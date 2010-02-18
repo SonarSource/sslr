@@ -4,7 +4,7 @@
 
   <artifactId>sonarsource-lr</artifactId>
   <packaging>jar</packaging>
-  <version>0.1</version>
+  <version>0.1-SNAPSHOT</version>
   <name>SonarSource Language Recognition</name>
   <parent>
     <groupId>com.sonarsource.plugins</groupId>
@@ -29,7 +29,7 @@
         <artifactId>maven-release-plugin</artifactId>
         <version>2.0-beta-9</version>
         <configuration>
-          <tagBase>http://subversion.assembla.com/svn/sonarsourcecode/tags</tagBase>
+          <tagBase>https://subversion.assembla.com/svn/sonarsourcecode/tags</tagBase>
           <autoVersionSubmodules>true</autoVersionSubmodules>
         </configuration>
       </plugin>
@@ -76,9 +76,9 @@
 
 
   <scm>
-    <connection>scm:svn:http://subversion.assembla.com/svn/sonarsourcecode/tags/sonarsource-lr-0.1</connection>
-    <developerConnection>scm:svn:http://subversion.assembla.com/svn/sonarsourcecode/tags/sonarsource-lr-0.1</developerConnection>
-    <url>http://subversion.assembla.com/svn/sonarsourcecode/tags/sonarsource-lr-0.1</url>
+    <connection>scm:svn:https://subversion.assembla.com/svn/sonarsourcecode/trunk/sonarsource-lr</connection>
+    <developerConnection>scm:svn:https://subversion.assembla.com/svn/sonarsourcecode/tags/sonarsource-lr</developerConnection>
+    <url>https://subversion.assembla.com/svn/sonarsourcecode/tags/sonarsource-lr</url>
   </scm>
 
 
