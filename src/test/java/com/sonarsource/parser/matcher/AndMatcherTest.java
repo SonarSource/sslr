@@ -1,0 +1,30 @@
+/*
+ * Sonar, open source software quality management tool.
+ * Copyright (C) 2009 SonarSource SA
+ * mailto:contact AT sonarsource DOT com
+ */
+
+package com.sonarsource.parser.matcher;
+
+import org.junit.Test;
+
+import static com.sonarsource.parser.matcher.Matchers.and;
+import static com.sonarsource.parser.matcher.Matchers.isFalse;
+import static com.sonarsource.parser.matcher.Matchers.isTrue;
+
+import static org.junit.Assert.assertEquals;
+
+public class AndMatcherTest extends MatcherCase {
+
+  @Test
+  public void testAll() {
+    assertMatch(and(isTrue(), isTrue(), isTrue()), "one", "two", "three");
+    assertNotMatch(and(isTrue(), isFalse()), "one", "two");
+    assertNotMatch(and(isFalse(), isFalse()), "one", "two");
+  }
+
+  @Test
+  public void testToString() {
+    assertEquals("public class MyClass", and("public", "class", "MyClass").toString());
+  }
+}
