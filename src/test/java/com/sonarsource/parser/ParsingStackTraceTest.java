@@ -12,7 +12,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sonarsource.cobol.parser.CobolTokenType;
 import com.sonarsource.lexer.Token;
 import com.sonarsource.parser.matcher.Matchers;
 import com.sonarsource.parser.matcher.Rule;
@@ -29,10 +28,10 @@ public class ParsingStackTraceTest {
 
   @Before
   public void init() {
-    tokens.add(new Token(CobolTokenType.WORD, "public"));
-    tokens.add(new Token(CobolTokenType.WORD, "java"));
-    tokens.add(new Token(CobolTokenType.WORD, "lang", 34, 46, "file1"));
-    tokens.add(new Token(CobolTokenType.WORD, "class", 34, 46, "file2"));
+    tokens.add(new Token(MockTokenType.WORD, "public"));
+    tokens.add(new Token(MockTokenType.WORD, "java"));
+    tokens.add(new Token(MockTokenType.WORD, "lang", 34, 46, "file1"));
+    tokens.add(new Token(MockTokenType.WORD, "class", 34, 46, "file2"));
     state = new ParsingState(tokens);
   }
 

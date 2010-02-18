@@ -12,7 +12,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sonarsource.cobol.parser.CobolTokenType;
 import com.sonarsource.lexer.Token;
 import com.sonarsource.parser.ast.AstNode;
 import com.sonarsource.parser.matcher.Rule;
@@ -30,9 +29,9 @@ public class ParsingStateTest {
   @Before
   public void init() {
     List<Token> tokens = new ArrayList<Token>();
-    tokens.add(new Token(CobolTokenType.WORD, "java"));
-    tokens.add(new Token(CobolTokenType.WORD, "public"));
-    tokens.add(new Token(CobolTokenType.WORD, "class"));
+    tokens.add(new Token(MockTokenType.WORD, "java"));
+    tokens.add(new Token(MockTokenType.WORD, "public"));
+    tokens.add(new Token(MockTokenType.WORD, "class"));
 
     state = new ParsingState(tokens);
   }

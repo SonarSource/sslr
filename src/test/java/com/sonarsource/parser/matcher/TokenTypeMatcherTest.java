@@ -8,8 +8,8 @@ package com.sonarsource.parser.matcher;
 
 import org.junit.Test;
 
-import com.sonarsource.cobol.lexer.CobolLexer;
-import com.sonarsource.cobol.parser.CobolTokenType;
+import com.sonarsource.lexer.WordLexer;
+import com.sonarsource.parser.MockTokenType;
 import com.sonarsource.parser.ParsingState;
 import com.sonarsource.parser.ast.AstNode;
 
@@ -19,16 +19,16 @@ public class TokenTypeMatcherTest {
 
   @Test
   public void testMatch() {
-    TokenTypeMatcher matcher = new TokenTypeMatcher(CobolTokenType.WORD);
-    CobolLexer lexer = new CobolLexer();
+    TokenTypeMatcher matcher = new TokenTypeMatcher(MockTokenType.WORD);
+    WordLexer lexer = new WordLexer();
     AstNode node = matcher.match(new ParsingState(lexer.lex("print screen")));
 
-    assertEquals(CobolTokenType.WORD, node.getTokenType());
+    assertEquals(MockTokenType.WORD, node.getTokenType());
   }
 
   @Test
   public void testToString() {
-    TokenTypeMatcher matcher = new TokenTypeMatcher(CobolTokenType.WORD);
+    TokenTypeMatcher matcher = new TokenTypeMatcher(MockTokenType.WORD);
     assertEquals("WORD", matcher.toString());
   }
 }

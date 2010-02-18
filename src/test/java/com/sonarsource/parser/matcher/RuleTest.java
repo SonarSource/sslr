@@ -9,7 +9,7 @@ package com.sonarsource.parser.matcher;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.sonarsource.cobol.parser.CobolTokenType.WORD;
+import static com.sonarsource.parser.MockTokenType.WORD;
 import static com.sonarsource.parser.matcher.Matchers.o2n;
 import static com.sonarsource.parser.matcher.Matchers.opt;
 import static com.sonarsource.parser.matcher.Matchers.or;

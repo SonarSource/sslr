@@ -8,7 +8,7 @@ package com.sonarsource.parser.matcher;
 
 import org.junit.Test;
 
-import com.sonarsource.cobol.lexer.CobolLexer;
+import com.sonarsource.lexer.WordLexer;
 import com.sonarsource.parser.ParsingState;
 import com.sonarsource.parser.ast.AstNode;
 
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 
 public class TokenValueMatcherTest {
 
-  private CobolLexer lexer = new CobolLexer();
+  private WordLexer lexer = new WordLexer();
 
   @Test
   public void testMatch() {

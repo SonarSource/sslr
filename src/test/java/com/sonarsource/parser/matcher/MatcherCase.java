@@ -9,8 +9,8 @@ package com.sonarsource.parser.matcher;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sonarsource.cobol.parser.CobolTokenType;
 import com.sonarsource.lexer.Token;
+import com.sonarsource.parser.MockTokenType;
 import com.sonarsource.parser.ParsingStackTrace;
 import com.sonarsource.parser.ParsingState;
 import com.sonarsource.parser.RecognitionException;
@@ -32,7 +32,7 @@ public class MatcherCase {
   private List<Token> convertStringsToTokens(String[] strings) {
     List<Token> tokens = new ArrayList<Token>();
     for (String value : strings) {
-      tokens.add(new Token(CobolTokenType.WORD, value));
+      tokens.add(new Token(MockTokenType.WORD, value));
     }
     return tokens;
   }
