@@ -76,9 +76,9 @@
 
 
   <scm>
-    <connection>scm:svn:http://subversion.assembla.com/svn/sonarsourcecode/tags/sonarsource-lr-0.1</connection>
-    <developerConnection>scm:svn:http://subversion.assembla.com/svn/sonarsourcecode/tags/sonarsource-lr-0.1</developerConnection>
-    <url>http://subversion.assembla.com/svn/sonarsourcecode/tags/sonarsource-lr-0.1</url>
+    <connection>scm:svn:http://subversion.assembla.com/svn/sonarsourcecode/trunk/sonarsource-lr</connection>
+    <developerConnection>scm:svn:http://subversion.assembla.com/svn/sonarsourcecode/trunk/sonarsource-lr</developerConnection>
+    <url>http://subversion.assembla.com/svn/sonarsourcecode/trunk/sonarsource-lr</url>
   </scm>
 
 
