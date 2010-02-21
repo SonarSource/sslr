@@ -23,6 +23,10 @@ public class Matchers {
     return new ProxyMatcher(new OrMatcher(Matcher.convertToMatchers(matchers)));
   }
 
+  public static Matcher not(Object object) {
+    return new ProxyMatcher(new NotMatcher(Matcher.convertToMatcher(object)));
+  }
+
   public static Matcher and(Object... matchers) {
     return new ProxyMatcher(new AndMatcher(Matcher.convertToMatchers(matchers)));
   }
