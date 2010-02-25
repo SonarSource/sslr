@@ -6,6 +6,7 @@
 package com.sonarsource.lexer;
 
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Map;
 
 public class LexingState {
@@ -55,5 +56,11 @@ public class LexingState {
 
   public TokenType getKeyword(String key) {
     return keywords.get(key);
+  }
+
+  public void endOfTokens(List<Token> tokens) {
+    for (Preprocessor preprocessor : preprocessors) {
+      preprocessor.endOfTokens(tokens);
+    }
   }
 }

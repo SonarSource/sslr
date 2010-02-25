@@ -10,4 +10,7 @@ import java.util.List;
 public abstract class Preprocessor {
 
   public abstract boolean process(Token token, List<Token> tokens);
+
+  public void endOfTokens(List<Token> tokens) {
+  }
 }
