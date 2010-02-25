@@ -69,4 +69,17 @@ public class AstNodeTest {
     assertFalse(expr.hasChildren());
   }
 
+  @Test
+  public void testFindFirstNode() {
+    AstNode expr = new AstNode(new Rule("expr"), "expr", null);
+    Rule statRule = new Rule("stat");
+    AstNode stat = new AstNode(statRule, "stat", null);
+    AstNode identifier = new AstNode(new Rule("identifier"), "identifier", null);
+    expr.addChild(stat);
+    expr.addChild(identifier);
+
+    assertThat(expr.findFirstNode(statRule), is(stat));
+    Rule anotherRule = new Rule("anotherRule");
+    assertThat(expr.findFirstNode(anotherRule, statRule), is(stat));
+  }
 }

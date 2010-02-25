@@ -59,7 +59,7 @@ public class Token {
 
     Token token = (Token) o;
 
-    if (type != null ? !type.equals(token.type) : token.type != null)
+    if (type != null ? type != token.type : token.type != null)
       return false;
     if (value != null ? !value.equals(token.value) : token.value != null)
       return false;

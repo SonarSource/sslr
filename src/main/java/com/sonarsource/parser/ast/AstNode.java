@@ -119,10 +119,12 @@ public class AstNode {
     this.toIndex = toIndex;
   }
 
-  public AstNode findFirstNode(AstNodeType nodeType) {
+  public AstNode findFirstNode(AstNodeType... nodeTypes) {
     for (AstNode child : children) {
-      if (child.type == nodeType) {
-        return child;
+      for (AstNodeType nodeType : nodeTypes) {
+        if (child.type == nodeType) {
+          return child;
+        }
       }
     }
     return null;
