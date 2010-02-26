@@ -11,6 +11,9 @@ public abstract class Preprocessor {
 
   public abstract boolean process(Token token, List<Token> tokens);
 
-  public void endOfTokens(List<Token> tokens) {
+  public void endLexing(List<Token> tokens) {
+  }
+
+  public void startLexing() {
   }
 }

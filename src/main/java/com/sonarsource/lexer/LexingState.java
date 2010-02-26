@@ -58,9 +58,15 @@ public class LexingState {
     return keywords.get(key);
   }
 
-  public void endOfTokens(List<Token> tokens) {
+  public void startLexing() {
     for (Preprocessor preprocessor : preprocessors) {
-      preprocessor.endOfTokens(tokens);
+      preprocessor.startLexing();
+    }
+  }
+
+  public void endLexing(List<Token> tokens) {
+    for (Preprocessor preprocessor : preprocessors) {
+      preprocessor.endLexing(tokens);
     }
   }
 }
