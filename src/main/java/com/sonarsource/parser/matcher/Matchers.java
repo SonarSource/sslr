@@ -22,6 +22,10 @@ public class Matchers {
   public static Matcher or(Object... matchers) {
     return new ProxyMatcher(new OrMatcher(Matcher.convertToMatchers(matchers)));
   }
+  
+  public static Matcher strictOr(Object... matchers) {
+    return new ProxyMatcher(new StrictOrMatcher(Matcher.convertToMatchers(matchers)));
+  }
 
   public static Matcher not(Object object) {
     return new ProxyMatcher(new NotMatcher(Matcher.convertToMatcher(object)));
