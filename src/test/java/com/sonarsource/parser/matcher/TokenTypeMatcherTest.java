@@ -1,6 +1,6 @@
 /*
- * Sonar, open source software quality management tool.
- * Copyright (C) 2009 SonarSource SA
+ * Copyright (C) 2010 SonarSource SA
+ * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
 
