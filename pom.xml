@@ -7,7 +7,7 @@
   <version>0.3-SNAPSHOT</version>
   <name>SonarSource :: Language Recognition</name>
   <parent>
-    <groupId>com.sonarsource.plugins</groupId>
+    <groupId>com.sonarsource.plugins.parent</groupId>
     <artifactId>parent</artifactId>
     <version>4</version>
   </parent>
