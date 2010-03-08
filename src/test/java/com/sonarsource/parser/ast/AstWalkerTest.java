@@ -12,8 +12,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
 
+import com.sonarsource.lexer.Token;
+import com.sonarsource.lexer.TokenType;
+import com.sonarsource.parser.MockTokenType;
+
+import static org.hamcrest.Matchers.anything;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class AstWalkerTest {
 
@@ -24,6 +32,7 @@ public class AstWalkerTest {
   private AstNode ast121;
   private AstNode ast122;
   private AstNode ast13;
+  private AstNode astNodeWithToken;
   private AstNodeType animal = new AstNodeType() {
   };
   private AstNodeType dog = new AstNodeType() {
@@ -32,7 +41,8 @@ public class AstWalkerTest {
   };
   private AstNodeType tiger = new AstNodeType() {
   };
-  private AstVisitor visitor = mock(AstVisitor.class);
+  private AstVisitor astVisitor = mock(AstVisitor.class);
+  private AstAndTokenVisitor astAndTokenVisitor = mock(AstAndTokenVisitor.class);
 
   @Before
   public void init() {
@@ -42,6 +52,7 @@ public class AstWalkerTest {
     ast121 = new AstNode(animal, "121", null);
     ast122 = new AstNode(tiger, "122", null);
     ast13 = new AstNode(cat, "13", null);
+    astNodeWithToken = new AstNode(new Token(MockTokenType.WORD, "word"));
 
     ast1.addChild(ast11);
     ast1.addChild(ast12);
@@ -52,22 +63,32 @@ public class AstWalkerTest {
 
   @Test
   public void testVisitFileAndLeaveFileCalls() {
-    when(visitor.getAstNodeTypesToVisit()).thenReturn(new ArrayList<AstNodeType>());
-    walker.addVisitor(visitor);
+    when(astVisitor.getAstNodeTypesToVisit()).thenReturn(new ArrayList<AstNodeType>());
+    walker.addVisitor(astVisitor);
     walker.walkAndVisit(ast1);
-    verify(visitor).visitFile(ast1);
-    verify(visitor).leaveFile(ast1);
-    verify(visitor, never()).visitNode(ast11);
+    verify(astVisitor).visitFile(ast1);
+    verify(astVisitor).leaveFile(ast1);
+    verify(astVisitor, never()).visitNode(ast11);
   }
-  
+
+  @Test
+  public void testVisitToken() {
+    when(astAndTokenVisitor.getAstNodeTypesToVisit()).thenReturn(new ArrayList<AstNodeType>());
+    walker.addVisitor(astAndTokenVisitor);
+    walker.walkAndVisit(astNodeWithToken);
+    verify(astAndTokenVisitor).visitFile(astNodeWithToken);
+    verify(astAndTokenVisitor).leaveFile(astNodeWithToken);
+    verify(astAndTokenVisitor).visitToken(new Token(MockTokenType.WORD, "word"));
+  }
+
   @Test
   public void testVisitNodeAndLeaveNodeCalls() {
-    when(visitor.getAstNodeTypesToVisit()).thenReturn(Arrays.asList(tiger));
-    walker.addVisitor(visitor);
+    when(astVisitor.getAstNodeTypesToVisit()).thenReturn(Arrays.asList(tiger));
+    walker.addVisitor(astVisitor);
     walker.walkAndVisit(ast1);
-    InOrder inOrder = inOrder(visitor);
-    inOrder.verify(visitor).visitNode(ast122);
-    inOrder.verify(visitor).leaveNode(ast122);
-    verify(visitor, never()).visitNode(ast11);
+    InOrder inOrder = inOrder(astVisitor);
+    inOrder.verify(astVisitor).visitNode(ast122);
+    inOrder.verify(astVisitor).leaveNode(ast122);
+    verify(astVisitor, never()).visitNode(ast11);
   }
 }

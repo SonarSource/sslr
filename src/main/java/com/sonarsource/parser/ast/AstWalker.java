@@ -13,10 +13,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.sonarsource.lexer.Token;
+
 public class AstWalker {
 
   private Map<AstNodeType, AstVisitor[]> visitorsByNodeType = new IdentityHashMap<AstNodeType, AstVisitor[]>();
   private Set<AstVisitor> visitors = new HashSet<AstVisitor>();
+  private AstAndTokenVisitor[] astAndTokenVisitors = new AstAndTokenVisitor[0];
+  private Token lastVisitedToken = null;
+
+  public AstWalker(AstVisitor... visitors) {
+    for (AstVisitor visitor : visitors) {
+      addVisitor(visitor);
+    }
+  }
 
   public void addVisitor(AstVisitor visitor) {
     visitors.add(visitor);
@@ -24,6 +34,11 @@ public class AstWalker {
       List<AstVisitor> visitorsByType = getAstVisitors(type);
       visitorsByType.add(visitor);
       putAstVisitors(type, visitorsByType);
+    }
+    if (visitor instanceof AstAndTokenVisitor) {
+      List<AstAndTokenVisitor> tokenVisitorsList = new ArrayList<AstAndTokenVisitor>(Arrays.asList(astAndTokenVisitors));
+      tokenVisitorsList.add((AstAndTokenVisitor) visitor);
+      astAndTokenVisitors = tokenVisitorsList.toArray(new AstAndTokenVisitor[0]);
     }
   }
 
@@ -52,6 +67,12 @@ public class AstWalker {
     }
     for (AstVisitor visitor : nodeVisitors) {
       visitor.leaveNode(ast);
+    }
+    if (ast.getToken() != null && lastVisitedToken != ast.getToken()) {
+      lastVisitedToken = ast.getToken();
+      for (AstAndTokenVisitor astAndTokenVisitor : astAndTokenVisitors) {
+        astAndTokenVisitor.visitToken(lastVisitedToken);
+      }
     }
   }
 
