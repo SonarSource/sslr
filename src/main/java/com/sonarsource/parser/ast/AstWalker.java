@@ -20,7 +20,7 @@ public class AstWalker {
 
   public void addVisitor(AstVisitor visitor) {
     visitors.add(visitor);
-    for (AstNodeType type : visitor.getAstNodeTypes()) {
+    for (AstNodeType type : visitor.getAstNodeTypesToVisit()) {
       List<AstVisitor> visitorsByType = getAstVisitors(type);
       visitorsByType.add(visitor);
       putAstVisitors(type, visitorsByType);

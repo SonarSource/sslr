@@ -52,7 +52,7 @@ public class AstWalkerTest {
 
   @Test
   public void testVisitFileAndLeaveFileCalls() {
-    when(visitor.getAstNodeTypes()).thenReturn(new ArrayList<AstNodeType>());
+    when(visitor.getAstNodeTypesToVisit()).thenReturn(new ArrayList<AstNodeType>());
     walker.addVisitor(visitor);
     walker.walkAndVisit(ast1);
     verify(visitor).visitFile(ast1);
@@ -62,7 +62,7 @@ public class AstWalkerTest {
   
   @Test
   public void testVisitNodeAndLeaveNodeCalls() {
-    when(visitor.getAstNodeTypes()).thenReturn(Arrays.asList(tiger));
+    when(visitor.getAstNodeTypesToVisit()).thenReturn(Arrays.asList(tiger));
     walker.addVisitor(visitor);
     walker.walkAndVisit(ast1);
     InOrder inOrder = inOrder(visitor);

@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface AstVisitor {
 
-  List<AstNodeType> getAstNodeTypes();
+  List<AstNodeType> getAstNodeTypesToVisit();
 
   void visitFile(AstNode ast);
 
