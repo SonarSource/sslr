@@ -13,6 +13,7 @@ public class Token {
   private int line = 0;
   private int column = 0;
   private String fileName;
+  private boolean copyBook = false;
 
   public Token(TokenType type, String value) {
     this.type = type;
@@ -48,6 +49,14 @@ public class Token {
 
   public void setType(TokenType type) {
     this.type = type;
+  }
+
+  public boolean isCopyBook() {
+    return copyBook;
+  }
+
+  public void setCopyBook(boolean copyBook) {
+    this.copyBook = copyBook;
   }
 
   @Override
