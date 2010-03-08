@@ -6,6 +6,7 @@
 package com.sonarsource.lexer;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,8 @@ public class LexingState {
   private String fileName = null;
 
   private Map<String, TokenType> keywords;
+
+  private List<Token> comments = new ArrayList<Token>();
 
   private Charset charset = Charset.defaultCharset();
 
@@ -59,9 +62,14 @@ public class LexingState {
   }
 
   public void startLexing() {
+    comments.clear();
     for (Preprocessor preprocessor : preprocessors) {
       preprocessor.startLexing();
     }
+  }
+
+  public List<Token> getComments() {
+    return comments;
   }
 
   public void endLexing(List<Token> tokens) {
