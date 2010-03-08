@@ -60,6 +60,12 @@ public class AstWalker {
     for (AstVisitor visitor : nodeVisitors) {
       visitor.visitNode(ast);
     }
+    if (ast.getToken() != null && lastVisitedToken != ast.getToken()) {
+      lastVisitedToken = ast.getToken();
+      for (AstAndTokenVisitor astAndTokenVisitor : astAndTokenVisitors) {
+        astAndTokenVisitor.visitToken(lastVisitedToken);
+      }
+    }
     if (ast.getChildren() != null) {
       for (AstNode nodeChild : ast.getChildren()) {
         visit(nodeChild);
@@ -67,12 +73,6 @@ public class AstWalker {
     }
     for (AstVisitor visitor : nodeVisitors) {
       visitor.leaveNode(ast);
-    }
-    if (ast.getToken() != null && lastVisitedToken != ast.getToken()) {
-      lastVisitedToken = ast.getToken();
-      for (AstAndTokenVisitor astAndTokenVisitor : astAndTokenVisitors) {
-        astAndTokenVisitor.visitToken(lastVisitedToken);
-      }
     }
   }
 
