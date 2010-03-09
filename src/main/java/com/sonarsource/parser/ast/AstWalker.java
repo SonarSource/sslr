@@ -87,6 +87,6 @@ public class AstWalker {
     if (visitors == null) {
       return new ArrayList<AstVisitor>();
     }
-    return Arrays.asList(visitors);
+    return new ArrayList<AstVisitor>(Arrays.asList(visitors));
   }
 }
