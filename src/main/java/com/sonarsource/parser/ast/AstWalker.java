@@ -7,22 +7,24 @@ package com.sonarsource.parser.ast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.sonarsource.lexer.Token;
 
 public class AstWalker {
 
   private Map<AstNodeType, AstVisitor[]> visitorsByNodeType = new IdentityHashMap<AstNodeType, AstVisitor[]>();
-  private Set<AstVisitor> visitors = new HashSet<AstVisitor>();
+  private List<AstVisitor> visitors = new ArrayList<AstVisitor>();
   private AstAndTokenVisitor[] astAndTokenVisitors = new AstAndTokenVisitor[0];
   private Token lastVisitedToken = null;
 
   public AstWalker(AstVisitor... visitors) {
+    this(Arrays.asList(visitors));
+  }
+
+  public AstWalker(List<? extends AstVisitor> visitors) {
     for (AstVisitor visitor : visitors) {
       addVisitor(visitor);
     }
@@ -47,8 +49,8 @@ public class AstWalker {
       visitor.visitFile(ast);
     }
     visit(ast);
-    for (AstVisitor visitor : visitors) {
-      visitor.leaveFile(ast);
+    for (int i = visitors.size() - 1; i >= 0; i--) {
+      visitors.get(i).leaveFile(ast);
     }
   }
 
@@ -71,8 +73,8 @@ public class AstWalker {
         visit(nodeChild);
       }
     }
-    for (AstVisitor visitor : nodeVisitors) {
-      visitor.leaveNode(ast);
+    for (int i = nodeVisitors.length - 1; i >= 0; i--) {
+      nodeVisitors[i].leaveNode(ast);
     }
   }
 

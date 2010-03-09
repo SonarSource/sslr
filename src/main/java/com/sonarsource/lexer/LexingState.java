@@ -68,7 +68,11 @@ public class LexingState {
     }
   }
 
-  public List<Token> getComments() {
+  public Comments getComments() {
+    return new Comments(comments);
+  }
+
+  public List<Token> getCommentTokens() {
     return comments;
   }
 
