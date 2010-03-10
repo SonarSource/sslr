@@ -14,6 +14,7 @@ public class Token {
   private int column = 0;
   private String fileName;
   private boolean copyBook = false;
+  private boolean generatedCode = false;
 
   public Token(TokenType type, String value) {
     this.type = type;
@@ -57,6 +58,14 @@ public class Token {
 
   public void setCopyBook(boolean copyBook) {
     this.copyBook = copyBook;
+  }
+
+  public boolean isGeneratedCode() {
+    return generatedCode;
+  }
+
+  public void setGeneratedCode(boolean generatedCode) {
+    this.generatedCode = generatedCode;
   }
 
   @Override
