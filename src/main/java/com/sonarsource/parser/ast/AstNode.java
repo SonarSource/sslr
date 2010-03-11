@@ -20,6 +20,7 @@ public class AstNode {
   private String name;
   private Token token;
   private List<AstNode> children;
+  private AstNode parent;
   private int fromIndex;
   private int toIndex;
   private boolean hasToBeSkipped = false;
@@ -42,6 +43,10 @@ public class AstNode {
     this.hasToBeSkipped = hasToBeSkipped;
   }
 
+  public AstNode getParent() {
+    return parent;
+  }
+
   public void addChild(AstNode child) {
     if (child != null) {
       if (children == null) {
@@ -50,9 +55,13 @@ public class AstNode {
       if (child.hasToBeSkipped()) {
         if (child.hasChildren()) {
           children.addAll(child.children);
+          for (AstNode subChild : child.children) {
+            subChild.parent = this;
+          }
         }
       } else {
         children.add(child);
+        child.parent = this;
       }
     }
   }
@@ -119,11 +128,28 @@ public class AstNode {
     this.toIndex = toIndex;
   }
 
-  public AstNode findFirstNode(AstNodeType... nodeTypes) {
+  public AstNode findFirstDirectChild(AstNodeType... nodeTypes) {
     for (AstNode child : children) {
       for (AstNodeType nodeType : nodeTypes) {
         if (child.type == nodeType) {
           return child;
+        }
+      }
+    }
+    return null;
+  }
+
+  public AstNode findFirst(AstNodeType... nodeTypes) {
+    if (children != null) {
+      for (AstNode child : children) {
+        for (AstNodeType nodeType : nodeTypes) {
+          if (child.type == nodeType) {
+            return child;
+          }
+          AstNode node = child.findFirst(nodeTypes);
+          if (node != null) {
+            return node;
+          }
         }
       }
     }
@@ -137,7 +163,7 @@ public class AstNode {
     return null;
   }
 
-  public List<AstNode> findNodes(AstNodeType nodeType) {
+  public List<AstNode> findDirectChildren(AstNodeType nodeType) {
     List<AstNode> nodes = new ArrayList<AstNode>();
     for (AstNode child : children) {
       if (child.type == nodeType) {
@@ -154,8 +180,21 @@ public class AstNode {
     return null;
   }
 
-  public boolean hasNode(AstNodeType nodeType) {
-    return findFirstNode(nodeType) != null;
+  public boolean hasDirectChildren(AstNodeType nodeType) {
+    return findFirstDirectChild(nodeType) != null;
+  }
+
+  public boolean hasSomewhere(AstNodeType nodeType) {
+    return findFirst(nodeType) != null;
+  }
+
+  public boolean hasAmongParents(AstNodeType nodeType) {
+    if (parent == null) {
+      return false;
+    } else if (parent.type == nodeType) {
+      return true;
+    }
+    return parent.hasAmongParents(nodeType);
   }
 
 }
