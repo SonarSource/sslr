@@ -74,6 +74,16 @@ public class AstNode {
     return children;
   }
 
+  public AstNode getNextSibling() {
+    for (int i = 0; i < parent.children.size(); i++) {
+      AstNode child = parent.children.get(i);
+      if (child == this && parent.children.size() > i + 1) {
+        return parent.children.get(i + 1);
+      }
+    }
+    return null;
+  }
+
   public String getTokenValue() {
     if (token == null || type instanceof Rule) {
       return null;
@@ -189,12 +199,19 @@ public class AstNode {
   }
 
   public boolean hasAmongParents(AstNodeType nodeType) {
-    if (parent == null) {
-      return false;
-    } else if (parent.type == nodeType) {
+    if (getFirtParent(nodeType) != null) {
       return true;
     }
-    return parent.hasAmongParents(nodeType);
+    return false;
+  }
+
+  public AstNode getFirtParent(AstNodeType nodeType) {
+    if (parent == null) {
+      return null;
+    } else if (parent.type == nodeType) {
+      return parent;
+    }
+    return parent.getFirtParent(nodeType);
   }
 
 }

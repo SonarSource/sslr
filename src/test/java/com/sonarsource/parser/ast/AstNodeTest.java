@@ -72,6 +72,19 @@ public class AstNodeTest {
   }
 
   @Test
+  public void testGetNextSibling() {
+    AstNode expr1 = new AstNode(new Rule("expr1"), "expr1", null);
+    AstNode expr2 = new AstNode(new Rule("expr2"), "expr2", null);
+    AstNode statement = new AstNode(new Rule("statement"), "statement", null);
+
+    statement.addChild(expr1);
+    statement.addChild(expr2);
+
+    assertThat(expr1.getNextSibling(), is(expr2));
+    assertThat(expr2.getNextSibling(), is(nullValue()));
+  }
+
+  @Test
   public void testFindFirstDirectChild() {
     AstNode expr = new AstNode(new Rule("expr"), "expr", null);
     Rule statRule = new Rule("stat");
