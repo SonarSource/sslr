@@ -13,8 +13,12 @@ public class Token {
   private int line = 0;
   private int column = 0;
   private String fileName;
-  private boolean copyBook = false;
   private boolean generatedCode = false;
+  
+  private boolean copyBook = false;
+  private int copyBookOriginalLine = -1;
+  private String copyBookOriginalFileName = null;
+  
 
   public Token(TokenType type, String value) {
     this.type = type;
@@ -99,5 +103,21 @@ public class Token {
 
   public void setValue(String value) {
     this.value = value;
+  }
+
+  public void setCopyBookOriginalLine(int copyBookOriginalLine) {
+    this.copyBookOriginalLine = copyBookOriginalLine;
+  }
+
+  public int getCopyBookOriginalLine() {
+    return copyBookOriginalLine;
+  }
+
+  public void setCopyBookOriginalFileName(String copyBookOriginalFileName) {
+    this.copyBookOriginalFileName = copyBookOriginalFileName;
+  }
+
+  public String getCopyBookOriginalFileName() {
+    return copyBookOriginalFileName;
   }
 }
