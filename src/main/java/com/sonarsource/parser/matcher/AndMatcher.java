@@ -12,14 +12,13 @@ import com.sonarsource.parser.ast.AstNode;
 public class AndMatcher extends Matcher {
 
   private final Matcher[] matchers;
-  private final AstNode[] childNodes;
 
   public AndMatcher(Matcher... matchers) {
     this.matchers = matchers;
-    childNodes = new AstNode[matchers.length];
   }
 
   public AstNode match(ParsingState parsingState) {
+    AstNode[] childNodes = new AstNode[matchers.length];
     int startIndex = parsingState.lexerIndex;
 
     for (int i = 0; i < matchers.length; i++) {
