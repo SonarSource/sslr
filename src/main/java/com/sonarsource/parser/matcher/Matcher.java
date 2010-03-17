@@ -7,7 +7,6 @@
 package com.sonarsource.parser.matcher;
 
 import com.sonarsource.lexer.TokenType;
-import com.sonarsource.parser.ParsingStackTrace;
 import com.sonarsource.parser.ParsingState;
 import com.sonarsource.parser.RecognitionException;
 import com.sonarsource.parser.ast.AstNode;
@@ -41,7 +40,7 @@ public abstract class Matcher implements AstNodeType {
     try {
       return this.match(parsingState);
     } catch (RecognitionException e) {
-      throw new RecognitionException(ParsingStackTrace.generate(parsingState));
+      throw new RecognitionException(parsingState);
     }
   }
 
