@@ -22,7 +22,7 @@ public class Matchers {
   public static Matcher or(Object... matchers) {
     return new ProxyMatcher(new OrMatcher(Matcher.convertToMatchers(matchers)));
   }
-  
+
   public static Matcher strictOr(Object... matchers) {
     return new ProxyMatcher(new StrictOrMatcher(Matcher.convertToMatchers(matchers)));
   }
@@ -43,20 +43,12 @@ public class Matchers {
     return new ProxyMatcher(new BooleanMatcher(false));
   }
 
-  public static Matcher eof() {
-    return new ProxyMatcher(new EndOfFileMatcher());
-  }
-
   public static Matcher till(Object matcher) {
     return new ProxyMatcher(new InclusiveTillMatcher(Matcher.convertToMatcher(matcher)));
   }
 
   public static Matcher exclusiveTill(Object... matchers) {
     return new ProxyMatcher(new ExclusiveTillMatcher(Matcher.convertToMatchers(matchers)));
-  }
-
-  public static Matcher eof(Matcher matcher) {
-    return new ProxyMatcher(new EndOfFileMatcher(matcher));
   }
 
   public static ZeroToNMatcher o2n(Object... objects) {
