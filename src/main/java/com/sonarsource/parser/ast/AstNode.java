@@ -138,6 +138,10 @@ public class AstNode {
     this.toIndex = toIndex;
   }
 
+  public boolean is(AstNodeType type) {
+    return this.type == type;
+  }
+
   public AstNode findFirstDirectChild(AstNodeType... nodeTypes) {
     for (AstNode child : children) {
       for (AstNodeType nodeType : nodeTypes) {
