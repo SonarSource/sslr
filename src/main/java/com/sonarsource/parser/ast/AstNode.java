@@ -10,13 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sonarsource.lexer.Token;
-import com.sonarsource.lexer.TokenType;
 import com.sonarsource.parser.matcher.Matcher;
 import com.sonarsource.parser.matcher.Rule;
 
 public class AstNode {
 
-  public final AstNodeType type;
+  protected final AstNodeType type;
   private String name;
   private Token token;
   private List<AstNode> children;
@@ -75,27 +74,23 @@ public class AstNode {
   }
 
   public AstNode getNextSibling() {
+    if (parent == null) {
+      return null;
+    }
     for (int i = 0; i < parent.children.size(); i++) {
       AstNode child = parent.children.get(i);
       if (child == this && parent.children.size() > i + 1) {
         return parent.children.get(i + 1);
       }
     }
-    return null;
+    return parent.getNextSibling();
   }
 
   public String getTokenValue() {
-    if (token == null || type instanceof Rule) {
+    if (token == null) {
       return null;
     }
     return token.getValue();
-  }
-
-  public TokenType getTokenType() {
-    if (token == null || type instanceof Rule) {
-      return null;
-    }
-    return token.getType();
   }
 
   public Token getToken() {
@@ -104,10 +99,6 @@ public class AstNode {
 
   public int getTokenLine() {
     return token.getLine();
-  }
-
-  public int getTokenColumn() {
-    return token.getColumn();
   }
 
   public boolean hasToken() {
@@ -140,6 +131,14 @@ public class AstNode {
 
   public boolean is(AstNodeType type) {
     return this.type == type;
+  }
+
+  public boolean isARule() {
+    return type instanceof Rule;
+  }
+
+  public boolean isNot(AstNodeType type) {
+    return this.type != type;
   }
 
   public AstNode findFirstDirectChild(AstNodeType... nodeTypes) {

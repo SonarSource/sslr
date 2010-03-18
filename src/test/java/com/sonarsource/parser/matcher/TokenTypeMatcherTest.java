@@ -14,6 +14,7 @@ import com.sonarsource.parser.ParsingState;
 import com.sonarsource.parser.ast.AstNode;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TokenTypeMatcherTest {
 
@@ -23,7 +24,7 @@ public class TokenTypeMatcherTest {
     WordLexer lexer = new WordLexer();
     AstNode node = matcher.match(new ParsingState(lexer.lex("print screen")));
 
-    assertEquals(MockTokenType.WORD, node.getTokenType());
+    assertTrue(node.is(MockTokenType.WORD));
   }
 
   @Test

@@ -60,11 +60,11 @@ public class AstXmlPrinter {
 
   private void appendNodecontent(AstNode node) throws IOException {
     writer.append(node.getName());
-    if (node.getTokenValue() != null && !node.getName().equals(node.getTokenValue())) {
+    if ( !node.isARule() && node.getTokenValue() != null && !node.getName().equals(node.getTokenValue())) {
       writer.append(" value=\"" + node.getTokenValue() + "\"");
     }
     if (node.hasToken()) {
-      writer.append(" line=\"" + node.getTokenLine() + "\" col=\""+ node.getTokenColumn() + "\"");
+      writer.append(" line=\"" + node.getTokenLine() + "\" col=\"" + node.getToken().getColumn() + "\"");
     }
   }
 
