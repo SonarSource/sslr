@@ -24,6 +24,7 @@ public class Token {
   public Token(TokenType type, String value) {
     this.type = type;
     this.value = value;
+    file = new File("Dummy for unit tests");
   }
 
   public Token(TokenType type, String value, int line, int column) {
