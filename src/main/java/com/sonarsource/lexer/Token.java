@@ -6,30 +6,35 @@
 
 package com.sonarsource.lexer;
 
+import java.io.File;
+
 public class Token {
 
   private TokenType type;
   private String value;
   private int line = 0;
   private int column = 0;
-  private String fileName;
+  private File file;
   private boolean generatedCode = false;
-  
+
   private boolean copyBook = false;
   private int copyBookOriginalLine = -1;
   private String copyBookOriginalFileName = null;
-  
 
   public Token(TokenType type, String value) {
     this.type = type;
     this.value = value;
   }
 
-  public Token(TokenType type, String value, int line, int column, String fileName) {
+  public Token(TokenType type, String value, int line, int column) {
     this(type, value);
     this.line = line;
     this.column = column;
-    this.fileName = fileName;
+  }
+
+  public Token(TokenType type, String value, int line, int column, File file) {
+    this(type, value, line, column);
+    setFile(file);
   }
 
   public TokenType getType() {
@@ -48,8 +53,8 @@ public class Token {
     return column;
   }
 
-  public String getFileName() {
-    return fileName;
+  public File getFile() {
+    return file;
   }
 
   public void setType(TokenType type) {
@@ -119,5 +124,9 @@ public class Token {
 
   public String getCopyBookOriginalFileName() {
     return copyBookOriginalFileName;
+  }
+
+  public void setFile(File file) {
+    this.file = file;
   }
 }

@@ -21,7 +21,10 @@ public abstract class TokenChannel implements Channel {
   public abstract boolean read(CodeReader code);
 
   protected void addToken(TokenType tokenType, String value, int linePosition, int columnPosition) {
-    Token token = new Token(tokenType, value, linePosition, columnPosition, lexingState.getFileName());
+    Token token = new Token(tokenType, value, linePosition, columnPosition);
+    if (lexingState.getFile() != null) {
+      token.setFile(lexingState.getFile());
+    }
     for (Preprocessor preprocessor : lexingState.getPreprocessors()) {
       if (preprocessor.process(token, tokens)) {
         return;

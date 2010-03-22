@@ -39,14 +39,14 @@ public class ParsingStackTrace {
     if (token != null) {
       stackTrace.append(token.getValue());
       stackTrace.append(" [" + token.getType() + "]>");
-      stackTrace.append(" ('" + token.getFileName() + "':");
+      stackTrace.append(" ('" + token.getFile().getName() + "':");
       stackTrace.append(" Line " + token.getLine() + " /");
       stackTrace.append(" Column " + token.getColumn() + ")");
     } else {
       stackTrace.append("EOF>");
       if (parsingState.lexerSize > 0) {
         Token lastToken = parsingState.peekToken(parsingState.lexerSize - 1, null);
-        stackTrace.append(" ('" + lastToken.getFileName() + "')");
+        stackTrace.append(" ('" + lastToken.getFile().getName() + "')");
       }
     }
     stackTrace.append("\n");

@@ -5,6 +5,7 @@
  */
 package com.sonarsource.lexer;
 
+import java.io.File;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Map;
 
 public class LexingState {
 
-  private String fileName = null;
+  private File file = null;
 
   private Map<String, TokenType> keywords;
 
@@ -33,12 +34,12 @@ public class LexingState {
     return preprocessors;
   }
 
-  public void setFileName(String fileName) {
-    this.fileName = fileName;
+  public void setFile(File file) {
+    this.file = file;
   }
 
-  public String getFileName() {
-    return fileName;
+  public File getFile() {
+    return file;
   }
 
   public void setCharset(Charset charset) {

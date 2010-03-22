@@ -6,6 +6,7 @@
 
 package com.sonarsource.parser;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +31,8 @@ public class ParsingStackTraceTest {
   public void init() {
     tokens.add(new Token(MockTokenType.WORD, "public"));
     tokens.add(new Token(MockTokenType.WORD, "java"));
-    tokens.add(new Token(MockTokenType.WORD, "lang", 34, 46, "file1"));
-    tokens.add(new Token(MockTokenType.WORD, "class", 34, 46, "file2"));
+    tokens.add(new Token(MockTokenType.WORD, "lang", 34, 46, new File("file1")));
+    tokens.add(new Token(MockTokenType.WORD, "class", 34, 46, new File("file2")));
     state = new ParsingState(tokens);
   }
 
