@@ -38,7 +38,7 @@ public class Rule extends Matcher {
   }
 
   public void mock() {
-    setMatcher(new TokenValueMatcher(name));
+    setMatcher(new TokenValueMatcher(name.toUpperCase()));
   }
 
   public Rule or(Object... matchers) {
