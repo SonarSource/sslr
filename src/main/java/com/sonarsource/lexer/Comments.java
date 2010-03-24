@@ -25,7 +25,7 @@ public class Comments implements Iterable<Token> {
     return comments.values().iterator();
   }
 
-  public boolean isThereCommentAtLine(int line) {
+  private boolean isThereCommentAtLine(int line) {
     return comments.containsKey(line);
   }
 
@@ -43,9 +43,20 @@ public class Comments implements Iterable<Token> {
     return true;
   }
 
-  public boolean isBlankComment(int line) {
+  private boolean isBlankComment(int line) {
     if (isThereCommentAtLine(line)) {
       return isBlankComment(getCommentAtLine(line).getValue());
+    }
+    return false;
+  }
+
+  public boolean isThereCommentBeforeLine(int line) {
+    int commentLine = line - 1;
+    while (isThereCommentAtLine(commentLine)) {
+      if ( !isBlankComment(commentLine)) {
+        return true;
+      }
+      commentLine--;
     }
     return false;
   }
