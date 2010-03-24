@@ -33,4 +33,21 @@ public class Comments implements Iterable<Token> {
     return comments.get(line);
   }
 
+  public static boolean isBlankComment(String comment) {
+    for (int i = 0; i < comment.length(); i++) {
+      char character = comment.charAt(i);
+      if ( !Character.isSpaceChar(character) && character != '*' && character != '-' && character != '=') {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public boolean isBlankComment(int line) {
+    if (isThereCommentAtLine(line)) {
+      return isBlankComment(getCommentAtLine(line).getValue());
+    }
+    return false;
+  }
+
 }

@@ -217,4 +217,7 @@ public class AstNode {
     return parent.getFirtParent(nodeType);
   }
 
+  public boolean isCopyBookOrGeneratedNode() {
+    return getToken().isCopyBook() || getToken().isGeneratedCode();
+  }
 }
