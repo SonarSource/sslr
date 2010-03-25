@@ -27,7 +27,7 @@ public class TokenValueMatcher extends TokenMatcher {
 
   @Override
   protected boolean isExpectedToken(Token token) {
-    return tokenValue.equals(token.getValue());
+    return tokenValue.hashCode() == token.getValue().hashCode() && tokenValue.equals(token.getValue());
   }
 
 }
