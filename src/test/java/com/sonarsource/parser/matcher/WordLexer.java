@@ -3,11 +3,12 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.lexer;
+package com.sonarsource.parser.matcher;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sonarsource.lexer.Token;
 import com.sonarsource.parser.MockTokenType;
 
 public class WordLexer {

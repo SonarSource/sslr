@@ -8,6 +8,9 @@ package com.sonarsource.lexer;
 
 import java.util.List;
 
+import org.sonar.channel.Channel;
+import org.sonar.channel.CodeReader;
+
 public abstract class TokenChannel implements Channel {
 
   private List<Token> tokens;

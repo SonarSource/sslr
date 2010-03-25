@@ -8,7 +8,6 @@ package com.sonarsource.parser.matcher;
 
 import org.junit.Test;
 
-import com.sonarsource.lexer.WordLexer;
 import com.sonarsource.parser.MockTokenType;
 import com.sonarsource.parser.ParsingState;
 import com.sonarsource.parser.ast.AstNode;
