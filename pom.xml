@@ -4,7 +4,7 @@
 	<groupId>com.sonarsource.plugins.sslr</groupId>
 	<artifactId>sonarsource-lr</artifactId>
 	<packaging>jar</packaging>
-	<version>0.3</version>
+	<version>0.4-SNAPSHOT</version>
 	<name>SonarSource :: Language Recognition</name>
 	<parent>
 		<groupId>com.sonarsource.parent</groupId>
@@ -79,8 +79,8 @@
 	</build>
 
 	<scm>
-		<connection>scm:svn:https://subversion.assembla.com/svn/sonarsourcecode/tags/sonarsource-lr-0.3</connection>
-		<developerConnection>scm:svn:https://subversion.assembla.com/svn/sonarsourcecode/tags/sonarsource-lr-0.3</developerConnection>
-		<url>https://subversion.assembla.com/svn/sonarsourcecode/tags/sonarsource-lr-0.3</url>
+		<connection>scm:svn:https://subversion.assembla.com/svn/sonarsourcecode/trunk/sslr</connection>
+		<developerConnection>scm:svn:https://subversion.assembla.com/svn/sonarsourcecode/trunk/sslr</developerConnection>
+		<url>https://subversion.assembla.com/svn/sonarsourcecode/trunk/sslr</url>
 	</scm>
 </project>
