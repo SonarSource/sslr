@@ -59,13 +59,13 @@ public class AstWalker {
     if (nodeVisitors == null) {
       nodeVisitors = new AstVisitor[0];
     }
-    for (AstVisitor visitor : nodeVisitors) {
-      visitor.visitNode(ast);
+    for (int i = 0; i < nodeVisitors.length; i++) {
+      nodeVisitors[i].visitNode(ast);
     }
     if (ast.getToken() != null && lastVisitedToken != ast.getToken()) {
       lastVisitedToken = ast.getToken();
-      for (AstAndTokenVisitor astAndTokenVisitor : astAndTokenVisitors) {
-        astAndTokenVisitor.visitToken(lastVisitedToken);
+      for (int i = 0; i < astAndTokenVisitors.length; i++) {
+        astAndTokenVisitors[i].visitToken(lastVisitedToken);
       }
     }
     if (ast.getChildren() != null) {
