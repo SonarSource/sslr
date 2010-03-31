@@ -8,17 +8,14 @@ package com.sonarsource.lexer;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 public class Comments implements Iterable<Token> {
 
   private Map<Integer, Token> comments = new HashMap<Integer, Token>();
 
-  public Comments(List<Token> comments) {
-    for (Token comment : comments) {
-      this.comments.put(comment.getLine(), comment);
-    }
+  public Comments(Map<Integer, Token> comments) {
+    this.comments = comments;
   }
 
   public Iterator<Token> iterator() {

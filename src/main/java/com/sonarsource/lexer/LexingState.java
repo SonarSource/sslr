@@ -7,7 +7,7 @@ package com.sonarsource.lexer;
 
 import java.io.File;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +17,7 @@ public class LexingState {
 
   private Map<String, TokenType> keywords;
 
-  private List<Token> comments = new ArrayList<Token>();
+  private Map<Integer, Token> comments = new HashMap<Integer, Token>();
 
   private Charset charset = Charset.defaultCharset();
 
@@ -73,7 +73,7 @@ public class LexingState {
     return new Comments(comments);
   }
 
-  public List<Token> getCommentTokens() {
+  public Map<Integer, Token> getCommentTokens() {
     return comments;
   }
 
