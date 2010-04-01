@@ -20,13 +20,20 @@ public class ExclusiveTillMatcher extends Matcher {
   }
 
   public AstNode match(ParsingState parsingState) {
-    AstNode astNode = new AstNode(this, "exclusiveTillMatcher", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
+    Token nextToken = parsingState.peekTokenIfExists(parsingState.lexerIndex, this);
+    int nextTokenLine = 0;
+    int nextTokenColumn = 0;
+    if (nextToken != null) {
+      nextTokenLine = nextToken.getLine();
+      nextTokenColumn = nextToken.getColumn();
+    }
+    AstNode astNode = new AstNode(this, "exclusiveTillMatcher", nextToken);
     StringBuilder builder = new StringBuilder();
     while (nothingMatch(parsingState)) {
       builder.append(parsingState.popToken(this).getValue());
       builder.append(" ");
     }
-    astNode.addChild(new AstNode(new Token(new WordsTokenType(), builder.toString())));
+    astNode.addChild(new AstNode(new Token(new WordsTokenType(), builder.toString(), nextTokenLine, nextTokenColumn)));
     return astNode;
   }
 
