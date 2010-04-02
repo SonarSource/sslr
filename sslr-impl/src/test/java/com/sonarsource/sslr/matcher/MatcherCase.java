@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sonarsource.sslr.MockTokenType;
-import com.sonarsource.sslr.ParsingStackTrace;
-import com.sonarsource.sslr.ParsingState;
-import com.sonarsource.sslr.RecognitionExceptionImpl;
 import com.sonarsource.sslr.api.Token;
+import com.sonarsource.sslr.impl.ParsingStackTrace;
+import com.sonarsource.sslr.impl.ParsingState;
+import com.sonarsource.sslr.impl.RecognitionExceptionImpl;
 import com.sonarsource.sslr.matcher.Matcher;
 
 public class MatcherCase {

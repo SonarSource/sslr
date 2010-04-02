@@ -4,7 +4,7 @@
  * mailto:contact AT sonarsource DOT com
  */
 
-package com.sonarsource.sslr;
+package com.sonarsource.sslr.impl;
 
 import java.io.File;
 

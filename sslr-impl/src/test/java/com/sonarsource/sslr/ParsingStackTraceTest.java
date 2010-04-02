@@ -13,10 +13,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sonarsource.sslr.ParsingStackTrace;
-import com.sonarsource.sslr.ParsingState;
-import com.sonarsource.sslr.RecognitionExceptionImpl;
 import com.sonarsource.sslr.api.Token;
+import com.sonarsource.sslr.impl.ParsingStackTrace;
+import com.sonarsource.sslr.impl.ParsingState;
+import com.sonarsource.sslr.impl.RecognitionExceptionImpl;
 import com.sonarsource.sslr.matcher.Matchers;
 import com.sonarsource.sslr.matcher.RuleImpl;
 import com.sonarsource.sslr.matcher.TokenValueMatcher;

@@ -9,8 +9,8 @@ package com.sonarsource.sslr.matcher;
 import org.junit.Test;
 
 import com.sonarsource.sslr.MockTokenType;
-import com.sonarsource.sslr.ParsingState;
 import com.sonarsource.sslr.api.AstNode;
+import com.sonarsource.sslr.impl.ParsingState;
 import com.sonarsource.sslr.matcher.TokenTypeMatcher;
 
 import static org.junit.Assert.assertEquals;

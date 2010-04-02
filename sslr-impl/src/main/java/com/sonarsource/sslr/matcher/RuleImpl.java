@@ -6,9 +6,9 @@
 
 package com.sonarsource.sslr.matcher;
 
-import com.sonarsource.sslr.ParsingState;
 import com.sonarsource.sslr.api.AstNode;
 import com.sonarsource.sslr.api.Rule;
+import com.sonarsource.sslr.impl.ParsingState;
 
 public class RuleImpl extends Matcher implements Rule {
 

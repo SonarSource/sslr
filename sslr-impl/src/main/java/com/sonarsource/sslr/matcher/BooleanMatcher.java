@@ -6,9 +6,9 @@
 
 package com.sonarsource.sslr.matcher;
 
-import com.sonarsource.sslr.ParsingState;
-import com.sonarsource.sslr.RecognitionExceptionImpl;
 import com.sonarsource.sslr.api.AstNode;
+import com.sonarsource.sslr.impl.ParsingState;
+import com.sonarsource.sslr.impl.RecognitionExceptionImpl;
 
 public class BooleanMatcher extends Matcher {
 
