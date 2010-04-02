@@ -14,11 +14,11 @@ import com.sonarsource.sslr.api.TokenType;
 
 public abstract class Matcher implements AstNodeType {
 
-  protected Rule parentRule;
+  protected RuleImpl parentRule;
 
-  public abstract void setParentRule(Rule parentRule);
+  public abstract void setParentRule(RuleImpl parentRule);
 
-  public Rule getRule() {
+  public RuleImpl getRule() {
     return parentRule;
   }
 
@@ -70,7 +70,7 @@ public abstract class Matcher implements AstNodeType {
         throw new IllegalStateException("The matcher object can't be anything else than a Matcher, String or TokenType. Object = " + object);
       }
     }
-    if (matcher instanceof Rule) {
+    if (matcher instanceof RuleImpl) {
       return new ProxyMatcher(matcher);
     } else {
       return matcher;

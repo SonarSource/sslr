@@ -27,7 +27,7 @@ public class NotMatcher extends Matcher {
   }
 
   @Override
-  public void setParentRule(Rule parentRule) {
+  public void setParentRule(RuleImpl parentRule) {
     this.parentRule = parentRule;
     matcher.setParentRule(parentRule);
   }

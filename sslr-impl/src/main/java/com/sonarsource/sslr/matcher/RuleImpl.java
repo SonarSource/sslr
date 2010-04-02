@@ -8,15 +8,16 @@ package com.sonarsource.sslr.matcher;
 
 import com.sonarsource.sslr.ParsingState;
 import com.sonarsource.sslr.api.AstNode;
+import com.sonarsource.sslr.api.Rule;
 
-public class Rule extends Matcher {
+public class RuleImpl extends Matcher implements Rule {
 
   protected String name;
   protected Matcher matcher;
   private boolean hasSeveralParents = false;
   protected boolean hasToBeSkippedWhenBuildingAst = false;
 
-  public Rule(String name) {
+  public RuleImpl(String name) {
     this.name = name;
   }
 
@@ -33,7 +34,7 @@ public class Rule extends Matcher {
     return false;
   }
 
-  public Rule is(Object... matchers) {
+  public RuleImpl is(Object... matchers) {
     if (matchers.length == 0) {
       throw new IllegalStateException("The rule '" + name + "' should at least contains one matcher.");
     }
@@ -45,7 +46,7 @@ public class Rule extends Matcher {
     setMatcher(new TokenValueMatcher(name.toUpperCase()));
   }
 
-  public Rule or(Object... matchers) {
+  public RuleImpl or(Object... matchers) {
     if (matchers.length == 0) {
       throw new IllegalStateException("A rule should at least contains one matcher.");
     }
@@ -53,7 +54,7 @@ public class Rule extends Matcher {
     return this;
   }
 
-  public Rule skip() {
+  public RuleImpl skip() {
     hasToBeSkippedWhenBuildingAst = true;
     return this;
   }
@@ -63,7 +64,7 @@ public class Rule extends Matcher {
     matcher.setParentRule(this);
   }
 
-  public void setParentRule(Rule parentRule) {
+  public void setParentRule(RuleImpl parentRule) {
     if (this.parentRule != null && parentRule != this.parentRule) {
       hasSeveralParents = true;
     }
@@ -74,11 +75,11 @@ public class Rule extends Matcher {
     this.parentRule = parentRule;
   }
 
-  public Rule getParentRule() {
+  public RuleImpl getParentRule() {
     return parentRule;
   }
 
-  public Rule getRule() {
+  public RuleImpl getRule() {
     return this;
   }
 

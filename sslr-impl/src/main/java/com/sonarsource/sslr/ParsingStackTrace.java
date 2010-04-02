@@ -8,7 +8,7 @@ package com.sonarsource.sslr;
 
 import com.sonarsource.sslr.api.Token;
 import com.sonarsource.sslr.matcher.Matcher;
-import com.sonarsource.sslr.matcher.Rule;
+import com.sonarsource.sslr.matcher.RuleImpl;
 import com.sonarsource.sslr.matcher.TokenTypeMatcher;
 
 public class ParsingStackTrace {
@@ -21,7 +21,7 @@ public class ParsingStackTrace {
     this.parsingState = parsingState;
     displayExpectedToken(parsingState.getOutpostMatcher());
     displayButWasToken(parsingState.getOutpostMatcherToken());
-    displayLastParentRules((Rule) parsingState.getOutpostMatcher().getRule(), STACK_TRACE_DEPTH);
+    displayLastParentRules((RuleImpl) parsingState.getOutpostMatcher().getRule(), STACK_TRACE_DEPTH);
   }
 
   private void displayExpectedToken(Matcher matcher) {
@@ -52,14 +52,14 @@ public class ParsingStackTrace {
     stackTrace.append("\n");
   }
 
-  private void displayLastParentRules(Rule rule, int level) {
-    if (level == 0 || rule == null) {
+  private void displayLastParentRules(RuleImpl ruleImpl, int level) {
+    if (level == 0 || ruleImpl == null) {
       return;
     }
     stackTrace.append("  at ");
-    stackTrace.append(rule.toEBNFNotation());
+    stackTrace.append(ruleImpl.toEBNFNotation());
     stackTrace.append("\n");
-    displayLastParentRules(rule.getParentRule(), level - 1);
+    displayLastParentRules(ruleImpl.getParentRule(), level - 1);
   }
 
   public static String generate(ParsingState state) {

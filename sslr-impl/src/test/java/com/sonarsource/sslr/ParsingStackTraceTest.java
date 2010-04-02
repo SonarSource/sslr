@@ -18,7 +18,7 @@ import com.sonarsource.sslr.ParsingState;
 import com.sonarsource.sslr.RecognitionException;
 import com.sonarsource.sslr.api.Token;
 import com.sonarsource.sslr.matcher.Matchers;
-import com.sonarsource.sslr.matcher.Rule;
+import com.sonarsource.sslr.matcher.RuleImpl;
 import com.sonarsource.sslr.matcher.TokenValueMatcher;
 
 import static com.sonarsource.sslr.matcher.Matchers.one2n;
@@ -42,9 +42,9 @@ public class ParsingStackTraceTest {
   @Test
   public void testGenerate() {
     TokenValueMatcher language = new TokenValueMatcher("language");
-    Rule parentRule = new Rule("ParentRule");
+    RuleImpl parentRule = new RuleImpl("ParentRule");
     parentRule.or(Matchers.or(language, "implements"));
-    Rule grandParentRule = new Rule("GrandParentRule");
+    RuleImpl grandParentRule = new RuleImpl("GrandParentRule");
     grandParentRule.is(one2n(parentRule));
     state.popToken(parentRule);
     state.popToken(parentRule);
@@ -62,9 +62,9 @@ public class ParsingStackTraceTest {
   public void testEndOfFileIsReached() {
     ParsingState state = new ParsingState(tokens);
     TokenValueMatcher language = new TokenValueMatcher("language");
-    Rule parentRule = new Rule("ParentRule");
+    RuleImpl parentRule = new RuleImpl("ParentRule");
     parentRule.or(Matchers.or(language, "implements"));
-    Rule grandParentRule = new Rule("GrandParentRule");
+    RuleImpl grandParentRule = new RuleImpl("GrandParentRule");
     grandParentRule.is(one2n(parentRule));
     state.popToken(parentRule);
     state.popToken(parentRule);

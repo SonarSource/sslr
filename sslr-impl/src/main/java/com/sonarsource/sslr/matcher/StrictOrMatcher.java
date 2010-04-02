@@ -36,7 +36,7 @@ public class StrictOrMatcher extends OrMatcher {
   }
 
   @Override
-  public void setParentRule(Rule parentRule) {
+  public void setParentRule(RuleImpl parentRule) {
     this.parentRule = parentRule;
     for (Matcher matcher : matchers) {
       matcher.setParentRule(parentRule);

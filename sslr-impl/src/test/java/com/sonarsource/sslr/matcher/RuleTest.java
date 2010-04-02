@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sonarsource.sslr.matcher.Matcher;
-import com.sonarsource.sslr.matcher.Rule;
+import com.sonarsource.sslr.matcher.RuleImpl;
 
 import static com.sonarsource.sslr.MockTokenType.WORD;
 import static com.sonarsource.sslr.matcher.Matchers.o2n;
@@ -23,12 +23,12 @@ import static org.junit.Assert.assertSame;
 
 public class RuleTest {
 
-  private Rule javaClassDefinition;
+  private RuleImpl javaClassDefinition;
   private Matcher opMatcher;
 
   @Before
   public void init() {
-    javaClassDefinition = new Rule("JavaClassDefinition");
+    javaClassDefinition = new RuleImpl("JavaClassDefinition");
     opMatcher = opt("implements", WORD, o2n(",", WORD));
     javaClassDefinition.is("public", or("class", "interface"), opMatcher);
   }
@@ -45,13 +45,13 @@ public class RuleTest {
 
   @Test(expected = IllegalStateException.class)
   public void testEmptyIs() {
-    javaClassDefinition = new Rule("JavaClassDefinition");
+    javaClassDefinition = new RuleImpl("JavaClassDefinition");
     javaClassDefinition.is();
   }
 
   @Test(expected = IllegalStateException.class)
   public void testEmptyOr() {
-    javaClassDefinition = new Rule("JavaClassDefinition");
+    javaClassDefinition = new RuleImpl("JavaClassDefinition");
     javaClassDefinition.or();
   }
 
@@ -63,10 +63,10 @@ public class RuleTest {
 
   @Test
   public void testSetParentRule() {
-    Rule parentRule1 = new Rule("ParentRule1");
-    Rule parentRule2 = new Rule("ParentRule2");
+    RuleImpl parentRule1 = new RuleImpl("ParentRule1");
+    RuleImpl parentRule2 = new RuleImpl("ParentRule2");
 
-    Rule childRule = new Rule("ChildRule");
+    RuleImpl childRule = new RuleImpl("ChildRule");
 
     parentRule1.is(childRule);
     assertSame(parentRule1, childRule.getParentRule());

@@ -6,10 +6,10 @@
 
 package com.sonarsource.sslr;
 
-import com.sonarsource.sslr.matcher.Rule;
+import com.sonarsource.sslr.matcher.RuleImpl;
 
 public interface Grammar {
 
-  Rule getRootRule();
+  RuleImpl getRootRule();
 
 }

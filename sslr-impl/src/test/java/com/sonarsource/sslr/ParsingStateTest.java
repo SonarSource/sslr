@@ -15,7 +15,7 @@ import org.junit.Test;
 import com.sonarsource.sslr.ParsingState;
 import com.sonarsource.sslr.api.AstNode;
 import com.sonarsource.sslr.api.Token;
-import com.sonarsource.sslr.matcher.Rule;
+import com.sonarsource.sslr.matcher.RuleImpl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -39,56 +39,56 @@ public class ParsingStateTest {
 
   @Test
   public void testPopToken() {
-    assertEquals("java", state.popToken(new Rule("Dummy")).getValue());
-    assertEquals("public", state.popToken(new Rule("Dummy")).getValue());
+    assertEquals("java", state.popToken(new RuleImpl("Dummy")).getValue());
+    assertEquals("public", state.popToken(new RuleImpl("Dummy")).getValue());
   }
 
   @Test
   public void testPeekToken() {
-    assertEquals("java", state.peekToken(new Rule("Dummy")).getValue());
-    assertEquals("java", state.peekToken(new Rule("Dummy")).getValue());
+    assertEquals("java", state.peekToken(new RuleImpl("Dummy")).getValue());
+    assertEquals("java", state.peekToken(new RuleImpl("Dummy")).getValue());
   }
 
   @Test
   public void testGetIndex() {
     assertEquals(0, state.lexerIndex);
-    state.popToken(new Rule("Dummy")).getValue();
+    state.popToken(new RuleImpl("Dummy")).getValue();
     assertEquals(1, state.lexerIndex);
-    state.peekToken(new Rule("Dummy")).getValue();
+    state.peekToken(new RuleImpl("Dummy")).getValue();
     assertEquals(1, state.lexerIndex);
   }
 
   @Test
   public void testHasNextToken() {
     assertTrue(state.hasNextToken());
-    state.popToken(new Rule("Dummy")).getValue();
-    state.popToken(new Rule("Dummy")).getValue();
-    state.popToken(new Rule("Dummy")).getValue();
+    state.popToken(new RuleImpl("Dummy")).getValue();
+    state.popToken(new RuleImpl("Dummy")).getValue();
+    state.popToken(new RuleImpl("Dummy")).getValue();
     assertFalse(state.hasNextToken());
   }
 
   @Test
   public void testGetOutpostMatcherOnPeek() {
-    state.popToken(new Rule("Dummy1"));
-    state.peekToken(new Rule("Dummy2"));
+    state.popToken(new RuleImpl("Dummy1"));
+    state.peekToken(new RuleImpl("Dummy2"));
     assertEquals("public", state.getOutpostMatcherToken().getValue());
     assertEquals("Dummy2", state.getOutpostMatcher().toString());
   }
 
   @Test
   public void testGetOutpostMatcherOnPop() {
-    state.popToken(new Rule("Dummy1"));
-    state.popToken(new Rule("Dummy2"));
+    state.popToken(new RuleImpl("Dummy1"));
+    state.popToken(new RuleImpl("Dummy2"));
     assertEquals("public", state.getOutpostMatcherToken().getValue());
     assertEquals("Dummy2", state.getOutpostMatcher().toString());
   }
 
   @Test
   public void testHasMemoizedAst() {
-    assertFalse(state.hasMemoizedAst(new Rule("Dummy")));
+    assertFalse(state.hasMemoizedAst(new RuleImpl("Dummy")));
 
-    state.popToken(new Rule("Dummy"));
-    Rule myrule = new Rule("MyRule");
+    state.popToken(new RuleImpl("Dummy"));
+    RuleImpl myrule = new RuleImpl("MyRule");
     AstNode astNode = new AstNode(myrule, "MyRule", null);
     astNode.setFromIndex(1);
     assertEquals(0, astNode.getToIndex());
@@ -96,14 +96,14 @@ public class ParsingStateTest {
     state.memoizeAst(myrule, astNode);
 
     assertEquals(1, astNode.getToIndex());
-    state.popToken(new Rule("Dummy"));
+    state.popToken(new RuleImpl("Dummy"));
     assertFalse(state.hasMemoizedAst(myrule));
     assertNull(state.getMemoizedAst(myrule));
   }
 
   @Test
   public void testGetMemoizedAst() {
-    Rule myrule = new Rule("MyRule");
+    RuleImpl myrule = new RuleImpl("MyRule");
     state.popToken(myrule);
     state.popToken(myrule);
     AstNode astNode = new AstNode(myrule, "MyRule", null);
