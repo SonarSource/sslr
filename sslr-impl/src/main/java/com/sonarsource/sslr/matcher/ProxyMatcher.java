@@ -7,7 +7,7 @@
 package com.sonarsource.sslr.matcher;
 
 import com.sonarsource.sslr.ParsingState;
-import com.sonarsource.sslr.RecognitionException;
+import com.sonarsource.sslr.RecognitionExceptionImpl;
 import com.sonarsource.sslr.api.AstNode;
 
 class ProxyMatcher extends Matcher {
@@ -27,7 +27,7 @@ class ProxyMatcher extends Matcher {
       AstNode node = proxiedMatcher.match(state);
       memoizeAstNode(node, startingIndex, state);
       return true;
-    } catch (RecognitionException e) {
+    } catch (RecognitionExceptionImpl e) {
       return false;
     } finally {
       state.lexerIndex = startingIndex;

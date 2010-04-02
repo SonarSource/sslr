@@ -7,7 +7,7 @@
 package com.sonarsource.sslr.matcher;
 
 import com.sonarsource.sslr.ParsingState;
-import com.sonarsource.sslr.RecognitionException;
+import com.sonarsource.sslr.RecognitionExceptionImpl;
 import com.sonarsource.sslr.api.AstNode;
 import com.sonarsource.sslr.api.AstNodeType;
 import com.sonarsource.sslr.api.TokenType;
@@ -27,7 +27,7 @@ public abstract class Matcher implements AstNodeType {
     try {
       match(parsingState);
       return true;
-    } catch (RecognitionException e) {
+    } catch (RecognitionExceptionImpl e) {
       return false;
     } finally {
       parsingState.lexerIndex = indexBeforeStarting;
@@ -43,8 +43,8 @@ public abstract class Matcher implements AstNodeType {
   public final AstNode parse(ParsingState parsingState) {
     try {
       return this.match(parsingState);
-    } catch (RecognitionException e) {
-      throw new RecognitionException(parsingState);
+    } catch (RecognitionExceptionImpl e) {
+      throw new RecognitionExceptionImpl(parsingState);
     }
   }
 

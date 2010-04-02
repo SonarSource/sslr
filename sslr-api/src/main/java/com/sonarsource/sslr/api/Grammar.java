@@ -4,12 +4,10 @@
  * mailto:contact AT sonarsource DOT com
  */
 
-package com.sonarsource.sslr;
-
-import com.sonarsource.sslr.matcher.RuleImpl;
+package com.sonarsource.sslr.api;
 
 public interface Grammar {
 
-  RuleImpl getRootRule();
+  Rule getRootRule();
 
 }

@@ -12,7 +12,7 @@ import java.util.List;
 import com.sonarsource.sslr.MockTokenType;
 import com.sonarsource.sslr.ParsingStackTrace;
 import com.sonarsource.sslr.ParsingState;
-import com.sonarsource.sslr.RecognitionException;
+import com.sonarsource.sslr.RecognitionExceptionImpl;
 import com.sonarsource.sslr.api.Token;
 import com.sonarsource.sslr.matcher.Matcher;
 
@@ -22,7 +22,7 @@ public class MatcherCase {
     ParsingState parsingState = new ParsingState(convertStringsToTokens(tokens));
     try {
       matcher.match(parsingState);
-    } catch (RecognitionException e) {
+    } catch (RecognitionExceptionImpl e) {
       throw new AssertionError(ParsingStackTrace.generate(parsingState));
     }
     if (parsingState.hasNextToken()) {
@@ -42,7 +42,7 @@ public class MatcherCase {
     ParsingState parsingState = new ParsingState(convertStringsToTokens(tokens));
     try {
       matcher.match(parsingState);
-    } catch (RecognitionException e) {
+    } catch (RecognitionExceptionImpl e) {
     }
     if (!parsingState.hasNextToken()) {
       throw new AssertionError("The tokens" + arrayToString(tokens) + "  have been all consumed.");

@@ -6,16 +6,18 @@
 
 package com.sonarsource.sslr;
 
-public class RecognitionException extends RuntimeException {
+import com.sonarsource.sslr.api.RecognitionException;
+
+public class RecognitionExceptionImpl extends RuntimeException implements RecognitionException {
 
   private int line;
 
-  private static RecognitionException exception = new RecognitionException();
+  private static RecognitionExceptionImpl exception = new RecognitionExceptionImpl();
 
-  private RecognitionException() {
+  private RecognitionExceptionImpl() {
   }
 
-  public RecognitionException(ParsingState parsingState) {
+  public RecognitionExceptionImpl(ParsingState parsingState) {
     super(ParsingStackTrace.generate(parsingState));
     if (parsingState.getOutpostMatcherToken() != null) {
       line = parsingState.getOutpostMatcherToken().getLine();
@@ -26,7 +28,7 @@ public class RecognitionException extends RuntimeException {
     return line;
   }
 
-  public static RecognitionException create() {
+  public static RecognitionExceptionImpl create() {
     return exception;
   }
 }

@@ -7,7 +7,7 @@
 package com.sonarsource.sslr.matcher;
 
 import com.sonarsource.sslr.ParsingState;
-import com.sonarsource.sslr.RecognitionException;
+import com.sonarsource.sslr.RecognitionExceptionImpl;
 import com.sonarsource.sslr.api.AstNode;
 
 public class StrictOrMatcher extends OrMatcher {
@@ -32,7 +32,7 @@ public class StrictOrMatcher extends OrMatcher {
     } else if (matchingMatchers > 1) {
       throw new IllegalStateException("There are two possible ways.");
     }
-    throw RecognitionException.create();
+    throw RecognitionExceptionImpl.create();
   }
 
   @Override

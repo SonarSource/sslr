@@ -7,7 +7,7 @@
 package com.sonarsource.sslr.matcher;
 
 import com.sonarsource.sslr.ParsingState;
-import com.sonarsource.sslr.RecognitionException;
+import com.sonarsource.sslr.RecognitionExceptionImpl;
 import com.sonarsource.sslr.api.AstNode;
 
 public class OrMatcher extends Matcher {
@@ -24,7 +24,7 @@ public class OrMatcher extends Matcher {
         return matcher.match(parsingState);
       }
     }
-    throw RecognitionException.create();
+    throw RecognitionExceptionImpl.create();
   }
 
   @Override

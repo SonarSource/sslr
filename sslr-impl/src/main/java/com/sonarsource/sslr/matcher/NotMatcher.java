@@ -7,7 +7,7 @@
 package com.sonarsource.sslr.matcher;
 
 import com.sonarsource.sslr.ParsingState;
-import com.sonarsource.sslr.RecognitionException;
+import com.sonarsource.sslr.RecognitionExceptionImpl;
 import com.sonarsource.sslr.api.AstNode;
 
 public class NotMatcher extends Matcher {
@@ -20,7 +20,7 @@ public class NotMatcher extends Matcher {
 
   public AstNode match(ParsingState parsingState) {
     if (matcher.isMatching(parsingState)) {
-      throw RecognitionException.create();
+      throw RecognitionExceptionImpl.create();
     } else {
       return new AstNode(parsingState.popToken(this));
     }

@@ -35,7 +35,7 @@ public class ParsingState {
       outpostMatcher = matcher;
     }
     if (lexerIndex >= lexerSize) {
-      throw RecognitionException.create();
+      throw RecognitionExceptionImpl.create();
     }
     return tokens[lexerIndex++];
   }
@@ -50,7 +50,7 @@ public class ParsingState {
       outpostMatcher = matcher;
     }
     if (index >= lexerSize) {
-      throw RecognitionException.create();
+      throw RecognitionExceptionImpl.create();
     }
     return tokens[index];
   }
@@ -95,7 +95,7 @@ public class ParsingState {
   public Token peekTokenIfExists(int index, Matcher matcher) {
     try {
       return peekToken(index, matcher);
-    } catch (RecognitionException e) {
+    } catch (RecognitionExceptionImpl e) {
       return null;
     }
   }

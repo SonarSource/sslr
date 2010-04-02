@@ -7,7 +7,7 @@
 package com.sonarsource.sslr.matcher;
 
 import com.sonarsource.sslr.ParsingState;
-import com.sonarsource.sslr.RecognitionException;
+import com.sonarsource.sslr.RecognitionExceptionImpl;
 import com.sonarsource.sslr.api.AstNode;
 import com.sonarsource.sslr.api.Token;
 
@@ -28,7 +28,7 @@ public abstract class TokenMatcher extends Matcher {
         return new AstNode(token);
       }
     } else {
-      throw RecognitionException.create();
+      throw RecognitionExceptionImpl.create();
     }
   }
 

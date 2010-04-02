@@ -7,7 +7,7 @@
 package com.sonarsource.sslr.matcher;
 
 import com.sonarsource.sslr.ParsingState;
-import com.sonarsource.sslr.RecognitionException;
+import com.sonarsource.sslr.RecognitionExceptionImpl;
 import com.sonarsource.sslr.api.AstNode;
 
 public class BooleanMatcher extends Matcher {
@@ -22,7 +22,7 @@ public class BooleanMatcher extends Matcher {
     if (internalState) {
       return new AstNode(this, "trueMatcher", parsingState.popToken(this));
     } else {
-      throw RecognitionException.create();
+      throw RecognitionExceptionImpl.create();
     }
   }
 

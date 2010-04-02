@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import com.sonarsource.sslr.ParsingStackTrace;
 import com.sonarsource.sslr.ParsingState;
-import com.sonarsource.sslr.RecognitionException;
+import com.sonarsource.sslr.RecognitionExceptionImpl;
 import com.sonarsource.sslr.api.Token;
 import com.sonarsource.sslr.matcher.Matchers;
 import com.sonarsource.sslr.matcher.RuleImpl;
@@ -72,7 +72,7 @@ public class ParsingStackTraceTest {
     state.popToken(parentRule);
     try {
       state.peekToken(language);
-    } catch (RecognitionException e) {
+    } catch (RecognitionExceptionImpl e) {
 
     }
 
