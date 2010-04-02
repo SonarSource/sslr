@@ -7,4 +7,6 @@
 package com.sonarsource.sslr.api;
 
 public interface AstNodeType {
+  
+  public boolean hasToBeSkippedFromAst();
 }

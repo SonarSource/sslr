@@ -13,8 +13,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sonarsource.sslr.ParsingState;
+import com.sonarsource.sslr.api.AstNode;
 import com.sonarsource.sslr.api.Token;
-import com.sonarsource.sslr.ast.AstNode;
 import com.sonarsource.sslr.matcher.Rule;
 
 import static org.junit.Assert.assertEquals;

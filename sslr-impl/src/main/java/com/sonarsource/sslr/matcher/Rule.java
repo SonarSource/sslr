@@ -7,7 +7,7 @@
 package com.sonarsource.sslr.matcher;
 
 import com.sonarsource.sslr.ParsingState;
-import com.sonarsource.sslr.ast.AstNode;
+import com.sonarsource.sslr.api.AstNode;
 
 public class Rule extends Matcher {
 
@@ -27,6 +27,10 @@ public class Rule extends Matcher {
     AstNode astNode = new AstNode(this, name, parsingState.peekTokenIfExists(startIndex, matcher), hasToBeSkippedWhenBuildingAst);
     astNode.addChild(childNode);
     return astNode;
+  }
+
+  public boolean hasToBeSkippedFromAst() {
+    return false;
   }
 
   public Rule is(Object... matchers) {

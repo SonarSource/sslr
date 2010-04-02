@@ -13,15 +13,12 @@ import org.junit.Test;
 import org.mockito.InOrder;
 
 import com.sonarsource.sslr.MockTokenType;
+import com.sonarsource.sslr.api.AstAndTokenVisitor;
+import com.sonarsource.sslr.api.AstNode;
 import com.sonarsource.sslr.api.AstNodeType;
+import com.sonarsource.sslr.api.AstVisitor;
 import com.sonarsource.sslr.api.Token;
-import com.sonarsource.sslr.api.TokenType;
-import com.sonarsource.sslr.ast.AstAndTokenVisitor;
-import com.sonarsource.sslr.ast.AstNode;
-import com.sonarsource.sslr.ast.AstVisitor;
-import com.sonarsource.sslr.ast.AstWalker;
 
-import static org.hamcrest.Matchers.anything;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -39,12 +36,28 @@ public class AstWalkerTest {
   private AstNode ast13;
   private AstNode astNodeWithToken;
   private AstNodeType animal = new AstNodeType() {
+
+    public boolean hasToBeSkippedFromAst() {
+      return false;
+    }
   };
   private AstNodeType dog = new AstNodeType() {
+
+    public boolean hasToBeSkippedFromAst() {
+      return false;
+    }
   };
   private AstNodeType cat = new AstNodeType() {
+
+    public boolean hasToBeSkippedFromAst() {
+      return false;
+    }
   };
   private AstNodeType tiger = new AstNodeType() {
+
+    public boolean hasToBeSkippedFromAst() {
+      return false;
+    }
   };
   private AstVisitor astVisitor = mock(AstVisitor.class);
   private AstAndTokenVisitor astAndTokenVisitor = mock(AstAndTokenVisitor.class);

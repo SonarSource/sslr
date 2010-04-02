@@ -8,9 +8,9 @@ package com.sonarsource.sslr.matcher;
 
 import com.sonarsource.sslr.ParsingState;
 import com.sonarsource.sslr.RecognitionException;
+import com.sonarsource.sslr.api.AstNode;
 import com.sonarsource.sslr.api.AstNodeType;
 import com.sonarsource.sslr.api.TokenType;
-import com.sonarsource.sslr.ast.AstNode;
 
 public abstract class Matcher implements AstNodeType {
 
@@ -32,6 +32,10 @@ public abstract class Matcher implements AstNodeType {
     } finally {
       parsingState.lexerIndex = indexBeforeStarting;
     }
+  }
+
+  public boolean hasToBeSkippedFromAst() {
+    return true;
   }
 
   protected abstract AstNode match(ParsingState parsingState);

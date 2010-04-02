@@ -8,7 +8,7 @@ package com.sonarsource.sslr.ast;
 
 import org.junit.Test;
 
-import com.sonarsource.sslr.ast.AstNode;
+import com.sonarsource.sslr.api.AstNode;
 import com.sonarsource.sslr.matcher.AndMatcher;
 import com.sonarsource.sslr.matcher.OneToNMatcher;
 import com.sonarsource.sslr.matcher.Rule;

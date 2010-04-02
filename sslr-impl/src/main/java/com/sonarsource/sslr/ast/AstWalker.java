@@ -11,7 +11,10 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sonarsource.sslr.api.AstAndTokenVisitor;
+import com.sonarsource.sslr.api.AstNode;
 import com.sonarsource.sslr.api.AstNodeType;
+import com.sonarsource.sslr.api.AstVisitor;
 import com.sonarsource.sslr.api.Token;
 
 public class AstWalker {
@@ -56,7 +59,7 @@ public class AstWalker {
   }
 
   private void visit(AstNode ast) {
-    AstVisitor[] nodeVisitors = visitorsByNodeType.get(ast.type);
+    AstVisitor[] nodeVisitors = visitorsByNodeType.get(ast.getType());
     if (nodeVisitors == null) {
       nodeVisitors = new AstVisitor[0];
     }

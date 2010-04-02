@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
+import com.sonarsource.sslr.api.AstNode;
+
 public class AstXmlPrinter {
 
   private final AstNode rootNode;
@@ -60,7 +62,7 @@ public class AstXmlPrinter {
 
   private void appendNodecontent(AstNode node) throws IOException {
     writer.append(node.getName());
-    if ( !node.isARule() && node.getTokenValue() != null && !node.getName().equals(node.getTokenValue())) {
+    if (node.getTokenValue() != null && !node.getName().equals(node.getTokenValue())) {
       writer.append(" value=\"" + node.getTokenValue() + "\"");
     }
     if (node.hasToken()) {

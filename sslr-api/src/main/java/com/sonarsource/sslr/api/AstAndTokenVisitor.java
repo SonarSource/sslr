@@ -3,9 +3,8 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.sslr.ast;
+package com.sonarsource.sslr.api;
 
-import com.sonarsource.sslr.api.Token;
 
 public interface AstAndTokenVisitor extends AstVisitor {
 

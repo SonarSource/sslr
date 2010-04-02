@@ -9,7 +9,7 @@ package com.sonarsource.sslr.matcher;
 import org.junit.Test;
 
 import com.sonarsource.sslr.ParsingState;
-import com.sonarsource.sslr.ast.AstNode;
+import com.sonarsource.sslr.api.AstNode;
 import com.sonarsource.sslr.matcher.TokenValueMatcher;
 
 import static org.junit.Assert.assertEquals;

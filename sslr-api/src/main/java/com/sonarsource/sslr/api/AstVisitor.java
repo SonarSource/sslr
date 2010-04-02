@@ -3,11 +3,9 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.sslr.ast;
+package com.sonarsource.sslr.api;
 
 import java.util.List;
-
-import com.sonarsource.sslr.api.AstNodeType;
 
 public interface AstVisitor {
 

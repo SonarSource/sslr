@@ -7,7 +7,7 @@
 package com.sonarsource.sslr.matcher;
 
 import com.sonarsource.sslr.ParsingState;
-import com.sonarsource.sslr.ast.AstNode;
+import com.sonarsource.sslr.api.AstNode;
 
 public class AndMatcher extends Matcher {
 

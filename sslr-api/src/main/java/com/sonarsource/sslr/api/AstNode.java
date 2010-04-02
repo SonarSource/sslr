@@ -4,15 +4,10 @@
  * mailto:contact AT sonarsource DOT com
  */
 
-package com.sonarsource.sslr.ast;
+package com.sonarsource.sslr.api;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.sonarsource.sslr.api.AstNodeType;
-import com.sonarsource.sslr.api.Token;
-import com.sonarsource.sslr.matcher.Matcher;
-import com.sonarsource.sslr.matcher.Rule;
 
 public class AstNode {
 
@@ -33,9 +28,7 @@ public class AstNode {
     this.type = type;
     this.token = token;
     this.name = name;
-    if (type instanceof Matcher && !(type instanceof Rule)) {
-      hasToBeSkipped = true;
-    }
+    hasToBeSkipped = type.hasToBeSkippedFromAst();
   }
 
   public AstNode(AstNodeType type, String name, Token token, boolean hasToBeSkipped) {
@@ -134,10 +127,6 @@ public class AstNode {
     return this.type == type;
   }
 
-  public boolean isARule() {
-    return type instanceof Rule;
-  }
-
   public boolean isNot(AstNodeType type) {
     return this.type != type;
   }
@@ -220,5 +209,9 @@ public class AstNode {
 
   public boolean isCopyBookOrGeneratedNode() {
     return getToken().isCopyBook() || getToken().isGeneratedCode();
+  }
+
+  public AstNodeType getType() {
+    return type;
   }
 }
