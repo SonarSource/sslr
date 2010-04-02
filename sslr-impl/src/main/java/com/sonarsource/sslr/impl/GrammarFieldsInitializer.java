@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
 
 import com.sonarsource.sslr.api.Grammar;
 import com.sonarsource.sslr.api.Rule;
-import com.sonarsource.sslr.matcher.RuleImpl;
+import com.sonarsource.sslr.impl.matcher.RuleImpl;
 
 public class GrammarFieldsInitializer {
 

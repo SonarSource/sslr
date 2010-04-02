@@ -7,9 +7,9 @@
 package com.sonarsource.sslr.impl;
 
 import com.sonarsource.sslr.api.Token;
-import com.sonarsource.sslr.matcher.Matcher;
-import com.sonarsource.sslr.matcher.RuleImpl;
-import com.sonarsource.sslr.matcher.TokenTypeMatcher;
+import com.sonarsource.sslr.impl.matcher.Matcher;
+import com.sonarsource.sslr.impl.matcher.RuleImpl;
+import com.sonarsource.sslr.impl.matcher.TokenTypeMatcher;
 
 public class ParsingStackTrace {
 

@@ -10,7 +10,7 @@ import java.util.List;
 
 import com.sonarsource.sslr.api.AstNode;
 import com.sonarsource.sslr.api.Token;
-import com.sonarsource.sslr.matcher.Matcher;
+import com.sonarsource.sslr.impl.matcher.Matcher;
 
 public class ParsingState {
 
