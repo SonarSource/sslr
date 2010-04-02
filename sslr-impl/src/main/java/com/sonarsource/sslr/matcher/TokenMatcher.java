@@ -1,0 +1,41 @@
+/*
+ * Copyright (C) 2010 SonarSource SA
+ * All rights reserved
+ * mailto:contact AT sonarsource DOT com
+ */
+
+package com.sonarsource.sslr.matcher;
+
+import com.sonarsource.sslr.ParsingState;
+import com.sonarsource.sslr.RecognitionException;
+import com.sonarsource.sslr.api.Token;
+import com.sonarsource.sslr.ast.AstNode;
+
+public abstract class TokenMatcher extends Matcher {
+
+  private final boolean hasToBeSkippedFromAst;;
+
+  public TokenMatcher(boolean hasToBeSkippedFromAst) {
+    this.hasToBeSkippedFromAst = hasToBeSkippedFromAst;
+  }
+
+  public AstNode match(ParsingState parsingState) {
+    if (isExpectedToken(parsingState.peekToken(parsingState.lexerIndex, this))) {
+      Token token = parsingState.popToken(this);
+      if (hasToBeSkippedFromAst) {
+        return null;
+      } else {
+        return new AstNode(token);
+      }
+    } else {
+      throw RecognitionException.create();
+    }
+  }
+
+  protected abstract boolean isExpectedToken(Token token);
+
+  @Override
+  public void setParentRule(Rule parentRule) {
+    this.parentRule = parentRule;
+  }
+}
