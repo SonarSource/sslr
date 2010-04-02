@@ -6,10 +6,10 @@
 
 package com.sonarsource.parser.matcher;
 
-import com.sonarsource.lexer.Token;
 import com.sonarsource.parser.ParsingState;
 import com.sonarsource.parser.RecognitionException;
 import com.sonarsource.parser.ast.AstNode;
+import com.sonarsource.sslr.api.Token;
 
 public abstract class TokenMatcher extends Matcher {
 

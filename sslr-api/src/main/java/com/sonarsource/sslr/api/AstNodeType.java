@@ -4,7 +4,7 @@
  * mailto:contact AT sonarsource DOT com
  */
 
-package com.sonarsource.parser.ast;
+package com.sonarsource.sslr.api;
 
 public interface AstNodeType {
 }

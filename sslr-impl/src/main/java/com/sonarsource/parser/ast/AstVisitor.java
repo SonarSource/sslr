@@ -7,6 +7,8 @@ package com.sonarsource.parser.ast;
 
 import java.util.List;
 
+import com.sonarsource.sslr.api.AstNodeType;
+
 public interface AstVisitor {
 
   List<AstNodeType> getAstNodeTypesToVisit();

@@ -12,9 +12,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sonarsource.lexer.Token;
 import com.sonarsource.parser.ast.AstNode;
 import com.sonarsource.parser.matcher.Rule;
+import com.sonarsource.sslr.api.Token;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

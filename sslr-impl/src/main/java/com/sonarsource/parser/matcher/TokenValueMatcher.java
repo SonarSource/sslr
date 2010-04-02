@@ -6,7 +6,7 @@
 
 package com.sonarsource.parser.matcher;
 
-import com.sonarsource.lexer.Token;
+import com.sonarsource.sslr.api.Token;
 
 public class TokenValueMatcher extends TokenMatcher {
 

@@ -8,8 +8,8 @@ package com.sonarsource.parser.matcher;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sonarsource.lexer.Token;
 import com.sonarsource.parser.MockTokenType;
+import com.sonarsource.sslr.api.Token;
 
 public class WordLexer {
 

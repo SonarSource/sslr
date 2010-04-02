@@ -11,7 +11,8 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sonarsource.lexer.Token;
+import com.sonarsource.sslr.api.AstNodeType;
+import com.sonarsource.sslr.api.Token;
 
 public class AstWalker {
 

@@ -5,7 +5,7 @@
  */
 package com.sonarsource.parser;
 
-import com.sonarsource.lexer.TokenType;
+import com.sonarsource.sslr.api.TokenType;
 
 public enum MockTokenType implements TokenType {
 

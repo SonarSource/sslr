@@ -8,9 +8,9 @@ package com.sonarsource.parser;
 
 import java.util.List;
 
-import com.sonarsource.lexer.Token;
 import com.sonarsource.parser.ast.AstNode;
 import com.sonarsource.parser.matcher.Matcher;
+import com.sonarsource.sslr.api.Token;
 
 public class ParsingState {
 

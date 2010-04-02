@@ -6,10 +6,10 @@
 
 package com.sonarsource.parser.matcher;
 
-import com.sonarsource.lexer.Token;
-import com.sonarsource.lexer.TokenType;
 import com.sonarsource.parser.ParsingState;
 import com.sonarsource.parser.ast.AstNode;
+import com.sonarsource.sslr.api.Token;
+import com.sonarsource.sslr.api.TokenType;
 
 public class ExclusiveTillMatcher extends Matcher {
 

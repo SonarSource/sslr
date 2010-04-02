@@ -7,6 +7,8 @@ package com.sonarsource.lexer;
 
 import java.util.List;
 
+import com.sonarsource.sslr.api.Token;
+
 public abstract class Preprocessor {
 
   public abstract boolean process(Token token, List<Token> tokens);

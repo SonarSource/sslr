@@ -5,7 +5,7 @@
  */
 package com.sonarsource.parser.ast;
 
-import com.sonarsource.lexer.Token;
+import com.sonarsource.sslr.api.Token;
 
 public interface AstAndTokenVisitor extends AstVisitor {
 

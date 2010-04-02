@@ -9,9 +9,10 @@ package com.sonarsource.parser.ast;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sonarsource.lexer.Token;
 import com.sonarsource.parser.matcher.Matcher;
 import com.sonarsource.parser.matcher.Rule;
+import com.sonarsource.sslr.api.AstNodeType;
+import com.sonarsource.sslr.api.Token;
 
 public class AstNode {
 

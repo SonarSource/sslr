@@ -6,10 +6,10 @@
 
 package com.sonarsource.parser;
 
-import com.sonarsource.lexer.Token;
 import com.sonarsource.parser.matcher.Matcher;
 import com.sonarsource.parser.matcher.Rule;
 import com.sonarsource.parser.matcher.TokenTypeMatcher;
+import com.sonarsource.sslr.api.Token;
 
 public class ParsingStackTrace {
 

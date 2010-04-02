@@ -6,11 +6,11 @@
 
 package com.sonarsource.parser.matcher;
 
-import com.sonarsource.lexer.TokenType;
 import com.sonarsource.parser.ParsingState;
 import com.sonarsource.parser.RecognitionException;
 import com.sonarsource.parser.ast.AstNode;
-import com.sonarsource.parser.ast.AstNodeType;
+import com.sonarsource.sslr.api.AstNodeType;
+import com.sonarsource.sslr.api.TokenType;
 
 public abstract class Matcher implements AstNodeType {
 

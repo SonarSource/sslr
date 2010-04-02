@@ -8,8 +8,8 @@ package com.sonarsource.parser;
 
 import java.io.File;
 
-import com.sonarsource.lexer.Comments;
 import com.sonarsource.parser.ast.AstNode;
+import com.sonarsource.sslr.api.Comments;
 
 public interface Parser {
 

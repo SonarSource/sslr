@@ -13,10 +13,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sonarsource.lexer.Token;
 import com.sonarsource.parser.matcher.Matchers;
 import com.sonarsource.parser.matcher.Rule;
 import com.sonarsource.parser.matcher.TokenValueMatcher;
+import com.sonarsource.sslr.api.Token;
 
 import static com.sonarsource.parser.matcher.Matchers.one2n;
 

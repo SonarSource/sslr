@@ -4,7 +4,7 @@
  * mailto:contact AT sonarsource DOT com
  */
 
-package com.sonarsource.lexer;
+package com.sonarsource.sslr.api;
 
 import java.io.File;
 

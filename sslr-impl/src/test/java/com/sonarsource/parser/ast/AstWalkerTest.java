@@ -12,9 +12,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
 
-import com.sonarsource.lexer.Token;
-import com.sonarsource.lexer.TokenType;
 import com.sonarsource.parser.MockTokenType;
+import com.sonarsource.sslr.api.AstNodeType;
+import com.sonarsource.sslr.api.Token;
+import com.sonarsource.sslr.api.TokenType;
 
 import static org.hamcrest.Matchers.anything;
 import static org.mockito.Mockito.inOrder;

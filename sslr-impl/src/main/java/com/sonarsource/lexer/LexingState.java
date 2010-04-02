@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sonarsource.sslr.api.Comments;
+import com.sonarsource.sslr.api.Token;
+import com.sonarsource.sslr.api.TokenType;
+
 public class LexingState {
 
   private File file = null;

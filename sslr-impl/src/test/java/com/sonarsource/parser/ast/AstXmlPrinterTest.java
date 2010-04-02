@@ -8,9 +8,9 @@ package com.sonarsource.parser.ast;
 
 import org.junit.Test;
 
-import com.sonarsource.lexer.Token;
-import com.sonarsource.lexer.TokenType;
 import com.sonarsource.parser.matcher.Rule;
+import com.sonarsource.sslr.api.Token;
+import com.sonarsource.sslr.api.TokenType;
 
 import static org.junit.Assert.assertEquals;
 

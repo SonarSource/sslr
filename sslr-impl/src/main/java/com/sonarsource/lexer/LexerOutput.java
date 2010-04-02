@@ -8,6 +8,9 @@ package com.sonarsource.lexer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sonarsource.sslr.api.Token;
+import com.sonarsource.sslr.api.TokenType;
+
 public class LexerOutput {
 
   private List<Token> tokens = new ArrayList<Token>();

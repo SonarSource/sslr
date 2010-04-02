@@ -4,9 +4,8 @@
  * mailto:contact AT sonarsource DOT com
  */
 
-package com.sonarsource.lexer;
+package com.sonarsource.sslr.api;
 
-import com.sonarsource.parser.ast.AstNodeType;
 
 public interface TokenType extends AstNodeType {
 
