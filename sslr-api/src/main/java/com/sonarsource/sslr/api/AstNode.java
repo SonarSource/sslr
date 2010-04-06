@@ -214,4 +214,13 @@ public class AstNode {
   public AstNodeType getType() {
     return type;
   }
+
+  public String toString() {
+    StringBuilder result = new StringBuilder();
+    result.append(name);
+    result.append(" value=\"").append(token.getValue()).append("\"");
+    result.append(" line=").append(token.getLine());
+    result.append(" column=\"").append(token.getColumn());
+    return result.toString();
+  }
 }
