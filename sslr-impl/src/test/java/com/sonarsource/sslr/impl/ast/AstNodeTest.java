@@ -81,8 +81,8 @@ public class AstNodeTest {
     statement.addChild(expr1);
     statement.addChild(expr2);
 
-    assertThat(expr1.getNextSibling(), is(expr2));
-    assertThat(expr2.getNextSibling(), is(nullValue()));
+    assertThat(expr1.nextSibling(), is(expr2));
+    assertThat(expr2.nextSibling(), is(nullValue()));
   }
 
   @Test

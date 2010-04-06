@@ -67,7 +67,18 @@ public class AstNode {
     return children;
   }
 
-  public AstNode getNextSibling() {
+  public AstNode nextSibling() {
+    AstNode nextSibling = nextSiblingAtSameLevel();
+    if (nextSibling != null) {
+      return nextSibling;
+    }
+    if (parent != null) {
+      return parent.nextSibling();
+    }
+    return null;
+  }
+
+  public AstNode nextSiblingAtSameLevel() {
     if (parent == null) {
       return null;
     }
@@ -77,7 +88,7 @@ public class AstNode {
         return parent.children.get(i + 1);
       }
     }
-    return parent.getNextSibling();
+    return null;
   }
 
   public String getTokenValue() {
@@ -192,19 +203,19 @@ public class AstNode {
   }
 
   public boolean hasAmongParents(AstNodeType nodeType) {
-    if (getFirtParent(nodeType) != null) {
+    if (findFirtParent(nodeType) != null) {
       return true;
     }
     return false;
   }
 
-  public AstNode getFirtParent(AstNodeType nodeType) {
+  public AstNode findFirtParent(AstNodeType nodeType) {
     if (parent == null) {
       return null;
     } else if (parent.type == nodeType) {
       return parent;
     }
-    return parent.getFirtParent(nodeType);
+    return parent.findFirtParent(nodeType);
   }
 
   public boolean isCopyBookOrGeneratedNode() {
