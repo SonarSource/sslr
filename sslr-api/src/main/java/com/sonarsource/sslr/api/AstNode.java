@@ -67,18 +67,18 @@ public class AstNode {
     return children;
   }
 
-  public AstNode nextSibling() {
-    AstNode nextSibling = nextSiblingAtSameLevel();
+  public AstNode nextAstNode() {
+    AstNode nextSibling = nextSibling();
     if (nextSibling != null) {
       return nextSibling;
     }
     if (parent != null) {
-      return parent.nextSibling();
+      return parent.nextAstNode();
     }
     return null;
   }
 
-  public AstNode nextSiblingAtSameLevel() {
+  public AstNode nextSibling() {
     if (parent == null) {
       return null;
     }
@@ -86,6 +86,19 @@ public class AstNode {
       AstNode child = parent.children.get(i);
       if (child == this && parent.children.size() > i + 1) {
         return parent.children.get(i + 1);
+      }
+    }
+    return null;
+  }
+
+  public AstNode previousSibling() {
+    if (parent == null) {
+      return null;
+    }
+    for (int i = 0; i < parent.children.size(); i++) {
+      AstNode child = parent.children.get(i);
+      if (child == this && i > 0) {
+        return parent.children.get(i - 1);
       }
     }
     return null;
@@ -153,14 +166,14 @@ public class AstNode {
     return null;
   }
 
-  public AstNode findFirst(AstNodeType... nodeTypes) {
+  public AstNode findFirstChild(AstNodeType... nodeTypes) {
     if (children != null) {
       for (AstNode child : children) {
         for (AstNodeType nodeType : nodeTypes) {
           if (child.type == nodeType) {
             return child;
           }
-          AstNode node = child.findFirst(nodeTypes);
+          AstNode node = child.findFirstChild(nodeTypes);
           if (node != null) {
             return node;
           }
@@ -194,28 +207,28 @@ public class AstNode {
     return null;
   }
 
-  public boolean hasDirectChildren(AstNodeType nodeType) {
-    return findFirstDirectChild(nodeType) != null;
+  public boolean hasDirectChildren(AstNodeType... nodeTypes) {
+    return findFirstDirectChild(nodeTypes) != null;
   }
 
-  public boolean hasSomewhere(AstNodeType nodeType) {
-    return findFirst(nodeType) != null;
+  public boolean hasChildren(AstNodeType... nodeTypes) {
+    return findFirstChild(nodeTypes) != null;
   }
 
-  public boolean hasAmongParents(AstNodeType nodeType) {
-    if (findFirtParent(nodeType) != null) {
+  public boolean hasParents(AstNodeType nodeType) {
+    if (findFirstParent(nodeType) != null) {
       return true;
     }
     return false;
   }
 
-  public AstNode findFirtParent(AstNodeType nodeType) {
+  public AstNode findFirstParent(AstNodeType nodeType) {
     if (parent == null) {
       return null;
     } else if (parent.type == nodeType) {
       return parent;
     }
-    return parent.findFirtParent(nodeType);
+    return parent.findFirstParent(nodeType);
   }
 
   public boolean isCopyBookOrGeneratedNode() {
