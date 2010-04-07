@@ -25,7 +25,7 @@
 
   <modules>
     <module>sslr-impl</module>
-    <module>sslr-api</module>
+    <module>sslr-api</module>  
   </modules>
 
   <build>
