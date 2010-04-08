@@ -6,6 +6,12 @@
 
 package com.sonarsource.sslr.api;
 
+/**
+ * A Rule describes a grammar syntactic rule.
+ * 
+ * @see Grammar
+ * @see <a href="http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">Backus–Naur Form</a>
+ */
 public interface Rule extends AstNodeType {
 
   public Rule is(Object... matchers);
@@ -15,5 +21,4 @@ public interface Rule extends AstNodeType {
   public Rule skip();
 
   public void mock();
-
 }

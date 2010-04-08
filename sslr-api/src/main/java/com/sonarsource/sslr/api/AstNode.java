@@ -9,6 +9,13 @@ package com.sonarsource.sslr.api;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * the parser is in charge to construct an abstract syntax tree (AST) which is a tree representation of the abstract syntactic structure of
+ * source code. Each node of the tree is an AstNode and each node denotes a construct occurring in the source code which starts at a given
+ * Token.
+ * 
+ * @see Token
+ */
 public class AstNode {
 
   protected final AstNodeType type;
@@ -36,6 +43,11 @@ public class AstNode {
     this.hasToBeSkipped = hasToBeSkipped;
   }
 
+  /**
+   * Get the parent of this node in the tree.
+   * 
+   * @param parent
+   */
   public AstNode getParent() {
     return parent;
   }
@@ -59,10 +71,18 @@ public class AstNode {
     }
   }
 
+  /**
+   * @return true if this AstNode has some children.
+   */
   public boolean hasChildren() {
     return children != null && !children.isEmpty();
   }
 
+  /**
+   * Get the list of children.
+   * 
+   * @return list of children
+   */
   public List<AstNode> getChildren() {
     return children;
   }
@@ -78,6 +98,11 @@ public class AstNode {
     return null;
   }
 
+  /**
+   * Get the next sibling AstNode if exists in the tree.
+   * 
+   * @return next sibling AstNode
+   */
   public AstNode nextSibling() {
     if (parent == null) {
       return null;
@@ -91,6 +116,11 @@ public class AstNode {
     return null;
   }
 
+  /**
+   * Get the previous sibling AstNode if exists in the tree.
+   * 
+   * @return previous sibling AstNode
+   */
   public AstNode previousSibling() {
     if (parent == null) {
       return null;
@@ -104,6 +134,11 @@ public class AstNode {
     return null;
   }
 
+  /**
+   * Get the Token's value associated to this AstNode
+   * 
+   * @return token's value
+   */
   public String getTokenValue() {
     if (token == null) {
       return null;
@@ -111,10 +146,18 @@ public class AstNode {
     return token.getValue();
   }
 
+  /**
+   * Get the Token associated to this AstNode
+   */
   public Token getToken() {
     return token;
   }
 
+  /**
+   * Get the Token's line associated to this AstNode
+   * 
+   * @return token's line
+   */
   public int getTokenLine() {
     return token.getLine();
   }
@@ -155,6 +198,13 @@ public class AstNode {
     return this.type != type;
   }
 
+  /**
+   * Find the first child among all direct children having one of the desired types.
+   * 
+   * @param list
+   *          of desired node types
+   * @return the first child or null
+   */
   public AstNode findFirstDirectChild(AstNodeType... nodeTypes) {
     for (AstNode child : children) {
       for (AstNodeType nodeType : nodeTypes) {
@@ -166,6 +216,13 @@ public class AstNode {
     return null;
   }
 
+  /**
+   * Find the first child among all children and grand-children having one of the desired types.
+   * 
+   * @param AstNodeType
+   *          list of desired node types
+   * @return the first child or null
+   */
   public AstNode findFirstChild(AstNodeType... nodeTypes) {
     if (children != null) {
       for (AstNode child : children) {
@@ -183,6 +240,11 @@ public class AstNode {
     return null;
   }
 
+  /**
+   * Get the first child of this node
+   * 
+   * @return the first child or null if there is no child
+   */
   public AstNode getFirstChild() {
     if (children != null && children.size() > 0) {
       return children.get(0);
@@ -190,6 +252,13 @@ public class AstNode {
     return null;
   }
 
+  /**
+   * Find the all children among direct children having the desired type.
+   * 
+   * @param AstNodeType
+   *          the node type
+   * @return the list of matching children
+   */
   public List<AstNode> findDirectChildren(AstNodeType nodeType) {
     List<AstNode> nodes = new ArrayList<AstNode>();
     for (AstNode child : children) {
@@ -200,6 +269,11 @@ public class AstNode {
     return nodes;
   }
 
+  /**
+   * Get the last child of this node
+   * 
+   * @return the last child or null if there is no child
+   */
   public AstNode getLastChild() {
     if (children != null && children.size() > 0) {
       return children.get(children.size() - 1);
@@ -207,14 +281,23 @@ public class AstNode {
     return null;
   }
 
+  /**
+   * @return true if this node has some direct children with the desired node types
+   */
   public boolean hasDirectChildren(AstNodeType... nodeTypes) {
     return findFirstDirectChild(nodeTypes) != null;
   }
 
+  /**
+   * @return true if this node has some children and/or grand-children with the desired node types
+   */
   public boolean hasChildren(AstNodeType... nodeTypes) {
     return findFirstChild(nodeTypes) != null;
   }
 
+  /**
+   * @return true if this node has a parent or a grand-parent with the desired node type.
+   */
   public boolean hasParents(AstNodeType nodeType) {
     if (findFirstParent(nodeType) != null) {
       return true;
@@ -222,6 +305,13 @@ public class AstNode {
     return false;
   }
 
+  /**
+   * Find the first parent with the desired node type
+   * 
+   * @param AstNodeType
+   *          the desired Ast node type
+   * @return the parent/grand-parent or null
+   */
   public AstNode findFirstParent(AstNodeType nodeType) {
     if (parent == null) {
       return null;
