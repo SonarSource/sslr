@@ -15,7 +15,7 @@ import com.sonarsource.sslr.api.Comments;
 import com.sonarsource.sslr.api.Token;
 import com.sonarsource.sslr.api.TokenType;
 
-public class LexingState {
+public class LexingState { //TODO this class's name should be Lexer
 
   private File file = null;
 
