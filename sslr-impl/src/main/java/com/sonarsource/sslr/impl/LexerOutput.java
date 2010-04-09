@@ -56,4 +56,16 @@ public class LexerOutput {
   public Token get(int i) {
     return tokens.get(i);
   }
+
+  @Override
+  public String toString() {
+    StringBuilder result = new StringBuilder();
+    result.append(size()).append(" tokens");
+    if (size() > 0) {
+      Token lastToken = getLastToken();
+      result.append(", last one is Token('" + lastToken.getValue() + "'");
+      result.append(", " + lastToken.getType() + ")");
+    }
+    return result.toString();
+  }
 }
