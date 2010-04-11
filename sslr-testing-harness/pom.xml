@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.sonarsource.sslr</groupId>
 		<artifactId>sslr</artifactId>
 		<version>0.5-SNAPSHOT</version>
-    </parent>
+	</parent>
 	<artifactId>sslr-testing-harness</artifactId>
 	<name>SonarSource :: Language Recognition :: Testing Harness</name>
 
@@ -13,6 +14,15 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>sslr-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>sslr-impl</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.sonar</groupId>
+			<artifactId>sonar-channel</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
