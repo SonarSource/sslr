@@ -58,4 +58,8 @@ public class Comments implements Iterable<Token> {
     return false;
   }
 
+  public int size() {
+    return comments.size();
+  }
+
 }

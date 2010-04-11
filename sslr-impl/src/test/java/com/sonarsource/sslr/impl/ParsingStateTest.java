@@ -34,7 +34,9 @@ public class ParsingStateTest {
     tokens.add(new Token(MockTokenType.WORD, "public"));
     tokens.add(new Token(MockTokenType.WORD, "class"));
 
-    state = new ParsingState(tokens);
+    LexerOutput lexerOutput = new LexerOutput();
+    lexerOutput.addAllTokens(tokens);
+    state = new ParsingState(lexerOutput);
   }
 
   @Test

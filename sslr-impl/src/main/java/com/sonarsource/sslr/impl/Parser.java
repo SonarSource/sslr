@@ -9,15 +9,12 @@ package com.sonarsource.sslr.impl;
 import java.io.File;
 
 import com.sonarsource.sslr.api.AstNode;
-import com.sonarsource.sslr.api.Comments;
 
 public interface Parser {
 
   AstNode parse(File sourceFile);
 
   AstNode parse(String source);
-
-  Comments getComments();
 
   ParsingState getParsingState();
 }

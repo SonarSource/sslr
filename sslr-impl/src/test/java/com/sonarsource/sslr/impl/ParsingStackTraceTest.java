@@ -14,9 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sonarsource.sslr.api.Token;
-import com.sonarsource.sslr.impl.ParsingStackTrace;
-import com.sonarsource.sslr.impl.ParsingState;
-import com.sonarsource.sslr.impl.RecognitionExceptionImpl;
 import com.sonarsource.sslr.impl.matcher.Matchers;
 import com.sonarsource.sslr.impl.matcher.RuleImpl;
 import com.sonarsource.sslr.impl.matcher.TokenValueMatcher;
@@ -36,7 +33,10 @@ public class ParsingStackTraceTest {
     tokens.add(new Token(MockTokenType.WORD, "java"));
     tokens.add(new Token(MockTokenType.WORD, "lang", 34, 46, new File("file1")));
     tokens.add(new Token(MockTokenType.WORD, "class", 34, 46, new File("file2")));
-    state = new ParsingState(tokens);
+
+    LexerOutput lexerOutput = new LexerOutput();
+    lexerOutput.addAllTokens(tokens);
+    state = new ParsingState(lexerOutput);
   }
 
   @Test
@@ -60,7 +60,9 @@ public class ParsingStackTraceTest {
 
   @Test
   public void testEndOfFileIsReached() {
-    ParsingState state = new ParsingState(tokens);
+    LexerOutput lexerOutput = new LexerOutput();
+    lexerOutput.addAllTokens(tokens);
+    ParsingState state = new ParsingState(lexerOutput);
     TokenValueMatcher language = new TokenValueMatcher("language");
     RuleImpl parentRule = new RuleImpl("ParentRule");
     parentRule.or(Matchers.or(language, "implements"));

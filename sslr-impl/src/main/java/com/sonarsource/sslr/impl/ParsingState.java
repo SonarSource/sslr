@@ -6,8 +6,6 @@
 
 package com.sonarsource.sslr.impl;
 
-import java.util.List;
-
 import com.sonarsource.sslr.api.AstNode;
 import com.sonarsource.sslr.api.Token;
 import com.sonarsource.sslr.impl.matcher.Matcher;
@@ -22,8 +20,8 @@ public class ParsingState {
   private AstNode[] astNodeMemoization;
   private Matcher[] astMatcherMemoization;
 
-  public ParsingState(List<Token> tokens) {
-    this.tokens = tokens.toArray(new Token[0]);
+  public ParsingState(LexerOutput lexerOutput) {
+    this.tokens = lexerOutput.getTokens().toArray(new Token[0]);
     lexerSize = this.tokens.length;
     astNodeMemoization = new AstNode[lexerSize + 1];
     astMatcherMemoization = new Matcher[lexerSize + 1];

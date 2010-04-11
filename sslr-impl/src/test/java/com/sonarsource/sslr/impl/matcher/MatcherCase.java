@@ -10,16 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sonarsource.sslr.api.Token;
+import com.sonarsource.sslr.impl.LexerOutput;
 import com.sonarsource.sslr.impl.MockTokenType;
 import com.sonarsource.sslr.impl.ParsingStackTrace;
 import com.sonarsource.sslr.impl.ParsingState;
 import com.sonarsource.sslr.impl.RecognitionExceptionImpl;
-import com.sonarsource.sslr.impl.matcher.Matcher;
 
 public class MatcherCase {
 
   protected void assertMatch(Matcher matcher, String... tokens) {
-    ParsingState parsingState = new ParsingState(convertStringsToTokens(tokens));
+    ParsingState parsingState = new ParsingState(convertStringsToLexerOutput(tokens));
     try {
       matcher.match(parsingState);
     } catch (RecognitionExceptionImpl e) {
@@ -30,21 +30,23 @@ public class MatcherCase {
     }
   }
 
-  private List<Token> convertStringsToTokens(String[] strings) {
+  private LexerOutput convertStringsToLexerOutput(String[] strings) {
     List<Token> tokens = new ArrayList<Token>();
     for (String value : strings) {
       tokens.add(new Token(MockTokenType.WORD, value));
     }
-    return tokens;
+    LexerOutput output = new LexerOutput();
+    output.addAllTokens(tokens);
+    return output;
   }
 
   protected void assertNotMatch(Matcher matcher, String... tokens) {
-    ParsingState parsingState = new ParsingState(convertStringsToTokens(tokens));
+    ParsingState parsingState = new ParsingState(convertStringsToLexerOutput(tokens));
     try {
       matcher.match(parsingState);
     } catch (RecognitionExceptionImpl e) {
     }
-    if (!parsingState.hasNextToken()) {
+    if ( !parsingState.hasNextToken()) {
       throw new AssertionError("The tokens" + arrayToString(tokens) + "  have been all consumed.");
     }
   }

@@ -5,15 +5,13 @@
  */
 package com.sonarsource.sslr.impl;
 
-import java.util.List;
-
 import com.sonarsource.sslr.api.Token;
 
 public abstract class Preprocessor {
 
-  public abstract boolean process(Token token, List<Token> tokens);
+  public abstract boolean process(Token token, LexerOutput output);
 
-  public void endLexing(List<Token> tokens) {
+  public void endLexing(LexerOutput output) {
   }
 
   public void startLexing() {
