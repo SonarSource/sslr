@@ -8,7 +8,7 @@ package com.sonarsource.sslr.impl;
 import java.io.File;
 import java.nio.charset.Charset;
 
-public abstract class Lexer { //TODO this class's name should be Lexer
+public abstract class Lexer {
 
   private Charset charset = Charset.defaultCharset();
 
