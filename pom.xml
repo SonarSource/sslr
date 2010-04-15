@@ -13,7 +13,7 @@
   </parent>
 
   <properties>
-    <sonarVersion>2.1-SNAPSHOT</sonarVersion>
+    <sonarVersion>2.1M2</sonarVersion>
   </properties>
 
   <scm>
