@@ -49,7 +49,7 @@ public class LexerOutput {
         return;
       }
     }
-    tokens.add(token);
+    addToken(token);
   }
 
   public void addToken(Token token) {
