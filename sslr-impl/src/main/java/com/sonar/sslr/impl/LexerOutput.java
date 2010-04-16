@@ -21,7 +21,6 @@ public class LexerOutput {
   private Map<Integer, Token> comments = new HashMap<Integer, Token>();
   private File file = null;
   private final Preprocessor[] preprocessors;
-  private Map<String, TokenType> keywords;
 
   public LexerOutput(Preprocessor... preprocessors) {
     this.preprocessors = preprocessors;
@@ -83,18 +82,6 @@ public class LexerOutput {
 
   public Token get(int i) {
     return tokens.get(i);
-  }
-
-  public void setKeywords(Map<String, TokenType> keywords) {
-    this.keywords = keywords;
-  }
-
-  public boolean isKeyword(String key) {
-    return keywords.containsKey(key);
-  }
-
-  public TokenType getKeyword(String key) {
-    return keywords.get(key);
   }
 
   @Override

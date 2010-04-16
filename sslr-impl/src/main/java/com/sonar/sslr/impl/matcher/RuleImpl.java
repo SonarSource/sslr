@@ -42,8 +42,12 @@ public class RuleImpl extends Matcher implements Rule {
     return this;
   }
 
-  public void mock() {
+  public void mockUpperCase() {
     setMatcher(new TokenValueMatcher(name.toUpperCase()));
+  }
+
+  public void mock() {
+    setMatcher(new TokenValueMatcher(name));
   }
 
   public RuleImpl or(Object... matchers) {

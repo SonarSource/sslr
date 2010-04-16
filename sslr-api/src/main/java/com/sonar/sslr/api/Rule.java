@@ -20,5 +20,7 @@ public interface Rule extends AstNodeType {
 
   public Rule skip();
 
+  public void mockUpperCase();
+
   public void mock();
 }

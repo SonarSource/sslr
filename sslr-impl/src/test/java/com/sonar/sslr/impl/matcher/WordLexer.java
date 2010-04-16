@@ -9,6 +9,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sonar.channel.ChannelDispatcher;
+
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.Lexer;
 import com.sonar.sslr.impl.LexerOutput;
@@ -29,6 +31,12 @@ public class WordLexer extends Lexer {
 
   @Override
   public LexerOutput lex(File file) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  protected ChannelDispatcher<LexerOutput> getChannelDispatcher() {
+    // TODO Auto-generated method stub
     return null;
   }
 }
