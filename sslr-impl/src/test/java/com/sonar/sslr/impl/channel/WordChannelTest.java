@@ -25,7 +25,7 @@ public class WordChannelTest {
   @Test
   public void testConsumWord() {
     assertTrue(channel.consum(new CodeReader("word"), output));
-    assertThat(output.getLastToken().getType(), is((TokenType) GenericTokenType.WORD));
+    assertThat(output.getLastToken().getType(), is((TokenType) GenericTokenType.IDENTIFIER));
   }
 
   @Test

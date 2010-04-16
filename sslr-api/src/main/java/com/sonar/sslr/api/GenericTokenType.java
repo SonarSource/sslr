@@ -8,7 +8,7 @@ package com.sonar.sslr.api;
 import com.sonar.sslr.api.TokenType;
 
 public enum GenericTokenType implements TokenType {
-  COMMENT, WORD, LITERAL, NUMBER, EOF;
+  COMMENT, IDENTIFIER, LITERAL, CONSTANT, EOF;
 
   public String getName() {
     return name();
