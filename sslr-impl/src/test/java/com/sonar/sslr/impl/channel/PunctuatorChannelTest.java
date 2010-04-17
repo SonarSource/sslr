@@ -8,7 +8,7 @@ package com.sonar.sslr.impl.channel;
 import org.junit.Test;
 import org.sonar.channel.CodeReader;
 
-import com.sonar.sslr.api.CharacterTokenType;
+import com.sonar.sslr.api.PunctuatorTokenType;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.LexerOutput;
 
@@ -17,9 +17,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class CharacterChannelTest {
+public class PunctuatorChannelTest {
 
-  private CharacterChannel channel = new CharacterChannel(MyCharacters.values());
+  private PunctuatorChannel channel = new PunctuatorChannel(MyCharacters.values());
   private LexerOutput output = new LexerOutput();
 
   @Test
@@ -36,7 +36,7 @@ public class CharacterChannelTest {
     assertFalse(channel.consum(new CodeReader("word"), output));
   }
 
-  private enum MyCharacters implements CharacterTokenType {
+  private enum MyCharacters implements PunctuatorTokenType {
     STAR("*"), COLON(",");
 
     private final String value;

@@ -17,9 +17,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class WordChannelTest {
+public class IdentifierAndKeywordChannelTest {
 
-  private WordChannel channel = new WordChannel(MyKeywords.values());
+  private IdentifierAndKeywordChannel channel = new IdentifierAndKeywordChannel(MyKeywords.values());
   private LexerOutput output = new LexerOutput();
 
   @Test

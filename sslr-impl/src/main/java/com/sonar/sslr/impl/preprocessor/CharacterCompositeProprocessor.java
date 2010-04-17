@@ -10,27 +10,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sonar.sslr.api.CharacterCompositeTokenType;
-import com.sonar.sslr.api.CharacterTokenType;
+import com.sonar.sslr.api.PunctuatorCompositeTokenType;
+import com.sonar.sslr.api.PunctuatorTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.LexerOutput;
 import com.sonar.sslr.impl.Preprocessor;
 
 public class CharacterCompositeProprocessor extends Preprocessor {
 
-  private Map<String, CharacterCompositeTokenType> maps = new HashMap<String, CharacterCompositeTokenType>();
+  private Map<String, PunctuatorCompositeTokenType> maps = new HashMap<String, PunctuatorCompositeTokenType>();
 
   private List<Token> pendingComposite = new ArrayList<Token>();
 
-  public CharacterCompositeProprocessor(CharacterCompositeTokenType... characterComposites) {
-    for (CharacterCompositeTokenType composite : characterComposites) {
+  public CharacterCompositeProprocessor(PunctuatorCompositeTokenType... characterComposites) {
+    for (PunctuatorCompositeTokenType composite : characterComposites) {
       maps.put(composite.getValue(), composite);
     }
   }
 
   @Override
   public boolean process(Token token, LexerOutput output) {
-    if (token.getType() instanceof CharacterTokenType && !token.getValue().equals(",")) {
+    if (token.getType() instanceof PunctuatorTokenType && !token.getValue().equals(",")) {
       pendingComposite.add(token);
       return true;
     } else {
@@ -47,7 +47,7 @@ public class CharacterCompositeProprocessor extends Preprocessor {
       }
       if (maps.containsKey(value)) {
         Token firstCharacter = pendingComposite.get(0);
-        CharacterCompositeTokenType tokenType = maps.get(value);
+        PunctuatorCompositeTokenType tokenType = maps.get(value);
         Token composite = new Token(tokenType, value, firstCharacter.getLine(), firstCharacter.getColumn(), firstCharacter.getFile());
         output.addToken(composite);
       } else {

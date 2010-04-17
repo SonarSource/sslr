@@ -16,11 +16,11 @@ import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.LexerOutput;
 
-public class WordChannel implements Channel<LexerOutput> {
+public class IdentifierAndKeywordChannel implements Channel<LexerOutput> {
 
   private final Map<String, TokenType> keywordsMap;
 
-  public WordChannel(TokenType... keywords) {
+  public IdentifierAndKeywordChannel(TokenType... keywords) {
     keywordsMap = new HashMap<String, TokenType>();
     for (TokenType keyword : keywords) {
       keywordsMap.put(keyword.getValue(), keyword);

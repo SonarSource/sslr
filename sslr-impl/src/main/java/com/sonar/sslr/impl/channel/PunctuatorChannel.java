@@ -10,16 +10,16 @@ import java.util.HashMap;
 import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
 
-import com.sonar.sslr.api.CharacterTokenType;
+import com.sonar.sslr.api.PunctuatorTokenType;
 import com.sonar.sslr.impl.LexerOutput;
 
-public class CharacterChannel implements Channel<LexerOutput> {
+public class PunctuatorChannel implements Channel<LexerOutput> {
 
-  HashMap<Character, CharacterTokenType> specialChars;
+  HashMap<Character, PunctuatorTokenType> specialChars;
 
-  public CharacterChannel(CharacterTokenType... characters) {
-    specialChars = new HashMap<Character, CharacterTokenType>();
-    for (CharacterTokenType specialChar : characters) {
+  public PunctuatorChannel(PunctuatorTokenType... characters) {
+    specialChars = new HashMap<Character, PunctuatorTokenType>();
+    for (PunctuatorTokenType specialChar : characters) {
       specialChars.put(Character.valueOf(specialChar.getChar()), specialChar);
     }
   }
@@ -27,7 +27,7 @@ public class CharacterChannel implements Channel<LexerOutput> {
   public boolean consum(CodeReader code, LexerOutput output) {
     Character nextChar = Character.valueOf((char) code.peek());
     if (specialChars.containsKey(nextChar)) {
-      CharacterTokenType specialChar = specialChars.get(nextChar);
+      PunctuatorTokenType specialChar = specialChars.get(nextChar);
       code.pop();
       output.addToken(specialChar, specialChar.getValue(), code.getLinePosition(), code.getColumnPosition());
       return true;

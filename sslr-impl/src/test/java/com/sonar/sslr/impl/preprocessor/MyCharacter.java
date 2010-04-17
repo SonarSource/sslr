@@ -5,9 +5,9 @@
  */
 package com.sonar.sslr.impl.preprocessor;
 
-import com.sonar.sslr.api.CharacterTokenType;
+import com.sonar.sslr.api.PunctuatorTokenType;
 
-public enum MyCharacter implements CharacterTokenType {
+public enum MyCharacter implements PunctuatorTokenType {
   EQUAL("="), EXCLAMATION("!"), COMMA(",");
 
   private final String value;

@@ -5,8 +5,8 @@
  */
 package com.sonar.sslr.api;
 
-public interface CharacterCompositeTokenType extends TokenType {
+public interface PunctuatorCompositeTokenType extends TokenType {
 
-  public CharacterTokenType[] getCharacters();
+  public PunctuatorTokenType[] getCharacters();
 
 }
