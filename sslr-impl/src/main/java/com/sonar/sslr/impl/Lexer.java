@@ -18,7 +18,6 @@ import org.sonar.channel.ChannelDispatcher;
 import org.sonar.channel.CodeReader;
 
 import com.sonar.sslr.api.GenericTokenType;
-import com.sonar.sslr.api.Token;
 
 public abstract class Lexer {
 
