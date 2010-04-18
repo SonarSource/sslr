@@ -10,6 +10,7 @@ import org.sonar.channel.CodeReader;
 import org.sonar.channel.EndMatcher;
 
 import com.sonar.sslr.api.GenericTokenType;
+import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.LexerOutput;
 
 public abstract class AbstractCommentChannel implements Channel<LexerOutput> {
@@ -24,7 +25,7 @@ public abstract class AbstractCommentChannel implements Channel<LexerOutput> {
     if (code.peek() == starter[0] && isCommentStarting(code)) {
       StringBuilder comment = new StringBuilder();
       code.popTo(getEndCommentMatcher(), comment);
-      output.addToken(GenericTokenType.COMMENT, comment.toString(), code.getLinePosition(), code.getColumnPosition());
+      output.addCommentToken(new Token(GenericTokenType.COMMENT, comment.toString(), code.getLinePosition(), code.getColumnPosition()));
       return true;
     }
     return false;

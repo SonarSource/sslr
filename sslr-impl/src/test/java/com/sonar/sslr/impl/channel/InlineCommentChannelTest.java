@@ -8,6 +8,7 @@ package com.sonar.sslr.impl.channel;
 import org.junit.Test;
 import org.sonar.channel.CodeReader;
 
+import com.sonar.sslr.api.Comments;
 import com.sonar.sslr.impl.LexerOutput;
 
 import static org.hamcrest.Matchers.is;
@@ -24,14 +25,16 @@ public class InlineCommentChannelTest {
   public void testConsumCommentStartingWithOneCharacter() {
     channel = new InlineCommentChannel("'");
     assertTrue(channel.consum(new CodeReader("' my comment\n toto"), output));
-    assertThat(output.getLastToken().getValue(), is("' my comment"));
+    Comments comments = output.getComments();
+    assertThat(comments.getCommentAtLine(1).getValue(), is("' my comment"));
   }
   
   @Test
   public void testConsumCppComment() {
     channel = new InlineCommentChannel("//");
     assertTrue(channel.consum(new CodeReader("// my comment\r lkjd"), output));
-    assertThat(output.getLastToken().getValue(), is("// my comment"));
+    Comments comments = output.getComments();
+    assertThat(comments.getCommentAtLine(1).getValue(), is("// my comment"));
   }
 
   @Test

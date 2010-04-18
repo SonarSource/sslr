@@ -8,6 +8,7 @@ package com.sonar.sslr.impl.channel;
 import org.junit.Test;
 import org.sonar.channel.CodeReader;
 
+import com.sonar.sslr.api.Comments;
 import com.sonar.sslr.impl.LexerOutput;
 
 import static org.hamcrest.Matchers.is;
@@ -24,7 +25,8 @@ public class MultilineCommentChannelTest {
   public void testConsumCommentStartingWithOneCharacter() {
     channel = new MultilineCommentChannel("/*", "*/");
     assertTrue(channel.consum(new CodeReader("/*/ my comment \n second line*/   word"), output));
-    assertThat(output.getLastToken().getValue(), is("/*/ my comment \n second line*/"));
+    Comments comments = output.getComments();
+    assertThat(comments.getCommentAtLine(2).getValue(), is("/*/ my comment \n second line*/"));
   }
 
   @Test

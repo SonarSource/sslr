@@ -73,6 +73,9 @@ public class LexerOutput {
   }
 
   public void addCommentToken(Token token) {
+    if (file != null) {
+      token.setFile(file);
+    }
     comments.put(token.getLine(), token);
   }
 
