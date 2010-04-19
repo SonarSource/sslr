@@ -32,7 +32,6 @@ public class CharacterCompositeProprocessor extends Preprocessor {
   public boolean process(Token token, LexerOutput output) {
     if (token.getType() instanceof PunctuatorTokenType && !token.getValue().equals(",")) {
       pendingComposite.add(token);
-      return true;
     } else {
       endLexing(output);
     }
@@ -49,12 +48,9 @@ public class CharacterCompositeProprocessor extends Preprocessor {
         Token firstCharacter = pendingComposite.get(0);
         PunctuatorCompositeTokenType tokenType = maps.get(value);
         Token composite = new Token(tokenType, value, firstCharacter.getLine(), firstCharacter.getColumn(), firstCharacter.getFile());
+        output.removeLastTokens(pendingComposite.size());
         output.addToken(composite);
-      } else {
-        for (Token character : pendingComposite) {
-          output.addToken(character);
-        }
-      }
+      } 
       pendingComposite.clear();
     }
   }

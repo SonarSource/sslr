@@ -27,9 +27,9 @@ public class CharacterCompositeProprocessorTest {
 
   @Test
   public void testProcessEQ_OP() {
-    output.addToken(MyCharacter.EQUAL, "=", 1, 7);
-    output.addToken(MyCharacter.EQUAL, "=", 1, 8);
-    output.addToken(GenericTokenType.IDENTIFIER, "word", 1, 9);
+    output.addTokenAndProcess(MyCharacter.EQUAL, "=", 1, 7);
+    output.addTokenAndProcess(MyCharacter.EQUAL, "=", 1, 8);
+    output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "word", 1, 9);
 
     assertThat(output.size(), is(2));
     assertThat(output.get(0).getValue(), is("=="));
@@ -40,9 +40,9 @@ public class CharacterCompositeProprocessorTest {
 
   @Test
   public void testProcessNE_OP() {
-    output.addToken(MyCharacter.EQUAL, "!", 1, 7);
-    output.addToken(MyCharacter.EQUAL, "=", 1, 8);
-    output.addToken(GenericTokenType.IDENTIFIER, "word", 1, 9);
+    output.addTokenAndProcess(MyCharacter.EQUAL, "!", 1, 7);
+    output.addTokenAndProcess(MyCharacter.EQUAL, "=", 1, 8);
+    output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "word", 1, 9);
 
     assertThat(output.size(), is(2));
     assertThat(output.get(0).getValue(), is("!="));
@@ -51,10 +51,10 @@ public class CharacterCompositeProprocessorTest {
   
   @Test
   public void testProcessCommaBeforeNE_OP() {
-    output.addToken(MyCharacter.EQUAL, ",", 1, 7);
-    output.addToken(MyCharacter.EQUAL, "!", 1, 7);
-    output.addToken(MyCharacter.EQUAL, "=", 1, 8);
-    output.addToken(GenericTokenType.IDENTIFIER, "word", 1, 9);
+    output.addTokenAndProcess(MyCharacter.EQUAL, ",", 1, 7);
+    output.addTokenAndProcess(MyCharacter.EQUAL, "!", 1, 7);
+    output.addTokenAndProcess(MyCharacter.EQUAL, "=", 1, 8);
+    output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "word", 1, 9);
 
     assertThat(output.size(), is(3));
     assertThat(output.get(0).getValue(), is(","));
@@ -64,8 +64,8 @@ public class CharacterCompositeProprocessorTest {
 
   @Test
   public void testProcessEqualChar() {
-    output.addToken(MyCharacter.EQUAL, "=", 1, 8);
-    output.addToken(GenericTokenType.IDENTIFIER, "word", 3, 4);
+    output.addTokenAndProcess(MyCharacter.EQUAL, "=", 1, 8);
+    output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "word", 3, 4);
 
     assertThat(output.size(), is(2));
     assertThat(output.getLastToken().getValue(), is("word"));

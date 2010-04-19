@@ -18,6 +18,7 @@ import com.sonar.sslr.api.TokenType;
 public class LexerOutput {
 
   private List<Token> tokens = new ArrayList<Token>();
+  private List<Token> preprocessingTokens = new ArrayList<Token>();
   private Map<Integer, Token> comments = new HashMap<Integer, Token>();
   private File file = null;
   private final Preprocessor[] preprocessors;
@@ -34,12 +35,22 @@ public class LexerOutput {
   public List<Token> getTokens() {
     return tokens;
   }
+  
+  public List<Token> getPreprocessingTokens(){
+    return preprocessingTokens;
+  }
 
   public Token getLastToken() {
     return tokens.get(tokens.size() - 1);
   }
 
-  public void addToken(TokenType tokenType, String value, int linePosition, int columnPosition) {
+  public void removeLastTokens(int numberOfTokensToRemove) {
+    for (int i = 0; i < numberOfTokensToRemove; i++) {
+      tokens.remove(tokens.size() - 1);
+    }
+  }
+
+  public void addTokenAndProcess(TokenType tokenType, String value, int linePosition, int columnPosition) {
     Token token = new Token(tokenType, value, linePosition, columnPosition);
     if (file != null) {
       token.setFile(file);
@@ -50,6 +61,13 @@ public class LexerOutput {
       }
     }
     addToken(token);
+  }
+
+  public void addPreprocessingToken(Token token) {
+    if (file != null) {
+      token.setFile(file);
+    }
+    preprocessingTokens.add(token);
   }
 
   public void addToken(Token token) {

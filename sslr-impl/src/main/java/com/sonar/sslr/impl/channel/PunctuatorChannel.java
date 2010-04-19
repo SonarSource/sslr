@@ -29,7 +29,7 @@ public class PunctuatorChannel implements Channel<LexerOutput> {
     if (specialChars.containsKey(nextChar)) {
       PunctuatorTokenType specialChar = specialChars.get(nextChar);
       code.pop();
-      output.addToken(specialChar, specialChar.getValue(), code.getLinePosition(), code.getColumnPosition());
+      output.addTokenAndProcess(specialChar, specialChar.getValue(), code.getLinePosition(), code.getColumnPosition());
       return true;
     }
     return false;
