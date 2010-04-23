@@ -4,7 +4,7 @@
   <groupId>com.sonarsource.sslr</groupId>
   <artifactId>sslr</artifactId>
   <packaging>pom</packaging>
-  <version>0.7-SNAPSHOT</version>
+  <version>0.6</version>
   <name>SonarSource :: Language Recognition</name>
   <parent>
     <groupId>com.sonarsource.parent</groupId>
