@@ -7,19 +7,18 @@ package com.sonar.sslr.impl;
 
 import java.lang.reflect.Field;
 
-import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
 public class GrammarFieldsInitializer {
 
-  public static void initializeRuleFields(Grammar grammarImpl, Class<?> grammar) {
+  public static void initializeRuleFields(Object rules, Class<?> grammar) {
     Field[] fields = grammar.getDeclaredFields();
     for (Field field : fields) {
       if (field.getType() == Rule.class) {
         String fieldName = field.getName();
         try {
-          field.set(grammarImpl, new RuleImpl(fieldName));
+          field.set(rules, new RuleImpl(fieldName));
         } catch (Exception e) {
           e.printStackTrace();
         }
