@@ -9,14 +9,14 @@ import com.sonar.sslr.api.TokenType;
 
 public enum MockTokenType implements TokenType {
 
-  WORD;
+  WORD, WORD1, WORD2;
 
   public String getName() {
-    return "WORD";
+    return name();
   }
 
   public String getValue() {
-    return "WORD";
+    return name();
   }
 
   public boolean hasToBeSkippedFromAst() {

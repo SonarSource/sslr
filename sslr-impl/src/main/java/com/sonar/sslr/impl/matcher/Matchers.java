@@ -6,6 +6,8 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import com.sonar.sslr.api.TokenType;
+
 public class Matchers {
 
   private Matchers() {
@@ -29,6 +31,10 @@ public class Matchers {
 
   public static Matcher not(Object object) {
     return new ProxyMatcher(new NotMatcher(Matcher.convertToMatcher(object)));
+  }
+
+  public static Matcher isOneOfThem(TokenType... keywords) {
+    return new TokenTypesMatcher(keywords);
   }
 
   public static Matcher and(Object... matchers) {
