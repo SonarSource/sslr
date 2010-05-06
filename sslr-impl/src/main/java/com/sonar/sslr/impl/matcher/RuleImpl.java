@@ -35,11 +35,15 @@ public class RuleImpl extends Matcher implements Rule {
   }
 
   public RuleImpl is(Object... matchers) {
+    checkIfThereIsAtLeastOneMatcher(matchers);
+    setMatcher(Matchers.and(matchers));
+    return this;
+  }
+
+  private void checkIfThereIsAtLeastOneMatcher(Object[] matchers) {
     if (matchers.length == 0) {
       throw new IllegalStateException("The rule '" + name + "' should at least contains one matcher.");
     }
-    setMatcher(Matchers.and(matchers));
-    return this;
   }
 
   public void mockUpperCase() {
@@ -50,11 +54,18 @@ public class RuleImpl extends Matcher implements Rule {
     setMatcher(new TokenValueMatcher(name));
   }
 
-  public RuleImpl or(Object... matchers) {
-    if (matchers.length == 0) {
-      throw new IllegalStateException("A rule should at least contains one matcher.");
-    }
+  public RuleImpl isOr(Object... matchers) {
+    checkIfThereIsAtLeastOneMatcher(matchers);
     setMatcher(Matchers.or(matchers));
+    return this;
+  }
+
+  public RuleImpl or(Object... matchers) {
+    checkIfThereIsAtLeastOneMatcher(matchers);
+    if (matcher == null) {
+      throw new IllegalStateException("The Rule.or(...) can't be called if the method Rule.is(...) hasn't been called first.");
+    }
+    setMatcher(Matchers.or(matcher, Matchers.and(matchers)));
     return this;
   }
 

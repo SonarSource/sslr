@@ -9,19 +9,18 @@ package com.sonar.sslr.impl.matcher;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sonar.sslr.impl.matcher.Matcher;
-import com.sonar.sslr.impl.matcher.RuleImpl;
-
 import static com.sonar.sslr.impl.MockTokenType.WORD;
 import static com.sonar.sslr.impl.matcher.Matchers.o2n;
 import static com.sonar.sslr.impl.matcher.Matchers.opt;
 import static com.sonar.sslr.impl.matcher.Matchers.or;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 
-public class RuleTest {
+public class RuleImplTest {
 
   private RuleImpl javaClassDefinition;
   private Matcher opMatcher;
@@ -50,9 +49,39 @@ public class RuleTest {
   }
 
   @Test(expected = IllegalStateException.class)
+  public void testEmptyIsOr() {
+    javaClassDefinition = new RuleImpl("JavaClassDefinition");
+    javaClassDefinition.isOr();
+  }
+  
+  @Test(expected = IllegalStateException.class)
   public void testEmptyOr() {
     javaClassDefinition = new RuleImpl("JavaClassDefinition");
     javaClassDefinition.or();
+  }
+  
+  @Test(expected = IllegalStateException.class)
+  public void testCallingOrWithoutHavingCallIsFirst() {
+    javaClassDefinition = new RuleImpl("JavaClassDefinition");
+    javaClassDefinition.or("keyword");
+  }
+
+  @Test
+  public void testIsOr() {
+    RuleImpl myRule = new RuleImpl("MyRule");
+    myRule.is("option1");
+    assertThat(myRule.toEBNFNotation(), is("MyRule := option1"));
+  }
+
+  @Test
+  public void testOr() {
+    RuleImpl myRule = new RuleImpl("MyRule");
+    myRule.is("option1");
+    assertThat(myRule.toEBNFNotation(), is("MyRule := option1"));
+    myRule.or("option2");
+    assertThat(myRule.toEBNFNotation(), is("MyRule := (option1 | option2)"));
+    myRule.or("option3", "option4");
+    assertThat(myRule.toEBNFNotation(), is("MyRule := ((option1 | option2) | option3 option4)"));
   }
 
   @Test

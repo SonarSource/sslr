@@ -34,10 +34,13 @@ public class Matchers {
   }
 
   public static Matcher isOneOfThem(TokenType... keywords) {
-    return new TokenTypesMatcher(keywords);
+    return new ProxyMatcher(new TokenTypesMatcher(keywords));
   }
 
   public static Matcher and(Object... matchers) {
+    if(matchers.length == 1) {
+      return new ProxyMatcher(Matcher.convertToMatcher(matchers[0]));
+    }
     return new ProxyMatcher(new AndMatcher(Matcher.convertToMatchers(matchers)));
   }
 

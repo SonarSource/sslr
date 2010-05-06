@@ -15,8 +15,10 @@ package com.sonar.sslr.api;
 public interface Rule extends AstNodeType {
 
   public Rule is(Object... matchers);
-
+  
   public Rule or(Object... matchers);
+
+  public Rule isOr(Object... matchers);
 
   public Rule skip();
 

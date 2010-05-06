@@ -47,7 +47,7 @@ public class ParsingStackTraceTest {
   public void testGenerate() {
     TokenValueMatcher language = new TokenValueMatcher("language");
     RuleImpl parentRule = new RuleImpl("ParentRule");
-    parentRule.or(Matchers.or(language, "implements"));
+    parentRule.isOr(Matchers.or(language, "implements"));
     RuleImpl grandParentRule = new RuleImpl("GrandParentRule");
     grandParentRule.is(one2n(parentRule));
     state.popToken(parentRule);
@@ -69,7 +69,7 @@ public class ParsingStackTraceTest {
     ParsingState state = new ParsingState(lexerOutput);
     TokenValueMatcher language = new TokenValueMatcher("language");
     RuleImpl parentRule = new RuleImpl("ParentRule");
-    parentRule.or(Matchers.or(language, "implements"));
+    parentRule.isOr(Matchers.or(language, "implements"));
     RuleImpl grandParentRule = new RuleImpl("GrandParentRule");
     grandParentRule.is(one2n(parentRule));
     state.popToken(parentRule);
