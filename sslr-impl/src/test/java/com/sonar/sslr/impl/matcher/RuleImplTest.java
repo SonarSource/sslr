@@ -83,6 +83,15 @@ public class RuleImplTest {
     myRule.or("option3", "option4");
     assertThat(myRule.toEBNFNotation(), is("MyRule := ((option1 | option2) | option3 option4)"));
   }
+  
+  @Test
+  public void testOrBefore() {
+    RuleImpl myRule = new RuleImpl("MyRule");
+    myRule.is("option1");
+    assertThat(myRule.toEBNFNotation(), is("MyRule := option1"));
+    myRule.orBefore("option2");
+    assertThat(myRule.toEBNFNotation(), is("MyRule := (option2 | option1)"));
+  }
 
   @Test
   public void testGetParentRule() {

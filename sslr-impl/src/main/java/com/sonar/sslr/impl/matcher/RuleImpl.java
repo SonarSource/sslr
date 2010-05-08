@@ -69,6 +69,15 @@ public class RuleImpl extends Matcher implements Rule {
     return this;
   }
 
+  public RuleImpl orBefore(Object... matchers) {
+    checkIfThereIsAtLeastOneMatcher(matchers);
+    if (matcher == null) {
+      throw new IllegalStateException("The Rule.or(...) can't be called if the method Rule.is(...) hasn't been called first.");
+    }
+    setMatcher(Matchers.or(Matchers.and(matchers), matcher));
+    return this;
+  }
+
   public RuleImpl skip() {
     hasToBeSkippedWhenBuildingAst = true;
     return this;

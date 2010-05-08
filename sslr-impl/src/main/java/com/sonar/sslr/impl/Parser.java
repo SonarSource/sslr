@@ -7,13 +7,16 @@
 package com.sonar.sslr.impl;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.api.GrammarDecorator;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
-public abstract class Parser {
+public abstract class Parser<GRAMMAR extends Grammar> {
 
   private RuleImpl rootRule;
   private ParsingState parsingState;
@@ -21,14 +24,25 @@ public abstract class Parser {
   private Lexer lexer;
   private Grammar grammar;
 
-  public Parser(Grammar grammar, Lexer lexer) {
+  public Parser(GRAMMAR grammar, Lexer lexer, List<GrammarDecorator<GRAMMAR>> decorators) {
     this.grammar = grammar;
+    for (GrammarDecorator<GRAMMAR> decorator : decorators) {
+      decorator.decorate(grammar);
+    }
     rootRule = (RuleImpl) grammar.getRootRule();
     this.lexer = lexer;
   }
 
-  public Parser(Grammar grammar, Rule rootRule, Lexer lexer) {
-    this(grammar, lexer);
+  public Parser(GRAMMAR grammar, Lexer lexer, GrammarDecorator<GRAMMAR>... decorators) {
+    this(grammar, lexer, Arrays.asList(decorators));
+  }
+
+  public Parser(GRAMMAR grammar, Rule rootRule, Lexer lexer, GrammarDecorator<GRAMMAR>... decorators) {
+    this(grammar, rootRule, lexer, Arrays.asList(decorators));
+  }
+  
+  public Parser(GRAMMAR grammar, Rule rootRule, Lexer lexer, List<GrammarDecorator<GRAMMAR>> decorators) {
+    this(grammar, lexer, decorators);
     this.rootRule = (RuleImpl) rootRule;
   }
 
