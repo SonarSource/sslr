@@ -13,7 +13,7 @@
   </parent>
 
   <properties>
-    <sonarVersion>2.1</sonarVersion>
+    <sonarVersion>2.1.1</sonarVersion>
   </properties>
 
   <scm>
