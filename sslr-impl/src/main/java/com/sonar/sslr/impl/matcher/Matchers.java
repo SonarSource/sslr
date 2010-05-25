@@ -38,7 +38,7 @@ public class Matchers {
   }
 
   public static Matcher and(Object... matchers) {
-    if(matchers.length == 1) {
+    if (matchers.length == 1) {
       return new ProxyMatcher(Matcher.convertToMatcher(matchers[0]));
     }
     return new ProxyMatcher(new AndMatcher(Matcher.convertToMatchers(matchers)));
@@ -46,6 +46,10 @@ public class Matchers {
 
   public static Matcher isTrue() {
     return new ProxyMatcher(new BooleanMatcher(true));
+  }
+
+  public static Matcher anything() {
+    return new ProxyMatcher(new AnythingMatcher());
   }
 
   public static Matcher isFalse() {
