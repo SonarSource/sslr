@@ -10,8 +10,8 @@ import org.sonar.channel.CodeReader;
 import org.sonar.channel.EndMatcher;
 
 import com.sonar.sslr.api.GenericTokenType;
+import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.LexerOutput;
 
 public abstract class AbstractCommentChannel implements Channel<LexerOutput> {
 

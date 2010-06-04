@@ -10,7 +10,7 @@ import org.hamcrest.Description;
 import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
 
-import com.sonar.sslr.impl.LexerOutput;
+import com.sonar.sslr.api.LexerOutput;
 
 class ConsumeMatcher extends BaseMatcher<Channel<LexerOutput>> {
 

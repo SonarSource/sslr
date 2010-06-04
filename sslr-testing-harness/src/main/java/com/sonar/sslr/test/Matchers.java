@@ -9,8 +9,8 @@ import org.hamcrest.Matcher;
 import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
 
+import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.TokenType;
-import com.sonar.sslr.impl.LexerOutput;
 
 public class Matchers {
 
@@ -24,6 +24,10 @@ public class Matchers {
 
   public final static Matcher<LexerOutput> hasComment(String commentValue) {
     return new HasCommentMatcher(commentValue);
+  }
+  
+  public final static Matcher<LexerOutput> hasComment(String commentValue, int commentLine) {
+    return new HasCommentMatcher(commentValue, commentLine);
   }
 
   public final static Matcher<Channel<LexerOutput>> consume(String source, LexerOutput output) {

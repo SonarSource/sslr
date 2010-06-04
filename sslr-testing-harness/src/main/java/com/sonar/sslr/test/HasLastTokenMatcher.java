@@ -8,9 +8,9 @@ package com.sonar.sslr.test;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
+import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
-import com.sonar.sslr.impl.LexerOutput;
 
 class HasLastTokenMatcher extends BaseMatcher<LexerOutput> {
 

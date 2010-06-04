@@ -13,8 +13,8 @@ import org.sonar.channel.CodeReader;
 import org.sonar.channel.EndMatcher;
 
 import com.sonar.sslr.api.GenericTokenType;
+import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.TokenType;
-import com.sonar.sslr.impl.LexerOutput;
 
 public class IdentifierAndKeywordChannel implements Channel<LexerOutput> {
 

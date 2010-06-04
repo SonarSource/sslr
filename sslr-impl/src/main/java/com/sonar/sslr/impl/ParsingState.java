@@ -7,6 +7,7 @@
 package com.sonar.sslr.impl;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.matcher.Matcher;
 

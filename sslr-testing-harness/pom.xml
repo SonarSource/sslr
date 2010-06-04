@@ -15,11 +15,6 @@
 			<artifactId>sslr-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>sslr-impl</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.codehaus.sonar</groupId>
 			<artifactId>sonar-channel</artifactId>
 		</dependency>

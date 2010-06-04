@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.impl;
+package com.sonar.sslr.api;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -11,9 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sonar.sslr.api.Comments;
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.TokenType;
 
 public class LexerOutput {
 

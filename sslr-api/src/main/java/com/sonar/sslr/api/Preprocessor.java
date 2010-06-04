@@ -3,9 +3,8 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.impl;
+package com.sonar.sslr.api;
 
-import com.sonar.sslr.api.Token;
 
 public abstract class Preprocessor {
 

@@ -5,16 +5,15 @@
  */
 package com.sonar.sslr.impl.channel;
 
+import static com.sonar.sslr.test.Matchers.consume;
+import static com.sonar.sslr.test.Matchers.hasComment;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 import org.sonar.channel.CodeReader;
 
-import com.sonar.sslr.api.Comments;
-import com.sonar.sslr.impl.LexerOutput;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import com.sonar.sslr.api.LexerOutput;
 
 public class InlineCommentChannelTest {
 
@@ -24,22 +23,20 @@ public class InlineCommentChannelTest {
   @Test
   public void testConsumCommentStartingWithOneCharacter() {
     channel = new InlineCommentChannel("'");
-    assertTrue(channel.consum(new CodeReader("' my comment\n toto"), output));
-    Comments comments = output.getComments();
-    assertThat(comments.getCommentAtLine(1).getValue(), is("' my comment"));
+    assertThat(channel, consume(new CodeReader("' my comment\n toto"), output));
+    assertThat(output, hasComment("' my comment"));
   }
-  
+
   @Test
   public void testConsumCppComment() {
     channel = new InlineCommentChannel("//");
-    assertTrue(channel.consum(new CodeReader("// my comment\r lkjd"), output));
-    Comments comments = output.getComments();
-    assertThat(comments.getCommentAtLine(1).getValue(), is("// my comment"));
+    assertThat(channel, consume(new CodeReader("// my comment\r lkjd"), output));
+    assertThat(output, hasComment("// my comment"));
   }
 
   @Test
   public void testNotConsumWord() {
     channel = new InlineCommentChannel("'");
-    assertFalse(channel.consum(new CodeReader("word"), output));
+    assertThat(channel, not(consume(new CodeReader("word"), output)));
   }
 }

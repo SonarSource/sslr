@@ -5,16 +5,17 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import org.junit.Test;
-import org.sonar.channel.CodeReader;
-
-import com.sonar.sslr.api.TokenType;
-import com.sonar.sslr.impl.LexerOutput;
-
+import static com.sonar.sslr.test.Matchers.consume;
+import static com.sonar.sslr.test.Matchers.hasToken;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+import org.sonar.channel.CodeReader;
+
+import com.sonar.sslr.api.LexerOutput;
+import com.sonar.sslr.api.TokenType;
 
 public class PunctuatorAndOperatorChannelTest {
 
@@ -23,20 +24,20 @@ public class PunctuatorAndOperatorChannelTest {
 
   @Test
   public void testConsumeSpecialCharacters() {
-    assertTrue(channel.consum(new CodeReader("**="), output));
-    assertThat(output.getLastToken().getType(), is((TokenType) MyPunctuatorAndOperator.STAR));
+    assertThat(channel, consume(new CodeReader("**="), output));
+    assertThat(output, hasToken("*", MyPunctuatorAndOperator.STAR));
 
-    assertTrue(channel.consum(new CodeReader(",="), output));
-    assertThat(output.getLastToken().getType(), is((TokenType) MyPunctuatorAndOperator.COLON));
+    assertThat(channel, consume(new CodeReader(",="), output));
+    assertThat(output, hasToken(",", MyPunctuatorAndOperator.COLON));
 
-    assertTrue(channel.consum(new CodeReader("=*"), output));
-    assertThat(output.getLastToken().getType(), is((TokenType) MyPunctuatorAndOperator.EQUAL));
+    assertThat(channel, consume(new CodeReader("=*"), output));
+    assertThat(output, hasToken("=", MyPunctuatorAndOperator.EQUAL));
 
-    assertTrue(channel.consum(new CodeReader("==,"), output));
-    assertThat(output.getLastToken().getType(), is((TokenType) MyPunctuatorAndOperator.EQUAL_OP));
+    assertThat(channel, consume(new CodeReader("==,"), output));
+    assertThat(output, hasToken("==", MyPunctuatorAndOperator.EQUAL_OP));
 
-    assertTrue(channel.consum(new CodeReader("*=,"), output));
-    assertThat(output.getLastToken().getType(), is((TokenType) MyPunctuatorAndOperator.MUL_ASSIGN));
+    assertThat(channel, consume(new CodeReader("*=,"), output));
+    assertThat(output, hasToken("*=", MyPunctuatorAndOperator.MUL_ASSIGN));
   }
 
   @Test

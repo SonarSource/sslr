@@ -11,7 +11,7 @@ import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
 import org.sonar.channel.EndMatcher;
 
-import com.sonar.sslr.impl.LexerOutput;
+import com.sonar.sslr.api.LexerOutput;
 
 public class BlackHoleChannel implements Channel<LexerOutput> {
 

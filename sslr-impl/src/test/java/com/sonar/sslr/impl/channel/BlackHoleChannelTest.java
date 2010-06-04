@@ -5,14 +5,14 @@
  */
 package com.sonar.sslr.impl.channel;
 
+import static com.sonar.sslr.test.Matchers.consume;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 import org.sonar.channel.CodeReader;
 
-import com.sonar.sslr.impl.LexerOutput;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import com.sonar.sslr.api.LexerOutput;
 
 public class BlackHoleChannelTest {
 
@@ -21,17 +21,17 @@ public class BlackHoleChannelTest {
 
   @Test
   public void testConsumAnything() {
-    assertTrue(channel.consum(new CodeReader("$"), output));
-    assertTrue(channel.consum(new CodeReader("\n"), output));
-    assertTrue(channel.consum(new CodeReader("g"), output));
-    assertTrue(channel.consum(new CodeReader("-"), output));
-    assertTrue(channel.consum(new CodeReader("1"), output));
+    assertThat(channel, consume(new CodeReader("$"), output));
+    assertThat(channel, consume(new CodeReader("\n"), output));
+    assertThat(channel, consume(new CodeReader("g"), output));
+    assertThat(channel, consume(new CodeReader("-"), output));
+    assertThat(channel, consume(new CodeReader("1"), output));
   }
 
   @Test
   public void testConsumNumber() {
     CodeReader reader = new CodeReader("   \t\n\r123");
-    assertTrue(channel.consum(reader, output));
+    assertThat(channel, consume(reader, output));
     assertThat((char) reader.peek(), is('1'));
   }
 }

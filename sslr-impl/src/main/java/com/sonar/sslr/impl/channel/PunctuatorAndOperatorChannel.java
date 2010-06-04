@@ -15,8 +15,8 @@ import org.sonar.channel.EndMatcher;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.TokenType;
-import com.sonar.sslr.impl.LexerOutput;
 
 public class PunctuatorAndOperatorChannel implements Channel<LexerOutput> {
 

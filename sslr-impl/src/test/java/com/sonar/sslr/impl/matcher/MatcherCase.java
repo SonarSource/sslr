@@ -9,8 +9,8 @@ package com.sonar.sslr.impl.matcher;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.LexerOutput;
 import com.sonar.sslr.impl.MockTokenType;
 import com.sonar.sslr.impl.ParsingStackTrace;
 import com.sonar.sslr.impl.ParsingState;

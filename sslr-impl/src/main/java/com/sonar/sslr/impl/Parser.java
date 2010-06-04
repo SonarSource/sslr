@@ -13,6 +13,7 @@ import java.util.List;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.GrammarDecorator;
+import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 

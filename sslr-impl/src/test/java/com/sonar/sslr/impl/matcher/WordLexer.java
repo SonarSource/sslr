@@ -11,9 +11,9 @@ import java.util.List;
 
 import org.sonar.channel.ChannelDispatcher;
 
+import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.Lexer;
-import com.sonar.sslr.impl.LexerOutput;
 import com.sonar.sslr.impl.MockTokenType;
 
 public class WordLexer extends Lexer {

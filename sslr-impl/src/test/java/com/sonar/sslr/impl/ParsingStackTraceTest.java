@@ -13,8 +13,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.LexerOutput;
 import com.sonar.sslr.impl.ParsingStackTrace;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;

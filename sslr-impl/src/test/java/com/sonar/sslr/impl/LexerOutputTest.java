@@ -8,6 +8,7 @@ package com.sonar.sslr.impl;
 import org.junit.Test;
 
 import com.sonar.sslr.api.GenericTokenType;
+import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
 
 import static org.hamcrest.Matchers.is;
