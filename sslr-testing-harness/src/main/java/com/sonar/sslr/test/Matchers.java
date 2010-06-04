@@ -14,8 +14,16 @@ import com.sonar.sslr.impl.LexerOutput;
 
 public class Matchers {
 
+  public final static Matcher<LexerOutput> hasToken(String tokenValue, TokenType tokenType) {
+    return new HasTokenMatcher(tokenValue, tokenType);
+  }
+
   public final static Matcher<LexerOutput> hasLastToken(String tokenValue, TokenType tokenType) {
     return new HasLastTokenMatcher(tokenValue, tokenType);
+  }
+
+  public final static Matcher<LexerOutput> hasComment(String commentValue) {
+    return new HasCommentMatcher(commentValue);
   }
 
   public final static Matcher<Channel<LexerOutput>> consume(String source, LexerOutput output) {
