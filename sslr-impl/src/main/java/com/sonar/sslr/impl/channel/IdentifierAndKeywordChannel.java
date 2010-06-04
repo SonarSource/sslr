@@ -32,7 +32,7 @@ public class IdentifierAndKeywordChannel implements Channel<LexerOutput> {
       StringBuilder wordBuilder = new StringBuilder();
       code.popTo(new EndWordMatcher(), wordBuilder);
       String word = wordBuilder.toString();
-      if (isVbKeyword(word)) {
+      if (isKeyword(word)) {
         output.addTokenAndProcess(keywordsMap.get(word), word, code.getLinePosition(), code.getColumnPosition());
       } else {
         output.addTokenAndProcess(GenericTokenType.IDENTIFIER, word, code.getLinePosition(), code.getColumnPosition());
@@ -42,7 +42,7 @@ public class IdentifierAndKeywordChannel implements Channel<LexerOutput> {
     return false;
   }
 
-  private boolean isVbKeyword(String word) {
+  private boolean isKeyword(String word) {
     return keywordsMap.containsKey(word);
   }
 
