@@ -28,9 +28,27 @@ public final class RegexpChannelBuilder {
   public final static String o2n(String regexpPiece) {
     return regexpPiece + "*";
   }
+  
+  public final static String anyButNot(String... character){
+    StringBuilder result = new StringBuilder();
+    result.append("[^");
+    for (int i = 0; i < character.length; i++) {
+      result.append(character[i]);
+      if (i != character.length - 1) {
+      }
+    }
+    result.append("]");
+    return result.toString();
+  }
 
-  public final static String g(String regexpPiece) {
-    return "(" + regexpPiece + ")";
+  public final static String g(String... regexpPiece) {
+    StringBuilder result = new StringBuilder();
+    result.append("(");
+    for (int i = 0; i < regexpPiece.length; i++) {
+      result.append(regexpPiece[i]);
+    }
+    result.append(")");
+    return result.toString();
   }
 
   public final static String or(String... regexpPiece) {

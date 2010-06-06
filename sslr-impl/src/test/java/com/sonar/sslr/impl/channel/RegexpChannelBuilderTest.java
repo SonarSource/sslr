@@ -5,6 +5,7 @@
  */
 package com.sonar.sslr.impl.channel;
 
+import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.anyButNot;
 import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.g;
 import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.o2n;
 import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.one2n;
@@ -35,11 +36,17 @@ public class RegexpChannelBuilderTest {
   @Test
   public void testg() {
     assertThat(g("L"), equalTo("(L)"));
+    assertThat(g("L", "l"), equalTo("(Ll)"));
   }
 
   @Test
   public void testOr() {
     assertThat(or("L", "l", "U", "u"), equalTo("(L|l|U|u)"));
+  }
+  
+  @Test
+  public void testAnyButNot() {
+    assertThat(anyButNot("L", "l"), equalTo("[^Ll]"));
   }
 
 }
