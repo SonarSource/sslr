@@ -105,11 +105,10 @@ public class LexerOutput {
   @Override
   public String toString() {
     StringBuilder result = new StringBuilder();
-    result.append(size()).append(" tokens");
-    if (size() > 0) {
-      Token lastToken = getLastToken();
-      result.append(", last one is Token('" + lastToken.getValue() + "'");
-      result.append(", " + lastToken.getType() + ")");
+    result.append(size()).append(" tokens ");
+    for(Token token : tokens){
+      result.append("('" + token.getValue() + "' ");
+      result.append(": " + token.getType() + ")");
     }
     return result.toString();
   }
