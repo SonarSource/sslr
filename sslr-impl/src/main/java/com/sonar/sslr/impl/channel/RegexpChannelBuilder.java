@@ -12,11 +12,7 @@ public final class RegexpChannelBuilder {
   public final static String D = "[0-9]";
 
   public final static RegexpChannel regexp(TokenType type, String... regexpPiece) {
-    StringBuilder regexp = new StringBuilder();
-    for (int i = 0; i < regexpPiece.length; i++) {
-      regexp.append(regexpPiece[i]);
-    }
-    return new RegexpChannel(type, regexp.toString());
+    return new RegexpChannel(type, merge(regexpPiece));
   }
 
   public final static String opt(String regexpPiece) {
@@ -30,6 +26,10 @@ public final class RegexpChannelBuilder {
   public final static String o2n(String regexpPiece) {
     return regexpPiece + "*";
   }
+  
+  public final static String g(String regexpPiece){
+    return "(" + regexpPiece + ")";
+  }
 
   public final static String or(String... regexpPiece) {
     StringBuilder result = new StringBuilder();
@@ -41,6 +41,14 @@ public final class RegexpChannelBuilder {
       }
     }
     result.append(")");
+    return result.toString();
+  }
+
+  private final static String merge(String... piece) {
+    StringBuilder result = new StringBuilder();
+    for (int i = 0; i < piece.length; i++) {
+      result.append(piece[i]);
+    }
     return result.toString();
   }
 }

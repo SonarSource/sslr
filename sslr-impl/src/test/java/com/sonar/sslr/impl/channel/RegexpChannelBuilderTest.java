@@ -1,5 +1,6 @@
 package com.sonar.sslr.impl.channel;
 
+import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.g;
 import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.o2n;
 import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.one2n;
 import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.opt;
@@ -24,6 +25,11 @@ public class RegexpChannelBuilderTest {
   @Test
   public void testO2n() {
     assertThat(o2n("L"), equalTo("L*"));
+  }
+  
+  @Test
+  public void testg() {
+    assertThat(g("L"), equalTo("(L)"));
   }
   
   @Test
