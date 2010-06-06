@@ -20,7 +20,7 @@ public class RegexpChannel implements Channel<LexerOutput> {
   private final TokenType type;
   private final Matcher matcher;
 
-  public RegexpChannel(String regexp, TokenType type) {
+  public RegexpChannel(TokenType type, String regexp) {
     matcher = Pattern.compile(regexp).matcher("");
     this.type = type;
   }
@@ -33,5 +33,4 @@ public class RegexpChannel implements Channel<LexerOutput> {
     }
     return false;
   }
-
 }

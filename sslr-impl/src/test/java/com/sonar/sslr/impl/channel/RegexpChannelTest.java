@@ -29,15 +29,15 @@ public class RegexpChannelTest {
 
   @Test
   public void testRegexpToHandleInlineComment() {
-    channel = new RegexpChannel("//.*", GenericTokenType.COMMENT);
+    channel = new RegexpChannel(GenericTokenType.COMMENT, "//.*");
     assertThat(channel, not(consume(new CodeReader("This is not a comment"), output)));
     assertThat(channel, consume(new CodeReader("//My Comment\n second line"), output));
     assertThat(output, hasToken("//My Comment", GenericTokenType.COMMENT));
   }
-  
+
   @Test
   public void testRegexpToHandleNumber() {
-    channel = new RegexpChannel("[0-9]*", GenericTokenType.CONSTANT);
+    channel = new RegexpChannel(GenericTokenType.CONSTANT, "[0-9]*");
     assertThat(channel, not(consume(new CodeReader("Not a number"), output)));
     assertThat(channel, consume(new CodeReader("56;"), output));
     assertThat(output, hasToken("56", GenericTokenType.CONSTANT));
