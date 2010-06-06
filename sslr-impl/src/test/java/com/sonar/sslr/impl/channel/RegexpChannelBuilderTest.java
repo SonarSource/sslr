@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2010 SonarSource SA
+ * All rights reserved
+ * mailto:contact AT sonarsource DOT com
+ */
 package com.sonar.sslr.impl.channel;
 
 import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.g;
@@ -26,12 +31,12 @@ public class RegexpChannelBuilderTest {
   public void testO2n() {
     assertThat(o2n("L"), equalTo("L*"));
   }
-  
+
   @Test
   public void testg() {
     assertThat(g("L"), equalTo("(L)"));
   }
-  
+
   @Test
   public void testOr() {
     assertThat(or("L", "l", "U", "u"), equalTo("(L|l|U|u)"));
