@@ -19,7 +19,7 @@ import com.sonar.sslr.api.TokenType;
 
 public class PunctuatorAndOperatorChannelTest {
 
-  private PunctuatorAndOperatorChannel channel = new PunctuatorAndOperatorChannel(MyPunctuatorAndOperator.values());
+  private PunctuatorChannel channel = new PunctuatorChannel(MyPunctuatorAndOperator.values());
   private LexerOutput output = new LexerOutput();
 
   @Test

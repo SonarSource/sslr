@@ -18,11 +18,11 @@ import com.google.common.collect.Multimap;
 import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.TokenType;
 
-public class PunctuatorAndOperatorChannel implements Channel<LexerOutput> {
+public class PunctuatorChannel implements Channel<LexerOutput> {
 
   public Multimap<Character, TokenType> specialChars;
 
-  public PunctuatorAndOperatorChannel(TokenType... characters) {
+  public PunctuatorChannel(TokenType... characters) {
     specialChars = HashMultimap.create();
     for (TokenType specialChar : characters) {
       specialChars.put(Character.valueOf(specialChar.getValue().charAt(0)), specialChar);
