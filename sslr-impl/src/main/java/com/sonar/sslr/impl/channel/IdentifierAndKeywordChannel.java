@@ -7,10 +7,11 @@ package com.sonar.sslr.impl.channel;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
-import org.sonar.channel.EndMatcher;
 
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.LexerOutput;
@@ -19,24 +20,26 @@ import com.sonar.sslr.api.TokenType;
 public class IdentifierAndKeywordChannel implements Channel<LexerOutput> {
 
   private final Map<String, TokenType> keywordsMap;
+  private final StringBuilder tmpBuilder = new StringBuilder();
+  private final Matcher matcher;
 
-  public IdentifierAndKeywordChannel(TokenType... keywords) {
+  public IdentifierAndKeywordChannel(String regexp, TokenType... keywords) {
     keywordsMap = new HashMap<String, TokenType>();
     for (TokenType keyword : keywords) {
       keywordsMap.put(keyword.getValue(), keyword);
     }
+    matcher = Pattern.compile(regexp).matcher("");
   }
 
   public boolean consum(CodeReader code, LexerOutput output) {
-    if (Character.isJavaIdentifierStart((char) code.peek())) {
-      StringBuilder wordBuilder = new StringBuilder();
-      code.popTo(new EndWordMatcher(), wordBuilder);
-      String word = wordBuilder.toString();
+    if (code.popTo(matcher, tmpBuilder) > 0) {
+      String word = tmpBuilder.toString();
       if (isKeyword(word)) {
         output.addTokenAndProcess(keywordsMap.get(word), word, code.getLinePosition(), code.getColumnPosition());
       } else {
         output.addTokenAndProcess(GenericTokenType.IDENTIFIER, word, code.getLinePosition(), code.getColumnPosition());
       }
+      tmpBuilder.delete(0, tmpBuilder.length());
       return true;
     }
     return false;
@@ -46,11 +49,4 @@ public class IdentifierAndKeywordChannel implements Channel<LexerOutput> {
     return keywordsMap.containsKey(word);
   }
 
-  private static class EndWordMatcher implements EndMatcher {
-
-    public boolean match(int toMatch) {
-      return !Character.isJavaIdentifierPart(toMatch);
-    }
-
-  }
 }

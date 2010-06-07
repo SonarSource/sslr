@@ -19,7 +19,7 @@ import com.sonar.sslr.api.TokenType;
 
 public class IdentifierAndKeywordChannelTest {
 
-  private IdentifierAndKeywordChannel channel = new IdentifierAndKeywordChannel(MyKeywords.values());
+  private IdentifierAndKeywordChannel channel = new IdentifierAndKeywordChannel("[a-zA-Z_][a-zA-Z_0-9]*", MyKeywords.values());
   private LexerOutput output = new LexerOutput();
 
   @Test
