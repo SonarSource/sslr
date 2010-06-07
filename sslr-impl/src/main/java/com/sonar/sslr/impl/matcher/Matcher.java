@@ -38,7 +38,7 @@ public abstract class Matcher implements AstNodeType {
     return true;
   }
 
-  protected abstract AstNode match(ParsingState parsingState);
+  public abstract AstNode match(ParsingState parsingState);
 
   public final AstNode parse(ParsingState parsingState) {
     try {

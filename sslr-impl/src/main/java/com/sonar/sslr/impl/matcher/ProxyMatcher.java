@@ -43,7 +43,7 @@ class ProxyMatcher extends Matcher {
   }
 
   @Override
-  protected AstNode match(ParsingState state) {
+  public AstNode match(ParsingState state) {
     if (state.hasMemoizedAst(this)) {
       return state.getMemoizedAst(this);
     }
