@@ -29,7 +29,7 @@ public class ParsingState {
   }
 
   public Token popToken(Matcher matcher) {
-    if (lexerIndex > outpostMatcherTokenIndex || lexerIndex == 0) {
+    if (lexerIndex >= outpostMatcherTokenIndex) {
       outpostMatcherTokenIndex = lexerIndex;
       outpostMatcher = matcher;
     }
@@ -58,6 +58,10 @@ public class ParsingState {
     return peekToken(lexerIndex, matcher);
   }
 
+  public Token readToken(int tokenIndex) {
+    return tokens[tokenIndex];
+  }
+
   public Matcher getOutpostMatcher() {
     return outpostMatcher;
   }
@@ -69,10 +73,21 @@ public class ParsingState {
     return tokens[outpostMatcherTokenIndex];
   }
 
+  public int getOutpostMatcherTokenIndex() {
+    return outpostMatcherTokenIndex;
+  }
+
   public void memoizeAst(Matcher matcher, AstNode astNode) {
     astNode.setToIndex(lexerIndex);
     astNodeMemoization[astNode.getFromIndex()] = astNode;
     astMatcherMemoization[astNode.getFromIndex()] = matcher;
+  }
+
+  public void deleteMemoizedAstAfter(int index) {
+    for (int i = index; i <= outpostMatcherTokenIndex; i++) {
+      astMatcherMemoization[i] = null;
+      astNodeMemoization[i] = null;
+    }
   }
 
   public boolean hasMemoizedAst(Matcher matcher) {
