@@ -6,8 +6,8 @@
 		<artifactId>sslr</artifactId>
 		<version>0.9-SNAPSHOT</version>
 	</parent>
-	<artifactId>sslr-testing-harness</artifactId>
-	<name>SonarSource :: Language Recognition :: Testing Harness</name>
+	<artifactId>sslr-lexer-testing-harness</artifactId>
+	<name>SonarSource :: Language Recognition :: Lexer :: Testing Harness</name>
 
 	<dependencies>
 		<dependency>

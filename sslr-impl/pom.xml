@@ -56,7 +56,7 @@
     </dependency>
     <dependency>
       <groupId>com.sonarsource.sslr</groupId>
-      <artifactId>sslr-testing-harness</artifactId>
+      <artifactId>sslr-lexer-testing-harness</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>

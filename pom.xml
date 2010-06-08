@@ -23,9 +23,11 @@
   </scm>
 
   <modules>
-    <module>sslr-impl</module>
-    <module>sslr-api</module>  
-    <module>sslr-testing-harness</module> 
+    <module>sslr-api</module>   
+    <module>sslr-impl</module> 
+    <module>sslr-matchers</module>     
+    <module>sslr-lexer-testing-harness</module> 
+    <module>sslr-parser-testing-harness</module>     
   </modules>
 
   <build>
@@ -50,6 +52,11 @@
         <artifactId>sslr-api</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>sslr-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>      
       <dependency>
         <groupId>org.codehaus.sonar</groupId>
         <artifactId>sonar-channel</artifactId>
