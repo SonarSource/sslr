@@ -5,8 +5,8 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import static com.sonar.sslr.test.Matchers.consume;
-import static com.sonar.sslr.test.Matchers.hasToken;
+import static com.sonar.sslr.test.lexer.LexerMatchers.consume;
+import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;

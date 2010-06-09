@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.test;
+package com.sonar.sslr.test.lexer;
 
 import org.hamcrest.Matcher;
 import org.sonar.channel.Channel;
@@ -12,7 +12,7 @@ import org.sonar.channel.CodeReader;
 import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.TokenType;
 
-public class Matchers {
+public class LexerMatchers {
 
   public final static Matcher<LexerOutput> hasToken(String tokenValue, TokenType tokenType) {
     return new HasTokenMatcher(tokenValue, tokenType);

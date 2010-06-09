@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.test;
+package com.sonar.sslr.test.lexer;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
