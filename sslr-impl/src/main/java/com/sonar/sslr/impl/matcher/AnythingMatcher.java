@@ -18,5 +18,9 @@ public class AnythingMatcher extends TokenMatcher {
   protected boolean isExpectedToken(Token token) {
     return true;
   }
+  
+  public String toString() {
+    return "anyThingMatcher()";
+  }
 
 }
