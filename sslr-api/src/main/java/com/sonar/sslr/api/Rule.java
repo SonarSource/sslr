@@ -18,6 +18,8 @@ public interface Rule extends AstNodeType {
   
   public Rule or(Object... matchers);
   
+  public Rule and(Object... matchers);
+  
   public Rule orBefore(Object... matchers);
 
   public Rule isOr(Object... matchers);

@@ -23,7 +23,7 @@ public abstract class Parser<GRAMMAR extends Grammar> {
   private ParsingState parsingState;
   private LexerOutput lexerOutput;
   private Lexer lexer;
-  private Grammar grammar;
+  private GRAMMAR grammar;
 
   public Parser(GRAMMAR grammar, Lexer lexer, List<GrammarDecorator<GRAMMAR>> decorators) {
     this.grammar = grammar;
@@ -41,7 +41,7 @@ public abstract class Parser<GRAMMAR extends Grammar> {
   public Parser(GRAMMAR grammar, Rule rootRule, Lexer lexer, GrammarDecorator<GRAMMAR>... decorators) {
     this(grammar, rootRule, lexer, Arrays.asList(decorators));
   }
-  
+
   public Parser(GRAMMAR grammar, Rule rootRule, Lexer lexer, List<GrammarDecorator<GRAMMAR>> decorators) {
     this(grammar, lexer, decorators);
     this.rootRule = (RuleImpl) rootRule;
@@ -76,11 +76,26 @@ public abstract class Parser<GRAMMAR extends Grammar> {
     return parsingState;
   }
 
-  public final Grammar getGrammar() {
+  public final GRAMMAR getGrammar() {
     return grammar;
   }
 
   public final LexerOutput getLexerOutput() {
     return lexerOutput;
+  }
+
+  public final RuleImpl getRootRule() {
+    return rootRule;
+  }
+  
+  public final void setRootRule(RuleImpl rootRule){
+    this.rootRule = rootRule;
+  }
+  
+  public String toString(){
+    StringBuilder result = new StringBuilder();
+    result.append("Root rule is : " + rootRule.toEBNFNotation() + "\n");
+    result.append("and : " + lexerOutput.toString());
+    return result.toString();
   }
 }
