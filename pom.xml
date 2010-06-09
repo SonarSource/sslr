@@ -24,8 +24,7 @@
 
   <modules>
     <module>sslr-api</module>   
-    <module>sslr-impl</module> 
-    <module>sslr-matchers</module>     
+    <module>sslr-impl</module>   
     <module>sslr-lexer-testing-harness</module> 
     <module>sslr-parser-testing-harness</module>     
   </modules>
