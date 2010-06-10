@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class LexerOutput {
 
   private List<Token> tokens = new ArrayList<Token>();
@@ -32,8 +31,8 @@ public class LexerOutput {
   public List<Token> getTokens() {
     return tokens;
   }
-  
-  public List<Token> getPreprocessingTokens(){
+
+  public List<Token> getPreprocessingTokens() {
     return preprocessingTokens;
   }
 
@@ -106,7 +105,7 @@ public class LexerOutput {
   public String toString() {
     StringBuilder result = new StringBuilder();
     result.append(size()).append(" tokens ");
-    for(Token token : tokens){
+    for (Token token : tokens) {
       result.append("('" + token.getValue() + "' ");
       result.append(": " + token.getType() + ")");
     }
@@ -115,5 +114,9 @@ public class LexerOutput {
 
   public void addAllTokens(List<Token> allNewtokens) {
     tokens.addAll(allNewtokens);
+  }
+
+  public void setTokens(List<Token> tokens) {
+    this.tokens = tokens;
   }
 }
