@@ -20,10 +20,10 @@ public class AnythingMatcherTest {
   @Test
   public void testMatch() {
     AnythingMatcher matcher = new AnythingMatcher();
-    AstNode node = matcher.match(new ParsingState(lexer.lex("print screen")));
+    AstNode node = matcher.match(new ParsingState(lexer.lex("print screen").getTokens()));
     assertEquals("print", node.getTokenValue());
     
-    node = matcher.match(new ParsingState(lexer.lex(".")));
+    node = matcher.match(new ParsingState(lexer.lex(".").getTokens()));
     assertEquals(".", node.getTokenValue());
   }
 }

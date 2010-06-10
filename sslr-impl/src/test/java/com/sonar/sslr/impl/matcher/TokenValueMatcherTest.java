@@ -6,13 +6,12 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.matcher.TokenValueMatcher;
-
-import static org.junit.Assert.assertEquals;
 
 public class TokenValueMatcherTest {
 
@@ -21,7 +20,7 @@ public class TokenValueMatcherTest {
   @Test
   public void testMatch() {
     TokenValueMatcher matcher = new TokenValueMatcher("print");
-    AstNode node = matcher.match(new ParsingState(lexer.lex("print screen")));
+    AstNode node = matcher.match(new ParsingState(lexer.lex("print screen").getTokens()));
 
     assertEquals("print", node.getTokenValue());
   }

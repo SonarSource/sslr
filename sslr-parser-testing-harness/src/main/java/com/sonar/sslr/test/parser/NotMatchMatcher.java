@@ -1,10 +1,10 @@
 package com.sonar.sslr.test.parser;
+
 /*
  * Copyright (C) 2010 SonarSource SA
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -29,7 +29,7 @@ class NotMatchMatcher extends BaseMatcher<Matcher> {
       return false;
     }
     Matcher matcherUnderTest = (Matcher) obj;
-    ParsingState parsingState = new ParsingState(lexer.lex(sourceCode));
+    ParsingState parsingState = new ParsingState(lexer.lex(sourceCode).getTokens());
     try {
       matcherUnderTest.match(parsingState);
       return false;

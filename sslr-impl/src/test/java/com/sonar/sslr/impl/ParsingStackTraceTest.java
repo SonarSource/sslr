@@ -6,6 +6,9 @@
 
 package com.sonar.sslr.impl;
 
+import static com.sonar.sslr.impl.matcher.Matchers.one2n;
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,18 +16,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.ParsingStackTrace;
-import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.matcher.Matchers;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 import com.sonar.sslr.impl.matcher.TokenValueMatcher;
-
-import static com.sonar.sslr.impl.matcher.Matchers.one2n;
-
-import static org.junit.Assert.assertEquals;
 
 public class ParsingStackTraceTest {
 
@@ -38,9 +33,7 @@ public class ParsingStackTraceTest {
     tokens.add(new Token(MockTokenType.WORD, "lang", 34, 46, new File("file1")));
     tokens.add(new Token(MockTokenType.WORD, "class", 34, 46, new File("file2")));
 
-    LexerOutput lexerOutput = new LexerOutput();
-    lexerOutput.addAllTokens(tokens);
-    state = new ParsingState(lexerOutput);
+    state = new ParsingState(tokens);
   }
 
   @Test
@@ -64,9 +57,7 @@ public class ParsingStackTraceTest {
 
   @Test
   public void testEndOfFileIsReached() {
-    LexerOutput lexerOutput = new LexerOutput();
-    lexerOutput.addAllTokens(tokens);
-    ParsingState state = new ParsingState(lexerOutput);
+    ParsingState state = new ParsingState(tokens);
     TokenValueMatcher language = new TokenValueMatcher("language");
     RuleImpl parentRule = new RuleImpl("ParentRule");
     parentRule.isOr(Matchers.or(language, "implements"));

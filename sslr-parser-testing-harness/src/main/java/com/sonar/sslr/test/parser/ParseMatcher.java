@@ -5,6 +5,8 @@
  */
 package com.sonar.sslr.test.parser;
 
+import static com.sonar.sslr.impl.matcher.Matchers.opt;
+
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
@@ -27,7 +29,7 @@ class ParseMatcher extends BaseMatcher<Parser> {
     }
     Parser parser = (Parser) obj;
     if ( !parser.getRootRule().toEBNFNotation().contains("EOF")) {
-      parser.getRootRule().and(GenericTokenType.EOF);
+      parser.getRootRule().and(opt(GenericTokenType.EOF));
     }
     try {
       parser.parse(sourceCode);

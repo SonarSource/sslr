@@ -15,6 +15,7 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.GrammarDecorator;
 import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Rule;
+import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
 public abstract class Parser<GRAMMAR extends Grammar> {
@@ -48,10 +49,19 @@ public abstract class Parser<GRAMMAR extends Grammar> {
   }
 
   public AstNode parse(File file) {
+    lexerOutput = lexer.lex(file);
+    return parse(lexerOutput.getTokens());
+  }
+
+  public AstNode parse(String source) {
+    lexerOutput = lexer.lex(source);
+    return parse(lexerOutput.getTokens());
+  }
+
+  public AstNode parse(List<Token> tokens) {
+    parsingState = null;
     try {
-      parsingState = null;
-      lexerOutput = lexer.lex(file);
-      parsingState = new ParsingState(lexerOutput);
+      parsingState = new ParsingState(tokens);
       return rootRule.match(parsingState);
     } catch (RecognitionExceptionImpl e) {
       if (parsingState != null) {
@@ -59,16 +69,6 @@ public abstract class Parser<GRAMMAR extends Grammar> {
       } else {
         throw e;
       }
-    }
-  }
-
-  public AstNode parse(String source) {
-    try {
-      lexerOutput = lexer.lex(source);
-      parsingState = new ParsingState(lexerOutput);
-      return rootRule.match(parsingState);
-    } catch (RecognitionExceptionImpl e) {
-      throw new RecognitionExceptionImpl(parsingState);
     }
   }
 
@@ -87,12 +87,12 @@ public abstract class Parser<GRAMMAR extends Grammar> {
   public final RuleImpl getRootRule() {
     return rootRule;
   }
-  
-  public final void setRootRule(RuleImpl rootRule){
+
+  public final void setRootRule(RuleImpl rootRule) {
     this.rootRule = rootRule;
   }
-  
-  public String toString(){
+
+  public String toString() {
     StringBuilder result = new StringBuilder();
     result.append("Root rule is : " + rootRule.toEBNFNotation() + "\n");
     result.append("and : " + lexerOutput.toString());

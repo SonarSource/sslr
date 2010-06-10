@@ -27,5 +27,4 @@ public class ParserMatchers {
   public final static Matcher<Parser> notParse(String sourceCode) {
     return new NotParseMatcher(sourceCode);
   }
-
 }

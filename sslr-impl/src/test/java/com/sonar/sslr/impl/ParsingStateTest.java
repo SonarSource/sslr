@@ -6,6 +6,12 @@
 
 package com.sonar.sslr.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,16 +19,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.matcher.RuleImpl;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class ParsingStateTest {
 
@@ -35,9 +33,7 @@ public class ParsingStateTest {
     tokens.add(new Token(MockTokenType.WORD, "public"));
     tokens.add(new Token(MockTokenType.WORD, "class"));
 
-    LexerOutput lexerOutput = new LexerOutput();
-    lexerOutput.addAllTokens(tokens);
-    state = new ParsingState(lexerOutput);
+    state = new ParsingState(tokens);
   }
 
   @Test

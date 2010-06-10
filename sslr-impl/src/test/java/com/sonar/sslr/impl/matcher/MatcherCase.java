@@ -9,18 +9,16 @@ package com.sonar.sslr.impl.matcher;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.MockTokenType;
 import com.sonar.sslr.impl.ParsingStackTrace;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
-import com.sonar.sslr.impl.matcher.Matcher;
 
 public class MatcherCase {
 
   protected void assertMatch(Matcher matcher, String... tokens) {
-    ParsingState parsingState = new ParsingState(convertStringsToLexerOutput(tokens));
+    ParsingState parsingState = new ParsingState(convertStringsToTokens(tokens));
     try {
       matcher.match(parsingState);
     } catch (RecognitionExceptionImpl e) {
@@ -31,18 +29,16 @@ public class MatcherCase {
     }
   }
 
-  private LexerOutput convertStringsToLexerOutput(String[] strings) {
+  private List<Token> convertStringsToTokens(String[] strings) {
     List<Token> tokens = new ArrayList<Token>();
     for (String value : strings) {
       tokens.add(new Token(MockTokenType.WORD, value));
     }
-    LexerOutput output = new LexerOutput();
-    output.addAllTokens(tokens);
-    return output;
+    return tokens;
   }
 
   protected void assertNotMatch(Matcher matcher, String... tokens) {
-    ParsingState parsingState = new ParsingState(convertStringsToLexerOutput(tokens));
+    ParsingState parsingState = new ParsingState(convertStringsToTokens(tokens));
     try {
       matcher.match(parsingState);
     } catch (RecognitionExceptionImpl e) {

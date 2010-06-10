@@ -22,7 +22,7 @@ public class TokenTypeMatcherTest {
   public void testMatch() {
     TokenTypeMatcher matcher = new TokenTypeMatcher(MockTokenType.WORD);
     WordLexer lexer = new WordLexer();
-    AstNode node = matcher.match(new ParsingState(lexer.lex("print screen")));
+    AstNode node = matcher.match(new ParsingState(lexer.lex("print screen").getTokens()));
 
     assertTrue(node.is(MockTokenType.WORD));
   }
