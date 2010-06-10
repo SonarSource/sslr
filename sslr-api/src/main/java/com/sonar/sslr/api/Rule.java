@@ -23,6 +23,8 @@ public interface Rule extends AstNodeType {
   public Rule orBefore(Object... matchers);
 
   public Rule isOr(Object... matchers);
+  
+  public Rule setListener(AstListener listener);
 
   public Rule skip();
 

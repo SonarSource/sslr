@@ -6,17 +6,16 @@
 
 package com.sonar.sslr.api;
 
-import org.junit.Test;
-
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.AstNodeType;
-
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+import org.junit.Test;
 
 public class AstNodeTest {
 
@@ -68,6 +67,60 @@ public class AstNodeTest {
   public void testHasChildren() {
     AstNode expr = new AstNode(new NodeType(), "expr", null);
     assertFalse(expr.hasChildren());
+  }
+
+  @Test
+  public void testGetChild() {
+    AstNode parent = new AstNode(new NodeType(), "parent", null);
+    AstNode child1 = new AstNode(new NodeType(), "child1", null);
+    AstNode child2 = new AstNode(new NodeType(), "child2", null);
+    parent.addChild(child1);
+    parent.addChild(child2);
+
+    assertThat(parent.getChild(0), is(child1));
+    assertThat(parent.getChild(1), is(child2));
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void testGetChildWithBadIndex() {
+    AstNode parent = new AstNode(new NodeType(), "parent", new Token(GenericTokenType.IDENTIFIER, "PI"));
+    AstNode child1 = new AstNode(new NodeType(), "child1", null);
+    parent.addChild(child1);
+    parent.getChild(1);
+  }
+
+  @Test
+  public void testStartListening() {
+    AstNode node = new AstNode(new NodeType(), "child1", null);
+    AstListener<AstListenersOutput> listener = mock(AstListener.class);
+    AstListenersOutput listenersOutput = mock(AstListenersOutput.class);
+    node.setAstNodeListener(listener);
+    node.startListening(listenersOutput);
+    verify(listener).startListening(node, listenersOutput);
+  }
+
+  @Test
+  public void testStartListeningWithoutListener() {
+    AstNode node = new AstNode(new NodeType(), "child1", null);
+    AstListenersOutput listenersOutput = mock(AstListenersOutput.class);
+    node.startListening(listenersOutput);
+  }
+
+  @Test
+  public void testStopListening() {
+    AstNode node = new AstNode(new NodeType(), "child1", null);
+    AstListener<AstListenersOutput> listener = mock(AstListener.class);
+    AstListenersOutput listenersOutput = mock(AstListenersOutput.class);
+    node.setAstNodeListener(listener);
+    node.stopListening(listenersOutput);
+    verify(listener).stopListening(node, listenersOutput);
+  }
+  
+  @Test
+  public void testStopListeningWithoutListener() {
+    AstNode node = new AstNode(new NodeType(), "child1", null);
+    AstListenersOutput listenersOutput = mock(AstListenersOutput.class);
+    node.stopListening(listenersOutput);
   }
 
   @Test

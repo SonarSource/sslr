@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sonar.sslr.api.AstAndTokenVisitor;
+import com.sonar.sslr.api.AstListenersOutput;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.AstVisitor;
@@ -49,37 +50,64 @@ public class AstWalker {
   }
 
   public void walkAndVisit(AstNode ast) {
+    walkVisitAndListen(ast, new EmptyAstListenersOutput());
+  }
+
+  public <OUTPUT extends AstListenersOutput> void walkVisitAndListen(AstNode ast, OUTPUT output) {
     for (AstVisitor visitor : visitors) {
       visitor.visitFile(ast);
     }
-    visit(ast);
+    visit(ast, output);
     for (int i = visitors.size() - 1; i >= 0; i--) {
       visitors.get(i).leaveFile(ast);
     }
   }
 
-  private void visit(AstNode ast) {
-    AstVisitor[] nodeVisitors = visitorsByNodeType.get(ast.getType());
-    if (nodeVisitors == null) {
-      nodeVisitors = new AstVisitor[0];
+  private <OUTPUT extends AstListenersOutput> void visit(AstNode ast, OUTPUT output) {
+    ast.startListening(output);
+    AstVisitor[] nodeVisitors = getNodeVisitors(ast);
+    visitNode(ast, nodeVisitors);
+    visitToken(ast);
+    visitChildren(ast, output);
+    leaveNode(ast, nodeVisitors);
+    ast.stopListening(output);
+  }
+
+  private void leaveNode(AstNode ast, AstVisitor[] nodeVisitors) {
+    for (int i = nodeVisitors.length - 1; i >= 0; i--) {
+      nodeVisitors[i].leaveNode(ast);
     }
-    for (int i = 0; i < nodeVisitors.length; i++) {
-      nodeVisitors[i].visitNode(ast);
+  }
+
+  private void visitChildren(AstNode ast, AstListenersOutput output) {
+    if (ast.getChildren() != null) {
+      for (AstNode nodeChild : ast.getChildren()) {
+        visit(nodeChild, output);
+      }
     }
+  }
+
+  private void visitToken(AstNode ast) {
     if (ast.getToken() != null && lastVisitedToken != ast.getToken()) {
       lastVisitedToken = ast.getToken();
       for (int i = 0; i < astAndTokenVisitors.length; i++) {
         astAndTokenVisitors[i].visitToken(lastVisitedToken);
       }
     }
-    if (ast.getChildren() != null) {
-      for (AstNode nodeChild : ast.getChildren()) {
-        visit(nodeChild);
-      }
+  }
+
+  private void visitNode(AstNode ast, AstVisitor[] nodeVisitors) {
+    for (int i = 0; i < nodeVisitors.length; i++) {
+      nodeVisitors[i].visitNode(ast);
     }
-    for (int i = nodeVisitors.length - 1; i >= 0; i--) {
-      nodeVisitors[i].leaveNode(ast);
+  }
+
+  private AstVisitor[] getNodeVisitors(AstNode ast) {
+    AstVisitor[] nodeVisitors = visitorsByNodeType.get(ast.getType());
+    if (nodeVisitors == null) {
+      nodeVisitors = new AstVisitor[0];
     }
+    return nodeVisitors;
   }
 
   private void putAstVisitors(AstNodeType type, List<AstVisitor> visitors) {

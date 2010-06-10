@@ -26,6 +26,7 @@ public class AstNode {
   private int fromIndex;
   private int toIndex;
   private boolean hasToBeSkipped = false;
+  private AstListener action = null;
 
   public AstNode(Token token) {
     this(token.getType(), token.getType().getName(), token);
@@ -85,6 +86,28 @@ public class AstNode {
    */
   public List<AstNode> getChildren() {
     return children;
+  }
+
+  public int getNumberOfChildren() {
+    if (children == null) {
+      return 0;
+    }
+    return children.size();
+  }
+
+  /**
+   * Get the desired child
+   * 
+   * @param index
+   *          the index of the child (start at 0)
+   * @return the AstNode child
+   */
+  public AstNode getChild(int index) {
+    if (index >= getNumberOfChildren()) {
+      throw new IllegalStateException("The AstNode '" + this + "' has only " + getNumberOfChildren()
+          + " children. Requested child index is wrong : " + index);
+    }
+    return children.get(index);
   }
 
   public AstNode nextAstNode() {
@@ -192,6 +215,22 @@ public class AstNode {
 
   public boolean is(AstNodeType type) {
     return this.type == type;
+  }
+
+  public void setAstNodeListener(AstListener action) {
+    this.action = action;
+  }
+
+  public <OUTPUT extends AstListenersOutput> void startListening(OUTPUT output) {
+    if (action != null) {
+      action.startListening(this, output);
+    }
+  }
+
+  public <OUTPUT extends AstListenersOutput> void stopListening(OUTPUT output) {
+    if (action != null) {
+      action.stopListening(this, output);
+    }
   }
 
   public boolean isNot(AstNodeType type) {
@@ -332,9 +371,11 @@ public class AstNode {
   public String toString() {
     StringBuilder result = new StringBuilder();
     result.append(name);
-    result.append(" value=\"").append(token.getValue()).append("\"");
-    result.append(" line=").append(token.getLine());
-    result.append(" column=\"").append(token.getColumn());
+    if (token != null) {
+      result.append(" value=\"").append(token.getValue()).append("\"");
+      result.append(" line=").append(token.getLine());
+      result.append(" column=\"").append(token.getColumn());
+    }
     return result.toString();
   }
 }

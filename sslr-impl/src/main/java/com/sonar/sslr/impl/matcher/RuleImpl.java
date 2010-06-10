@@ -6,6 +6,8 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import com.sonar.sslr.api.AstListener;
+import com.sonar.sslr.api.AstListenersOutput;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.ParsingState;
@@ -16,6 +18,7 @@ public class RuleImpl extends Matcher implements Rule {
   protected Matcher matcher;
   private boolean hasSeveralParents = false;
   protected boolean hasToBeSkippedWhenBuildingAst = false;
+  private AstListener<? extends AstListenersOutput> listener;
 
   public RuleImpl(String name) {
     this.name = name;
@@ -26,6 +29,7 @@ public class RuleImpl extends Matcher implements Rule {
     AstNode childNode = matcher.match(parsingState);
 
     AstNode astNode = new AstNode(this, name, parsingState.peekTokenIfExists(startIndex, matcher), hasToBeSkippedWhenBuildingAst);
+    astNode.setAstNodeListener(listener);
     astNode.addChild(childNode);
     return astNode;
   }
@@ -68,7 +72,7 @@ public class RuleImpl extends Matcher implements Rule {
     setMatcher(Matchers.or(matcher, Matchers.and(matchers)));
     return this;
   }
-  
+
   public RuleImpl and(Object... matchers) {
     checkIfThereIsAtLeastOneMatcher(matchers);
     if (matcher == null) {
@@ -122,5 +126,10 @@ public class RuleImpl extends Matcher implements Rule {
 
   public String toString() {
     return name;
+  }
+
+  public Rule setListener(AstListener listener) {
+    this.listener = listener;
+    return this;
   }
 }
