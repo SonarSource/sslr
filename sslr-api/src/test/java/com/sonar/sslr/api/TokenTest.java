@@ -5,6 +5,7 @@
  */
 package com.sonar.sslr.api;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -24,7 +25,7 @@ public class TokenTest {
     assertThat(clone.getValue(), is("word"));
     assertThat(clone.getLine(), is(12));
     assertThat(clone.getColumn(), is(15));
-    assertThat(clone.getFile().getAbsolutePath(), is("/myTemplateFilePath"));
+    assertThat(clone.getFile().getAbsolutePath(), containsString("myTemplateFilePath"));
   }
 
 }
