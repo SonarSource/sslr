@@ -6,8 +6,11 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import java.util.List;
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
+import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
@@ -46,6 +49,10 @@ public abstract class Matcher implements AstNodeType {
     } catch (RecognitionExceptionImpl e) {
       throw new RecognitionExceptionImpl(parsingState);
     }
+  }
+
+  public final AstNode parse(List<Token> tokens) {
+    return parse(new ParsingState(tokens));
   }
 
   protected static final Matcher[] convertToMatchers(Object[] objects) {
