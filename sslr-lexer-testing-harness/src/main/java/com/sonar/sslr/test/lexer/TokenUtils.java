@@ -31,9 +31,11 @@ public class TokenUtils {
   }
 
   private static void removeLastTokenIfEof(List<Token> tokens) {
-    Token lastToken = tokens.get(tokens.size() - 1);
-    if (lastToken.getValue().equals("EOF")) {
-      tokens.remove(tokens.size() - 1);
+    if (tokens.size() > 0) {
+      Token lastToken = tokens.get(tokens.size() - 1);
+      if (lastToken.getValue().equals("EOF")) {
+        tokens.remove(tokens.size() - 1);
+      }
     }
   }
 
