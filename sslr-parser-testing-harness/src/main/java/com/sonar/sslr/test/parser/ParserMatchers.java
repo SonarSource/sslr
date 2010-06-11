@@ -16,10 +16,6 @@ public class ParserMatchers {
     return new MatchMatcher(sourceCode, lexer);
   }
 
-  public final static Matcher<com.sonar.sslr.impl.matcher.Matcher> notMatch(String sourceCode, Lexer lexer) {
-    return new NotMatchMatcher(sourceCode, lexer);
-  }
-
   public final static Matcher<Parser> parse(String sourceCode) {
     return new ParseMatcher(sourceCode);
   }
