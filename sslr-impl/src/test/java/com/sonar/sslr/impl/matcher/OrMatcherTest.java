@@ -6,21 +6,23 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import org.junit.Test;
-
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static com.sonar.sslr.impl.matcher.Matchers.isFalse;
 import static com.sonar.sslr.impl.matcher.Matchers.isTrue;
 import static com.sonar.sslr.impl.matcher.Matchers.or;
-
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
-public class OrMatcherTest extends MatcherCase {
+import org.junit.Test;
+
+public class OrMatcherTest {
 
   @Test
   public void testOr() {
-    assertMatch(or(isFalse(), isTrue()), "one");
-    assertMatch(or(isTrue(), isFalse()), "one");
-    assertNotMatch(or(isFalse(), isFalse()), "one");
+    assertThat(or(isFalse(), isTrue()), match("one"));
+    assertThat(or(isTrue(), isFalse()), match("one"));
+    assertThat(or(isFalse(), isFalse()), not(match("one")));
   }
 
   @Test

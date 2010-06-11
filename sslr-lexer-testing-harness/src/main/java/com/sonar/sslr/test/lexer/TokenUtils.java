@@ -5,8 +5,14 @@
  */
 package com.sonar.sslr.test.lexer;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.sonar.channel.CodeReader;
+
+import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 
 public class TokenUtils {
@@ -29,5 +35,26 @@ public class TokenUtils {
     if (lastToken.getValue().equals("EOF")) {
       tokens.remove(tokens.size() - 1);
     }
+  }
+
+  public static List<Token> split(String sourceCode) {
+    List<Token> tokens = new ArrayList<Token>();
+    CodeReader reader = new CodeReader(sourceCode);
+    Matcher matcher = Pattern.compile("[a-zA-Z_0-9]+").matcher("");
+
+    while (reader.peek() != -1) {
+      StringBuilder nextStringToken = new StringBuilder();
+      Token token;
+      if (reader.popTo(matcher, nextStringToken) != -1) {
+        token = new Token(GenericTokenType.IDENTIFIER, nextStringToken.toString(), reader.getLinePosition(), reader.getColumnPosition());
+      } else if (' ' == (char) reader.peek()) {
+        reader.pop();
+        continue;
+      } else {
+        token = new Token(GenericTokenType.IDENTIFIER, "" + (char) reader.pop(), reader.getLinePosition(), reader.getColumnPosition());
+      }
+      tokens.add(token);
+    }
+    return tokens;
   }
 }

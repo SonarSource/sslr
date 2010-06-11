@@ -6,6 +6,7 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import static com.sonar.sslr.test.lexer.TokenUtils.split;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -15,15 +16,13 @@ import com.sonar.sslr.impl.ParsingState;
 
 public class AnythingMatcherTest {
 
-  private WordLexer lexer = new WordLexer();
-
   @Test
   public void testMatch() {
     AnythingMatcher matcher = new AnythingMatcher();
-    AstNode node = matcher.match(new ParsingState(lexer.lex("print screen").getTokens()));
+    AstNode node = matcher.match(new ParsingState(split("print screen")));
     assertEquals("print", node.getTokenValue());
-    
-    node = matcher.match(new ParsingState(lexer.lex(".").getTokens()));
+
+    node = matcher.match(new ParsingState(split(".")));
     assertEquals(".", node.getTokenValue());
   }
 }

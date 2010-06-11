@@ -6,19 +6,20 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import org.junit.Test;
-
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static com.sonar.sslr.impl.matcher.Matchers.and;
 import static com.sonar.sslr.impl.matcher.Matchers.exclusiveTill;
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
-public class ExclusiveTillMatcherTest extends MatcherCase {
+import org.junit.Test;
+
+public class ExclusiveTillMatcherTest {
 
   @Test
   public void ok() {
-    assertMatch(and(exclusiveTill("four"), "four"), "one", "two", "three", "four");
-    assertMatch(and(exclusiveTill("two", "three"), "two", "three", "four"), "one", "two", "three", "four");
+    assertThat(and(exclusiveTill("four"), "four"), match("one two three four"));
+    assertThat(and(exclusiveTill("two", "three"), "two", "three", "four"), match("one two three four"));
   }
 
   @Test

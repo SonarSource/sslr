@@ -12,14 +12,18 @@ import static com.sonar.sslr.impl.matcher.Matchers.isFalse;
 import static com.sonar.sslr.impl.matcher.Matchers.isTrue;
 import static com.sonar.sslr.impl.matcher.Matchers.o2n;
 
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
-public class ZeroToNMatcherTest extends MatcherCase {
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
+
+public class ZeroToNMatcherTest  {
 
   @Test
   public void testMany() {
-    assertNotMatch(o2n(isFalse()), "one");
-    assertMatch(o2n(isTrue()), "one", "two", "three");
+    assertThat(o2n(isFalse()), not(match("one")));
+    assertThat(o2n(isTrue()), match("one two three"));
   }
 
   @Test

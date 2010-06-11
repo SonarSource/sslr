@@ -7,26 +7,24 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static com.sonar.sslr.impl.matcher.Matchers.adjacent;
 import static com.sonar.sslr.impl.matcher.Matchers.and;
-import static com.sonar.sslr.impl.matcher.Matchers.isFalse;
-import static com.sonar.sslr.impl.matcher.Matchers.isTrue;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-public class AndMatcherTest {
+public class AdjacentMatcherTest {
 
   @Test
   public void testAll() {
-    assertThat(and(isTrue(), isTrue(), isTrue()), match("one two three"));
-    assertThat(and(isTrue(), isFalse()), not(match("one two")));
-    assertThat(and(isFalse(), isFalse()), not(match("one two")));
+    assertThat(and("myMacro", adjacent("(", ")")), match("myMacro()"));
+    assertThat(and("myMacro", adjacent("(", ")")), not(match("myMacro ()")));
   }
 
   @Test
   public void testToString() {
-    assertEquals("public class MyClass", and("public", "class", "MyClass").toString());
+    assertEquals("(public class MyClass)adjacent", adjacent("public", "class", "MyClass").toString());
   }
 }

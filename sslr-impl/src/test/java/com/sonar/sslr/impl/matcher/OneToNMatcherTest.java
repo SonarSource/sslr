@@ -6,20 +6,22 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import org.junit.Test;
-
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static com.sonar.sslr.impl.matcher.Matchers.isFalse;
 import static com.sonar.sslr.impl.matcher.Matchers.isTrue;
 import static com.sonar.sslr.impl.matcher.Matchers.one2n;
-
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
-public class OneToNMatcherTest extends MatcherCase {
+import org.junit.Test;
+
+public class OneToNMatcherTest {
 
   @Test
   public void testMany() {
-    assertMatch(one2n(isTrue()), "one");
-    assertNotMatch(one2n(isFalse()), "one");
+    assertThat(one2n(isTrue()), match("one"));
+    assertThat(one2n(isFalse()), not(match("one")));
   }
 
   @Test

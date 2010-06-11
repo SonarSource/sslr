@@ -17,6 +17,14 @@ public class Matchers {
     return new ProxyMatcher(new OpMatcher(Matcher.convertToMatcher(object)));
   }
 
+  public static Matcher adjacent(Object object) {
+    return new ProxyMatcher(new AdjacentMatcher(Matcher.convertToMatcher(object)));
+  }
+
+  public static Matcher adjacent(Object... objects) {
+    return new ProxyMatcher(new AdjacentMatcher(new AndMatcher(Matcher.convertToMatchers(objects))));
+  }
+
   public static Matcher opt(Object... objects) {
     return new ProxyMatcher(new OpMatcher(new AndMatcher(Matcher.convertToMatchers(objects))));
   }

@@ -6,26 +6,28 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import org.junit.Test;
-
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static com.sonar.sslr.impl.matcher.Matchers.isFalse;
 import static com.sonar.sslr.impl.matcher.Matchers.isTrue;
 import static com.sonar.sslr.impl.matcher.Matchers.strictOr;
-
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
-public class StrictOrMatcherTest extends MatcherCase {
+import org.junit.Test;
+
+public class StrictOrMatcherTest {
 
   @Test
   public void testStrictOr() {
-    assertMatch(strictOr(isFalse(), isTrue()), "one");
-    assertMatch(strictOr(isTrue(), isFalse()), "one");
-    assertNotMatch(strictOr(isFalse(), isFalse()), "one");
+    assertThat(strictOr(isFalse(), isTrue()), match("one"));
+    assertThat(strictOr(isTrue(), isFalse()), match("one"));
+    assertThat(strictOr(isFalse(), isFalse()), not(match("one")));
   }
 
   @Test(expected = IllegalStateException.class)
   public void testTwoWaysMatch() {
-    assertMatch(strictOr(isTrue(), isTrue()), "one");
+    assertThat(strictOr(isTrue(), isTrue()), match("one"));
   }
 
   @Test

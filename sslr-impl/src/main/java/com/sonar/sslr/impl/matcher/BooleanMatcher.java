@@ -19,6 +19,7 @@ public class BooleanMatcher extends Matcher {
   }
 
   public AstNode match(ParsingState parsingState) {
+    parsingState.peekToken(this);
     if (internalState) {
       return new AstNode(this, "trueMatcher", parsingState.popToken(this));
     } else {
