@@ -24,6 +24,7 @@ import com.sonar.sslr.impl.matcher.TokenValueMatcher;
 public class ParsingStackTraceTest {
 
   private List<Token> tokens = new ArrayList<Token>();
+  TokenValueMatcher language = new TokenValueMatcher("language");
   private ParsingState state;
 
   @Before
@@ -31,20 +32,23 @@ public class ParsingStackTraceTest {
     tokens.add(new Token(MockTokenType.WORD, "public"));
     tokens.add(new Token(MockTokenType.WORD, "java"));
     tokens.add(new Token(MockTokenType.WORD, "lang", 34, 46, new File("file1")));
-    tokens.add(new Token(MockTokenType.WORD, "class", 34, 46, new File("file2")));
+    Token copyBookToken = new Token(MockTokenType.WORD, "class", 34, 46, new File("copy1"));
+    copyBookToken.setCopyBook(true);
+    copyBookToken.setCopyBookOriginalFileName("file1");
+    copyBookToken.setCopyBookOriginalLine(10);
+    tokens.add(copyBookToken);
 
     state = new ParsingState(tokens);
-  }
-
-  @Test
-  public void testGenerate() {
-    TokenValueMatcher language = new TokenValueMatcher("language");
     RuleImpl parentRule = new RuleImpl("ParentRule");
     parentRule.isOr(Matchers.or(language, "implements"));
     RuleImpl grandParentRule = new RuleImpl("GrandParentRule");
     grandParentRule.is(one2n(parentRule));
     state.popToken(parentRule);
     state.popToken(parentRule);
+  }
+
+  @Test
+  public void testGenerate() {
     state.peekToken(language);
 
     StringBuilder expected = new StringBuilder();
@@ -56,17 +60,23 @@ public class ParsingStackTraceTest {
   }
 
   @Test
+  public void testGenerateErrorOnCopyBook() {
+    state.popToken(language);
+    state.peekToken(language);
+
+    StringBuilder expected = new StringBuilder();
+    expected.append("Expected : <language> but was : <class [WORD]> (copy book 'copy1': Line 34 / Column 46 called from file 'file1': Line 10)\n");
+    expected.append("  at ParentRule := ((language | implements))\n");
+    expected.append("  at GrandParentRule := (ParentRule)+\n");
+
+    assertEquals(expected.toString(), ParsingStackTrace.generate(state));
+  }
+
+  @Test
   public void testEndOfFileIsReached() {
-    ParsingState state = new ParsingState(tokens);
-    TokenValueMatcher language = new TokenValueMatcher("language");
-    RuleImpl parentRule = new RuleImpl("ParentRule");
-    parentRule.isOr(Matchers.or(language, "implements"));
-    RuleImpl grandParentRule = new RuleImpl("GrandParentRule");
-    grandParentRule.is(one2n(parentRule));
-    state.popToken(parentRule);
-    state.popToken(parentRule);
-    state.popToken(parentRule);
-    state.popToken(parentRule);
+    state.popToken(language);
+    state.popToken(language);
+
     try {
       state.peekToken(language);
     } catch (RecognitionExceptionImpl e) {
@@ -74,7 +84,7 @@ public class ParsingStackTraceTest {
     }
 
     StringBuilder expected = new StringBuilder();
-    expected.append("Expected : <language> but was : <EOF> ('file2')\n");
+    expected.append("Expected : <language> but was : <EOF> ('copy1')\n");
     expected.append("  at ParentRule := ((language | implements))\n");
     expected.append("  at GrandParentRule := (ParentRule)+\n");
 

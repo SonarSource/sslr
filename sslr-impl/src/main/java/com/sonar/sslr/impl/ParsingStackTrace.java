@@ -39,9 +39,19 @@ public class ParsingStackTrace {
     if (token != null) {
       stackTrace.append(token.getValue());
       stackTrace.append(" [" + token.getType() + "]>");
-      stackTrace.append(" ('" + token.getFile().getName() + "':");
+      stackTrace.append(" (");
+      if (token.isCopyBook()) {
+        stackTrace.append("copy book ");
+      }
+      stackTrace.append("'" + token.getFile().getName() + "':");
       stackTrace.append(" Line " + token.getLine() + " /");
-      stackTrace.append(" Column " + token.getColumn() + ")");
+      stackTrace.append(" Column " + token.getColumn());
+      if (token.isCopyBook()) {
+        stackTrace.append(" called from file ");
+        stackTrace.append("'" + token.getCopyBookOriginalFileName() + "':");
+        stackTrace.append(" Line " + token.getCopyBookOriginalLine());
+      }
+      stackTrace.append(")");
     } else {
       stackTrace.append("EOF>");
       if (parsingState.lexerSize > 0) {
