@@ -92,8 +92,8 @@ public class AstNodeTest {
   @Test
   public void testStartListening() {
     AstNode node = new AstNode(new NodeType(), "child1", null);
-    AstListener<AstListenersOutput> listener = mock(AstListener.class);
-    AstListenersOutput listenersOutput = mock(AstListenersOutput.class);
+    AstListener listener = mock(AstListener.class);
+    Object listenersOutput = mock(Object.class);
     node.setAstNodeListener(listener);
     node.startListening(listenersOutput);
     verify(listener).startListening(node, listenersOutput);
@@ -102,24 +102,24 @@ public class AstNodeTest {
   @Test
   public void testStartListeningWithoutListener() {
     AstNode node = new AstNode(new NodeType(), "child1", null);
-    AstListenersOutput listenersOutput = mock(AstListenersOutput.class);
+    Object listenersOutput = mock(Object.class);
     node.startListening(listenersOutput);
   }
 
   @Test
   public void testStopListening() {
     AstNode node = new AstNode(new NodeType(), "child1", null);
-    AstListener<AstListenersOutput> listener = mock(AstListener.class);
-    AstListenersOutput listenersOutput = mock(AstListenersOutput.class);
+    AstListener listener = mock(AstListener.class);
+    Object listenersOutput = mock(Object.class);
     node.setAstNodeListener(listener);
     node.stopListening(listenersOutput);
     verify(listener).stopListening(node, listenersOutput);
   }
-  
+
   @Test
   public void testStopListeningWithoutListener() {
     AstNode node = new AstNode(new NodeType(), "child1", null);
-    AstListenersOutput listenersOutput = mock(AstListenersOutput.class);
+    Object listenersOutput = mock(Object.class);
     node.stopListening(listenersOutput);
   }
 

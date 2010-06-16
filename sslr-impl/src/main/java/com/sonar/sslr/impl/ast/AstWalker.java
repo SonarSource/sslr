@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.sonar.sslr.api.AstAndTokenVisitor;
-import com.sonar.sslr.api.AstListenersOutput;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.AstVisitor;
@@ -50,10 +49,10 @@ public class AstWalker {
   }
 
   public void walkAndVisit(AstNode ast) {
-    walkVisitAndListen(ast, new EmptyAstListenersOutput());
+    walkVisitAndListen(ast, new Object());
   }
 
-  public <OUTPUT extends AstListenersOutput> void walkVisitAndListen(AstNode ast, OUTPUT output) {
+  public void walkVisitAndListen(AstNode ast, Object output) {
     for (AstVisitor visitor : visitors) {
       visitor.visitFile(ast);
     }
@@ -63,7 +62,7 @@ public class AstWalker {
     }
   }
 
-  private <OUTPUT extends AstListenersOutput> void visit(AstNode ast, OUTPUT output) {
+  private void visit(AstNode ast, Object output) {
     ast.startListening(output);
     AstVisitor[] nodeVisitors = getNodeVisitors(ast);
     visitNode(ast, nodeVisitors);
@@ -79,7 +78,7 @@ public class AstWalker {
     }
   }
 
-  private void visitChildren(AstNode ast, AstListenersOutput output) {
+  private void visitChildren(AstNode ast, Object output) {
     if (ast.getChildren() != null) {
       for (AstNode nodeChild : ast.getChildren()) {
         visit(nodeChild, output);

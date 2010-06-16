@@ -6,26 +6,24 @@
 package com.sonar.sslr.impl.channel;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
-import org.sonar.channel.EndMatcher;
 
 import com.sonar.sslr.api.LexerOutput;
 
 public class BlackHoleChannel implements Channel<LexerOutput> {
 
-  public boolean consum(CodeReader code, LexerOutput output) {
-    code.popTo(new BlackHoleEndMatcher(), new EmptyAppendable());
-    return true;
+  private final Matcher matcher;
+
+  public BlackHoleChannel(String regexp) {
+    matcher = Pattern.compile(regexp).matcher("");
   }
 
-  public class BlackHoleEndMatcher implements EndMatcher {
-
-    public boolean match(int toMatch) {
-      return toMatch != ' ' && toMatch != '\t' && toMatch != '\r' && toMatch != '\n';
-    }
-
+  public boolean consum(CodeReader code, LexerOutput output) {
+    return code.popTo(matcher, new EmptyAppendable()) != -1;
   }
 
   private static class EmptyAppendable implements Appendable {

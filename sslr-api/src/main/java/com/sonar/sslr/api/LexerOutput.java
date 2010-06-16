@@ -13,11 +13,12 @@ import java.util.Map;
 
 public class LexerOutput {
 
+  private File file = null;
   private List<Token> tokens = new ArrayList<Token>();
   private List<Token> preprocessingTokens = new ArrayList<Token>();
   private Map<Integer, Token> comments = new HashMap<Integer, Token>();
-  private File file = null;
   private final Preprocessor[] preprocessors;
+  private PreprocessingDirectiveTable preprocessingDirectiveTable;
 
   public LexerOutput(Preprocessor... preprocessors) {
     this.preprocessors = preprocessors;
@@ -37,7 +38,10 @@ public class LexerOutput {
   }
 
   public Token getLastToken() {
-    return tokens.get(tokens.size() - 1);
+    if (size() > 0) {
+      return tokens.get(tokens.size() - 1);
+    }
+    return null;
   }
 
   public void removeLastTokens(int numberOfTokensToRemove) {
@@ -78,8 +82,20 @@ public class LexerOutput {
     return file;
   }
 
+  public String getFileName() {
+    return file.getName();
+  }
+
   public int size() {
     return tokens.size();
+  }
+
+  public void setPreprocessingDirectiveTable(PreprocessingDirectiveTable directives) {
+    preprocessingDirectiveTable = directives;
+  }
+
+  public PreprocessingDirectiveTable getPreprocessingDirectiveTable() {
+    return preprocessingDirectiveTable;
   }
 
   public Comments getComments() {

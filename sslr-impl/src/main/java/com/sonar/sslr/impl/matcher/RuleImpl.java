@@ -7,7 +7,6 @@
 package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstListener;
-import com.sonar.sslr.api.AstListenersOutput;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.ParsingState;
@@ -18,7 +17,7 @@ public class RuleImpl extends Matcher implements Rule {
   protected Matcher matcher;
   private boolean hasSeveralParents = false;
   protected boolean hasToBeSkippedWhenBuildingAst = false;
-  private AstListener<? extends AstListenersOutput> listener;
+  private AstListener listener;
 
   public RuleImpl(String name) {
     this.name = name;

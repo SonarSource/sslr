@@ -7,6 +7,7 @@ package com.sonar.sslr.impl.channel;
 
 import static com.sonar.sslr.test.lexer.LexerMatchers.consume;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -17,20 +18,20 @@ import com.sonar.sslr.api.LexerOutput;
 public class BlackHoleChannelTest {
 
   private LexerOutput output = new LexerOutput();
-  private BlackHoleChannel channel = new BlackHoleChannel();
+  private BlackHoleChannel channel = new BlackHoleChannel("[ \\t]+");
 
   @Test
-  public void testConsumAnything() {
-    assertThat(channel, consume(new CodeReader("$"), output));
-    assertThat(channel, consume(new CodeReader("\n"), output));
-    assertThat(channel, consume(new CodeReader("g"), output));
-    assertThat(channel, consume(new CodeReader("-"), output));
-    assertThat(channel, consume(new CodeReader("1"), output));
+  public void testConsumeOneCharacter() {
+    assertThat(channel, consume(new CodeReader(" "), output));
+    assertThat(channel, consume(new CodeReader("\t"), output));
+    assertThat(channel, not(consume(new CodeReader("g"), output)));
+    assertThat(channel, not(consume(new CodeReader("-"), output)));
+    assertThat(channel, not(consume(new CodeReader("1"), output)));
   }
 
   @Test
-  public void testConsumNumber() {
-    CodeReader reader = new CodeReader("   \t\n\r123");
+  public void consumeSeveralCharacters() {
+    CodeReader reader = new CodeReader("   \t123");
     assertThat(channel, consume(reader, output));
     assertThat((char) reader.peek(), is('1'));
   }

@@ -221,13 +221,13 @@ public class AstNode {
     this.action = action;
   }
 
-  public <OUTPUT extends AstListenersOutput> void startListening(OUTPUT output) {
+  public void startListening(Object output) {
     if (action != null) {
       action.startListening(this, output);
     }
   }
 
-  public <OUTPUT extends AstListenersOutput> void stopListening(OUTPUT output) {
+  public void stopListening(Object output) {
     if (action != null) {
       action.stopListening(this, output);
     }

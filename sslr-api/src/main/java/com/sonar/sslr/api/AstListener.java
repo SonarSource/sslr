@@ -5,7 +5,7 @@
  */
 package com.sonar.sslr.api;
 
-public abstract class AstListener<OUTPUT extends AstListenersOutput> {
+public abstract class AstListener<OUTPUT> {
 
   public abstract void startListening(AstNode astNode, OUTPUT output);
 

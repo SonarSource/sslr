@@ -22,7 +22,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstListener;
-import com.sonar.sslr.api.AstListenersOutput;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 
@@ -124,7 +123,7 @@ public class RuleImplTest {
     RuleImpl rule = new RuleImpl("MyRule");
     AstListener listener = mock(AstListener.class);
     ParsingState parsingState = mock(ParsingState.class);
-    AstListenersOutput output = mock(AstListenersOutput.class);
+    Object output = mock(Object.class);
 
     rule.setListener(listener);
     rule.setMatcher(new BooleanMatcher(true));
