@@ -83,7 +83,10 @@ public class LexerOutput {
   }
 
   public String getFileName() {
-    return file.getName();
+    if (file != null) {
+      return file.getName();
+    }
+    return null;
   }
 
   public int size() {
