@@ -20,21 +20,36 @@ import com.sonar.sslr.api.TokenType;
 
 public class IdentifierAndKeywordChannelTest {
 
-  private IdentifierAndKeywordChannel channel = new IdentifierAndKeywordChannel("[a-zA-Z_][a-zA-Z_0-9]*", MyKeywords.values());
+  private IdentifierAndKeywordChannel channel;
   private LexerOutput output = new LexerOutput();
 
   @Test
-  public void testConsumWord() {
+  public void testConsumeWord() {
+    channel = new IdentifierAndKeywordChannel("[a-zA-Z_][a-zA-Z_0-9]*", true, MyKeywords.values());
     assertThat(channel, consume(new CodeReader("word"), output));
     assertThat(output.getLastToken().getType(), is((TokenType) GenericTokenType.IDENTIFIER));
   }
 
   @Test
-  public void testConsumKeywords() {
+  public void testConsumeCaseSensitiveKeywords() {
+    channel = new IdentifierAndKeywordChannel("[a-zA-Z_][a-zA-Z_0-9]*", true, MyKeywords.values());
     assertThat(channel, consume(new CodeReader("KEYWORD1"), output));
     assertThat(output.getLastToken().getType(), is((TokenType) MyKeywords.KEYWORD1));
 
     assertThat(channel, consume(new CodeReader("KeyWord2"), output));
+    assertThat(output.getLastToken().getType(), is((TokenType) MyKeywords.KeyWord2));
+    
+    assertThat(channel, consume(new CodeReader("KEYWORD2"), output));
+    assertThat(output.getLastToken().getType(), is((TokenType) GenericTokenType.IDENTIFIER));
+  }
+  
+  @Test
+  public void testConsumeNotCaseSensitiveKeywords() {
+    channel = new IdentifierAndKeywordChannel("[a-zA-Z_][a-zA-Z_0-9]*", false, MyKeywords.values());
+    assertThat(channel, consume(new CodeReader("keyword1"), output));
+    assertThat(output.getLastToken().getType(), is((TokenType) MyKeywords.KEYWORD1));
+
+    assertThat(channel, consume(new CodeReader("keyword2"), output));
     assertThat(output.getLastToken().getType(), is((TokenType) MyKeywords.KeyWord2));
   }
 
