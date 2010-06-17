@@ -141,14 +141,14 @@ public class RuleImplTest {
     RuleImpl rule = new RuleImpl("MyRule");
     assertThat(rule.hasToBeSkippedFromAst(null), is(false));
 
-    rule.skipFromAst();
+    rule.skip();
     assertThat(rule.hasToBeSkippedFromAst(null), is(true));
   }
 
   @Test
   public void testSkipFromAstIf() {
     RuleImpl rule = new RuleImpl("MyRule");
-    rule.skipFromAstIf(new SkipFromAstIfOnlyOneChild());
+    rule.skipIf(new SkipFromAstIfOnlyOneChild());
 
     AstNode parent = new AstNode(new Token(GenericTokenType.IDENTIFIER, "parent"));
     AstNode child1 = new AstNode(new Token(GenericTokenType.IDENTIFIER, "child1"));

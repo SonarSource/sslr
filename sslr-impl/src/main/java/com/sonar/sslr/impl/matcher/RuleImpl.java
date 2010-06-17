@@ -94,7 +94,7 @@ public class RuleImpl extends Matcher implements Rule {
     return this;
   }
 
-  public RuleImpl skipFromAst() {
+  public RuleImpl skip() {
     astNodeSkippingPolicy = new AlwaysSkipFromAst();
     return this;
   }
@@ -136,12 +136,12 @@ public class RuleImpl extends Matcher implements Rule {
     return this;
   }
 
-  public Rule skipFromAstIf(AstNodeSkippingPolicy astNodeSkipPolicy) {
+  public Rule skipIf(AstNodeSkippingPolicy astNodeSkipPolicy) {
     this.astNodeSkippingPolicy = astNodeSkipPolicy;
     return this;
   }
   
-  public Rule skipFromAstIfOneChild() {
+  public Rule skipIfOneChild() {
     this.astNodeSkippingPolicy = new SkipFromAstIfOnlyOneChild();
     return this;
   }

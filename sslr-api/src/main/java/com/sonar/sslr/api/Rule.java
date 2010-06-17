@@ -26,11 +26,11 @@ public interface Rule extends AstNodeSkippingPolicy {
   
   public Rule setListener(AstListener listener);
 
-  public Rule skipFromAst();
+  public Rule skip();
   
-  public Rule skipFromAstIf(AstNodeSkippingPolicy policy);
+  public Rule skipIf(AstNodeSkippingPolicy policy);
   
-  public Rule skipFromAstIfOneChild();
+  public Rule skipIfOneChild();
 
   public void mockUpperCase();
 
