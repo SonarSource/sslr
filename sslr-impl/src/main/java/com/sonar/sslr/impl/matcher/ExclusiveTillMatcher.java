@@ -72,7 +72,7 @@ public class ExclusiveTillMatcher extends Matcher {
       return "WORDS";
     }
 
-    public boolean hasToBeSkippedFromAst() {
+    public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
 

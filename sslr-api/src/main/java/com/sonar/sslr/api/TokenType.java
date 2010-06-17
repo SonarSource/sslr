@@ -7,12 +7,12 @@
 package com.sonar.sslr.api;
 
 
-public interface TokenType extends AstNodeType {
+public interface TokenType extends AstNodeSkippingPolicy {
 
   public String getName();
 
   public String getValue();
 
-  public boolean hasToBeSkippedFromAst();
+  public boolean hasToBeSkippedFromAst(AstNode node);
 
 }

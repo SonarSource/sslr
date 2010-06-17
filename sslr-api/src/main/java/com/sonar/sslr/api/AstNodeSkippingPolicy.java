@@ -16,7 +16,7 @@ package com.sonar.sslr.api;
  * @see Grammar
  * @see AstNode
  */
-public interface AstNodeType {
+public interface AstNodeSkippingPolicy {
 
   /**
    * Some AstNode can be pretty useless and makes a global AST less readable. This method allows to automatically remove those AstNode from
@@ -24,5 +24,5 @@ public interface AstNodeType {
    * 
    * @return true if AstNode with this type must be skipped from the AST.
    */
-  public boolean hasToBeSkippedFromAst();
+  public boolean hasToBeSkippedFromAst(AstNode node);
 }

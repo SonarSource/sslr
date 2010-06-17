@@ -23,7 +23,10 @@ import org.junit.Test;
 
 import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.GenericTokenType;
+import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 
 public class RuleImplTest {
 
@@ -131,5 +134,31 @@ public class RuleImplTest {
     node.startListening(output);
 
     verify(listener).startListening(node, output);
+  }
+
+  @Test
+  public void testSkipFromAst() {
+    RuleImpl rule = new RuleImpl("MyRule");
+    assertThat(rule.hasToBeSkippedFromAst(null), is(false));
+
+    rule.skipFromAst();
+    assertThat(rule.hasToBeSkippedFromAst(null), is(true));
+  }
+
+  @Test
+  public void testSkipFromAstIf() {
+    RuleImpl rule = new RuleImpl("MyRule");
+    rule.skipFromAstIf(new SkipFromAstIfOnlyOneChild());
+
+    AstNode parent = new AstNode(new Token(GenericTokenType.IDENTIFIER, "parent"));
+    AstNode child1 = new AstNode(new Token(GenericTokenType.IDENTIFIER, "child1"));
+    AstNode child2 = new AstNode(new Token(GenericTokenType.IDENTIFIER, "child2"));
+    parent.addChild(child1);
+    parent.addChild(child2);
+    child1.addChild(child2);
+
+    assertThat(rule.hasToBeSkippedFromAst(parent), is(false));
+    assertThat(rule.hasToBeSkippedFromAst(child2), is(false));
+    assertThat(rule.hasToBeSkippedFromAst(child1), is(true));
   }
 }

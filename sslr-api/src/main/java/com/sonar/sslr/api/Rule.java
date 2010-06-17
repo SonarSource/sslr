@@ -12,7 +12,7 @@ package com.sonar.sslr.api;
  * @see Grammar
  * @see <a href="http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">Backus–Naur Form</a>
  */
-public interface Rule extends AstNodeType {
+public interface Rule extends AstNodeSkippingPolicy {
 
   public Rule is(Object... matchers);
   
@@ -26,7 +26,11 @@ public interface Rule extends AstNodeType {
   
   public Rule setListener(AstListener listener);
 
-  public Rule skip();
+  public Rule skipFromAst();
+  
+  public Rule skipFromAstIf(AstNodeSkippingPolicy policy);
+  
+  public Rule skipFromAstIfOneChild();
 
   public void mockUpperCase();
 

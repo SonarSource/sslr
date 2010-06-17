@@ -13,13 +13,13 @@ import java.util.Map;
 
 import com.sonar.sslr.api.AstAndTokenVisitor;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.AstNodeType;
+import com.sonar.sslr.api.AstNodeSkippingPolicy;
 import com.sonar.sslr.api.AstVisitor;
 import com.sonar.sslr.api.Token;
 
 public class AstWalker {
 
-  private Map<AstNodeType, AstVisitor[]> visitorsByNodeType = new IdentityHashMap<AstNodeType, AstVisitor[]>();
+  private Map<AstNodeSkippingPolicy, AstVisitor[]> visitorsByNodeType = new IdentityHashMap<AstNodeSkippingPolicy, AstVisitor[]>();
   private List<AstVisitor> visitors = new ArrayList<AstVisitor>();
   private AstAndTokenVisitor[] astAndTokenVisitors = new AstAndTokenVisitor[0];
   private Token lastVisitedToken = null;
@@ -36,7 +36,7 @@ public class AstWalker {
 
   public void addVisitor(AstVisitor visitor) {
     visitors.add(visitor);
-    for (AstNodeType type : visitor.getAstNodeTypesToVisit()) {
+    for (AstNodeSkippingPolicy type : visitor.getAstNodeTypesToVisit()) {
       List<AstVisitor> visitorsByType = getAstVisitors(type);
       visitorsByType.add(visitor);
       putAstVisitors(type, visitorsByType);
@@ -109,11 +109,11 @@ public class AstWalker {
     return nodeVisitors;
   }
 
-  private void putAstVisitors(AstNodeType type, List<AstVisitor> visitors) {
+  private void putAstVisitors(AstNodeSkippingPolicy type, List<AstVisitor> visitors) {
     visitorsByNodeType.put(type, visitors.toArray(new AstVisitor[0]));
   }
 
-  private List<AstVisitor> getAstVisitors(AstNodeType type) {
+  private List<AstVisitor> getAstVisitors(AstNodeSkippingPolicy type) {
     AstVisitor[] visitors = visitorsByNodeType.get(type);
     if (visitors == null) {
       return new ArrayList<AstVisitor>();

@@ -9,13 +9,13 @@ package com.sonar.sslr.impl.matcher;
 import java.util.List;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.AstNodeType;
+import com.sonar.sslr.api.AstNodeSkippingPolicy;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
-public abstract class Matcher implements AstNodeType {
+public abstract class Matcher implements AstNodeSkippingPolicy {
 
   protected RuleImpl parentRule;
 
@@ -37,7 +37,7 @@ public abstract class Matcher implements AstNodeType {
     }
   }
 
-  public boolean hasToBeSkippedFromAst() {
+  public boolean hasToBeSkippedFromAst(AstNode node) {
     return true;
   }
 
@@ -69,7 +69,7 @@ public abstract class Matcher implements AstNodeType {
       matcher = new TokenValueMatcher((String) object);
     } else if (object instanceof TokenType) {
       TokenType tokenType = (TokenType) object;
-      matcher = new TokenTypeMatcher(tokenType, tokenType.hasToBeSkippedFromAst());
+      matcher = new TokenTypeMatcher(tokenType, tokenType.hasToBeSkippedFromAst(null));
     } else {
       try {
         matcher = (Matcher) object;

@@ -5,6 +5,12 @@
  */
 package com.sonar.sslr.impl.ast;
 
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -14,17 +20,10 @@ import org.mockito.InOrder;
 
 import com.sonar.sslr.api.AstAndTokenVisitor;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.AstNodeType;
+import com.sonar.sslr.api.AstNodeSkippingPolicy;
 import com.sonar.sslr.api.AstVisitor;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.MockTokenType;
-import com.sonar.sslr.impl.ast.AstWalker;
-
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class AstWalkerTest {
 
@@ -36,27 +35,27 @@ public class AstWalkerTest {
   private AstNode ast122;
   private AstNode ast13;
   private AstNode astNodeWithToken;
-  private AstNodeType animal = new AstNodeType() {
+  private AstNodeSkippingPolicy animal = new AstNodeSkippingPolicy() {
 
-    public boolean hasToBeSkippedFromAst() {
+    public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
   };
-  private AstNodeType dog = new AstNodeType() {
+  private AstNodeSkippingPolicy dog = new AstNodeSkippingPolicy() {
 
-    public boolean hasToBeSkippedFromAst() {
+    public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
   };
-  private AstNodeType cat = new AstNodeType() {
+  private AstNodeSkippingPolicy cat = new AstNodeSkippingPolicy() {
 
-    public boolean hasToBeSkippedFromAst() {
+    public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
   };
-  private AstNodeType tiger = new AstNodeType() {
+  private AstNodeSkippingPolicy tiger = new AstNodeSkippingPolicy() {
 
-    public boolean hasToBeSkippedFromAst() {
+    public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
   };
@@ -82,7 +81,7 @@ public class AstWalkerTest {
 
   @Test
   public void testVisitFileAndLeaveFileCalls() {
-    when(astVisitor.getAstNodeTypesToVisit()).thenReturn(new ArrayList<AstNodeType>());
+    when(astVisitor.getAstNodeTypesToVisit()).thenReturn(new ArrayList<AstNodeSkippingPolicy>());
     walker.addVisitor(astVisitor);
     walker.walkAndVisit(ast1);
     verify(astVisitor).visitFile(ast1);
@@ -92,7 +91,7 @@ public class AstWalkerTest {
 
   @Test
   public void testVisitToken() {
-    when(astAndTokenVisitor.getAstNodeTypesToVisit()).thenReturn(new ArrayList<AstNodeType>());
+    when(astAndTokenVisitor.getAstNodeTypesToVisit()).thenReturn(new ArrayList<AstNodeSkippingPolicy>());
     walker.addVisitor(astAndTokenVisitor);
     walker.walkAndVisit(astNodeWithToken);
     verify(astAndTokenVisitor).visitFile(astNodeWithToken);

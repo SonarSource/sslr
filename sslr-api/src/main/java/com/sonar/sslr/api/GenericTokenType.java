@@ -18,7 +18,7 @@ public enum GenericTokenType implements TokenType {
     return name();
   }
 
-  public boolean hasToBeSkippedFromAst() {
+  public boolean hasToBeSkippedFromAst(AstNode node) {
     return false;
   }
 }

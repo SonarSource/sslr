@@ -13,6 +13,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.sonar.channel.CodeReader;
 
+import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.TokenType;
@@ -53,7 +54,7 @@ public class IdentifierAndKeywordChannelTest {
       return name();
     }
 
-    public boolean hasToBeSkippedFromAst() {
+    public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
 

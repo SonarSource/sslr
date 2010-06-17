@@ -8,16 +8,20 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.AstNodeSkippingPolicy;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.impl.ast.AlwaysSkipFromAst;
+import com.sonar.sslr.impl.ast.NeverSkipFromAst;
+import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 
 public class RuleImpl extends Matcher implements Rule {
 
   protected String name;
   protected Matcher matcher;
   private boolean hasSeveralParents = false;
-  protected boolean hasToBeSkippedWhenBuildingAst = false;
   private AstListener listener;
+  private AstNodeSkippingPolicy astNodeSkippingPolicy = new NeverSkipFromAst();
 
   public RuleImpl(String name) {
     this.name = name;
@@ -27,14 +31,14 @@ public class RuleImpl extends Matcher implements Rule {
     int startIndex = parsingState.lexerIndex;
     AstNode childNode = matcher.match(parsingState);
 
-    AstNode astNode = new AstNode(this, name, parsingState.peekTokenIfExists(startIndex, matcher), hasToBeSkippedWhenBuildingAst);
+    AstNode astNode = new AstNode(this, name, parsingState.peekTokenIfExists(startIndex, matcher));
     astNode.setAstNodeListener(listener);
     astNode.addChild(childNode);
     return astNode;
   }
 
-  public boolean hasToBeSkippedFromAst() {
-    return false;
+  public boolean hasToBeSkippedFromAst(AstNode node) {
+    return astNodeSkippingPolicy.hasToBeSkippedFromAst(node);
   }
 
   public RuleImpl is(Object... matchers) {
@@ -90,8 +94,8 @@ public class RuleImpl extends Matcher implements Rule {
     return this;
   }
 
-  public RuleImpl skip() {
-    hasToBeSkippedWhenBuildingAst = true;
+  public RuleImpl skipFromAst() {
+    astNodeSkippingPolicy = new AlwaysSkipFromAst();
     return this;
   }
 
@@ -129,6 +133,16 @@ public class RuleImpl extends Matcher implements Rule {
 
   public Rule setListener(AstListener listener) {
     this.listener = listener;
+    return this;
+  }
+
+  public Rule skipFromAstIf(AstNodeSkippingPolicy astNodeSkipPolicy) {
+    this.astNodeSkippingPolicy = astNodeSkipPolicy;
+    return this;
+  }
+  
+  public Rule skipFromAstIfOneChild() {
+    this.astNodeSkippingPolicy = new SkipFromAstIfOnlyOneChild();
     return this;
   }
 }

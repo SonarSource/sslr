@@ -6,15 +6,14 @@
 
 package com.sonar.sslr.impl.ast;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
-import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import com.sonar.sslr.impl.matcher.RuleImpl;
-
-import static org.junit.Assert.assertEquals;
 
 public class AstXmlPrinterTest {
 
@@ -52,7 +51,7 @@ public class AstXmlPrinterTest {
       return "WORD";
     }
 
-    public boolean hasToBeSkippedFromAst() {
+    public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
 

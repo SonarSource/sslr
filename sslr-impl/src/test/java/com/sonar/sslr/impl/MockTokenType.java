@@ -5,6 +5,7 @@
  */
 package com.sonar.sslr.impl;
 
+import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.TokenType;
 
 public enum MockTokenType implements TokenType {
@@ -19,7 +20,7 @@ public enum MockTokenType implements TokenType {
     return name();
   }
 
-  public boolean hasToBeSkippedFromAst() {
+  public boolean hasToBeSkippedFromAst(AstNode node) {
     return false;
   }
 }

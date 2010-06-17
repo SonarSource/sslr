@@ -203,7 +203,7 @@ public class AstNodeTest {
     assertThat(statement.getLastChild(), is(expr2));
   }
 
-  private class NodeType implements AstNodeType {
+  private class NodeType implements AstNodeSkippingPolicy {
 
     private boolean skippedFromAst = false;
 
@@ -215,7 +215,7 @@ public class AstNodeTest {
       this.skippedFromAst = skippedFromAst;
     }
 
-    public boolean hasToBeSkippedFromAst() {
+    public boolean hasToBeSkippedFromAst(AstNode node) {
       return skippedFromAst;
     }
 
