@@ -7,7 +7,7 @@ package com.sonar.sslr.test.lexer;
 
 import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
 import static com.sonar.sslr.test.lexer.TokenUtils.merge;
-import static com.sonar.sslr.test.lexer.TokenUtils.split;
+import static com.sonar.sslr.test.lexer.TokenUtils.lex;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -33,7 +33,7 @@ public class TokenUtilsTest {
 
   @Test
   public void testSplit() {
-    List<Token> tokens = split("myMacro(a, param2)");
+    List<Token> tokens = lex("myMacro(a, param2)");
     assertThat(merge(tokens), is("myMacro ( a , param2 )"));
   }
 

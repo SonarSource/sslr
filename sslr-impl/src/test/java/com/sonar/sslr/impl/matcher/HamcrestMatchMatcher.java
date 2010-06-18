@@ -7,7 +7,7 @@ package com.sonar.sslr.impl.matcher;
  */
 
 import static com.sonar.sslr.test.lexer.TokenUtils.merge;
-import static com.sonar.sslr.test.lexer.TokenUtils.split;
+import static com.sonar.sslr.test.lexer.TokenUtils.lex;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ class HamcrestMatchMatcher extends BaseMatcher<Matcher> {
   }
 
   public static HamcrestMatchMatcher match(String sourceCode) {
-    return new HamcrestMatchMatcher(split(sourceCode));
+    return new HamcrestMatchMatcher(lex(sourceCode));
   }
 
   public HamcrestMatchMatcher(List<Token> tokens) {
