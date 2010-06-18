@@ -31,7 +31,7 @@ class ParseMatcher extends BaseMatcher<Parser> {
     if (parser.getRootRule() == null) {
       throw new IllegalStateException("The root rule of the parser is null. No grammar decorator seems to be activated.");
     }
-    if ( !parser.getRootRule().toEBNFNotation().contains("EOF")) {
+    if ( !parser.getRootRule().toEBNFNotation().contains(" EOF ")) {
       parser.getRootRule().and(opt(GenericTokenType.EOF));
     }
     try {

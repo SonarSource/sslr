@@ -5,6 +5,8 @@
  */
 package com.sonar.sslr.test.parser;
 
+import static com.sonar.sslr.impl.matcher.Matchers.opt;
+
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
@@ -25,10 +27,15 @@ class NotParseMatcher extends BaseMatcher<Parser> {
       return false;
     }
     Parser parser = (Parser) obj;
-    parser.getRootRule().and(GenericTokenType.EOF);
+    if ( !parser.getRootRule().toEBNFNotation().contains(" EOF ")) {
+      parser.getRootRule().and(opt(GenericTokenType.EOF));
+    }
     try {
       parser.parse(sourceCode);
     } catch (RecognitionExceptionImpl e) {
+      return true;
+    }
+    if(parser.getParsingState().hasNextToken()){
       return true;
     }
     return false;
