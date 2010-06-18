@@ -17,7 +17,7 @@ import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.TokenType;
 
-public class IdentifierAndKeywordChannel implements Channel<LexerOutput> {
+public class IdentifierAndKeywordChannel extends Channel<LexerOutput> {
 
   private final Map<String, TokenType> keywordsMap;
   private final StringBuilder tmpBuilder = new StringBuilder();
@@ -34,7 +34,8 @@ public class IdentifierAndKeywordChannel implements Channel<LexerOutput> {
     matcher = Pattern.compile(regexp).matcher("");
   }
 
-  public boolean consum(CodeReader code, LexerOutput output) {
+  @Override
+  public boolean consume(CodeReader code, LexerOutput output) {
     if (code.popTo(matcher, tmpBuilder) > 0) {
       String word = tmpBuilder.toString();
       if ( !caseSensitive) {

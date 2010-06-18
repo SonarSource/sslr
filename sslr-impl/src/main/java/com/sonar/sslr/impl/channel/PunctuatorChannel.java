@@ -18,7 +18,7 @@ import com.google.common.collect.Multimap;
 import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.TokenType;
 
-public class PunctuatorChannel implements Channel<LexerOutput> {
+public class PunctuatorChannel extends Channel<LexerOutput> {
 
   public Multimap<Character, TokenType> specialChars;
 
@@ -29,7 +29,8 @@ public class PunctuatorChannel implements Channel<LexerOutput> {
     }
   }
 
-  public boolean consum(CodeReader code, LexerOutput output) {
+  @Override
+  public boolean consume(CodeReader code, LexerOutput output) {
     Character nextChar = Character.valueOf((char) code.peek());
     if (specialChars.containsKey(nextChar)) {
       EndSpecialCharsMatcher matcher = new EndSpecialCharsMatcher(specialChars.get(nextChar));

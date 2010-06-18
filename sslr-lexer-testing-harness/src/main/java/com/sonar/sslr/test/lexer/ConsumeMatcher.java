@@ -27,7 +27,7 @@ class ConsumeMatcher extends BaseMatcher<Channel<LexerOutput>> {
       return false;
     }
     Channel<LexerOutput> channel = (Channel<LexerOutput>) obj;
-    return channel.consum(reader, output);
+    return channel.consume(reader, output);
   }
 
   public void describeTo(Description desc) {

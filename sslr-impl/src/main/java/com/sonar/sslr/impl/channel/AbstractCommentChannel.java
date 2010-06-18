@@ -13,7 +13,7 @@ import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
 
-public abstract class AbstractCommentChannel implements Channel<LexerOutput> {
+public abstract class AbstractCommentChannel extends Channel<LexerOutput> {
 
   private final char[] starter;
 
@@ -21,7 +21,8 @@ public abstract class AbstractCommentChannel implements Channel<LexerOutput> {
     this.starter = starter.toCharArray();
   }
 
-  public final boolean consum(CodeReader code, LexerOutput output) {
+  @Override
+  public final boolean consume(CodeReader code, LexerOutput output) {
     if (code.peek() == starter[0] && isCommentStarting(code)) {
       StringBuilder comment = new StringBuilder();
       code.popTo(getEndCommentMatcher(), comment);

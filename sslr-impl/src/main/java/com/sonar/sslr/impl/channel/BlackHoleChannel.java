@@ -14,7 +14,7 @@ import org.sonar.channel.CodeReader;
 
 import com.sonar.sslr.api.LexerOutput;
 
-public class BlackHoleChannel implements Channel<LexerOutput> {
+public class BlackHoleChannel extends Channel<LexerOutput> {
 
   private final Matcher matcher;
 
@@ -22,7 +22,8 @@ public class BlackHoleChannel implements Channel<LexerOutput> {
     matcher = Pattern.compile(regexp).matcher("");
   }
 
-  public boolean consum(CodeReader code, LexerOutput output) {
+  @Override
+  public boolean consume(CodeReader code, LexerOutput output) {
     return code.popTo(matcher, new EmptyAppendable()) != -1;
   }
 

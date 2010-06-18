@@ -14,7 +14,7 @@ import org.sonar.channel.CodeReader;
 import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.TokenType;
 
-public class RegexpChannel implements Channel<LexerOutput> {
+public class RegexpChannel extends Channel<LexerOutput> {
 
   private final StringBuilder tmpBuilder = new StringBuilder();
   private final TokenType type;
@@ -25,7 +25,8 @@ public class RegexpChannel implements Channel<LexerOutput> {
     this.type = type;
   }
 
-  public boolean consum(CodeReader code, LexerOutput output) {
+  @Override
+  public boolean consume(CodeReader code, LexerOutput output) {
     if (code.popTo(matcher, tmpBuilder) > 0) {
       output.addTokenAndProcess(type, tmpBuilder.toString(), code.getLinePosition(), code.getColumnPosition());
       tmpBuilder.delete(0, tmpBuilder.length());

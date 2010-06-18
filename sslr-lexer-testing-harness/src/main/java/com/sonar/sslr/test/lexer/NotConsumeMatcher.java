@@ -27,7 +27,7 @@ class NotConsumeMatcher extends BaseMatcher<Channel<LexerOutput>> {
       return false;
     }
     Channel<LexerOutput> channel = (Channel<LexerOutput>) obj;
-    return !channel.consum(new CodeReader(sourceCode), output);
+    return !channel.consume(new CodeReader(sourceCode), output);
   }
 
   public void describeTo(Description desc) {

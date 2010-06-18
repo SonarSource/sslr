@@ -42,7 +42,7 @@ public class PunctuatorAndOperatorChannelTest {
 
   @Test
   public void testNotConsumeWord() {
-    assertFalse(channel.consum(new CodeReader("word"), output));
+    assertFalse(channel.consume(new CodeReader("word"), output));
   }
 
   private enum MyPunctuatorAndOperator implements TokenType {

@@ -72,7 +72,7 @@ public abstract class Lexer {
     startLexing();
     CodeReader code = new CodeReader(reader);
     try {
-      getChannelDispatcher().consum(code, lexerOutput);
+      getChannelDispatcher().consume(code, lexerOutput);
       lexerOutput.addTokenAndProcess(GenericTokenType.EOF, "EOF", code.getLinePosition(), code.getColumnPosition());
       endLexing(lexerOutput);
     } catch (LexerException e) {
