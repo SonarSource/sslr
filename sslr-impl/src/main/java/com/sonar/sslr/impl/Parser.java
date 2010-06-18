@@ -88,8 +88,8 @@ public abstract class Parser<GRAMMAR extends Grammar> {
     return rootRule;
   }
 
-  public final void setRootRule(RuleImpl rootRule) {
-    this.rootRule = rootRule;
+  public final void setRootRule(Rule rootRule) {
+    this.rootRule = (RuleImpl)rootRule;
   }
 
   public String toString() {
