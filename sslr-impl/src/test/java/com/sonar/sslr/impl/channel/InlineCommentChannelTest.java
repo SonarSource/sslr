@@ -5,13 +5,12 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import static com.sonar.sslr.test.lexer.LexerMatchers.consume;
 import static com.sonar.sslr.test.lexer.LexerMatchers.hasComment;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static org.sonar.test.Matchers.consume;
 
 import org.junit.Test;
-import org.sonar.channel.CodeReader;
 
 import com.sonar.sslr.api.LexerOutput;
 
@@ -23,20 +22,20 @@ public class InlineCommentChannelTest {
   @Test
   public void testConsumCommentStartingWithOneCharacter() {
     channel = new InlineCommentChannel("'");
-    assertThat(channel, consume(new CodeReader("' my comment\n toto"), output));
+    assertThat(channel, consume("' my comment\n toto", output));
     assertThat(output, hasComment("' my comment"));
   }
 
   @Test
   public void testConsumCppComment() {
     channel = new InlineCommentChannel("//");
-    assertThat(channel, consume(new CodeReader("// my comment\r lkjd"), output));
+    assertThat(channel, consume("// my comment\r lkjd", output));
     assertThat(output, hasComment("// my comment"));
   }
 
   @Test
   public void testNotConsumWord() {
     channel = new InlineCommentChannel("'");
-    assertThat(channel, not(consume(new CodeReader("word"), output)));
+    assertThat(channel, not(consume("word", output)));
   }
 }

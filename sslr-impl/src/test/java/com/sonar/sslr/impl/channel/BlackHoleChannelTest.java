@@ -5,10 +5,10 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import static com.sonar.sslr.test.lexer.LexerMatchers.consume;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static org.sonar.test.Matchers.consume;
+import static org.sonar.test.Matchers.hasNextChar;
 
 import org.junit.Test;
 import org.sonar.channel.CodeReader;
@@ -22,17 +22,17 @@ public class BlackHoleChannelTest {
 
   @Test
   public void testConsumeOneCharacter() {
-    assertThat(channel, consume(new CodeReader(" "), output));
-    assertThat(channel, consume(new CodeReader("\t"), output));
-    assertThat(channel, not(consume(new CodeReader("g"), output)));
-    assertThat(channel, not(consume(new CodeReader("-"), output)));
-    assertThat(channel, not(consume(new CodeReader("1"), output)));
+    assertThat(channel, consume(" ", output));
+    assertThat(channel, consume("\t", output));
+    assertThat(channel, not(consume("g", output)));
+    assertThat(channel, not(consume("-", output)));
+    assertThat(channel, not(consume("1", output)));
   }
 
   @Test
   public void consumeSeveralCharacters() {
     CodeReader reader = new CodeReader("   \t123");
     assertThat(channel, consume(reader, output));
-    assertThat((char) reader.peek(), is('1'));
+    assertThat(reader, hasNextChar('1'));
   }
 }

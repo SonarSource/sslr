@@ -5,10 +5,10 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import static com.sonar.sslr.test.lexer.LexerMatchers.consume;
 import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.sonar.test.Matchers.consume;
 
 import org.junit.Test;
 import org.sonar.channel.CodeReader;
@@ -17,26 +17,26 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.TokenType;
 
-public class PunctuatorAndOperatorChannelTest {
+public class PunctuatorChannelTest {
 
   private PunctuatorChannel channel = new PunctuatorChannel(MyPunctuatorAndOperator.values());
   private LexerOutput output = new LexerOutput();
 
   @Test
   public void testConsumeSpecialCharacters() {
-    assertThat(channel, consume(new CodeReader("**="), output));
+    assertThat(channel, consume("**=", output));
     assertThat(output, hasToken("*", MyPunctuatorAndOperator.STAR));
 
-    assertThat(channel, consume(new CodeReader(",="), output));
+    assertThat(channel, consume(",=", output));
     assertThat(output, hasToken(",", MyPunctuatorAndOperator.COLON));
 
-    assertThat(channel, consume(new CodeReader("=*"), output));
+    assertThat(channel, consume("=*", output));
     assertThat(output, hasToken("=", MyPunctuatorAndOperator.EQUAL));
 
-    assertThat(channel, consume(new CodeReader("==,"), output));
+    assertThat(channel, consume("==,", output));
     assertThat(output, hasToken("==", MyPunctuatorAndOperator.EQUAL_OP));
 
-    assertThat(channel, consume(new CodeReader("*=,"), output));
+    assertThat(channel, consume("*=,", output));
     assertThat(output, hasToken("*=", MyPunctuatorAndOperator.MUL_ASSIGN));
   }
 
