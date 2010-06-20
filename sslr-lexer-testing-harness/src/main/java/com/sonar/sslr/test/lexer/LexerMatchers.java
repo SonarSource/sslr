@@ -16,6 +16,14 @@ public class LexerMatchers {
     return new HasTokenMatcher(tokenValue, tokenType);
   }
 
+  public final static Matcher<LexerOutput> hasToken(String tokenValue) {
+    return new HasTokenValueMatcher(tokenValue);
+  }
+
+  public final static Matcher<LexerOutput> hasTokens(String... tokenValues) {
+    return new HasTokensMatcher(tokenValues);
+  }
+
   public final static Matcher<LexerOutput> hasLastToken(String tokenValue, TokenType tokenType) {
     return new HasLastTokenMatcher(tokenValue, tokenType);
   }
