@@ -24,11 +24,10 @@ public abstract class AbstractCommentChannel extends Channel<LexerOutput> {
   @Override
   public final boolean consume(CodeReader code, LexerOutput output) {
     if (code.peek() == starter[0] && isCommentStarting(code)) {
-      int line = code.getLinePosition();
-      int column = code.getColumnPosition();
       StringBuilder comment = new StringBuilder();
       code.popTo(getEndCommentMatcher(), comment);
-      output.addCommentToken(new Token(GenericTokenType.COMMENT, comment.toString(), line, column));
+      output.addCommentToken(new Token(GenericTokenType.COMMENT, comment.toString(), code.getPreviousCursor().getLine(), code
+          .getPreviousCursor().getColumn()));
       return true;
     }
     return false;

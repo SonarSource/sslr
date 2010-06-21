@@ -29,7 +29,7 @@ public class RegexpChannel extends Channel<LexerOutput> {
   public boolean consume(CodeReader code, LexerOutput output) {
     if (code.popTo(matcher, tmpBuilder) > 0) {
       String value = tmpBuilder.toString();
-      output.addTokenAndProcess(type, value, code.getLinePosition(), code.getColumnPosition() - value.length());
+      output.addTokenAndProcess(type, value, code.getPreviousCursor().getLine(), code.getPreviousCursor().getColumn());
       tmpBuilder.delete(0, tmpBuilder.length());
       return true;
     }
