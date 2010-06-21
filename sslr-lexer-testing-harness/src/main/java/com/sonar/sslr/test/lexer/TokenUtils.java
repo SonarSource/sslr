@@ -47,13 +47,15 @@ public class TokenUtils {
     while (reader.peek() != -1) {
       StringBuilder nextStringToken = new StringBuilder();
       Token token;
+      int linePosition = reader.getLinePosition();
+      int columnPosition = reader.getColumnPosition();
       if (reader.popTo(matcher, nextStringToken) != -1) {
-        token = new Token(GenericTokenType.IDENTIFIER, nextStringToken.toString(), reader.getLinePosition(), reader.getColumnPosition());
-      } else if (' ' == (char) reader.peek()) {
+        token = new Token(GenericTokenType.IDENTIFIER, nextStringToken.toString(), linePosition, columnPosition);
+      } else if (Character.isWhitespace(reader.peek())) {
         reader.pop();
         continue;
       } else {
-        token = new Token(GenericTokenType.IDENTIFIER, "" + (char) reader.pop(), reader.getLinePosition(), reader.getColumnPosition());
+        token = new Token(GenericTokenType.IDENTIFIER, "" + (char) reader.pop(), linePosition, columnPosition);
       }
       tokens.add(token);
     }

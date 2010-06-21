@@ -28,7 +28,8 @@ public class RegexpChannel extends Channel<LexerOutput> {
   @Override
   public boolean consume(CodeReader code, LexerOutput output) {
     if (code.popTo(matcher, tmpBuilder) > 0) {
-      output.addTokenAndProcess(type, tmpBuilder.toString(), code.getLinePosition(), code.getColumnPosition());
+      String value = tmpBuilder.toString();
+      output.addTokenAndProcess(type, value, code.getLinePosition(), code.getColumnPosition() - value.length());
       tmpBuilder.delete(0, tmpBuilder.length());
       return true;
     }

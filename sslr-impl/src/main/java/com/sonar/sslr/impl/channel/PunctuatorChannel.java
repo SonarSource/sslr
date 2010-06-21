@@ -35,8 +35,9 @@ public class PunctuatorChannel extends Channel<LexerOutput> {
     if (specialChars.containsKey(nextChar)) {
       EndSpecialCharsMatcher matcher = new EndSpecialCharsMatcher(specialChars.get(nextChar));
       code.popTo(matcher, new EmptyAppendable());
-      output.addTokenAndProcess(matcher.getSpecialchar(), matcher.getSpecialchar().getValue(), code.getLinePosition(), code
-          .getColumnPosition());
+      String value = matcher.getSpecialchar().getValue();
+      output.addTokenAndProcess(matcher.getSpecialchar(), value, code.getLinePosition(), code
+          .getColumnPosition() - value.length());
       return true;
     }
     return false;

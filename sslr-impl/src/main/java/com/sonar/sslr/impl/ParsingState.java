@@ -77,6 +77,14 @@ public class ParsingState {
   public int getOutpostMatcherTokenIndex() {
     return outpostMatcherTokenIndex;
   }
+  
+  public int getOutpostMatcherTokenLine() {
+    if(outpostMatcherTokenIndex < lexerSize){
+      return tokens[outpostMatcherTokenIndex].getLine();
+    }
+    return tokens[lexerSize - 1].getLine();
+  }
+
 
   public void memoizeAst(Matcher matcher, AstNode astNode) {
     astNode.setToIndex(lexerIndex);

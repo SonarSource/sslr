@@ -37,7 +37,7 @@ class MatchMatcher extends BaseMatcher<Matcher> {
       matcher.match(parsingState);
       return true;
     } catch (RecognitionExceptionImpl e) {
-      parsingStackTrace = ParsingStackTrace.generate(parsingState);
+      parsingStackTrace = ParsingStackTrace.generateFullStackTrace(parsingState);
       return false;
     }
   }

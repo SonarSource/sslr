@@ -23,7 +23,7 @@ public class AdjacentMatcher extends Matcher {
     int index = parsingState.lexerIndex;
     Token nextToken = parsingState.peekToken(index, this);
     Token previousToken = parsingState.readToken(index - 1);
-    if (nextToken.getColumn() == previousToken.getColumn() + 1) {
+    if (nextToken.getColumn() == previousToken.getColumn() + previousToken.getValue().length()) {
       AstNode node = new AstNode(this, "adjacentMatcher", nextToken);
       node.addChild(matcher.match(parsingState));
       return node;

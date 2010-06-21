@@ -6,6 +6,7 @@
 package com.sonar.sslr.impl.channel;
 
 import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import static org.sonar.test.channel.ChannelMatchers.consume;
@@ -41,5 +42,12 @@ public class RegexpChannelTest {
     assertThat(channel, not(consume("Not a number", output)));
     assertThat(channel, consume(new CodeReader("56;"), output));
     assertThat(output, hasToken("56", GenericTokenType.CONSTANT));
+  }
+  
+  @Test
+  public void testColumnNumber() {
+    channel = new RegexpChannel(GenericTokenType.CONSTANT, "[0-9]*");
+    assertThat(channel, consume("56;", output));
+    assertThat(output.getTokens().get(0).getColumn(), is(0));
   }
 }

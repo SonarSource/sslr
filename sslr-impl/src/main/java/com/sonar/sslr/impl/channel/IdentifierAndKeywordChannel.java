@@ -42,9 +42,9 @@ public class IdentifierAndKeywordChannel extends Channel<LexerOutput> {
         word = word.toUpperCase();
       }
       if (isKeyword(word)) {
-        output.addTokenAndProcess(keywordsMap.get(word), word, code.getLinePosition(), code.getColumnPosition());
+        output.addTokenAndProcess(keywordsMap.get(word), word, code.getLinePosition(), code.getColumnPosition() - word.length());
       } else {
-        output.addTokenAndProcess(GenericTokenType.IDENTIFIER, word, code.getLinePosition(), code.getColumnPosition());
+        output.addTokenAndProcess(GenericTokenType.IDENTIFIER, word, code.getLinePosition(), code.getColumnPosition() - word.length());
       }
       tmpBuilder.delete(0, tmpBuilder.length());
       return true;

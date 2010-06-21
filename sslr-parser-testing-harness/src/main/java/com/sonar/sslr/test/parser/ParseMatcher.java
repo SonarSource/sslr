@@ -37,7 +37,7 @@ class ParseMatcher extends BaseMatcher<Parser> {
     try {
       parser.parse(sourceCode);
     } catch (RecognitionExceptionImpl e) {
-      throw new AssertionError(ParsingStackTrace.generate(parser.getParsingState()));
+      throw new AssertionError(ParsingStackTrace.generateFullStackTrace(parser.getParsingState()));
     }
     return !parser.getParsingState().hasNextToken();
   }
