@@ -8,7 +8,7 @@ package com.sonar.sslr.impl.channel;
 import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.sonar.test.Matchers.consume;
+import static org.sonar.test.channel.ChannelMatchers.consume;
 
 import org.junit.Test;
 import org.sonar.channel.CodeReader;

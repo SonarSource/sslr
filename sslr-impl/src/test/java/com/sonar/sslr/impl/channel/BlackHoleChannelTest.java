@@ -7,8 +7,8 @@ package com.sonar.sslr.impl.channel;
 
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
-import static org.sonar.test.Matchers.consume;
-import static org.sonar.test.Matchers.hasNextChar;
+import static org.sonar.test.channel.ChannelMatchers.consume;
+import static org.sonar.test.channel.ChannelMatchers.hasNextChar;
 
 import org.junit.Test;
 import org.sonar.channel.CodeReader;
