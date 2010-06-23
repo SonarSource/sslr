@@ -19,8 +19,7 @@ public class ParsingStackTrace {
   private final StringBuilder stackTrace = new StringBuilder();
   private static final int STACK_TRACE_DEPTH = 8;
   private final ParsingState parsingState;
-  private final static int SOURCE_CODE_TOKENS_WINDOW = 20;
-  private final static int SOURCE_CODE_LINES_WINDOW = 3;
+  private final static int SOURCE_CODE_TOKENS_WINDOW = 30;
   private final static int SOURCE_CODE_LINE_HEADER_WIDTH = 6;
 
   private ParsingStackTrace(ParsingState parsingState, boolean displaySourceCode) {
@@ -81,9 +80,6 @@ public class ParsingStackTrace {
         continue;
       }
       Token token = parsingState.readToken(i);
-      if (Math.abs(token.getLine() - outpostMatcherTokenLine) > SOURCE_CODE_LINES_WINDOW) {
-        continue;
-      }
       tokens.add(parsingState.readToken(i));
     }
     return tokens;
