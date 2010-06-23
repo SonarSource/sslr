@@ -18,7 +18,6 @@ public class LexerOutput {
   private List<Token> preprocessingTokens = new ArrayList<Token>();
   private Map<Integer, Token> comments = new HashMap<Integer, Token>();
   private final Preprocessor[] preprocessors;
-  private PreprocessingDirectiveTable preprocessingDirectiveTable;
 
   public LexerOutput(Preprocessor... preprocessors) {
     this.preprocessors = preprocessors;
@@ -40,6 +39,13 @@ public class LexerOutput {
   public Token getLastToken() {
     if (size() > 0) {
       return tokens.get(tokens.size() - 1);
+    }
+    return null;
+  }
+  
+  public Token getFirstToken() {
+    if (size() > 0) {
+      return tokens.get(0);
     }
     return null;
   }
@@ -91,14 +97,6 @@ public class LexerOutput {
 
   public int size() {
     return tokens.size();
-  }
-
-  public void setPreprocessingDirectiveTable(PreprocessingDirectiveTable directives) {
-    preprocessingDirectiveTable = directives;
-  }
-
-  public PreprocessingDirectiveTable getPreprocessingDirectiveTable() {
-    return preprocessingDirectiveTable;
   }
 
   public Comments getComments() {

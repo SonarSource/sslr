@@ -20,6 +20,10 @@ public class LexerMatchers {
     return new HasTokenValueMatcher(tokenValue);
   }
 
+  public final static Matcher<LexerOutput> hasToken(TokenType tokenType) {
+    return new HasTokenTypeMatcher(tokenType);
+  }
+
   public final static Matcher<LexerOutput> hasTokens(String... tokenValues) {
     return new HasTokensMatcher(tokenValues);
   }
