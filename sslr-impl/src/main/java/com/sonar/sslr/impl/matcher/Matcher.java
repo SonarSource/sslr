@@ -70,6 +70,8 @@ public abstract class Matcher implements AstNodeSkippingPolicy {
     } else if (object instanceof TokenType) {
       TokenType tokenType = (TokenType) object;
       matcher = new TokenTypeMatcher(tokenType, tokenType.hasToBeSkippedFromAst(null));
+    } else if (object instanceof Class) {
+      matcher = new TokenTypeClassMatcher((Class) object);
     } else {
       try {
         matcher = (Matcher) object;
