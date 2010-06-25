@@ -29,6 +29,9 @@ public class RuleImpl extends Matcher implements Rule {
 
   public AstNode match(ParsingState parsingState) {
     int startIndex = parsingState.lexerIndex;
+    if(matcher == null){
+      throw new IllegalStateException("The rule '" + name + "' hasn't beed defined.");
+    }
     AstNode childNode = matcher.match(parsingState);
 
     AstNode astNode = new AstNode(this, name, parsingState.peekTokenIfExists(startIndex, matcher));
