@@ -9,10 +9,20 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.TokenType;
 
 public class Matchers {
+  
+  private static boolean strictOrMode = false;
 
   private Matchers() {
   };
+  
+  public static void activeStrictOrMode(){
+    strictOrMode = true;
+  }
 
+  public static void deactivateStrictOrMode(){
+    strictOrMode = false;
+  }
+  
   public static Matcher opt(Object object) {
     return new ProxyMatcher(new OpMatcher(Matcher.convertToMatcher(object)));
   }
@@ -30,11 +40,11 @@ public class Matchers {
   }
 
   public static Matcher or(Object... matchers) {
+    if(strictOrMode){
+      return new ProxyMatcher(new StrictOrMatcher(Matcher.convertToMatchers(matchers)));
+    } else {
     return new ProxyMatcher(new OrMatcher(Matcher.convertToMatchers(matchers)));
-  }
-
-  public static Matcher strictOr(Object... matchers) {
-    return new ProxyMatcher(new StrictOrMatcher(Matcher.convertToMatchers(matchers)));
+    }
   }
 
   public static Matcher not(Object object) {
