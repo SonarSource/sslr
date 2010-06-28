@@ -24,11 +24,13 @@ public class IdentifierAndKeywordChannel extends Channel<LexerOutput> {
   private final Matcher matcher;
   private final boolean caseSensitive;
 
-  public IdentifierAndKeywordChannel(String regexp, boolean caseSensitive, TokenType... keywords) {
+  public IdentifierAndKeywordChannel(String regexp, boolean caseSensitive, TokenType[]... keywordSets) {
     keywordsMap = new HashMap<String, TokenType>();
-    for (TokenType keyword : keywords) {
-      String keywordValue = (caseSensitive ? keyword.getValue() : keyword.getValue().toUpperCase());
-      keywordsMap.put(keywordValue, keyword);
+    for (TokenType[] keywords : keywordSets) {
+      for (TokenType keyword : keywords) {
+        String keywordValue = (caseSensitive ? keyword.getValue() : keyword.getValue().toUpperCase());
+        keywordsMap.put(keywordValue, keyword);
+      }
     }
     this.caseSensitive = caseSensitive;
     matcher = Pattern.compile(regexp).matcher("");
