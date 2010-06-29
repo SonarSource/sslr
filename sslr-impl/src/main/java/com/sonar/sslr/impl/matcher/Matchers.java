@@ -38,6 +38,10 @@ public class Matchers {
   public static Matcher opt(Object... objects) {
     return new ProxyMatcher(new OpMatcher(new AndMatcher(Matcher.convertToMatchers(objects))));
   }
+  
+  public static Matcher next(Object... objects) {
+    return new ProxyMatcher(new NextMatcher(new AndMatcher(Matcher.convertToMatchers(objects))));
+  }
 
   public static Matcher or(Object... matchers) {
     if(strictOrMode){
