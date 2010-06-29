@@ -132,15 +132,4 @@ public class Token {
   public void setFile(File file) {
     this.file = file;
   }
-
-  public Token copy(Token tokenTemplate) {
-    Token token = new Token(type, value, tokenTemplate.getLine(), tokenTemplate.getColumn());
-    token.setFile(tokenTemplate.getFile());
-    token.setCopyBook(true);
-    if (file != null) {
-      token.setCopyBookOriginalFileName(file.getName());
-    }
-    token.setCopyBookOriginalLine(line);
-    return token;
-  }
 }
