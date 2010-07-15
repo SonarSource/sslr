@@ -13,7 +13,7 @@
   </parent>
 
   <properties>
-    <sonarVersion>2.2</sonarVersion>
+    <sonar.version>2.2</sonar.version>
   </properties>
 
   <scm>
@@ -59,7 +59,7 @@
       <dependency>
         <groupId>org.codehaus.sonar</groupId>
         <artifactId>sonar-channel</artifactId>
-        <version>${sonarVersion}</version>
+        <version>${sonar.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.collections</groupId>
@@ -89,7 +89,7 @@
       <dependency>
         <groupId>org.codehaus.sonar</groupId>
         <artifactId>sonar-testing-harness</artifactId>
-        <version>${sonarVersion}</version>
+        <version>${sonar.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
