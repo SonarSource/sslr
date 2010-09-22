@@ -75,7 +75,7 @@ public abstract class Lexer {
       getChannelDispatcher().consume(code, lexerOutput);
       lexerOutput.addTokenAndProcess(GenericTokenType.EOF, "EOF", code.getLinePosition(), code.getColumnPosition());
       endLexing(lexerOutput);
-    } catch (LexerException e) {
+    } catch (Exception e) {
       throw new LexerException("Unable to lex source code at line : " + code.getLinePosition() + " and column : "
           + code.getColumnPosition(), e);
     }
