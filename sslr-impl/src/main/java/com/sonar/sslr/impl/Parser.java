@@ -28,10 +28,7 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 
   public Parser(GRAMMAR grammar, Lexer lexer, List<GrammarDecorator<GRAMMAR>> decorators) {
     this.grammar = grammar;
-    for (GrammarDecorator<GRAMMAR> decorator : decorators) {
-      decorator.decorate(grammar);
-    }
-    rootRule = (RuleImpl) grammar.getRootRule();
+    setDecorators(decorators);
     this.lexer = lexer;
   }
 
@@ -47,6 +44,17 @@ public abstract class Parser<GRAMMAR extends Grammar> {
     this(grammar, lexer, decorators);
     this.rootRule = (RuleImpl) rootRule;
   }
+  
+  public void setDecorators(List<GrammarDecorator<GRAMMAR>> decorators){
+    for (GrammarDecorator<GRAMMAR> decorator : decorators) {
+      decorator.decorate(grammar);
+    }
+    rootRule = (RuleImpl) grammar.getRootRule();
+  }
+  
+  public void setDecorators(GrammarDecorator<GRAMMAR>... decorators){
+    setDecorators(Arrays.asList(decorators));
+  }
 
   public AstNode parse(File file) {
     lexerOutput = lexer.lex(file);
@@ -60,6 +68,7 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 
   public AstNode parse(List<Token> tokens) {
     parsingState = null;
+    beforeEachFile();
     try {
       parsingState = new ParsingState(tokens);
       return rootRule.match(parsingState);
@@ -69,7 +78,15 @@ public abstract class Parser<GRAMMAR extends Grammar> {
       } else {
         throw e;
       }
+    } finally{
+      afterEachFile();
     }
+  }
+
+  public void beforeEachFile() {    
+  }
+  
+  public void afterEachFile() {    
   }
 
   public final ParsingState getParsingState() {
