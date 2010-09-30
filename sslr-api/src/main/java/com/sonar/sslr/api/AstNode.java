@@ -364,10 +364,10 @@ public class AstNode {
   public String toString() {
     StringBuilder result = new StringBuilder();
     result.append(name);
-    if (token != null) {
-      result.append(" value=\"").append(token.getValue()).append("\"");
+    if (token != null) {    
+      result.append(" token='").append(token.getValue()).append("'");
       result.append(" line=").append(token.getLine());
-      result.append(" column=\"").append(token.getColumn());
+      result.append(" column=").append(token.getColumn());
     }
     return result.toString();
   }
