@@ -25,11 +25,11 @@ public class SkipFromAstIfOnlyOneChildTest {
     parent.addChild(child2);
     child2.addChild(child1);
 
-    SkipFromAstIfOnlyOneChild skipPolicy = new SkipFromAstIfOnlyOneChild();
+    SkipFromAstIfOnlyOneChild astNodeType = new SkipFromAstIfOnlyOneChild();
 
-    assertThat(skipPolicy.hasToBeSkippedFromAst(parent), is(false));
-    assertThat(skipPolicy.hasToBeSkippedFromAst(child1), is(false));
-    assertThat(skipPolicy.hasToBeSkippedFromAst(child2), is(true));
+    assertThat(astNodeType.hasToBeSkippedFromAst(parent), is(false));
+    assertThat(astNodeType.hasToBeSkippedFromAst(child1), is(false));
+    assertThat(astNodeType.hasToBeSkippedFromAst(child2), is(true));
   }
 
 }

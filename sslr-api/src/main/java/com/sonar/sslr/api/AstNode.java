@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class AstNode {
 
-  protected final AstNodeSkippingPolicy type;
+  protected final AstNodeType type;
   private String name;
   private Token token;
   private List<AstNode> children;
@@ -31,7 +31,7 @@ public class AstNode {
     this(token.getType(), token.getType().getName(), token);
   }
 
-  public AstNode(AstNodeSkippingPolicy type, String name, Token token) {
+  public AstNode(AstNodeType type, String name, Token token) {
     this.type = type;
     this.token = token;
     this.name = name;
@@ -199,14 +199,17 @@ public class AstNode {
   }
 
   public boolean hasToBeSkippedFromAst() {
-    return type.hasToBeSkippedFromAst(this);
+    if (AstNodeSkippingPolicy.class.isAssignableFrom(type.getClass())) {
+      return ((AstNodeSkippingPolicy) type).hasToBeSkippedFromAst(this);
+    }
+    return false;
   }
 
   public void setToIndex(int toIndex) {
     this.toIndex = toIndex;
   }
 
-  public boolean is(AstNodeSkippingPolicy type) {
+  public boolean is(AstNodeType type) {
     return this.type == type;
   }
 
@@ -226,7 +229,7 @@ public class AstNode {
     }
   }
 
-  public boolean isNot(AstNodeSkippingPolicy type) {
+  public boolean isNot(AstNodeType type) {
     return this.type != type;
   }
 
@@ -237,9 +240,9 @@ public class AstNode {
    *          of desired node types
    * @return the first child or null
    */
-  public AstNode findFirstDirectChild(AstNodeSkippingPolicy... nodeTypes) {
+  public AstNode findFirstDirectChild(AstNodeType... nodeTypes) {
     for (AstNode child : children) {
-      for (AstNodeSkippingPolicy nodeType : nodeTypes) {
+      for (AstNodeType nodeType : nodeTypes) {
         if (child.type == nodeType) {
           return child;
         }
@@ -251,14 +254,14 @@ public class AstNode {
   /**
    * Find the first child among all children and grand-children having one of the desired types.
    * 
-   * @param AstNodeSkippingPolicy
+   * @param AstNodeType
    *          list of desired node types
    * @return the first child or null
    */
-  public AstNode findFirstChild(AstNodeSkippingPolicy... nodeTypes) {
+  public AstNode findFirstChild(AstNodeType... nodeTypes) {
     if (children != null) {
       for (AstNode child : children) {
-        for (AstNodeSkippingPolicy nodeType : nodeTypes) {
+        for (AstNodeType nodeType : nodeTypes) {
           if (child.type == nodeType) {
             return child;
           }
@@ -287,11 +290,11 @@ public class AstNode {
   /**
    * Find the all children among direct children having the desired type.
    * 
-   * @param AstNodeSkippingPolicy
+   * @param AstNodeType
    *          the node type
    * @return the list of matching children
    */
-  public List<AstNode> findDirectChildren(AstNodeSkippingPolicy nodeType) {
+  public List<AstNode> findDirectChildren(AstNodeType nodeType) {
     List<AstNode> nodes = new ArrayList<AstNode>();
     for (AstNode child : children) {
       if (child.type == nodeType) {
@@ -316,21 +319,21 @@ public class AstNode {
   /**
    * @return true if this node has some direct children with the desired node types
    */
-  public boolean hasDirectChildren(AstNodeSkippingPolicy... nodeTypes) {
+  public boolean hasDirectChildren(AstNodeType... nodeTypes) {
     return findFirstDirectChild(nodeTypes) != null;
   }
 
   /**
    * @return true if this node has some children and/or grand-children with the desired node types
    */
-  public boolean hasChildren(AstNodeSkippingPolicy... nodeTypes) {
+  public boolean hasChildren(AstNodeType... nodeTypes) {
     return findFirstChild(nodeTypes) != null;
   }
 
   /**
    * @return true if this node has a parent or a grand-parent with the desired node type.
    */
-  public boolean hasParents(AstNodeSkippingPolicy nodeType) {
+  public boolean hasParents(AstNodeType nodeType) {
     if (findFirstParent(nodeType) != null) {
       return true;
     }
@@ -340,11 +343,11 @@ public class AstNode {
   /**
    * Find the first parent with the desired node type
    * 
-   * @param AstNodeSkippingPolicy
+   * @param AstNodeType
    *          the desired Ast node type
    * @return the parent/grand-parent or null
    */
-  public AstNode findFirstParent(AstNodeSkippingPolicy nodeType) {
+  public AstNode findFirstParent(AstNodeType nodeType) {
     if (parent == null) {
       return null;
     } else if (parent.type == nodeType) {
@@ -357,14 +360,14 @@ public class AstNode {
     return getToken().isCopyBook() || getToken().isGeneratedCode();
   }
 
-  public AstNodeSkippingPolicy getType() {
+  public AstNodeType getType() {
     return type;
   }
 
   public String toString() {
     StringBuilder result = new StringBuilder();
     result.append(name);
-    if (token != null) {    
+    if (token != null) {
       result.append(" token='").append(token.getValue()).append("'");
       result.append(" line=").append(token.getLine());
       result.append(" column=").append(token.getColumn());

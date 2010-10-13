@@ -14,7 +14,7 @@ public interface AstVisitor {
    * 
    * @return the AST node types this must be registered for.
    */
-  List<AstNodeSkippingPolicy> getAstNodeTypesToVisit();
+  List<AstNodeType> getAstNodeTypesToVisit();
 
   /**
    * Called before starting visiting a computation unit tree. 

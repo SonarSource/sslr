@@ -20,7 +20,7 @@ import org.mockito.InOrder;
 
 import com.sonar.sslr.api.AstAndTokenVisitor;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.AstNodeSkippingPolicy;
+import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.AstVisitor;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.MockTokenType;
@@ -35,25 +35,25 @@ public class AstWalkerTest {
   private AstNode ast122;
   private AstNode ast13;
   private AstNode astNodeWithToken;
-  private AstNodeSkippingPolicy animal = new AstNodeSkippingPolicy() {
+  private AstNodeType animal = new AstNodeType() {
 
     public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
   };
-  private AstNodeSkippingPolicy dog = new AstNodeSkippingPolicy() {
+  private AstNodeType dog = new AstNodeType() {
 
     public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
   };
-  private AstNodeSkippingPolicy cat = new AstNodeSkippingPolicy() {
+  private AstNodeType cat = new AstNodeType() {
 
     public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
   };
-  private AstNodeSkippingPolicy tiger = new AstNodeSkippingPolicy() {
+  private AstNodeType tiger = new AstNodeType() {
 
     public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
@@ -81,7 +81,7 @@ public class AstWalkerTest {
 
   @Test
   public void testVisitFileAndLeaveFileCalls() {
-    when(astVisitor.getAstNodeTypesToVisit()).thenReturn(new ArrayList<AstNodeSkippingPolicy>());
+    when(astVisitor.getAstNodeTypesToVisit()).thenReturn(new ArrayList<AstNodeType>());
     walker.addVisitor(astVisitor);
     walker.walkAndVisit(ast1);
     verify(astVisitor).visitFile(ast1);
@@ -91,7 +91,7 @@ public class AstWalkerTest {
 
   @Test
   public void testVisitToken() {
-    when(astAndTokenVisitor.getAstNodeTypesToVisit()).thenReturn(new ArrayList<AstNodeSkippingPolicy>());
+    when(astAndTokenVisitor.getAstNodeTypesToVisit()).thenReturn(new ArrayList<AstNodeType>());
     walker.addVisitor(astAndTokenVisitor);
     walker.walkAndVisit(astNodeWithToken);
     verify(astAndTokenVisitor).visitFile(astNodeWithToken);

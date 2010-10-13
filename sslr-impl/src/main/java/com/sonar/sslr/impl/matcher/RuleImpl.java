@@ -9,6 +9,7 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeSkippingPolicy;
+import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.ast.AlwaysSkipFromAst;
@@ -21,7 +22,7 @@ public class RuleImpl extends Matcher implements Rule {
   protected Matcher matcher;
   private boolean hasSeveralParents = false;
   private AstListener listener;
-  private AstNodeSkippingPolicy astNodeSkippingPolicy = new NeverSkipFromAst();
+  private AstNodeType astNodeType = new NeverSkipFromAst();
 
   public RuleImpl(String name) {
     this.name = name;
@@ -29,7 +30,7 @@ public class RuleImpl extends Matcher implements Rule {
 
   public AstNode match(ParsingState parsingState) {
     int startIndex = parsingState.lexerIndex;
-    if(matcher == null){
+    if (matcher == null) {
       throw new IllegalStateException("The rule '" + name + "' hasn't beed defined.");
     }
     AstNode childNode = matcher.match(parsingState);
@@ -41,7 +42,10 @@ public class RuleImpl extends Matcher implements Rule {
   }
 
   public boolean hasToBeSkippedFromAst(AstNode node) {
-    return astNodeSkippingPolicy.hasToBeSkippedFromAst(node);
+    if (AstNodeSkippingPolicy.class.isAssignableFrom(astNodeType.getClass())) {
+      return ((AstNodeSkippingPolicy) astNodeType).hasToBeSkippedFromAst(node);
+    }
+    return false;
   }
 
   public RuleImpl is(Object... matchers) {
@@ -98,7 +102,7 @@ public class RuleImpl extends Matcher implements Rule {
   }
 
   public RuleImpl skip() {
-    astNodeSkippingPolicy = new AlwaysSkipFromAst();
+    astNodeType = new AlwaysSkipFromAst();
     return this;
   }
 
@@ -139,13 +143,13 @@ public class RuleImpl extends Matcher implements Rule {
     return this;
   }
 
-  public Rule skipIf(AstNodeSkippingPolicy astNodeSkipPolicy) {
-    this.astNodeSkippingPolicy = astNodeSkipPolicy;
+  public Rule skipIf(AstNodeType astNodeSkipPolicy) {
+    this.astNodeType = astNodeSkipPolicy;
     return this;
   }
-  
+
   public Rule skipIfOneChild() {
-    this.astNodeSkippingPolicy = new SkipFromAstIfOnlyOneChild();
+    this.astNodeType = new SkipFromAstIfOnlyOneChild();
     return this;
   }
 }
