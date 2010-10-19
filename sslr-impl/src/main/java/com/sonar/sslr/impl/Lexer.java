@@ -16,6 +16,7 @@ import java.nio.charset.Charset;
 import org.apache.commons.io.IOUtils;
 import org.sonar.channel.ChannelDispatcher;
 import org.sonar.channel.CodeReader;
+import org.sonar.channel.CodeReaderFilter;
 
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.LexerOutput;
@@ -26,6 +27,9 @@ public abstract class Lexer {
   private Charset charset = Charset.defaultCharset();
 
   private Preprocessor[] preprocessors = new Preprocessor[0];
+
+  @SuppressWarnings("unchecked")
+  private CodeReaderFilter<LexerOutput>[] codeReaderFilters = new CodeReaderFilter[0];
 
   public Lexer() {
     this(Charset.defaultCharset());
@@ -43,12 +47,21 @@ public abstract class Lexer {
     return preprocessors;
   }
 
+  public void setCodeReaderFilters(CodeReaderFilter<LexerOutput>... codeReaderFilters) {
+    this.codeReaderFilters = codeReaderFilters;
+  }
+
+  protected final CodeReaderFilter<LexerOutput>[] getCodeReaderFilters() {
+    return codeReaderFilters;
+  }
+
   public Charset getCharset() {
     return charset;
   }
 
   public LexerOutput lex(String sourceCode) {
     LexerOutput lexerOutput = createLexerOutput();
+    initCodeReaderFilters(lexerOutput);
     lex(new StringReader(sourceCode), lexerOutput);
     return lexerOutput;
   }
@@ -58,6 +71,7 @@ public abstract class Lexer {
     try {
       reader = new InputStreamReader(new FileInputStream(file), getCharset());
       LexerOutput lexerOutput = createLexerOutput();
+      initCodeReaderFilters(lexerOutput);
       lexerOutput.setFile(file);
       lex(reader, lexerOutput);
       return lexerOutput;
@@ -70,7 +84,8 @@ public abstract class Lexer {
 
   public void lex(Reader reader, LexerOutput lexerOutput) {
     startLexing();
-    CodeReader code = new CodeReader(reader);
+    initCodeReaderFilters(lexerOutput);
+    CodeReader code = new CodeReader(reader, codeReaderFilters);
     try {
       getChannelDispatcher().consume(code, lexerOutput);
       lexerOutput.addTokenAndProcess(GenericTokenType.EOF, "EOF", code.getLinePosition(), code.getColumnPosition());
@@ -78,6 +93,12 @@ public abstract class Lexer {
     } catch (Exception e) {
       throw new LexerException("Unable to lex source code at line : " + code.getLinePosition() + " and column : "
           + code.getColumnPosition(), e);
+    }
+  }
+
+  private void initCodeReaderFilters(LexerOutput lexerOutput) {
+    for (CodeReaderFilter<LexerOutput> filter : codeReaderFilters) {
+      filter.setOutput(lexerOutput);
     }
   }
 
