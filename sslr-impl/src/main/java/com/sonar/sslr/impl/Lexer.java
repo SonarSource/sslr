@@ -16,6 +16,7 @@ import java.nio.charset.Charset;
 import org.apache.commons.io.IOUtils;
 import org.sonar.channel.ChannelDispatcher;
 import org.sonar.channel.CodeReader;
+import org.sonar.channel.CodeReaderConfiguration;
 import org.sonar.channel.CodeReaderFilter;
 
 import com.sonar.sslr.api.GenericTokenType;
@@ -26,10 +27,9 @@ public abstract class Lexer {
 
   private Charset charset = Charset.defaultCharset();
 
-  private Preprocessor[] preprocessors = new Preprocessor[0];
+  private CodeReaderConfiguration configuration = new CodeReaderConfiguration();
 
-  @SuppressWarnings("unchecked")
-  private CodeReaderFilter<LexerOutput>[] codeReaderFilters = new CodeReaderFilter[0];
+  private Preprocessor[] preprocessors = new Preprocessor[0];
 
   public Lexer() {
     this(Charset.defaultCharset());
@@ -47,12 +47,12 @@ public abstract class Lexer {
     return preprocessors;
   }
 
-  public void setCodeReaderFilters(CodeReaderFilter<LexerOutput>... codeReaderFilters) {
-    this.codeReaderFilters = codeReaderFilters;
+  protected CodeReaderConfiguration getConfiguration() {
+    return configuration;
   }
 
-  protected final CodeReaderFilter<LexerOutput>[] getCodeReaderFilters() {
-    return codeReaderFilters;
+  protected void setConfiguration(CodeReaderConfiguration configuration) {
+    this.configuration = configuration;
   }
 
   public Charset getCharset() {
@@ -85,7 +85,7 @@ public abstract class Lexer {
   public void lex(Reader reader, LexerOutput lexerOutput) {
     startLexing();
     initCodeReaderFilters(lexerOutput);
-    CodeReader code = new CodeReader(reader, codeReaderFilters);
+    CodeReader code = new CodeReader(reader, configuration);
     try {
       getChannelDispatcher().consume(code, lexerOutput);
       lexerOutput.addTokenAndProcess(GenericTokenType.EOF, "EOF", code.getLinePosition(), code.getColumnPosition());
@@ -97,7 +97,7 @@ public abstract class Lexer {
   }
 
   private void initCodeReaderFilters(LexerOutput lexerOutput) {
-    for (CodeReaderFilter<LexerOutput> filter : codeReaderFilters) {
+    for (CodeReaderFilter<LexerOutput> filter : configuration.getCodeReaderFilters()) {
       filter.setOutput(lexerOutput);
     }
   }
