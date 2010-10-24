@@ -65,6 +65,10 @@ public class Matchers {
     }
     return new ProxyMatcher(new AndMatcher(Matcher.convertToMatchers(matchers)));
   }
+  
+  public static Matcher bridge(TokenType from, TokenType to) {
+    return new ProxyMatcher(new BridgeMatcher(from, to));
+  }
 
   public static Matcher isTrue() {
     return new ProxyMatcher(new BooleanMatcher(true));
