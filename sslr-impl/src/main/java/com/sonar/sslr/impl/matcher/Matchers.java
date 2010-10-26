@@ -26,6 +26,10 @@ public class Matchers {
   public static Matcher opt(Object object) {
     return new ProxyMatcher(new OpMatcher(Matcher.convertToMatcher(object)));
   }
+  
+  public static Matcher not(Object object) {
+    return new ProxyMatcher(new NotMatcher(Matcher.convertToMatcher(object)));
+  }
 
   public static Matcher adjacent(Object object) {
     return new ProxyMatcher(new AdjacentMatcher(Matcher.convertToMatcher(object)));
@@ -51,8 +55,8 @@ public class Matchers {
     }
   }
 
-  public static Matcher not(Object object) {
-    return new ProxyMatcher(new NotMatcher(Matcher.convertToMatcher(object)));
+  public static Matcher anyTokenButNot(Object object) {
+    return new ProxyMatcher(new AnyTokenButNotMatcher(Matcher.convertToMatcher(object)));
   }
 
   public static Matcher isOneOfThem(TokenType... keywords) {
@@ -74,8 +78,8 @@ public class Matchers {
     return new ProxyMatcher(new BooleanMatcher(true));
   }
 
-  public static Matcher anything() {
-    return new ProxyMatcher(new AnythingMatcher());
+  public static Matcher anyToken() {
+    return new ProxyMatcher(new AnyTokenMatcher());
   }
 
   public static Matcher isFalse() {

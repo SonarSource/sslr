@@ -8,9 +8,9 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.Token;
 
-public class AnythingMatcher extends TokenMatcher {
+public class AnyTokenMatcher extends TokenMatcher {
 
-  public AnythingMatcher() {
+  public AnyTokenMatcher() {
     super(false);
   }
 
@@ -20,7 +20,7 @@ public class AnythingMatcher extends TokenMatcher {
   }
   
   public String toString() {
-    return "anyThingMatcher()";
+    return "anyTokenMatcher()";
   }
 
 }

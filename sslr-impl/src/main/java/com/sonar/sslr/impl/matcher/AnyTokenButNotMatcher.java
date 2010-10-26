@@ -10,11 +10,11 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
-public class NotMatcher extends Matcher {
+public class AnyTokenButNotMatcher extends Matcher {
 
   private Matcher matcher;
 
-  public NotMatcher(Matcher matcher) {
+  public AnyTokenButNotMatcher(Matcher matcher) {
     this.matcher = matcher;
   }
 
@@ -22,7 +22,7 @@ public class NotMatcher extends Matcher {
     if (matcher.isMatching(parsingState)) {
       throw RecognitionExceptionImpl.create();
     } else {
-      return null;
+      return new AstNode(parsingState.popToken(this));
     }
   }
 

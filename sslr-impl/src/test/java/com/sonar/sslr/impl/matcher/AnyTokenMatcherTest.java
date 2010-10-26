@@ -14,11 +14,11 @@ import org.junit.Test;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 
-public class AnythingMatcherTest {
+public class AnyTokenMatcherTest {
 
   @Test
   public void testMatch() {
-    AnythingMatcher matcher = new AnythingMatcher();
+    AnyTokenMatcher matcher = new AnyTokenMatcher();
     AstNode node = matcher.match(new ParsingState(lex("print screen")));
     assertEquals("print", node.getTokenValue());
 
