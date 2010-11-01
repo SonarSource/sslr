@@ -61,7 +61,6 @@ public abstract class Lexer {
 
   public LexerOutput lex(String sourceCode) {
     LexerOutput lexerOutput = createLexerOutput();
-    initCodeReaderFilters(lexerOutput);
     lex(new StringReader(sourceCode), lexerOutput);
     return lexerOutput;
   }
@@ -71,7 +70,6 @@ public abstract class Lexer {
     try {
       reader = new InputStreamReader(new FileInputStream(file), getCharset());
       LexerOutput lexerOutput = createLexerOutput();
-      initCodeReaderFilters(lexerOutput);
       lexerOutput.setFile(file);
       lex(reader, lexerOutput);
       return lexerOutput;
@@ -83,8 +81,8 @@ public abstract class Lexer {
   }
 
   public void lex(Reader reader, LexerOutput lexerOutput) {
-    startLexing();
     initCodeReaderFilters(lexerOutput);
+    startLexing();
     CodeReader code = new CodeReader(reader, configuration);
     try {
       getChannelDispatcher().consume(code, lexerOutput);
