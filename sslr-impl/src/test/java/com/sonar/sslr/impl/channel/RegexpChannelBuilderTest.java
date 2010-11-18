@@ -20,17 +20,17 @@ public class RegexpChannelBuilderTest {
 
   @Test
   public void testOpt() {
-    assertThat(opt("L"), equalTo("L?"));
+    assertThat(opt("L"), equalTo("L?+"));
   }
 
   @Test
   public void testOne2n() {
-    assertThat(one2n("L"), equalTo("L+"));
+    assertThat(one2n("L"), equalTo("L++"));
   }
 
   @Test
   public void testO2n() {
-    assertThat(o2n("L"), equalTo("L*"));
+    assertThat(o2n("L"), equalTo("L*+"));
   }
 
   @Test

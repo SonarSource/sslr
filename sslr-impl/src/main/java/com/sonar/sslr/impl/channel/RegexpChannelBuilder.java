@@ -18,18 +18,26 @@ public final class RegexpChannelBuilder {
   }
 
   public final static String opt(String regexpPiece) {
-    return regexpPiece + "?";
+    return regexpPiece + "?+";
+  }
+
+  public final static String and(String... regexpPieces) {
+    StringBuilder result = new StringBuilder();
+    for (String rexpPiece : regexpPieces) {
+      result.append(rexpPiece);
+    }
+    return result.toString();
   }
 
   public final static String one2n(String regexpPiece) {
-    return regexpPiece + "+";
+    return regexpPiece + "++";
   }
 
   public final static String o2n(String regexpPiece) {
-    return regexpPiece + "*";
+    return regexpPiece + "*+";
   }
-  
-  public final static String anyButNot(String... character){
+
+  public final static String anyButNot(String... character) {
     StringBuilder result = new StringBuilder();
     result.append("[^");
     for (int i = 0; i < character.length; i++) {
