@@ -6,6 +6,7 @@
 package com.sonar.sslr.impl.channel;
 
 import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
+import static com.sonar.sslr.test.lexer.LexerMatchers.hasComment;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
@@ -33,7 +34,7 @@ public class RegexpChannelTest {
     channel = new RegexpChannel(GenericTokenType.COMMENT, "//.*");
     assertThat(channel, not(consume("This is not a comment", output)));
     assertThat(channel, consume("//My Comment\n second line", output));
-    assertThat(output, hasToken("//My Comment", GenericTokenType.COMMENT));
+    assertThat(output, hasComment("//My Comment"));
   }
 
   @Test
