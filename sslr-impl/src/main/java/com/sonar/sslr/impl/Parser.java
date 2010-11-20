@@ -44,15 +44,15 @@ public abstract class Parser<GRAMMAR extends Grammar> {
     this(grammar, lexer, decorators);
     this.rootRule = (RuleImpl) rootRule;
   }
-  
-  public void setDecorators(List<GrammarDecorator<GRAMMAR>> decorators){
+
+  public void setDecorators(List<GrammarDecorator<GRAMMAR>> decorators) {
     for (GrammarDecorator<GRAMMAR> decorator : decorators) {
       decorator.decorate(grammar);
     }
     rootRule = (RuleImpl) grammar.getRootRule();
   }
-  
-  public void setDecorators(GrammarDecorator<GRAMMAR>... decorators){
+
+  public void setDecorators(GrammarDecorator<GRAMMAR>... decorators) {
     setDecorators(Arrays.asList(decorators));
   }
 
@@ -78,15 +78,18 @@ public abstract class Parser<GRAMMAR extends Grammar> {
       } else {
         throw e;
       }
-    } finally{
+    } catch (StackOverflowError e) {
+      throw new RecognitionExceptionImpl("The grammar seems to contain a left recursion which is not compatible with LL(*) parser.",
+          parsingState, e);
+    } finally {
       afterEachFile();
     }
   }
 
-  public void beforeEachFile() {    
+  public void beforeEachFile() {
   }
-  
-  public void afterEachFile() {    
+
+  public void afterEachFile() {
   }
 
   public final ParsingState getParsingState() {
@@ -106,7 +109,7 @@ public abstract class Parser<GRAMMAR extends Grammar> {
   }
 
   public final void setRootRule(Rule rootRule) {
-    this.rootRule = (RuleImpl)rootRule;
+    this.rootRule = (RuleImpl) rootRule;
   }
 
   public String toString() {

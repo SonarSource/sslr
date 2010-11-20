@@ -23,6 +23,13 @@ public class RecognitionExceptionImpl extends RuntimeException implements Recogn
       line = parsingState.getOutpostMatcherToken().getLine();
     }
   }
+  
+  public RecognitionExceptionImpl(String message, ParsingState parsingState, Throwable e) {
+    super(message + "\n" + ParsingStackTrace.generateFullStackTrace(parsingState), e);
+    if (parsingState.getOutpostMatcherToken() != null) {
+      line = parsingState.getOutpostMatcherToken().getLine();
+    }
+  }
 
   public int getLine() {
     return line;
