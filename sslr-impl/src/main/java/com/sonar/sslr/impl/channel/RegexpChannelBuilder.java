@@ -9,7 +9,8 @@ import com.sonar.sslr.api.TokenType;
 
 public final class RegexpChannelBuilder {
 
-  public final static String DIGIT = "[0-9]";
+  public final static String DIGIT = "\\d";
+  public final static String ANY_CHAR = "[\\s\\S]";
   public final static String OCTAL_DIGIT = "[0-7]";
   public static final String HEXA_DIGIT = "[a-fA-F0-9]";
 
