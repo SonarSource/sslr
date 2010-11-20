@@ -8,7 +8,7 @@ package com.sonar.sslr.impl;
 
 public class LexerException extends RuntimeException {
 
-  public LexerException(String message, Exception e) {
+  public LexerException(String message, Throwable e) {
     super(message, e);
   }
 
