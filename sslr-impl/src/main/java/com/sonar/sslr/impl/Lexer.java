@@ -27,6 +27,9 @@ public abstract class Lexer {
 
   private Charset charset = Charset.defaultCharset();
 
+  private static final int DEFAULT_CODE_BUFFER_CAPACITY = 80000; // The default 8'000 buffer capacity is extended to 80'000 to be able to
+                                                                 // consume big comment
+
   private CodeReaderConfiguration configuration = new CodeReaderConfiguration();
 
   private Preprocessor[] preprocessors = new Preprocessor[0];
@@ -37,6 +40,8 @@ public abstract class Lexer {
 
   public Lexer(Charset defaultCharset) {
     this.charset = defaultCharset;
+    configuration = new CodeReaderConfiguration();
+    configuration.setBufferCapacity(DEFAULT_CODE_BUFFER_CAPACITY);
   }
 
   public void setPreprocessors(Preprocessor... preprocessors) {
