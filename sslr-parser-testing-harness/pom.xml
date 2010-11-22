@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.sonarsource.sslr</groupId>
 		<artifactId>sslr</artifactId>
-		<version>1.1</version>
+		<version>1.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>sslr-parser-testing-harness</artifactId>
 	<name>SonarSource :: Language Recognition :: Parser :: Testing Harness</name>
