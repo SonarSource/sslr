@@ -9,11 +9,11 @@
   <parent>
     <groupId>com.sonarsource.parent</groupId>
     <artifactId>parent</artifactId>
-    <version>5</version>
+    <version>8</version>
   </parent>
 
   <properties>
-    <sonar.version>2.4-RC1</sonar.version>
+    <sonar.version>2.4</sonar.version>
   </properties>
 
   <scm>
