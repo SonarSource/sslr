@@ -74,7 +74,7 @@ public abstract class Lexer {
       lex(reader, lexerOutput);
       return lexerOutput;
     } catch (FileNotFoundException e) {
-      throw new LexerException("Unable to open file '" + file.getName() + "'", e);
+      throw new LexerException("Unable to open file : " + file.getAbsolutePath(), e);
     } finally {
       IOUtils.closeQuietly(reader);
     }
@@ -90,7 +90,7 @@ public abstract class Lexer {
       endLexing(lexerOutput);
     } catch (Exception e) {
       throw new LexerException("Unable to lex source code at line : " + code.getLinePosition() + " and column : "
-          + code.getColumnPosition(), e);
+          + code.getColumnPosition() + " in file : " + lexerOutput.getFileAbsolutePath(), e);
     }
   }
 

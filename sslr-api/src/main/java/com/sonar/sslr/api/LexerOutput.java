@@ -94,6 +94,13 @@ public class LexerOutput {
     }
     return null;
   }
+  
+  public String getFileAbsolutePath() {
+    if (file != null) {
+      return file.getAbsolutePath();
+    }
+    return null;
+  }
 
   public int size() {
     return tokens.size();
