@@ -36,7 +36,7 @@ public class RuleImpl extends Matcher implements Rule {
       throw new IllegalStateException("The rule '" + name + "' hasn't beed defined.");
     }
     Token nextToken = parsingState.readToken(parsingState.lexerIndex);
-    if(lastToken == nextToken){ //left recursion must be stopped
+    if(lastToken == nextToken && parsingState.getParsingStack().contains(this)){ //left recursion must be stopped
       throw RecognitionExceptionImpl.create();
     }
     lastToken = nextToken;

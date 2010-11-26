@@ -25,4 +25,8 @@ public class ParsingStack {
   public RuleImpl pop() {
     return parsingStack.pop();
   }
+
+  public boolean contains(RuleImpl ruleImpl) {
+    return parsingStack.contains(ruleImpl);
+  }
 }
