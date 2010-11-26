@@ -56,12 +56,6 @@ class ProxyMatcher extends Matcher {
     return node;
   }
 
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-    proxiedMatcher.setParentRule(parentRule);
-  }
-
   public String toString() {
     return proxiedMatcher.toString();
   }

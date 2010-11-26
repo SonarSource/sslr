@@ -33,12 +33,6 @@ public class AdjacentMatcher extends Matcher {
   }
 
   @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-    matcher.parentRule = parentRule;
-  }
-
-  @Override
   public String toString() {
     StringBuilder expr = new StringBuilder("(");
     expr.append(matcher);

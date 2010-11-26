@@ -30,9 +30,4 @@ public class BooleanMatcher extends Matcher {
   public String toString() {
     return "" + internalState;
   }
-
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-  }
 }

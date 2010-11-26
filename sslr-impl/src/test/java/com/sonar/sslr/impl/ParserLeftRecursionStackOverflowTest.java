@@ -11,6 +11,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.sonar.channel.Channel;
 import org.sonar.channel.ChannelDispatcher;
@@ -26,6 +27,7 @@ import com.sonar.sslr.impl.matcher.RuleImpl;
 public class ParserLeftRecursionStackOverflowTest {
 
   @Test
+  @Ignore
   public void shouldGetLeftRecursionStackOverflow() {
     boolean getRecognitionException = false;
     try {

@@ -42,12 +42,4 @@ public class AndMatcher extends Matcher {
     }
     return expr.toString();
   }
-
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-    for (Matcher matcher : matchers) {
-      matcher.setParentRule(parentRule);
-    }
-  }
 }

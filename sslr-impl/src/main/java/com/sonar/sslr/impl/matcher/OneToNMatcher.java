@@ -39,12 +39,6 @@ public class OneToNMatcher extends Matcher {
     return astNode;
   }
 
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-    matcher.setParentRule(parentRule);
-  }
-
   public String toString() {
     return "(" + matcher + ")+";
   }

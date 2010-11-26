@@ -22,19 +22,13 @@ public class InclusiveTillMatcher extends Matcher {
   public AstNode match(ParsingState parsingState) {
     AstNode astNode = new AstNode(this, "tillMatcher", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
     StringBuilder builder = new StringBuilder();
-    while (!matcher.isMatching(parsingState)) {
+    while ( !matcher.isMatching(parsingState)) {
       builder.append(parsingState.popToken(this).getValue());
       builder.append(" ");
     }
     astNode.addChild(new AstNode(new Token(new WordsTokenType(), builder.toString())));
     astNode.addChild(matcher.match(parsingState));
     return astNode;
-  }
-
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-    matcher.setParentRule(parentRule);
   }
 
   public String toString() {

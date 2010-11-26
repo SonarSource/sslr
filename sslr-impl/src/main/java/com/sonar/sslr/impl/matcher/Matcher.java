@@ -19,8 +19,6 @@ public abstract class Matcher implements AstNodeSkippingPolicy {
 
   protected RuleImpl parentRule;
 
-  public abstract void setParentRule(RuleImpl parentRule);
-
   public RuleImpl getRule() {
     return parentRule;
   }
