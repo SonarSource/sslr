@@ -25,6 +25,7 @@ import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
+import com.sonar.sslr.impl.ParsingStack;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 
@@ -126,6 +127,7 @@ public class RuleImplTest {
     RuleImpl rule = new RuleImpl("MyRule");
     AstListener listener = mock(AstListener.class);
     ParsingState parsingState = mock(ParsingState.class);
+    parsingState.setParsingStack(new ParsingStack());
     Object output = mock(Object.class);
 
     rule.setListener(listener);
