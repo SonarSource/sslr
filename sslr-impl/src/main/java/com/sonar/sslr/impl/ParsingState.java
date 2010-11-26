@@ -9,7 +9,6 @@ package com.sonar.sslr.impl;
 import java.util.List;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleImpl;
@@ -47,20 +46,20 @@ public class ParsingState {
     return lexerIndex < lexerSize;
   }
 
-  public final void pushRuleToParsingStack(RuleImpl rule) {
-    parsingStack.push(rule);
+  public final ParsingStack getParsingStack() {
+    return parsingStack;
   }
 
   public final void setParsingStack(ParsingStack parsingStack) {
     this.parsingStack = parsingStack;
   }
-  
-  public void popParsingStack() {
-    parsingStack.pop();  
+
+  public final void popFromParsingStack() {
+    parsingStack.pop();
   }
 
-  public final ParsingStack getParsingStack() {
-    return parsingStack;
+  public final void pushToParsingStack(RuleImpl rule) {
+    parsingStack.push(rule);
   }
 
   public Token peekToken(int index, Matcher matcher) {

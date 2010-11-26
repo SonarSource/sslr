@@ -37,6 +37,9 @@ public class ParsingStackTrace {
       stackTrace.append("  at ").append(parsingStack.pop().toEBNFNotation()).append("\n");
       depth++;
     }
+    if (depth == parsingStackTraceDepth) {
+      stackTrace.append("  ...");
+    }
   }
 
   private void displaySourceCode() {

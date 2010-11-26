@@ -33,9 +33,9 @@ public class RuleImpl extends Matcher implements Rule {
     if (matcher == null) {
       throw new IllegalStateException("The rule '" + name + "' hasn't beed defined.");
     }
-    parsingState.pushRuleToParsingStack(this);
+    parsingState.pushToParsingStack(this);
     AstNode childNode = matcher.match(parsingState);
-    parsingState.popParsingStack();
+    parsingState.popFromParsingStack();
 
     AstNode astNode = new AstNode(this, name, parsingState.peekTokenIfExists(startIndex, matcher));
     astNode.setAstNodeListener(listener);
