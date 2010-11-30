@@ -11,12 +11,13 @@ import java.util.List;
 
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.matcher.Matcher;
+import com.sonar.sslr.impl.matcher.RuleImpl;
 import com.sonar.sslr.impl.matcher.TokenTypeMatcher;
 
 public class ParsingStackTrace {
 
   private final StringBuilder stackTrace = new StringBuilder();
-  private static final int PARSING_STACK_TRACE_DEPTH = 40;
+  private static final int STACK_TRACE_DEPTH = 8;
   private final ParsingState parsingState;
   private final static int SOURCE_CODE_TOKENS_WINDOW = 30;
   private final static int SOURCE_CODE_LINE_HEADER_WIDTH = 6;
@@ -28,18 +29,7 @@ public class ParsingStackTrace {
     }
     displayExpectedToken(parsingState.getOutpostMatcher());
     displayButWasToken(parsingState.getOutpostMatcherToken());
-    displayParsingStackTrace(parsingState.getParsingStack(), PARSING_STACK_TRACE_DEPTH);
-  }
-
-  private void displayParsingStackTrace(ParsingStack parsingStack, int parsingStackTraceDepth) {
-    int depth = 0;
-    while ( !parsingStack.empty() && depth < parsingStackTraceDepth) {
-      stackTrace.append("  at ").append(parsingStack.pop().toEBNFNotation()).append("\n");
-      depth++;
-    }
-    if (depth == parsingStackTraceDepth) {
-      stackTrace.append("  ...");
-    }
+    displayLastParentRules((RuleImpl) parsingState.getOutpostMatcher().getRule(), STACK_TRACE_DEPTH);
   }
 
   private void displaySourceCode() {
@@ -131,6 +121,16 @@ public class ParsingStackTrace {
       }
     }
     stackTrace.append("\n");
+  }
+
+  private void displayLastParentRules(RuleImpl ruleImpl, int level) {
+    if (level == 0 || ruleImpl == null) {
+      return;
+    }
+    stackTrace.append("  at ");
+    stackTrace.append(ruleImpl.toEBNFNotation());
+    stackTrace.append("\n");
+    displayLastParentRules(ruleImpl.getParentRule(), level - 1);
   }
 
   public static String generate(ParsingState state) {

@@ -46,6 +46,14 @@ public class ExclusiveTillMatcher extends Matcher {
     return true;
   }
 
+  @Override
+  public void setParentRule(RuleImpl parentRule) {
+    this.parentRule = parentRule;
+    for (Matcher matcher : matchers) {
+      matcher.setParentRule(parentRule);
+    }
+  }
+
   public String toString() {
     StringBuilder expr = new StringBuilder("(");
     for (int i = 0; i < matchers.length; i++) {

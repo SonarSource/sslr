@@ -23,6 +23,12 @@ public class OpMatcher extends Matcher {
     } else return null;
   }
 
+  @Override
+  public void setParentRule(RuleImpl parentRule) {
+    this.parentRule = parentRule;
+    matcher.setParentRule(parentRule);
+  }
+
   public String toString() {
     return "(" + matcher + ")?";
   }

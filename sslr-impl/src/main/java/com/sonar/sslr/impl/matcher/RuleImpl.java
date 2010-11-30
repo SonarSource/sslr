@@ -11,9 +11,7 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeSkippingPolicy;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.ast.AlwaysSkipFromAst;
 import com.sonar.sslr.impl.ast.NeverSkipFromAst;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
@@ -22,9 +20,9 @@ public class RuleImpl extends Matcher implements Rule {
 
   protected String name;
   protected Matcher matcher;
+  private boolean hasSeveralParents = false;
   private AstListener listener;
   private AstNodeType astNodeType = new NeverSkipFromAst();
-  private Token lastToken = null;
 
   public RuleImpl(String name) {
     this.name = name;
@@ -35,14 +33,7 @@ public class RuleImpl extends Matcher implements Rule {
     if (matcher == null) {
       throw new IllegalStateException("The rule '" + name + "' hasn't beed defined.");
     }
-    //Token nextToken = parsingState.readToken(parsingState.lexerIndex);
-    //if(lastToken == nextToken && parsingState.getParsingStack().contains(this)){ //left recursion must be stopped
-     // throw RecognitionExceptionImpl.create();
-    //}
-    //lastToken = nextToken;
-    parsingState.pushToParsingStack(this);
     AstNode childNode = matcher.match(parsingState);
-    parsingState.popFromParsingStack();
 
     AstNode astNode = new AstNode(this, name, parsingState.peekTokenIfExists(startIndex, matcher));
     astNode.setAstNodeListener(listener);
@@ -117,6 +108,22 @@ public class RuleImpl extends Matcher implements Rule {
 
   protected void setMatcher(Matcher matcher) {
     this.matcher = matcher;
+    matcher.setParentRule(this);
+  }
+
+  public void setParentRule(RuleImpl parentRule) {
+    if (this.parentRule != null && parentRule != this.parentRule) {
+      hasSeveralParents = true;
+    }
+    if (hasSeveralParents) {
+      this.parentRule = null;
+      return;
+    }
+    this.parentRule = parentRule;
+  }
+
+  public RuleImpl getParentRule() {
+    return parentRule;
   }
 
   public RuleImpl getRule() {

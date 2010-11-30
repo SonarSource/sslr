@@ -11,7 +11,6 @@ import java.util.List;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.matcher.Matcher;
-import com.sonar.sslr.impl.matcher.RuleImpl;
 
 public class ParsingState {
 
@@ -22,7 +21,6 @@ public class ParsingState {
   private Matcher outpostMatcher;
   private AstNode[] astNodeMemoization;
   private Matcher[] astMatcherMemoization;
-  private ParsingStack parsingStack = new ParsingStack();
 
   public ParsingState(List<Token> tokens) {
     this.tokens = tokens.toArray(new Token[0]);
@@ -44,22 +42,6 @@ public class ParsingState {
 
   public boolean hasNextToken() {
     return lexerIndex < lexerSize;
-  }
-
-  public final ParsingStack getParsingStack() {
-    return parsingStack;
-  }
-
-  public final void setParsingStack(ParsingStack parsingStack) {
-    this.parsingStack = parsingStack;
-  }
-
-  public final void popFromParsingStack() {
-    parsingStack.pop();
-  }
-
-  public final void pushToParsingStack(RuleImpl rule) {
-    parsingStack.push(rule);
   }
 
   public Token peekToken(int index, Matcher matcher) {
@@ -95,13 +77,14 @@ public class ParsingState {
   public int getOutpostMatcherTokenIndex() {
     return outpostMatcherTokenIndex;
   }
-
+  
   public int getOutpostMatcherTokenLine() {
-    if (outpostMatcherTokenIndex < lexerSize) {
+    if(outpostMatcherTokenIndex < lexerSize){
       return tokens[outpostMatcherTokenIndex].getLine();
     }
     return tokens[lexerSize - 1].getLine();
   }
+
 
   public void memoizeAst(Matcher matcher, AstNode astNode) {
     astNode.setToIndex(lexerIndex);

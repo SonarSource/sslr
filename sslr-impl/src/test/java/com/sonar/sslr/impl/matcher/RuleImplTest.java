@@ -12,19 +12,19 @@ import static com.sonar.sslr.impl.matcher.Matchers.opt;
 import static com.sonar.sslr.impl.matcher.Matchers.or;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.ParsingStack;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 
@@ -102,12 +102,30 @@ public class RuleImplTest {
   }
 
   @Test
-  @Ignore
+  public void testGetParentRule() {
+    assertSame(javaClassDefinition, javaClassDefinition.getRule());
+    assertSame(javaClassDefinition, opMatcher.getRule());
+  }
+
+  @Test
+  public void testSetParentRule() {
+    RuleImpl parentRule1 = new RuleImpl("ParentRule1");
+    RuleImpl parentRule2 = new RuleImpl("ParentRule2");
+
+    RuleImpl childRule = new RuleImpl("ChildRule");
+
+    parentRule1.is(childRule);
+    assertSame(parentRule1, childRule.getParentRule());
+
+    parentRule2.is(childRule);
+    assertNull(childRule.getParentRule());
+  }
+
+  @Test
   public void testSetAstNodeListener() {
     RuleImpl rule = new RuleImpl("MyRule");
     AstListener listener = mock(AstListener.class);
     ParsingState parsingState = mock(ParsingState.class);
-    parsingState.setParsingStack(new ParsingStack());
     Object output = mock(Object.class);
 
     rule.setListener(listener);

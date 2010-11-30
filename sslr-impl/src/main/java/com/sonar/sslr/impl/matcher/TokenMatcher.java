@@ -34,4 +34,8 @@ public abstract class TokenMatcher extends Matcher {
 
   protected abstract boolean isExpectedToken(Token token);
 
+  @Override
+  public void setParentRule(RuleImpl parentRule) {
+    this.parentRule = parentRule;
+  }
 }

@@ -26,6 +26,12 @@ public class NotMatcher extends Matcher {
     }
   }
 
+  @Override
+  public void setParentRule(RuleImpl parentRule) {
+    this.parentRule = parentRule;
+    matcher.setParentRule(parentRule);
+  }
+
   public String toString() {
     return "(" + matcher + ")!";
   }

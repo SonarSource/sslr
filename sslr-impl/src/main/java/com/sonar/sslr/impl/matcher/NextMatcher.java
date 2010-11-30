@@ -25,6 +25,12 @@ public class NextMatcher extends Matcher {
     throw RecognitionExceptionImpl.create();
   }
 
+  @Override
+  public void setParentRule(RuleImpl parentRule) {
+    this.parentRule = parentRule;
+    matcher.setParentRule(parentRule);
+  }
+
   public String toString() {
     return "(" + matcher + ")next";
   }

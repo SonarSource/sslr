@@ -23,6 +23,11 @@ public class TokenTypesMatcher extends TokenMatcher {
     }
   }
 
+  @Override
+  public void setParentRule(RuleImpl parentRule) {
+    this.parentRule = parentRule;
+  }
+
   public String toString() {
     return "tokenTypesMatcher()";
   }
