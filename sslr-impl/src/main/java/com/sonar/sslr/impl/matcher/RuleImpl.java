@@ -35,11 +35,11 @@ public class RuleImpl extends Matcher implements Rule {
     if (matcher == null) {
       throw new IllegalStateException("The rule '" + name + "' hasn't beed defined.");
     }
-    Token nextToken = parsingState.readToken(parsingState.lexerIndex);
-    if(lastToken == nextToken && parsingState.getParsingStack().contains(this)){ //left recursion must be stopped
-      throw RecognitionExceptionImpl.create();
-    }
-    lastToken = nextToken;
+    //Token nextToken = parsingState.readToken(parsingState.lexerIndex);
+    //if(lastToken == nextToken && parsingState.getParsingStack().contains(this)){ //left recursion must be stopped
+     // throw RecognitionExceptionImpl.create();
+    //}
+    //lastToken = nextToken;
     parsingState.pushToParsingStack(this);
     AstNode childNode = matcher.match(parsingState);
     parsingState.popFromParsingStack();
