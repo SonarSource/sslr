@@ -80,6 +80,19 @@ public class AstNodeTest {
     assertThat(parent.getChild(0), is(child1));
     assertThat(parent.getChild(1), is(child2));
   }
+  
+  @Test
+  public void testGetLastToken() {
+    Token lastToken = new Token(GenericTokenType.IDENTIFIER, "LAST_TOKEN");
+    AstNode parent = new AstNode(new NodeType(), "parent", null);
+    AstNode child1 = new AstNode(new NodeType(), "child1", null);
+    AstNode child2 = new AstNode(new NodeType(), "child2", lastToken);
+    parent.addChild(child1);
+    parent.addChild(child2);
+
+    assertThat(parent.getLastToken(), is(lastToken));
+    assertThat(child2.getLastToken(), is(lastToken));
+  }
 
   @Test(expected = IllegalStateException.class)
   public void testGetChildWithBadIndex() {

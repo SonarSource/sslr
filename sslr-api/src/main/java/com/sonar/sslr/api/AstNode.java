@@ -374,4 +374,12 @@ public class AstNode {
     }
     return result.toString();
   }
+
+  public Token getLastToken() {
+    AstNode lastAstNode = this;
+    while (lastAstNode.getLastChild() != null) {
+      lastAstNode = lastAstNode.getLastChild();
+    }
+    return lastAstNode.getToken();
+  }
 }
