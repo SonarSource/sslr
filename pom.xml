@@ -58,6 +58,11 @@
       </dependency>      
       <dependency>
         <groupId>org.codehaus.sonar</groupId>
+        <artifactId>sonar-graph</artifactId>
+        <version>${sonar.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.sonar</groupId>
         <artifactId>sonar-channel</artifactId>
         <version>${sonar.version}</version>
       </dependency>

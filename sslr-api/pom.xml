@@ -12,6 +12,10 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.codehaus.sonar</groupId>
+      <artifactId>sonar-graph</artifactId>
+    </dependency>
+    <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
