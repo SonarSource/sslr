@@ -85,6 +85,7 @@ public class AstWalkerTest {
     walker.addVisitor(astVisitor);
     walker.walkAndVisit(ast1);
     verify(astVisitor).visitFile(ast1);
+    verify(astVisitor).beforeLeaveFile(ast1);
     verify(astVisitor).leaveFile(ast1);
     verify(astVisitor, never()).visitNode(ast11);
   }
