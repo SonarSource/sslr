@@ -48,10 +48,22 @@ public class RuleImpl extends Matcher implements Rule {
     return false;
   }
 
+  /**
+   * ${@inheritDoc}
+   */
   public RuleImpl is(Object... matchers) {
     if (matcher != null) {
       throw new IllegalStateException("The rule '" + name + "' has already been defined somewhere in the grammar.");
     }
+    checkIfThereIsAtLeastOneMatcher(matchers);
+    setMatcher(Matchers.and(matchers));
+    return this;
+  }
+
+  /**
+   * ${@inheritDoc}
+   */
+  public RuleImpl override(Object... matchers) {
     checkIfThereIsAtLeastOneMatcher(matchers);
     setMatcher(Matchers.and(matchers));
     return this;

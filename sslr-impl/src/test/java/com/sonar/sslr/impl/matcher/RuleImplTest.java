@@ -77,8 +77,8 @@ public class RuleImplTest {
   @Test(expected = IllegalStateException.class)
   public void testMoreThanOneDefinitionForASigleRuleWithIs() {
     javaClassDefinition = new RuleImpl("JavaClassDefinition");
-    javaClassDefinition.is("");
-    javaClassDefinition.is("");
+    javaClassDefinition.is("option1");
+    javaClassDefinition.is("option2");
   }
 
   @Test(expected = IllegalStateException.class)
@@ -93,6 +93,22 @@ public class RuleImplTest {
     RuleImpl myRule = new RuleImpl("MyRule");
     myRule.is("option1");
     assertThat(myRule.toEBNFNotation(), is("MyRule := option1"));
+  }
+
+  @Test
+  public void testIs() {
+    RuleImpl myRule = new RuleImpl("MyRule");
+    myRule.is("option1");
+    assertThat(myRule.toEBNFNotation(), is("MyRule := option1"));
+  }
+
+  @Test
+  public void testOverride() {
+    RuleImpl myRule = new RuleImpl("MyRule");
+    myRule.is("option1");
+    assertThat(myRule.toEBNFNotation(), is("MyRule := option1"));
+    myRule.override("option2");
+    assertThat(myRule.toEBNFNotation(), is("MyRule := option2"));
   }
 
   @Test
