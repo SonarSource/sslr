@@ -93,6 +93,37 @@ public class AstNodeTest {
     assertThat(parent.getLastToken(), is(lastToken));
     assertThat(child2.getLastToken(), is(lastToken));
   }
+  
+  @Test
+  public void testGetTokens() {
+    Token child1Token = new Token(GenericTokenType.IDENTIFIER, "CHILD 1");
+    Token child2Token = new Token(GenericTokenType.IDENTIFIER, "CHILD 2");
+    AstNode parent = new AstNode(new NodeType(), "parent", null);
+    AstNode child1 = new AstNode(new NodeType(), "child1", child1Token);
+    AstNode child2 = new AstNode(new NodeType(), "child2", child2Token);
+    parent.addChild(child1);
+    parent.addChild(child2);
+
+    assertThat(parent.getTokens().size(), is(2));
+    assertThat(parent.getTokens().get(0), is(child1Token));
+    assertThat(parent.getTokens().get(1), is(child2Token));
+  }
+  
+  @Test
+  public void dumpSourceCode() {
+    Token child1Token = new Token(GenericTokenType.IDENTIFIER, "CHILD 1", 1, 2);
+    Token child2Token = new Token(GenericTokenType.IDENTIFIER, "CHILD 2", 1 , 12);
+    Token child3Token = new Token(GenericTokenType.IDENTIFIER, "CHILD 3", 2 , 0);
+    AstNode parent = new AstNode(new NodeType(), "parent", null);
+    AstNode child1 = new AstNode(new NodeType(), "child1", child1Token);
+    AstNode child2 = new AstNode(new NodeType(), "child2", child2Token);
+    AstNode child3 = new AstNode(new NodeType(), "child3", child3Token);
+    parent.addChild(child1);
+    parent.addChild(child2);
+    parent.addChild(child3);
+
+    assertThat(parent.dumpSourceCode(), is("  CHILD 1   CHILD 2\nCHILD 3"));
+  }
 
   @Test(expected = IllegalStateException.class)
   public void testGetChildWithBadIndex() {

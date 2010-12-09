@@ -364,6 +364,47 @@ public class AstNode {
     return type;
   }
 
+  /**
+   * Dump the partial source code covered by this node.
+   */
+  public String dumpSourceCode() {
+    StringBuilder result = new StringBuilder();
+    List<Token> tokens = getTokens();
+    int line = tokens.get(0).getLine();
+    int column = 0;
+    for (Token token : getTokens()) {
+      if (line != token.getLine()) {
+        result.append("\n");
+      }
+      for (int i = column; i < token.getColumn(); i++) {
+        result.append(' ');
+      }
+      result.append(token.getValue());
+      line = token.getLine();
+      column = token.getColumn() + token.getValue().toString().length();
+    }
+    return result.toString();
+  }
+
+  /**
+   * Return all tokens contained in this tree node. Those tokens can be directly or indirectly attached to this node.
+   */
+  public List<Token> getTokens() {
+    List<Token> tokens = new ArrayList<Token>();
+    if ( !hasChildren()) {
+      tokens.add(token);
+      return tokens;
+    }
+    for (AstNode child : children) {
+      if ( !child.hasChildren()) {
+        tokens.add(child.getToken());
+      } else {
+        tokens.addAll(child.getTokens());
+      }
+    }
+    return tokens;
+  }
+
   public String toString() {
     StringBuilder result = new StringBuilder();
     result.append(name);
