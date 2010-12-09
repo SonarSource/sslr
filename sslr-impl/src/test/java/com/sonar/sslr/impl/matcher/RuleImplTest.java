@@ -74,6 +74,20 @@ public class RuleImplTest {
     javaClassDefinition.or("keyword");
   }
 
+  @Test(expected = IllegalStateException.class)
+  public void testMoreThanOneDefinitionForASigleRuleWithIs() {
+    javaClassDefinition = new RuleImpl("JavaClassDefinition");
+    javaClassDefinition.is("");
+    javaClassDefinition.is("");
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void testMoreThanOneDefinitionForASigleRuleWithIsOr() {
+    javaClassDefinition = new RuleImpl("JavaClassDefinition");
+    javaClassDefinition.is("");
+    javaClassDefinition.isOr("");
+  }
+
   @Test
   public void testIsOr() {
     RuleImpl myRule = new RuleImpl("MyRule");

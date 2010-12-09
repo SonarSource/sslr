@@ -49,6 +49,9 @@ public class RuleImpl extends Matcher implements Rule {
   }
 
   public RuleImpl is(Object... matchers) {
+    if (matcher != null) {
+      throw new IllegalStateException("The rule '" + name + "' has already been defined somewhere in the grammar.");
+    }
     checkIfThereIsAtLeastOneMatcher(matchers);
     setMatcher(Matchers.and(matchers));
     return this;
@@ -69,6 +72,9 @@ public class RuleImpl extends Matcher implements Rule {
   }
 
   public RuleImpl isOr(Object... matchers) {
+    if (matcher != null) {
+      throw new IllegalStateException("The rule '" + name + "' has already been defined somewhere in the grammar.");
+    }
     checkIfThereIsAtLeastOneMatcher(matchers);
     setMatcher(Matchers.or(matchers));
     return this;
