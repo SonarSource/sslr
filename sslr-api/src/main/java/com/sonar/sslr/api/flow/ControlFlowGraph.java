@@ -7,6 +7,8 @@
 package com.sonar.sslr.api.flow;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.sonar.graph.DirectedGraph;
@@ -16,6 +18,7 @@ import com.sonar.sslr.api.AstNode;
 public class ControlFlowGraph {
 
   private DirectedGraph<Block, Path> graph = new DirectedGraph<Block, Path>();
+  private Map<AstNode, Block> statments = new HashMap<AstNode, Block>();
 
   private Block entryBlock;
 
@@ -39,16 +42,19 @@ public class ControlFlowGraph {
     return graph.getIncomingEdges(to);
   }
 
-  public void addBlock(Block block) {
+  public Block createBlock(AstNode firstStatement) {
+    Block block = new Block(firstStatement);
     graph.addVertex(block);
+    statments.put(firstStatement, block);
+    return block;
   }
 
   public Set<Block> getBlocks() {
     return graph.getVertices();
   }
 
-  public Block getBlockStartingAt(AstNode instruction) {
-    Block requestedBlock = new Block(instruction);
+  public Block getBlockStartingAt(AstNode statement) {
+    Block requestedBlock = new Block(statement);
     if (graph.getVertices().contains(requestedBlock)) {
       for (Block block : graph.getVertices()) {
         if (block.equals(requestedBlock)) {

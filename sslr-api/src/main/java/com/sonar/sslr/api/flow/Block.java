@@ -6,84 +6,35 @@
 
 package com.sonar.sslr.api.flow;
 
-import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.sonar.sslr.api.AstNode;
 
-public class Block implements Iterable<AstNode> {
+public class Block {
 
-  private final AstNode firstInstruction;
-  private AstNode lastInstruction;
-  private InstructionIterator iterator;
+  private final List<AstNode> stmts = new LinkedList<AstNode>();
+  private final AstNode firstStatement;
 
-  public Block(AstNode firstInstruction) {
-    this.firstInstruction = firstInstruction;
+  Block(AstNode firstStatement) {
+    stmts.add(firstStatement);
+    this.firstStatement = firstStatement;
   }
-
-  public void setLastInstruction(AstNode instruction) {
-    this.lastInstruction = instruction;
+  
+  public void addStatement(AstNode stmt){
+    stmts.add(stmt);
   }
 
   @Override
   public boolean equals(Object object) {
     if (object instanceof Block) {
-      return firstInstruction == ((Block) object).firstInstruction;
+      return firstStatement == ((Block) object).firstStatement;
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    return firstInstruction.hashCode();
-  }
-
-  public Iterator<AstNode> iterator() {
-    if (lastInstruction == null) {
-      throw new IllegalStateException("The last instruction of the block has not been defined.");
-    }
-    if (iterator == null) {
-      iterator = new InstructionIterator();
-    }
-    iterator.init();
-    return iterator;
-  }
-
-  private class InstructionIterator implements Iterator<AstNode> {
-
-    private final AstNode parent;
-    private int currentIndex;
-    private int fromInstructionIndex = -1;
-    private int toInstructionIndex = -1;
-
-    private InstructionIterator() {
-      parent = firstInstruction.getParent();
-      int childIndex = 0;
-      for (AstNode child : parent.getChildren()) {
-        if (child == firstInstruction) {
-          fromInstructionIndex = childIndex;
-        } else if (child == lastInstruction) {
-          toInstructionIndex = childIndex;
-          return;
-        }
-        childIndex++;
-      }
-      throw new IllegalStateException("The ");
-    }
-
-    public void init() {
-      currentIndex = fromInstructionIndex;
-    }
-
-    public boolean hasNext() {
-      return currentIndex <= toInstructionIndex;
-    }
-
-    public AstNode next() {
-      return parent.getChild(currentIndex++);
-    }
-
-    public void remove() {
-      throw new UnsupportedOperationException();
-    }
+    return firstStatement.hashCode();
   }
 }

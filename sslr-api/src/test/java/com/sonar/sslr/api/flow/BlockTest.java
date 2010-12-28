@@ -19,33 +19,6 @@ import com.sonar.sslr.api.AstNode;
 
 public class BlockTest {
 
-  @Test(expected = IllegalStateException.class)
-  public void shouldThrowExceptionWhenTryingToIterateWithoutLastInstruction() {
-    Block block = new Block(createAstNode("instruction"));
-    block.iterator();
-  }
-
-  @Test
-  public void shouldIterateOverInstructions() {
-    AstNode parent = createAstNode("parent");
-    AstNode instruction1 = createAstNode("instruction");
-    AstNode instruction2 = createAstNode("instruction");
-    AstNode instruction3 = createAstNode("instruction");
-    parent.addChild(instruction1);
-    parent.addChild(instruction2);
-    parent.addChild(instruction3);
-
-    Block block = new Block(instruction1);
-    block.setLastInstruction(instruction3);
-
-    Iterator<AstNode> instructions = block.iterator();
-    assertThat(instructions.hasNext(), is(true));
-    assertThat(instructions.next(), is(instruction1));
-    assertThat(instructions.next(), is(instruction2));
-    assertThat(instructions.next(), is(instruction3));
-    assertThat(instructions.hasNext(), is(false));
-  }
-
   @Test
   public void shouldBeEqualsWhenStartingWithTheSameInstruction() {
     AstNode instruction = createAstNode("instruction");

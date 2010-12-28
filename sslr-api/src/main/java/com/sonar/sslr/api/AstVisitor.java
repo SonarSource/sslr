@@ -26,16 +26,6 @@ public interface AstVisitor {
   void visitFile(AstNode ast);
 
   /**
-   * Called just before leaveFile(AstNode ast) method. This method is useful when an AstVisitor needs to share some information with others
-   * AstVisitors but can't compute this information without having visited the full AST. In that case, this method beforeLeaveFile(AstNode
-   * ast) must be implemented and the others visitor will be able to reused information in the leaveFile(AstNode ast) method.
-   * 
-   * @param ast
-   *          the root of the tree
-   */
-  void beforeLeaveFile(AstNode ast);
-
-  /**
    * Called once a computation unit tree has been fully visited. Ideal place to report on information collected while processing a tree.
    * 
    * @param ast
