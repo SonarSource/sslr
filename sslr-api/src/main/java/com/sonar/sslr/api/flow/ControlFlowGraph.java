@@ -35,6 +35,10 @@ public class ControlFlowGraph {
     graph.addEdge(path);
   }
 
+  public boolean hasPath(Block from, Block to) {
+    return graph.hasEdge(from, to);
+  }
+
   public Collection<Path> getOutgoingPaths(Block from) {
     return graph.getOutgoingEdges(from);
   }

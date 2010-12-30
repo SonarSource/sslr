@@ -56,4 +56,9 @@ public class Path implements Edge<Block> {
   public int getWeight() {
     throw new UnsupportedOperationException();
   }
+  
+  @Override
+  public String toString(){
+    return "Path between " + getFrom() + " and " + getTo();
+  }
 }

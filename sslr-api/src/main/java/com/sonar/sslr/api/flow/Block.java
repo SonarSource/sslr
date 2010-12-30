@@ -49,4 +49,9 @@ public class Block {
   public AstNode getLastStatement() {
     return stmts.get(stmts.size() - 1);
   }
+
+  @Override
+  public String toString() {
+    return "Block starting with statement '" + getFirstStatement() + "' and ending with statement '" + getLastStatement() + "'";
+  }
 }
