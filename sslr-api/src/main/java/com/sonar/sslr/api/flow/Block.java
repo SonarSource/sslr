@@ -20,8 +20,8 @@ public class Block {
     stmts.add(firstStatement);
     this.firstStatement = firstStatement;
   }
-  
-  public void addStatement(AstNode stmt){
+
+  void addStatement(AstNode stmt) {
     stmts.add(stmt);
   }
 
@@ -43,7 +43,7 @@ public class Block {
   }
 
   public AstNode getFirstStatement() {
-    return stmts.get(0);
+    return firstStatement;
   }
 
   public AstNode getLastStatement() {

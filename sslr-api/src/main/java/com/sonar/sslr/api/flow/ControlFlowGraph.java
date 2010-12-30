@@ -42,26 +42,33 @@ public class ControlFlowGraph {
     return graph.getIncomingEdges(to);
   }
 
-  public Block createBlock(AstNode firstStatement) {
-    Block block = new Block(firstStatement);
+  public Block createBlock(AstNode firstStmt) {
+    if (oneBlockContains(firstStmt)) {
+      throw new IllegalStateException("One block already contains the statement : " + firstStmt);
+    }
+    Block block = new Block(firstStmt);
     graph.addVertex(block);
-    statments.put(firstStatement, block);
+    statments.put(firstStmt, block);
     return block;
+  }
+
+  public Block getBlockContaining(AstNode stmt) {
+    return statments.get(stmt);
+  }
+
+  public boolean oneBlockContains(AstNode stmt) {
+    return statments.containsKey(stmt);
+  }
+
+  public void addStatement(Block block, AstNode stmt) {
+    if (oneBlockContains(stmt)) {
+      throw new IllegalStateException("One block already contains the statement : " + stmt);
+    }
+    statments.put(stmt, block);
+    block.addStatement(stmt);
   }
 
   public Set<Block> getBlocks() {
     return graph.getVertices();
-  }
-
-  public Block getBlockStartingAt(AstNode statement) {
-    Block requestedBlock = new Block(statement);
-    if (graph.getVertices().contains(requestedBlock)) {
-      for (Block block : graph.getVertices()) {
-        if (block.equals(requestedBlock)) {
-          return block;
-        }
-      }
-    }
-    return null;
   }
 }

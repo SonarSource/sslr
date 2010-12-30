@@ -11,8 +11,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
-import java.util.Iterator;
-
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
@@ -21,20 +19,39 @@ public class BlockTest {
 
   @Test
   public void shouldBeEqualsWhenStartingWithTheSameInstruction() {
-    AstNode instruction = createAstNode("instruction");
-    assertThat(new Block(instruction), equalTo(new Block(instruction)));
+    AstNode stmt = createAstNode("stmt");
+    assertThat(new Block(stmt), equalTo(new Block(stmt)));
 
-    AstNode anotherInstruction = createAstNode("instruction");
-    assertThat(new Block(anotherInstruction), not(equalTo(new Block(instruction))));
+    AstNode anotherStmt = createAstNode("stmt");
+    assertThat(new Block(anotherStmt), not(equalTo(new Block(stmt))));
   }
 
   @Test
   public void shouldHaveTheSameHashcodeWhenStartingWithTheSameInstruction() {
-    AstNode instruction = createAstNode("instruction");
-    assertThat(new Block(instruction).hashCode(), is(new Block(instruction).hashCode()));
+    AstNode stmt = createAstNode("stmt");
+    assertThat(new Block(stmt).hashCode(), is(new Block(stmt).hashCode()));
 
-    AstNode anotherInstruction = createAstNode("instruction");
-    assertThat(new Block(anotherInstruction).hashCode(), not(is(new Block(instruction).hashCode())));
+    AstNode anotherStmt = createAstNode("stmt");
+    assertThat(new Block(anotherStmt).hashCode(), not(is(new Block(stmt).hashCode())));
+  }
+
+  @Test
+  public void shouldGetLastStatement() {
+    Block block = new Block(createAstNode("stmt1"));
+    block.addStatement(createAstNode("stmt2"));
+    AstNode lastStmt = createAstNode("lastStmt");
+    block.addStatement(lastStmt);
+
+    assertThat(block.getLastStatement(), is(lastStmt));
+  }
+
+  @Test
+  public void shouldGetFirstStatement() {
+    AstNode firstStmt = createAstNode("firstStmt");
+    Block block = new Block(firstStmt);
+    block.addStatement(createAstNode("stmt2"));
+
+    assertThat(block.getFirstStatement(), is(firstStmt));
   }
 
 }
