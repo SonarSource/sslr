@@ -14,17 +14,17 @@ public class Path implements Edge<Block> {
 
   private Block from;
   private Block to;
-  private PathType type;
+  private ConditionalPathType type;
 
   public Path(Block from, Block to) {
     this.from = from;
     this.to = to;
   }
 
-  public Path(Block from, Block to, AstNode condition) {
+  public Path(Block from, Block to, AstNode condition, boolean expectedConditionValue) {
     this.from = from;
     this.to = to;
-    this.type = new ConditionalPathType(condition);
+    this.type = new ConditionalPathType(condition, expectedConditionValue);
   }
 
   public Block getFrom() {
@@ -37,6 +37,10 @@ public class Path implements Edge<Block> {
 
   public boolean isConditionalPath() {
     return type != null && type instanceof ConditionalPathType;
+  }
+
+  public ConditionalPathType getConditionalPathType() {
+    return type;
   }
 
   public int getWeight() {
