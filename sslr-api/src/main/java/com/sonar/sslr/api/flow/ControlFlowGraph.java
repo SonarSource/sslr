@@ -8,6 +8,7 @@ package com.sonar.sslr.api.flow;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,14 +21,14 @@ public class ControlFlowGraph {
   private DirectedGraph<Block, Path> graph = new DirectedGraph<Block, Path>();
   private Map<AstNode, Block> statments = new HashMap<AstNode, Block>();
 
-  private Block entryBlock;
+  private Set<Block> entryBlocks = new HashSet<Block>();
 
-  public void setEntryBlock(Block block) {
-    this.entryBlock = block;
+  public void addEntryBlock(Block block) {
+    entryBlocks.add(block);
   }
 
-  public Block getEntryBlock() {
-    return entryBlock;
+  public Set<Block> getEntryBlocks() {
+    return entryBlocks;
   }
 
   public void addPath(Path path) {
