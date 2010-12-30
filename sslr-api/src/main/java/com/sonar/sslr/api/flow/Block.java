@@ -37,4 +37,16 @@ public class Block {
   public int hashCode() {
     return firstStatement.hashCode();
   }
+
+  public List<AstNode> getStatements() {
+    return stmts;
+  }
+
+  public AstNode getFirstStatement() {
+    return stmts.get(0);
+  }
+
+  public AstNode getLastStatement() {
+    return stmts.get(stmts.size() - 1);
+  }
 }

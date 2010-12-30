@@ -22,6 +22,7 @@ public class AstNode {
   private String name;
   private Token token;
   private List<AstNode> children;
+  private int childIndex = -1;
   private AstNode parent;
   private int fromIndex;
   private int toIndex;
@@ -53,16 +54,20 @@ public class AstNode {
       }
       if (child.hasToBeSkippedFromAst()) {
         if (child.hasChildren()) {
-          children.addAll(child.children);
           for (AstNode subChild : child.children) {
-            subChild.parent = this;
+            addChildToList(subChild);
           }
         }
       } else {
-        children.add(child);
-        child.parent = this;
+        addChildToList(child);
       }
     }
+  }
+
+  private void addChildToList(AstNode child) {
+    children.add(child);
+    child.childIndex = children.size() - 1;
+    child.parent = this;
   }
 
   /**
@@ -103,6 +108,9 @@ public class AstNode {
     return children.get(index);
   }
 
+  /**
+   * Get the next sibling AstNode in the tree and if this node doesn't exist try to get the next AST Node of the parent.
+   */
   public AstNode nextAstNode() {
     AstNode nextSibling = nextSibling();
     if (nextSibling != null) {
@@ -123,11 +131,8 @@ public class AstNode {
     if (parent == null) {
       return null;
     }
-    for (int i = 0; i < parent.children.size(); i++) {
-      AstNode child = parent.children.get(i);
-      if (child == this && parent.children.size() > i + 1) {
-        return parent.children.get(i + 1);
-      }
+    if (parent.getNumberOfChildren() > childIndex + 1) {
+      return parent.children.get(childIndex + 1);
     }
     return null;
   }
@@ -141,11 +146,8 @@ public class AstNode {
     if (parent == null) {
       return null;
     }
-    for (int i = 0; i < parent.children.size(); i++) {
-      AstNode child = parent.children.get(i);
-      if (child == this && i > 0) {
-        return parent.children.get(i - 1);
-      }
+    if (childIndex > 0) {
+      return parent.children.get(childIndex - 1);
     }
     return null;
   }
