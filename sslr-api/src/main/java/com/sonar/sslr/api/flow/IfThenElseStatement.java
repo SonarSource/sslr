@@ -8,22 +8,25 @@ package com.sonar.sslr.api.flow;
 
 import com.sonar.sslr.api.AstNode;
 
-public class ConditionalPathType extends PathType {
+public class IfThenElseStatement extends Statement {
 
   private final AstNode condition;
-  private final boolean expectedValue;
+  private boolean elseBranch = false;
 
-  public ConditionalPathType(AstNode condition, boolean expectedValue) {
+  public IfThenElseStatement(AstNode stmtAstNode, AstNode condition) {
+    super(stmtAstNode);
     this.condition = condition;
-    this.expectedValue = expectedValue;
   }
 
   public AstNode getCondition() {
     return condition;
   }
 
-  public boolean getExpectedResult() {
-    return expectedValue;
+  public void setElseBranch() {
+    this.elseBranch = true;
   }
 
+  public boolean hasElseBranch() {
+    return elseBranch;
+  }
 }
