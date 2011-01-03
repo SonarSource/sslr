@@ -39,4 +39,12 @@ public class Block {
       return stmts.get(stmts.size() - 1);
     }
   }
+  
+  public Statement getFirstStatement() {
+    if (stmts.isEmpty()) {
+      return null;
+    } else {
+      return stmts.get(0);
+    }
+  }
 }

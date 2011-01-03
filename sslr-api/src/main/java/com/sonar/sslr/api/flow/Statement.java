@@ -11,6 +11,7 @@ import com.sonar.sslr.api.AstNode;
 public class Statement {
 
   private final AstNode stmtAstNode;
+  private StatementFlowHandler flowHandler;
 
   public Statement(AstNode stmtAstNode) {
     this.stmtAstNode = stmtAstNode;
@@ -25,7 +26,15 @@ public class Statement {
     return "Statement (" + stmtAstNode + ")";
   }
 
-  public void handleVisit(ControlFlowWalker flowWalker) {
-    flowWalker.visitStatement(this);
+  public void setFlowHandler(StatementFlowHandler flowHandler) {
+    this.flowHandler = flowHandler;
+  }
+
+  public StatementFlowHandler getFlowHandler() {
+    return flowHandler;
+  }
+
+  public boolean isControlFlowStatement() {
+    return flowHandler != null;
   }
 }

@@ -13,28 +13,26 @@ import java.util.Set;
 
 import com.sonar.sslr.api.AstNode;
 
-public class ControlFlow {
+public class ControlFlowGraph {
 
   private Map<Statement, Block> statments = new HashMap<Statement, Block>();
   private Map<AstNode, Statement> stmtAstNodes = new HashMap<AstNode, Statement>();
 
-  public void addStatement(Block block, Statement stmt) {
+  public final void addStatement(Block block, Statement stmt) {
     statments.put(stmt, block);
     stmtAstNodes.put(stmt.getAstNode(), stmt);
     block.addStatement(stmt);
   }
 
-  public Set<Block> getBlocks() {
+  public final Set<Block> getBlocks() {
     return new HashSet<Block>(statments.values());
   }
 
-  public void visitPathsFrom(AstNode stmt, PathVisitor... visitors) {
-    visitPathsFrom(stmtAstNodes.get(stmt), visitors);
+  public final Block getBlock(Statement stmt) {
+    return statments.get(stmt);
   }
 
-  public void visitPathsFrom(Statement stmt, PathVisitor... visitors) {
-    Block block = statments.get(stmt);
-    ControlFlowWalker walker = new ControlFlowWalker(block, block.indexOf(stmt), visitors);
-    walker.start();
+  public final Statement getStatement(AstNode stmtNode) {
+    return stmtAstNodes.get(stmtNode);
   }
 }
