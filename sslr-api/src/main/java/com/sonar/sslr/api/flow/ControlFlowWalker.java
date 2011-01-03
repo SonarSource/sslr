@@ -36,11 +36,16 @@ class ControlFlowWalker {
   }
 
   public void start() {
+    for (int i = 0; i < visitors.length; i++) {
+      visitors[i].start();
+    }
     visitPathsFrom(firstBlock, indexOfFirstStmt);
     while ( !branches.empty()) {
       branches.pop().getControlFlowStmt().handleVisit(this);
     }
-
+    for (int i = 0; i < visitors.length; i++) {
+      visitors[i].end();
+    }
   }
 
   public void endPath() {

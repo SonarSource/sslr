@@ -31,4 +31,12 @@ public class Block {
     }
     return -1;
   }
+
+  public Statement getLastStatement() {
+    if (stmts.isEmpty()) {
+      return null;
+    } else {
+      return stmts.get(stmts.size() - 1);
+    }
+  }
 }

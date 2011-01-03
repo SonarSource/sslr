@@ -12,7 +12,7 @@ public class Statement {
 
   private final AstNode stmtAstNode;
 
-  Statement(AstNode stmtAstNode) {
+  public Statement(AstNode stmtAstNode) {
     this.stmtAstNode = stmtAstNode;
   }
 
