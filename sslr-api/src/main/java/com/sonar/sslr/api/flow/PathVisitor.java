@@ -14,7 +14,7 @@ public abstract class PathVisitor {
   
   public abstract void visitBranch(Statement stmt);
   
-  public abstract void leaveBranch(Statement stmt);
+  public abstract void leaveBranch();
   
   public abstract void endPath();
   

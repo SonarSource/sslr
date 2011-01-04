@@ -17,7 +17,7 @@ public class EmptyPathVisitor extends PathVisitor {
   public void visitBranch(Statement stmt) {
   }
 
-  public void leaveBranch(Statement stmt) {
+  public void leaveBranch() {
   }
 
   public void endPath() {

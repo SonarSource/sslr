@@ -8,12 +8,12 @@ package com.sonar.sslr.api.flow;
 
 public abstract class StatementFlowHandler {
 
-  public abstract void process(PathFinder flowWalker, ControlFlowStack stack);
+  public abstract void process(PathFinder pathFinder, ControlFlowStack stack);
 
   public boolean shouldStopCurrentPath() {
     return false;
   }
 
-  public void exploreNewBranch(PathFinder flowWalker, ControlFlowStack stack) {
+  public void exploreNewBranch(PathFinder pathFinder, ControlFlowStack stack) {
   }
 }

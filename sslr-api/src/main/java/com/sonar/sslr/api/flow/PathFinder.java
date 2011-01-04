@@ -25,20 +25,20 @@ public class PathFinder {
     this.graph = graph;
   }
 
-  public void visitPathsFrom(Block block) {
-    visitPathsFrom(block, 0);
+  public void visitPath(Block block) {
+    visitPaths(block, 0);
   }
 
-  public void visitPathsFrom(Statement stmt) {
+  public void visitPath(Statement stmt) {
     Block block = graph.getBlock(stmt);
-    visitPathsFrom(block, block.indexOf(stmt));
+    visitPaths(block, block.indexOf(stmt));
   }
 
-  public void visitPathsFrom(AstNode stmtNode) {
-    visitPathsFrom(graph.getStatement(stmtNode));
+  public void visitPath(AstNode stmtNode) {
+    visitPath(graph.getStatement(stmtNode));
   }
 
-  private void visitPathsFrom(Block block, int indexOfFirstStmt) {
+  private void visitPaths(Block block, int indexOfFirstStmt) {
     if ( !pathFinderStarted) {
       this.indexOfFirstStmt = indexOfFirstStmt;
       firstBlock = block;
@@ -70,11 +70,23 @@ public class PathFinder {
       visitors[i].visitStatment(currentStmt);
     }
   }
+  
+  public void visitBranch() {
+    for (int i = 0; i < visitors.length; i++) {
+      visitors[i].visitBranch(currentStmt);
+    }
+  }
+  
+  public void leaveBranch() {
+    for (int i = 0; i < visitors.length; i++) {
+      visitors[i].leaveBranch();
+    }
+  }
 
   public void start() {
     pathFinderStarted = true;
     visitStart();
-    visitPathsFrom(firstBlock, indexOfFirstStmt);
+    visitPaths(firstBlock, indexOfFirstStmt);
     while (controlFlowStack.hasBranchesToExplore()) {
       controlFlowStack.peekBranchToExplore().exploreNewBranch(this, controlFlowStack);
     }
