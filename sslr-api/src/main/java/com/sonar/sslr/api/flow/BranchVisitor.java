@@ -8,15 +8,21 @@ package com.sonar.sslr.api.flow;
 
 public abstract class BranchVisitor {
   
-  public abstract void start();
+  public void start() {
+  }
 
-  public abstract void visitStatment(Statement stmt);
-  
-  public abstract void visitBranch(Statement stmt);
-  
-  public abstract void leaveBranch();
-  
-  public abstract void endPath();
-  
-  public abstract void end();
+  public void visitStatment(Statement stmt) {
+  }
+
+  public void visitBranch(Statement stmt) {
+  }
+
+  public void leaveBranch() {
+  }
+
+  public void endPath() {
+  }
+
+  public void end() {
+  }
 }
