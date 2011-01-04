@@ -16,6 +16,7 @@ public class BranchExplorer {
   private final BranchVisitor[] visitors;
   private final ControlFlowStack controlFlowStack = new ControlFlowStack();
   private Statement currentStmt;
+  private Statement lastEndPathStmt;
   private Block firstBlock;
   private int indexOfFirstStmt;
   private boolean pathFinderStarted = false;
@@ -57,12 +58,18 @@ public class BranchExplorer {
         }
       }
     }
+    if(block == firstBlock){
+      visitEndPath();
+    }
   }
 
-  private void visitEndPath() {
-    for (int i = 0; i < visitors.length; i++) {
-      visitors[i].endPath();
+  public void visitEndPath() {
+    if (currentStmt != lastEndPathStmt) {
+      for (int i = 0; i < visitors.length; i++) {
+        visitors[i].endPath();
+      }
     }
+    lastEndPathStmt = currentStmt;
   }
 
   private void visitStatement() {
@@ -70,13 +77,13 @@ public class BranchExplorer {
       visitors[i].visitStatment(currentStmt);
     }
   }
-  
+
   public void visitBranch() {
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].visitBranch(currentStmt);
     }
   }
-  
+
   public void leaveBranch() {
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].leaveBranch();
