@@ -28,4 +28,8 @@ public class ControlFlowStack {
     return branches.pop();
   }
 
+  public boolean contains(StatementFlowHandler flowHandler) {
+    return branches.contains(flowHandler);
+  }
+
 }
