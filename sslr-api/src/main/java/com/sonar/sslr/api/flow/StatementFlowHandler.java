@@ -10,7 +10,9 @@ public abstract class StatementFlowHandler {
 
   public abstract void process(PathFinder flowWalker, ControlFlowStack stack);
 
-  public abstract boolean shouldStopCurrentPath();
+  public boolean shouldStopCurrentPath() {
+    return false;
+  }
 
   public void exploreNewBranch(PathFinder flowWalker, ControlFlowStack stack) {
   }
