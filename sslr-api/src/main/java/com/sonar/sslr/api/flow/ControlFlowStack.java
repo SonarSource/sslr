@@ -12,19 +12,19 @@ public class ControlFlowStack {
 
   private final Stack<StatementFlowHandler> branches = new Stack<StatementFlowHandler>();
 
-  public final boolean hasBranchesToExplore() {
-    return !branches.isEmpty();
+  public final boolean isEmpty() {
+    return branches.isEmpty();
   }
 
-  public final void addNewBranchToExplore(StatementFlowHandler flowHandler) {
+  public final void add(StatementFlowHandler flowHandler) {
     branches.push(flowHandler);
   }
 
-  public final StatementFlowHandler peekBranchToExplore() {
+  public final StatementFlowHandler peek() {
     return branches.peek();
   }
 
-  public StatementFlowHandler popBranchToExplore() {
+  public StatementFlowHandler pop() {
     return branches.pop();
   }
 

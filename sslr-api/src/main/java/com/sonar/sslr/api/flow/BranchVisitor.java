@@ -6,7 +6,7 @@
 
 package com.sonar.sslr.api.flow;
 
-public abstract class PathVisitor {
+public abstract class BranchVisitor {
   
   public abstract void start();
 

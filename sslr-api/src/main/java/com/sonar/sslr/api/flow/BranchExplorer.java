@@ -10,35 +10,35 @@ import java.util.List;
 
 import com.sonar.sslr.api.AstNode;
 
-public class PathFinder {
+public class BranchExplorer {
 
   private final ControlFlowGraph graph;
-  private final PathVisitor[] visitors;
+  private final BranchVisitor[] visitors;
   private final ControlFlowStack controlFlowStack = new ControlFlowStack();
   private Statement currentStmt;
   private Block firstBlock;
   private int indexOfFirstStmt;
   private boolean pathFinderStarted = false;
 
-  public PathFinder(ControlFlowGraph graph, PathVisitor... visitors) {
+  public BranchExplorer(ControlFlowGraph graph, BranchVisitor... visitors) {
     this.visitors = visitors;
     this.graph = graph;
   }
 
-  public void visitPath(Block block) {
-    visitPaths(block, 0);
+  public void visit(Block block) {
+    visit(block, 0);
   }
 
-  public void visitPath(Statement stmt) {
+  public void visit(Statement stmt) {
     Block block = graph.getBlock(stmt);
-    visitPaths(block, block.indexOf(stmt));
+    visit(block, block.indexOf(stmt));
   }
 
-  public void visitPath(AstNode stmtNode) {
-    visitPath(graph.getStatement(stmtNode));
+  public void visit(AstNode stmtNode) {
+    visit(graph.getStatement(stmtNode));
   }
 
-  private void visitPaths(Block block, int indexOfFirstStmt) {
+  private void visit(Block block, int indexOfFirstStmt) {
     if ( !pathFinderStarted) {
       this.indexOfFirstStmt = indexOfFirstStmt;
       firstBlock = block;
@@ -86,10 +86,7 @@ public class PathFinder {
   public void start() {
     pathFinderStarted = true;
     visitStart();
-    visitPaths(firstBlock, indexOfFirstStmt);
-    while (controlFlowStack.hasBranchesToExplore()) {
-      controlFlowStack.peekBranchToExplore().exploreNewBranch(this, controlFlowStack);
-    }
+    visit(firstBlock, indexOfFirstStmt);
     visitEnd();
   }
 
