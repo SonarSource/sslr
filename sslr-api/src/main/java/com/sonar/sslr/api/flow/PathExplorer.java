@@ -7,10 +7,12 @@
 package com.sonar.sslr.api.flow;
 
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import com.sonar.sslr.api.AstNode;
 
-public class PathExplorer {
+public class PathExplorer implements Observer {
 
   private final ControlFlowGraph graph;
   private final PathVisitor[] visitors;
@@ -23,6 +25,9 @@ public class PathExplorer {
 
   public PathExplorer(ControlFlowGraph graph, PathVisitor... visitors) {
     this.visitors = visitors;
+    for (PathVisitor visitor : visitors) {
+      visitor.addObserver(this);
+    }
     this.graph = graph;
   }
 
@@ -58,7 +63,7 @@ public class PathExplorer {
         }
       }
     }
-    if(block == firstBlock){
+    if (block == firstBlock) {
       visitEndPath();
     }
   }
@@ -74,13 +79,13 @@ public class PathExplorer {
 
   private void visitStatement() {
     for (int i = 0; i < visitors.length; i++) {
-      visitors[i].visitStatment(currentStmt);
+      visitors[i].visitStatement(currentStmt);
     }
   }
 
   public void visitBranch() {
     for (int i = 0; i < visitors.length; i++) {
-      visitors[i].visitBranch(currentStmt);
+      visitors[i].visitBranch();
     }
   }
 
@@ -93,7 +98,11 @@ public class PathExplorer {
   public void start() {
     pathFinderStarted = true;
     visitStart();
-    visit(firstBlock, indexOfFirstStmt);
+    try {
+      visit(firstBlock, indexOfFirstStmt);
+    } catch (StopExploring e) {
+
+    }
     visitEnd();
   }
 
@@ -107,5 +116,12 @@ public class PathExplorer {
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].start();
     }
+  }
+
+  public void update(Observable o, Object arg) {
+    throw new StopExploring();
+  }
+
+  private class StopExploring extends RuntimeException {
   }
 }

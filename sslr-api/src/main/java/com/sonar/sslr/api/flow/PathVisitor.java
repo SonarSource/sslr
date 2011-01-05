@@ -6,15 +6,17 @@
 
 package com.sonar.sslr.api.flow;
 
-public abstract class PathVisitor {
+import java.util.Observable;
+
+public abstract class PathVisitor extends Observable {
   
   public void start() {
   }
 
-  public void visitStatment(Statement stmt) {
+  public void visitStatement(Statement stmt) {
   }
 
-  public void visitBranch(Statement stmt) {
+  public void visitBranch() {
   }
 
   public void leaveBranch() {
@@ -24,5 +26,10 @@ public abstract class PathVisitor {
   }
 
   public void end() {
+  }
+  
+  protected final void stopVisitingPath(){
+    setChanged();
+    notifyObservers();
   }
 }
