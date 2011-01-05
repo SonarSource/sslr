@@ -6,7 +6,6 @@
 
 package com.sonar.sslr.api.flow;
 
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -14,105 +13,95 @@ import com.sonar.sslr.api.AstNode;
 
 public class ExecutionFlowExplorer implements Observer {
 
-  private final ExecutionFlow graph;
+  private final ExecutionFlow executionFlow;
   private final ExecutionFlowVisitor[] visitors;
-  private final ExecutionFlowStack controlFlowStack = new ExecutionFlowStack();
-  private Statement currentStmt;
+  private final ExecutionFlowStack executionFlowStack = new ExecutionFlowStack();
+  private Statement lastStmt;
   private Statement lastEndPathStmt;
-  private Block firstBlock;
-  private int indexOfFirstStmt;
-  private boolean pathFinderStarted = false;
+  private Statement firstStmt;
+  private boolean executionFlowStarted = false;
 
-  public ExecutionFlowExplorer(ExecutionFlow graph, ExecutionFlowVisitor... visitors) {
+  public ExecutionFlowExplorer(ExecutionFlow executionFlow, ExecutionFlowVisitor... visitors) {
     this.visitors = visitors;
     for (ExecutionFlowVisitor visitor : visitors) {
       visitor.addObserver(this);
     }
-    this.graph = graph;
-  }
-
-  public void visitPath(Block block) {
-    visitPath(block, 0);
-  }
-
-  public void visitPath(Statement stmt) {
-    Block block = graph.getBlock(stmt);
-    visitPath(block, block.indexOf(stmt));
+    this.executionFlow = executionFlow;
   }
 
   public void visitPath(AstNode stmtNode) {
-    visitPath(graph.getStatement(stmtNode));
+    visitPath(executionFlow.getStatement(stmtNode));
   }
 
-  private void visitPath(Block block, int indexOfFirstStmt) {
-    if ( !pathFinderStarted) {
-      this.indexOfFirstStmt = indexOfFirstStmt;
-      firstBlock = block;
+  public void visitPath(Statement stmt) {
+    if ( !executionFlowStarted) {
+      this.firstStmt = stmt;
       return;
     }
-    List<Statement> stmts = block.getStatements();
-    for (int i = indexOfFirstStmt; i < stmts.size(); i++) {
-      currentStmt = stmts.get(i);
-      visitStatement();
+    Statement currentStmt = stmt;
+    do {
+      lastStmt = currentStmt;
+      callVisitStatementOnVisitors();
       if (currentStmt.hasFlowHandler()) {
         FlowHandler flowHandler = currentStmt.getFlowHandler();
-        flowHandler.processFlow(this, controlFlowStack);
+        flowHandler.processFlow(this, executionFlowStack);
         if (flowHandler.shouldStopCurrentPath()) {
-          visitEndPath();
+          callEndPathOnVisitors();
           return;
         }
       }
-    }
-    if (block == firstBlock) {
-      visitEndPath();
+      currentStmt = currentStmt.getNext();
+    } while (currentStmt != null);
+    if (firstStmt == stmt) {
+      callEndPathOnVisitors();
     }
   }
 
-  public void visitEndPath() {
-    if (currentStmt != lastEndPathStmt) {
+  public void callEndPathOnVisitors() {
+    if (lastStmt != lastEndPathStmt) {
       for (int i = 0; i < visitors.length; i++) {
         visitors[i].endPath();
       }
     }
-    lastEndPathStmt = currentStmt;
+    lastEndPathStmt = lastStmt;
   }
 
-  private void visitStatement() {
+  private void callVisitStatementOnVisitors() {
     for (int i = 0; i < visitors.length; i++) {
-      visitors[i].visitStatement(currentStmt);
+      visitors[i].visitStatement(lastStmt);
     }
   }
 
-  public void visitBranch() {
+  public void callVisitBranchOnVisitors() {
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].visitBranch();
     }
   }
 
-  public void leaveBranch() {
+  public void callLeaveBranchOnVisitors() {
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].leaveBranch();
     }
   }
 
   public void start() {
-    pathFinderStarted = true;
-    visitStart();
+    executionFlowStarted = true;
+    callVisitStartOnVisitors();
     try {
-      visitPath(firstBlock, indexOfFirstStmt);
+      visitPath(firstStmt);
     } catch (StopExploring e) {
 
     }
-    visitEnd();
+    callVisitEndOnVisitors();
   }
 
-  private void visitEnd() {
+  private void callVisitEndOnVisitors() {
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].end();
     }
   }
 
-  private void visitStart() {
+  private void callVisitStartOnVisitors() {
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].start();
     }

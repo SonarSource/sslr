@@ -12,6 +12,8 @@ public class Statement {
 
   private final AstNode astNode;
   private FlowHandler flowHandler;
+  private Statement nextStmt;
+  private Statement previousStmt;
 
   public Statement(AstNode stmtAstNode) {
     this.astNode = stmtAstNode;
@@ -36,5 +38,24 @@ public class Statement {
 
   public boolean hasFlowHandler() {
     return flowHandler != null;
+  }
+
+  public void setNext(Statement nextStmt) {
+    this.nextStmt = nextStmt;
+    if (nextStmt != null) {
+      nextStmt.previousStmt = this;
+    }
+  }
+
+  public Statement getNext() {
+    return nextStmt;
+  }
+
+  public Statement getPrevious() {
+    return previousStmt;
+  }
+
+  public boolean hasNext() {
+    return nextStmt != null;
   }
 }
