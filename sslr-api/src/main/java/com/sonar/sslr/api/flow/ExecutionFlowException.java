@@ -6,9 +6,9 @@
 
 package com.sonar.sslr.api.flow;
 
-public class SonarFlowException extends RuntimeException {
+public class ExecutionFlowException extends RuntimeException {
 
-  public SonarFlowException(String message) {
+  public ExecutionFlowException(String message) {
     super(message);
   }
 }

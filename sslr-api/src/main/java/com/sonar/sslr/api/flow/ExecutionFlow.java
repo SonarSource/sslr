@@ -13,7 +13,7 @@ import java.util.Set;
 
 import com.sonar.sslr.api.AstNode;
 
-public class ControlFlowGraph {
+public class ExecutionFlow {
 
   private Map<Statement, Block> statments = new HashMap<Statement, Block>();
   private Map<AstNode, Statement> stmtAstNodes = new HashMap<AstNode, Statement>();

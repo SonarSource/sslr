@@ -11,7 +11,7 @@ import com.sonar.sslr.api.AstNode;
 public class Statement {
 
   private final AstNode astNode;
-  private Edges edgeHandler;
+  private FlowHandler flowHandler;
 
   public Statement(AstNode stmtAstNode) {
     this.astNode = stmtAstNode;
@@ -26,15 +26,15 @@ public class Statement {
     return "Statement (" + astNode + ")";
   }
 
-  public void setEdgeHandler(Edges edgeHandler) {
-    this.edgeHandler = edgeHandler;
+  public void setFlowHandler(FlowHandler flowHandler) {
+    this.flowHandler = flowHandler;
   }
 
-  public Edges getEdgeHandler() {
-    return edgeHandler;
+  public FlowHandler getFlowHandler() {
+    return flowHandler;
   }
 
-  public boolean hasEdges() {
-    return edgeHandler != null;
+  public boolean hasFlowHandler() {
+    return flowHandler != null;
   }
 }

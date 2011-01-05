@@ -8,27 +8,27 @@ package com.sonar.sslr.api.flow;
 
 import java.util.Stack;
 
-public class PathExplorerStack {
+public class ExecutionFlowStack {
 
-  private final Stack<Edges> branches = new Stack<Edges>();
+  private final Stack<FlowHandler> branches = new Stack<FlowHandler>();
 
   public final boolean isEmpty() {
     return branches.isEmpty();
   }
 
-  public final void add(Edges flowHandler) {
+  public final void add(FlowHandler flowHandler) {
     branches.push(flowHandler);
   }
 
-  public final Edges peek() {
+  public final FlowHandler peek() {
     return branches.peek();
   }
 
-  public Edges pop() {
+  public FlowHandler pop() {
     return branches.pop();
   }
 
-  public boolean contains(Edges flowHandler) {
+  public boolean contains(FlowHandler flowHandler) {
     return branches.contains(flowHandler);
   }
 

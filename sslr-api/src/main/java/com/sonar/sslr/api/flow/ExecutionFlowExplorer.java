@@ -12,39 +12,39 @@ import java.util.Observer;
 
 import com.sonar.sslr.api.AstNode;
 
-public class PathExplorer implements Observer {
+public class ExecutionFlowExplorer implements Observer {
 
-  private final ControlFlowGraph graph;
-  private final PathVisitor[] visitors;
-  private final PathExplorerStack controlFlowStack = new PathExplorerStack();
+  private final ExecutionFlow graph;
+  private final ExecutionFlowVisitor[] visitors;
+  private final ExecutionFlowStack controlFlowStack = new ExecutionFlowStack();
   private Statement currentStmt;
   private Statement lastEndPathStmt;
   private Block firstBlock;
   private int indexOfFirstStmt;
   private boolean pathFinderStarted = false;
 
-  public PathExplorer(ControlFlowGraph graph, PathVisitor... visitors) {
+  public ExecutionFlowExplorer(ExecutionFlow graph, ExecutionFlowVisitor... visitors) {
     this.visitors = visitors;
-    for (PathVisitor visitor : visitors) {
+    for (ExecutionFlowVisitor visitor : visitors) {
       visitor.addObserver(this);
     }
     this.graph = graph;
   }
 
-  public void visit(Block block) {
-    visit(block, 0);
+  public void visitPath(Block block) {
+    visitPath(block, 0);
   }
 
-  public void visit(Statement stmt) {
+  public void visitPath(Statement stmt) {
     Block block = graph.getBlock(stmt);
-    visit(block, block.indexOf(stmt));
+    visitPath(block, block.indexOf(stmt));
   }
 
-  public void visit(AstNode stmtNode) {
-    visit(graph.getStatement(stmtNode));
+  public void visitPath(AstNode stmtNode) {
+    visitPath(graph.getStatement(stmtNode));
   }
 
-  private void visit(Block block, int indexOfFirstStmt) {
+  private void visitPath(Block block, int indexOfFirstStmt) {
     if ( !pathFinderStarted) {
       this.indexOfFirstStmt = indexOfFirstStmt;
       firstBlock = block;
@@ -54,9 +54,9 @@ public class PathExplorer implements Observer {
     for (int i = indexOfFirstStmt; i < stmts.size(); i++) {
       currentStmt = stmts.get(i);
       visitStatement();
-      if (currentStmt.hasEdges()) {
-        Edges flowHandler = currentStmt.getEdgeHandler();
-        flowHandler.processPath(this, controlFlowStack);
+      if (currentStmt.hasFlowHandler()) {
+        FlowHandler flowHandler = currentStmt.getFlowHandler();
+        flowHandler.processFlow(this, controlFlowStack);
         if (flowHandler.shouldStopCurrentPath()) {
           visitEndPath();
           return;
@@ -99,7 +99,7 @@ public class PathExplorer implements Observer {
     pathFinderStarted = true;
     visitStart();
     try {
-      visit(firstBlock, indexOfFirstStmt);
+      visitPath(firstBlock, indexOfFirstStmt);
     } catch (StopExploring e) {
 
     }

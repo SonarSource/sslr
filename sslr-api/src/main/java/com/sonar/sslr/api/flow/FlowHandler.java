@@ -6,9 +6,9 @@
 
 package com.sonar.sslr.api.flow;
 
-public abstract class Edges {
+public abstract class FlowHandler {
 
-  public abstract void processPath(PathExplorer pathExplorer, PathExplorerStack stack);
+  public abstract void processFlow(ExecutionFlowExplorer flowExplorer, ExecutionFlowStack flowStack);
 
   public boolean shouldStopCurrentPath() {
     return false;
