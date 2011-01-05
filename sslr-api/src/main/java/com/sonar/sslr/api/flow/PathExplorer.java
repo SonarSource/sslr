@@ -10,18 +10,18 @@ import java.util.List;
 
 import com.sonar.sslr.api.AstNode;
 
-public class BranchExplorer {
+public class PathExplorer {
 
   private final ControlFlowGraph graph;
-  private final BranchVisitor[] visitors;
-  private final ControlFlowStack controlFlowStack = new ControlFlowStack();
+  private final PathVisitor[] visitors;
+  private final PathExplorerStack controlFlowStack = new PathExplorerStack();
   private Statement currentStmt;
   private Statement lastEndPathStmt;
   private Block firstBlock;
   private int indexOfFirstStmt;
   private boolean pathFinderStarted = false;
 
-  public BranchExplorer(ControlFlowGraph graph, BranchVisitor... visitors) {
+  public PathExplorer(ControlFlowGraph graph, PathVisitor... visitors) {
     this.visitors = visitors;
     this.graph = graph;
   }
@@ -49,9 +49,9 @@ public class BranchExplorer {
     for (int i = indexOfFirstStmt; i < stmts.size(); i++) {
       currentStmt = stmts.get(i);
       visitStatement();
-      if (currentStmt.isControlFlowStatement()) {
-        StatementFlowHandler flowHandler = currentStmt.getFlowHandler();
-        flowHandler.process(this, controlFlowStack);
+      if (currentStmt.hasEdges()) {
+        Edges flowHandler = currentStmt.getEdgeHandler();
+        flowHandler.processPath(this, controlFlowStack);
         if (flowHandler.shouldStopCurrentPath()) {
           visitEndPath();
           return;

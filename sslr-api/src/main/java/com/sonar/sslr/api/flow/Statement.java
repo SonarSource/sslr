@@ -10,31 +10,31 @@ import com.sonar.sslr.api.AstNode;
 
 public class Statement {
 
-  private final AstNode stmtAstNode;
-  private StatementFlowHandler flowHandler;
+  private final AstNode astNode;
+  private Edges edgeHandler;
 
   public Statement(AstNode stmtAstNode) {
-    this.stmtAstNode = stmtAstNode;
+    this.astNode = stmtAstNode;
   }
 
   public AstNode getAstNode() {
-    return stmtAstNode;
+    return astNode;
   }
 
   @Override
   public String toString() {
-    return "Statement (" + stmtAstNode + ")";
+    return "Statement (" + astNode + ")";
   }
 
-  public void setFlowHandler(StatementFlowHandler flowHandler) {
-    this.flowHandler = flowHandler;
+  public void setEdgeHandler(Edges edgeHandler) {
+    this.edgeHandler = edgeHandler;
   }
 
-  public StatementFlowHandler getFlowHandler() {
-    return flowHandler;
+  public Edges getEdgeHandler() {
+    return edgeHandler;
   }
 
-  public boolean isControlFlowStatement() {
-    return flowHandler != null;
+  public boolean hasEdges() {
+    return edgeHandler != null;
   }
 }
