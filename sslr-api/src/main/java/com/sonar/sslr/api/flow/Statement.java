@@ -58,4 +58,8 @@ public class Statement {
   public boolean hasNext() {
     return nextStmt != null;
   }
+  
+  public boolean hasPrevious() {
+    return previousStmt != null;
+  }
 }
