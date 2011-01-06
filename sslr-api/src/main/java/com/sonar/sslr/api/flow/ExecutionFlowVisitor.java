@@ -6,10 +6,8 @@
 
 package com.sonar.sslr.api.flow;
 
-import java.util.Observable;
+public abstract class ExecutionFlowVisitor {
 
-public abstract class ExecutionFlowVisitor extends Observable {
-  
   public void start() {
   }
 
@@ -26,10 +24,5 @@ public abstract class ExecutionFlowVisitor extends Observable {
   }
 
   public void end() {
-  }
-  
-  protected final void stopExecutionFlowExplorer(){
-    setChanged();
-    notifyObservers();
   }
 }

@@ -23,9 +23,15 @@ public class ExecutionFlow {
     return stmtAstNodes.get(stmtNode);
   }
 
-  public final void visitPath(AstNode stmt, ExecutionFlowVisitor... visitors) {
+  public final void visitFlow(AstNode stmtToStartVisitFrom, ExecutionFlowVisitor... visitors) {
     ExecutionFlowExplorer explorer = new ExecutionFlowExplorer(this, visitors);
-    explorer.visitPath(stmt);
+    explorer.visitFlow(stmtToStartVisitFrom);
+    explorer.start();
+  }
+  
+  public final void visitFlow(Statement stmtToStartVisitFrom, ExecutionFlowVisitor... visitors) {
+    ExecutionFlowExplorer explorer = new ExecutionFlowExplorer(this, visitors);
+    explorer.visitFlow(stmtToStartVisitFrom);
     explorer.start();
   }
 }

@@ -6,53 +6,50 @@
 
 package com.sonar.sslr.api.flow;
 
-import java.util.Observable;
-import java.util.Observer;
+import java.util.Stack;
 
 import com.sonar.sslr.api.AstNode;
 
-public class ExecutionFlowExplorer implements Observer {
+public class ExecutionFlowExplorer {
 
   private final ExecutionFlow executionFlow;
   private final ExecutionFlowVisitor[] visitors;
-  private final ExecutionFlowStack executionFlowStack = new ExecutionFlowStack();
+  private final FlowStack executionFlowStack = new FlowStack();
   private Statement lastStmt;
   private Statement lastEndPathStmt;
   private Statement firstStmt;
   private boolean executionFlowStarted = false;
 
-  public ExecutionFlowExplorer(ExecutionFlow executionFlow, ExecutionFlowVisitor... visitors) {
+  ExecutionFlowExplorer(ExecutionFlow executionFlow, ExecutionFlowVisitor... visitors) {
     this.visitors = visitors;
-    for (ExecutionFlowVisitor visitor : visitors) {
-      visitor.addObserver(this);
-    }
     this.executionFlow = executionFlow;
   }
 
-  public void visitPath(AstNode stmtNode) {
-    visitPath(executionFlow.getStatement(stmtNode));
+  public void visitFlow(AstNode stmtToStartVisitFrom) {
+    visitFlow(executionFlow.getStatement(stmtToStartVisitFrom));
   }
 
-  public void visitPath(Statement stmt) {
+  public void visitFlow(Statement stmtToStartVisitFrom) {
     if ( !executionFlowStarted) {
-      this.firstStmt = stmt;
+      this.firstStmt = stmtToStartVisitFrom;
       return;
     }
-    Statement currentStmt = stmt;
+    Statement currentStmt = stmtToStartVisitFrom;
     do {
       lastStmt = currentStmt;
       callVisitStatementOnVisitors();
       if (currentStmt.hasFlowHandler()) {
-        FlowHandler flowHandler = currentStmt.getFlowHandler();
-        flowHandler.processFlow(this, executionFlowStack);
-        if (flowHandler.shouldStopCurrentPath()) {
+        try {
+          FlowHandler flowHandler = currentStmt.getFlowHandler();
+          flowHandler.processFlow(this);
+        } catch (EndPathSignal signal) {
           callEndPathOnVisitors();
           return;
         }
       }
       currentStmt = currentStmt.getNext();
     } while (currentStmt != null);
-    if (firstStmt == stmt) {
+    if (firstStmt == stmtToStartVisitFrom) {
       callEndPathOnVisitors();
     }
   }
@@ -84,12 +81,12 @@ public class ExecutionFlowExplorer implements Observer {
     }
   }
 
-  public void start() {
+  void start() {
     executionFlowStarted = true;
     callVisitStartOnVisitors();
     try {
-      visitPath(firstStmt);
-    } catch (StopExploring e) {
+      visitFlow(firstStmt);
+    } catch (StopFlowExplorationSignal e) {
 
     }
     callVisitEndOnVisitors();
@@ -107,10 +104,32 @@ public class ExecutionFlowExplorer implements Observer {
     }
   }
 
-  public void update(Observable o, Object arg) {
-    throw new StopExploring();
+  public FlowStack getExecutionFlowStack() {
+    return executionFlowStack;
   }
 
-  private class StopExploring extends RuntimeException {
+  public class FlowStack {
+
+    private final Stack<FlowHandler> branches = new Stack<FlowHandler>();
+
+    public final boolean isEmpty() {
+      return branches.isEmpty();
+    }
+
+    public final void add(FlowHandler flowHandler) {
+      branches.push(flowHandler);
+    }
+
+    public final FlowHandler peek() {
+      return branches.peek();
+    }
+
+    public FlowHandler pop() {
+      return branches.pop();
+    }
+
+    public boolean contains(FlowHandler flowHandler) {
+      return branches.contains(flowHandler);
+    }
   }
 }

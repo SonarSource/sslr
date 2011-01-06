@@ -6,7 +6,6 @@
 
 package com.sonar.sslr.api.flow;
 
-public abstract class FlowHandler {
+public class ExecutionFlowSignal extends RuntimeException {
 
-  public abstract void processFlow(ExecutionFlowExplorer flowExplorer);
 }
