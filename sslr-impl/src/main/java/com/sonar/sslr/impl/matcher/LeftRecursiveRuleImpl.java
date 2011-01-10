@@ -14,8 +14,9 @@ import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
 public class LeftRecursiveRuleImpl extends RuleImpl {
 
-  private Stack<Integer> ruleCalledAtIndexes = new Stack<Integer>();
-  private Stack<Integer> recursionDetectedIndexes = new Stack<Integer>();
+  private Stack<Integer> matchStartIndex = new Stack<Integer>();
+  private boolean recursionSignal = false;
+  private AstNode partialAstNode;
 
   public LeftRecursiveRuleImpl(String name) {
     super(name);
@@ -23,46 +24,45 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
 
   @Override
   public AstNode match(ParsingState parsingState) {
-    // printState("-- Start Match", parsingState);
 
-    if ( !ruleCalledAtIndexes.isEmpty() && ruleCalledAtIndexes.peek().equals(parsingState.lexerIndex)) {
-      recursionDetectedIndexes.push(parsingState.lexerIndex);
+    int startIndex = parsingState.lexerIndex;
 
-      // printState("---- /!\\ Recursion detected", parsingState);
+    // Loop in a pending recursion
+    if (partialAstNode != null) {
+      AstNode returnAstNode = partialAstNode;
+      partialAstNode = null;
+      return returnAstNode;
+    }
+
+    // Stop recursion
+    if ( !matchStartIndex.isEmpty() && matchStartIndex.peek().equals(startIndex)) {
+      recursionSignal = true;
       throw RecognitionExceptionImpl.create();
     }
 
-    ruleCalledAtIndexes.push(parsingState.lexerIndex);
+    matchStartIndex.push(startIndex);
 
     AstNode currentNode = null;
     try {
-
-      // printState("-- Before inner Match", parsingState);
-
       currentNode = super.match(parsingState);
 
-      // printState("-- After inner Match", parsingState);
-
+      // Relaunch matching in case of recursion
+      while (recursionSignal) {
+        partialAstNode = currentNode;
+        try {
+          currentNode = super.match(parsingState);
+        } catch (RecognitionExceptionImpl e) {
+          recursionSignal = false;
+          partialAstNode = null;
+        }
+      }
     } catch (RecognitionExceptionImpl e) {
       throw e;
     } finally {
-      ruleCalledAtIndexes.pop();
-      recursionDetectedIndexes.pop();
+      matchStartIndex.pop();
     }
 
-    // printState("-- End Match", parsingState);
     return currentNode;
-  }
-
-  private void printState(String message, ParsingState parsingState) {
-    StringBuffer state = new StringBuffer(message);
-    state.append(" = lexingIndex: ");
-    state.append(parsingState.lexerIndex);
-    state.append(" | called: ");
-    state.append(ruleCalledAtIndexes);
-    state.append(" | detected: ");
-    state.append(recursionDetectedIndexes);
-    System.out.println(state.toString());
   }
 
 }
