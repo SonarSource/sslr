@@ -10,22 +10,27 @@ import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static com.sonar.sslr.impl.matcher.Matchers.and;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Before;
 import org.junit.Test;
 
 public class LeftRecursiveRuleImplTest {
 
-  private RuleImpl recursiveRule;
-
-  @Before
-  public void init() {
-    recursiveRule = new LeftRecursiveRuleImpl("recursiveRule");
-    recursiveRule.isOr(and(recursiveRule, "and", "one"), "one");
+  @Test
+  public void testDirectLeftRecursion() throws Exception {
+    RuleImpl rule = new LeftRecursiveRuleImpl("rule");
+    rule.isOr(and(rule, "and", "x"), "x");
+    assertThat(rule, match("x and x and x and x and x"));
   }
 
   @Test
-  public void testDetectLeftRecursion() throws Exception {
-    assertThat(recursiveRule, match("one and one and one and one and one"));
-  }
+  public void testInDirectLeftRecursion() throws Exception {
+    RuleImpl a = new LeftRecursiveRuleImpl("a");
+    RuleImpl b = new LeftRecursiveRuleImpl("b");
+    RuleImpl c = new LeftRecursiveRuleImpl("c");
 
+    a.isOr(and(b, "x", "y"), "x");
+    b.is(c);
+    c.isOr(a, "c");
+
+    assertThat(a, match("x x y x y x y x y x y"));
+  }
 }

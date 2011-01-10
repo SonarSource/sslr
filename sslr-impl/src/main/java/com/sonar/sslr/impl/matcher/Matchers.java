@@ -24,7 +24,7 @@ public class Matchers {
   }
 
   public static Matcher opt(Object object) {
-    return new ProxyMatcher(new OpMatcher(Matcher.convertToMatcher(object)));
+    return new MemoizerMatcher(new OpMatcher(Matcher.convertToMatcher(object)));
   }
 
   /**
@@ -34,70 +34,70 @@ public class Matchers {
    * @return
    */
   public static Matcher not(Object object) {
-    return new ProxyMatcher(new NotMatcher(Matcher.convertToMatcher(object)));
+    return new MemoizerMatcher(new NotMatcher(Matcher.convertToMatcher(object)));
   }
 
   public static Matcher adjacent(Object object) {
-    return new ProxyMatcher(new AdjacentMatcher(Matcher.convertToMatcher(object)));
+    return new MemoizerMatcher(new AdjacentMatcher(Matcher.convertToMatcher(object)));
   }
 
   public static Matcher adjacent(Object... objects) {
-    return new ProxyMatcher(new AdjacentMatcher(new AndMatcher(Matcher.convertToMatchers(objects))));
+    return new MemoizerMatcher(new AdjacentMatcher(new AndMatcher(Matcher.convertToMatchers(objects))));
   }
 
   public static Matcher opt(Object... objects) {
-    return new ProxyMatcher(new OpMatcher(new AndMatcher(Matcher.convertToMatchers(objects))));
+    return new MemoizerMatcher(new OpMatcher(new AndMatcher(Matcher.convertToMatchers(objects))));
   }
 
   public static Matcher next(Object... objects) {
-    return new ProxyMatcher(new NextMatcher(new AndMatcher(Matcher.convertToMatchers(objects))));
+    return new MemoizerMatcher(new NextMatcher(new AndMatcher(Matcher.convertToMatchers(objects))));
   }
 
   public static Matcher or(Object... matchers) {
     if (strictOrMode) {
-      return new ProxyMatcher(new StrictOrMatcher(Matcher.convertToMatchers(matchers)));
+      return new MemoizerMatcher(new StrictOrMatcher(Matcher.convertToMatchers(matchers)));
     } else {
-      return new ProxyMatcher(new OrMatcher(Matcher.convertToMatchers(matchers)));
+      return new MemoizerMatcher(new OrMatcher(Matcher.convertToMatchers(matchers)));
     }
   }
 
   public static Matcher anyTokenButNot(Object object) {
-    return new ProxyMatcher(new AnyTokenButNotMatcher(Matcher.convertToMatcher(object)));
+    return new MemoizerMatcher(new AnyTokenButNotMatcher(Matcher.convertToMatcher(object)));
   }
 
   public static Matcher isOneOfThem(TokenType... keywords) {
-    return new ProxyMatcher(new TokenTypesMatcher(keywords));
+    return new MemoizerMatcher(new TokenTypesMatcher(keywords));
   }
 
   public static Matcher and(Object... matchers) {
     if (matchers.length == 1) {
-      return new ProxyMatcher(Matcher.convertToMatcher(matchers[0]));
+      return new MemoizerMatcher(Matcher.convertToMatcher(matchers[0]));
     }
-    return new ProxyMatcher(new AndMatcher(Matcher.convertToMatchers(matchers)));
+    return new MemoizerMatcher(new AndMatcher(Matcher.convertToMatchers(matchers)));
   }
 
   public static Matcher bridge(TokenType from, TokenType to) {
-    return new ProxyMatcher(new BridgeMatcher(from, to));
+    return new MemoizerMatcher(new BridgeMatcher(from, to));
   }
 
   public static Matcher isTrue() {
-    return new ProxyMatcher(new BooleanMatcher(true));
+    return new MemoizerMatcher(new BooleanMatcher(true));
   }
 
   public static Matcher anyToken() {
-    return new ProxyMatcher(new AnyTokenMatcher());
+    return new MemoizerMatcher(new AnyTokenMatcher());
   }
 
   public static Matcher isFalse() {
-    return new ProxyMatcher(new BooleanMatcher(false));
+    return new MemoizerMatcher(new BooleanMatcher(false));
   }
 
   public static Matcher till(Object matcher) {
-    return new ProxyMatcher(new InclusiveTillMatcher(Matcher.convertToMatcher(matcher)));
+    return new MemoizerMatcher(new InclusiveTillMatcher(Matcher.convertToMatcher(matcher)));
   }
 
   public static Matcher exclusiveTill(Object... matchers) {
-    return new ProxyMatcher(new ExclusiveTillMatcher(Matcher.convertToMatchers(matchers)));
+    return new MemoizerMatcher(new ExclusiveTillMatcher(Matcher.convertToMatchers(matchers)));
   }
 
   public static ZeroToNMatcher o2n(Object... objects) {

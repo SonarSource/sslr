@@ -6,15 +6,13 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import java.util.Stack;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
 public class LeftRecursiveRuleImpl extends RuleImpl {
 
-  private Stack<Integer> matchStartIndex = new Stack<Integer>();
+  private int lastStartIndex = -1;
   private boolean recursionSignal = false;
   private AstNode partialAstNode;
 
@@ -25,8 +23,6 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
   @Override
   public AstNode match(ParsingState parsingState) {
 
-    int startIndex = parsingState.lexerIndex;
-
     // Loop in a pending recursion
     if (partialAstNode != null) {
       AstNode returnAstNode = partialAstNode;
@@ -35,31 +31,26 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
     }
 
     // Stop recursion
-    if ( !matchStartIndex.isEmpty() && matchStartIndex.peek().equals(startIndex)) {
+    if (lastStartIndex == parsingState.lexerIndex) {
       recursionSignal = true;
       throw RecognitionExceptionImpl.create();
     }
 
-    matchStartIndex.push(startIndex);
+    lastStartIndex = parsingState.lexerIndex;
 
-    AstNode currentNode = null;
-    try {
-      currentNode = super.match(parsingState);
+    AstNode currentNode = super.match(parsingState);
 
-      // Relaunch matching in case of recursion
-      while (recursionSignal) {
-        partialAstNode = currentNode;
-        try {
+    // Relaunch matching in case of recursion
+    if (recursionSignal) {
+      try {
+        while (true) {
+          partialAstNode = currentNode;
           currentNode = super.match(parsingState);
-        } catch (RecognitionExceptionImpl e) {
-          recursionSignal = false;
-          partialAstNode = null;
         }
+      } catch (RecognitionExceptionImpl e) {
+        recursionSignal = false;
+        partialAstNode = null;
       }
-    } catch (RecognitionExceptionImpl e) {
-      throw e;
-    } finally {
-      matchStartIndex.pop();
     }
 
     return currentNode;

@@ -80,7 +80,7 @@ public abstract class Matcher implements AstNodeSkippingPolicy {
       }
     }
     if (matcher instanceof RuleImpl) {
-      return new ProxyMatcher(matcher);
+      return new MemoizerMatcher(matcher);
     } else {
       return matcher;
     }
