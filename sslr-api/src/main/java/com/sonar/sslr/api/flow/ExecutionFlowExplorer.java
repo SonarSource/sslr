@@ -35,7 +35,7 @@ public class ExecutionFlowExplorer {
       return;
     }
     Statement currentStmt = stmtToStartVisitFrom;
-    do {
+    while (currentStmt != null) {
       lastStmt = currentStmt;
       callVisitStatementOnVisitors();
       if (currentStmt.hasFlowHandler()) {
@@ -48,7 +48,7 @@ public class ExecutionFlowExplorer {
         }
       }
       currentStmt = currentStmt.getNext();
-    } while (currentStmt != null);
+    }
     if (firstStmt == stmtToStartVisitFrom) {
       callEndPathOnVisitors();
     }
