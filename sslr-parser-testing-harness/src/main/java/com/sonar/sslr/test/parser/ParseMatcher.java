@@ -7,6 +7,7 @@ package com.sonar.sslr.test.parser;
 
 import static com.sonar.sslr.impl.matcher.Matchers.opt;
 
+import org.apache.commons.lang.StringUtils;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
@@ -37,7 +38,11 @@ class ParseMatcher extends BaseMatcher<Parser> {
     try {
       parser.parse(sourceCode);
     } catch (RecognitionExceptionImpl e) {
-      throw new AssertionError(ParsingStackTrace.generateFullStackTrace(parser.getParsingState()));
+      String message = ParsingStackTrace.generateFullStackTrace(parser.getParsingState());
+      if (StringUtils.isEmpty(message)) {
+        message = e.getMessage();
+      }
+      throw new AssertionError(message);
     }
     return !parser.getParsingState().hasNextToken();
   }

@@ -143,6 +143,9 @@ public class ParsingStackTrace {
   }
 
   public static String generateFullStackTrace(ParsingState state) {
+    if (state.getOutpostMatcher() == null) {
+      return "";
+    }
     ParsingStackTrace stackTrace = new ParsingStackTrace(state, true);
     return stackTrace.toString();
   }
