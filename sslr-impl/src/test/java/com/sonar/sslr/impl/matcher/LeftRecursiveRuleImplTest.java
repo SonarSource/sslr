@@ -7,6 +7,8 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.Matchers.and;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
@@ -14,9 +16,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
+import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.LeftRecursionDetectedException;
 
 public class LeftRecursiveRuleImplTest {
 
@@ -35,9 +37,10 @@ public class LeftRecursiveRuleImplTest {
     tokens.add(new Token(GenericTokenType.LITERAL, "1"));
   }
 
-  @Test(expected = LeftRecursionDetectedException.class)
-  public void testDetectLeftRecursion() throws Exception {
-    recursiveRule.parse(tokens);
+  @Test
+  public void testDetectLeftRecursionAndStop() throws Exception {
+    AstNode node = recursiveRule.parse(tokens);
+    assertThat(node.toString(), is("recursiveRule token='1' line=0 column=0 file='Dummy for unit tests'"));
   }
 
 }

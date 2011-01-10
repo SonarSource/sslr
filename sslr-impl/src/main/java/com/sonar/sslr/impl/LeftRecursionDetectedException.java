@@ -8,8 +8,6 @@ package com.sonar.sslr.impl;
 
 /**
  * Temporary Exception, should be removed later.
- * 
- * @deprecated
  */
 public class LeftRecursionDetectedException extends RuntimeException {
 
