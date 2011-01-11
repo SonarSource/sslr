@@ -42,7 +42,7 @@ public class LexerOutput {
     }
     return null;
   }
-  
+
   public Token getFirstToken() {
     if (size() > 0) {
       return tokens.get(0);
@@ -56,6 +56,14 @@ public class LexerOutput {
     }
   }
 
+  /**
+   * Add a new token and notify the preprocessors
+   * 
+   * @param tokenType
+   * @param value
+   * @param linePosition
+   * @param columnPosition
+   */
   public void addTokenAndProcess(TokenType tokenType, String value, int linePosition, int columnPosition) {
     Token token = new Token(tokenType, value, linePosition, columnPosition);
     if (file != null) {
@@ -69,6 +77,29 @@ public class LexerOutput {
     addToken(token);
   }
 
+  /**
+   * This method must be called by a preprocessor when a token has been temporary consumed by this preprocessor but finally must be pushed
+   * back to the LexerOutput. With this method all other preprocessors will be notified to optionnally consumed this token.
+   */
+  public void pushBackTokenAndProcess(Token token, Preprocessor preprocessorToExclude) {
+    for (Preprocessor preprocessor : preprocessors) {
+      if (preprocessor != preprocessorToExclude && preprocessor.process(token, this)) {
+        return;
+      }
+    }
+    addToken(token);
+  }
+
+  /**
+   * This method must be called by a preprocessor when some tokens have been temporary consumed by this preprocessor but finally must be
+   * pushed back to the LexerOutput. With this method all other preprocessors will be notified to optionally consumed those tokens.
+   */
+  public void pushBackTokensAndProcess(List<Token> tokens, Preprocessor preprocessorToExclude) {
+    for (Token token : tokens) {
+      pushBackTokenAndProcess(token, preprocessorToExclude);
+    }
+  }
+
   public void addPreprocessingToken(Token token) {
     if (file != null) {
       token.setFile(file);
@@ -76,8 +107,22 @@ public class LexerOutput {
     preprocessingTokens.add(token);
   }
 
+  /**
+   * Add a token to the list without notifying preprocessors.
+   * 
+   * @param token
+   */
   public void addToken(Token token) {
     tokens.add(token);
+  }
+  
+  /**
+   * Add a list of tokens to the list without notifying preprocessors.
+   * 
+   * @param token
+   */
+  public void addAllTokens(List<Token> allNewtokens) {
+    tokens.addAll(allNewtokens);
   }
 
   public void setFile(File file) {
@@ -94,7 +139,7 @@ public class LexerOutput {
     }
     return null;
   }
-  
+
   public String getFileAbsolutePath() {
     if (file != null) {
       return file.getAbsolutePath();
@@ -134,10 +179,6 @@ public class LexerOutput {
       result.append(": " + token.getType() + ")");
     }
     return result.toString();
-  }
-
-  public void addAllTokens(List<Token> allNewtokens) {
-    tokens.addAll(allNewtokens);
   }
 
   public void setTokens(List<Token> tokens) {
