@@ -8,12 +8,14 @@ package com.sonar.sslr.impl;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.matcher.Matcher;
 
 public class ParsingState {
 
+  private List<Matcher> notifiedMatchers = Lists.newArrayList();
   private final Token[] tokens;
   public int lexerIndex = 0;
   public final int lexerSize;
@@ -136,4 +138,17 @@ public class ParsingState {
   public void allowToPopToken(){
     canPopToken = true;
   }
+  
+  public void reinitNotifiedMatchersList() {
+    notifiedMatchers.clear();
+  }
+  
+  public void matcherNotified(Matcher matcher) {
+    notifiedMatchers.add(matcher);
+  }
+  
+  public boolean hasMatcherBeenNotified(Matcher matcher) {
+    return notifiedMatchers.contains(matcher);
+  }
+  
 }

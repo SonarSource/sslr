@@ -45,4 +45,20 @@ public class AdjacentMatcher extends Matcher {
     expr.append(")adjacent");
     return expr.toString();
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void startParsing(ParsingState parsingState) {
+    matcher.notifyStartParsing(parsingState);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void endParsing(ParsingState parsingState) {
+    matcher.notifyEndParsing(parsingState);
+  }
 }

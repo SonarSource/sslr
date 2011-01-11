@@ -16,12 +16,13 @@ import org.junit.Test;
 public class LeftRecursiveRuleImplTest {
 
   @Test
-  public void testDirectLeftRecursion() throws Exception {
-    RuleImpl rule = new LeftRecursiveRuleImpl("rule");
-    rule.isOr(and(rule, "and", "x"), "x");
-    assertThat(rule, match("x and x and x and x and x"));
+  public void testSimpleRecursiveRule() throws Exception {
+    RuleImpl recursiveRule = new LeftRecursiveRuleImpl("recursiveRule");
+    recursiveRule.isOr(and(recursiveRule, "+", "1"), "1");
+
+    assertThat(recursiveRule, match("1 + 1 + 1 + 1 + 1"));
   }
-  
+
   @Test
   public void testPreventMatchersToConsumeTokens() throws Exception {
     RuleImpl rule = new LeftRecursiveRuleImpl("rule");
@@ -40,5 +41,19 @@ public class LeftRecursiveRuleImplTest {
     c.isOr(a, "c");
 
     assertThat(a, match("x x y x y x y x y x y"));
+  }
+
+  @Test
+  public void testMultipleSequentialCallsToMatch() throws Exception {
+    RuleImpl a = new LeftRecursiveRuleImpl("a");
+    RuleImpl b = new LeftRecursiveRuleImpl("b");
+    RuleImpl c = new LeftRecursiveRuleImpl("c");
+
+    a.isOr(and(b, "x", "y"), "x");
+    b.is(c);
+    c.isOr(a, "c");
+
+    assertThat(a, match("x x y x y x y x y x y"));
+    assertThat(a, match("c x y"));
   }
 }

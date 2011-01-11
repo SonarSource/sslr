@@ -71,7 +71,7 @@ public abstract class Parser<GRAMMAR extends Grammar> {
     beforeEachFile();
     try {
       parsingState = new ParsingState(tokens);
-      return rootRule.match(parsingState);
+      return rootRule.parse(parsingState);
     } catch (RecognitionExceptionImpl e) {
       if (parsingState != null) {
         throw new RecognitionExceptionImpl(parsingState);

@@ -54,4 +54,24 @@ public class StrictOrMatcher extends OrMatcher {
     expr.append(")");
     return expr.toString();
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void startParsing(ParsingState parsingState) {
+    for (int i = 0; i < matchers.length; i++) {
+      ((Matcher) matchers[i]).notifyStartParsing(parsingState);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void endParsing(ParsingState parsingState) {
+    for (int i = 0; i < matchers.length; i++) {
+      ((Matcher) matchers[i]).notifyEndParsing(parsingState);
+    }
+  }
 }

@@ -34,4 +34,20 @@ public class NextMatcher extends Matcher {
   public String toString() {
     return "(" + matcher + ")next";
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void startParsing(ParsingState parsingState) {
+    matcher.notifyStartParsing(parsingState);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void endParsing(ParsingState parsingState) {
+    matcher.notifyEndParsing(parsingState);
+  }
 }

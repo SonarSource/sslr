@@ -43,6 +43,22 @@ public class ZeroToNMatcher extends Matcher {
     matcher.setParentRule(parentRule);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void startParsing(ParsingState parsingState) {
+    matcher.notifyStartParsing(parsingState);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void endParsing(ParsingState parsingState) {
+    matcher.notifyEndParsing(parsingState);
+  }
+
   public String toString() {
     return "(" + matcher + ")*";
   }

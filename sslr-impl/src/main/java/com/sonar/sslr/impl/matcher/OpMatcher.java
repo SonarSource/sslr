@@ -32,4 +32,20 @@ public class OpMatcher extends Matcher {
   public String toString() {
     return "(" + matcher + ")?";
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void startParsing(ParsingState parsingState) {
+    matcher.notifyStartParsing(parsingState);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void endParsing(ParsingState parsingState) {
+    matcher.notifyEndParsing(parsingState);
+  }
 }

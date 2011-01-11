@@ -41,6 +41,22 @@ public class InclusiveTillMatcher extends Matcher {
     return "(" + matcher + ")till";
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void startParsing(ParsingState parsingState) {
+    matcher.notifyStartParsing(parsingState);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void endParsing(ParsingState parsingState) {
+    matcher.notifyEndParsing(parsingState);
+  }
+
   static class WordsTokenType implements TokenType {
 
     public String getName() {

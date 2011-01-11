@@ -60,4 +60,15 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
     return currentNode;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void startParsing(ParsingState parsingState) {
+    super.notifyStartParsing(parsingState);
+    lastStartIndex = -1;
+    recursionSignal = false;
+    partialAstNode = null;
+  }
+
 }

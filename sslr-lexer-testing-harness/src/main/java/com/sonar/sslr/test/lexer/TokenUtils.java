@@ -42,7 +42,7 @@ public class TokenUtils {
   public static List<Token> lex(String sourceCode) {
     List<Token> tokens = new ArrayList<Token>();
     CodeReader reader = new CodeReader(sourceCode);
-    Matcher matcher = Pattern.compile("[a-zA-Z_0-9]+").matcher("");
+    Matcher matcher = Pattern.compile("[a-zA-Z_0-9\\+\\-\\*/]+").matcher("");
 
     while (reader.peek() != -1) {
       StringBuilder nextStringToken = new StringBuilder();

@@ -13,7 +13,7 @@ import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
 public abstract class TokenMatcher extends Matcher {
 
-  private final boolean hasToBeSkippedFromAst;;
+  private final boolean hasToBeSkippedFromAst;
 
   public TokenMatcher(boolean hasToBeSkippedFromAst) {
     this.hasToBeSkippedFromAst = hasToBeSkippedFromAst;
@@ -37,5 +37,19 @@ public abstract class TokenMatcher extends Matcher {
   @Override
   public void setParentRule(RuleImpl parentRule) {
     this.parentRule = parentRule;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void endParsing(ParsingState parsingState) {    
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void startParsing(ParsingState parsingState) {    
   }
 }

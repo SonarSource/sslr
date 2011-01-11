@@ -63,4 +63,20 @@ class MemoizerMatcher extends Matcher {
     return memoizedMatcher.toString();
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void startParsing(ParsingState parsingState) {
+    memoizedMatcher.notifyStartParsing(parsingState);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void endParsing(ParsingState parsingState) {
+    memoizedMatcher.notifyEndParsing(parsingState);
+  }
+
 }
