@@ -11,6 +11,7 @@ import static com.sonar.sslr.impl.matcher.Matchers.and;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class LeftRecursiveRuleImplTest {
@@ -56,4 +57,47 @@ public class LeftRecursiveRuleImplTest {
     assertThat(a, match("x x y x y x y x y x y"));
     assertThat(a, match("c x y"));
   }
+
+  @Test
+  public void testComplexeRecursion_OK1() throws Exception {
+    RuleImpl pnae = new LeftRecursiveRuleImpl("pnae");
+    RuleImpl ma = new LeftRecursiveRuleImpl("ma");
+    RuleImpl inve = new LeftRecursiveRuleImpl("inve");
+
+    pnae.isOr(ma, inve, "PNAE");
+    ma.is(pnae, "MA");
+    inve.is(pnae, "INVE");
+
+    assertThat(pnae, match("PNAE MA"));
+  }
+
+  @Test
+  public void testComplexeRecursion_OK2() throws Exception {
+    RuleImpl pnae = new LeftRecursiveRuleImpl("pnae");
+    RuleImpl ma = new LeftRecursiveRuleImpl("ma");
+    RuleImpl pe = new LeftRecursiveRuleImpl("pe");
+
+    pnae.isOr(ma, "PNAE");
+    ma.is(pe, "MA");
+    pe.isOr("PE", pnae);
+
+    assertThat(pnae, match("PNAE MA"));
+  }
+
+  @Test
+  @Ignore("This test seems to run into an infinite loop whereas the two above pass")
+  public void testComplexeRecursion_KO() throws Exception {
+    RuleImpl pnae = new LeftRecursiveRuleImpl("pnae");
+    RuleImpl ma = new LeftRecursiveRuleImpl("ma");
+    RuleImpl inve = new LeftRecursiveRuleImpl("inve");
+    RuleImpl pe = new LeftRecursiveRuleImpl("pe");
+
+    pnae.isOr(ma, inve, "PNAE");
+    ma.is(pe, "MA");
+    inve.is(pe, "INVE");
+    pe.isOr("PE", pnae);
+
+    assertThat(pnae, match("PNAE MA"));
+  }
+
 }
