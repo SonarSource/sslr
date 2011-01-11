@@ -11,7 +11,6 @@ import static com.sonar.sslr.impl.matcher.Matchers.and;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class LeftRecursiveRuleImplTest {
@@ -85,8 +84,7 @@ public class LeftRecursiveRuleImplTest {
   }
 
   @Test
-  @Ignore("This test seems to run into an infinite loop whereas the two above pass")
-  public void testComplexeRecursion_KO() throws Exception {
+  public void testComplexeRecursion_OK3() throws Exception {
     RuleImpl pnae = new LeftRecursiveRuleImpl("pnae");
     RuleImpl ma = new LeftRecursiveRuleImpl("ma");
     RuleImpl inve = new LeftRecursiveRuleImpl("inve");
