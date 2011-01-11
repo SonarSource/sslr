@@ -27,6 +27,7 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
     if (partialAstNode != null) {
       AstNode returnAstNode = partialAstNode;
       partialAstNode = null;
+      parsingState.allowToPopToken();
       return returnAstNode;
     }
 
@@ -45,11 +46,13 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
       try {
         while (true) {
           partialAstNode = currentNode;
+          parsingState.forbidToPopToken();
           currentNode = super.match(parsingState);
         }
       } catch (RecognitionExceptionImpl e) {
         recursionSignal = false;
         partialAstNode = null;
+        parsingState.allowToPopToken();
       }
     }
 

@@ -8,6 +8,7 @@ package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static com.sonar.sslr.impl.matcher.Matchers.and;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -19,6 +20,13 @@ public class LeftRecursiveRuleImplTest {
     RuleImpl rule = new LeftRecursiveRuleImpl("rule");
     rule.isOr(and(rule, "and", "x"), "x");
     assertThat(rule, match("x and x and x and x and x"));
+  }
+  
+  @Test
+  public void testPreventMatchersToConsumeTokens() throws Exception {
+    RuleImpl rule = new LeftRecursiveRuleImpl("rule");
+    rule.isOr("y", and(rule, "and", "x"), "z");
+    assertThat(rule, not(match("z and x y")));
   }
 
   @Test

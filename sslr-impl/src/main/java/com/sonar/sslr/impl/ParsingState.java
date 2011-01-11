@@ -21,6 +21,7 @@ public class ParsingState {
   private Matcher outpostMatcher;
   private AstNode[] astNodeMemoization;
   private Matcher[] astMatcherMemoization;
+  private boolean canPopToken = true;
 
   public ParsingState(List<Token> tokens) {
     this.tokens = tokens.toArray(new Token[0]);
@@ -30,6 +31,9 @@ public class ParsingState {
   }
 
   public Token popToken(Matcher matcher) {
+    if(!canPopToken){
+      throw RecognitionExceptionImpl.create();
+    }
     if (lexerIndex >= outpostMatcherTokenIndex) {
       outpostMatcherTokenIndex = lexerIndex;
       outpostMatcher = matcher;
@@ -45,6 +49,9 @@ public class ParsingState {
   }
 
   public Token peekToken(int index, Matcher matcher) {
+    if(!canPopToken){
+      throw RecognitionExceptionImpl.create();
+    }
     if (index > outpostMatcherTokenIndex) {
       outpostMatcherTokenIndex = index;
       outpostMatcher = matcher;
@@ -120,5 +127,13 @@ public class ParsingState {
     } catch (RecognitionExceptionImpl e) {
       return null;
     }
+  }
+  
+  public void forbidToPopToken(){
+    canPopToken = false;
+  }
+  
+  public void allowToPopToken(){
+    canPopToken = true;
   }
 }
