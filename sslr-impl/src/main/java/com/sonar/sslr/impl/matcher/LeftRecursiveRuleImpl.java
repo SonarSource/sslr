@@ -27,6 +27,7 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
     if (partialAstNode != null) {
       AstNode returnAstNode = partialAstNode;
       partialAstNode = null;
+      recursionSignal = false;
       parsingState.allowToPopToken();
       return returnAstNode;
     }
