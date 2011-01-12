@@ -11,7 +11,6 @@ import static com.sonar.sslr.impl.matcher.Matchers.and;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class LeftRecursiveRuleImplTest {
@@ -35,7 +34,7 @@ public class LeftRecursiveRuleImplTest {
   public void testInDirectLeftRecursion() throws Exception {
     RuleImpl a = new LeftRecursiveRuleImpl("a");
     RuleImpl b = new LeftRecursiveRuleImpl("b");
-    RuleImpl c = new LeftRecursiveRuleImpl("c");
+    RuleImpl c = new RuleImpl("c");
 
     a.isOr(and(b, "x", "y"), "x");
     b.is(c);
@@ -47,8 +46,8 @@ public class LeftRecursiveRuleImplTest {
   @Test
   public void testMultipleSequentialCallsToMatch() throws Exception {
     RuleImpl a = new LeftRecursiveRuleImpl("a");
-    RuleImpl b = new LeftRecursiveRuleImpl("b");
-    RuleImpl c = new LeftRecursiveRuleImpl("c");
+    RuleImpl b = new RuleImpl("b");
+    RuleImpl c = new RuleImpl("c");
 
     a.isOr(and(b, "x", "y"), "x");
     b.is(c);
@@ -61,8 +60,8 @@ public class LeftRecursiveRuleImplTest {
   @Test
   public void testComplexeRecursion_OK1() throws Exception {
     RuleImpl pnae = new LeftRecursiveRuleImpl("pnae");
-    RuleImpl ma = new LeftRecursiveRuleImpl("ma");
-    RuleImpl inve = new LeftRecursiveRuleImpl("inve");
+    RuleImpl ma = new RuleImpl("ma");
+    RuleImpl inve = new RuleImpl("inve");
 
     pnae.isOr(ma, inve, "PNAE");
     ma.is(pnae, "MA");
@@ -74,8 +73,8 @@ public class LeftRecursiveRuleImplTest {
   @Test
   public void testComplexeRecursion_OK2() throws Exception {
     RuleImpl pnae = new LeftRecursiveRuleImpl("pnae");
-    RuleImpl ma = new LeftRecursiveRuleImpl("ma");
-    RuleImpl pe = new LeftRecursiveRuleImpl("pe");
+    RuleImpl ma = new RuleImpl("ma");
+    RuleImpl pe = new RuleImpl("pe");
 
     pnae.isOr(ma, "PNAE");
     ma.is(pe, "MA");
@@ -87,9 +86,9 @@ public class LeftRecursiveRuleImplTest {
   @Test
   public void testComplexeRecursion_OK3() throws Exception {
     RuleImpl pnae = new LeftRecursiveRuleImpl("pnae");
-    RuleImpl ma = new LeftRecursiveRuleImpl("ma");
-    RuleImpl inve = new LeftRecursiveRuleImpl("inve");
-    RuleImpl pe = new LeftRecursiveRuleImpl("pe");
+    RuleImpl ma = new RuleImpl("ma");
+    RuleImpl inve = new RuleImpl("inve");
+    RuleImpl pe = new RuleImpl("pe");
 
     pnae.isOr(ma, inve, "PNAE");
     ma.is(pe, "MA");
@@ -102,9 +101,9 @@ public class LeftRecursiveRuleImplTest {
   @Test
   public void testComplexeRecursion_NewOK1() throws Exception {
     RuleImpl exp = new LeftRecursiveRuleImpl("exp");
-    RuleImpl sn = new LeftRecursiveRuleImpl("sn");
-    // RuleImpl ma = new LeftRecursiveRuleImpl("ma");
-    RuleImpl inve = new LeftRecursiveRuleImpl("inve");
+    RuleImpl sn = new RuleImpl("sn");
+    // RuleImpl ma = new RuleImpl("ma");
+    RuleImpl inve = new RuleImpl("inve");
 
     exp.isOr(inve, sn);
     sn.is("SN");
@@ -117,9 +116,9 @@ public class LeftRecursiveRuleImplTest {
   @Test
   public void testComplexeRecursion_NewOK2() throws Exception {
     RuleImpl exp = new LeftRecursiveRuleImpl("exp");
-    RuleImpl sn = new LeftRecursiveRuleImpl("sn");
-    RuleImpl ma = new LeftRecursiveRuleImpl("ma");
-    RuleImpl inve = new LeftRecursiveRuleImpl("inve");
+    RuleImpl sn = new RuleImpl("sn");
+    RuleImpl ma = new RuleImpl("ma");
+    RuleImpl inve = new RuleImpl("inve");
 
     // I add "ma" rule between "inve" and "sn" : OK
     exp.isOr(inve, ma, sn);
@@ -131,12 +130,11 @@ public class LeftRecursiveRuleImplTest {
   }
 
   @Test
-  @Ignore
   public void testComplexeRecursion_NewKO1() throws Exception {
     RuleImpl exp = new LeftRecursiveRuleImpl("exp");
-    RuleImpl sn = new LeftRecursiveRuleImpl("sn");
-    RuleImpl ma = new LeftRecursiveRuleImpl("ma");
-    RuleImpl inve = new LeftRecursiveRuleImpl("inve");
+    RuleImpl sn = new RuleImpl("sn");
+    RuleImpl ma = new RuleImpl("ma");
+    RuleImpl inve = new RuleImpl("inve");
 
     // I pass "ma" rule before "inve" rule : KO
     exp.isOr(ma, inve, sn);
@@ -148,7 +146,6 @@ public class LeftRecursiveRuleImplTest {
   }
 
   @Test
-  @Ignore
   public void testComplexeRecursion_NewKO2() throws Exception {
     RuleImpl exp = new LeftRecursiveRuleImpl("exp");
     RuleImpl sn = new LeftRecursiveRuleImpl("sn");

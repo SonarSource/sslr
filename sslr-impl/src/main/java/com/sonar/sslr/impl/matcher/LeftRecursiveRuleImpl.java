@@ -7,9 +7,7 @@
 package com.sonar.sslr.impl.matcher;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 
 import com.sonar.sslr.api.AstNode;
@@ -20,7 +18,6 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
 
   private Stack<Integer> matchStartIndexes = new Stack<Integer>();
   private Map<Integer, AstNode> partialAstNodes = new HashMap<Integer, AstNode>();
-  private Set<Integer> recursionSignals = new HashSet<Integer>();
 
   public LeftRecursiveRuleImpl(String name) {
     super(name);
@@ -34,12 +31,11 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
     // Loop in a pending recursion
     if (partialAstNodes.containsKey(firstLexerIndex)) {
       parsingState.allowToPopToken();
-      return partialAstNodes.remove(firstLexerIndex);
+      return partialAstNodes.get(firstLexerIndex);
     }
 
     // Stop recursion
     if ( !matchStartIndexes.isEmpty() && matchStartIndexes.peek() == firstLexerIndex) {
-      recursionSignals.add(firstLexerIndex);
       throw RecognitionExceptionImpl.create();
     }
 
@@ -48,24 +44,22 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
 
       AstNode currentNode = super.match(parsingState);
 
-      // Relaunch matching in case of recursion
-      if (recursionSignals.contains(firstLexerIndex)) {
-        try {
-          while (true) {
-            partialAstNodes.put(parsingState.lexerIndex, currentNode);
-            parsingState.forbidToPopToken();
-            currentNode = super.match(parsingState);
-          }
-        } catch (RecognitionExceptionImpl e) {
-          partialAstNodes.remove(parsingState.lexerIndex);
-          parsingState.allowToPopToken();
+      int previousLexerIndex = firstLexerIndex;
+      try {
+        while (previousLexerIndex != parsingState.lexerIndex) {
+          partialAstNodes.put(parsingState.lexerIndex, currentNode);
+          parsingState.forbidToPopToken();
+          currentNode = super.match(parsingState);
         }
+      } catch (RecognitionExceptionImpl e) {
+        partialAstNodes.remove(parsingState.lexerIndex);
+        parsingState.allowToPopToken();
       }
 
       return currentNode;
     } finally {
       matchStartIndexes.pop();
-      recursionSignals.remove(firstLexerIndex);
+      partialAstNodes.remove(firstLexerIndex);
     }
   }
 
@@ -77,7 +71,6 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
     super.notifyStartParsing(parsingState);
     matchStartIndexes = new Stack<Integer>();
     partialAstNodes = new HashMap<Integer, AstNode>();
-    recursionSignals = new HashSet<Integer>();
   }
 
 }
