@@ -11,6 +11,7 @@ import static com.sonar.sslr.impl.matcher.Matchers.and;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class LeftRecursiveRuleImplTest {
@@ -96,6 +97,72 @@ public class LeftRecursiveRuleImplTest {
     pe.isOr("PE", pnae);
 
     assertThat(pnae, match("PNAE MA"));
+  }
+
+  @Test
+  public void testComplexeRecursion_NewOK1() throws Exception {
+    RuleImpl exp = new LeftRecursiveRuleImpl("exp");
+    RuleImpl sn = new LeftRecursiveRuleImpl("sn");
+    // RuleImpl ma = new LeftRecursiveRuleImpl("ma");
+    RuleImpl inve = new LeftRecursiveRuleImpl("inve");
+
+    exp.isOr(inve, sn);
+    sn.is("SN");
+    // ma.is(exp, "MA");
+    inve.is(exp, "INVE");
+
+    assertThat(exp, match("SN INVE"));
+  }
+
+  @Test
+  public void testComplexeRecursion_NewOK2() throws Exception {
+    RuleImpl exp = new LeftRecursiveRuleImpl("exp");
+    RuleImpl sn = new LeftRecursiveRuleImpl("sn");
+    RuleImpl ma = new LeftRecursiveRuleImpl("ma");
+    RuleImpl inve = new LeftRecursiveRuleImpl("inve");
+
+    // I add "ma" rule between "inve" and "sn" : OK
+    exp.isOr(inve, ma, sn);
+    sn.is("SN");
+    ma.is(exp, "MA");
+    inve.is(exp, "INVE");
+
+    assertThat(exp, match("SN INVE"));
+  }
+
+  @Test
+  @Ignore
+  public void testComplexeRecursion_NewKO1() throws Exception {
+    RuleImpl exp = new LeftRecursiveRuleImpl("exp");
+    RuleImpl sn = new LeftRecursiveRuleImpl("sn");
+    RuleImpl ma = new LeftRecursiveRuleImpl("ma");
+    RuleImpl inve = new LeftRecursiveRuleImpl("inve");
+
+    // I pass "ma" rule before "inve" rule : KO
+    exp.isOr(ma, inve, sn);
+    sn.is("SN");
+    ma.is(exp, "MA");
+    inve.is(exp, "INVE");
+
+    assertThat(exp, match("SN INVE"));
+  }
+
+  @Test
+  @Ignore
+  public void testComplexeRecursion_NewKO2() throws Exception {
+    RuleImpl exp = new LeftRecursiveRuleImpl("exp");
+    RuleImpl sn = new LeftRecursiveRuleImpl("sn");
+    RuleImpl ma = new LeftRecursiveRuleImpl("ma");
+    RuleImpl inve = new LeftRecursiveRuleImpl("inve");
+
+    // This is the exact way (order is important) it is described in the real C# grammar specification
+    exp.isOr(sn, ma, inve);
+    sn.is("SN");
+    ma.is(exp, "MA");
+    inve.is(exp, "INVE");
+
+    // And this should normally parse
+    assertThat(exp, match("SN MA MA INVE"));
   }
 
 }
