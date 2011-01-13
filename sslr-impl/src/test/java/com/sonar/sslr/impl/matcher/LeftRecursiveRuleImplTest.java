@@ -11,9 +11,17 @@ import static com.sonar.sslr.impl.matcher.Matchers.and;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.sonar.sslr.impl.loggers.ParserLogger;
+
 public class LeftRecursiveRuleImplTest {
+
+  @BeforeClass
+  public static void initSslrMode() {
+    System.setProperty(ParserLogger.SSLR_MODE_PROPERTY, ParserLogger.SSLR_DEBUG_MODE);
+  }
 
   @Test
   public void testSimpleRecursiveRule() throws Exception {

@@ -6,6 +6,8 @@
 
 package com.sonar.sslr.impl;
 
+import static com.sonar.sslr.impl.loggers.ParserLogger.memoizedAstUsed;
+
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -33,7 +35,7 @@ public class ParsingState {
   }
 
   public Token popToken(Matcher matcher) {
-    if(!canPopToken){
+    if ( !canPopToken) {
       throw RecognitionExceptionImpl.create();
     }
     if (lexerIndex >= outpostMatcherTokenIndex) {
@@ -51,7 +53,7 @@ public class ParsingState {
   }
 
   public Token peekToken(int index, Matcher matcher) {
-    if(!canPopToken){
+    if ( !canPopToken) {
       throw RecognitionExceptionImpl.create();
     }
     if (index > outpostMatcherTokenIndex) {
@@ -69,6 +71,9 @@ public class ParsingState {
   }
 
   public Token readToken(int tokenIndex) {
+    if (tokenIndex >= tokens.length) {
+      return null;
+    }
     return tokens[tokenIndex];
   }
 
@@ -118,6 +123,7 @@ public class ParsingState {
     AstNode astNode = null;
     if (hasMemoizedAst(matcher)) {
       astNode = astNodeMemoization[lexerIndex];
+      memoizedAstUsed(matcher, this, astNode);
       lexerIndex = astNode.getToIndex();
     }
     return astNode;
@@ -130,25 +136,25 @@ public class ParsingState {
       return null;
     }
   }
-  
-  public void forbidToPopToken(){
+
+  public void forbidToPopToken() {
     canPopToken = false;
   }
-  
-  public void allowToPopToken(){
+
+  public void allowToPopToken() {
     canPopToken = true;
   }
-  
+
   public void reinitNotifiedMatchersList() {
     notifiedMatchers.clear();
   }
-  
+
   public void matcherNotified(Matcher matcher) {
     notifiedMatchers.add(matcher);
   }
-  
+
   public boolean hasMatcherBeenNotified(Matcher matcher) {
     return notifiedMatchers.contains(matcher);
   }
-  
+
 }

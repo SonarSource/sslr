@@ -69,14 +69,14 @@ public abstract class Matcher implements AstNodeSkippingPolicy {
 
   public final AstNode parse(ParsingState parsingState) {
     try {
-      //notifyStartParsing(parsingState);
-      //parsingState.reinitNotifiedMatchersList();
+      // notifyStartParsing(parsingState);
+      // parsingState.reinitNotifiedMatchersList();
       return this.match(parsingState);
     } catch (RecognitionExceptionImpl e) {
       throw new RecognitionExceptionImpl(parsingState);
     } finally {
-      //notifyEndParsing(parsingState);
-      //parsingState.reinitNotifiedMatchersList();
+      // notifyEndParsing(parsingState);
+      // parsingState.reinitNotifiedMatchersList();
     }
   }
 
