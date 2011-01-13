@@ -47,6 +47,9 @@ public class Statement {
     }
   }
 
+  public void update(DataStates dataState) throws DataFlowException {
+  }
+
   public Statement getNext() {
     return nextStmt;
   }
@@ -58,7 +61,7 @@ public class Statement {
   public boolean hasNext() {
     return nextStmt != null;
   }
-  
+
   public boolean hasPrevious() {
     return previousStmt != null;
   }
