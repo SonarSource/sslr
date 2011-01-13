@@ -104,7 +104,7 @@ public class ParsingStackTraceTest {
     public Rule classDeclaration;
 
     public JavaGrammar() {
-      GrammarFieldsInitializer.initializeRuleFields(this, JavaGrammar.class);
+      GrammarRuleLifeCycleManager.initializeRuleFields(this, JavaGrammar.class);
       compilationUnit.is(packageDeclaration, importDeclaration, classBlock);
       classBlock.is(classDeclaration);
 

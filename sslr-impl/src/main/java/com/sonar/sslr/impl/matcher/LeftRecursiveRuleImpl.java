@@ -73,4 +73,8 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
     partialAstNodes = new HashMap<Integer, AstNode>();
   }
 
+  public void reInitState() {
+    matchStartIndexes = new Stack<Integer>();
+    partialAstNodes = new HashMap<Integer, AstNode>();
+  }
 }
