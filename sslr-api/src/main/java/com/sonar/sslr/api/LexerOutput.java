@@ -14,7 +14,7 @@ import java.util.Map;
 public class LexerOutput {
 
   private File file = null;
-  private List<Token> tokens = new ArrayList<Token>();
+  private List<Token> tokens = new ArrayList<Token>(1000);
   private List<Token> preprocessingTokens = new ArrayList<Token>();
   private Map<Integer, Token> comments = new HashMap<Integer, Token>();
   private final Preprocessor[] preprocessors;
