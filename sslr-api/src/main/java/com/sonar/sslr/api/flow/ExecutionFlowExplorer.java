@@ -34,23 +34,27 @@ public class ExecutionFlowExplorer {
       this.firstStmt = stmtToStartVisitFrom;
       return;
     }
-    Statement currentStmt = stmtToStartVisitFrom;
-    while (currentStmt != null) {
-      lastStmt = currentStmt;
-      callVisitStatementOnVisitors();
-      if (currentStmt.hasFlowHandler()) {
-        try {
-          FlowHandler flowHandler = currentStmt.getFlowHandler();
-          flowHandler.processFlow(this);
-        } catch (EndPathSignal signal) {
-          callEndPathOnVisitors();
-          return;
+    try {
+      Statement currentStmt = stmtToStartVisitFrom;
+      while (currentStmt != null) {
+        lastStmt = currentStmt;
+        callVisitStatementOnVisitors();
+        if (currentStmt.hasFlowHandler()) {
+          try {
+            FlowHandler flowHandler = currentStmt.getFlowHandler();
+            flowHandler.processFlow(this);
+          } catch (EndPathSignal signal) {
+            callEndPathOnVisitors();
+            return;
+          }
         }
+        currentStmt = currentStmt.getNext();
       }
-      currentStmt = currentStmt.getNext();
-    }
-    if (firstStmt == stmtToStartVisitFrom) {
-      callEndPathOnVisitors();
+      if (firstStmt == stmtToStartVisitFrom) {
+        callEndPathOnVisitors();
+      }
+    } catch (StopPathExplorationSignal signal) {
+      return;
     }
   }
 

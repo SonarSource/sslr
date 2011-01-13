@@ -6,6 +6,9 @@
 package com.sonar.sslr.api.flow;
 
 import static com.sonar.sslr.api.AstNodeUtils.createAstNode;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -87,6 +90,26 @@ public class ExecutionFlowExplorerTest {
 
   @Test
   public void shouldStopPathExploration() {
+    Statement stmt1 = new Statement(createAstNode("myStmt1"));
+    Statement stmt2 = new Statement(createAstNode("myStmt2"));
+    stmt1.setNext(stmt2);
+
+    ExecutionFlowVisitor visitor = new ExecutionFlowVisitor() {
+
+      private int numberOfCall = 0;
+
+      @Override
+      public void visitStatement(Statement stmt) {
+        numberOfCall++;
+        assertThat(numberOfCall, is(lessThan(2)));
+        throw new StopPathExplorationSignal();
+      }
+    };
+    flow.visitFlow(stmt1, visitor);
+  }
+
+  @Test
+  public void shouldEndPathExploration() {
     Statement stmt1 = new Statement(createAstNode("myStmt1"));
     FlowHandler flowHandler = new FlowHandler() {
 
