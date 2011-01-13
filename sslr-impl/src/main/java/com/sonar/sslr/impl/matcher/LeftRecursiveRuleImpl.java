@@ -30,7 +30,7 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
 
     // Loop in a pending recursion
     if (partialAstNodes.containsKey(firstLexerIndex)) {
-      parsingState.allowToPopToken();
+      parsingState.stopLeftRecursion();
       return partialAstNodes.get(firstLexerIndex);
     }
 
@@ -48,12 +48,12 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
       try {
         while (previousLexerIndex != parsingState.lexerIndex) {
           partialAstNodes.put(parsingState.lexerIndex, currentNode);
-          parsingState.forbidToPopToken();
+          parsingState.startLeftRecursion();
           currentNode = super.match(parsingState);
         }
       } catch (RecognitionExceptionImpl e) {
         partialAstNodes.remove(parsingState.lexerIndex);
-        parsingState.allowToPopToken();
+        parsingState.stopLeftRecursion();
       }
 
       return currentNode;

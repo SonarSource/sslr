@@ -8,19 +8,18 @@ package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static com.sonar.sslr.impl.matcher.Matchers.and;
+import static com.sonar.sslr.impl.matcher.Matchers.opt;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.sonar.sslr.impl.loggers.ParserLogger;
-
 public class LeftRecursiveRuleImplTest {
 
   @BeforeClass
   public static void initSslrMode() {
-    System.setProperty(ParserLogger.SSLR_MODE_PROPERTY, ParserLogger.SSLR_DEBUG_MODE);
+    // System.setProperty(ParserLogger.SSLR_MODE_PROPERTY, ParserLogger.SSLR_DEBUG_MODE);
   }
 
   @Test
@@ -39,7 +38,7 @@ public class LeftRecursiveRuleImplTest {
   }
 
   @Test
-  public void testInDirectLeftRecursion() throws Exception {
+  public void testRecursionCase8() throws Exception {
     RuleImpl a = new LeftRecursiveRuleImpl("a");
     RuleImpl b = new LeftRecursiveRuleImpl("b");
     RuleImpl c = new RuleImpl("c");
@@ -66,7 +65,7 @@ public class LeftRecursiveRuleImplTest {
   }
 
   @Test
-  public void testComplexeRecursion_OK1() throws Exception {
+  public void testRecursionCase5() throws Exception {
     RuleImpl pnae = new LeftRecursiveRuleImpl("pnae");
     RuleImpl ma = new RuleImpl("ma");
     RuleImpl inve = new RuleImpl("inve");
@@ -79,7 +78,7 @@ public class LeftRecursiveRuleImplTest {
   }
 
   @Test
-  public void testComplexeRecursion_OK2() throws Exception {
+  public void testRecursionCase6() throws Exception {
     RuleImpl pnae = new LeftRecursiveRuleImpl("pnae");
     RuleImpl ma = new RuleImpl("ma");
     RuleImpl pe = new RuleImpl("pe");
@@ -92,7 +91,7 @@ public class LeftRecursiveRuleImplTest {
   }
 
   @Test
-  public void testComplexeRecursion_OK3() throws Exception {
+  public void testRecursionCase7() throws Exception {
     RuleImpl pnae = new LeftRecursiveRuleImpl("pnae");
     RuleImpl ma = new RuleImpl("ma");
     RuleImpl inve = new RuleImpl("inve");
@@ -107,7 +106,7 @@ public class LeftRecursiveRuleImplTest {
   }
 
   @Test
-  public void testComplexeRecursion_NewOK1() throws Exception {
+  public void testRecursionCase3() throws Exception {
     RuleImpl exp = new LeftRecursiveRuleImpl("exp");
     RuleImpl sn = new RuleImpl("sn");
     // RuleImpl ma = new RuleImpl("ma");
@@ -122,7 +121,7 @@ public class LeftRecursiveRuleImplTest {
   }
 
   @Test
-  public void testComplexeRecursion_NewOK2() throws Exception {
+  public void testRecursionCase4() throws Exception {
     RuleImpl exp = new LeftRecursiveRuleImpl("exp");
     RuleImpl sn = new RuleImpl("sn");
     RuleImpl ma = new RuleImpl("ma");
@@ -138,7 +137,7 @@ public class LeftRecursiveRuleImplTest {
   }
 
   @Test
-  public void testComplexeRecursion_NewKO1() throws Exception {
+  public void testRecursionCase1() throws Exception {
     RuleImpl exp = new LeftRecursiveRuleImpl("exp");
     RuleImpl sn = new RuleImpl("sn");
     RuleImpl ma = new RuleImpl("ma");
@@ -154,7 +153,7 @@ public class LeftRecursiveRuleImplTest {
   }
 
   @Test
-  public void testComplexeRecursion_NewKO2() throws Exception {
+  public void testRecursionCase2() throws Exception {
     RuleImpl exp = new LeftRecursiveRuleImpl("exp");
     RuleImpl sn = new LeftRecursiveRuleImpl("sn");
     RuleImpl ma = new LeftRecursiveRuleImpl("ma");
@@ -166,8 +165,41 @@ public class LeftRecursiveRuleImplTest {
     ma.is(exp, "MA");
     inve.is(exp, "INVE");
 
-    // And this should normally parse
     assertThat(exp, match("SN MA MA INVE"));
+  }
+
+  @Test
+  public void testRecursionCase9() throws Exception {
+    RuleImpl exp = new LeftRecursiveRuleImpl("exp");
+    RuleImpl sn = new LeftRecursiveRuleImpl("sn");
+    RuleImpl ma = new LeftRecursiveRuleImpl("ma");
+    RuleImpl singleMa = new LeftRecursiveRuleImpl("singleMa");
+    RuleImpl inve = new LeftRecursiveRuleImpl("inve");
+
+    exp.isOr(sn, inve, singleMa, ma);
+    sn.is("SN");
+    inve.is(exp, "SOMETHING");
+    singleMa.is("MA");
+    ma.is(exp, "MA", "INVE");
+
+    assertThat(exp, match("SN MA INVE"));
+  }
+
+  @Test
+  public void testRecursionCase10() throws Exception {
+    RuleImpl exp = new LeftRecursiveRuleImpl("exp");
+    RuleImpl sn = new LeftRecursiveRuleImpl("sn");
+    RuleImpl ma = new LeftRecursiveRuleImpl("ma");
+    RuleImpl singleMa = new LeftRecursiveRuleImpl("singleMa");
+    RuleImpl inve = new LeftRecursiveRuleImpl("inve");
+
+    exp.isOr(sn, inve, singleMa, ma);
+    sn.is("SN");
+    inve.is(opt(exp, "SOMETHING"), "MA");
+    singleMa.is("MA");
+    ma.is(exp, "MA", "INVE");
+
+    assertThat(exp, match("SN MA INVE"));
   }
 
 }

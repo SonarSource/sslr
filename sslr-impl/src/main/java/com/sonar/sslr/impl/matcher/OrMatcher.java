@@ -20,9 +20,11 @@ public class OrMatcher extends Matcher {
 
   public AstNode match(ParsingState parsingState) {
     for (Matcher matcher : matchers) {
+      boolean leftRecursionState = parsingState.hasPendingLeftRecursion();
       if (matcher.isMatching(parsingState)) {
         return matcher.match(parsingState);
       }
+      parsingState.setLeftRecursionState(leftRecursionState);
     }
     throw RecognitionExceptionImpl.create();
   }

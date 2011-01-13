@@ -25,7 +25,7 @@ public class ParsingState {
   private Matcher outpostMatcher;
   private AstNode[] astNodeMemoization;
   private Matcher[] astMatcherMemoization;
-  private boolean canPopToken = true;
+  private boolean pendingLeftRecursion = false;
 
   public ParsingState(List<Token> tokens) {
     this.tokens = tokens.toArray(new Token[0]);
@@ -35,7 +35,7 @@ public class ParsingState {
   }
 
   public Token popToken(Matcher matcher) {
-    if ( !canPopToken) {
+    if ( pendingLeftRecursion) {
       throw RecognitionExceptionImpl.create();
     }
     if (lexerIndex >= outpostMatcherTokenIndex) {
@@ -53,7 +53,7 @@ public class ParsingState {
   }
 
   public Token peekToken(int index, Matcher matcher) {
-    if ( !canPopToken) {
+    if ( pendingLeftRecursion) {
       throw RecognitionExceptionImpl.create();
     }
     if (index > outpostMatcherTokenIndex) {
@@ -64,6 +64,10 @@ public class ParsingState {
       throw RecognitionExceptionImpl.create();
     }
     return tokens[index];
+  }
+
+  public final boolean hasPendingLeftRecursion() {
+    return pendingLeftRecursion;
   }
 
   public Token peekToken(Matcher matcher) {
@@ -137,12 +141,12 @@ public class ParsingState {
     }
   }
 
-  public void forbidToPopToken() {
-    canPopToken = false;
+  public void startLeftRecursion() {
+    pendingLeftRecursion = true;
   }
 
-  public void allowToPopToken() {
-    canPopToken = true;
+  public void stopLeftRecursion() {
+    pendingLeftRecursion = false;
   }
 
   public void reinitNotifiedMatchersList() {
@@ -155,6 +159,10 @@ public class ParsingState {
 
   public boolean hasMatcherBeenNotified(Matcher matcher) {
     return notifiedMatchers.contains(matcher);
+  }
+
+  public void setLeftRecursionState(boolean leftRecursionState) {
+    this.pendingLeftRecursion = leftRecursionState;
   }
 
 }
