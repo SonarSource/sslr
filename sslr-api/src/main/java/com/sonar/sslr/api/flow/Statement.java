@@ -8,7 +8,7 @@ package com.sonar.sslr.api.flow;
 
 import com.sonar.sslr.api.AstNode;
 
-public class Statement {
+public class Statement<DATASTATES extends DataStates> {
 
   private final AstNode astNode;
   private FlowHandler flowHandler;
@@ -47,7 +47,7 @@ public class Statement {
     }
   }
 
-  public void update(DataStates dataState) throws DataFlowException {
+  public void update(DATASTATES dataState) {
   }
 
   public Statement getNext() {

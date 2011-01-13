@@ -6,7 +6,7 @@
 package com.sonar.sslr.api.flow;
 
 
-public abstract class DataFlowException extends Exception {
+public abstract class DataFlowException extends RuntimeException {
   
   
 
