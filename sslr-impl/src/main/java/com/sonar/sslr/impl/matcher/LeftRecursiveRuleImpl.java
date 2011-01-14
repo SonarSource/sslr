@@ -14,6 +14,9 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
+/**
+ * Implementation of a Rule that support left recursion.
+ */
 public class LeftRecursiveRuleImpl extends RuleImpl {
 
   private Stack<Integer> matchStartIndexes = new Stack<Integer>();
