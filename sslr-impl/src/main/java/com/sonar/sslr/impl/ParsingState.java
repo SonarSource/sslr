@@ -20,6 +20,7 @@ public class ParsingState {
   private List<Matcher> notifiedMatchers = Lists.newArrayList();
   private final Token[] tokens;
   public int lexerIndex = 0;
+  public int lastRecursionLexerIndex = 0;
   public final int lexerSize;
   private int outpostMatcherTokenIndex = -1;
   private Matcher outpostMatcher;

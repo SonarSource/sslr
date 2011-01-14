@@ -204,16 +204,15 @@ public class LeftRecursiveRuleImplTest {
   }
 
   @Test
-  @Ignore("This is the exact same test case as #testRecursionCase2(), except that I added to assertions at the end, and they fail")
   public void testRecursionCase11() throws Exception {
     RuleImpl exp = new LeftRecursiveRuleImpl("exp");
     RuleImpl sn = new LeftRecursiveRuleImpl("sn");
     RuleImpl ma = new LeftRecursiveRuleImpl("ma");
     RuleImpl inve = new LeftRecursiveRuleImpl("inve");
 
+    ma.is(exp, "MA");
     exp.isOr(sn, ma, inve);
     sn.is("SN");
-    ma.is(exp, "MA");
     inve.is(exp, "INVE");
 
     // this is the assertion that passes in #testRecursionCase2()

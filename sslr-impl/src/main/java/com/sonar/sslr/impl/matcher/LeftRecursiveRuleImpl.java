@@ -32,13 +32,17 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
     int firstLexerIndex = parsingState.lexerIndex;
 
     // Loop in a pending recursion
-    if (partialAstNodes.containsKey(firstLexerIndex)) {
+    if (parsingState.hasPendingLeftRecursion() && partialAstNodes.containsKey(firstLexerIndex)) {
       parsingState.stopLeftRecursion();
       return partialAstNodes.get(firstLexerIndex);
     }
 
-    // Stop recursion
-    if ( !matchStartIndexes.isEmpty() && matchStartIndexes.peek() == firstLexerIndex) {
+    // Stop recursion When :
+    // 1   - This rule is already in the parsing stack
+    // 2.A - The previous rule in the parsing stack has begun at the same token index
+    // 2.B - Or another left recursion rule is currently trying to do some recursion at the same token index
+    if ( !matchStartIndexes.isEmpty()
+        && (matchStartIndexes.peek() == firstLexerIndex || (parsingState.hasPendingLeftRecursion() && matchStartIndexes.peek() == parsingState.lastRecursionLexerIndex))) {
       throw RecognitionExceptionImpl.create();
     }
 
@@ -51,6 +55,7 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
       try {
         while (previousLexerIndex < parsingState.lexerIndex) {
           previousLexerIndex = parsingState.lexerIndex;
+          parsingState.lastRecursionLexerIndex = firstLexerIndex;
           partialAstNodes.put(parsingState.lexerIndex, currentNode);
           parsingState.startLeftRecursion();
           currentNode = super.match(parsingState);
