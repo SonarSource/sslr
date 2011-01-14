@@ -6,8 +6,8 @@ package com.sonar.sslr.impl.matcher;
  * mailto:contact AT sonarsource DOT com
  */
 
-import static com.sonar.sslr.test.lexer.TokenUtils.merge;
 import static com.sonar.sslr.test.lexer.TokenUtils.lex;
+import static com.sonar.sslr.test.lexer.TokenUtils.merge;
 
 import java.util.List;
 
@@ -52,6 +52,10 @@ class HamcrestMatchMatcher extends BaseMatcher<Matcher> {
     } catch (RecognitionExceptionImpl e) {
       parsingStackTrace = ParsingStackTrace.generate(parsingState);
       return false;
+    } finally {
+      if (obj instanceof LeftRecursiveRuleImpl) {
+        ((LeftRecursiveRuleImpl) obj).endParsing();
+      }
     }
   }
 

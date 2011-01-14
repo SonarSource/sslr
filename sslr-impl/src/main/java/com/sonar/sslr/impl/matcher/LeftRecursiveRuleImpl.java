@@ -49,7 +49,8 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
 
       int previousLexerIndex = firstLexerIndex;
       try {
-        while (previousLexerIndex != parsingState.lexerIndex) {
+        while (previousLexerIndex < parsingState.lexerIndex) {
+          previousLexerIndex = parsingState.lexerIndex;
           partialAstNodes.put(parsingState.lexerIndex, currentNode);
           parsingState.startLeftRecursion();
           currentNode = super.match(parsingState);
