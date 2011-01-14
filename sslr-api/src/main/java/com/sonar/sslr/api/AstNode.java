@@ -393,18 +393,18 @@ public class AstNode {
    */
   public List<Token> getTokens() {
     List<Token> tokens = new ArrayList<Token>();
+    getTokens(tokens);
+    return tokens;
+  }
+
+  private void getTokens(List<Token> tokens) {
     if ( !hasChildren()) {
       tokens.add(token);
-      return tokens;
-    }
-    for (AstNode child : children) {
-      if ( !child.hasChildren()) {
-        tokens.add(child.getToken());
-      } else {
-        tokens.addAll(child.getTokens());
+    } else {
+      for (int i = 0; i < children.size(); i++) {
+        children.get(i).getTokens(tokens);
       }
     }
-    return tokens;
   }
 
   public String toString() {

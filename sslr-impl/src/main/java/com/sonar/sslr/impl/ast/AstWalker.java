@@ -79,9 +79,10 @@ public class AstWalker {
   }
 
   private void visitChildren(AstNode ast, Object output) {
-    if (ast.getChildren() != null) {
-      for (AstNode nodeChild : ast.getChildren()) {
-        visit(nodeChild, output);
+    List<AstNode> children = ast.getChildren();
+    if (children != null) {
+      for (int i = 0 ; i < children.size() ; i++) {
+        visit(ast.getChild(i), output);
       }
     }
   }
