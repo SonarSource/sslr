@@ -50,9 +50,9 @@ public class GrammarRuleLifeCycleManagerTest {
     grammar.rule1 = new RuleImpl("rule1");
     grammar.rule2 = mockRule;
 
-    GrammarRuleLifeCycleManager.reinitializeLeftRecursionRuleFields(grammar);
+    GrammarRuleLifeCycleManager.notifyEndParsing(grammar);
 
-    verify(mockRule).reInitState();
+    verify(mockRule).endParsing();
   }
 
   private class SampleGrammar implements Grammar {

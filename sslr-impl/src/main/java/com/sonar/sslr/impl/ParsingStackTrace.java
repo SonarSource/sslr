@@ -74,12 +74,10 @@ public class ParsingStackTrace {
   private List<Token> getTokensToDisplayAroundOutpostMatcherToken() {
     List<Token> tokens = new ArrayList<Token>();
     int outpostMatcherTokenIndex = parsingState.getOutpostMatcherTokenIndex();
-    int outpostMatcherTokenLine = parsingState.getOutpostMatcherTokenLine();
     for (int i = outpostMatcherTokenIndex - SOURCE_CODE_TOKENS_WINDOW; i <= outpostMatcherTokenIndex + SOURCE_CODE_TOKENS_WINDOW; i++) {
       if (i < 0 || i > parsingState.lexerSize - 1) {
         continue;
       }
-      Token token = parsingState.readToken(i);
       tokens.add(parsingState.readToken(i));
     }
     return tokens;

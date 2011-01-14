@@ -54,26 +54,6 @@ public class RuleImpl extends Matcher implements Rule {
   }
 
   /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void startParsing(ParsingState parsingState) {
-    if (matcher != null) {
-      matcher.notifyStartParsing(parsingState);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void endParsing(ParsingState parsingState) {
-    if (matcher != null) {
-      matcher.notifyEndParsing(parsingState);
-    }
-  }
-
-  /**
    * ${@inheritDoc}
    */
   public RuleImpl is(Object... matchers) {

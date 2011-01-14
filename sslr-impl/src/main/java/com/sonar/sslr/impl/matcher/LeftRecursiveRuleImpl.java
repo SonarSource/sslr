@@ -63,17 +63,7 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void startParsing(ParsingState parsingState) {
-    super.notifyStartParsing(parsingState);
-    matchStartIndexes = new Stack<Integer>();
-    partialAstNodes = new HashMap<Integer, AstNode>();
-  }
-
-  public void reInitState() {
+  public void endParsing() {
     matchStartIndexes = new Stack<Integer>();
     partialAstNodes = new HashMap<Integer, AstNode>();
   }

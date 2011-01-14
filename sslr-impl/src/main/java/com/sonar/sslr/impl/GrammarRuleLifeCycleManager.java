@@ -66,19 +66,19 @@ public final class GrammarRuleLifeCycleManager {
   }
 
   /**
-   * Reinitializes the state of all the left recursion rules of the given grammar.
+   * Notify the rules of the given grammar that a parsing has just ended so that they can optionally reinitialize their state.
    * 
    * @param rules
-   *          the grammar object that contains the rules to reinit
+   *          the grammar object that contains the rules to notify
    */
-  public static void reinitializeLeftRecursionRuleFields(Object rules) {
+  public static void notifyEndParsing(Object rules) {
     Field[] fields = rules.getClass().getDeclaredFields();
     for (Field field : fields) {
       if (field.getType() == Rule.class) {
         try {
           Object rule = field.get(rules);
           if (ClassUtils.isAssignable(rule.getClass(), LeftRecursiveRuleImpl.class)) {
-            ((LeftRecursiveRuleImpl) rule).reInitState();
+            ((LeftRecursiveRuleImpl) rule).endParsing();
           }
         } catch (Exception e) {
           e.printStackTrace();

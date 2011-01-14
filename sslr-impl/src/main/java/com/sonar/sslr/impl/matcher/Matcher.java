@@ -43,40 +43,11 @@ public abstract class Matcher implements AstNodeSkippingPolicy {
 
   public abstract AstNode match(ParsingState parsingState);
 
-  /**
-   * Matcher life cycle method called before starting the parsing,
-   */
-  protected abstract void startParsing(ParsingState parsingState);
-
-  /**
-   * Matcher life cycle method called when ending the parsing,
-   */
-  protected abstract void endParsing(ParsingState parsingState);
-
-  public final void notifyStartParsing(ParsingState parsingState) {
-    if ( !parsingState.hasMatcherBeenNotified(this)) {
-      parsingState.matcherNotified(this);
-      startParsing(parsingState);
-    }
-  }
-
-  public final void notifyEndParsing(ParsingState parsingState) {
-    if ( !parsingState.hasMatcherBeenNotified(this)) {
-      parsingState.matcherNotified(this);
-      endParsing(parsingState);
-    }
-  }
-
   public final AstNode parse(ParsingState parsingState) {
     try {
-      // notifyStartParsing(parsingState);
-      // parsingState.reinitNotifiedMatchersList();
       return this.match(parsingState);
     } catch (RecognitionExceptionImpl e) {
       throw new RecognitionExceptionImpl(parsingState);
-    } finally {
-      // notifyEndParsing(parsingState);
-      // parsingState.reinitNotifiedMatchersList();
     }
   }
 

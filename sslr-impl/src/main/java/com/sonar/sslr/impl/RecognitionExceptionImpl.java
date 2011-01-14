@@ -10,6 +10,8 @@ import com.sonar.sslr.api.RecognitionException;
 
 public class RecognitionExceptionImpl extends RuntimeException implements RecognitionException {
 
+  private static final long serialVersionUID = 9043689248001323911L;
+
   private int line;
 
   private static RecognitionExceptionImpl exception = new RecognitionExceptionImpl();

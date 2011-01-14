@@ -35,18 +35,4 @@ public class BooleanMatcher extends Matcher {
   public void setParentRule(RuleImpl parentRule) {
     this.parentRule = parentRule;
   }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void startParsing(ParsingState parsingState) {
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void endParsing(ParsingState parsingState) {
-  }
 }

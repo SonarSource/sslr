@@ -43,7 +43,8 @@ public final class RegexpChannelBuilder {
     result.append("[^");
     for (int i = 0; i < character.length; i++) {
       result.append(character[i]);
-      if (i != character.length - 1) {
+      if (i != character.length - 1) { //NOSONAR
+        // do nothing
       }
     }
     result.append("]");

@@ -22,7 +22,7 @@ public class InclusiveTillMatcher extends Matcher {
   public AstNode match(ParsingState parsingState) {
     AstNode astNode = new AstNode(this, "tillMatcher", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
     StringBuilder builder = new StringBuilder();
-    while (!matcher.isMatching(parsingState)) {
+    while ( !matcher.isMatching(parsingState)) {
       builder.append(parsingState.popToken(this).getValue());
       builder.append(" ");
     }
@@ -39,22 +39,6 @@ public class InclusiveTillMatcher extends Matcher {
 
   public String toString() {
     return "(" + matcher + ")till";
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void startParsing(ParsingState parsingState) {
-    matcher.notifyStartParsing(parsingState);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void endParsing(ParsingState parsingState) {
-    matcher.notifyEndParsing(parsingState);
   }
 
   static class WordsTokenType implements TokenType {
