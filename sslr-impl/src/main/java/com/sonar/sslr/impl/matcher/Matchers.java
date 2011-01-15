@@ -100,25 +100,25 @@ public class Matchers {
     return new MemoizerMatcher(new ExclusiveTillMatcher(Matcher.convertToMatchers(matchers)));
   }
 
-  public static ZeroToNMatcher o2n(Object... objects) {
+  public static Matcher o2n(Object... objects) {
     Matcher[] matchers = Matcher.convertToMatchers(objects);
     if (matchers.length == 0) {
       throw new IllegalStateException("You must define at least one matcher.");
     } else if (matchers.length == 0) {
-      return new ZeroToNMatcher(matchers[0]);
+      return new MemoizerMatcher(new ZeroToNMatcher(matchers[0]));
     } else {
-      return new ZeroToNMatcher(new AndMatcher(matchers));
+      return new MemoizerMatcher(new ZeroToNMatcher(new AndMatcher(matchers)));
     }
   }
 
-  public static OneToNMatcher one2n(Object... objects) {
+  public static Matcher one2n(Object... objects) {
     Matcher[] matchers = Matcher.convertToMatchers(objects);
     if (matchers.length == 0) {
       throw new IllegalStateException("You must define at least one matcher.");
     } else if (matchers.length == 0) {
-      return new OneToNMatcher(matchers[0]);
+      return new MemoizerMatcher(new OneToNMatcher(matchers[0]));
     } else {
-      return new OneToNMatcher(new AndMatcher(matchers));
+      return new MemoizerMatcher(new OneToNMatcher(new AndMatcher(matchers)));
     }
   }
 }
