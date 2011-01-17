@@ -112,9 +112,11 @@ public class ExecutionFlowExplorer<STATEMENT extends Statement<DATASTATES>, DATA
     executionFlowStarted = true;
     callStartOnVisitors();
     try {
-      visitFlow(firstStmt);
-    } catch (EndPathSignal e) {
-      callEndPathOnVisitors();
+      try {
+        visitFlow(firstStmt);
+      } catch (EndPathSignal e) {
+        callEndPathOnVisitors();
+      }
     } catch (StopPathExplorationSignal e) {
 
     } catch (StopFlowExplorationSignal e) {
