@@ -11,15 +11,15 @@ import java.util.Map;
 
 import com.sonar.sslr.api.AstNode;
 
-public class ExecutionFlow {
+public class ExecutionFlow<STATEMENT extends Statement<? extends DataStates>> {
 
-  private Map<AstNode, Statement> stmtAstNodes = new HashMap<AstNode, Statement>();
+  private Map<AstNode, STATEMENT> stmtAstNodes = new HashMap<AstNode, STATEMENT>();
 
-  public final void add(Statement stmt) {
+  public final void add(STATEMENT stmt) {
     stmtAstNodes.put(stmt.getAstNode(), stmt);
   }
 
-  public final Statement getStatement(AstNode stmtNode) {
+  public final STATEMENT getStatement(AstNode stmtNode) {
     return stmtAstNodes.get(stmtNode);
   }
 
@@ -28,8 +28,8 @@ public class ExecutionFlow {
     explorer.visitFlow(stmtToStartVisitFrom);
     explorer.start();
   }
-  
-  public final void visitFlow(Statement stmtToStartVisitFrom, ExecutionFlowVisitor... visitors) {
+
+  public final void visitFlow(STATEMENT stmtToStartVisitFrom, ExecutionFlowVisitor... visitors) {
     ExecutionFlowExplorer explorer = new ExecutionFlowExplorer(this, visitors);
     explorer.visitFlow(stmtToStartVisitFrom);
     explorer.start();

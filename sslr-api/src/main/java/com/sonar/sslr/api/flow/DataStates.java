@@ -5,6 +5,6 @@
  */
 package com.sonar.sslr.api.flow;
 
-public class DataStates {
+abstract public class DataStates {
 
 }
