@@ -12,7 +12,7 @@ import java.util.Map;
 
 import com.sonar.sslr.api.AstNode;
 
-public class ExecutionFlow<STATEMENT extends Statement<? extends DataStates>> {
+public class ExecutionFlow<STATEMENT extends Statement<DATASTATES>, DATASTATES extends DataStates> {
 
   private Map<AstNode, STATEMENT> stmtAstNodes = new HashMap<AstNode, STATEMENT>();
 
@@ -24,15 +24,23 @@ public class ExecutionFlow<STATEMENT extends Statement<? extends DataStates>> {
     return stmtAstNodes.get(stmtNode);
   }
 
-  public final void visitFlow(AstNode stmtToStartVisitFrom, ExecutionFlowVisitor<STATEMENT>... visitors) {
-    ExecutionFlowExplorer<STATEMENT> explorer = new ExecutionFlowExplorer<STATEMENT>(this, visitors);
+  public final void visitFlow(AstNode stmtToStartVisitFrom, ExecutionFlowVisitor<STATEMENT, DATASTATES>... visitors) {
+    ExecutionFlowExplorer<STATEMENT, DATASTATES> explorer = new ExecutionFlowExplorer<STATEMENT, DATASTATES>(this, visitors);
     explorer.visitFlow(stmtToStartVisitFrom);
     explorer.start();
   }
 
-  public final void visitFlow(STATEMENT stmtToStartVisitFrom, ExecutionFlowVisitor<STATEMENT>... visitors) {
-    ExecutionFlowExplorer<STATEMENT> explorer = new ExecutionFlowExplorer<STATEMENT>(this, visitors);
+  public final void visitFlow(STATEMENT stmtToStartVisitFrom, ExecutionFlowVisitor<STATEMENT, DATASTATES>... visitors) {
+    ExecutionFlowExplorer<STATEMENT, DATASTATES> explorer = new ExecutionFlowExplorer<STATEMENT, DATASTATES>(this, visitors);
     explorer.visitFlow(stmtToStartVisitFrom);
+    explorer.start();
+  }
+
+  public final void visitFlowAndData(STATEMENT stmtToStartVisitFrom, DATASTATES dataStates,
+      ExecutionFlowVisitor<STATEMENT, DATASTATES>... visitors) {
+    ExecutionFlowExplorer<STATEMENT, DATASTATES> explorer = new ExecutionFlowExplorer<STATEMENT, DATASTATES>(this, visitors);
+    explorer.visitFlow(stmtToStartVisitFrom);
+    explorer.setDataStates(dataStates);
     explorer.start();
   }
 

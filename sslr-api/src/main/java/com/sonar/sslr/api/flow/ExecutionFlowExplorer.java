@@ -10,19 +10,27 @@ import java.util.Stack;
 
 import com.sonar.sslr.api.AstNode;
 
-public class ExecutionFlowExplorer<STATEMENT extends Statement<? extends DataStates>> {
+public class ExecutionFlowExplorer<STATEMENT extends Statement<DATASTATES>, DATASTATES extends DataStates> {
 
-  private final ExecutionFlow<STATEMENT> executionFlow;
-  private final ExecutionFlowVisitor<STATEMENT>[] visitors;
+  private final ExecutionFlow<STATEMENT, DATASTATES> executionFlow;
+  private final ExecutionFlowVisitor<STATEMENT, DATASTATES>[] visitors;
   private final FlowStack executionFlowStack = new FlowStack();
   private STATEMENT lastStmt;
   private STATEMENT lastEndPathStmt;
   private STATEMENT firstStmt;
+  private DATASTATES dataStates = null;
   private boolean executionFlowStarted = false;
 
-  ExecutionFlowExplorer(ExecutionFlow<STATEMENT> executionFlow, ExecutionFlowVisitor<STATEMENT>... visitors) {
+  ExecutionFlowExplorer(ExecutionFlow<STATEMENT, DATASTATES> executionFlow, ExecutionFlowVisitor<STATEMENT, DATASTATES>... visitors) {
     this.visitors = visitors;
     this.executionFlow = executionFlow;
+  }
+
+  public void setDataStates(DATASTATES dataStates) {
+    this.dataStates = dataStates;
+    for (ExecutionFlowVisitor<STATEMENT, DATASTATES> visitor : visitors) {
+      visitor.dataStates = dataStates;
+    }
   }
 
   public void visitFlow(AstNode stmtToStartVisitFrom) {
@@ -34,27 +42,18 @@ public class ExecutionFlowExplorer<STATEMENT extends Statement<? extends DataSta
       this.firstStmt = stmtToStartVisitFrom;
       return;
     }
-    try {
-      STATEMENT currentStmt = stmtToStartVisitFrom;
-      while (currentStmt != null) {
-        lastStmt = currentStmt;
-        callVisitStatementOnVisitors();
-        if (currentStmt.hasFlowHandler()) {
-          try {
-            FlowHandler flowHandler = currentStmt.getFlowHandler();
-            flowHandler.processFlow(this);
-          } catch (EndPathSignal signal) {
-            callEndPathOnVisitors();
-            return;
-          }
-        }
-        currentStmt = (STATEMENT) currentStmt.getNext();
+    STATEMENT currentStmt = stmtToStartVisitFrom;
+    while (currentStmt != null) {
+      lastStmt = currentStmt;
+      callVisitStatementOnVisitors();
+      if (currentStmt.hasFlowHandler()) {
+        FlowHandler flowHandler = currentStmt.getFlowHandler();
+        flowHandler.processFlow(this);
       }
-      if (firstStmt == stmtToStartVisitFrom) {
-        callEndPathOnVisitors();
-      }
-    } catch (StopPathExplorationSignal signal) {
-      return;
+      currentStmt = (STATEMENT) currentStmt.getNext();
+    }
+    if (firstStmt == stmtToStartVisitFrom) {
+      callEndPathOnVisitors();
     }
   }
 
@@ -74,24 +73,36 @@ public class ExecutionFlowExplorer<STATEMENT extends Statement<? extends DataSta
   }
 
   public void callVisitBranchOnVisitors() {
+    if (dataStates != null) {
+      dataStates.visitBranch();
+    }
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].visitBranch();
     }
   }
 
   public void callVisitMandatoryBranches() {
+    if (dataStates != null) {
+      dataStates.visitMandatoryBranches();
+    }
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].visitMandatoryBranches();
     }
   }
-  
+
   public void callLeaveMandatoryBranches() {
+    if (dataStates != null) {
+      dataStates.leaveMandatoryBranches();
+    }
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].leaveMandatoryBranches();
     }
   }
 
   public void callLeaveBranchOnVisitors() {
+    if (dataStates != null) {
+      dataStates.leaveBranch();
+    }
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].leaveBranch();
     }
@@ -99,22 +110,26 @@ public class ExecutionFlowExplorer<STATEMENT extends Statement<? extends DataSta
 
   void start() {
     executionFlowStarted = true;
-    callVisitStartOnVisitors();
+    callStartOnVisitors();
     try {
       visitFlow(firstStmt);
+    } catch (EndPathSignal e) {
+      callEndPathOnVisitors();
+    } catch (StopPathExplorationSignal e) {
+
     } catch (StopFlowExplorationSignal e) {
 
     }
-    callVisitEndOnVisitors();
+    callStopOnVisitors();
   }
 
-  private void callVisitEndOnVisitors() {
+  private void callStopOnVisitors() {
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].stop();
     }
   }
 
-  private void callVisitStartOnVisitors() {
+  private void callStartOnVisitors() {
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].start();
     }

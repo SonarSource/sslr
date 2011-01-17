@@ -7,4 +7,11 @@ package com.sonar.sslr.api.flow;
 
 abstract public class DataStates {
 
+  public abstract void visitBranch();
+
+  public abstract void leaveBranch();
+
+  public abstract void visitMandatoryBranches();
+
+  public abstract void leaveMandatoryBranches();
 }
