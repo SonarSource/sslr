@@ -14,7 +14,7 @@ public abstract class ExecutionFlowVisitor<STATEMENT extends Statement<? extends
   public void visitStatement(STATEMENT stmt) {
   }
 
-  public void startVisitingMandatoryBranches() {
+  public void visitMandatoryBranches() {
   }
 
   public void visitBranch() {
@@ -23,7 +23,7 @@ public abstract class ExecutionFlowVisitor<STATEMENT extends Statement<? extends
   public void leaveBranch() {
   }
 
-  public void stopVisitingMandatoryBranches() {
+  public void leaveMandatoryBranches() {
   }
 
   public void endPath() {

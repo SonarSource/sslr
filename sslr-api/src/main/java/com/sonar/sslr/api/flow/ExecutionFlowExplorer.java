@@ -79,15 +79,15 @@ public class ExecutionFlowExplorer<STATEMENT extends Statement<? extends DataSta
     }
   }
 
-  public void callStartVisitingMandatoryBranches() {
+  public void callVisitMandatoryBranches() {
     for (int i = 0; i < visitors.length; i++) {
-      visitors[i].startVisitingMandatoryBranches();
+      visitors[i].visitMandatoryBranches();
     }
   }
   
-  public void callStopVisitingMandatoryBranches() {
+  public void callLeaveMandatoryBranches() {
     for (int i = 0; i < visitors.length; i++) {
-      visitors[i].stopVisitingMandatoryBranches();
+      visitors[i].leaveMandatoryBranches();
     }
   }
 
