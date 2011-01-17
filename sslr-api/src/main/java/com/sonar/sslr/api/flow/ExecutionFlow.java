@@ -6,6 +6,7 @@
 
 package com.sonar.sslr.api.flow;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,15 +24,19 @@ public class ExecutionFlow<STATEMENT extends Statement<? extends DataStates>> {
     return stmtAstNodes.get(stmtNode);
   }
 
-  public final void visitFlow(AstNode stmtToStartVisitFrom, ExecutionFlowVisitor... visitors) {
-    ExecutionFlowExplorer explorer = new ExecutionFlowExplorer(this, visitors);
+  public final void visitFlow(AstNode stmtToStartVisitFrom, ExecutionFlowVisitor<STATEMENT>... visitors) {
+    ExecutionFlowExplorer<STATEMENT> explorer = new ExecutionFlowExplorer<STATEMENT>(this, visitors);
     explorer.visitFlow(stmtToStartVisitFrom);
     explorer.start();
   }
 
-  public final void visitFlow(STATEMENT stmtToStartVisitFrom, ExecutionFlowVisitor... visitors) {
-    ExecutionFlowExplorer explorer = new ExecutionFlowExplorer(this, visitors);
+  public final void visitFlow(STATEMENT stmtToStartVisitFrom, ExecutionFlowVisitor<STATEMENT>... visitors) {
+    ExecutionFlowExplorer<STATEMENT> explorer = new ExecutionFlowExplorer<STATEMENT>(this, visitors);
     explorer.visitFlow(stmtToStartVisitFrom);
     explorer.start();
+  }
+
+  public final Collection<STATEMENT> getStatements() {
+    return stmtAstNodes.values();
   }
 }

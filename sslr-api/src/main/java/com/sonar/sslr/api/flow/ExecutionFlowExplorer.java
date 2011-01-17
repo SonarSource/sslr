@@ -10,17 +10,17 @@ import java.util.Stack;
 
 import com.sonar.sslr.api.AstNode;
 
-public class ExecutionFlowExplorer {
+public class ExecutionFlowExplorer<STATEMENT extends Statement<? extends DataStates>> {
 
-  private final ExecutionFlow executionFlow;
-  private final ExecutionFlowVisitor[] visitors;
+  private final ExecutionFlow<STATEMENT> executionFlow;
+  private final ExecutionFlowVisitor<STATEMENT>[] visitors;
   private final FlowStack executionFlowStack = new FlowStack();
-  private Statement lastStmt;
-  private Statement lastEndPathStmt;
-  private Statement firstStmt;
+  private STATEMENT lastStmt;
+  private STATEMENT lastEndPathStmt;
+  private STATEMENT firstStmt;
   private boolean executionFlowStarted = false;
 
-  ExecutionFlowExplorer(ExecutionFlow executionFlow, ExecutionFlowVisitor... visitors) {
+  ExecutionFlowExplorer(ExecutionFlow<STATEMENT> executionFlow, ExecutionFlowVisitor<STATEMENT>... visitors) {
     this.visitors = visitors;
     this.executionFlow = executionFlow;
   }
@@ -29,13 +29,13 @@ public class ExecutionFlowExplorer {
     visitFlow(executionFlow.getStatement(stmtToStartVisitFrom));
   }
 
-  public void visitFlow(Statement stmtToStartVisitFrom) {
+  public void visitFlow(STATEMENT stmtToStartVisitFrom) {
     if ( !executionFlowStarted) {
       this.firstStmt = stmtToStartVisitFrom;
       return;
     }
     try {
-      Statement currentStmt = stmtToStartVisitFrom;
+      STATEMENT currentStmt = stmtToStartVisitFrom;
       while (currentStmt != null) {
         lastStmt = currentStmt;
         callVisitStatementOnVisitors();
@@ -48,7 +48,7 @@ public class ExecutionFlowExplorer {
             return;
           }
         }
-        currentStmt = currentStmt.getNext();
+        currentStmt = (STATEMENT)currentStmt.getNext();
       }
       if (firstStmt == stmtToStartVisitFrom) {
         callEndPathOnVisitors();
