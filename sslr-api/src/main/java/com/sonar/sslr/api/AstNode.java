@@ -236,7 +236,7 @@ public class AstNode {
   }
 
   /**
-   * Find the first child among all direct children having one of the desired types.
+   * Find the first child among all direct children having one of the requested types.
    * 
    * @param list
    *          of desired node types
@@ -254,7 +254,7 @@ public class AstNode {
   }
 
   /**
-   * Find the first child among all children and grand-children having one of the desired types.
+   * Find the first child among all children and grand-children having one of the requested types.
    * 
    * @param AstNodeType
    *          list of desired node types
@@ -290,7 +290,8 @@ public class AstNode {
   }
 
   /**
-   * Find the all children among direct children having the desired type.
+   * Find the all children among direct children having the requested type. As far as possible, this method should be used instead of
+   * findChildren(AstNodeType nodeType) which is more CPU intensive.
    * 
    * @param AstNodeType
    *          the node type
@@ -307,6 +308,30 @@ public class AstNode {
   }
 
   /**
+   * Find the all children having the requested type. Be careful, this method searches among all children whatever is their depth.
+   * 
+   * @param AstNodeType
+   *          the node type
+   * @return the list of matching children
+   */
+  public List<AstNode> findChildren(AstNodeType nodeType) {
+    List<AstNode> nodes = new ArrayList<AstNode>();
+    findChildren(nodes, nodeType);
+    return nodes;
+  }
+
+  private void findChildren(List<AstNode> result, AstNodeType nodeType) {
+    if (is(nodeType)) {
+      result.add(this);
+    }
+    if (hasChildren()) {
+      for (AstNode child : children) {
+        child.findChildren(result, nodeType);
+      }
+    }
+  }
+
+  /**
    * Get the last child of this node
    * 
    * @return the last child or null if there is no child
@@ -319,21 +344,21 @@ public class AstNode {
   }
 
   /**
-   * @return true if this node has some direct children with the desired node types
+   * @return true if this node has some direct children with the requested node types
    */
   public boolean hasDirectChildren(AstNodeType... nodeTypes) {
     return findFirstDirectChild(nodeTypes) != null;
   }
 
   /**
-   * @return true if this node has some children and/or grand-children with the desired node types
+   * @return true if this node has some children and/or grand-children with the requested node types
    */
   public boolean hasChildren(AstNodeType... nodeTypes) {
     return findFirstChild(nodeTypes) != null;
   }
 
   /**
-   * @return true if this node has a parent or a grand-parent with the desired node type.
+   * @return true if this node has a parent or a grand-parent with the requested node type.
    */
   public boolean hasParents(AstNodeType nodeType) {
     if (findFirstParent(nodeType) != null) {

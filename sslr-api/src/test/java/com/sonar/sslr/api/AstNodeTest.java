@@ -15,6 +15,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.List;
+
 import org.junit.Test;
 
 public class AstNodeTest {
@@ -80,7 +82,7 @@ public class AstNodeTest {
     assertThat(parent.getChild(0), is(child1));
     assertThat(parent.getChild(1), is(child2));
   }
-  
+
   @Test
   public void testGetLastToken() {
     Token lastToken = new Token(GenericTokenType.IDENTIFIER, "LAST_TOKEN");
@@ -93,7 +95,7 @@ public class AstNodeTest {
     assertThat(parent.getLastToken(), is(lastToken));
     assertThat(child2.getLastToken(), is(lastToken));
   }
-  
+
   @Test
   public void testGetTokens() {
     Token child1Token = new Token(GenericTokenType.IDENTIFIER, "CHILD 1");
@@ -108,12 +110,12 @@ public class AstNodeTest {
     assertThat(parent.getTokens().get(0), is(child1Token));
     assertThat(parent.getTokens().get(1), is(child2Token));
   }
-  
+
   @Test
   public void dumpSourceCode() {
     Token child1Token = new Token(GenericTokenType.IDENTIFIER, "CHILD 1", 1, 2);
-    Token child2Token = new Token(GenericTokenType.IDENTIFIER, "CHILD 2", 1 , 12);
-    Token child3Token = new Token(GenericTokenType.IDENTIFIER, "CHILD 3", 2 , 0);
+    Token child2Token = new Token(GenericTokenType.IDENTIFIER, "CHILD 2", 1, 12);
+    Token child3Token = new Token(GenericTokenType.IDENTIFIER, "CHILD 3", 2, 0);
     AstNode parent = new AstNode(new NodeType(), "parent", null);
     AstNode child1 = new AstNode(new NodeType(), "child1", child1Token);
     AstNode child2 = new AstNode(new NodeType(), "child2", child2Token);
@@ -205,6 +207,24 @@ public class AstNodeTest {
     assertThat(expr.findFirstDirectChild(statRule), is(stat));
     NodeType anotherRule = new NodeType();
     assertThat(expr.findFirstDirectChild(anotherRule, statRule), is(stat));
+  }
+
+  @Test
+  public void testFindChildren() {
+    NodeType idType = new NodeType();
+    AstNode expr = new AstNode(new NodeType(), "expr", null);
+    AstNode stat = new AstNode(new NodeType(), "stat", null);
+    AstNode id1 = new AstNode(idType, "id1", null);
+    AstNode id2 = new AstNode(idType, "id2", null);
+
+    expr.addChild(stat);
+    expr.addChild(id1);
+    stat.addChild(id2);
+
+    List<AstNode> identifiers = expr.findChildren(idType);
+
+    assertThat(identifiers.size(), is(2));
+    assertThat(identifiers, hasItems(id1, id2));
   }
 
   @Test
