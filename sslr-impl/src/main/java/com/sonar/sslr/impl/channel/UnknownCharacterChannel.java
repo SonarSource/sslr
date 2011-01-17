@@ -32,7 +32,8 @@ public class UnknownCharacterChannel extends Channel<LexerOutput> {
     if (code.peek() != -1) {
       char unknownChar = (char) code.pop();
       if (shouldLogWarning) {
-        LOG.warn("Unknown char: \"" + unknownChar + "\" (" + code.getLinePosition() + ":" + code.getColumnPosition() + ")");
+        LOG.warn("Unknown char: \"" + unknownChar + "\" (" + lexerOutput.getFileName() + ":" + code.getLinePosition() + ":"
+            + code.getColumnPosition() + ")");
       }
       lexerOutput.addTokenAndProcess(GenericTokenType.UNKNOWN_CHAR, String.valueOf(unknownChar), code.getLinePosition(),
           code.getColumnPosition() - 1);
