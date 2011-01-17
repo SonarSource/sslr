@@ -12,8 +12,8 @@ public class Statement<DATASTATES extends DataStates> {
 
   private final AstNode astNode;
   private FlowHandler flowHandler;
-  private Statement nextStmt;
-  private Statement previousStmt;
+  private Statement<DATASTATES> nextStmt;
+  private Statement<DATASTATES> previousStmt;
 
   public Statement(AstNode stmtAstNode) {
     this.astNode = stmtAstNode;
@@ -22,6 +22,9 @@ public class Statement<DATASTATES extends DataStates> {
   public AstNode getAstNode() {
     return astNode;
   }
+
+  public void init() {
+  };
 
   @Override
   public String toString() {
@@ -40,7 +43,7 @@ public class Statement<DATASTATES extends DataStates> {
     return flowHandler != null;
   }
 
-  public void setNext(Statement nextStmt) {
+  public void setNext(Statement<DATASTATES> nextStmt) {
     this.nextStmt = nextStmt;
     if (nextStmt != null) {
       nextStmt.previousStmt = this;
@@ -50,11 +53,11 @@ public class Statement<DATASTATES extends DataStates> {
   public void update(DATASTATES dataState) {
   }
 
-  public Statement getNext() {
+  public Statement<DATASTATES> getNext() {
     return nextStmt;
   }
 
-  public Statement getPrevious() {
+  public Statement<DATASTATES> getPrevious() {
     return previousStmt;
   }
 
