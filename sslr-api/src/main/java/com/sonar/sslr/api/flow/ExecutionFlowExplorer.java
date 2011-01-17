@@ -48,7 +48,7 @@ public class ExecutionFlowExplorer<STATEMENT extends Statement<? extends DataSta
             return;
           }
         }
-        currentStmt = (STATEMENT)currentStmt.getNext();
+        currentStmt = (STATEMENT) currentStmt.getNext();
       }
       if (firstStmt == stmtToStartVisitFrom) {
         callEndPathOnVisitors();
@@ -79,6 +79,18 @@ public class ExecutionFlowExplorer<STATEMENT extends Statement<? extends DataSta
     }
   }
 
+  public void callStartVisitingMandatoryBranches() {
+    for (int i = 0; i < visitors.length; i++) {
+      visitors[i].startVisitingMandatoryBranches();
+    }
+  }
+  
+  public void callStopVisitingMandatoryBranches() {
+    for (int i = 0; i < visitors.length; i++) {
+      visitors[i].stopVisitingMandatoryBranches();
+    }
+  }
+
   public void callLeaveBranchOnVisitors() {
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].leaveBranch();
@@ -98,7 +110,7 @@ public class ExecutionFlowExplorer<STATEMENT extends Statement<? extends DataSta
 
   private void callVisitEndOnVisitors() {
     for (int i = 0; i < visitors.length; i++) {
-      visitors[i].end();
+      visitors[i].stop();
     }
   }
 

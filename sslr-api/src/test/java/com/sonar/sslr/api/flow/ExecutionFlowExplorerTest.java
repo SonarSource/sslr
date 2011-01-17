@@ -31,7 +31,7 @@ public class ExecutionFlowExplorerTest {
     InOrder inOrder = inOrder(visitor);
     inOrder.verify(visitor, times(1)).start();
     inOrder.verify(visitor, times(1)).endPath();
-    inOrder.verify(visitor, times(1)).end();
+    inOrder.verify(visitor, times(1)).stop();
   }
 
   @Test

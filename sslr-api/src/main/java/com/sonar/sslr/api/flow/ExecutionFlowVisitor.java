@@ -14,15 +14,21 @@ public abstract class ExecutionFlowVisitor<STATEMENT extends Statement<? extends
   public void visitStatement(STATEMENT stmt) {
   }
 
+  public void startVisitingMandatoryBranches() {
+  }
+
   public void visitBranch() {
   }
 
   public void leaveBranch() {
   }
 
+  public void stopVisitingMandatoryBranches() {
+  }
+
   public void endPath() {
   }
 
-  public void end() {
+  public void stop() {
   }
 }
