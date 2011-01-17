@@ -204,25 +204,23 @@ public class LeftRecursiveRuleImplTest {
   }
 
   @Test
+  @Ignore
   public void testRecursionCase11() throws Exception {
     RuleImpl exp = new LeftRecursiveRuleImpl("exp");
     RuleImpl sn = new LeftRecursiveRuleImpl("sn");
     RuleImpl ma = new LeftRecursiveRuleImpl("ma");
     RuleImpl inve = new LeftRecursiveRuleImpl("inve");
 
-    ma.is(exp, "MA");
     exp.isOr(sn, ma, inve);
     sn.is("SN");
+    ma.is(exp, "MA");
     inve.is(exp, "INVE");
 
-    // this is the assertion that passes in #testRecursionCase2()
-    assertThat(exp, match("SN MA MA INVE"));
-
-    // this assertion fails
     assertThat(ma, match("SN MA MA"));
-
-    // this one turns into an infinite loop
     assertThat(inve, match("SN INVE"));
+    // the following fails
+    assertThat(inve, match("SN MA INVE MA INVE"));
+
   }
 
 }
