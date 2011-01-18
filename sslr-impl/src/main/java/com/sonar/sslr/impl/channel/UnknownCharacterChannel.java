@@ -18,6 +18,9 @@ public class UnknownCharacterChannel extends Channel<LexerOutput> {
 
   private static final Logger LOG = LoggerFactory.getLogger(UnknownCharacterChannel.class);
 
+  // Byte Order Mark that can be found in some Unicode files
+  public static final char BOM_CHAR = '\uFEFF';
+
   private boolean shouldLogWarning = false;
 
   public UnknownCharacterChannel() {
@@ -31,6 +34,9 @@ public class UnknownCharacterChannel extends Channel<LexerOutput> {
   public boolean consume(CodeReader code, LexerOutput lexerOutput) {
     if (code.peek() != -1) {
       char unknownChar = (char) code.pop();
+      if (unknownChar == BOM_CHAR) {
+        return true;
+      }
       if (shouldLogWarning) {
         LOG.warn("Unknown char: \"" + unknownChar + "\" (" + lexerOutput.getFileName() + ":" + code.getLinePosition() + ":"
             + code.getColumnPosition() + ")");

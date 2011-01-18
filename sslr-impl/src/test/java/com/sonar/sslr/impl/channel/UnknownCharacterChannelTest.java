@@ -7,8 +7,8 @@
 package com.sonar.sslr.impl.channel;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
@@ -37,6 +37,12 @@ public class UnknownCharacterChannelTest {
   @Test
   public void shouldConsumeEofCharacter() {
     assertFalse(channel.consume(new CodeReader(""), null));
+  }
+
+  @Test
+  public void shouldConsumeBomCharacter() {
+    assertTrue(channel.consume(new CodeReader("\uFEFF"), lexerOutput));
+    assertThat(lexerOutput.getTokens().size(), is(0));
   }
 
   public void check(String input, Channel<LexerOutput> channel, Token expectedOutput, LexerOutput lexerOutput, boolean assertion) {
