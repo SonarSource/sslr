@@ -10,6 +10,8 @@ abstract public class DataStates {
   public abstract void visitBranch();
 
   public abstract void leaveBranch();
+  
+  public abstract void endPath();
 
   public abstract void visitMandatoryBranches();
 

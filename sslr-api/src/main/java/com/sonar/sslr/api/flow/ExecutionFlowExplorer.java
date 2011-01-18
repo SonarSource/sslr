@@ -58,6 +58,9 @@ public class ExecutionFlowExplorer<STATEMENT extends Statement<DATASTATES>, DATA
   }
 
   public void callEndPathOnVisitors() {
+    if (dataStates != null) {
+      dataStates.endPath();
+    }
     if (lastStmt != lastEndPathStmt) {
       for (int i = 0; i < visitors.length; i++) {
         visitors[i].endPath();
