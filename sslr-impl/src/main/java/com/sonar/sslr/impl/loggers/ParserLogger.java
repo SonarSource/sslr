@@ -31,12 +31,26 @@ public final class ParserLogger {
   }
 
   static {
+    init();
+  }
+
+  private static void init() {
     String sslrMode = System.getProperty(SSLR_MODE_PROPERTY);
     if (SSLR_DEBUG_MODE.equals(sslrMode)) {
       createParserLogger(new DebugLogger());
     } else {
       logger = new EmptyLogger();
     }
+  }
+  
+  public static void activateDebugMode(){
+    System.setProperty(SSLR_MODE_PROPERTY, SSLR_DEBUG_MODE);
+    init();
+  }
+  
+  public static void deactivateDebugMode(){
+    System.clearProperty(SSLR_MODE_PROPERTY);
+    init();
   }
 
   protected static void createParserLogger(Logger newLogger) {
