@@ -12,6 +12,10 @@ public abstract class ExecutionFlowVisitor<STATEMENT extends Statement<DATASTATE
 
   public void start() {
   }
+  
+  public DATASTATES getDataStates(){
+    return dataStates;
+  }
 
   public void visitStatement(STATEMENT stmt) {
   }
