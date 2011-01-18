@@ -15,19 +15,26 @@ public class AstNodeBrowser {
   public AstNodeBrowser(AstNode rootNode) {
     this.node = rootNode;
   }
-  
-  public static AstNodeBrowser browse(AstNode rootNode){
+
+  public static AstNodeBrowser browse(AstNode rootNode) {
     return new AstNodeBrowser(rootNode);
   }
 
-  public AstNodeBrowser getFirstDirectChild(AstNodeType... nodeTypes) {
+  public AstNodeBrowser findFirstDirectChild(AstNodeType... nodeTypes) {
     if (node != null) {
       node = node.findFirstDirectChild(nodeTypes);
     }
     return this;
   }
 
-  public AstNodeBrowser getFirstDirectChild(AstNodeType nodeType, String tokenValue) {
+  public AstNodeBrowser findFirstChild(AstNodeType... nodeTypes) {
+    if (node != null) {
+      node = node.findFirstChild(nodeTypes);
+    }
+    return this;
+  }
+
+  public AstNodeBrowser findFirstDirectChil(AstNodeType nodeType, String tokenValue) {
     if (node != null) {
       List<AstNode> words = node.findDirectChildren(nodeType);
       for (AstNode word : words) {
