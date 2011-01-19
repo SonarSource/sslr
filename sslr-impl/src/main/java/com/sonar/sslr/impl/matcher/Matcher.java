@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeSkippingPolicy;
+import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.ParsingState;
@@ -27,6 +28,7 @@ public abstract class Matcher implements AstNodeSkippingPolicy {
 
   public boolean isMatching(ParsingState parsingState) {
     int indexBeforeStarting = parsingState.lexerIndex;
+    boolean leftRecursionState = parsingState.hasPendingLeftRecursion();
     try {
       match(parsingState);
       return true;
@@ -34,6 +36,7 @@ public abstract class Matcher implements AstNodeSkippingPolicy {
       return false;
     } finally {
       parsingState.lexerIndex = indexBeforeStarting;
+      parsingState.setLeftRecursionState(leftRecursionState);
     }
   }
 
@@ -80,7 +83,7 @@ public abstract class Matcher implements AstNodeSkippingPolicy {
         throw new IllegalStateException("The matcher object can't be anything else than a Matcher, String or TokenType. Object = " + object);
       }
     }
-    if (matcher instanceof RuleImpl) {
+    if (matcher instanceof Rule) {
       return new MemoizerMatcher(matcher);
     } else {
       return matcher;

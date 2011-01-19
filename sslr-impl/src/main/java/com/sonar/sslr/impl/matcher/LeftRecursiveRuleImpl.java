@@ -13,6 +13,7 @@ import java.util.Stack;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
+import com.sonar.sslr.impl.loggers.SslrLogger;
 
 /**
  * Implementation of a Rule that support left recursion.
@@ -29,46 +30,48 @@ public class LeftRecursiveRuleImpl extends RuleImpl {
   @Override
   public AstNode match(ParsingState parsingState) {
 
-    int firstLexerIndex = parsingState.lexerIndex;
+    int mostLeftLexerIndex = parsingState.lexerIndex;
 
     // Loop in a pending recursion
-    if (parsingState.hasPendingLeftRecursion() && partialAstNodes.containsKey(firstLexerIndex)) {
+    if ( !matchStartIndexes.isEmpty() && partialAstNodes.containsKey(mostLeftLexerIndex)) {
+      AstNode partialAstNode = partialAstNodes.get(mostLeftLexerIndex);
+      parsingState.lexerIndex = partialAstNode.getToIndex();
       parsingState.stopLeftRecursion();
-      return partialAstNodes.get(firstLexerIndex);
+      SslrLogger.hasMatchedWithLeftRecursion(this, parsingState, partialAstNode);
+      return partialAstNode;
     }
 
-    // Stop recursion When :
-    // 1   - This rule is already in the parsing stack
-    // 2.A - The previous rule in the parsing stack has begun at the same token index
-    // 2.B - Or another left recursion rule is currently trying to do some recursion at the same token index
-    if ( !matchStartIndexes.isEmpty()
-        && (matchStartIndexes.peek() == firstLexerIndex || (parsingState.hasPendingLeftRecursion() && matchStartIndexes.peek() == parsingState.lastRecursionLexerIndex))) {
+    // Stop recursion When this rule is already in the parsing stack
+    if ( !matchStartIndexes.isEmpty() && (matchStartIndexes.peek() == mostLeftLexerIndex)) {
+      SslrLogger.stopLeftRecursion(this, parsingState);
       throw RecognitionExceptionImpl.create();
     }
 
     try {
-      matchStartIndexes.push(firstLexerIndex);
+      matchStartIndexes.push(mostLeftLexerIndex);
 
       AstNode currentNode = super.match(parsingState);
 
-      int previousLexerIndex = firstLexerIndex;
+      int mostRightLexerIndex = mostLeftLexerIndex;
       try {
-        while (previousLexerIndex < parsingState.lexerIndex) {
-          previousLexerIndex = parsingState.lexerIndex;
-          parsingState.lastRecursionLexerIndex = firstLexerIndex;
-          partialAstNodes.put(parsingState.lexerIndex, currentNode);
+        while (mostRightLexerIndex < parsingState.lexerIndex) {
+          mostRightLexerIndex = parsingState.lexerIndex;
+          currentNode.setToIndex(parsingState.lexerIndex);
+          parsingState.lexerIndex = mostLeftLexerIndex;
           parsingState.startLeftRecursion();
+          partialAstNodes.put(mostLeftLexerIndex, currentNode);
           currentNode = super.match(parsingState);
         }
       } catch (RecognitionExceptionImpl e) {
-        partialAstNodes.remove(parsingState.lexerIndex);
+      } finally {
+        parsingState.lexerIndex = mostRightLexerIndex;
         parsingState.stopLeftRecursion();
       }
 
       return currentNode;
     } finally {
       matchStartIndexes.pop();
-      partialAstNodes.remove(firstLexerIndex);
+      partialAstNodes.remove(mostLeftLexerIndex);
     }
   }
 

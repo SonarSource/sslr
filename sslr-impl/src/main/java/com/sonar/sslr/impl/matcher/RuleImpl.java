@@ -6,8 +6,8 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.loggers.ParserLogger.hasMatched;
-import static com.sonar.sslr.impl.loggers.ParserLogger.tryToMatch;
+import static com.sonar.sslr.impl.loggers.SslrLogger.hasMatched;
+import static com.sonar.sslr.impl.loggers.SslrLogger.tryToMatch;
 
 import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;

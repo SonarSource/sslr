@@ -18,11 +18,9 @@ public class OpMatcher extends Matcher {
   }
 
   public AstNode match(ParsingState parsingState) {
-    boolean leftRecursionState = parsingState.hasPendingLeftRecursion();
     if (matcher.isMatching(parsingState)) {
       return matcher.match(parsingState);
     }
-    parsingState.setLeftRecursionState(leftRecursionState);
     return null;
   }
 

@@ -10,7 +10,7 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.matcher.Matcher;
 
 /**
- * Classes that implement this interface can be called by the {@link ParserLogger} class to treat parsing information.
+ * Classes that implement this interface can be called by the {@link SslrLogger} class to treat parsing information.
  */
 public interface Logger {
 
@@ -47,5 +47,11 @@ public interface Logger {
    *          the memoized AST node that is returned
    */
   void memoizedAstUsed(Matcher matcher, ParsingState parsingState, AstNode astNode);
+
+  void hasMatchedWithLeftRecursion(Matcher matcher, ParsingState parsingState, AstNode astNode);
+
+  void stopLeftRecursion(Matcher matcher, ParsingState parsingState);
+  
+  void flushLog();
 
 }

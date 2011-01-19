@@ -12,23 +12,16 @@ import static com.sonar.sslr.impl.matcher.Matchers.opt;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class LeftRecursiveRuleImplTest {
 
-  @BeforeClass
-  public static void initSslrMode() {
-    // System.setProperty(ParserLogger.SSLR_MODE_PROPERTY, ParserLogger.SSLR_DEBUG_MODE);
-  }
-
   @Test
   public void testSimpleRecursiveRule() throws Exception {
     RuleImpl recursiveRule = new LeftRecursiveRuleImpl("recursiveRule");
-    recursiveRule.isOr(and(recursiveRule, "+", "1"), "1");
+    recursiveRule.isOr("1", and(recursiveRule, "+", "1"));
 
-    assertThat(recursiveRule, match("1 + 1 + 1 + 1 + 1"));
+    assertThat(recursiveRule, match("1 + 1 + 1 + 1"));
   }
 
   @Test
@@ -204,7 +197,6 @@ public class LeftRecursiveRuleImplTest {
   }
 
   @Test
-  @Ignore
   public void testRecursionCase11() throws Exception {
     RuleImpl exp = new LeftRecursiveRuleImpl("exp");
     RuleImpl sn = new LeftRecursiveRuleImpl("sn");
@@ -218,7 +210,6 @@ public class LeftRecursiveRuleImplTest {
 
     assertThat(ma, match("SN MA MA"));
     assertThat(inve, match("SN INVE"));
-    // the following fails
     assertThat(inve, match("SN MA INVE MA INVE"));
 
   }

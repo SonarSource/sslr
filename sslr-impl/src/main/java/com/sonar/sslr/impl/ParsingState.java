@@ -6,13 +6,12 @@
 
 package com.sonar.sslr.impl;
 
-import static com.sonar.sslr.impl.loggers.ParserLogger.memoizedAstUsed;
-
 import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
+import com.sonar.sslr.impl.loggers.SslrLogger;
 import com.sonar.sslr.impl.matcher.Matcher;
 
 public class ParsingState {
@@ -36,7 +35,7 @@ public class ParsingState {
   }
 
   public Token popToken(Matcher matcher) {
-    if ( pendingLeftRecursion) {
+    if (pendingLeftRecursion) {
       throw RecognitionExceptionImpl.create();
     }
     if (lexerIndex >= outpostMatcherTokenIndex) {
@@ -54,7 +53,7 @@ public class ParsingState {
   }
 
   public Token peekToken(int index, Matcher matcher) {
-    if ( pendingLeftRecursion) {
+    if (pendingLeftRecursion) {
       throw RecognitionExceptionImpl.create();
     }
     if (index > outpostMatcherTokenIndex) {
@@ -118,20 +117,20 @@ public class ParsingState {
   }
 
   public boolean hasMemoizedAst(Matcher matcher) {
-    if (astMatcherMemoization[lexerIndex] == matcher) {
+    if ( !pendingLeftRecursion && astMatcherMemoization[lexerIndex] == matcher) {
       return true;
     }
     return false;
   }
 
   public AstNode getMemoizedAst(Matcher matcher) {
-    AstNode astNode = null;
     if (hasMemoizedAst(matcher)) {
-      astNode = astNodeMemoization[lexerIndex];
-      memoizedAstUsed(matcher, this, astNode);
+      AstNode astNode = astNodeMemoization[lexerIndex];
+      SslrLogger.memoizedAstUsed(matcher, this, astNode);
       lexerIndex = astNode.getToIndex();
+      return astNode;
     }
-    return astNode;
+    return null;
   }
 
   public Token peekTokenIfExists(int index, Matcher matcher) {

@@ -32,7 +32,7 @@ public class ParserLoggerTest {
   @BeforeClass
   public static void init() {
     logger = mock(Logger.class);
-    ParserLogger.createParserLogger(logger);
+    SslrLogger.createSslrLogger(logger);
   }
 
   @Test

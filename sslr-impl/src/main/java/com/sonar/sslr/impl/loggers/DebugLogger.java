@@ -8,6 +8,7 @@ package com.sonar.sslr.impl.loggers;
 import java.io.PrintStream;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.matcher.Matcher;
 
@@ -26,21 +27,36 @@ class DebugLogger implements Logger {
    * {@inheritDoc}
    */
   public void tryToMatch(Matcher matcher, ParsingState parsingState) {
-    logger.printf("--> %1$-6s %2$-30s %3$s%n", parsingState.lexerIndex, parsingState.readToken(parsingState.lexerIndex), matcher);
+    logger.printf("     %1$-5s %2$-35s %3$s%n", parsingState.lexerIndex, parsingState.readToken(parsingState.lexerIndex), matcher);
   }
 
   /**
    * {@inheritDoc}
    */
   public void hasMatched(Matcher matcher, ParsingState parsingState, AstNode astNode) {
-    logger.printf("<== %1$-6s %2$-30s %3$s%n", parsingState.lexerIndex, parsingState.readToken(parsingState.lexerIndex), matcher, astNode);
+    int lexerIndex = parsingState.lexerIndex - 1;
+    logger.printf("<==  %1$-5s %2$-30s %3$s%n", lexerIndex, parsingState.readToken(lexerIndex), matcher, astNode);
   }
 
   /**
    * {@inheritDoc}
    */
   public void memoizedAstUsed(Matcher matcher, ParsingState parsingState, AstNode astNode) {
-    logger.printf("< > %1$-6s %2$-30s %3$s%n", parsingState.lexerIndex, parsingState.readToken(parsingState.lexerIndex), matcher, astNode);
+    if (matcher instanceof Rule) {
+      logger.printf("MEM  %1$-5s %2$-30s %3$s%n", parsingState.lexerIndex, parsingState.readToken(parsingState.lexerIndex), matcher,
+          astNode);
+    }
+  }
+
+  public void hasMatchedWithLeftRecursion(Matcher matcher, ParsingState parsingState, AstNode astNode) {
+    logger.printf(" LR  %1$-5s %2$-30s %3$s%n", parsingState.lexerIndex, parsingState.readToken(parsingState.lexerIndex), matcher, astNode);
+  }
+
+  public void stopLeftRecursion(Matcher matcher, ParsingState parsingState) {
+    logger.printf(" X   %1$-5s %2$-35s %3$s%n", parsingState.lexerIndex, parsingState.readToken(parsingState.lexerIndex), matcher);
+  }
+
+  public void flushLog() {
   }
 
 }

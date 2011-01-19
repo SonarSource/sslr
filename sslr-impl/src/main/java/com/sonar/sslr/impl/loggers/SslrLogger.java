@@ -20,14 +20,15 @@ import com.sonar.sslr.impl.matcher.Matcher;
  * An evolution of this class would/will be to keep all the fired events in memory to be able to profile, analyze and -in turn- optimize the
  * parsing.
  */
-public final class ParserLogger {
+public final class SslrLogger {
 
   public static final String SSLR_MODE_PROPERTY = "sonar.sslr.mode";
   public static final String SSLR_DEBUG_MODE = "debug";
+  public static final String SSLR_PROFILE_MODE = "profile";
 
   private static Logger logger;
 
-  private ParserLogger() {
+  private SslrLogger() {
   }
 
   static {
@@ -37,24 +38,27 @@ public final class ParserLogger {
   private static void init() {
     String sslrMode = System.getProperty(SSLR_MODE_PROPERTY);
     if (SSLR_DEBUG_MODE.equals(sslrMode)) {
-      createParserLogger(new DebugLogger());
+      createSslrLogger(new DebugLogger());
+    } else if (SSLR_PROFILE_MODE.equals(sslrMode)) {
+      createSslrLogger(new ProfileLogger());
     } else {
-      logger = new EmptyLogger();
+      logger = null;
     }
   }
-  
-  public static void activateDebugMode(){
+
+  public static void activateDebugMode() {
     System.setProperty(SSLR_MODE_PROPERTY, SSLR_DEBUG_MODE);
     init();
   }
-  
-  public static void deactivateDebugMode(){
-    System.clearProperty(SSLR_MODE_PROPERTY);
+
+  public static void activateProfileMode() {
+    System.setProperty(SSLR_MODE_PROPERTY, SSLR_DEBUG_MODE);
     init();
   }
 
-  protected static void createParserLogger(Logger newLogger) {
-    logger = newLogger;
+  public static void deactivateDebugMode() {
+    System.clearProperty(SSLR_MODE_PROPERTY);
+    init();
   }
 
   /**
@@ -66,7 +70,9 @@ public final class ParserLogger {
    *          the state to can give information about the token and its position
    */
   public static void tryToMatch(Matcher matcher, ParsingState parsingState) {
-    logger.tryToMatch(matcher, parsingState);
+    if (logger != null) {
+      logger.tryToMatch(matcher, parsingState);
+    }
   }
 
   /**
@@ -80,7 +86,15 @@ public final class ParserLogger {
    *          the AST node that is returned from this match
    */
   public static void hasMatched(Matcher matcher, ParsingState parsingState, AstNode astNode) {
-    logger.hasMatched(matcher, parsingState, astNode);
+    if (logger != null) {
+      logger.hasMatched(matcher, parsingState, astNode);
+    }
+  }
+
+  public static void hasMatchedWithLeftRecursion(Matcher matcher, ParsingState parsingState, AstNode astNode) {
+    if (logger != null) {
+      logger.hasMatchedWithLeftRecursion(matcher, parsingState, astNode);
+    }
   }
 
   /**
@@ -94,8 +108,25 @@ public final class ParserLogger {
    *          the memoized AST node that is returned
    */
   public static void memoizedAstUsed(Matcher matcher, ParsingState parsingState, AstNode astNode) {
-    logger.memoizedAstUsed(matcher, parsingState, astNode);
+    if (logger != null) {
+      logger.memoizedAstUsed(matcher, parsingState, astNode);
+    }
+  }
 
+  public static void stopLeftRecursion(Matcher matcher, ParsingState parsingState) {
+    if (logger != null) {
+      logger.stopLeftRecursion(matcher, parsingState);
+    }
+  }
+
+  public static void createSslrLogger(Logger logger) {
+    SslrLogger.logger = logger;
+  }
+
+  public static void flushLog() {
+    if (logger != null) {
+      SslrLogger.logger.flushLog();
+    }
   }
 
 }
