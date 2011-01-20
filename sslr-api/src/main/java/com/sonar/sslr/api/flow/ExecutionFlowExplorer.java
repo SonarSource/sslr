@@ -13,7 +13,7 @@ import com.sonar.sslr.api.AstNode;
 public class ExecutionFlowExplorer<STATEMENT extends Statement<DATASTATES>, DATASTATES extends DataStates> {
 
   private final ExecutionFlow<STATEMENT, DATASTATES> executionFlow;
-  private final ExecutionFlowVisitor<STATEMENT, DATASTATES>[] visitors;
+  private ExecutionFlowVisitor<STATEMENT, DATASTATES>[] visitors;
   private final FlowStack executionFlowStack = new FlowStack();
   private STATEMENT lastStmt;
   private STATEMENT lastEndPathStmt;
@@ -22,8 +22,12 @@ public class ExecutionFlowExplorer<STATEMENT extends Statement<DATASTATES>, DATA
   private boolean executionFlowStarted = false;
 
   ExecutionFlowExplorer(ExecutionFlow<STATEMENT, DATASTATES> executionFlow, ExecutionFlowVisitor<STATEMENT, DATASTATES>... visitors) {
-    this.visitors = visitors;
     this.executionFlow = executionFlow;
+    this.visitors = new ExecutionFlowVisitor[visitors.length + 1];
+    this.visitors[0] = new RecursionBarrier();
+    for (int i = 1; i <= visitors.length; i++) {
+      this.visitors[i] = visitors[i - 1];
+    }
   }
 
   public void setDataStates(DATASTATES dataStates) {
@@ -52,6 +56,7 @@ public class ExecutionFlowExplorer<STATEMENT extends Statement<DATASTATES>, DATA
       }
       currentStmt = (STATEMENT) currentStmt.getNext();
     }
+
     if (firstStmt == stmtToStartVisitFrom) {
       callEndPathOnVisitors();
     }
@@ -120,8 +125,6 @@ public class ExecutionFlowExplorer<STATEMENT extends Statement<DATASTATES>, DATA
       } catch (EndPathSignal e) {
         callEndPathOnVisitors();
       }
-    } catch (StopPathExplorationSignal e) {
-
     } catch (StopFlowExplorationSignal e) {
 
     }
