@@ -120,7 +120,9 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> {
     } catch (StopFlowExplorationSignal signal) {
     } catch (BarrierSignal signal) {
     } finally {
+      try{
       callEndPathOnVisitors();
+      }catch(ExecutionFlowSignal signal){}
       executionFlowStarted = false;
     }
     callStopOnVisitors();
