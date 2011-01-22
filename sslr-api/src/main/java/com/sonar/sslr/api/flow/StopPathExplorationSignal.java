@@ -6,5 +6,5 @@
 
 package com.sonar.sslr.api.flow;
 
-public class StopRecursionSignal extends ExecutionFlowSignal {
+public class StopPathExplorationSignal extends ExecutionFlowSignal {
 }

@@ -8,12 +8,12 @@ package com.sonar.sslr.api.flow;
 
 import com.sonar.sslr.api.AstNode;
 
-public class Statement<DATASTATES extends DataStates> {
+public class Statement {
 
   private final AstNode astNode;
   private FlowHandler flowHandler;
-  private Statement<DATASTATES> nextStmt;
-  private Statement<DATASTATES> previousStmt;
+  private Statement nextStmt;
+  private Statement previousStmt;
 
   public Statement(AstNode stmtAstNode) {
     this.astNode = stmtAstNode;
@@ -22,9 +22,6 @@ public class Statement<DATASTATES extends DataStates> {
   public AstNode getAstNode() {
     return astNode;
   }
-
-  public void init() {
-  };
 
   @Override
   public String toString() {
@@ -43,21 +40,18 @@ public class Statement<DATASTATES extends DataStates> {
     return flowHandler != null;
   }
 
-  public void setNext(Statement<DATASTATES> nextStmt) {
+  public void setNext(Statement nextStmt) {
     this.nextStmt = nextStmt;
     if (nextStmt != null) {
       nextStmt.previousStmt = this;
     }
   }
 
-  public void update(DATASTATES dataState) {
-  }
-
-  public Statement<DATASTATES> getNext() {
+  public Statement getNext() {
     return nextStmt;
   }
 
-  public Statement<DATASTATES> getPrevious() {
+  public Statement getPrevious() {
     return previousStmt;
   }
 

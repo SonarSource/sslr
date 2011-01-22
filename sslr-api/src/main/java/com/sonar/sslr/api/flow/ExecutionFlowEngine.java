@@ -6,39 +6,49 @@
 
 package com.sonar.sslr.api.flow;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 import com.sonar.sslr.api.AstNode;
 
-public class ExecutionFlowExplorer<STATEMENT extends Statement<DATASTATES>, DATASTATES extends DataStates> {
+public class ExecutionFlowEngine<STATEMENT extends Statement> {
 
-  private final ExecutionFlow<STATEMENT, DATASTATES> executionFlow;
-  private ExecutionFlowVisitor<STATEMENT, DATASTATES>[] visitors;
-  private final FlowStack executionFlowStack = new FlowStack();
+  private ExecutionFlowVisitor<STATEMENT>[] visitors = new ExecutionFlowVisitor[0];
+  private final FlowHandlerStack flowHandlerStack = new FlowHandlerStack();
   private STATEMENT lastStmt;
   private STATEMENT lastEndPathStmt;
   private STATEMENT firstStmt;
-  private DATASTATES dataStates = null;
   private boolean executionFlowStarted = false;
+  private Map<AstNode, STATEMENT> stmtAstNodes = new HashMap<AstNode, STATEMENT>();
 
-  ExecutionFlowExplorer(ExecutionFlow<STATEMENT, DATASTATES> executionFlow, ExecutionFlowVisitor<STATEMENT, DATASTATES>... visitors) {
-    this.executionFlow = executionFlow;
-    this.visitors = new ExecutionFlowVisitor[visitors.length + 1];
-    this.visitors[0] = new RecursionBarrier();
-    for (int i = 1; i <= visitors.length; i++) {
-      this.visitors[i] = visitors[i - 1];
-    }
+  public final void add(STATEMENT stmt) {
+    stmtAstNodes.put(stmt.getAstNode(), stmt);
   }
 
-  public void setDataStates(DATASTATES dataStates) {
-    this.dataStates = dataStates;
-    for (ExecutionFlowVisitor<STATEMENT, DATASTATES> visitor : visitors) {
-      visitor.dataStates = dataStates;
-    }
+  public final STATEMENT getStatement(AstNode stmtNode) {
+    return stmtAstNodes.get(stmtNode);
+  }
+
+  public final void visitFlow(AstNode stmtToStartVisitFrom, ExecutionFlowVisitor<STATEMENT>... visitors) {
+    this.visitors = visitors;
+    visitFlow(stmtToStartVisitFrom);
+    start();
+  }
+
+  public final void visitFlow(STATEMENT stmtToStartVisitFrom, ExecutionFlowVisitor<STATEMENT>... visitors) {
+    this.visitors = visitors;
+    visitFlow(stmtToStartVisitFrom);
+    start();
+  }
+
+  public final Collection<STATEMENT> getStatements() {
+    return stmtAstNodes.values();
   }
 
   public void visitFlow(AstNode stmtToStartVisitFrom) {
-    visitFlow(executionFlow.getStatement(stmtToStartVisitFrom));
+    visitFlow(getStatement(stmtToStartVisitFrom));
   }
 
   public void visitFlow(STATEMENT stmtToStartVisitFrom) {
@@ -63,9 +73,6 @@ public class ExecutionFlowExplorer<STATEMENT extends Statement<DATASTATES>, DATA
   }
 
   public void callEndPathOnVisitors() {
-    if (dataStates != null) {
-      dataStates.endPath();
-    }
     if (lastStmt != lastEndPathStmt) {
       for (int i = 0; i < visitors.length; i++) {
         visitors[i].endPath();
@@ -81,36 +88,24 @@ public class ExecutionFlowExplorer<STATEMENT extends Statement<DATASTATES>, DATA
   }
 
   public void callVisitBranchOnVisitors() {
-    if (dataStates != null) {
-      dataStates.visitBranch();
-    }
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].visitBranch();
     }
   }
 
   public void callVisitMandatoryBranches() {
-    if (dataStates != null) {
-      dataStates.visitMandatoryBranches();
-    }
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].visitMandatoryBranches();
     }
   }
 
   public void callLeaveMandatoryBranches() {
-    if (dataStates != null) {
-      dataStates.leaveMandatoryBranches();
-    }
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].leaveMandatoryBranches();
     }
   }
 
   public void callLeaveBranchOnVisitors() {
-    if (dataStates != null) {
-      dataStates.leaveBranch();
-    }
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].leaveBranch();
     }
@@ -120,13 +115,13 @@ public class ExecutionFlowExplorer<STATEMENT extends Statement<DATASTATES>, DATA
     executionFlowStarted = true;
     callStartOnVisitors();
     try {
-      try {
-        visitFlow(firstStmt);
-      } catch (EndPathSignal e) {
-        callEndPathOnVisitors();
-      }
-    } catch (StopFlowExplorationSignal e) {
-
+      visitFlow(firstStmt);
+    } catch (StopPathExplorationSignal signal) {
+    } catch (StopFlowExplorationSignal signal) {
+    } catch (BarrierSignal signal) {
+    } finally {
+      callEndPathOnVisitors();
+      executionFlowStarted = false;
     }
     callStopOnVisitors();
   }
@@ -143,11 +138,11 @@ public class ExecutionFlowExplorer<STATEMENT extends Statement<DATASTATES>, DATA
     }
   }
 
-  public FlowStack getExecutionFlowStack() {
-    return executionFlowStack;
+  public FlowHandlerStack getFlowHandlerStack() {
+    return flowHandlerStack;
   }
 
-  public class FlowStack {
+  public class FlowHandlerStack {
 
     private final Stack<FlowHandler> branches = new Stack<FlowHandler>();
 

@@ -6,5 +6,5 @@
 
 package com.sonar.sslr.api.flow;
 
-public class EndPathSignal extends ExecutionFlowSignal {
+public class BarrierSignal extends ExecutionFlowSignal {
 }

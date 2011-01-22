@@ -9,9 +9,9 @@ import static com.sonar.sslr.api.AstNodeUtils.createAstNode;
 
 import org.junit.Test;
 
-public class RecursionBarrierTest {
+public class NotVisitTwiceTheSameStatementBarrierTest {
 
-  RecursionBarrier barrier = new RecursionBarrier();
+  NotVisitTwiceTheSameStatementBarrier barrier = new NotVisitTwiceTheSameStatementBarrier();
 
   @Test
   public void shouldStopExecutionWhenEncounteringPreviousVisitedStatement() {
@@ -23,21 +23,9 @@ public class RecursionBarrierTest {
 
     try {
       barrier.visitStatement(stmt1);
-    } catch (StopRecursionSignal signal) {
+    } catch (BarrierSignal signal) {
       return;
     }
     throw new AssertionError("A StopPathExplorationSignal was expected.");
-  }
-
-  @Test
-  public void shouldNotStopExecutionWhenEncounteringPreviousVisitedStatementButWithinAnotherPath() {
-    Statement stmt1 = new Statement(createAstNode("myStmt1"));
-    Statement stmt2 = new Statement(createAstNode("myStmt2"));
-
-    barrier.visitStatement(stmt1);
-    barrier.visitBranch();
-    barrier.visitStatement(stmt2);
-    barrier.leaveBranch();
-    barrier.visitStatement(stmt2);
   }
 }

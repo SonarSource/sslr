@@ -8,5 +8,5 @@ package com.sonar.sslr.api.flow;
 
 public abstract class FlowHandler {
 
-  public abstract void processFlow(ExecutionFlowExplorer flowExplorer);
+  public abstract void processFlow(ExecutionFlowEngine flowExplorer);
 }

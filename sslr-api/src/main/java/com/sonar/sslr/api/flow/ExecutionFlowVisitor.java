@@ -6,17 +6,11 @@
 
 package com.sonar.sslr.api.flow;
 
-public abstract class ExecutionFlowVisitor<STATEMENT extends Statement<DATASTATES>, DATASTATES extends DataStates> {
-
-  protected DATASTATES dataStates;
+public abstract class ExecutionFlowVisitor<STATEMENT extends Statement> {
 
   public void start() {
   }
   
-  public DATASTATES getDataStates(){
-    return dataStates;
-  }
-
   public void visitStatement(STATEMENT stmt) {
   }
 
