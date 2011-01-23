@@ -9,7 +9,7 @@ package com.sonar.sslr.api.flow;
 public class BranchDepthExplorationBarrier extends ExecutionFlowVisitor {
 
   private final int maximumBranchDepth;
-  private int branchDepth = 0;
+  private int branchDepth = 1;
 
   public BranchDepthExplorationBarrier(int maximumBranchDepth) {
     this.maximumBranchDepth = maximumBranchDepth;
@@ -17,7 +17,7 @@ public class BranchDepthExplorationBarrier extends ExecutionFlowVisitor {
 
   @Override
   public void visitBranch() {
-    if (branchDepth > maximumBranchDepth) {
+    if (branchDepth >= maximumBranchDepth) {
       throw new BarrierSignal();
     }
     branchDepth++;

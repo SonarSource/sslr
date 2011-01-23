@@ -26,6 +26,6 @@ public class NotVisitTwiceTheSameStatementBarrierTest {
     } catch (BarrierSignal signal) {
       return;
     }
-    throw new AssertionError("A StopPathExplorationSignal was expected.");
+    throw new AssertionError("A BarrierSignal was expected.");
   }
 }

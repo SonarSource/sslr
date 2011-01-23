@@ -13,7 +13,7 @@ import java.util.Stack;
 
 import com.sonar.sslr.api.AstNode;
 
-public class ExecutionFlowEngine<STATEMENT extends Statement> {
+public class ExecutionFlowEngine<STATEMENT extends Statement> implements ExecutionFlow<STATEMENT> {
 
   private ExecutionFlowVisitor<STATEMENT>[] visitors = new ExecutionFlowVisitor[0];
   private final FlowHandlerStack flowHandlerStack = new FlowHandlerStack();
@@ -120,9 +120,10 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> {
     } catch (StopFlowExplorationSignal signal) {
     } catch (BarrierSignal signal) {
     } finally {
-      try{
-      callEndPathOnVisitors();
-      }catch(ExecutionFlowSignal signal){}
+      try {
+        callEndPathOnVisitors();
+      } catch (ExecutionFlowSignal signal) {
+      }
       executionFlowStarted = false;
     }
     callStopOnVisitors();
@@ -167,5 +168,9 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> {
     public boolean contains(FlowHandler flowHandler) {
       return branches.contains(flowHandler);
     }
+  }
+
+  public void visitFlow(ExecutionFlowVisitor<STATEMENT>... visitors) {
+    throw new UnsupportedOperationException();
   }
 }
