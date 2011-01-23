@@ -6,11 +6,13 @@
 
 package com.sonar.sslr.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AstNodeBrowser {
 
   private AstNode node;
+  private List<AstNode> nodes;
 
   public AstNodeBrowser(AstNode rootNode) {
     this.node = rootNode;
@@ -27,6 +29,13 @@ public class AstNodeBrowser {
     return this;
   }
 
+  public AstNodeBrowser findChildren(AstNodeType nodeType) {
+    if (node != null) {
+      nodes = node.findChildren(nodeType);
+    }
+    return this;
+  }
+
   public AstNodeBrowser findFirstChild(AstNodeType... nodeTypes) {
     if (node != null) {
       node = node.findFirstChild(nodeTypes);
@@ -34,7 +43,7 @@ public class AstNodeBrowser {
     return this;
   }
 
-  public AstNodeBrowser findFirstDirectChil(AstNodeType nodeType, String tokenValue) {
+  public AstNodeBrowser findFirstDirectChild(AstNodeType nodeType, String tokenValue) {
     if (node != null) {
       List<AstNode> words = node.findDirectChildren(nodeType);
       for (AstNode word : words) {
@@ -49,10 +58,17 @@ public class AstNodeBrowser {
   }
 
   public boolean hasResult() {
-    return node != null;
+    return node != null || nodes != null;
   }
 
   public AstNode getResult() {
     return node;
+  }
+
+  public List<AstNode> getResults() {
+    if (nodes != null) {
+      return nodes;
+    }
+    return new ArrayList<AstNode>();
   }
 }
