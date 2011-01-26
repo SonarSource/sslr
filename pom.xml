@@ -25,6 +25,7 @@
   <modules>
     <module>sslr-api</module>   
     <module>sslr-impl</module>   
+    <module>sslr-dsl</module>  
     <module>sslr-lexer-testing-harness</module> 
     <module>sslr-parser-testing-harness</module>     
   </modules>
@@ -55,7 +56,17 @@
         <groupId>${project.groupId}</groupId>
         <artifactId>sslr-impl</artifactId>
         <version>${project.version}</version>
-      </dependency>      
+      </dependency> 
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>sslr-lexer-testing-harness</artifactId>
+      <version>${project.version}</version>
+    </dependency>  
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>sslr-parser-testing-harness</artifactId>
+      <version>${project.version}</version>
+    </dependency>               
       <dependency>
         <groupId>org.codehaus.sonar</groupId>
         <artifactId>sonar-graph</artifactId>
