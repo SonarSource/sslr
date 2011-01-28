@@ -6,6 +6,7 @@
 
 package com.sonar.sslr.api;
 
+
 /**
  * A Rule describes a grammar syntactic rule.
  * 
@@ -58,4 +59,6 @@ public interface Rule extends AstNodeType {
   public void mockUpperCase();
 
   public void mock();
+
+  public void setAdapter(Class adapterClass);
 }

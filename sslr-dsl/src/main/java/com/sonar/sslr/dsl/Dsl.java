@@ -13,12 +13,12 @@ import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.GrammarRuleLifeCycleManager;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
-public abstract class DslDefinition implements Grammar {
+public abstract class Dsl implements Grammar {
 
   protected Rule myDsl = new RuleImpl("myDsl");
   protected Rule statement = new RuleImpl("statement");
 
-  public DslDefinition() {
+  public Dsl() {
     GrammarRuleLifeCycleManager.initializeRuleFields(this, this.getClass());
 
     myDsl.is(o2n(statement), EOF);

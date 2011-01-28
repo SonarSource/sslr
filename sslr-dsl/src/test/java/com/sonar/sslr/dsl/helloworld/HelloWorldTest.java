@@ -8,7 +8,6 @@ package com.sonar.sslr.dsl.helloworld;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.io.StringWriter;
 import java.net.URISyntaxException;
 
 import org.junit.Test;
@@ -19,9 +18,9 @@ public class HelloWorldTest {
 
   @Test
   public void shouldGetHelloWorld() throws URISyntaxException {
-    StringWriter output = new StringWriter();
-    DslRunner.execute(new HelloWorldDsl(output), "hello world!");
-    
-    //assertThat(output.toString(), is("hello world!"));
+    StringBuilder output = new StringBuilder();
+    DslRunner helloWorld = DslRunner.create(new HelloWorldDsl()).addComponent(output);
+    helloWorld.execute("print \"hello world!\"");
+    assertThat(output.toString(), is("\"hello world!\""));
   }
 }

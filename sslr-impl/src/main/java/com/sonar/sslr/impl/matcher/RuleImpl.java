@@ -25,6 +25,7 @@ public class RuleImpl extends Matcher implements Rule {
   protected Matcher matcher;
   private boolean hasSeveralParents = false;
   private AstListener listener;
+  private Class adapterClass;
   private AstNodeType astNodeType = new NeverSkipFromAst();
 
   public RuleImpl(String name) {
@@ -174,5 +175,13 @@ public class RuleImpl extends Matcher implements Rule {
   public Rule skipIfOneChild() {
     this.astNodeType = new SkipFromAstIfOnlyOneChild();
     return this;
+  }
+
+  public void setAdapter(Class adapterClass) {
+    this.adapterClass = adapterClass;
+  }
+
+  public Class getAdapter() {
+    return adapterClass;
   }
 }

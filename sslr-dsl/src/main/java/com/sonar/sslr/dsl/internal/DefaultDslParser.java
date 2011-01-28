@@ -4,14 +4,14 @@
  * mailto:contact AT sonarsource DOT com
  */
 
-package com.sonar.sslr.dsl;
+package com.sonar.sslr.dsl.internal;
 
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
 
-class DslParser extends Parser<Grammar> {
+public class DefaultDslParser extends Parser<Grammar> {
 
-  public DslParser(DslDefinition grammar) {
-    super(grammar, new DslLexer());
+  public DefaultDslParser(Grammar grammar) {
+    super(grammar, new DefaultDslLexer());
   }
 }

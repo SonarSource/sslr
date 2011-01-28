@@ -5,14 +5,12 @@
  */
 package com.sonar.sslr.dsl.helloworld;
 
-import java.io.Writer;
+import static com.sonar.sslr.dsl.DslTokenType.LITERAL;
 
-import com.sonar.sslr.dsl.DslDefinition;
+import com.sonar.sslr.dsl.Dsl;
+public class HelloWorldDsl extends Dsl {
 
-public class HelloWorldDsl extends DslDefinition {
-
-  public HelloWorldDsl(Writer output) {
-    statement.is("hello", "world", "!");
-    //statement.setAdapter(new HelloWorldAdapter(output));
+  public HelloWorldDsl() {
+    statement.is("print", LITERAL).setAdapter(HelloWorld.class);
   }
 }
