@@ -7,10 +7,10 @@ package com.sonar.sslr.dsl.helloworld;
 
 public class HelloWorld {
 
-  private StringBuilder output;
+  private StringBuilder output = new StringBuilder();
   private String message;
 
-  public HelloWorld(StringBuilder output) {
+  public void setOutput(StringBuilder output) {
     this.output = output;
   }
 

@@ -7,7 +7,7 @@ package com.sonar.sslr.dsl.internal;
 
 import java.lang.reflect.Method;
 
-public class Reflexion {
+public class ReflexionUtil {
 
   public static boolean call(Object obj, String methodName) {
     try {
@@ -26,14 +26,6 @@ public class Reflexion {
       return false;
     }
     return true;
-  }
-
-  public static Object newInstance(Class obj) {
-    try {
-      return obj.newInstance();
-    } catch (Exception e) {
-      return null;
-    }
   }
 
   public static boolean call(Object obj, String methodName, String arg) {

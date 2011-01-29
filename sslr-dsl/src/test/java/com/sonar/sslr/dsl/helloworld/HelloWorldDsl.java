@@ -11,6 +11,6 @@ import com.sonar.sslr.dsl.Dsl;
 public class HelloWorldDsl extends Dsl {
 
   public HelloWorldDsl() {
-    statement.is("print", LITERAL).setAdapter(HelloWorld.class);
+    statement.is("print", LITERAL).plug(HelloWorld.class);
   }
 }

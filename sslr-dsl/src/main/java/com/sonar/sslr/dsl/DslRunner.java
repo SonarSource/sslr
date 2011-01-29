@@ -6,44 +6,46 @@
 
 package com.sonar.sslr.dsl;
 
-import java.util.List;
-
-import org.picocontainer.MutablePicoContainer;
-import org.picocontainer.containers.TransientPicoContainer;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.dsl.internal.AstToStatementTransformer;
+import com.sonar.sslr.dsl.internal.AdapterRepository;
+import com.sonar.sslr.dsl.internal.AstToBytecodeTransformer;
+import com.sonar.sslr.dsl.internal.Bytecode;
 import com.sonar.sslr.dsl.internal.DefaultDslParser;
-import com.sonar.sslr.dsl.internal.Reflexion;
 import com.sonar.sslr.impl.Parser;
 
 public class DslRunner {
 
   private Parser<Grammar> parser;
   private Grammar dsl;
-  private MutablePicoContainer pico = new TransientPicoContainer();
+  private String source;
+  private AdapterRepository adapters = new AdapterRepository();
+  private Bytecode bytecode;
 
-  private DslRunner(Dsl dsl) {
+  private DslRunner(Dsl dsl, String source) {
     this.dsl = dsl;
+    this.source = source;
   }
 
-  public DslRunner addComponent(Object obj) {
-    pico.addComponent(obj);
+  public DslRunner inject(Object component) {
+    adapters.inject(component);
     return this;
   }
 
-  public static DslRunner create(Dsl dsl) {
-    return new DslRunner(dsl);
+  public static DslRunner create(Dsl dsl, String source) {
+    DslRunner dslRunner = new DslRunner(dsl, source);
+    dslRunner.compile();
+    return dslRunner;
   }
 
-  public void execute(String source) {
+  private void compile() {
     parser = new DefaultDslParser(dsl);
     AstNode ast = parser.parse(source);
-    List<Object> stmts = new AstToStatementTransformer(pico).transform(ast);
-    for (Object stmt : stmts) {
-      Reflexion.call(stmt, "execute");
-    }
+    bytecode = new AstToBytecodeTransformer(adapters).transform(ast);
+  }
+
+  public void execute() {
+    bytecode.execute();
   }
 
 }

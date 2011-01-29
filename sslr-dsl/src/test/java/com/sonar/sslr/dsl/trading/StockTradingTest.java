@@ -15,10 +15,9 @@ public class StockTradingTest {
 
   @Test
   public void shouldParseAllStatements() throws URISyntaxException {
-    DslRunner stockTrading = DslRunner.create(new StockTradingDsl());
-    stockTrading.execute("buy 500 'AAPL' at 179.30");
-    stockTrading.execute("sell 500 'AAPL' at 179.30");
-    stockTrading.execute("show transactions 'AAPL'");
-    stockTrading.execute("print portfolio");
+    DslRunner.create(new StockTradingDsl(), "buy 500 'AAPL' at 179.30");
+    DslRunner.create(new StockTradingDsl(), "sell 500 'AAPL' at 179.30");
+    DslRunner.create(new StockTradingDsl(), "show transactions 'AAPL'");
+    DslRunner.create(new StockTradingDsl(), "print portfolio");
   }
 }

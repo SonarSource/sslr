@@ -10,26 +10,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.picocontainer.MutablePicoContainer;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.dsl.DslTokenType;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
-public class AstToStatementTransformer {
+public class AstToBytecodeTransformer {
 
-  private MutablePicoContainer pico;
-  private Map<Class, Object> adapterByClass = new HashMap<Class, Object>();
   private Map<AstNode, Object> adapterByAstNode = new HashMap<AstNode, Object>();
+  private final AdapterRepository adapters;
 
-  public AstToStatementTransformer(MutablePicoContainer pico) {
-    this.pico = pico;
+  public AstToBytecodeTransformer(AdapterRepository adapters) {
+    this.adapters = adapters;
   }
 
-  public List<Object> transform(AstNode astNode) {
+  public Bytecode transform(AstNode astNode) {
     List<Object> stmts = new ArrayList<Object>();
     feedStmtList(astNode, stmts);
-    return stmts;
+    return new Bytecode(stmts);
   }
 
   private void feedStmtList(AstNode astNode, List<Object> stmts) {
@@ -40,14 +37,8 @@ public class AstToStatementTransformer {
   }
 
   private void instanciateAdapter(AstNode astNode) {
-    Class adapterClass = getAdapter(astNode);
-    if (adapterClass != null) {
-      Object adapter = adapterByClass.get(adapterClass);
-      if (adapter == null) {
-        pico.addComponent(adapterClass);
-        adapter = pico.getComponent(adapterClass);
-        adapterByClass.put(adapterClass, adapter);
-      }
+    Object adapter = getAdapter(astNode);
+    if (adapter != null) {
       adapterByAstNode.put(astNode, adapter);
     }
   }
@@ -55,13 +46,13 @@ public class AstToStatementTransformer {
   private void feedParentAttributes(AstNode astNode) {
     if (astNode.is(DslTokenType.LITERAL) && adapterByAstNode.containsKey(astNode.getParent())) {
       Object parentAdapter = adapterByAstNode.get(astNode.getParent());
-      Reflexion.call(parentAdapter, "setLiteral", astNode.getTokenValue());
+      ReflexionUtil.call(parentAdapter, "setLiteral", astNode.getTokenValue());
     }
 
   }
 
   private void addExecutableAdapter(AstNode astNode, List<Object> stmts) {
-    if (adapterByAstNode.containsKey(astNode) && Reflexion.hasMethod(adapterByAstNode.get(astNode).getClass(), "execute")) {
+    if (adapterByAstNode.containsKey(astNode) && ReflexionUtil.hasMethod(adapterByAstNode.get(astNode).getClass(), "execute")) {
       stmts.add(adapterByAstNode.get(astNode));
     }
   }
@@ -74,10 +65,12 @@ public class AstToStatementTransformer {
     }
   }
 
-  private Class getAdapter(AstNode astNode) {
+  private Object getAdapter(AstNode astNode) {
     if (astNode.getType() instanceof RuleImpl) {
       RuleImpl rule = (RuleImpl) astNode.getType();
-      return rule.getAdapter();
+      if (rule.getAdapter() != null) {
+        return adapters.newInstance(rule.getAdapter());
+      }
     }
     return null;
   }
