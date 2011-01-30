@@ -16,7 +16,7 @@ public class AdapterRepositoryTest {
 
   @Test
   public void shoudInjectComponent() {
-    MyAdapter myAdapter = (MyAdapter) adapters.newInstance(MyAdapter.class);
+    MyAdapter myAdapter = (MyAdapter) adapters.plug(MyAdapter.class, null);
     adapters.inject("hello");
     assertThat(myAdapter.message, is("hello"));
   }
@@ -24,9 +24,26 @@ public class AdapterRepositoryTest {
   public static class MyAdapter {
 
     private String message;
+    private MyAdapter child;
 
     public void setMessage(String message) {
       this.message = message;
     }
+
+    public void setChild(MyAdapter child) {
+      this.child = child;
+    }
+
+  }
+
+  @Test
+  public void shouldInjectAdapter() {
+    MyAdapter parentAdapter = (MyAdapter) adapters.plug(MyAdapter.class, null);
+    MyAdapter childAdapter = (MyAdapter) adapters.plug(MyAdapter.class, null);
+
+    adapters.injectAdapter(parentAdapter, childAdapter);
+
+    assertThat(parentAdapter.child, is(childAdapter));
+
   }
 }

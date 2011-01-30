@@ -14,7 +14,7 @@ public class HelloWorld {
     this.output = output;
   }
 
-  public void setLiteral(String message) {
+  public void setMessage(String message) {
     this.message = message;
   }
 

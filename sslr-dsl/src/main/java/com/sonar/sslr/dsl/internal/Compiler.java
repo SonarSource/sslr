@@ -5,11 +5,6 @@
  */
 package com.sonar.sslr.dsl.internal;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.dsl.Dsl;
@@ -19,7 +14,6 @@ import com.sonar.sslr.impl.matcher.RuleImpl;
 
 public class Compiler {
 
-  private Map<AstNode, Object> adapterByAstNode = new HashMap<AstNode, Object>();
   private Dsl dsl;
   private String source;
   private AdapterRepository adapters = new AdapterRepository();
@@ -30,43 +24,30 @@ public class Compiler {
   }
 
   public Bytecode transform(AstNode astNode) {
-    List<Object> stmts = new ArrayList<Object>();
-    feedStmtList(astNode, stmts);
-    return new Bytecode(stmts);
+    Bytecode bytecode = new Bytecode();
+    feedStmtList(astNode, bytecode);
+    return bytecode;
   }
 
-  private void feedStmtList(AstNode astNode, List<Object> stmts) {
-    instanciateAdapter(astNode);
-    feedStmtListOnChildren(astNode, stmts);
-    addExecutableAdapter(astNode, stmts);
+  private void feedStmtList(AstNode astNode, Bytecode bytecode) {
+    Object adapter = getAdapter(astNode);
+    feedStmtListOnChildren(astNode, bytecode);
+    bytecode.addInstruction(adapter);
     feedParentAttributes(astNode);
   }
 
-  private void instanciateAdapter(AstNode astNode) {
-    Object adapter = getAdapter(astNode);
-    if (adapter != null) {
-      adapterByAstNode.put(astNode, adapter);
-    }
-  }
-
   private void feedParentAttributes(AstNode astNode) {
-    if (astNode.is(DslTokenType.LITERAL) && adapterByAstNode.containsKey(astNode.getParent())) {
-      Object parentAdapter = adapterByAstNode.get(astNode.getParent());
-      ReflexionUtil.call(parentAdapter, "setLiteral", astNode.getTokenValue());
-    }
-
-  }
-
-  private void addExecutableAdapter(AstNode astNode, List<Object> stmts) {
-    if (adapterByAstNode.containsKey(astNode) && ReflexionUtil.hasMethod(adapterByAstNode.get(astNode).getClass(), "execute")) {
-      stmts.add(adapterByAstNode.get(astNode));
+    adapters.injectAdapter(astNode.getParent(), astNode);
+    if ( !astNode.hasChildren() && astNode.getParent().getNumberOfChildren() == 1 && astNode.getType() instanceof DslTokenType) {
+      DslTokenType dslTokenType = (DslTokenType) astNode.getType();
+      adapters.plug(dslTokenType.formatDslValue(astNode.getTokenValue()), astNode.getParent());
     }
   }
 
-  private void feedStmtListOnChildren(AstNode astNode, List<Object> stmts) {
+  private void feedStmtListOnChildren(AstNode astNode, Bytecode bytecode) {
     if (astNode.hasChildren()) {
       for (AstNode child : astNode.getChildren()) {
-        feedStmtList(child, stmts);
+        feedStmtList(child, bytecode);
       }
     }
   }
@@ -75,7 +56,7 @@ public class Compiler {
     if (astNode.getType() instanceof RuleImpl) {
       RuleImpl rule = (RuleImpl) astNode.getType();
       if (rule.getAdapter() != null) {
-        return adapters.newInstance(rule.getAdapter());
+        return adapters.plug(rule.getAdapter(), astNode);
       }
     }
     return null;

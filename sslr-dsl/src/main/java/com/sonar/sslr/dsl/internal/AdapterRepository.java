@@ -10,21 +10,34 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AdapterRepository {
+import com.sonar.sslr.api.AstNode;
+
+class AdapterRepository {
 
   private Map<AdapterType, List<Object>> adaptersByType = new HashMap<AdapterType, List<Object>>();
+  private Map<AstNode, Object> adapterByAstNode = new HashMap<AstNode, Object>();
+  private Map<Class, AdapterType> adapterTypeByClass = new HashMap<Class, AdapterType>();
 
-  Object newInstance(Class adapterClass) {
+  Object plug(Class adapterClass, AstNode node) {
     AdapterType adapterType = new AdapterType(adapterClass);
     Object adapterInstance = adapterType.newInstance();
-    if ( !adaptersByType.containsKey(adapterType)) {
-      adaptersByType.put(adapterType, new ArrayList<Object>());
-    }
-    adaptersByType.get(adapterType).add(adapterInstance);
+    plug(adapterInstance, node);
     return adapterInstance;
   }
 
-  public void inject(Object component) {
+  void plug(Object adapterInstance, AstNode node) {
+    Class adapterClass = adapterInstance.getClass();
+    if ( !adapterTypeByClass.containsKey(adapterClass)) {
+      AdapterType adapterType = new AdapterType(adapterClass);
+      adaptersByType.put(adapterType, new ArrayList<Object>());
+      adapterTypeByClass.put(adapterClass, adapterType);
+    }
+    AdapterType adapterType = adapterTypeByClass.get(adapterClass);
+    adaptersByType.get(adapterType).add(adapterInstance);
+    adapterByAstNode.put(node, adapterInstance);
+  }
+
+  void inject(Object component) {
     for (AdapterType type : adaptersByType.keySet()) {
       if (type.hasMethodWithArgumentType(component.getClass())) {
         for (Object adapter : adaptersByType.get(type)) {
@@ -34,4 +47,18 @@ public class AdapterRepository {
     }
   }
 
+  void injectAdapter(AstNode parentNode, AstNode node) {
+    Object parentAdapter = adapterByAstNode.get(parentNode);
+    Object adapter = adapterByAstNode.get(node);
+    if (parentAdapter != null && adapter != null) {
+      injectAdapter(parentAdapter, adapter);
+    }
+  }
+
+  void injectAdapter(Object parentAdapter, Object adapter) {
+    AdapterType parentAdapterType = adapterTypeByClass.get(parentAdapter.getClass());
+    if (parentAdapterType.hasMethodWithArgumentType(adapter.getClass())) {
+      parentAdapterType.inject(parentAdapter, adapter);
+    }
+  }
 }
