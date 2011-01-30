@@ -25,4 +25,14 @@ public class HelloWorldTest {
     helloWorld.execute();
     assertThat(output.toString(), is("\"hello world!\""));
   }
+  
+  @Test
+  public void shouldGetHelloFreddy() throws URISyntaxException {
+    DslRunner helloWorld = DslRunner.create(new HelloWorldDsl(), "print \"hello freddy!\"");
+
+    StringBuilder output = new StringBuilder();
+    helloWorld.inject(output);
+    helloWorld.execute();
+    assertThat(output.toString(), is("\"hello freddy!\""));
+  }
 }

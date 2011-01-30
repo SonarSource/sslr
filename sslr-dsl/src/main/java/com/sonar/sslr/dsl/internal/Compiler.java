@@ -11,16 +11,22 @@ import java.util.List;
 import java.util.Map;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.dsl.Dsl;
 import com.sonar.sslr.dsl.DslTokenType;
+import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
-public class AstToBytecodeTransformer {
+public class Compiler {
 
   private Map<AstNode, Object> adapterByAstNode = new HashMap<AstNode, Object>();
-  private final AdapterRepository adapters;
+  private Dsl dsl;
+  private String source;
+  private AdapterRepository adapters = new AdapterRepository();
 
-  public AstToBytecodeTransformer(AdapterRepository adapters) {
-    this.adapters = adapters;
+  public Compiler(Dsl dsl, String source) {
+    this.dsl = dsl;
+    this.source = source;
   }
 
   public Bytecode transform(AstNode astNode) {
@@ -73,6 +79,17 @@ public class AstToBytecodeTransformer {
       }
     }
     return null;
+  }
+
+  public void inject(Object component) {
+    adapters.inject(component);
+
+  }
+
+  public Bytecode compile() {
+    Parser<Grammar> parser = new DefaultDslParser(dsl);
+    AstNode ast = parser.parse(source);
+    return transform(ast);
   }
 
 }

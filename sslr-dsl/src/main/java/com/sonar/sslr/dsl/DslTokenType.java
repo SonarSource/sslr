@@ -9,7 +9,7 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.TokenType;
 
 public enum DslTokenType implements TokenType {
-  WORD, LITERAL, INTEGER, FLOAT, EOF, EOL;
+  WORD, LITERAL, INTEGER, PUNCTUATOR, FLOAT, EOF, EOL;
 
   public String getName() {
     return name();

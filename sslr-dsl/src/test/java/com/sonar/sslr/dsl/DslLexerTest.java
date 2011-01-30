@@ -5,9 +5,9 @@
  */
 package com.sonar.sslr.dsl;
 
-import static com.sonar.sslr.dsl.DslPunctuator.LBRACKET;
 import static com.sonar.sslr.dsl.DslTokenType.EOL;
 import static com.sonar.sslr.dsl.DslTokenType.INTEGER;
+import static com.sonar.sslr.dsl.DslTokenType.PUNCTUATOR;
 import static com.sonar.sslr.dsl.DslTokenType.WORD;
 import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
 import static org.junit.Assert.assertThat;
@@ -25,17 +25,17 @@ public class DslLexerTest {
     assertThat(lexer.lex("my id"), hasToken("my", WORD));
     assertThat(lexer.lex("my id"), hasToken("id", WORD));
   }
-  
+
   @Test
   public void shouldLexEol() {
     assertThat(lexer.lex("first line\n"), hasToken("\n", EOL));
   }
-  
+
   @Test
   public void shouldLexPunctuators() {
-    assertThat(lexer.lex("[]"), hasToken("[", LBRACKET));
+    assertThat(lexer.lex("[]"), hasToken("[", PUNCTUATOR));
   }
-  
+
   @Test
   public void shouldLexConstant() {
     assertThat(lexer.lex("50 bottles"), hasToken("50", INTEGER));
