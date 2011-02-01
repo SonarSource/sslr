@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import com.sonar.sslr.api.AstNode;
 
@@ -17,6 +18,7 @@ class AdapterRepository {
   private Map<AdapterType, List<Object>> adaptersByType = new HashMap<AdapterType, List<Object>>();
   private Map<AstNode, Object> adapterByAstNode = new HashMap<AstNode, Object>();
   private Map<Class, AdapterType> adapterTypeByClass = new HashMap<Class, AdapterType>();
+  private static Logger LOG = Logger.getLogger("SSLR DSL");
 
   Object plug(Class adapterClass, AstNode node) {
     AdapterType adapterType = new AdapterType(adapterClass);
@@ -53,12 +55,17 @@ class AdapterRepository {
     if (parentAdapter != null && adapter != null) {
       injectAdapter(parentAdapter, adapter);
     }
+    if (parentAdapter == null && adapter != null && parentNode.getNumberOfChildren() == 1) {
+      plug(adapter, parentNode);
+    }
   }
 
   void injectAdapter(Object parentAdapter, Object adapter) {
     AdapterType parentAdapterType = adapterTypeByClass.get(parentAdapter.getClass());
     if (parentAdapterType.hasMethodWithArgumentType(adapter.getClass())) {
       parentAdapterType.inject(parentAdapter, adapter);
+    } else {
+      LOG.warning("Unable to inject " + adapter + " into " + parentAdapter);
     }
   }
 }

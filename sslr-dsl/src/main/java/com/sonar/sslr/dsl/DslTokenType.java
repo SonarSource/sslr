@@ -34,7 +34,7 @@ public class DslTokenType implements TokenType {
     if (formatter != null) {
       return formatter.format(value);
     }
-    return value;
+    return null;
   }
 
   public boolean hasToBeSkippedFromAst(AstNode node) {

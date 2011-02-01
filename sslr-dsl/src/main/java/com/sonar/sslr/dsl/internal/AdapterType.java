@@ -39,11 +39,37 @@ class AdapterType {
   }
 
   boolean hasMethodWithArgumentType(Class argumentType) {
-    return methodsWithOneArgument.containsKey(argumentType);
+    if (methodsWithOneArgument.containsKey(argumentType)) {
+      return true;
+    }
+    Method method = getMethodAmongParents(argumentType);
+    if (method != null) {
+      methodsWithOneArgument.put(argumentType, method);
+      return true;
+    }
+    return false;
   }
 
-  private Method getMethodWithArgumentType(Class argumentType) {
-    return methodsWithOneArgument.get(argumentType);
+  private Method getMethodAmongParents(Class argumentType) {
+    Class argumentTypeParent = argumentType.getSuperclass();
+    if (argumentTypeParent == null) {
+      return null;
+    }
+    Method method = methodsWithOneArgument.get(argumentTypeParent);
+    if (method != null && argumentTypeParent != Object.class) {
+      return method;
+    }
+    for (Class implementedInterface : argumentType.getInterfaces()) {
+      method = methodsWithOneArgument.get(implementedInterface);
+      if (method != null) {
+        return method;
+      }
+      method = getMethodAmongParents(implementedInterface);
+      if (method != null) {
+        return method;
+      }
+    }
+    return getMethodAmongParents(argumentTypeParent);
   }
 
   public int hashCode() {

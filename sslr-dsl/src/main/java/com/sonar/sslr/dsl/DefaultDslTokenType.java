@@ -11,9 +11,7 @@ public class DefaultDslTokenType {
   public static final DslTokenType LITERAL = new DslTokenType("LITERAL", new LiteralTokenFormatter());
   public static final DslTokenType INTEGER = new DslTokenType("INTEGER", new IntegerTokenFormatter());
   public static final DslTokenType PUNCTUATOR = new DslTokenType("PUNCTUATOR");
-  public static final DslTokenType FLOAT = new DslTokenType("FLOAT", new DoubleTokenFormatter());
-  public static final DslTokenType EOF = new DslTokenType("EOF");
-  public static final DslTokenType EOL = new DslTokenType("EOL");
+  public static final DslTokenType DOUBLE = new DslTokenType("DOUBLE", new DoubleTokenFormatter());
 
   private static class IntegerTokenFormatter implements TokenFormatter {
 

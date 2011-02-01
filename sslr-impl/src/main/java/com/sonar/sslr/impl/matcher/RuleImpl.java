@@ -177,8 +177,9 @@ public class RuleImpl extends Matcher implements Rule {
     return this;
   }
 
-  public void plug(Class adapterClass) {
+  public Rule plug(Class adapterClass) {
     this.adapterClass = adapterClass;
+    return this;
   }
 
   public Class getAdapter() {

@@ -5,9 +5,9 @@
  */
 package com.sonar.sslr.dsl.trading;
 
-import static com.sonar.sslr.dsl.DefaultDslTokenType.*;
+import static com.sonar.sslr.dsl.DefaultDslTokenType.DOUBLE;
 import static com.sonar.sslr.dsl.DefaultDslTokenType.INTEGER;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.WORD;
+import static com.sonar.sslr.dsl.DefaultDslTokenType.LITERAL;
 
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.dsl.BasicDsl;
@@ -30,6 +30,6 @@ public class StockTradingDsl extends BasicDsl {
 
     quantity.is(INTEGER);
     product.is(LITERAL);
-    price.is(FLOAT);
+    price.is(DOUBLE);
   }
 }

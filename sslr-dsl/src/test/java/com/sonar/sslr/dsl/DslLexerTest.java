@@ -5,7 +5,6 @@
  */
 package com.sonar.sslr.dsl;
 
-import static com.sonar.sslr.dsl.DefaultDslTokenType.EOL;
 import static com.sonar.sslr.dsl.DefaultDslTokenType.INTEGER;
 import static com.sonar.sslr.dsl.DefaultDslTokenType.PUNCTUATOR;
 import static com.sonar.sslr.dsl.DefaultDslTokenType.WORD;
@@ -24,11 +23,6 @@ public class DslLexerTest {
   public void shouldLexIdentifier() {
     assertThat(lexer.lex("my id"), hasToken("my", WORD));
     assertThat(lexer.lex("my id"), hasToken("id", WORD));
-  }
-
-  @Test
-  public void shouldLexEol() {
-    assertThat(lexer.lex("first line\n"), hasToken("\n", EOL));
   }
 
   @Test

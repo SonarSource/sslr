@@ -37,11 +37,17 @@ public class Compiler {
   }
 
   private void feedParentAttributes(AstNode astNode) {
-    adapters.injectAdapter(astNode.getParent(), astNode);
-    if ( !astNode.hasChildren() && astNode.getParent().getNumberOfChildren() == 1 && astNode.getType() instanceof DslTokenType) {
+    if ( !astNode.hasChildren() && astNode.getType() instanceof DslTokenType) {
       DslTokenType dslTokenType = (DslTokenType) astNode.getType();
-      adapters.plug(dslTokenType.formatDslValue(astNode.getTokenValue()), astNode.getParent());
+      Object adapter = dslTokenType.formatDslValue(astNode.getTokenValue());
+      if (adapter != null) {
+        adapters.plug(adapter, astNode);
+      } else if (astNode.getParent().getNumberOfChildren() == 1) {
+        adapters.plug(astNode.getTokenValue(), astNode);
+      }
+
     }
+    adapters.injectAdapter(astNode.getParent(), astNode);
   }
 
   private void feedStmtListOnChildren(AstNode astNode, Bytecode bytecode) {

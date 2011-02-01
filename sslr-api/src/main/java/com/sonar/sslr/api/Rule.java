@@ -60,5 +60,5 @@ public interface Rule extends AstNodeType {
 
   public void mock();
 
-  public void plug(Class adapterClass);
+  public Rule plug(Class adapterClass);
 }

@@ -5,8 +5,7 @@
  */
 package com.sonar.sslr.dsl.internal;
 
-import static com.sonar.sslr.dsl.DefaultDslTokenType.EOL;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.FLOAT;
+import static com.sonar.sslr.dsl.DefaultDslTokenType.DOUBLE;
 import static com.sonar.sslr.dsl.DefaultDslTokenType.INTEGER;
 import static com.sonar.sslr.dsl.DefaultDslTokenType.LITERAL;
 import static com.sonar.sslr.dsl.DefaultDslTokenType.PUNCTUATOR;
@@ -28,12 +27,11 @@ public class DefaultDslLexer extends Lexer {
   @Override
   protected ChannelDispatcher<LexerOutput> getChannelDispatcher() {
     List<Channel> channels = new ArrayList<Channel>();
-    channels.add(new RegexpChannel(WORD, "\\p{Alpha}+"));
-    channels.add(new RegexpChannel(FLOAT, "\\d++\\.\\d++"));
+    channels.add(new RegexpChannel(WORD, "\\p{Alpha}[\\p{Alpha}\\d]+"));
+    channels.add(new RegexpChannel(DOUBLE, "\\d++\\.\\d++"));
     channels.add(new RegexpChannel(INTEGER, "\\d++"));
     channels.add(new RegexpChannel(LITERAL, "\".*?\""));
     channels.add(new RegexpChannel(LITERAL, "'.*?'"));
-    channels.add(new RegexpChannel(EOL, "\\r?\\n"));
     channels.add(new BlackHoleChannel("[\\s]"));
     channels.add(new RegexpChannel(PUNCTUATOR, "."));
     return new ChannelDispatcher<LexerOutput>(channels, true);

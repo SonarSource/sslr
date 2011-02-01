@@ -16,23 +16,17 @@ import com.sonar.sslr.dsl.DslRunner;
 
 public class HelloWorldTest {
 
+  StringBuilder output = new StringBuilder();
+
   @Test
   public void shouldGetHelloWorld() throws URISyntaxException {
-    DslRunner helloWorld = DslRunner.create(new HelloWorldDsl(), "print \"hello world!\"");
-
-    StringBuilder output = new StringBuilder();
-    helloWorld.inject(output);
-    helloWorld.execute();
+    DslRunner.create(new HelloWorldDsl(), "print \"hello world!\"").inject(output).execute();
     assertThat(output.toString(), is("hello world!"));
   }
 
   @Test
   public void shouldGetHelloFreddy() throws URISyntaxException {
-    DslRunner helloWorld = DslRunner.create(new HelloWorldDsl(), "print \"hello freddy!\"");
-
-    StringBuilder output = new StringBuilder();
-    helloWorld.inject(output);
-    helloWorld.execute();
+    DslRunner.create(new HelloWorldDsl(), "print \"hello freddy!\"").inject(output).execute();
     assertThat(output.toString(), is("hello freddy!"));
   }
 }
