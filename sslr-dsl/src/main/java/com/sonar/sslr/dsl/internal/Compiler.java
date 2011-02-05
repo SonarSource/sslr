@@ -31,8 +31,10 @@ public class Compiler {
 
   private void feedStmtList(AstNode astNode, Bytecode bytecode) {
     Object adapter = getAdapter(astNode);
+    bytecode.startControlFlowAdapter(adapter);
     feedStmtListOnChildren(astNode, bytecode);
-    bytecode.addInstruction(adapter);
+    bytecode.endControlFlowAdapter(adapter);
+    bytecode.addAdapter(adapter);
     feedParentAttributes(astNode);
   }
 

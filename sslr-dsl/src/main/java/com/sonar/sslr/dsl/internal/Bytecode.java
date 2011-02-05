@@ -5,39 +5,92 @@
  */
 package com.sonar.sslr.dsl.internal;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
-import com.sonar.sslr.dsl.DslException;
+import com.sonar.sslr.dsl.adapter.Adapter;
+import com.sonar.sslr.dsl.adapter.ConditionalBlockAdapter;
+import com.sonar.sslr.dsl.adapter.ControlFlowAdapter;
+import com.sonar.sslr.dsl.adapter.ExecutableAdapter;
+import com.sonar.sslr.dsl.adapter.ExitFlowAdapter;
+import com.sonar.sslr.dsl.adapter.LoopBlockAdapter;
 
 public class Bytecode {
 
-  private List<Object> instructions = new ArrayList<Object>();
+  private AdapterBlock mainBlock = new AdapterBlock();
+  private Stack<ControlFlowAdapter> pendingControlFlowAdapters = new Stack<ControlFlowAdapter>();
+  private Map<ControlFlowAdapter, AdapterBlock> controlFlowBlocks = new HashMap<ControlFlowAdapter, Bytecode.AdapterBlock>();
 
   public void execute() {
-    for (Object stmt : instructions) {
-      try {
-        Method method = stmt.getClass().getMethod("execute");
-        method.invoke(stmt);
-      } catch (Exception e) {
-        throw new DslException("Unable to call " + stmt.getClass().getName() + ".execute() method", e);
+    try {
+      execute(mainBlock);
+    } catch (ExitFlow exitFlow) {
+    }
+
+  }
+
+  private void execute(AdapterBlock block) {
+    for (Adapter adapter : block) {
+      if (adapter instanceof ExecutableAdapter) {
+        ((ExecutableAdapter) adapter).execute();
+      } else if (adapter instanceof ConditionalBlockAdapter) {
+        ConditionalBlockAdapter conditionalBlockAdapter = (ConditionalBlockAdapter) adapter;
+        if (conditionalBlockAdapter.shouldExecuteConditionalBlock()) {
+          execute(controlFlowBlocks.get(conditionalBlockAdapter));
+        }
+      } else if (adapter instanceof LoopBlockAdapter) {
+        LoopBlockAdapter loopBlockAdapter = (LoopBlockAdapter) adapter;
+        loopBlockAdapter.initLoopState();
+        while (loopBlockAdapter.shouldExecuteLoopBlockIteration()) {
+          execute(controlFlowBlocks.get(loopBlockAdapter));
+        }
+      } else if (adapter instanceof ExitFlowAdapter) {
+        throw new ExitFlow();
       }
     }
   }
 
-  public void addInstruction(Object instruction) {
-    if (instruction != null & hasExecuteMethod(instruction)) {
-      instructions.add(instruction);
+  public void addAdapter(Object adapter) {
+    if (adapter instanceof Adapter) {
+      if (pendingControlFlowAdapters.empty()) {
+        mainBlock.add((Adapter) adapter);
+      } else {
+        controlFlowBlocks.get(pendingControlFlowAdapters.peek()).add((Adapter) adapter);
+      }
     }
   }
 
-  private boolean hasExecuteMethod(Object instruction) {
-    try {
-      instruction.getClass().getMethod("execute");
-    } catch (Exception e) {
-      return false;
+  public void startControlFlowAdapter(Object adapter) {
+    if (adapter instanceof ControlFlowAdapter) {
+      ControlFlowAdapter controlFlowAdapter = (ControlFlowAdapter) adapter;
+      pendingControlFlowAdapters.push(controlFlowAdapter);
+      controlFlowBlocks.put(controlFlowAdapter, new AdapterBlock());
     }
-    return true;
+  }
+
+  public void endControlFlowAdapter(Object controlFlowAdapter) {
+    if (controlFlowAdapter instanceof ControlFlowAdapter) {
+      pendingControlFlowAdapters.pop();
+    }
+  }
+
+  private class AdapterBlock implements Iterable<Adapter> {
+
+    private List<Adapter> instructions = new ArrayList<Adapter>();
+
+    public Iterator<Adapter> iterator() {
+      return instructions.iterator();
+    }
+
+    public void add(Adapter adapter) {
+      instructions.add(adapter);
+    }
+  }
+
+  private class ExitFlow extends RuntimeException {
   }
 }

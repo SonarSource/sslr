@@ -7,7 +7,9 @@ package com.sonar.sslr.dsl.trading;
 
 import java.util.Map;
 
-public class PrintPortfolio {
+import com.sonar.sslr.dsl.adapter.ExecutableAdapter;
+
+public class PrintPortfolio implements ExecutableAdapter {
 
   private Portfolio portfolio;
   private StringBuilder output;

@@ -5,11 +5,11 @@
  */
 package com.sonar.sslr.dsl.internal;
 
-import static com.sonar.sslr.dsl.DefaultDslTokenType.DOUBLE;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.INTEGER;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.LITERAL;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.PUNCTUATOR;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.WORD;
+import static com.sonar.sslr.dsl.DslTokenType.DOUBLE;
+import static com.sonar.sslr.dsl.DslTokenType.INTEGER;
+import static com.sonar.sslr.dsl.DslTokenType.LITERAL;
+import static com.sonar.sslr.dsl.DslTokenType.PUNCTUATOR;
+import static com.sonar.sslr.dsl.DslTokenType.WORD;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,9 +3,11 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.dsl.selenium.controlflow;
+package com.sonar.sslr.dsl.internal.controlflow;
 
-public class Ping {
+import com.sonar.sslr.dsl.adapter.ExecutableAdapter;
+
+public class Ping implements ExecutableAdapter {
 
   private StringBuilder output;
 

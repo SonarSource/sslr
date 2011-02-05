@@ -5,14 +5,14 @@
  */
 package com.sonar.sslr.dsl.trading;
 
-import static com.sonar.sslr.dsl.DefaultDslTokenType.DOUBLE;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.INTEGER;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.LITERAL;
+import static com.sonar.sslr.dsl.DslTokenType.DOUBLE;
+import static com.sonar.sslr.dsl.DslTokenType.INTEGER;
+import static com.sonar.sslr.dsl.DslTokenType.LITERAL;
 
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.dsl.BasicDsl;
+import com.sonar.sslr.dsl.CommandListDsl;
 
-public class StockTradingDsl extends BasicDsl {
+public class StockTradingDsl extends CommandListDsl {
 
   public Rule buy;
   public Rule sell;
@@ -22,7 +22,7 @@ public class StockTradingDsl extends BasicDsl {
   public Rule price;
 
   public StockTradingDsl() {
-    statement.isOr(buy, sell, printPortfolio);
+    command.isOr(buy, sell, printPortfolio);
 
     buy.is("buy", quantity, product, "at", price).plug(Buy.class);
     sell.is("sell", quantity, product, "at", price).plug(Sell.class);

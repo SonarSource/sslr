@@ -6,13 +6,13 @@
 package com.sonar.sslr.dsl.condition;
 
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.dsl.BasicDsl;
+import com.sonar.sslr.dsl.CommandListDsl;
 
-public class ConditionPrinterDsl extends BasicDsl {
+public class ConditionPrinterDsl extends CommandListDsl {
 
   public Rule condition = new ConditionDsl().condition;
 
   public ConditionPrinterDsl() {
-    statement.is(condition).plug(ConditionPrinter.class);
+    command.is(condition).plug(ConditionPrinter.class);
   }
 }

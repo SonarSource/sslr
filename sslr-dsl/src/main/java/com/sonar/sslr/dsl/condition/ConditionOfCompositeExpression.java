@@ -5,7 +5,7 @@
  */
 package com.sonar.sslr.dsl.condition;
 
-import com.sonar.sslr.dsl.expression.AbstractExpression;
+import com.sonar.sslr.dsl.calculator.AbstractExpression;
 
 public abstract class ConditionOfCompositeExpression implements AbstractCondition {
 

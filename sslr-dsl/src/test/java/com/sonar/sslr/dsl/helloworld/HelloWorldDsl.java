@@ -5,16 +5,16 @@
  */
 package com.sonar.sslr.dsl.helloworld;
 
-import static com.sonar.sslr.dsl.DefaultDslTokenType.LITERAL;
+import static com.sonar.sslr.dsl.DslTokenType.LITERAL;
 
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.dsl.BasicDsl;
+import com.sonar.sslr.dsl.CommandListDsl;
 
-public class HelloWorldDsl extends BasicDsl {
+public class HelloWorldDsl extends CommandListDsl {
 
   public Rule message;
 
   public HelloWorldDsl() {
-    statement.is("print", LITERAL).plug(HelloWorld.class);
+    command.is("print", LITERAL).plug(HelloWorld.class);
   }
 }

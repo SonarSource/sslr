@@ -3,11 +3,12 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.dsl.selenium.controlflow;
+package com.sonar.sslr.dsl.internal.controlflow;
 
+import com.sonar.sslr.dsl.adapter.ConditionalBlockAdapter;
 import com.sonar.sslr.dsl.condition.Condition;
 
-public class IfControlFlow {
+public class If implements ConditionalBlockAdapter {
 
   private Condition condition;
 
@@ -15,7 +16,7 @@ public class IfControlFlow {
     this.condition = condition;
   }
 
-  public boolean isTrue() {
+  public boolean shouldExecuteConditionalBlock() {
     return condition.value();
   }
 }

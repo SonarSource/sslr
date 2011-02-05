@@ -5,7 +5,9 @@
  */
 package com.sonar.sslr.dsl.condition;
 
-public class ConditionPrinter {
+import com.sonar.sslr.dsl.adapter.ExecutableAdapter;
+
+public class ConditionPrinter implements ExecutableAdapter {
 
   private Condition condition;
   private StringBuilder output;

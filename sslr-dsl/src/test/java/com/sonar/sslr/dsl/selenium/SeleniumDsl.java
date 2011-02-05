@@ -6,20 +6,21 @@
 package com.sonar.sslr.dsl.selenium;
 
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.dsl.BasicDsl;
+import com.sonar.sslr.dsl.CommandListDsl;
+import static com.sonar.sslr.dsl.DslTokenType.*;
 
-public class SeleniumDsl extends BasicDsl {
+public class SeleniumDsl extends CommandListDsl {
 
   public Rule openUrl;
   public Rule assertTitle;
   public Rule assertSize;
 
   public SeleniumDsl() {
-    statement.isOr(openUrl, assertTitle, assertSize);
+    command.isOr(openUrl, assertTitle, assertSize);
 
-    openUrl.is("open", literal);
-    assertTitle.is("assert", "that", "title", "is", literal);
-    assertSize.is("assert", "that", "size", "<", "=", integer, "Ko");
+    openUrl.is("open", LITERAL);
+    assertTitle.is("assert", "that", "title", "is", LITERAL);
+    assertSize.is("assert", "that", "size", "<", "=", INTEGER, "Ko");
 
   }
 }

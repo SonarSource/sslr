@@ -5,7 +5,9 @@
  */
 package com.sonar.sslr.dsl.helloworld;
 
-public class HelloWorld {
+import com.sonar.sslr.dsl.adapter.ExecutableAdapter;
+
+public class HelloWorld implements ExecutableAdapter {
 
   private StringBuilder output = new StringBuilder();
   private String message;

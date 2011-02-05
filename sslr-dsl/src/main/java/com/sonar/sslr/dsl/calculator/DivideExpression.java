@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.dsl.expression;
+package com.sonar.sslr.dsl.calculator;
 
 public class DivideExpression extends CompositeExpression {
 

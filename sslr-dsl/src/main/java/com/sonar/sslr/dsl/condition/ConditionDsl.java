@@ -11,7 +11,7 @@ import static com.sonar.sslr.impl.matcher.Matchers.or;
 
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.dsl.Dsl;
-import com.sonar.sslr.dsl.expression.ExpressionDsl;
+import com.sonar.sslr.dsl.calculator.CalculatorDsl;
 
 public class ConditionDsl extends Dsl {
 
@@ -21,7 +21,7 @@ public class ConditionDsl extends Dsl {
   public Rule logicalOr;
   public Rule equal;
   public Rule notEqual;
-  public Rule expression = new ExpressionDsl().expression;
+  public Rule expression = new CalculatorDsl().expression;
 
   public ConditionDsl() {
     equal.is(expression, or("=", "equals"), expression).plug(Equal.class);

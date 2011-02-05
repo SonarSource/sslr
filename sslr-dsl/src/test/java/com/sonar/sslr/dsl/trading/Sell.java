@@ -5,29 +5,7 @@
  */
 package com.sonar.sslr.dsl.trading;
 
-public class Sell {
-
-  private int quantitity;
-  private String product;
-  private double price;
-
-  private Portfolio portfolio;
-
-  public void setPortfolio(Portfolio portfolio) {
-    this.portfolio = portfolio;
-  }
-
-  public void setQuantity(Integer quantity) {
-    this.quantitity = quantity;
-  }
-
-  public void setProduct(String product) {
-    this.product = product;
-  }
-
-  public void setPrice(Double price) {
-    this.price = price;
-  }
+public class Sell extends Operation {
 
   public void execute() {
     portfolio.sell(quantitity, product, price);

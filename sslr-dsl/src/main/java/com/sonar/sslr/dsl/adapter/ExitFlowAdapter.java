@@ -3,9 +3,8 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.dsl.expression;
+package com.sonar.sslr.dsl.adapter;
 
-public interface AbstractExpression {
+public class ExitFlowAdapter implements ControlFlowAdapter {
 
-  public double value();
 }
