@@ -7,7 +7,7 @@
     <version>1.3-SNAPSHOT</version>
   </parent>
   <artifactId>sslr-impl</artifactId>
-  <name>SonarSource :: Language Recognition :: Impl</name>
+  <name>SonarSource :: Language Recognizer :: Impl</name>
 
   <dependencies>
     <dependency>

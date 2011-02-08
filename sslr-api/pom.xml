@@ -8,7 +8,7 @@
   </parent>
 
   <artifactId>sslr-api</artifactId>
-  <name>SonarSource :: Language Recognition :: API</name>
+  <name>SonarSource :: Language Recognizer :: API</name>
 
   <dependencies>
     <dependency>

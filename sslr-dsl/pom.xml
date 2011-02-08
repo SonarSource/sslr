@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>sslr-dsl</artifactId>
-	<name>SonarSource :: Language Recognition :: DSL</name>
+	<name>SonarSource :: Language Recognizer :: DSL</name>
 
 	<dependencies>
 		<dependency>
