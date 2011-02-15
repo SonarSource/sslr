@@ -124,4 +124,38 @@ public class LexerOutputTest {
     verify(secondPreprocessors, times(2)).process((Token) anyObject(), eq(output));
   }
 
+  @Test
+  public void testTokenChainingWithAdd() {
+    output = new LexerOutput();
+    assertThat(output.getTokens().size(), is(0));
+    output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "first", 0, 0);
+    output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "second", 0, 0);
+    output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "third", 0, 0);
+    assertThat(output.getTokens().size(), is(3));
+    assertThat(output.get(0).getPreviousToken(), is(nullValue()));
+    assertThat(output.get(0).getFollowingToken().getValue(), is("second"));
+    assertThat(output.get(1).getPreviousToken().getValue(), is("first"));
+    assertThat(output.get(1).getFollowingToken().getValue(), is("third"));
+    assertThat(output.get(2).getPreviousToken().getValue(), is("second"));
+    assertThat(output.get(2).getFollowingToken(), is(nullValue()));
+  }
+
+  @Test
+  public void testTokenChainingWithAddAll() {
+    List<Token> tokens = Lists.newArrayList();
+    tokens.add(new Token(GenericTokenType.IDENTIFIER, "first", 0, 0));
+    tokens.add(new Token(GenericTokenType.IDENTIFIER, "second", 0, 0));
+    tokens.add(new Token(GenericTokenType.IDENTIFIER, "third", 0, 0));
+    output = new LexerOutput();
+    assertThat(output.getTokens().size(), is(0));
+    output.addAllTokens(tokens);
+    assertThat(output.getTokens().size(), is(3));
+    assertThat(output.get(0).getPreviousToken(), is(nullValue()));
+    assertThat(output.get(0).getFollowingToken().getValue(), is("second"));
+    assertThat(output.get(1).getPreviousToken().getValue(), is("first"));
+    assertThat(output.get(1).getFollowingToken().getValue(), is("third"));
+    assertThat(output.get(2).getPreviousToken().getValue(), is("second"));
+    assertThat(output.get(2).getFollowingToken(), is(nullValue()));
+  }
+
 }

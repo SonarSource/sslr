@@ -10,6 +10,8 @@ import java.io.File;
 
 public class Token {
 
+  private Token previousToken;
+  private Token followingToken;
   private TokenType type;
   private String value;
   private int line = 0;
@@ -131,5 +133,21 @@ public class Token {
 
   public void setFile(File file) {
     this.file = file;
+  }
+
+  public Token getPreviousToken() {
+    return previousToken;
+  }
+
+  public void setPreviousToken(Token previousToken) {
+    this.previousToken = previousToken;
+  }
+
+  public Token getFollowingToken() {
+    return followingToken;
+  }
+
+  public void setFollowingToken(Token followingToken) {
+    this.followingToken = followingToken;
   }
 }

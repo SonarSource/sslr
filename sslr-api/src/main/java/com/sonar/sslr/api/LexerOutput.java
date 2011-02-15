@@ -113,16 +113,23 @@ public class LexerOutput {
    * @param token
    */
   public void addToken(Token token) {
+    if ( !tokens.isEmpty()) {
+      Token previousToken = tokens.get(tokens.size() - 1);
+      token.setPreviousToken(previousToken);
+      previousToken.setFollowingToken(token);
+    }
     tokens.add(token);
   }
-  
+
   /**
    * Add a list of tokens to the list without notifying preprocessors.
    * 
    * @param token
    */
   public void addAllTokens(List<Token> allNewtokens) {
-    tokens.addAll(allNewtokens);
+    for (Token token : allNewtokens) {
+      addToken(token);
+    }
   }
 
   public void setFile(File file) {
