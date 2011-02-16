@@ -24,7 +24,7 @@ public class LexerOutput {
   }
 
   public LexerOutput(List<Token> tokens) {
-    this.tokens = tokens;
+    addAllTokens(tokens);
     this.preprocessors = null;
   }
 

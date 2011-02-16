@@ -157,5 +157,20 @@ public class LexerOutputTest {
     assertThat(output.get(2).getPreviousToken().getValue(), is("second"));
     assertThat(output.get(2).getFollowingToken(), is(nullValue()));
   }
+  
+  @Test
+  public void testTokenChainingWithConstructor() {
+    List<Token> tokens = Lists.newArrayList();
+    tokens.add(new Token(GenericTokenType.IDENTIFIER, "first", 0, 0));
+    tokens.add(new Token(GenericTokenType.IDENTIFIER, "second", 0, 0));
+    tokens.add(new Token(GenericTokenType.IDENTIFIER, "third", 0, 0));
+    output = new LexerOutput(tokens);
+    assertThat(output.get(0).getPreviousToken(), is(nullValue()));
+    assertThat(output.get(0).getFollowingToken().getValue(), is("second"));
+    assertThat(output.get(1).getPreviousToken().getValue(), is("first"));
+    assertThat(output.get(1).getFollowingToken().getValue(), is("third"));
+    assertThat(output.get(2).getPreviousToken().getValue(), is("second"));
+    assertThat(output.get(2).getFollowingToken(), is(nullValue()));
+  }
 
 }
