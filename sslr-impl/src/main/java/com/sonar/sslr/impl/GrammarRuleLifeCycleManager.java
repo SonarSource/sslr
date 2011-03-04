@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 
 import org.apache.commons.lang.ClassUtils;
 
+import com.sonar.sslr.api.LeftRecursiveRule;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.matcher.LeftRecursiveRuleImpl;
 import com.sonar.sslr.impl.matcher.RuleImpl;
@@ -32,35 +33,15 @@ public final class GrammarRuleLifeCycleManager {
   public static void initializeRuleFields(Object rules, Class<?> grammar) {
     Field[] fields = grammar.getDeclaredFields();
     for (Field field : fields) {
-      if (field.getType() == Rule.class) {
-        String fieldName = field.getName();
-        try {
-          field.set(rules, new RuleImpl(fieldName));
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-    }
-  }
-
-  /**
-   * Initializes the given grammar with rules that support left recursion.
-   * 
-   * @param rules
-   *          the grammar object to initialize
-   * @param grammar
-   *          the class that represents this grammar
-   */
-  public static void initializeLeftRecursionRuleFields(Object rules, Class<?> grammar) {
-    Field[] fields = grammar.getDeclaredFields();
-    for (Field field : fields) {
-      if (field.getType() == Rule.class) {
-        String fieldName = field.getName();
-        try {
+      String fieldName = field.getName();
+      try {
+        if (field.getType() == LeftRecursiveRule.class) {
           field.set(rules, new LeftRecursiveRuleImpl(fieldName));
-        } catch (Exception e) {
-          e.printStackTrace();
+        } else if (field.getType() == Rule.class) {
+          field.set(rules, new RuleImpl(fieldName));
         }
+      } catch (Exception e) {
+        throw new RuntimeException("Unable to instanciate the rule '" + grammar.getName() + "." + fieldName + "'", e);
       }
     }
   }
@@ -71,17 +52,18 @@ public final class GrammarRuleLifeCycleManager {
    * @param rules
    *          the grammar object that contains the rules to notify
    */
-  public static void notifyEndParsing(Object rules) {
-    Field[] fields = rules.getClass().getDeclaredFields();
+  static void notifyEndParsing(Object grammar) {
+    Field[] fields = grammar.getClass().getDeclaredFields();
     for (Field field : fields) {
-      if (field.getType() == Rule.class) {
+      if (field.getType() == LeftRecursiveRule.class) {
         try {
-          Object rule = field.get(rules);
+          Object rule = field.get(grammar);
           if (ClassUtils.isAssignable(rule.getClass(), LeftRecursiveRuleImpl.class)) {
             ((LeftRecursiveRuleImpl) rule).endParsing();
           }
         } catch (Exception e) {
-          e.printStackTrace();
+          throw new RuntimeException("Unable to call endParsing() method on the following left recursive rule rule '"
+              + grammar.getClass().getName() + "." + field.getName() + "'", e);
         }
       }
     }

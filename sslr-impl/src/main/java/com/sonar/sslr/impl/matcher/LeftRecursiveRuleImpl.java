@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.LeftRecursiveRule;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.loggers.SslrLogger;
@@ -18,7 +19,7 @@ import com.sonar.sslr.impl.loggers.SslrLogger;
 /**
  * Implementation of a Rule that support left recursion.
  */
-public class LeftRecursiveRuleImpl extends RuleImpl {
+public class LeftRecursiveRuleImpl extends RuleImpl implements LeftRecursiveRule {
 
   private Stack<Integer> matchStartIndexes = new Stack<Integer>();
   private Map<Integer, AstNode> partialAstNodes = new HashMap<Integer, AstNode>();

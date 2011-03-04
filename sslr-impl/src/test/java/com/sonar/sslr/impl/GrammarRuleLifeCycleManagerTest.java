@@ -15,6 +15,7 @@ import static org.mockito.Mockito.verify;
 import org.junit.Test;
 
 import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.api.LeftRecursiveRule;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.matcher.LeftRecursiveRuleImpl;
 import com.sonar.sslr.impl.matcher.RuleImpl;
@@ -30,17 +31,9 @@ public class GrammarRuleLifeCycleManagerTest {
 
     assertThat(grammar.rule1, not(nullValue()));
     assertThat(grammar.rule1, is(RuleImpl.class));
-  }
-
-  @Test
-  public void initializeLeftRecursionRuleFields() {
-    SampleGrammar grammar = new SampleGrammar();
-    assertThat(grammar.rule1, nullValue());
-
-    GrammarRuleLifeCycleManager.initializeLeftRecursionRuleFields(grammar, SampleGrammar.class);
-
-    assertThat(grammar.rule1, not(nullValue()));
-    assertThat(grammar.rule1, is(LeftRecursiveRuleImpl.class));
+    
+    assertThat(grammar.rule2, not(nullValue()));
+    assertThat(grammar.rule2, is(LeftRecursiveRuleImpl.class));
   }
 
   @Test
@@ -59,7 +52,7 @@ public class GrammarRuleLifeCycleManagerTest {
 
     public Rule rule1;
     @SuppressWarnings("unused")
-    public Rule rule2;
+    public LeftRecursiveRule rule2;
 
     public Rule getRootRule() {
       return rule1;
