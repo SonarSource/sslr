@@ -31,13 +31,11 @@ public abstract class Parser<GRAMMAR extends Grammar> {
   private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
 
   public Parser(GRAMMAR grammar, Lexer lexer, List<GrammarDecorator<GRAMMAR>> decorators) {
-    this.grammar = grammar;
-    setDecorators(decorators);
-    this.lexer = lexer;
+    this(grammar, grammar.getRootRule(), lexer, decorators);
   }
 
   public Parser(GRAMMAR grammar, Lexer lexer, GrammarDecorator<GRAMMAR>... decorators) {
-    this(grammar, lexer, Arrays.asList(decorators));
+    this(grammar, grammar.getRootRule(), lexer, Arrays.asList(decorators));
   }
 
   public Parser(GRAMMAR grammar, Rule rootRule, Lexer lexer, GrammarDecorator<GRAMMAR>... decorators) {
@@ -45,7 +43,9 @@ public abstract class Parser<GRAMMAR extends Grammar> {
   }
 
   public Parser(GRAMMAR grammar, Rule rootRule, Lexer lexer, List<GrammarDecorator<GRAMMAR>> decorators) {
-    this(grammar, lexer, decorators);
+    this.grammar = grammar;
+    this.lexer = lexer;
+    setDecorators(decorators);
     this.rootRule = (RuleImpl) rootRule;
   }
 
@@ -63,7 +63,6 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 
   public void addDecorator(GrammarDecorator<GRAMMAR> decorator) {
     decorator.decorate(grammar);
-    rootRule = (RuleImpl) grammar.getRootRule();
   }
 
   public void addListener(RecognictionExceptionListener listerner) {
