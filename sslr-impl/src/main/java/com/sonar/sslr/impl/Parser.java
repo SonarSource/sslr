@@ -51,13 +51,19 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 
   public void setDecorators(List<GrammarDecorator<GRAMMAR>> decorators) {
     for (GrammarDecorator<GRAMMAR> decorator : decorators) {
-      decorator.decorate(grammar);
+      addDecorator(decorator);
     }
-    rootRule = (RuleImpl) grammar.getRootRule();
   }
 
   public void setDecorators(GrammarDecorator<GRAMMAR>... decorators) {
-    setDecorators(Arrays.asList(decorators));
+    for (GrammarDecorator<GRAMMAR> decorator : decorators) {
+      addDecorator(decorator);
+    }
+  }
+
+  public void addDecorator(GrammarDecorator<GRAMMAR> decorator) {
+    decorator.decorate(grammar);
+    rootRule = (RuleImpl) grammar.getRootRule();
   }
 
   public void addListener(RecognictionExceptionListener listerner) {
