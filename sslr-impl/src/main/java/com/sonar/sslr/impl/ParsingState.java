@@ -6,10 +6,14 @@
 
 package com.sonar.sslr.impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.RecognictionExceptionListener;
+import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.loggers.SslrLogger;
 import com.sonar.sslr.impl.matcher.Matcher;
@@ -17,6 +21,7 @@ import com.sonar.sslr.impl.matcher.Matcher;
 public class ParsingState {
 
   private List<Matcher> notifiedMatchers = Lists.newArrayList();
+  private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
   private final Token[] tokens;
   public int lexerIndex = 0;
   public int lastRecursionLexerIndex = 0;
@@ -165,4 +170,17 @@ public class ParsingState {
     this.pendingLeftRecursion = leftRecursionState;
   }
 
+  protected void setListeners(Set<RecognictionExceptionListener> listeners) {
+    this.listeners = listeners;
+  }
+
+  public void addListener(RecognictionExceptionListener listener) {
+    listeners.add(listener);
+  }
+
+  public void notifyListerners(RecognitionException recognitionException) {
+    for (RecognictionExceptionListener listener : listeners) {
+      listener.addRecognitionException(recognitionException);
+    }
+  }
 }

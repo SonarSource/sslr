@@ -13,8 +13,10 @@ import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeSkippingPolicy;
 import com.sonar.sslr.api.AstNodeType;
+import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.ast.AlwaysSkipFromAst;
 import com.sonar.sslr.impl.ast.NeverSkipFromAst;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
@@ -27,6 +29,7 @@ public class RuleImpl extends Matcher implements Rule {
   private AstListener listener;
   private Class adapterClass;
   private AstNodeType astNodeType = new NeverSkipFromAst();
+  private boolean recoveryRule = false;
 
   public RuleImpl(String name) {
     this.name = name;
@@ -37,6 +40,12 @@ public class RuleImpl extends Matcher implements Rule {
     int startIndex = parsingState.lexerIndex;
     if (matcher == null) {
       throw new IllegalStateException("The rule '" + name + "' hasn't beed defined.");
+    }
+    if (recoveryRule) {
+      RecognitionException recognitionException = new RecognitionExceptionImpl(parsingState);
+      if (matcher.isMatching(parsingState)) {
+        parsingState.notifyListerners(recognitionException);
+      }
     }
     AstNode childNode = matcher.match(parsingState);
 
@@ -184,5 +193,9 @@ public class RuleImpl extends Matcher implements Rule {
 
   public Class getAdapter() {
     return adapterClass;
+  }
+
+  public void recoveryRule() {
+    recoveryRule = true;
   }
 }

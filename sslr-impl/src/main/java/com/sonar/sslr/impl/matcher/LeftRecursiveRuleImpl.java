@@ -80,4 +80,9 @@ public class LeftRecursiveRuleImpl extends RuleImpl implements LeftRecursiveRule
     matchStartIndexes = new Stack<Integer>();
     partialAstNodes = new HashMap<Integer, AstNode>();
   }
+
+  @Override
+  public void recoveryRule() {
+    throw new UnsupportedOperationException("The recovery mode is not yet supported by left-recursive rule");
+  }
 }

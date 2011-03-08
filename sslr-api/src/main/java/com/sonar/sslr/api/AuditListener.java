@@ -5,9 +5,13 @@
  */
 package com.sonar.sslr.api;
 
-public interface AuditListener {
+/**
+ * An AuditListener must be used to be notified of parsing error or standard exception which might occur when analysing a source code
+ */
+public interface AuditListener extends RecognictionExceptionListener {
 
-  public void addRecognitionException(RecognitionException e);
-
+  /**
+   * This method is called when an exception different from a parsing error occurs
+   */
   public void addException(Exception e);
 }

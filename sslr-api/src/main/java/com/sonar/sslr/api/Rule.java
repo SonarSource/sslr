@@ -6,7 +6,6 @@
 
 package com.sonar.sslr.api;
 
-
 /**
  * A Rule describes a grammar syntactic rule.
  * 
@@ -59,6 +58,11 @@ public interface Rule extends AstNodeType {
   public void mockUpperCase();
 
   public void mock();
+
+  /**
+   * A recovery rule notify RecognitionExceptionListener(s) of a parsing error before consuming bad tokens.
+   */
+  public void recoveryRule();
 
   public Rule plug(Class adapterClass);
 }

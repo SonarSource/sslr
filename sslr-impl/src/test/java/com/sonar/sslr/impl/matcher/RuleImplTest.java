@@ -10,12 +10,15 @@ import static com.sonar.sslr.impl.MockTokenType.WORD;
 import static com.sonar.sslr.impl.matcher.Matchers.o2n;
 import static com.sonar.sslr.impl.matcher.Matchers.opt;
 import static com.sonar.sslr.impl.matcher.Matchers.or;
+import static com.sonar.sslr.test.lexer.TokenUtils.lex;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
@@ -24,6 +27,8 @@ import org.junit.Test;
 import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
+import com.sonar.sslr.api.RecognictionExceptionListener;
+import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
@@ -190,5 +195,26 @@ public class RuleImplTest {
     assertThat(rule.hasToBeSkippedFromAst(parent), is(false));
     assertThat(rule.hasToBeSkippedFromAst(child2), is(false));
     assertThat(rule.hasToBeSkippedFromAst(child1), is(true));
+  }
+
+  @Test
+  public void testRecoveryMode() {
+    RuleImpl rule = new RuleImpl("MyRule");
+    rule.is("one");
+
+    ParsingState parsingState = new ParsingState(lex("one"));
+    RecognictionExceptionListener listener = mock(RecognictionExceptionListener.class);
+    parsingState.addListener(listener);
+    rule.match(parsingState);
+
+    verify(listener, times(0)).addRecognitionException((RecognitionException) anyObject());
+
+    rule.recoveryRule();
+    parsingState = new ParsingState(lex("one"));
+    listener = mock(RecognictionExceptionListener.class);
+    parsingState.addListener(listener);
+    rule.match(parsingState);
+
+    verify(listener, times(1)).addRecognitionException((RecognitionException) anyObject());
   }
 }

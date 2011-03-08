@@ -8,12 +8,15 @@ package com.sonar.sslr.impl;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.GrammarDecorator;
 import com.sonar.sslr.api.LexerOutput;
+import com.sonar.sslr.api.RecognictionExceptionListener;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.matcher.RuleImpl;
@@ -25,6 +28,7 @@ public abstract class Parser<GRAMMAR extends Grammar> {
   private LexerOutput lexerOutput;
   private Lexer lexer;
   private GRAMMAR grammar;
+  private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
 
   public Parser(GRAMMAR grammar, Lexer lexer, List<GrammarDecorator<GRAMMAR>> decorators) {
     this.grammar = grammar;
@@ -56,6 +60,10 @@ public abstract class Parser<GRAMMAR extends Grammar> {
     setDecorators(Arrays.asList(decorators));
   }
 
+  public void addListener(RecognictionExceptionListener listerner) {
+    listeners.add(listerner);
+  }
+
   public AstNode parse(File file) {
     lexerOutput = lexer.lex(file);
     return parse(lexerOutput.getTokens());
@@ -71,6 +79,7 @@ public abstract class Parser<GRAMMAR extends Grammar> {
     beforeEachFile();
     try {
       parsingState = new ParsingState(tokens);
+      parsingState.setListeners(listeners);
       return rootRule.parse(parsingState);
     } catch (RecognitionExceptionImpl e) {
       if (parsingState != null) {
