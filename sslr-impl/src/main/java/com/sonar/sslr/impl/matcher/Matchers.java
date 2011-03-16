@@ -99,6 +99,10 @@ public class Matchers {
   public static Matcher exclusiveTill(Object... matchers) {
     return new MemoizerMatcher(new ExclusiveTillMatcher(Matcher.convertToMatchers(matchers)));
   }
+  
+  public static Matcher token(TokenType type, String value) {
+  	return new MemoizerMatcher(new TokenTypeAndValueMatcher(type, value));
+  }
 
   public static Matcher o2n(Object... objects) {
     Matcher[] matchers = Matcher.convertToMatchers(objects);
