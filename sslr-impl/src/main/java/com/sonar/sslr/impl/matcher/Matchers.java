@@ -108,8 +108,6 @@ public class Matchers {
     Matcher[] matchers = Matcher.convertToMatchers(objects);
     if (matchers.length == 0) {
       throw new IllegalStateException("You must define at least one matcher.");
-    } else if (matchers.length == 0) {
-      return new MemoizerMatcher(new ZeroToNMatcher(matchers[0]));
     } else {
       return new MemoizerMatcher(new ZeroToNMatcher(new AndMatcher(matchers)));
     }
@@ -119,8 +117,6 @@ public class Matchers {
     Matcher[] matchers = Matcher.convertToMatchers(objects);
     if (matchers.length == 0) {
       throw new IllegalStateException("You must define at least one matcher.");
-    } else if (matchers.length == 0) {
-      return new MemoizerMatcher(new OneToNMatcher(matchers[0]));
     } else {
       return new MemoizerMatcher(new OneToNMatcher(new AndMatcher(matchers)));
     }
