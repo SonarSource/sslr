@@ -30,7 +30,7 @@ public class StrictOrMatcher extends OrMatcher {
     if (matchingMatchers == 1 && matchingMatcher != null) {
       return matchingMatcher.match(parsingState);
     } else if (matchingMatchers > 1) {
-      throw new IllegalStateException("There are two possible ways.");
+      throw new IllegalStateException("There are two possible ways on rule " + getRule());
     }
     throw RecognitionExceptionImpl.create();
   }
