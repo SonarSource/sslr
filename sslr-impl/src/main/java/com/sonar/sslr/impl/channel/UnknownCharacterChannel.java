@@ -27,7 +27,7 @@ public class UnknownCharacterChannel extends Channel<LexerOutput> {
   }
 
   public UnknownCharacterChannel(boolean shouldLogWarning) {
-    this.shouldLogWarning = true;
+    this.shouldLogWarning = shouldLogWarning;
   }
 
   @Override
