@@ -19,7 +19,7 @@ import org.junit.Test;
 public class AtLeastOneMatcherTest {
 
   @Test
-  public void testAll() {
+  public void ok() {
     assertThat(atLeastOne(isTrue(), isTrue(), isTrue()), match("one two three"));
     assertThat(atLeastOne(isFalse(), isTrue(), isTrue()), match("two three"));
     assertThat(atLeastOne(isTrue(), isFalse()), match("one"));

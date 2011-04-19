@@ -16,7 +16,7 @@ import org.junit.Test;
 public class AnyTokenButNotMatcherTest {
 
   @Test
-  public void testMany() {
+  public void ok() {
     assertThat(Matchers.anyTokenButNot("two"), match("one"));
     assertThat(Matchers.anyTokenButNot("one"), not(match("one")));
   }

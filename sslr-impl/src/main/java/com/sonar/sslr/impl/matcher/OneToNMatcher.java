@@ -24,7 +24,7 @@ public class OneToNMatcher extends Matcher {
     boolean match = true;
     int loop = 0;
     do {
-      match = matcher.isMatching(parsingState);
+      match = matcher.isMatching(parsingState) >= 0;
       if (match) {
         if (astNode == null) {
           astNode = new AstNode(this, "oneToNMatcher", parsingState.peekTokenIfExists(startIndex, this));

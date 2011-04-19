@@ -16,10 +16,10 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-public class OpMatcherTest {
+public class OptMatcherTest {
 
   @Test
-  public void testMany() {
+  public void ok() {
     assertThat(opt(isFalse()), not(match("one")));
     assertThat(opt(isTrue()), match("one"));
   }

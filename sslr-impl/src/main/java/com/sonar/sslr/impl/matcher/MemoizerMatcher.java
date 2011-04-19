@@ -18,17 +18,17 @@ class MemoizerMatcher extends Matcher {
     this.memoizedMatcher = proxiedMatcher;
   }
 
-  public boolean isMatching(ParsingState state) {
+  public int isMatching(ParsingState state) {
     if (state.hasMemoizedAst(this)) {
-      return true;
+      return state.getMemoizedAst(this).getToIndex();
     }
     int startingIndex = state.lexerIndex;
     try {
       AstNode node = memoizedMatcher.match(state);
       memoizeAstNode(node, startingIndex, state);
-      return true;
+      return state.lexerIndex;
     } catch (RecognitionExceptionImpl e) {
-      return false;
+      return -1;
     } finally {
       state.lexerIndex = startingIndex;
     }

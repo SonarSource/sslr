@@ -18,7 +18,7 @@ import org.junit.Test;
 public class NextMatcherTest {
 
   @Test
-  public void testNext() {
+  public void ok() {
     assertThat(and(next("one"), "one"), match("one"));
     assertThat(and(next("two"), "one"), not(match("one")));
   }

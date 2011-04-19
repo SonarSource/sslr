@@ -20,7 +20,7 @@ import com.sonar.sslr.impl.ParsingState;
 public class TokenTypeMatcherTest {
 
   @Test
-  public void testMatch() {
+  public void ok() {
     TokenTypeMatcher matcher = new TokenTypeMatcher(GenericTokenType.IDENTIFIER);
     AstNode node = matcher.match(new ParsingState(lex("print screen")));
 

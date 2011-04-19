@@ -19,7 +19,7 @@ import org.junit.Test;
 public class AndMatcherTest {
 
   @Test
-  public void testAll() {
+  public void ok() {
     assertThat(and(isTrue(), isTrue(), isTrue()), match("one two three"));
     assertThat(and(isTrue(), isFalse()), not(match("one two")));
     assertThat(and(isFalse(), isFalse()), not(match("one two")));

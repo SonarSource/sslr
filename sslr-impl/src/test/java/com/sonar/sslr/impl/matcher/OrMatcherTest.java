@@ -19,7 +19,7 @@ import org.junit.Test;
 public class OrMatcherTest {
 
   @Test
-  public void testOr() {
+  public void ok() {
     assertThat(or(isFalse(), isTrue()), match("one"));
     assertThat(or(isTrue(), isFalse()), match("one"));
     assertThat(or(isFalse(), isFalse()), not(match("one")));

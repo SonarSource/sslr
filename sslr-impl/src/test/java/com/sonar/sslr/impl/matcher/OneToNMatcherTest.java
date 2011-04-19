@@ -19,7 +19,7 @@ import org.junit.Test;
 public class OneToNMatcherTest {
 
   @Test
-  public void testMany() {
+  public void ok() {
     assertThat(one2n(isTrue()), match("one"));
     assertThat(one2n(isFalse()), not(match("one")));
   }

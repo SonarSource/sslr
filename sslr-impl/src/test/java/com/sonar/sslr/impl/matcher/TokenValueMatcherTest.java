@@ -17,7 +17,7 @@ import com.sonar.sslr.impl.ParsingState;
 public class TokenValueMatcherTest {
 
   @Test
-  public void testMatch() {
+  public void ok() {
     TokenValueMatcher matcher = new TokenValueMatcher("print");
     AstNode node = matcher.match(new ParsingState(lex("print screen")));
 

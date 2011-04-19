@@ -18,7 +18,7 @@ import org.junit.Test;
 public class AdjacentMatcherTest {
 
   @Test
-  public void testAll() {
+  public void ok() {
     assertThat(and("myMacro", adjacent("(", ")")), match("myMacro()"));
     assertThat(and("myMacro", adjacent("(", ")")), not(match("myMacro ()")));
   }

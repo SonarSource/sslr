@@ -17,7 +17,7 @@ import org.junit.Test;
 public class NotMatcherTest {
 
   @Test
-  public void testMany() {
+  public void ok() {
     assertThat(and("one", Matchers.not("two"), "three"), match("one three"));
     assertThat(and("one", Matchers.not("two"), "two"), not(match("one two")));
   }

@@ -21,7 +21,7 @@ import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
 public class ZeroToNMatcherTest  {
 
   @Test
-  public void testMany() {
+  public void ok() {
     assertThat(o2n(isFalse()), not(match("one")));
     assertThat(o2n(isTrue()), match("one two three"));
   }

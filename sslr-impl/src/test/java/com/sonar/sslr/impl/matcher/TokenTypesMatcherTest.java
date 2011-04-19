@@ -19,7 +19,7 @@ import com.sonar.sslr.impl.MockTokenType;
 public class TokenTypesMatcherTest {
 
   @Test
-  public void testIsExpectedToken() {
+  public void ok() {
     TokenTypesMatcher matcher = new TokenTypesMatcher(MockTokenType.values());
     assertTrue(matcher.isExpectedToken(new Token(MockTokenType.WORD2, "word2")));
 

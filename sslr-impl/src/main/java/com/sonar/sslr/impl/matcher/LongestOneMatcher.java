@@ -10,20 +10,34 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
-public class OrMatcher extends Matcher {
+public class LongestOneMatcher extends Matcher {
 
   private Matcher[] matchers;
 
-  public OrMatcher(Matcher... matchers) {
+  public LongestOneMatcher(Matcher... matchers) {
     this.matchers = matchers;
   }
 
   public AstNode match(ParsingState parsingState) {
+  	Matcher longestMatcher = null;
+  	int longestMatchIndex = -1;
+  	
     for (Matcher matcher : matchers) {
-      if (matcher.isMatching(parsingState) >= 0) {
-        return matcher.match(parsingState);
+    	int matcherIndex = matcher.isMatching(parsingState);
+      if (matcherIndex >= 0) {
+        /* This matcher could parse the input [as well], but for longer than the current longest matcher? */
+      	if (matcherIndex > longestMatchIndex) {
+      		/* Yes! */
+      		longestMatcher = matcher;
+      		longestMatchIndex = matcherIndex;
+      	}
       }
     }
+    
+    if (longestMatcher != null) {
+    	return longestMatcher.match(parsingState);
+    }
+    
     throw RecognitionExceptionImpl.create();
   }
 
@@ -36,11 +50,11 @@ public class OrMatcher extends Matcher {
   }
 
   public String toString() {
-    StringBuilder expr = new StringBuilder("(");
+    StringBuilder expr = new StringBuilder("longestOne(");
     for (int i = 0; i < matchers.length; i++) {
       expr.append(matchers[i]);
       if (i < matchers.length - 1) {
-        expr.append(" | ");
+        expr.append(", ");
       }
     }
     expr.append(")");

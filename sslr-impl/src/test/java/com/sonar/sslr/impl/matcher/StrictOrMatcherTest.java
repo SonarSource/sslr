@@ -31,7 +31,7 @@ public class StrictOrMatcherTest {
   }
 
   @Test
-  public void testStrictOr() {
+  public void ok() {
     assertThat(or(isFalse(), isTrue()), match("one"));
     assertThat(or(isTrue(), isFalse()), match("one"));
     assertThat(or(isFalse(), isFalse()), not(match("one")));

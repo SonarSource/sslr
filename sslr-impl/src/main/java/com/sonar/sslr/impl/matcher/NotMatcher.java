@@ -19,7 +19,7 @@ public class NotMatcher extends Matcher {
   }
 
   public AstNode match(ParsingState parsingState) {
-    if (matcher.isMatching(parsingState)) {
+    if (matcher.isMatching(parsingState) >= 0) {
       throw RecognitionExceptionImpl.create();
     } else {
       return null;
