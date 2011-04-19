@@ -103,6 +103,10 @@ public class Matchers {
   public static Matcher token(TokenType type, String value) {
   	return new MemoizerMatcher(new TokenTypeAndValueMatcher(type, value));
   }
+  
+  public static Matcher atLeastOne(Object... matchers) {
+  	return new MemoizerMatcher(new AtLeastOneMatcher(Matcher.convertToMatchers(matchers)));
+  }
 
   public static Matcher o2n(Object... objects) {
     Matcher[] matchers = Matcher.convertToMatchers(objects);
