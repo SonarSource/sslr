@@ -23,7 +23,7 @@ public class LongestOneMatcher extends Matcher {
   	int longestMatchIndex = -1;
   	
     for (Matcher matcher : matchers) {
-    	int matcherIndex = matcher.isMatching(parsingState);
+    	int matcherIndex = matcher.matchToIndex(parsingState);
       if (matcherIndex >= 0) {
         /* This matcher could parse the input [as well], but for longer than the current longest matcher? */
       	if (matcherIndex > longestMatchIndex) {

@@ -43,7 +43,7 @@ public class RuleImpl extends Matcher implements Rule {
     }
     if (recoveryRule) {
       RecognitionException recognitionException = new RecognitionExceptionImpl(parsingState);
-      if (matcher.isMatching(parsingState) >= 0) {
+      if (matcher.isMatching(parsingState)) {
         parsingState.notifyListerners(recognitionException);
       }
     }

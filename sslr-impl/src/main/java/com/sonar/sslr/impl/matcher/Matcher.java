@@ -26,7 +26,11 @@ public abstract class Matcher implements AstNodeSkippingPolicy {
     return parentRule;
   }
 
-  public int isMatching(ParsingState parsingState) {
+  public final boolean isMatching(ParsingState parsingState) {
+  	return matchToIndex(parsingState) >= 0;
+  }
+  
+  public int matchToIndex(ParsingState parsingState) {
     int indexBeforeStarting = parsingState.lexerIndex;
     boolean leftRecursionState = parsingState.hasPendingLeftRecursion();
     try {

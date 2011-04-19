@@ -18,7 +18,7 @@ class MemoizerMatcher extends Matcher {
     this.memoizedMatcher = proxiedMatcher;
   }
 
-  public int isMatching(ParsingState state) {
+  public int matchToIndex(ParsingState state) {
     if (state.hasMemoizedAst(this)) {
       return state.getMemoizedAst(this).getToIndex();
     }

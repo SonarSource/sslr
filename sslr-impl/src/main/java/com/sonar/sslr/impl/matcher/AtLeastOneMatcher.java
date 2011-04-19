@@ -25,7 +25,7 @@ public class AtLeastOneMatcher extends Matcher {
     int startIndex = parsingState.lexerIndex;
 
     for (int i = 0; i < matchers.length; i++) {
-    	if (matchers[i].isMatching(parsingState) >= 0) {
+    	if (matchers[i].isMatching(parsingState)) {
     		childNodes.add(matchers[i].match(parsingState));
     	}
     }

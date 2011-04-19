@@ -19,7 +19,7 @@ public class NextMatcher extends Matcher {
   }
 
   public AstNode match(ParsingState parsingState) {
-    if (matcher.isMatching(parsingState) >= 0) {
+    if (matcher.isMatching(parsingState)) {
       return null;
     }
     throw RecognitionExceptionImpl.create();

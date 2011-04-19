@@ -39,7 +39,7 @@ public class ExclusiveTillMatcher extends Matcher {
 
   private boolean nothingMatch(ParsingState parsingState) {
     for (Matcher matcher : matchers) {
-      if (matcher.isMatching(parsingState) >= 0) {
+      if (matcher.isMatching(parsingState)) {
         return false;
       }
     }

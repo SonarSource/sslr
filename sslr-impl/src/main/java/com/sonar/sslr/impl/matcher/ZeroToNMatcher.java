@@ -23,7 +23,7 @@ public class ZeroToNMatcher extends Matcher {
       AstNode astNode = null;
       boolean match = true;
       do {
-        match = matcher.isMatching(parsingState) >= 0;
+        match = matcher.isMatching(parsingState);
         if (match) {
           if (astNode == null) {
             astNode = new AstNode(this, "zeroToNMatcher", parsingState.peekTokenIfExists(startIndex, this));

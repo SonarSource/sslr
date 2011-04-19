@@ -18,7 +18,7 @@ public class OpMatcher extends Matcher {
   }
 
   public AstNode match(ParsingState parsingState) {
-    if (matcher.isMatching(parsingState) >= 0) {
+    if (matcher.isMatching(parsingState)) {
       return matcher.match(parsingState);
     }
     return null;

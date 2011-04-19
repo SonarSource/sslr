@@ -20,7 +20,7 @@ public class OrMatcher extends Matcher {
 
   public AstNode match(ParsingState parsingState) {
     for (Matcher matcher : matchers) {
-      if (matcher.isMatching(parsingState) >= 0) {
+      if (matcher.isMatching(parsingState)) {
         return matcher.match(parsingState);
       }
     }

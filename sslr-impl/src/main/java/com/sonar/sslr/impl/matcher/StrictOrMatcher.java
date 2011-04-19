@@ -22,7 +22,7 @@ public class StrictOrMatcher extends OrMatcher {
     Matcher matchingMatcher = null;
     int matchingMatchers = 0;
     for (Matcher matcher : matchers) {
-      if (matcher.isMatching(parsingState) >= 0) {
+      if (matcher.isMatching(parsingState)) {
         matchingMatchers++;
         matchingMatcher = matcher;
       }

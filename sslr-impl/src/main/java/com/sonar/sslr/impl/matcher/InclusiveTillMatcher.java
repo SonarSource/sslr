@@ -22,7 +22,7 @@ public class InclusiveTillMatcher extends Matcher {
   public AstNode match(ParsingState parsingState) {
     AstNode astNode = new AstNode(this, "tillMatcher", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
     StringBuilder builder = new StringBuilder();
-    while (matcher.isMatching(parsingState) < 0) {
+    while (!matcher.isMatching(parsingState)) {
       builder.append(parsingState.popToken(this).getValue());
       builder.append(" ");
     }
