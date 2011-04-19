@@ -19,12 +19,12 @@ public class AdjacentMatcherTest {
 
   @Test
   public void ok() {
-    assertThat(and("myMacro", adjacent("(", ")")), match("myMacro()"));
-    assertThat(and("myMacro", adjacent("(", ")")), not(match("myMacro ()")));
+    assertThat(and("myMacro", adjacent("(")), match("myMacro("));
+    assertThat(and("myMacro", adjacent("(")), not(match("myMacro (")));
   }
-
+ 
   @Test
   public void testToString() {
-    assertEquals("(public class MyClass)adjacent", adjacent("public", "class", "MyClass").toString());
+    assertEquals("(public)adjacent", adjacent("public").toString());
   }
 }

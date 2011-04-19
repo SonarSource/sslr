@@ -41,10 +41,6 @@ public class Matchers {
     return new MemoizerMatcher(new AdjacentMatcher(Matcher.convertToMatcher(object)));
   }
 
-  public static Matcher adjacent(Object... objects) {
-    return new MemoizerMatcher(new AdjacentMatcher(new AndMatcher(Matcher.convertToMatchers(objects))));
-  }
-
   public static Matcher opt(Object... objects) {
     return new MemoizerMatcher(new OpMatcher(new AndMatcher(Matcher.convertToMatchers(objects))));
   }
