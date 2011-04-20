@@ -12,6 +12,7 @@ import java.util.Stack;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.LeftRecursiveRule;
+import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
