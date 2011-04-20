@@ -14,6 +14,7 @@ import static org.mockito.Mockito.verify;
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -25,6 +26,7 @@ import com.sonar.sslr.impl.matcher.LeftRecursiveRuleImpl;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
+@Ignore
 public class ParserLoggerTest {
 
   private static Logger logger;

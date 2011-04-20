@@ -14,7 +14,6 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.LeftRecursiveRule;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
-import com.sonar.sslr.impl.loggers.SslrLogger;
 
 /**
  * Implementation of a Rule that support left recursion.
@@ -38,13 +37,11 @@ public class LeftRecursiveRuleImpl extends RuleImpl implements LeftRecursiveRule
       AstNode partialAstNode = partialAstNodes.get(mostLeftLexerIndex);
       parsingState.lexerIndex = partialAstNode.getToIndex();
       parsingState.stopLeftRecursion();
-      SslrLogger.hasMatchedWithLeftRecursion(this, parsingState, partialAstNode);
       return partialAstNode;
     }
 
     // Stop recursion When this rule is already in the parsing stack
     if ( !matchStartIndexes.isEmpty() && (matchStartIndexes.peek() == mostLeftLexerIndex)) {
-      SslrLogger.stopLeftRecursion(this, parsingState);
       throw RecognitionExceptionImpl.create();
     }
 

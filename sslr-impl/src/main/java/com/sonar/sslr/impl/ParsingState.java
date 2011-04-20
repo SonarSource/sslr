@@ -15,7 +15,6 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.RecognictionExceptionListener;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.loggers.SslrLogger;
 import com.sonar.sslr.impl.matcher.Matcher;
 
 public class ParsingState {
@@ -131,7 +130,6 @@ public class ParsingState {
   public AstNode getMemoizedAst(Matcher matcher) {
     if (hasMemoizedAst(matcher)) {
       AstNode astNode = astNodeMemoization[lexerIndex];
-      SslrLogger.memoizedAstUsed(matcher, this, astNode);
       lexerIndex = astNode.getToIndex();
       return astNode;
     }

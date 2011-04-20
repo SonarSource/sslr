@@ -6,9 +6,6 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.loggers.SslrLogger.hasMatched;
-import static com.sonar.sslr.impl.loggers.SslrLogger.tryToMatch;
-
 import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeSkippingPolicy;
@@ -36,7 +33,6 @@ public class RuleImpl extends Matcher implements Rule {
   }
 
   public AstNode match(ParsingState parsingState) {
-    tryToMatch(this, parsingState);
     int startIndex = parsingState.lexerIndex;
     if (matcher == null) {
       throw new IllegalStateException("The rule '" + name + "' hasn't beed defined.");
@@ -52,7 +48,6 @@ public class RuleImpl extends Matcher implements Rule {
     AstNode astNode = new AstNode(this, name, parsingState.peekTokenIfExists(startIndex, matcher));
     astNode.setAstNodeListener(listener);
     astNode.addChild(childNode);
-    hasMatched(this, parsingState, astNode);
     return astNode;
   }
 
