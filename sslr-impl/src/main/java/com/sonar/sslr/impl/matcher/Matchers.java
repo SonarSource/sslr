@@ -24,7 +24,7 @@ public class Matchers {
   }
 
   public static Matcher opt(Object object) {
-    return new MemoizerMatcher(new OpMatcher(Matcher.convertToMatcher(object)));
+    return new MemoizerMatcher(new OptMatcher(Matcher.convertToMatcher(object)));
   }
 
   /**
@@ -42,7 +42,7 @@ public class Matchers {
   }
 
   public static Matcher opt(Object... objects) {
-    return new MemoizerMatcher(new OpMatcher(new AndMatcher(Matcher.convertToMatchers(objects))));
+    return new MemoizerMatcher(new OptMatcher(new AndMatcher(Matcher.convertToMatchers(objects))));
   }
 
   public static Matcher next(Object... objects) {

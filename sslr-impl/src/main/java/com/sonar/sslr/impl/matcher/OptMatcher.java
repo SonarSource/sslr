@@ -9,9 +9,9 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 
-public class OpMatcher extends Matcher {
+public class OptMatcher extends Matcher {
 
-  public OpMatcher(Matcher matcher) {
+  public OptMatcher(Matcher matcher) {
     super(matcher);
   }
 
