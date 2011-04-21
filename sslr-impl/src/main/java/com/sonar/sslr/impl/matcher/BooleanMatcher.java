@@ -15,6 +15,8 @@ public class BooleanMatcher extends Matcher {
   private final boolean internalState;
 
   public BooleanMatcher(boolean internalState) {
+  	super();
+  	
     this.internalState = internalState;
   }
 
@@ -30,9 +32,5 @@ public class BooleanMatcher extends Matcher {
   public String toString() {
     return "" + internalState;
   }
-
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-  }
+  
 }

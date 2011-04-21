@@ -12,11 +12,9 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
 public class AdjacentMatcher extends Matcher {
-
-  private final Matcher matcher;
-
+	
   public AdjacentMatcher(Matcher matcher) {
-    this.matcher = matcher;
+  	super(matcher);
   }
 
   public AstNode match(ParsingState parsingState) {
@@ -26,7 +24,7 @@ public class AdjacentMatcher extends Matcher {
     if (nextToken.getColumn() <= previousToken.getColumn() + previousToken.getValue().length()
         && nextToken.getLine() == previousToken.getLine()) {
       AstNode node = new AstNode(this, "adjacentMatcher", nextToken);
-      node.addChild(matcher.match(parsingState));
+      node.addChild(super.children[0].match(parsingState));
       return node;
     } else {
       throw RecognitionExceptionImpl.create();
@@ -34,16 +32,11 @@ public class AdjacentMatcher extends Matcher {
   }
 
   @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-    matcher.parentRule = parentRule;
-  }
-
-  @Override
   public String toString() {
     StringBuilder expr = new StringBuilder("(");
-    expr.append(matcher);
+    expr.append(super.children[0]);
     expr.append(")adjacent");
     return expr.toString();
   }
+  
 }

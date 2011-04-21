@@ -12,16 +12,14 @@ import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
 public class StrictOrMatcher extends OrMatcher {
 
-  private Matcher[] matchers;
-
   public StrictOrMatcher(Matcher... matchers) {
-    this.matchers = matchers;
+    super(matchers);
   }
 
   public AstNode match(ParsingState parsingState) {
     Matcher matchingMatcher = null;
     int matchingMatchers = 0;
-    for (Matcher matcher : matchers) {
+    for (Matcher matcher : super.children) {
       if (matcher.isMatching(parsingState)) {
         matchingMatchers++;
         matchingMatcher = matcher;
@@ -35,23 +33,16 @@ public class StrictOrMatcher extends OrMatcher {
     throw RecognitionExceptionImpl.create();
   }
 
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-    for (Matcher matcher : matchers) {
-      matcher.setParentRule(parentRule);
-    }
-  }
-
   public String toString() {
     StringBuilder expr = new StringBuilder("(");
-    for (int i = 0; i < matchers.length; i++) {
-      expr.append(matchers[i]);
-      if (i < matchers.length - 1) {
+    for (int i = 0; i < super.children.length; i++) {
+      expr.append(super.children[i]);
+      if (i < super.children.length - 1) {
         expr.append(" | ");
       }
     }
     expr.append(")");
     return expr.toString();
   }
+  
 }

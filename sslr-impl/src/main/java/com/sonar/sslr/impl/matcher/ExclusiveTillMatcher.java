@@ -12,11 +12,8 @@ import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.ParsingState;
 
 public class ExclusiveTillMatcher extends Matcher {
-
-  private Matcher[] matchers;
-
   public ExclusiveTillMatcher(Matcher... matchers) {
-    this.matchers = matchers;
+  	super(matchers);
   }
 
   public AstNode match(ParsingState parsingState) {
@@ -38,7 +35,7 @@ public class ExclusiveTillMatcher extends Matcher {
   }
 
   private boolean nothingMatch(ParsingState parsingState) {
-    for (Matcher matcher : matchers) {
+    for (Matcher matcher : super.children) {
       if (matcher.isMatching(parsingState)) {
         return false;
       }
@@ -46,19 +43,11 @@ public class ExclusiveTillMatcher extends Matcher {
     return true;
   }
 
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-    for (Matcher matcher : matchers) {
-      matcher.setParentRule(parentRule);
-    }
-  }
-
   public String toString() {
     StringBuilder expr = new StringBuilder("(");
-    for (int i = 0; i < matchers.length; i++) {
-      expr.append(matchers[i]);
-      if (i < matchers.length - 1) {
+    for (int i = 0; i < super.children.length; i++) {
+      expr.append(super.children[i]);
+      if (i < super.children.length - 1) {
         expr.append(" | ");
       }
     }
@@ -81,4 +70,5 @@ public class ExclusiveTillMatcher extends Matcher {
     }
 
   }
+  
 }

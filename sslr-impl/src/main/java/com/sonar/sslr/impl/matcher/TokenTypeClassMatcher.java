@@ -17,11 +17,6 @@ public class TokenTypeClassMatcher extends TokenMatcher {
     this.typeClass = typeClass;
   }
 
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-  }
-
   public String toString() {
     return typeClass.getName();
   }
@@ -30,4 +25,5 @@ public class TokenTypeClassMatcher extends TokenMatcher {
   protected boolean isExpectedToken(Token token) {
     return typeClass == token.getType().getClass();
   }
+  
 }

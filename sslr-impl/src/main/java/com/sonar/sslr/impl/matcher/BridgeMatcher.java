@@ -17,6 +17,8 @@ public class BridgeMatcher extends Matcher {
   private final TokenType to;
 
   public BridgeMatcher(TokenType from, TokenType to) {
+  	super();
+  	
     this.from = from;
     this.to = to;
   }
@@ -47,9 +49,5 @@ public class BridgeMatcher extends Matcher {
   public String toString() {
     return "bridge('" + from.getName() + "' to '" + to.getName() + "')";
   }
-
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-  }
+  
 }

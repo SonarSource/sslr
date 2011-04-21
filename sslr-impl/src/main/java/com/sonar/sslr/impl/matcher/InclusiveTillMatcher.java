@@ -13,32 +13,24 @@ import com.sonar.sslr.impl.ParsingState;
 
 public class InclusiveTillMatcher extends Matcher {
 
-  private Matcher matcher;
-
   public InclusiveTillMatcher(Matcher matcher) {
-    this.matcher = matcher;
+  	super(matcher);
   }
 
   public AstNode match(ParsingState parsingState) {
     AstNode astNode = new AstNode(this, "tillMatcher", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
     StringBuilder builder = new StringBuilder();
-    while (!matcher.isMatching(parsingState)) {
+    while (!super.children[0].isMatching(parsingState)) {
       builder.append(parsingState.popToken(this).getValue());
       builder.append(" ");
     }
     astNode.addChild(new AstNode(new Token(new WordsTokenType(), builder.toString())));
-    astNode.addChild(matcher.match(parsingState));
+    astNode.addChild(super.children[0].match(parsingState));
     return astNode;
   }
 
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-    matcher.setParentRule(parentRule);
-  }
-
   public String toString() {
-    return "(" + matcher + ")till";
+    return "(" + super.children[0] + ")till";
   }
 
   static class WordsTokenType implements TokenType {
@@ -56,4 +48,5 @@ public class InclusiveTillMatcher extends Matcher {
     }
 
   }
+  
 }

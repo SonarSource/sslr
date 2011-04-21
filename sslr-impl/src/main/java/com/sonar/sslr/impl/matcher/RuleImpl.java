@@ -21,7 +21,6 @@ import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 public class RuleImpl extends Matcher implements Rule {
 
   protected String name;
-  protected Matcher matcher;
   private boolean hasSeveralParents = false;
   private AstListener listener;
   private Class adapterClass;
@@ -34,18 +33,18 @@ public class RuleImpl extends Matcher implements Rule {
 
   public AstNode match(ParsingState parsingState) {
     int startIndex = parsingState.lexerIndex;
-    if (matcher == null) {
+    if (super.children.length == 0) {
       throw new IllegalStateException("The rule '" + name + "' hasn't beed defined.");
     }
     if (recoveryRule) {
       RecognitionException recognitionException = new RecognitionExceptionImpl(parsingState);
-      if (matcher.isMatching(parsingState)) {
+      if (super.children[0].isMatching(parsingState)) {
         parsingState.notifyListerners(recognitionException);
       }
     }
-    AstNode childNode = matcher.match(parsingState);
+    AstNode childNode = super.children[0].match(parsingState);
 
-    AstNode astNode = new AstNode(this, name, parsingState.peekTokenIfExists(startIndex, matcher));
+    AstNode astNode = new AstNode(this, name, parsingState.peekTokenIfExists(startIndex, super.children[0]));
     astNode.setAstNodeListener(listener);
     astNode.addChild(childNode);
     return astNode;
@@ -62,7 +61,7 @@ public class RuleImpl extends Matcher implements Rule {
    * ${@inheritDoc}
    */
   public RuleImpl is(Object... matchers) {
-    if (matcher != null) {
+    if (super.children.length != 0) {
       throw new IllegalStateException("The rule '" + name + "' has already been defined somewhere in the grammar.");
     }
     checkIfThereIsAtLeastOneMatcher(matchers);
@@ -94,7 +93,7 @@ public class RuleImpl extends Matcher implements Rule {
   }
 
   public RuleImpl isOr(Object... matchers) {
-    if (matcher != null) {
+    if (super.children.length != 0) {
       throw new IllegalStateException("The rule '" + name + "' has already been defined somewhere in the grammar.");
     }
     checkIfThereIsAtLeastOneMatcher(matchers);
@@ -104,28 +103,28 @@ public class RuleImpl extends Matcher implements Rule {
 
   public RuleImpl or(Object... matchers) {
     checkIfThereIsAtLeastOneMatcher(matchers);
-    if (matcher == null) {
+    if (super.children.length == 0) {
       throw new IllegalStateException("The Rule.or(...) can't be called if the method Rule.is(...) hasn't been called first.");
     }
-    setMatcher(Matchers.or(matcher, Matchers.and(matchers)));
+    setMatcher(Matchers.or(super.children[0], Matchers.and(matchers)));
     return this;
   }
 
   public RuleImpl and(Object... matchers) {
     checkIfThereIsAtLeastOneMatcher(matchers);
-    if (matcher == null) {
+    if (super.children.length == 0) {
       throw new IllegalStateException("The Rule.and(...) can't be called if the method Rule.is(...) hasn't been called first.");
     }
-    setMatcher(Matchers.and(matcher, Matchers.and(matchers)));
+    setMatcher(Matchers.and(super.children[0], Matchers.and(matchers)));
     return this;
   }
 
   public RuleImpl orBefore(Object... matchers) {
     checkIfThereIsAtLeastOneMatcher(matchers);
-    if (matcher == null) {
+    if (super.children.length == 0) {
       throw new IllegalStateException("The Rule.or(...) can't be called if the method Rule.is(...) hasn't been called first.");
     }
-    setMatcher(Matchers.or(Matchers.and(matchers), matcher));
+    setMatcher(Matchers.or(Matchers.and(matchers), super.children[0]));
     return this;
   }
 
@@ -135,7 +134,7 @@ public class RuleImpl extends Matcher implements Rule {
   }
 
   protected void setMatcher(Matcher matcher) {
-    this.matcher = matcher;
+    super.children = new Matcher[]{ matcher };
     matcher.setParentRule(this);
   }
 
@@ -159,7 +158,7 @@ public class RuleImpl extends Matcher implements Rule {
   }
 
   public String toEBNFNotation() {
-    return name + " := " + matcher.toString();
+    return name + " := " + super.children[0].toString();
   }
 
   public String toString() {

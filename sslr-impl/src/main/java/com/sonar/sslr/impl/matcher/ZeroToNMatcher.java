@@ -11,10 +11,8 @@ import com.sonar.sslr.impl.ParsingState;
 
 public class ZeroToNMatcher extends Matcher {
 
-  private Matcher matcher;
-
   public ZeroToNMatcher(Matcher matcher) {
-    this.matcher = matcher;
+    super(matcher);
   }
 
   public AstNode match(ParsingState parsingState) {
@@ -23,12 +21,12 @@ public class ZeroToNMatcher extends Matcher {
       AstNode astNode = null;
       boolean match = true;
       do {
-        match = matcher.isMatching(parsingState);
+        match = super.children[0].isMatching(parsingState);
         if (match) {
           if (astNode == null) {
             astNode = new AstNode(this, "zeroToNMatcher", parsingState.peekTokenIfExists(startIndex, this));
           }
-          astNode.addChild(matcher.match(parsingState));
+          astNode.addChild(super.children[0].match(parsingState));
         }
       } while (match);
       return astNode;
@@ -37,13 +35,8 @@ public class ZeroToNMatcher extends Matcher {
     }
   }
 
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-    matcher.setParentRule(parentRule);
-  }
-
   public String toString() {
-    return "(" + matcher + ")*";
+    return "(" + super.children[0] + ")*";
   }
+  
 }

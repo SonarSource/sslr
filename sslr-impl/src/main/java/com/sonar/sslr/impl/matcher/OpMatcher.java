@@ -11,27 +11,19 @@ import com.sonar.sslr.impl.ParsingState;
 
 public class OpMatcher extends Matcher {
 
-  private Matcher matcher;
-
   public OpMatcher(Matcher matcher) {
-    this.matcher = matcher;
+    super(matcher);
   }
 
   public AstNode match(ParsingState parsingState) {
-    if (matcher.isMatching(parsingState)) {
-      return matcher.match(parsingState);
+    if (super.children[0].isMatching(parsingState)) {
+      return super.children[0].match(parsingState);
     }
     return null;
   }
 
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-    matcher.setParentRule(parentRule);
-  }
-
   public String toString() {
-    return "(" + matcher + ")?";
+    return "(" + super.children[0] + ")?";
   }
 
 }

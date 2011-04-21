@@ -19,8 +19,22 @@ import com.sonar.sslr.impl.RecognitionExceptionImpl;
 public abstract class Matcher implements AstNodeSkippingPolicy {
 
   protected RuleImpl parentRule;
+  protected Matcher[] children;
+  
+  public Matcher(Matcher... children) {
+  	this.children = children;
+  }
+  
+  public Matcher[] getChildren() {
+  	return this.children;
+  }
 
-  public abstract void setParentRule(RuleImpl parentRule);
+  public void setParentRule(RuleImpl parentRule) {
+  	this.parentRule = parentRule;
+  	for (Matcher child: this.children) {
+			child.setParentRule(parentRule);
+		}
+  }
 
   public RuleImpl getRule() {
     return parentRule;
@@ -93,4 +107,5 @@ public abstract class Matcher implements AstNodeSkippingPolicy {
       return matcher;
     }
   }
+  
 }

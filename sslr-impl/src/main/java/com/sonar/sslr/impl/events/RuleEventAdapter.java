@@ -106,12 +106,13 @@ public class RuleEventAdapter extends LeftRecursiveRuleImpl {
 			listener.exitWithMatchRule(rule, parsingState);
 			return result;
 		} catch (RecognitionExceptionImpl re) {
-			listener.exitWithoutMatchRule(rule, parsingState);
+			listener.exitWithoutMatchRule(rule, parsingState, re);
 			throw re;
 		}
 	}
 
 	public void endParsing() {
+		/* TODO: Find a less dirty solution */
 		if (rule instanceof LeftRecursiveRule) {
 			((LeftRecursiveRule) rule).endParsing();
 		}

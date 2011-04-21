@@ -12,17 +12,15 @@ import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
 public class LongestOneMatcher extends Matcher {
 
-  private Matcher[] matchers;
-
   public LongestOneMatcher(Matcher... matchers) {
-    this.matchers = matchers;
+  	super(matchers);
   }
 
   public AstNode match(ParsingState parsingState) {
   	Matcher longestMatcher = null;
   	int longestMatchIndex = -1;
   	
-    for (Matcher matcher : matchers) {
+    for (Matcher matcher : super.children) {
     	int matcherIndex = matcher.matchToIndex(parsingState);
       if (matcherIndex >= 0) {
         /* This matcher could parse the input [as well], but for longer than the current longest matcher? */
@@ -41,19 +39,11 @@ public class LongestOneMatcher extends Matcher {
     throw RecognitionExceptionImpl.create();
   }
 
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-    for (Matcher matcher : matchers) {
-      matcher.setParentRule(parentRule);
-    }
-  }
-
   public String toString() {
     StringBuilder expr = new StringBuilder("longestOne(");
-    for (int i = 0; i < matchers.length; i++) {
-      expr.append(matchers[i]);
-      if (i < matchers.length - 1) {
+    for (int i = 0; i < super.children.length; i++) {
+      expr.append(super.children[i]);
+      if (i < super.children.length - 1) {
         expr.append(", ");
       }
     }

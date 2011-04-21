@@ -5,6 +5,9 @@
  */
 package com.sonar.sslr.impl.events;
 
+import static com.sonar.sslr.api.GenericTokenType.COMMENT;
+import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.regexp;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +25,7 @@ public class IdentifierLexer extends Lexer {
 	protected ChannelDispatcher<LexerOutput> getChannelDispatcher() {
 		List<Channel> channels = new ArrayList<Channel>();
 		
+		channels.add(regexp(COMMENT, "!COMMENT!"));
 		channels.add(new IdentifierAndKeywordChannel("[a-zA-Z][a-zA-Z0-9]*", true)); /* Case sensitive */
 		channels.add(new BlackHoleChannel("[ \t\r\n]+"));
 		

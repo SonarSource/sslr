@@ -32,4 +32,5 @@ public class TokenTypeAndValueMatcher extends TokenMatcher {
   protected boolean isExpectedToken(Token token) {
     return type == token.getType() && value.equals(token.getValue());
   }
+  
 }

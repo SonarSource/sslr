@@ -13,20 +13,18 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
 public class AtLeastOneMatcher extends Matcher {
-
-  private final Matcher[] matchers;
-
+	
   public AtLeastOneMatcher(Matcher... matchers) {
-    this.matchers = matchers;
+  	super(matchers);
   }
 
   public AstNode match(ParsingState parsingState) {
   	ArrayList<AstNode> childNodes = new ArrayList<AstNode>();
     int startIndex = parsingState.lexerIndex;
 
-    for (int i = 0; i < matchers.length; i++) {
-    	if (matchers[i].isMatching(parsingState)) {
-    		childNodes.add(matchers[i].match(parsingState));
+    for (int i = 0; i < super.children.length; i++) {
+    	if (super.children[i].isMatching(parsingState)) {
+    		childNodes.add(super.children[i].match(parsingState));
     	}
     }
     
@@ -44,21 +42,14 @@ public class AtLeastOneMatcher extends Matcher {
 
   public String toString() {
     StringBuilder expr = new StringBuilder("atLeastOne(");
-    for (int i = 0; i < matchers.length; i++) {
-      expr.append(matchers[i]);
-      if (i < matchers.length - 1) {
+    for (int i = 0; i < super.children.length; i++) {
+      expr.append(super.children[i]);
+      if (i < super.children.length - 1) {
         expr.append(", ");
       }
     }
     expr.append(")");
     return expr.toString();
   }
-
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-    for (Matcher matcher : matchers) {
-      matcher.setParentRule(parentRule);
-    }
-  }
+  
 }

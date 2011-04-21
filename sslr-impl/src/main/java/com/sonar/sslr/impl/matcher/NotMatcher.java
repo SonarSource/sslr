@@ -11,29 +11,21 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
 public class NotMatcher extends Matcher {
-
-  private Matcher matcher;
-
+	
   public NotMatcher(Matcher matcher) {
-    this.matcher = matcher;
+    super(matcher);
   }
 
   public AstNode match(ParsingState parsingState) {
-    if (matcher.isMatching(parsingState)) {
+    if (super.children[0].isMatching(parsingState)) {
       throw RecognitionExceptionImpl.create();
     } else {
       return null;
     }
   }
 
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-    matcher.setParentRule(parentRule);
-  }
-
   public String toString() {
-    return "(" + matcher + ")!";
+    return "(" + super.children[0] + ")!";
   }
 
 }

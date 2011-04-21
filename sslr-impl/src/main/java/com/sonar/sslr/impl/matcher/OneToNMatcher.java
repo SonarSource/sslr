@@ -12,10 +12,8 @@ import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
 public class OneToNMatcher extends Matcher {
 
-  private Matcher matcher;
-
   public OneToNMatcher(Matcher matcher) {
-    this.matcher = matcher;
+    super(matcher);
   }
 
   public AstNode match(ParsingState parsingState) {
@@ -24,12 +22,12 @@ public class OneToNMatcher extends Matcher {
     boolean match = true;
     int loop = 0;
     do {
-      match = matcher.isMatching(parsingState);
+      match = super.children[0].isMatching(parsingState);
       if (match) {
         if (astNode == null) {
           astNode = new AstNode(this, "oneToNMatcher", parsingState.peekTokenIfExists(startIndex, this));
         }
-        astNode.addChild(matcher.match(parsingState));
+        astNode.addChild(super.children[0].match(parsingState));
         loop++;
       }
     } while (match);
@@ -39,13 +37,8 @@ public class OneToNMatcher extends Matcher {
     return astNode;
   }
 
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-    matcher.setParentRule(parentRule);
-  }
-
   public String toString() {
-    return "(" + matcher + ")+";
+    return "(" + super.children[0] + ")+";
   }
+  
 }

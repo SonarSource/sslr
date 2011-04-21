@@ -31,7 +31,7 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 	private Lexer lexer;
 	private GRAMMAR grammar;
 	private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
-	//private ParsingEventListener parsingEventListener; // TODO: WTF
+	//private ParsingEventListener parsingEventListener;
 
 	public Parser(GRAMMAR grammar, Lexer lexer,
 			List<GrammarDecorator<GRAMMAR>> decorators) {
@@ -55,15 +55,14 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 		setDecorators(decorators);
 	}
 
-	/* TODO: WTF
+	/*
 	public void activateExtendedStackTrace() {
 		setParsingEventListener(new ExtendedStackTrace());
 	}
 	
 	public void setParsingEventListener(ParsingEventListener parsingEventListener) {
 		this.parsingEventListener = parsingEventListener;
-	}
-	*/
+	}*/
 
 	public void setDecorators(List<GrammarDecorator<GRAMMAR>> decorators) {
 		for (GrammarDecorator<GRAMMAR> decorator : decorators) {
@@ -83,8 +82,8 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 			// FIXME: This is supra ugly!
 			GrammarRuleLifeCycleManager.initializeRuleFields(grammar,
 					decorator.getClass(), parsingEventListener);
-		}
-	*/
+		}*/
+
 		decorator.decorate(grammar);
 		this.rootRule = (RuleImpl) grammar.getRootRule();
 	}

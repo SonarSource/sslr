@@ -12,27 +12,19 @@ import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
 public class NextMatcher extends Matcher {
 
-  private Matcher matcher;
-
   public NextMatcher(Matcher matcher) {
-    this.matcher = matcher;
+    super(matcher);
   }
 
   public AstNode match(ParsingState parsingState) {
-    if (matcher.isMatching(parsingState)) {
+    if (super.children[0].isMatching(parsingState)) {
       return null;
     }
     throw RecognitionExceptionImpl.create();
   }
 
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-    matcher.setParentRule(parentRule);
-  }
-
   public String toString() {
-    return "(" + matcher + ")next";
+    return "(" + super.children[0] + ")next";
   }
 
 }

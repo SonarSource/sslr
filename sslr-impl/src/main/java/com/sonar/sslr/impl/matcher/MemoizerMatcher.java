@@ -12,10 +12,8 @@ import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
 class MemoizerMatcher extends Matcher {
 
-  private final Matcher memoizedMatcher;
-
   public MemoizerMatcher(Matcher proxiedMatcher) {
-    this.memoizedMatcher = proxiedMatcher;
+    super(proxiedMatcher);
   }
 
   public int matchToIndex(ParsingState state) {
@@ -24,7 +22,7 @@ class MemoizerMatcher extends Matcher {
     }
     int startingIndex = state.lexerIndex;
     try {
-      AstNode node = memoizedMatcher.match(state);
+      AstNode node = super.children[0].match(state);
       memoizeAstNode(node, startingIndex, state);
       return state.lexerIndex;
     } catch (RecognitionExceptionImpl e) {
@@ -48,19 +46,13 @@ class MemoizerMatcher extends Matcher {
       return state.getMemoizedAst(this);
     }
     int startingIndex = state.lexerIndex;
-    AstNode node = memoizedMatcher.match(state);
+    AstNode node = super.children[0].match(state);
     memoizeAstNode(node, startingIndex, state);
     return node;
   }
 
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.parentRule = parentRule;
-    memoizedMatcher.setParentRule(parentRule);
-  }
-
   public String toString() {
-    return memoizedMatcher.toString();
+    return super.children[0].toString();
   }
 
 }
