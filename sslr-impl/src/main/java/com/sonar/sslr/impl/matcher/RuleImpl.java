@@ -138,6 +138,7 @@ public class RuleImpl extends Matcher implements Rule {
     matcher.setParentRule(this);
   }
 
+  @Override
   public void setParentRule(RuleImpl parentRule) {
     if (this.parentRule != null && parentRule != this.parentRule) {
       hasSeveralParents = true;
@@ -153,6 +154,7 @@ public class RuleImpl extends Matcher implements Rule {
     return parentRule;
   }
 
+  @Override
   public RuleImpl getRule() {
     return this;
   }

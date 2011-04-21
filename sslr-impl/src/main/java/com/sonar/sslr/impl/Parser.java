@@ -31,7 +31,6 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 	private Lexer lexer;
 	private GRAMMAR grammar;
 	private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
-	//private ParsingEventListener parsingEventListener;
 
 	public Parser(GRAMMAR grammar, Lexer lexer,
 			List<GrammarDecorator<GRAMMAR>> decorators) {
@@ -54,15 +53,6 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 		this.rootRule = (RuleImpl) rootRule;
 		setDecorators(decorators);
 	}
-
-	/*
-	public void activateExtendedStackTrace() {
-		setParsingEventListener(new ExtendedStackTrace());
-	}
-	
-	public void setParsingEventListener(ParsingEventListener parsingEventListener) {
-		this.parsingEventListener = parsingEventListener;
-	}*/
 
 	public void setDecorators(List<GrammarDecorator<GRAMMAR>> decorators) {
 		for (GrammarDecorator<GRAMMAR> decorator : decorators) {
