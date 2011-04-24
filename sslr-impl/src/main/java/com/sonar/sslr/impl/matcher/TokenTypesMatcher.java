@@ -16,9 +16,9 @@ public class TokenTypesMatcher extends TokenMatcher {
 
   private final Set<TokenType> tokenTypes = new HashSet<TokenType>();
 
-  public TokenTypesMatcher(TokenType... keywords) {
+  public TokenTypesMatcher(TokenType... types) {
     super(false);
-    for (TokenType keyword : keywords) {
+    for (TokenType keyword : types) {
       this.tokenTypes.add(keyword);
     }
   }
