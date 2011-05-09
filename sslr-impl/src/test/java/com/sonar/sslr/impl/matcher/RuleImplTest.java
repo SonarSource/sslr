@@ -54,6 +54,12 @@ public class RuleImplTest {
   public void testToString() {
     assertEquals("JavaClassDefinition", javaClassDefinition.toString());
   }
+  
+  @Test
+  public void getName() {
+    assertEquals("JavaClassDefinition", javaClassDefinition.getName());
+  }
+
 
   @Test(expected = IllegalStateException.class)
   public void testEmptyIs() {

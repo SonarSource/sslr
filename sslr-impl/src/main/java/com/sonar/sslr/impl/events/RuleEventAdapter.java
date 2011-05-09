@@ -55,7 +55,7 @@ public class RuleEventAdapter extends LeftRecursiveRuleImpl {
 		return this;
 	}
 
-	public Rule setListener(AstListener listener) {
+	public RuleImpl setListener(AstListener listener) {
 		rule.setListener(listener);
 		return this;
 	}
@@ -65,12 +65,12 @@ public class RuleEventAdapter extends LeftRecursiveRuleImpl {
 		return this;
 	}
 
-	public Rule skipIf(AstNodeType policy) {
+	public RuleImpl skipIf(AstNodeType policy) {
 		rule.skipIf(policy);
 		return this;
 	}
 
-	public Rule skipIfOneChild() {
+	public RuleImpl skipIfOneChild() {
 		rule.skipIfOneChild();
 		return this;
 	}
@@ -87,7 +87,7 @@ public class RuleEventAdapter extends LeftRecursiveRuleImpl {
 		rule.recoveryRule();
 	}
 
-	public Rule plug(Class adapterClass) {
+	public RuleImpl plug(Class adapterClass) {
 		rule.plug(adapterClass);
 		return this;
 	}

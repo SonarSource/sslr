@@ -67,13 +67,6 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 	}
 
 	public void addDecorator(GrammarDecorator<GRAMMAR> decorator) {
-		/*
-		if (parsingEventListener != null) {
-			// FIXME: This is supra ugly!
-			GrammarRuleLifeCycleManager.initializeRuleFields(grammar,
-					decorator.getClass(), parsingEventListener);
-		}*/
-
 		decorator.decorate(grammar);
 		this.rootRule = (RuleImpl) grammar.getRootRule();
 	}

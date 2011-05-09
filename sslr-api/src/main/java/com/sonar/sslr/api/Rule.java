@@ -65,4 +65,10 @@ public interface Rule extends AstNodeType {
   public void recoveryRule();
 
   public Rule plug(Class adapterClass);
+  
+  /**
+   * Supporting left recursive rule requires to manage a state that must be (re)initialized before
+   * starting parsing a new source code.
+   */
+  public void endParsing();
 }

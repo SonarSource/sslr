@@ -12,10 +12,5 @@ package com.sonar.sslr.api;
  * additiveExpr.is(or(and(additiveExpr, "+", INTEGER), INTEGER)
  */
 public interface LeftRecursiveRule extends Rule {
-  
-  /**
-   * Supporting left recursive rule requires to manage a state that must be (re)initialized before
-   * starting parsing a new source code.
-   */
-  public void endParsing();
+ 
 }

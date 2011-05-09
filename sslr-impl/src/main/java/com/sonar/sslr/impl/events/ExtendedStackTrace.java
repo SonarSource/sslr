@@ -9,6 +9,7 @@ package com.sonar.sslr.impl.events;
 
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
+import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
 public class ExtendedStackTrace implements ParsingEventListener {
@@ -27,7 +28,7 @@ public class ExtendedStackTrace implements ParsingEventListener {
 	}
 
 	public void exitWithoutMatchRule(RuleImpl rule, ParsingState parsingState, RecognitionExceptionImpl re) {
-		System.out.println("exitWithoutMatchRule" + rule);
+		System.out.println("exitWithoutMatchRule" + rule + ", till " + parsingState.lexerIndex);
 		
 		/* The rule did actually not match, no progress, remove it from the longest stack trace */
 		//longestStack.pop();
@@ -41,5 +42,17 @@ public class ExtendedStackTrace implements ParsingEventListener {
 			System.out.println(rule);
 		}
 		*/
+	}
+
+	public void enterMatcher(Matcher matcher, ParsingState parsingState) {
+		// TODO Auto-generated method stub
+	}
+
+	public void enterWithMatchMatcher(Matcher matcher, ParsingState parsingState) {
+		// TODO Auto-generated method stub
+	}
+
+	public void enterWithoutMatchMatcher(Matcher matcher, ParsingState parsingState, RecognitionExceptionImpl re) {
+		// TODO Auto-generated method stub
 	}
 }

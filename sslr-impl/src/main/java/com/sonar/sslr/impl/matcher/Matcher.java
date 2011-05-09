@@ -29,6 +29,10 @@ public abstract class Matcher implements AstNodeSkippingPolicy {
   	return this.children;
   }
 
+  public void setChild(int i, Matcher child) {
+  	this.children[i] = child;
+  }
+  
   public void setParentRule(RuleImpl parentRule) {
   	this.parentRule = parentRule;
   	for (Matcher child: this.children) {

@@ -167,31 +167,40 @@ public class RuleImpl extends Matcher implements Rule {
     return name;
   }
 
-  public Rule setListener(AstListener listener) {
+  public RuleImpl setListener(AstListener listener) {
     this.listener = listener;
     return this;
   }
 
-  public Rule skipIf(AstNodeType astNodeSkipPolicy) {
+  public RuleImpl skipIf(AstNodeType astNodeSkipPolicy) {
     this.astNodeType = astNodeSkipPolicy;
     return this;
   }
 
-  public Rule skipIfOneChild() {
+  public RuleImpl skipIfOneChild() {
     this.astNodeType = new SkipFromAstIfOnlyOneChild();
     return this;
   }
 
-  public Rule plug(Class adapterClass) {
+  public RuleImpl plug(Class adapterClass) {
     this.adapterClass = adapterClass;
     return this;
   }
 
-  public Class getAdapter() {
+	public Class getAdapter() {
     return adapterClass;
+  }
+  
+  public String getName() {
+  	return name;
   }
 
   public void recoveryRule() {
     recoveryRule = true;
   }
+  
+  public void endParsing() {
+  	/* Nothing, used by left recurisve rule only so far */
+	}
+  
 }

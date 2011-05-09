@@ -17,6 +17,7 @@ import com.sonar.sslr.impl.GrammarRuleLifeCycleManager;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
+import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
 import static com.sonar.sslr.impl.matcher.Matchers.*;
@@ -46,6 +47,19 @@ public class ParsingEventListenerTest {
 			if (state == 2 && rule.toString().equals("item_list_1")) state++;
 			else failed = true;
 		}
+
+		public void enterMatcher(Matcher matcher, ParsingState parsingState) {
+			// TODO Auto-generated method stub
+		}
+
+		public void enterWithMatchMatcher(Matcher matcher, ParsingState parsingState) {
+			// TODO Auto-generated method stub
+		}
+
+		public void enterWithoutMatchMatcher(Matcher matcher, ParsingState parsingState, RecognitionExceptionImpl re) {
+			// TODO Auto-generated method stub
+		}
+		
 	};
 	
 	private ExtendedStackTrace extendedStackTrace = new ExtendedStackTrace();
@@ -63,7 +77,7 @@ public class ParsingEventListenerTest {
 	
 	private class MyTestGrammarDecorator implements GrammarDecorator<MyTestGrammar> {
 		public void decorate(MyTestGrammar t) {
-			GrammarRuleLifeCycleManager.initializeRuleFields(t, MyTestGrammar.class, extendedStackTrace);
+			GrammarRuleLifeCycleManager.initializeRuleFields(t, MyTestGrammar.class);
 			
 			t.root.is(longestOne(t.rule1, t.rule2), EOF);
 			t.rule1.is("hehe");
