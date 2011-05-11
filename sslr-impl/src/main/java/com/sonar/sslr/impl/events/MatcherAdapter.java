@@ -41,11 +41,6 @@ public class MatcherAdapter extends Matcher {
 	}
 
 	@Override
-	public int matchToIndex(ParsingState parsingState) {
-		return this.matcher.matchToIndex(parsingState);
-	}
-
-	@Override
 	public boolean hasToBeSkippedFromAst(AstNode node) {
 		return this.matcher.hasToBeSkippedFromAst(node);
 	}
@@ -66,7 +61,7 @@ public class MatcherAdapter extends Matcher {
 
 	@Override
 	public String getDefinition(boolean isRoot) {
-		return this.matcher.getDefinition(isRoot);
+		return "MatcherAdapter(" + this.matcher.getDefinition(isRoot) + ")";
 	}
 
 	@Override

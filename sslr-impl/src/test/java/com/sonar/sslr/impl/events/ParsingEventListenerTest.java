@@ -25,9 +25,7 @@ import static com.sonar.sslr.impl.matcher.Matchers.*;
 import static org.junit.Assert.*;
 
 public class ParsingEventListenerTest {
-	private int state;
-	private boolean failed;
-	
+
 	private ParsingEventListener parsingEventListener = new ParsingEventListener(){
 
 		public void enterRule(RuleImpl rule, ParsingState parsingState) {
@@ -73,7 +71,14 @@ public class ParsingEventListenerTest {
 	  public MyTestGrammarParser(MyTestGrammar g) {
 	  	super(g, g.getRootRule(), new IdentifierLexer());
 
-	    setDecorators(new MyTestGrammarDecorator(), new EventAdapterDecorator<MyTestGrammar>(parsingEventListener));
+	    setDecorators(new MyTestGrammarDecorator(), new EventAdapterDecorator<MyTestGrammar>(extendedStackTrace));
+	    
+	    System.out.println("Effective grammar:");
+	    System.out.println("------------------");
+	    System.out.println("");
+	    System.out.println(((RuleImpl)this.getGrammar().getRootRule()).getDefinition());
+	    System.out.println("");
+	    System.out.println("End of grammar");
 	  }
 	}
 	
@@ -89,12 +94,10 @@ public class ParsingEventListenerTest {
 	
 	@Test
 	public void ok() {
-		state = 0;
-		failed = false;
 		MyTestGrammarParser p = new MyTestGrammarParser(new MyTestGrammar());
 		
 		try {
-			p.parse("hehe huhu");
+			p.parse("hehe huhu haha");
 			System.out.println("*** PARSE SUCCESSFUL ***");
 		}
 		catch (Exception ex) {
@@ -103,8 +106,6 @@ public class ParsingEventListenerTest {
 		
 		System.out.println("*** STACK TRACE ***");
 		extendedStackTrace.printStackTrace();
-		
-	  //assertTrue(state == 6 && !failed);
 	}
 	
 }

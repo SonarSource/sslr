@@ -26,7 +26,7 @@ public class RuleImplAdapter extends RuleImpl {
 
 	@Override
 	public String getDefinition(boolean isRoot) {
-		return this.ruleImpl.getDefinition(isRoot);
+		return "RuleImplAdapter(" + this.ruleImpl.getDefinition(isRoot) + ")";
 	}
 
 	@Override
@@ -167,11 +167,6 @@ public class RuleImplAdapter extends RuleImpl {
 	@Override
 	public void setChild(int i, Matcher child) {
 		this.ruleImpl.setChild(i, child);
-	}
-
-	@Override
-	public int matchToIndex(ParsingState parsingState) {
-		return this.ruleImpl.matchToIndex(parsingState);
 	}
 	
 	@Override

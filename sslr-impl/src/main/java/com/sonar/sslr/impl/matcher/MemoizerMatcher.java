@@ -53,7 +53,7 @@ class MemoizerMatcher extends Matcher {
   
   @Override
   public String getDefinition(boolean isRoot) {
-  	return super.children[0].getDefinition(false);
+  	return "MemoizerMatcher(" + super.children[0].getDefinition(false) + ")";
   }
 
 }
