@@ -43,7 +43,7 @@ class HamcrestMatchMatcher extends BaseMatcher<Matcher> {
     matcher = (Matcher) obj;
     ParsingState parsingState = new ParsingState(tokens);
     try {
-      matcher.parse(parsingState);
+      matcher.match(parsingState);
       if (parsingState.hasNextToken()) {
         return false;
       }

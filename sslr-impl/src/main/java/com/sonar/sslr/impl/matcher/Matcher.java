@@ -6,13 +6,8 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import java.util.List;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeSkippingPolicy;
-import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
@@ -55,6 +50,10 @@ public abstract class Matcher implements AstNodeSkippingPolicy {
     return parentRule;
   }
 
+  public boolean hasToBeSkippedFromAst(AstNode node) {
+    return true;
+  }
+  
   public final boolean isMatching(ParsingState parsingState) {
   	return matchToIndex(parsingState) >= 0;
   }
@@ -73,22 +72,6 @@ public abstract class Matcher implements AstNodeSkippingPolicy {
     }
   }
 
-  public boolean hasToBeSkippedFromAst(AstNode node) {
-    return true;
-  }
-
   public abstract AstNode match(ParsingState parsingState);
 
-  public final AstNode parse(ParsingState parsingState) {
-    try {
-      return this.match(parsingState);
-    } catch (RecognitionExceptionImpl e) {
-      throw new RecognitionExceptionImpl(parsingState);
-    }
-  }
-
-  public final AstNode parse(List<Token> tokens) {
-    return parse(new ParsingState(tokens));
-  }
-  
 }
