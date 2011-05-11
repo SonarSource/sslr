@@ -12,7 +12,6 @@ import org.apache.commons.lang.ClassUtils;
 import com.sonar.sslr.api.LeftRecursiveRule;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.events.ParsingEventListener;
-import com.sonar.sslr.impl.events.RuleEventAdapter;
 import com.sonar.sslr.impl.matcher.LeftRecursiveRuleImpl;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 

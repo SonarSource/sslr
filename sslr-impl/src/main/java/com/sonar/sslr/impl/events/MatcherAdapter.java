@@ -7,14 +7,17 @@ package com.sonar.sslr.impl.events;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
 public class MatcherAdapter extends Matcher {
 	private Matcher matcher;
+	private ParsingEventListener parsingEventListener;
 	
-	public MatcherAdapter(Matcher matcher) {
+	public MatcherAdapter(ParsingEventListener parsingEventListener, Matcher matcher) {
 		this.matcher = matcher;
+		this.parsingEventListener = parsingEventListener;
 	}
 	
 	@Override
@@ -49,7 +52,16 @@ public class MatcherAdapter extends Matcher {
 
 	@Override
 	public AstNode match(ParsingState parsingState) {
-		return this.matcher.match(parsingState);
+		parsingEventListener.enterMatcher(matcher, parsingState);
+		
+		try {
+			AstNode astNode = this.matcher.match(parsingState);
+			parsingEventListener.exitWithMatchMatcher(matcher, parsingState, astNode);
+			return astNode;
+		} catch (RecognitionExceptionImpl re) {
+			parsingEventListener.exitWithoutMatchMatcher(matcher, parsingState, re);
+			throw re;
+		}
 	}
 
 	@Override

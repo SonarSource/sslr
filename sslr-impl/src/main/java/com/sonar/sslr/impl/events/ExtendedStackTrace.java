@@ -7,6 +7,7 @@ package com.sonar.sslr.impl.events;
 
 //import java.util.ArrayDeque;
 
+import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.matcher.Matcher;
@@ -21,7 +22,7 @@ public class ExtendedStackTrace implements ParsingEventListener {
 		//longestStack.push(rule);
 	}
 
-	public void exitWithMatchRule(RuleImpl rule, ParsingState parsingState) {
+	public void exitWithMatchRule(RuleImpl rule, ParsingState parsingState, AstNode astNode) {
 		System.out.println("exitWithMatchRule" + rule + ", till " + parsingState.lexerIndex);
 		
 		/* The rule matched, so we made some progress, keep it in the longest stack trace */
@@ -48,11 +49,11 @@ public class ExtendedStackTrace implements ParsingEventListener {
 		// TODO Auto-generated method stub
 	}
 
-	public void enterWithMatchMatcher(Matcher matcher, ParsingState parsingState) {
+	public void exitWithMatchMatcher(Matcher matcher, ParsingState parsingState, AstNode astNode) {
 		// TODO Auto-generated method stub
 	}
 
-	public void enterWithoutMatchMatcher(Matcher matcher, ParsingState parsingState, RecognitionExceptionImpl re) {
+	public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState, RecognitionExceptionImpl re) {
 		// TODO Auto-generated method stub
 	}
 }

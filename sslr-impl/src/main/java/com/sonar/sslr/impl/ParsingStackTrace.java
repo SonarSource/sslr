@@ -126,7 +126,7 @@ public class ParsingStackTrace {
       return;
     }
     stackTrace.append("  at ");
-    stackTrace.append(ruleImpl.toEBNFNotation());
+    stackTrace.append(ruleImpl.getName());
     stackTrace.append("\n");
     displayLastParentRules(ruleImpl.getParentRule(), level - 1);
   }

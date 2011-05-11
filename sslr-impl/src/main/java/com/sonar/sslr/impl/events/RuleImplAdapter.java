@@ -9,21 +9,33 @@ import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
 public class RuleImplAdapter extends RuleImpl {
 	private RuleImpl ruleImpl;
+	private ParsingEventListener parsingEventListener;
 	
-	public RuleImplAdapter(RuleImpl ruleImpl) {
+	public RuleImplAdapter(ParsingEventListener parsingEventListener, RuleImpl ruleImpl) {
 		super(ruleImpl.getName());
 		
 		this.ruleImpl = ruleImpl;
+		this.parsingEventListener = parsingEventListener;
 	}
 
 	@Override
 	public AstNode match(ParsingState parsingState) {
-		return this.ruleImpl.match(parsingState);
+		parsingEventListener.enterRule(ruleImpl, parsingState);
+		
+		try {
+			AstNode astNode = this.ruleImpl.match(parsingState);
+			parsingEventListener.exitWithMatchRule(ruleImpl, parsingState, astNode);
+			return astNode;
+		} catch (RecognitionExceptionImpl re) {
+			parsingEventListener.exitWithoutMatchRule(ruleImpl, parsingState, re);
+			throw re;
+		}
 	}
 
 	@Override
@@ -96,11 +108,6 @@ public class RuleImplAdapter extends RuleImpl {
 	@Override
 	public RuleImpl getRule() {
 		return this;
-	}
-
-	@Override
-	public String toEBNFNotation() {
-		return this.ruleImpl.toEBNFNotation();
 	}
 
 	@Override

@@ -136,7 +136,7 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 
 	public String toString() {
 		StringBuilder result = new StringBuilder();
-		result.append("Root rule is : " + rootRule.toEBNFNotation() + "\n");
+		result.append("Root rule is : " + rootRule.getName() + "\n");
 		result.append("and : " + lexerOutput.toString());
 		return result.toString();
 	}

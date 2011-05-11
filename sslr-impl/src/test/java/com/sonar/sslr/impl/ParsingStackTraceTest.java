@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sonar.sslr.api.Grammar;
@@ -21,6 +22,7 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 import com.sonar.sslr.impl.matcher.TokenValueMatcher;
 
+@Ignore
 public class ParsingStackTraceTest {
 
   private List<Token> tokens = lex("package com.test;\n" + "import java.util.*;\n" + "public abstract clas MyClass {\n"
