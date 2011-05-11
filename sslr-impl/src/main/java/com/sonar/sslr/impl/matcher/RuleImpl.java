@@ -159,12 +159,9 @@ public class RuleImpl extends Matcher implements Rule {
     return this;
   }
 
-  public String toEBNFNotation() {
-    return name + " := " + super.children[0].toString();
-  }
-
-  public String toString() {
-    return name;
+  @Override
+  public String getDefinition(boolean isRoot) {
+    return (isRoot) ? name + ".is(" + super.children[0].getDefinition(false) + ")" : name;
   }
 
   public RuleImpl setListener(AstListener listener) {

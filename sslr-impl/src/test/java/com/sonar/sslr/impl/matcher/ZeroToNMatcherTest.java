@@ -27,7 +27,8 @@ public class ZeroToNMatcherTest  {
   }
 
   @Test
-  public void testToString() {
-    assertEquals("(public void class)*", o2n("public", "void", "class").toString());
+  public void testGetDefinition() {
+  	assertEquals("o2n(\"public\")", o2n("public").getDefinition());
+    assertEquals("o2n(and(\"public\", \"void\", \"class\"))", o2n("public", "void", "class").getDefinition());
   }
 }

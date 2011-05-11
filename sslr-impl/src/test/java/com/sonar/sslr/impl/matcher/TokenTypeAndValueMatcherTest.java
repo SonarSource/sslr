@@ -29,8 +29,8 @@ public class TokenTypeAndValueMatcherTest {
   }
 
   @Test
-  public void testToString() {
+  public void testGetDefinition() {
   	TokenTypeAndValueMatcher matcher = new TokenTypeAndValueMatcher(MockTokenType.WORD, "print");
-    assertEquals("TokenTypeValueMatcher(WORD, print)", matcher.toString());
+    assertEquals("token(WORD, \"print\")", matcher.getDefinition());
   }
 }

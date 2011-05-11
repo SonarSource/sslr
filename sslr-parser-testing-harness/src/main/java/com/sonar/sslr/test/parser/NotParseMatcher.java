@@ -27,9 +27,8 @@ class NotParseMatcher extends BaseMatcher<Parser> {
       return false;
     }
     Parser parser = (Parser) obj;
-    if ( !parser.getRootRule().toEBNFNotation().contains(" EOF ")) {
-      parser.getRootRule().and(opt(GenericTokenType.EOF));
-    }
+    parser.getRootRule().and(opt(GenericTokenType.EOF));
+
     try {
       parser.parse(sourceCode);
     } catch (RecognitionExceptionImpl e) {

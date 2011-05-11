@@ -6,6 +6,7 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -39,6 +40,11 @@ public class TokenTypesMatcherTest {
     };
 
     assertFalse(matcher.isExpectedToken(new Token(dummyTokenType, "word2")));
+  }
+  
+  @Test
+  public void testGetDefinition() {
+  	assertEquals("isOneOfThem(WORD, WORD1, WORD2)", new TokenTypesMatcher(MockTokenType.values()).getDefinition());
   }
 
 }

@@ -46,13 +46,9 @@ public class RuleImplTest {
   }
 
   @Test
-  public void testEBNFNotation() {
-    assertEquals("JavaClassDefinition := public (class | interface) (implements WORD (, WORD)*)?", javaClassDefinition.toEBNFNotation());
-  }
-
-  @Test
-  public void testToString() {
-    assertEquals("JavaClassDefinition", javaClassDefinition.toString());
+  public void testGetDefinition() {
+    assertEquals("JavaClassDefinition.is(and(\"public\", or(\"class\", \"interface\"), opt(and(\"implements\", WORD, o2n(and(\",\", WORD))))))", javaClassDefinition.getDefinition());
+    assertEquals("JavaClassDefinition", javaClassDefinition.getDefinition(false));
   }
   
   @Test
@@ -102,44 +98,44 @@ public class RuleImplTest {
   @Test
   public void testIsOr() {
     RuleImpl myRule = new RuleImpl("MyRule");
-    myRule.is("option1");
-    assertThat(myRule.toEBNFNotation(), is("MyRule := option1"));
+    myRule.isOr("option1", "option2");
+    assertThat(myRule.getDefinition(), is("MyRule.is(or(\"option1\", \"option2\"))"));
   }
 
   @Test
   public void testIs() {
     RuleImpl myRule = new RuleImpl("MyRule");
     myRule.is("option1");
-    assertThat(myRule.toEBNFNotation(), is("MyRule := option1"));
+    assertThat(myRule.getDefinition(), is("MyRule.is(\"option1\")"));
   }
 
   @Test
   public void testOverride() {
     RuleImpl myRule = new RuleImpl("MyRule");
     myRule.is("option1");
-    assertThat(myRule.toEBNFNotation(), is("MyRule := option1"));
+    assertThat(myRule.getDefinition(), is("MyRule.is(\"option1\")"));
     myRule.override("option2");
-    assertThat(myRule.toEBNFNotation(), is("MyRule := option2"));
+    assertThat(myRule.getDefinition(), is("MyRule.is(\"option2\")"));
   }
 
   @Test
   public void testOr() {
     RuleImpl myRule = new RuleImpl("MyRule");
     myRule.is("option1");
-    assertThat(myRule.toEBNFNotation(), is("MyRule := option1"));
+    assertThat(myRule.getDefinition(), is("MyRule.is(\"option1\")"));
     myRule.or("option2");
-    assertThat(myRule.toEBNFNotation(), is("MyRule := (option1 | option2)"));
+    assertThat(myRule.getDefinition(), is("MyRule.is(or(\"option1\", \"option2\"))"));
     myRule.or("option3", "option4");
-    assertThat(myRule.toEBNFNotation(), is("MyRule := ((option1 | option2) | option3 option4)"));
+    assertThat(myRule.getDefinition(), is("MyRule.is(or(or(\"option1\", \"option2\"), and(\"option3\", \"option4\")))"));
   }
 
   @Test
   public void testOrBefore() {
     RuleImpl myRule = new RuleImpl("MyRule");
     myRule.is("option1");
-    assertThat(myRule.toEBNFNotation(), is("MyRule := option1"));
+    assertThat(myRule.getDefinition(), is("MyRule.is(\"option1\")"));
     myRule.orBefore("option2");
-    assertThat(myRule.toEBNFNotation(), is("MyRule := (option2 | option1)"));
+    assertThat(myRule.getDefinition(), is("MyRule.is(or(\"option2\", \"option1\"))"));
   }
 
   @Test

@@ -71,7 +71,6 @@ public class ParsingStateTest {
     state.popToken(new RuleImpl("Dummy1"));
     state.peekToken(new RuleImpl("Dummy2"));
     assertEquals("public", state.getOutpostMatcherToken().getValue());
-    assertEquals("Dummy2", state.getOutpostMatcher().toString());
   }
 
   @Test
@@ -79,7 +78,6 @@ public class ParsingStateTest {
     state.popToken(new RuleImpl("Dummy1"));
     state.popToken(new RuleImpl("Dummy2"));
     assertEquals("public", state.getOutpostMatcherToken().getValue());
-    assertEquals("Dummy2", state.getOutpostMatcher().toString());
   }
 
   @Test

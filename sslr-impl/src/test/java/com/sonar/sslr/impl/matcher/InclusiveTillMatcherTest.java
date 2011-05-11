@@ -23,7 +23,7 @@ public class InclusiveTillMatcherTest {
   }
 
   @Test
-  public void testToString() {
-    assertEquals("(public)till", till("public").toString());
+  public void testGetDefinition() {
+    assertEquals("till(\"public\")", till("public").getDefinition());
   }
 }

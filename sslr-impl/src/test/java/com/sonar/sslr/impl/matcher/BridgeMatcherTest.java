@@ -47,8 +47,8 @@ public class BridgeMatcherTest {
   }
 
   @Test
-  public void testToString() {
-    assertEquals("bridge('LEFT' to 'RIGHT')", bridge(LEFT, RIGHT).toString());
+  public void testGetDefinition() {
+    assertEquals("bridge(LEFT, RIGHT)", bridge(LEFT, RIGHT).getDefinition());
   }
 
   private static List<Token> createTokens(TokenType... types) {

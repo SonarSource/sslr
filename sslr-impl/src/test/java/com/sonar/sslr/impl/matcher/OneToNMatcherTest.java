@@ -25,7 +25,8 @@ public class OneToNMatcherTest {
   }
 
   @Test
-  public void testToString() {
-    assertEquals("(public void class)+", one2n("public", "void", "class").toString());
+  public void testGetDefinition() {
+  	assertEquals("one2n(\"public\")", one2n("public").getDefinition());
+    assertEquals("one2n(and(\"public\", \"void\", \"class\"))", one2n("public", "void", "class").getDefinition());
   }
 }

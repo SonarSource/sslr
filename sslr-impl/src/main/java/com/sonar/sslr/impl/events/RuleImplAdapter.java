@@ -25,6 +25,11 @@ public class RuleImplAdapter extends RuleImpl {
 	}
 
 	@Override
+	public String getDefinition(boolean isRoot) {
+		return this.ruleImpl.getDefinition(isRoot);
+	}
+
+	@Override
 	public AstNode match(ParsingState parsingState) {
 		parsingEventListener.enterRule(ruleImpl, parsingState);
 		

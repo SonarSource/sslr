@@ -28,9 +28,10 @@ public class BooleanMatcher extends Matcher {
       throw RecognitionExceptionImpl.create();
     }
   }
-
-  public String toString() {
-    return "" + internalState;
-  }
   
+  @Override
+  public String getDefinition(boolean isRoot) {
+  	return (internalState) ? "isTrue()" : "isFalse()";
+  }
+
 }

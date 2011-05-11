@@ -22,9 +22,10 @@ public class NextMatcher extends Matcher {
     }
     throw RecognitionExceptionImpl.create();
   }
-
-  public String toString() {
-    return "(" + super.children[0] + ")next";
+  
+  @Override
+  public String getDefinition(boolean isRoot) {
+  	return "next(" + super.children[0].getDefinition(false) + ")";
   }
 
 }

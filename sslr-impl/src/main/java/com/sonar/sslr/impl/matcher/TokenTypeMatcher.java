@@ -21,9 +21,10 @@ public class TokenTypeMatcher extends TokenMatcher {
     super(hasToBeSkippedFromAst);
     this.type = type;
   }
-
-  public String toString() {
-    return type.getName();
+  
+  @Override
+  public String getDefinition(boolean isRoot) {
+  	return type.getName();
   }
 
   @Override

@@ -22,7 +22,7 @@ public class AnyTokenButNotMatcherTest {
   }
 
   @Test
-  public void testToString() {
-    assertEquals("(implements)!", Matchers.anyTokenButNot("implements").toString());
+  public void testGetDefinition() {
+    assertEquals("anyTokenButNot(\"implements\")", Matchers.anyTokenButNot("implements").getDefinition());
   }
 }

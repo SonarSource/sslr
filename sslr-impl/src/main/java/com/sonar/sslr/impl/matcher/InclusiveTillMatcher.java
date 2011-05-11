@@ -28,9 +28,10 @@ public class InclusiveTillMatcher extends Matcher {
     astNode.addChild(super.children[0].match(parsingState));
     return astNode;
   }
-
-  public String toString() {
-    return "(" + super.children[0] + ")till";
+  
+  @Override
+  public String getDefinition(boolean isRoot) {
+  	return "till(" + super.children[0].getDefinition(false) + ")";
   }
 
   static class WordsTokenType implements TokenType {

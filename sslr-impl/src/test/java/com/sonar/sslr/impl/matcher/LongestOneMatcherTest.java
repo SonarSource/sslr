@@ -27,7 +27,7 @@ public class LongestOneMatcherTest {
   }
 
   @Test
-  public void testToString() {
-    assertEquals("longestOne(extends, implements)", longestOne("extends", "implements").toString());
+  public void testGetDefinition() {
+  	assertEquals("longestOne(\"hehe\", \"huhu\")", longestOne("hehe", "huhu").getDefinition());
   }
 }

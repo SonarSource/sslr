@@ -6,6 +6,7 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.TokenType;
 
 /**
@@ -20,7 +21,7 @@ public class Matchers {
    * Syntactic predicate to check that the next tokens don't match an element.
    */
   public static Matcher not(Object element) {
-    return new MemoizerMatcher(new NotMatcher(Matcher.convertToMatcher(element)));
+    return new MemoizerMatcher(new NotMatcher(convertToMatcher(element)));
   }
 
   /**
@@ -35,7 +36,7 @@ public class Matchers {
    * Without any space between previous_element and element
    */
   public static Matcher adjacent(Object element) {
-    return new MemoizerMatcher(new AdjacentMatcher(Matcher.convertToMatcher(element)));
+    return new MemoizerMatcher(new AdjacentMatcher(convertToMatcher(element)));
   }
 
   /**
@@ -51,16 +52,19 @@ public class Matchers {
    */
   public static Matcher opt(Object... elements) {
     if (elements.length == 1) {
-      return new MemoizerMatcher(new OptMatcher(Matcher.convertToMatcher(elements[0])));
+      return new MemoizerMatcher(new OptMatcher(convertToMatcher(elements[0])));
     }
-    return new MemoizerMatcher(new OptMatcher(new AndMatcher(Matcher.convertToMatchers(elements))));
+    return new MemoizerMatcher(new OptMatcher(new AndMatcher(convertToMatchers(elements))));
   }
 
   /**
    * Syntactic predicate to check that the next tokens match some elements.
    */
   public static Matcher next(Object... elements) {
-    return new MemoizerMatcher(new NextMatcher(new AndMatcher(Matcher.convertToMatchers(elements))));
+  	if (elements.length == 1) {
+  		return new MemoizerMatcher(new NextMatcher(convertToMatcher(elements[0])));
+    }
+    return new MemoizerMatcher(new NextMatcher(new AndMatcher(convertToMatchers(elements))));
   }
 
   /**
@@ -79,14 +83,14 @@ public class Matchers {
    * </pre>
    */
   public static Matcher or(Object... elements) {
-    return new MemoizerMatcher(new OrMatcher(Matcher.convertToMatchers(elements)));
+    return new MemoizerMatcher(new OrMatcher(convertToMatchers(elements)));
   }
 
   /**
    * Consume the next token if and only if the element doesn't match
    */
   public static Matcher anyTokenButNot(Object element) {
-    return new MemoizerMatcher(new AnyTokenButNotMatcher(Matcher.convertToMatcher(element)));
+    return new MemoizerMatcher(new AnyTokenButNotMatcher(convertToMatcher(element)));
   }
 
   /**
@@ -107,9 +111,9 @@ public class Matchers {
    */
   public static Matcher and(Object... elements) {
     if (elements.length == 1) {
-      return new MemoizerMatcher(Matcher.convertToMatcher(elements[0]));
+      return new MemoizerMatcher(convertToMatcher(elements[0]));
     }
-    return new MemoizerMatcher(new AndMatcher(Matcher.convertToMatchers(elements)));
+    return new MemoizerMatcher(new AndMatcher(convertToMatchers(elements)));
   }
 
   /**
@@ -156,7 +160,7 @@ public class Matchers {
    * </pre>
    */
   public static Matcher till(Object element) {
-    return new MemoizerMatcher(new InclusiveTillMatcher(Matcher.convertToMatcher(element)));
+    return new MemoizerMatcher(new InclusiveTillMatcher(convertToMatcher(element)));
   }
 
   /**
@@ -172,7 +176,7 @@ public class Matchers {
    * </pre>
    */
   public static Matcher exclusiveTill(Object... elements) {
-    return new MemoizerMatcher(new ExclusiveTillMatcher(Matcher.convertToMatchers(elements)));
+    return new MemoizerMatcher(new ExclusiveTillMatcher(convertToMatchers(elements)));
   }
 
   /**
@@ -194,7 +198,7 @@ public class Matchers {
    * </pre>
    */
   public static Matcher atLeastOne(Object... elements) {
-    return new MemoizerMatcher(new AtLeastOneMatcher(Matcher.convertToMatchers(elements)));
+    return new MemoizerMatcher(new AtLeastOneMatcher(convertToMatchers(elements)));
   }
 
   /**
@@ -213,7 +217,7 @@ public class Matchers {
    * </pre>
    */
   public static Matcher longestOne(Object... elements) {
-    return new MemoizerMatcher(new LongestOneMatcher(Matcher.convertToMatchers(elements)));
+    return new MemoizerMatcher(new LongestOneMatcher(convertToMatchers(elements)));
   }
 
   /**
@@ -230,9 +234,11 @@ public class Matchers {
    * </pre>
    */
   public static Matcher o2n(Object... objects) {
-    Matcher[] matchers = Matcher.convertToMatchers(objects);
+    Matcher[] matchers = convertToMatchers(objects);
     if (matchers.length == 0) {
       throw new IllegalStateException("You must define at least one matcher.");
+    }  else if (matchers.length == 1) {
+    	return new MemoizerMatcher(new ZeroToNMatcher(matchers[0]));
     } else {
       return new MemoizerMatcher(new ZeroToNMatcher(new AndMatcher(matchers)));
     }
@@ -250,11 +256,46 @@ public class Matchers {
    * </pre>
    */
   public static Matcher one2n(Object... elements) {
-    Matcher[] matchers = Matcher.convertToMatchers(elements);
+    Matcher[] matchers = convertToMatchers(elements);
     if (matchers.length == 0) {
       throw new IllegalStateException("You must define at least one matcher.");
+    }  else if (matchers.length == 1) {
+    	return new MemoizerMatcher(new OneToNMatcher(matchers[0]));
     } else {
       return new MemoizerMatcher(new OneToNMatcher(new AndMatcher(matchers)));
     }
   }
+  
+  protected static final Matcher[] convertToMatchers(Object[] objects) {
+    Matcher[] matchers = new Matcher[objects.length];
+    for (int i = 0; i < matchers.length; i++) {
+      matchers[i] = convertToMatcher(objects[i]);
+    }
+    return matchers;
+  }
+
+  @SuppressWarnings("rawtypes")
+  protected static final Matcher convertToMatcher(Object object) {
+    Matcher matcher;
+    if (object instanceof String) {
+      matcher = new TokenValueMatcher((String) object);
+    } else if (object instanceof TokenType) {
+      TokenType tokenType = (TokenType) object;
+      matcher = new TokenTypeMatcher(tokenType, tokenType.hasToBeSkippedFromAst(null));
+    } else if (object instanceof Class) {
+      matcher = new TokenTypeClassMatcher((Class) object);
+    } else {
+      try {
+        matcher = (Matcher) object;
+      } catch (ClassCastException e) {
+        throw new IllegalStateException("The matcher object can't be anything else than a Matcher, String or TokenType. Object = " + object);
+      }
+    }
+    if (matcher instanceof Rule) {
+      return new MemoizerMatcher(matcher);
+    } else {
+      return matcher;
+    }
+  }
+  
 }

@@ -26,7 +26,7 @@ public class AndMatcherTest {
   }
 
   @Test
-  public void testToString() {
-    assertEquals("public class MyClass", and("public", "class", "MyClass").toString());
+  public void testGetDefinition() {
+    assertEquals("and(\"public\", \"class\", \"MyClass\")", and("public", "class", "MyClass").getDefinition());
   }
 }

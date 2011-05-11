@@ -28,7 +28,7 @@ public class AtLeastOneMatcherTest {
   }
 
   @Test
-  public void testToString() {
-    assertEquals("atLeastOne(public, class, MyClass)", atLeastOne("public", "class", "MyClass").toString());
+  public void testGetDefinition() {
+    assertEquals("atLeastOne(\"public\", \"class\", \"MyClass\")", atLeastOne("public", "class", "MyClass").getDefinition());
   }
 }

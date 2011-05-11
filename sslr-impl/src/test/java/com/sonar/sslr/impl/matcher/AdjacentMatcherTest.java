@@ -24,7 +24,7 @@ public class AdjacentMatcherTest {
   }
  
   @Test
-  public void testToString() {
-    assertEquals("(public)adjacent", adjacent("public").toString());
+  public void testGetDefinition() {
+    assertEquals("adjacent(\"public\")", adjacent("public").getDefinition());
   }
 }

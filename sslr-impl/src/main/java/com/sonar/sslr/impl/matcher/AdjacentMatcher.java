@@ -30,13 +30,10 @@ public class AdjacentMatcher extends Matcher {
       throw RecognitionExceptionImpl.create();
     }
   }
-
+  
   @Override
-  public String toString() {
-    StringBuilder expr = new StringBuilder("(");
-    expr.append(super.children[0]);
-    expr.append(")adjacent");
-    return expr.toString();
+  public String getDefinition(boolean isRoot) {
+  	return "adjacent(" + super.children[0].getDefinition(false) + ")";
   }
   
 }

@@ -16,9 +16,10 @@ public class TokenTypeClassMatcher extends TokenMatcher {
     super(false);
     this.typeClass = typeClass;
   }
-
-  public String toString() {
-    return typeClass.getName();
+  
+  @Override
+  public String getDefinition(boolean isRoot) {
+  	return typeClass.getName() + ".class";
   }
 
   @Override

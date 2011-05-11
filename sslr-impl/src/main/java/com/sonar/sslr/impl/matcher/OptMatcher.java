@@ -21,9 +21,10 @@ public class OptMatcher extends Matcher {
     }
     return null;
   }
-
-  public String toString() {
-    return "(" + super.children[0] + ")?";
+  
+  @Override
+  public String getDefinition(boolean isRoot) {
+  	return "opt(" + super.children[0].getDefinition(false) + ")";
   }
 
 }

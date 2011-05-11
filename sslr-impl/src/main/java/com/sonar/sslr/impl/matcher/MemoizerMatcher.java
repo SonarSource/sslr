@@ -50,9 +50,10 @@ class MemoizerMatcher extends Matcher {
     memoizeAstNode(node, startingIndex, state);
     return node;
   }
-
-  public String toString() {
-    return super.children[0].toString();
+  
+  @Override
+  public String getDefinition(boolean isRoot) {
+  	return super.children[0].getDefinition(false);
   }
 
 }

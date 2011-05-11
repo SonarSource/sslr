@@ -8,6 +8,7 @@ package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -31,5 +32,10 @@ public class TokenTypeClassMatcherTest {
   public void testThroughMatchers() {
     assertThat(Matchers.and(GenericTokenType.class), match("word"));
     assertThat(Matchers.and(MockTokenType.class), not(match("word")));
+  }
+  
+  @Test
+  public void testGetDefinition() {
+  	assertEquals("com.sonar.sslr.api.GenericTokenType.class", new TokenTypeClassMatcher(GenericTokenType.class).getDefinition());
   }
 }

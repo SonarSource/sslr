@@ -25,7 +25,8 @@ public class OptMatcherTest {
   }
 
   @Test
-  public void testToString() {
-    assertEquals("(implements)?", Matchers.opt("implements").toString());
+  public void testGetDefinition() {
+    assertEquals("opt(\"implements\")", Matchers.opt("implements").getDefinition());
+    assertEquals("opt(and(\"implements\", \"b\"))", Matchers.opt("implements", "b").getDefinition());
   }
 }

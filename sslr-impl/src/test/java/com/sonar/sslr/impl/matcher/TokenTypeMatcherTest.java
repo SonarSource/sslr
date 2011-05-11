@@ -28,8 +28,8 @@ public class TokenTypeMatcherTest {
   }
 
   @Test
-  public void testToString() {
+  public void testGetDefinition() {
     TokenTypeMatcher matcher = new TokenTypeMatcher(MockTokenType.WORD);
-    assertEquals("WORD", matcher.toString());
+    assertEquals("WORD", matcher.getDefinition());
   }
 }

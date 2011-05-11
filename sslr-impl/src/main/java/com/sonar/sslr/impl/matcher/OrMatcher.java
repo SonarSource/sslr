@@ -24,13 +24,14 @@ public class OrMatcher extends Matcher {
     }
     throw RecognitionExceptionImpl.create();
   }
-
-  public String toString() {
-    StringBuilder expr = new StringBuilder("(");
+  
+  @Override
+  public String getDefinition(boolean isRoot) {
+    StringBuilder expr = new StringBuilder("or(");
     for (int i = 0; i < super.children.length; i++) {
-      expr.append(super.children[i]);
+      expr.append(super.children[i].getDefinition(false));
       if (i < super.children.length - 1) {
-        expr.append(" | ");
+        expr.append(", ");
       }
     }
     expr.append(")");

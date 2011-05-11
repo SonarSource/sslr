@@ -20,9 +20,10 @@ public class TokenValueMatcher extends TokenMatcher {
     super(hasToBeSkippedFromAst);
     this.tokenValue = tokenValue;
   }
-
-  public String toString() {
-    return tokenValue;
+  
+  @Override
+  public String getDefinition(boolean isRoot) {
+  	return "\"" + tokenValue.replace("\"", "\\\"") + "\"";
   }
 
   @Override

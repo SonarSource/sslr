@@ -65,6 +65,11 @@ public class MatcherAdapter extends Matcher {
 	}
 
 	@Override
+	public String getDefinition(boolean isRoot) {
+		return this.matcher.getDefinition(isRoot);
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		return this.matcher.equals(obj);
 	}

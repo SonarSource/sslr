@@ -23,9 +23,10 @@ public class AnyTokenButNotMatcher extends Matcher {
       return new AstNode(parsingState.popToken(this));
     }
   }
-
-  public String toString() {
-    return "(" + super.children[0] + ")!";
+  
+  @Override
+  public String getDefinition(boolean isRoot) {
+  	return "anyTokenButNot(" + super.children[0].getDefinition(false) + ")";
   }
   
 }

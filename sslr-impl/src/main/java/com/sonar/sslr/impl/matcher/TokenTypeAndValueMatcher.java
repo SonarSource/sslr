@@ -24,8 +24,9 @@ public class TokenTypeAndValueMatcher extends TokenMatcher {
     this.value = value;
   }
   
-  public String toString() {
-    return "TokenTypeValueMatcher(" + type.getName() + ", " + value + ")";
+  @Override
+  public String getDefinition(boolean isRoot) {
+  	return "token(" + type.getName() + ", \"" + value.replace("\"", "\\\"") + "\")";
   }
 
   @Override

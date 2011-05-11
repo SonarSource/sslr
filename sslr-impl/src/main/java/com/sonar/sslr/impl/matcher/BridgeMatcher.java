@@ -44,10 +44,10 @@ public class BridgeMatcher extends Matcher {
       throw RecognitionExceptionImpl.create();
     }
   }
-
-  @Override
-  public String toString() {
-    return "bridge('" + from.getName() + "' to '" + to.getName() + "')";
-  }
   
+  @Override
+  public String getDefinition(boolean isRoot) {
+  	return "bridge(" + from.getName() + ", " + to.getName() + ")";
+  }
+
 }

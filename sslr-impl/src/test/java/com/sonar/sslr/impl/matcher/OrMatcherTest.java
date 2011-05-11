@@ -26,7 +26,7 @@ public class OrMatcherTest {
   }
 
   @Test
-  public void testToString() {
-    assertEquals("(extends | implements)", or("extends", "implements").toString());
+  public void testGetDefinition() {
+    assertEquals("or(\"extends\", \"implements\")", or("extends", "implements").getDefinition());
   }
 }

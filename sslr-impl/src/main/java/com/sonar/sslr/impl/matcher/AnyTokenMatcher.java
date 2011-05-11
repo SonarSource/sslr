@@ -19,8 +19,9 @@ public class AnyTokenMatcher extends TokenMatcher {
     return true;
   }
   
-  public String toString() {
-    return "anyTokenMatcher()";
+  @Override
+  public String getDefinition(boolean isRoot) {
+  	return "anyToken()";
   }
 
 }

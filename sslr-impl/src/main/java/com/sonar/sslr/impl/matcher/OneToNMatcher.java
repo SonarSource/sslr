@@ -36,9 +36,10 @@ public class OneToNMatcher extends Matcher {
     }
     return astNode;
   }
-
-  public String toString() {
-    return "(" + super.children[0] + ")+";
-  }
   
+  @Override
+  public String getDefinition(boolean isRoot) {
+  	return "one2n(" + super.children[0].getDefinition(false) + ")";
+  }
+
 }

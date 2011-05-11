@@ -25,9 +25,9 @@ public class TokenValueMatcherTest {
   }
 
   @Test
-  public void testToString() {
+  public void testGetDefinition() {
     TokenValueMatcher matcher = new TokenValueMatcher("print");
-    assertEquals("print", matcher.toString());
+    assertEquals("\"print\"", matcher.getDefinition());
   }
 
 }

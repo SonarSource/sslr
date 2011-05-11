@@ -34,9 +34,10 @@ public class ZeroToNMatcher extends Matcher {
       return null;
     }
   }
-
-  public String toString() {
-    return "(" + super.children[0] + ")*";
+  
+  @Override
+  public String getDefinition(boolean isRoot) {
+  	return "o2n(" + super.children[0].getDefinition(false) + ")";
   }
   
 }

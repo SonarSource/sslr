@@ -38,11 +38,12 @@ public class LongestOneMatcher extends Matcher {
     
     throw RecognitionExceptionImpl.create();
   }
-
-  public String toString() {
-    StringBuilder expr = new StringBuilder("longestOne(");
+  
+  @Override
+  public String getDefinition(boolean isRoot) {
+  	StringBuilder expr = new StringBuilder("longestOne(");
     for (int i = 0; i < super.children.length; i++) {
-      expr.append(super.children[i]);
+      expr.append(super.children[i].getDefinition(false));
       if (i < super.children.length - 1) {
         expr.append(", ");
       }

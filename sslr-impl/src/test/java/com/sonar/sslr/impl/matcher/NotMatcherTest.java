@@ -23,7 +23,7 @@ public class NotMatcherTest {
   }
 
   @Test
-  public void testToString() {
-    assertEquals("(implements)!", Matchers.not("implements").toString());
+  public void testGetDefinition() {
+    assertEquals("not(\"implements\")", Matchers.not("implements").getDefinition());
   }
 }

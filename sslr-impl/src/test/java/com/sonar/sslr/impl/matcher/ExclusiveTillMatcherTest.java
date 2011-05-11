@@ -23,7 +23,7 @@ public class ExclusiveTillMatcherTest {
   }
 
   @Test
-  public void testToString() {
-    assertEquals("(public | private)exclusiveTill", exclusiveTill("public", "private").toString());
+  public void testGetDefinition() {
+    assertEquals("exclusiveTill(\"public\", \"private\")", exclusiveTill("public", "private").getDefinition());
   }
 }

@@ -20,7 +20,6 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
 class HamcrestMatchMatcher extends BaseMatcher<Matcher> {
-
   private final List<Token> tokens;
   private String parsingStackTrace;
   private Matcher matcher;

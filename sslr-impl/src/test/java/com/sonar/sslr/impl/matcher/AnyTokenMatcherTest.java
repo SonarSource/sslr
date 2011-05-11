@@ -25,4 +25,9 @@ public class AnyTokenMatcherTest {
     node = matcher.match(new ParsingState(lex(".")));
     assertEquals(".", node.getTokenValue());
   }
+  
+  @Test
+  public void testGetDefinition() {
+  	assertEquals("anyToken()", new AnyTokenMatcher().getDefinition());
+  }
 }

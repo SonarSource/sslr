@@ -24,7 +24,8 @@ public class NextMatcherTest {
   }
 
   @Test
-  public void testToString() {
-    assertEquals("(extends implements)next", next("extends", "implements").toString());
+  public void testGetDefinition() {
+  	assertEquals("next(\"extends\")", next("extends").getDefinition());
+    assertEquals("next(and(\"extends\", \"implements\"))", next("extends", "implements").getDefinition());
   }
 }

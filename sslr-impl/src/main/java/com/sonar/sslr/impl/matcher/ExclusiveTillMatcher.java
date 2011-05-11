@@ -42,16 +42,17 @@ public class ExclusiveTillMatcher extends Matcher {
     }
     return true;
   }
-
-  public String toString() {
-    StringBuilder expr = new StringBuilder("(");
+  
+  @Override
+  public String getDefinition(boolean isRoot) {
+  	StringBuilder expr = new StringBuilder("exclusiveTill(");
     for (int i = 0; i < super.children.length; i++) {
-      expr.append(super.children[i]);
+      expr.append(super.children[i].getDefinition(false));
       if (i < super.children.length - 1) {
-        expr.append(" | ");
+        expr.append(", ");
       }
     }
-    expr.append(")exclusiveTill");
+    expr.append(")");
     return expr.toString();
   }
 
