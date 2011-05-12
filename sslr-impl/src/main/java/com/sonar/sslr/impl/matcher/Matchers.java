@@ -6,7 +6,6 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.TokenType;
 
 /**
@@ -16,7 +15,7 @@ public class Matchers {
 
   private Matchers() {
   };
-
+  
   /**
    * Syntactic predicate to check that the next tokens don't match an element.
    */
@@ -61,8 +60,8 @@ public class Matchers {
    * Syntactic predicate to check that the next tokens match some elements.
    */
   public static Matcher next(Object... elements) {
-  	if (elements.length == 1) {
-  		return new NextMatcher(convertToMatcher(elements[0]));
+        if (elements.length == 1) {
+                return new NextMatcher(convertToMatcher(elements[0]));
     }
     return new NextMatcher(new AndMatcher(convertToMatchers(elements)));
   }
@@ -238,7 +237,7 @@ public class Matchers {
     if (matchers.length == 0) {
       throw new IllegalStateException("You must define at least one matcher.");
     }  else if (matchers.length == 1) {
-    	return new ZeroToNMatcher(matchers[0]);
+        return new ZeroToNMatcher(matchers[0]);
     } else {
       return new ZeroToNMatcher(new AndMatcher(matchers));
     }
@@ -260,12 +259,12 @@ public class Matchers {
     if (matchers.length == 0) {
       throw new IllegalStateException("You must define at least one matcher.");
     }  else if (matchers.length == 1) {
-    	return new OneToNMatcher(matchers[0]);
+        return new OneToNMatcher(matchers[0]);
     } else {
       return new OneToNMatcher(new AndMatcher(matchers));
     }
   }
-  
+
   protected static final Matcher[] convertToMatchers(Object[] objects) {
     Matcher[] matchers = new Matcher[objects.length];
     for (int i = 0; i < matchers.length; i++) {

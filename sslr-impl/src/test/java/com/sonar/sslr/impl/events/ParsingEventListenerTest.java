@@ -69,10 +69,8 @@ public class ParsingEventListenerTest {
 	
 	private class MyTestGrammarParser extends Parser<MyTestGrammar> {
 	  public MyTestGrammarParser(MyTestGrammar g) {
-	  	super(g, g.getRootRule(), new IdentifierLexer());
+	  	super(g, new IdentifierLexer(), new MyTestGrammarDecorator()/*, new EventAdapterDecorator<MyTestGrammar>(extendedStackTrace)*/);
 
-	    setDecorators(new MyTestGrammarDecorator(), new EventAdapterDecorator<MyTestGrammar>(extendedStackTrace));
-	    
 	    System.out.println("Effective grammar:");
 	    System.out.println("------------------");
 	    System.out.println("");
@@ -86,9 +84,13 @@ public class ParsingEventListenerTest {
 		public void decorate(MyTestGrammar t) {
 			GrammarRuleLifeCycleManager.initializeRuleFields(t, MyTestGrammar.class);
 			
+			///*
 			t.root.is(longestOne(t.rule1, t.rule2, and("hehe", "huhu")), EOF);
 			t.rule1.is("hehe");
 			t.rule2.is("hehe", "huhu");
+			//*/
+			
+			//t.root.is(or(and("4", "+", t.root), "4")); /* A recursive grammar */
 		}
 	}
 	

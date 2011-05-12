@@ -33,42 +33,26 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 	private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
 
 	public Parser(GRAMMAR grammar, Lexer lexer,
-			List<GrammarDecorator<GRAMMAR>> decorators) {
-		this(grammar, grammar.getRootRule(), lexer, decorators);
-	}
-
-	public Parser(GRAMMAR grammar, Lexer lexer,
 			GrammarDecorator<GRAMMAR>... decorators) {
 		this(grammar, lexer, Arrays.asList(decorators));
 	}
 
-	public Parser(GRAMMAR grammar, Rule rootRule, Lexer lexer,
-			GrammarDecorator<GRAMMAR>... decorators) {
-		this(grammar, rootRule, lexer, Arrays.asList(decorators));
-	}
-
-	public Parser(GRAMMAR grammar, Rule rootRule, Lexer lexer, List<GrammarDecorator<GRAMMAR>> decorators) {
+	public Parser(GRAMMAR grammar, Lexer lexer, List<GrammarDecorator<GRAMMAR>> decorators) {
 		this.grammar = grammar;
 		this.lexer = lexer;
-		this.rootRule = (RuleImpl) rootRule;
+		this.rootRule = (RuleImpl)grammar.getRootRule();
 		setDecorators(decorators);
 	}
 
 	public void setDecorators(List<GrammarDecorator<GRAMMAR>> decorators) {
 		for (GrammarDecorator<GRAMMAR> decorator : decorators) {
-			addDecorator(decorator);
+			decorator.decorate(grammar);
+			
+			/* Inject the memoization */
+			new MemoizerAdapterDecorator<Grammar>().decorate(grammar);
+			
+			this.rootRule = (RuleImpl)grammar.getRootRule();
 		}
-	}
-
-	public void setDecorators(GrammarDecorator<GRAMMAR>... decorators) {
-		for (GrammarDecorator<GRAMMAR> decorator : decorators) {
-			addDecorator(decorator);
-		}
-	}
-
-	public void addDecorator(GrammarDecorator<GRAMMAR> decorator) {
-		decorator.decorate(grammar);
-		this.rootRule = (RuleImpl) grammar.getRootRule();
 	}
 
 	public void addListener(RecognictionExceptionListener listerner) {
@@ -131,7 +115,7 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 	}
 
 	public final void setRootRule(Rule rootRule) {
-		this.rootRule = (RuleImpl) rootRule;
+		this.rootRule = (RuleImpl)rootRule;
 	}
 
 	public String toString() {

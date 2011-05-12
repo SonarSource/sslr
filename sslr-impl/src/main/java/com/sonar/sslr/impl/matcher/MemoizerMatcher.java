@@ -10,7 +10,7 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
-class MemoizerMatcher extends Matcher {
+public class MemoizerMatcher extends Matcher {
 
   public MemoizerMatcher(Matcher proxiedMatcher) {
     super(proxiedMatcher);
