@@ -19,6 +19,7 @@ import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.RecognictionExceptionListener;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
+import com.sonar.sslr.impl.events.EventAdapterDecorator;
 import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import com.sonar.sslr.impl.events.ParsingEventListener;
 import com.sonar.sslr.impl.matcher.RuleImpl;
@@ -31,6 +32,10 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 	private Lexer lexer;
 	private GRAMMAR grammar;
 	private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
+	
+	private boolean isDecorated = false;
+	private boolean enableMemoizer = true;
+	private boolean enableExtendedStackTrace = false;
 
 	public Parser(GRAMMAR grammar, Lexer lexer,
 			GrammarDecorator<GRAMMAR>... decorators) {
@@ -44,15 +49,27 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 		setDecorators(decorators);
 	}
 
-	public void setDecorators(List<GrammarDecorator<GRAMMAR>> decorators) {
+	protected void setDecorators(List<GrammarDecorator<GRAMMAR>> decorators) {
 		for (GrammarDecorator<GRAMMAR> decorator : decorators) {
 			decorator.decorate(grammar);
-			
-			/* Inject the memoization */
-			new MemoizerAdapterDecorator<Grammar>().decorate(grammar);
-			
 			this.rootRule = (RuleImpl)grammar.getRootRule();
 		}
+	}
+	
+	public void disableMemoizer() {
+		this.enableMemoizer = false;
+	}
+	
+	public void enableExtendedStackTrace() {
+		this.enableExtendedStackTrace = true;
+	}
+	
+	protected void decorate() {
+		if (isDecorated) return;
+		isDecorated = true;
+		
+		if (enableMemoizer) new MemoizerAdapterDecorator<GRAMMAR>().decorate(grammar);
+		if (enableExtendedStackTrace) new EventAdapterDecorator<GRAMMAR>(new ExtendedStackTrace()).decorate(grammar);
 	}
 
 	public void addListener(RecognictionExceptionListener listerner) {
@@ -70,6 +87,8 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 	}
 
 	public AstNode parse(List<Token> tokens) {
+		decorate(); /* FIXME: Is there a better place to do this? Perhaps with a Parser Builder! */
+		
 		parsingState = null;
 		beforeEachFile();
 		try {
