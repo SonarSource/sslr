@@ -15,35 +15,31 @@ public abstract class Matcher implements AstNodeSkippingPolicy {
 
   protected RuleImpl parentRule;
   protected Matcher[] children;
-  
+
   public Matcher(Matcher... children) {
-  	this.children = children;
-  }
-  
-  public Matcher[] getChildren() {
-  	return this.children;
+    this.children = children;
   }
 
-  public void setChild(int i, Matcher child) {
-  	this.children[i] = child;
+  public Matcher[] getChildren() {
+    return this.children;
   }
-  
+
   public String getDefinition() {
-  	return getDefinition(true);
+    return getDefinition(true);
   }
-  
+
   public abstract String getDefinition(boolean isRoot);
 
   @Override
   public String toString() {
-  	return getDefinition();
+    return getDefinition();
   }
-  
+
   public void setParentRule(RuleImpl parentRule) {
-  	this.parentRule = parentRule;
-  	for (Matcher child: this.children) {
-			child.setParentRule(parentRule);
-		}
+    this.parentRule = parentRule;
+    for (Matcher child : this.children) {
+      child.setParentRule(parentRule);
+    }
   }
 
   public RuleImpl getRule() {
@@ -53,11 +49,11 @@ public abstract class Matcher implements AstNodeSkippingPolicy {
   public boolean hasToBeSkippedFromAst(AstNode node) {
     return true;
   }
-  
+
   public final boolean isMatching(ParsingState parsingState) {
-  	return matchToIndex(parsingState) >= 0;
+    return matchToIndex(parsingState) >= 0;
   }
-  
+
   public int matchToIndex(ParsingState parsingState) {
     int indexBeforeStarting = parsingState.lexerIndex;
     boolean leftRecursionState = parsingState.hasPendingLeftRecursion();

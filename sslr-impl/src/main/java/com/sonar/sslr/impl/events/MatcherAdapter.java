@@ -12,71 +12,67 @@ import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
 public class MatcherAdapter extends Matcher {
-	private Matcher matcher;
-	private ParsingEventListener parsingEventListener;
-	
-	public MatcherAdapter(ParsingEventListener parsingEventListener, Matcher matcher) {
-		this.matcher = matcher;
-		this.parsingEventListener = parsingEventListener;
-	}
-	
-	@Override
-	public Matcher[] getChildren() {
-		return this.matcher.getChildren();
-	}
 
-	@Override
-	public void setChild(int i, Matcher child) {
-		this.matcher.setChild(i, child);
-	}
+  private Matcher matcher;
+  private ParsingEventListener parsingEventListener;
 
-	@Override
-	public void setParentRule(RuleImpl parentRule) {
-		this.matcher.setParentRule(parentRule);
-	}
+  public MatcherAdapter(ParsingEventListener parsingEventListener, Matcher matcher) {
+    this.matcher = matcher;
+    this.parsingEventListener = parsingEventListener;
+  }
 
-	@Override
-	public RuleImpl getRule() {
-		return this.matcher.getRule();
-	}
+  @Override
+  public Matcher[] getChildren() {
+    return this.matcher.getChildren();
+  }
 
-	@Override
-	public boolean hasToBeSkippedFromAst(AstNode node) {
-		return this.matcher.hasToBeSkippedFromAst(node);
-	}
+  @Override
+  public void setParentRule(RuleImpl parentRule) {
+    this.matcher.setParentRule(parentRule);
+  }
 
-	@Override
-	public AstNode match(ParsingState parsingState) {
-		parsingEventListener.enterMatcher(matcher, parsingState);
-		
-		try {
-			AstNode astNode = this.matcher.match(parsingState);
-			parsingEventListener.exitWithMatchMatcher(matcher, parsingState, astNode);
-			return astNode;
-		} catch (RecognitionExceptionImpl re) {
-			parsingEventListener.exitWithoutMatchMatcher(matcher, parsingState, re);
-			throw re;
-		}
-	}
+  @Override
+  public RuleImpl getRule() {
+    return this.matcher.getRule();
+  }
 
-	@Override
-	public String getDefinition(boolean isRoot) {
-		return "MatcherAdapter(" + this.matcher.getDefinition(isRoot) + ")";
-	}
+  @Override
+  public boolean hasToBeSkippedFromAst(AstNode node) {
+    return this.matcher.hasToBeSkippedFromAst(node);
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		return this.matcher.equals(obj);
-	}
+  @Override
+  public AstNode match(ParsingState parsingState) {
+    parsingEventListener.enterMatcher(matcher, parsingState);
 
-	@Override
-	public int hashCode() {
-		return this.matcher.hashCode();
-	}
+    try {
+      AstNode astNode = this.matcher.match(parsingState);
+      parsingEventListener.exitWithMatchMatcher(matcher, parsingState, astNode);
+      return astNode;
+    } catch (RecognitionExceptionImpl re) {
+      parsingEventListener.exitWithoutMatchMatcher(matcher, parsingState, re);
+      throw re;
+    }
+  }
 
-	@Override
-	public String toString() {
-		return this.matcher.toString();
-	}
+  @Override
+  public String getDefinition(boolean isRoot) {
+    return "MatcherAdapter(" + this.matcher.getDefinition(isRoot) + ")";
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return this.matcher.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return this.matcher.hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return this.matcher.toString();
+  }
 
 }
