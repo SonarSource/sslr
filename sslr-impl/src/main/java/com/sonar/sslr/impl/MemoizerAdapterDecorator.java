@@ -12,7 +12,7 @@ import com.sonar.sslr.api.GrammarDecorator;
 import com.sonar.sslr.impl.matcher.*;
 
 class MemoizerAdapterDecorator<GRAMMAR extends Grammar> implements GrammarDecorator<GRAMMAR> {
-	HashSet<Matcher> visited;
+	private HashSet<Matcher> visited;
 	
 	private void decorateMatcher(Matcher matcher) {
 		/* Visitor logic */

@@ -21,7 +21,7 @@ import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.events.EventAdapterDecorator;
 import com.sonar.sslr.impl.events.ExtendedStackTrace;
-import com.sonar.sslr.impl.events.ParsingEventListener;
+import com.sonar.sslr.impl.events.RuleImplAdapter;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
 public abstract class Parser<GRAMMAR extends Grammar> {
@@ -36,6 +36,7 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 	private boolean isDecorated = false;
 	private boolean enableMemoizer = true;
 	private boolean enableExtendedStackTrace = false;
+	private EventAdapterDecorator<GRAMMAR> eventAdapterDecorator;
 
 	public Parser(GRAMMAR grammar, Lexer lexer,
 			GrammarDecorator<GRAMMAR>... decorators) {
@@ -64,12 +65,19 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 		this.enableExtendedStackTrace = true;
 	}
 	
+	public void printExtendedStackTrace() {
+		((ExtendedStackTrace)this.eventAdapterDecorator.getParsingEventListener()).printExtendedStackTrace();
+	}
+	
 	protected void decorate() {
 		if (isDecorated) return;
 		isDecorated = true;
 		
 		if (enableMemoizer) new MemoizerAdapterDecorator<GRAMMAR>().decorate(grammar);
-		if (enableExtendedStackTrace) new EventAdapterDecorator<GRAMMAR>(new ExtendedStackTrace()).decorate(grammar);
+		if (enableExtendedStackTrace) {
+			this.eventAdapterDecorator = new EventAdapterDecorator<GRAMMAR>(new ExtendedStackTrace());
+			this.eventAdapterDecorator.decorate(grammar);
+		}
 	}
 
 	public void addListener(RecognictionExceptionListener listerner) {
@@ -88,6 +96,13 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 
 	public AstNode parse(List<Token> tokens) {
 		decorate(); /* FIXME: Is there a better place to do this? Perhaps with a Parser Builder! */
+		
+		/* Now wrap the root rule (only if required) */
+		if (enableExtendedStackTrace) {
+			if (!(this.rootRule instanceof RuleImplAdapter)) {
+				this.rootRule = eventAdapterDecorator.adaptRule(this.rootRule);
+			}
+		}
 		
 		parsingState = null;
 		beforeEachFile();

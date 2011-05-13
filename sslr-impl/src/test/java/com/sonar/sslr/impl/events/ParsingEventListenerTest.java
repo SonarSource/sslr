@@ -54,8 +54,6 @@ public class ParsingEventListenerTest {
 		
 	};
 	
-	private ExtendedStackTrace extendedStackTrace = new ExtendedStackTrace();
-	
 	public class MyTestGrammar implements Grammar {
 		
 		public Rule root;
@@ -69,14 +67,7 @@ public class ParsingEventListenerTest {
 	
 	private class MyTestGrammarParser extends Parser<MyTestGrammar> {
 	  public MyTestGrammarParser(MyTestGrammar g) {
-	  	super(g, new IdentifierLexer(), new MyTestGrammarDecorator()/*, new EventAdapterDecorator<MyTestGrammar>(extendedStackTrace)*/);
-
-	    System.out.println("Effective grammar:");
-	    System.out.println("------------------");
-	    System.out.println("");
-	    System.out.println(((RuleImpl)this.getGrammar().getRootRule()).getDefinition());
-	    System.out.println("");
-	    System.out.println("End of grammar");
+	  	super(g, new IdentifierLexer(), new MyTestGrammarDecorator());
 	  }
 	}
 	
@@ -97,6 +88,8 @@ public class ParsingEventListenerTest {
 	@Test
 	public void ok() {
 		MyTestGrammarParser p = new MyTestGrammarParser(new MyTestGrammar());
+		p.disableMemoizer();
+		p.enableExtendedStackTrace();
 		
 		try {
 			p.parse("hehe huhu haha");
@@ -107,7 +100,10 @@ public class ParsingEventListenerTest {
 		}
 		
 		System.out.println("*** STACK TRACE ***");
-		extendedStackTrace.printStackTrace();
+		p.printExtendedStackTrace();
+		
+		System.out.println("");
+		System.out.println("Grammar = " + ((RuleImpl)p.getRootRule()).getDefinition());
 	}
 	
 }
