@@ -84,17 +84,17 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 		listeners.add(listerner);
 	}
 
-	public AstNode parse(File file) {
+	public final AstNode parse(File file) {
 		lexerOutput = lexer.lex(file);
 		return parse(lexerOutput.getTokens());
 	}
 
-	public AstNode parse(String source) {
+	public final AstNode parse(String source) {
 		lexerOutput = lexer.lex(source);
 		return parse(lexerOutput.getTokens());
 	}
 
-	public AstNode parse(List<Token> tokens) {
+	public final AstNode parse(List<Token> tokens) {
 		decorate(); /* FIXME: Is there a better place to do this? Perhaps with a Parser Builder! */
 		
 		/* Now wrap the root rule (only if required) */

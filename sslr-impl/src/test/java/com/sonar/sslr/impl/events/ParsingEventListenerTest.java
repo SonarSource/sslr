@@ -63,12 +63,15 @@ public class ParsingEventListenerTest {
 		public Rule getRootRule() {
 	    return root;
 	  }
+		
 	}
 	
 	private class MyTestGrammarParser extends Parser<MyTestGrammar> {
+		
 	  public MyTestGrammarParser(MyTestGrammar g) {
 	  	super(g, new IdentifierLexer(), new MyTestGrammarDecorator());
 	  }
+	  
 	}
 	
 	private class MyTestGrammarDecorator implements GrammarDecorator<MyTestGrammar> {
@@ -76,7 +79,7 @@ public class ParsingEventListenerTest {
 			GrammarRuleLifeCycleManager.initializeRuleFields(t, MyTestGrammar.class);
 			
 			///*
-			t.root.is(longestOne(t.rule1, t.rule2, and("hehe", "huhu")), EOF);
+			t.root.is("bonjour", longestOne(t.rule1, t.rule2, and("hehe", "huhu")), EOF);
 			t.rule1.is("hehe");
 			t.rule2.is("hehe", "huhu");
 			//*/
@@ -92,7 +95,7 @@ public class ParsingEventListenerTest {
 		p.enableExtendedStackTrace();
 		
 		try {
-			p.parse("hehe huhu haha");
+			p.parse("bonjour hehe huhu haha");
 			System.out.println("*** PARSE SUCCESSFUL ***");
 		}
 		catch (Exception ex) {
