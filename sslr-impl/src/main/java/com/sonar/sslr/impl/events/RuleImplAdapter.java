@@ -5,6 +5,8 @@
  */
 package com.sonar.sslr.impl.events;
 
+import org.apache.commons.lang.NotImplementedException;
+
 import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
@@ -26,8 +28,8 @@ public class RuleImplAdapter extends RuleImpl {
   }
 
   @Override
-  public String getDefinition(boolean isRoot) {
-    return "RuleImplAdapter(" + this.ruleImpl.getDefinition(isRoot) + ")";
+  public String getDefinition(boolean isRoot, boolean isVerbose) {
+    return (isVerbose) ? "RuleImplAdapter(" + this.ruleImpl.getDefinition(isRoot, isVerbose) + ")" : this.ruleImpl.getDefinition(isRoot, isVerbose);
   }
 
   @Override
@@ -51,14 +53,12 @@ public class RuleImplAdapter extends RuleImpl {
 
   @Override
   public RuleImpl is(Object... matchers) {
-    this.ruleImpl.is(matchers);
-    return this;
+    throw new NotImplementedException();
   }
 
   @Override
   public RuleImpl override(Object... matchers) {
-    this.ruleImpl.override(matchers);
-    return this;
+  	throw new NotImplementedException();
   }
 
   @Override
@@ -73,26 +73,22 @@ public class RuleImplAdapter extends RuleImpl {
 
   @Override
   public RuleImpl isOr(Object... matchers) {
-    this.ruleImpl.isOr(matchers);
-    return this;
+  	throw new NotImplementedException();
   }
 
   @Override
   public RuleImpl or(Object... matchers) {
-    this.ruleImpl.or(matchers);
-    return this;
+  	throw new NotImplementedException();
   }
 
   @Override
   public RuleImpl and(Object... matchers) {
-    this.ruleImpl.and(matchers);
-    return this;
+  	throw new NotImplementedException();
   }
 
   @Override
   public RuleImpl orBefore(Object... matchers) {
-    this.ruleImpl.orBefore(matchers);
-    return this;
+  	throw new NotImplementedException();
   }
 
   @Override

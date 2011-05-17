@@ -25,7 +25,7 @@ public class TokenTypeAndValueMatcher extends TokenMatcher {
   }
   
   @Override
-  public String getDefinition(boolean isRoot) {
+  public String getDefinition(boolean isRoot, boolean isVerbose) {
   	return "token(" + type.getName() + ", \"" + value.replace("\"", "\\\"") + "\")";
   }
 

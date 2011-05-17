@@ -7,6 +7,7 @@
 package com.sonar.sslr.impl;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -65,8 +66,11 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 		this.enableExtendedStackTrace = true;
 	}
 	
-	public void printExtendedStackTrace() {
-		((ExtendedStackTrace)this.eventAdapterDecorator.getParsingEventListener()).printExtendedStackTrace();
+	public void printExtendedStackTrace(PrintStream stream) {
+		if (this.eventAdapterDecorator == null || !(this.eventAdapterDecorator.getParsingEventListener() instanceof ExtendedStackTrace)) {
+			throw new IllegalStateException("The extended stack trace mode needs to be enabled in order to be able to call this method.");
+		}
+		((ExtendedStackTrace)this.eventAdapterDecorator.getParsingEventListener()).printExtendedStackTrace(stream);
 	}
 	
 	protected void decorate() {

@@ -44,10 +44,10 @@ public class ExclusiveTillMatcher extends Matcher {
   }
   
   @Override
-  public String getDefinition(boolean isRoot) {
+  public String getDefinition(boolean isRoot, boolean isVerbose) {
   	StringBuilder expr = new StringBuilder("exclusiveTill(");
     for (int i = 0; i < super.children.length; i++) {
-      expr.append(super.children[i].getDefinition(false));
+      expr.append(super.children[i].getDefinition(false, isVerbose));
       if (i < super.children.length - 1) {
         expr.append(", ");
       }

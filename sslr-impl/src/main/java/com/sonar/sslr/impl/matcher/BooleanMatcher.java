@@ -30,7 +30,7 @@ public class BooleanMatcher extends Matcher {
   }
   
   @Override
-  public String getDefinition(boolean isRoot) {
+  public String getDefinition(boolean isRoot, boolean isVerbose) {
   	return (internalState) ? "isTrue()" : "isFalse()";
   }
 

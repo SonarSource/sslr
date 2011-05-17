@@ -20,7 +20,7 @@ public class AnyTokenMatcher extends TokenMatcher {
   }
   
   @Override
-  public String getDefinition(boolean isRoot) {
+  public String getDefinition(boolean isRoot, boolean isVerbose) {
   	return "anyToken()";
   }
 

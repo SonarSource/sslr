@@ -25,10 +25,10 @@ public abstract class Matcher implements AstNodeSkippingPolicy {
   }
 
   public String getDefinition() {
-    return getDefinition(true);
+    return getDefinition(true, true);
   }
 
-  public abstract String getDefinition(boolean isRoot);
+  public abstract String getDefinition(boolean isRoot, boolean isVerbose);
 
   @Override
   public String toString() {

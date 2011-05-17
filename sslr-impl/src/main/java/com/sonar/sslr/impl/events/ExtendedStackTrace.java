@@ -5,6 +5,7 @@
  */
 package com.sonar.sslr.impl.events;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -14,15 +15,19 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.matcher.Matcher;
+import com.sonar.sslr.impl.matcher.MemoizerMatcher;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
 public class ExtendedStackTrace implements ParsingEventListener {
-	private final static int STACK_TRACE_RULE_WINDOW = 3;
+	private final static int STACK_TRACE_RULE_STARTING_WITH_TOKENS = 4;
 	private final static int SOURCE_CODE_TOKENS_WINDOW = 30;
-	private final static int SOURCE_CODE_LINE_HEADER_WIDTH = 6;
+	private final static int LINE_AND_COLUMN_LEFT_PAD_LENGTH = 6;
+	private final static int LAST_SUCCESSFUL_TOKENS_WINDOW = 7;
 	
 	private Stack<MatcherWithPosition> currentStack = new Stack<MatcherWithPosition>();
 	private Stack<RuleWithPosition> longestStack = new Stack<RuleWithPosition>();
+	private MatcherWithPosition longesOutertMatcherWithPosition;
+	private MatcherWithPosition longestMatcherWithPosition;
 	private int longestIndex = -1;
 	private ParsingState longestParsingState;
 	
@@ -55,6 +60,11 @@ public class ExtendedStackTrace implements ParsingEventListener {
 			this.toIndex = -1;
 		}
 		
+		public RuleWithPosition(RuleImpl rule, int fromIndex, int toIndex) {
+			super(rule, fromIndex);
+			this.toIndex = toIndex;
+		}
+		
 		public RuleImpl getRule() {
 			return (RuleImpl)getMatcher();
 		}
@@ -70,15 +80,18 @@ public class ExtendedStackTrace implements ParsingEventListener {
 	}
 	
 	public void enterRule(RuleImpl rule, ParsingState parsingState) {
-		/* The beginning of a rule is the end of the last one, so update the last's one toIndex */
+		/* The beginning of a rule is the "end" (when partitioning) of the last one, so update the last's one toIndex */
+		RuleWithPosition lastRuleWithPosition = null;
 		for (MatcherWithPosition currentMatcherWithPosition: currentStack) {
 			if (currentMatcherWithPosition instanceof RuleWithPosition) {
-				RuleWithPosition ruleWithCurrentPosition = (RuleWithPosition)currentMatcherWithPosition;
-				ruleWithCurrentPosition.setToIndex(parsingState.lexerIndex);
-				break;
+				lastRuleWithPosition = (RuleWithPosition)currentMatcherWithPosition;
 			}
 		}
-		
+		if (lastRuleWithPosition != null) {
+			lastRuleWithPosition.setToIndex(parsingState.lexerIndex);
+		}
+
+		/* Add the newly entered rule to the current stack */
 		currentStack.push(new RuleWithPosition(rule, parsingState.lexerIndex));
 	}
 
@@ -94,79 +107,128 @@ public class ExtendedStackTrace implements ParsingEventListener {
 		currentStack.push(new MatcherWithPosition(matcher, parsingState.lexerIndex));
 	}
 
-	public void exitWithMatchMatcher(Matcher matcher, ParsingState parsingState, AstNode astNode) {
-		/* Update the toIndex */
-		MatcherWithPosition matcherWithPosition = currentStack.pop();
-		currentStack.push(matcherWithPosition);
-		
-		/* Handle the longest path */
-		if (parsingState.lexerIndex > longestIndex) {
-			/* New longest path! */
-			longestIndex = parsingState.lexerIndex;
-			
-			longestStack = new Stack<RuleWithPosition>();
-			for (MatcherWithPosition currentMatcherWithPosition: currentStack) {
-				Matcher currentMatcher = currentMatcherWithPosition.getMatcher();
-				if (currentMatcher instanceof RuleImpl) longestStack.push(new RuleWithPosition((RuleImpl)currentMatcher, currentMatcherWithPosition.getFromIndex()));
-			}
-			
-			this.longestParsingState = parsingState;
-		}
+	public void exitWithMatchMatcher(Matcher matcher, ParsingState parsingState, AstNode astNode) {	
 		currentStack.pop();
 	}
 
 	public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState, RecognitionExceptionImpl re) {
+		/* Handle the longest path */
+		if (parsingState.lexerIndex > longestIndex) {
+			/* New longest path! */
+			longestIndex = parsingState.lexerIndex;
+			longestMatcherWithPosition = currentStack.peek();
+			
+			/* Set the longest matcher to the outer most one starting at the current index (but ignorning MemoizerMatchers) */
+			for (MatcherWithPosition currentMatcherWithPosition: currentStack) {
+				if (currentMatcherWithPosition instanceof MatcherWithPosition && currentMatcherWithPosition.getFromIndex() == parsingState.lexerIndex && !(currentMatcherWithPosition.getMatcher() instanceof MemoizerMatcher)) {
+					longesOutertMatcherWithPosition = currentMatcherWithPosition;
+					break;
+				}
+			}
+			
+			/* Set the current's rule toIndex */
+			RuleWithPosition lastRuleWithPosition = null;
+			for (MatcherWithPosition currentMatcherWithPosition: currentStack) {
+				if (currentMatcherWithPosition instanceof RuleWithPosition) {
+					lastRuleWithPosition = (RuleWithPosition)currentMatcherWithPosition;
+				}
+			}
+			if (lastRuleWithPosition != null) {
+				lastRuleWithPosition.setToIndex(parsingState.lexerIndex);
+			}
+			
+			/* Copy the current stack to the longest stack (deep-copy / clone) */
+			longestStack.empty();
+			for (MatcherWithPosition currentMatcherWithPosition: currentStack) {
+				if (currentMatcherWithPosition instanceof RuleWithPosition) {
+					RuleWithPosition currentRuleWithPosition = (RuleWithPosition)currentMatcherWithPosition;
+					longestStack.push(new RuleWithPosition(currentRuleWithPosition.getRule(), currentRuleWithPosition.getFromIndex(), currentRuleWithPosition.getToIndex()));
+				}
+			}
+			
+			this.longestParsingState = parsingState;
+		}
+		
 		currentStack.pop();
 	}
 	
-	public void printExtendedStackTrace() {
-		System.out.println("Source code:");
-		System.out.println("------------");
-		displaySourceCode();
-		System.out.println("------------");
+	public void printExtendedStackTrace(PrintStream stream) {
+		stream.println("Source Snippet:");
+		stream.println("---------------");
+		// TODO: Integrate the error pointer directly into the source snippet
+		displaySourceSnippet(stream);
+		stream.println("---------------");
 		
-		System.out.println("Stack trace:");
-		System.out.println("------------");
-		displayStackTrace();
-		System.out.println("------------");
+		stream.println();
+		displayStackTrace(stream);
+		
+		stream.println();
+		stream.println("Last successful tokens:");
+		stream.println("-----------------------");
+		displayLastSuccessfulTokens(stream);
 	}
 	
-	private void displayStackTrace() {
+	private void displayLastSuccessfulTokens(PrintStream stream) {
+		/* Display the LAST_SUCCESSFUL_TOKENS_WINDOW last successfully consumed tokens, and the name of the rule which consumed them */
+		for (int i = longestIndex - 1; i >= longestIndex - LAST_SUCCESSFUL_TOKENS_WINDOW && i >= 0; i--) {
+			Token token = longestParsingState.readToken(i);
+			stream.println("  \"" + token.getValue().replace("\"", "\\\"") + "\" at " + token.getLine() + ":" + token.getColumn() + " consumed by " + getTokenConsumer(i).getRule().getName());
+		}
+	}
+	
+	private RuleWithPosition getTokenConsumer(int lexerIndex) {
+		for (RuleWithPosition ruleWithPosition: longestStack) {
+			if (ruleWithPosition.getFromIndex() <= lexerIndex && lexerIndex < ruleWithPosition.getToIndex()) {
+				return ruleWithPosition;
+			}
+		}
+		
+		return null;
+	}
+	
+	private void displayStackTrace(PrintStream stream) {
 		if (longestStack.size() == 0) {
-			System.out.println("Not a single match.");
+			stream.println("[ Not a single match ]");
 		}
 		else {
-			displayStackTraceRuleWithPosition(longestStack.pop());
+			stream.println("on matcher " + longesOutertMatcherWithPosition.getMatcher().getDefinition(true, false));
+			stream.print(getPosition(longestParsingState.readToken(longestIndex).getLine(), longestParsingState.readToken(longestIndex).getColumn()));
+			stream.print(longestMatcherWithPosition.getMatcher().getDefinition(true, false) + " expected but ");
+			stream.println("\"" + longestParsingState.readToken(longestIndex).getValue().replace("\"", "\\\"") + "\"" + " [" + longestParsingState.readToken(longestIndex).getType() + "] found");
 			
-			while (longestStack.size() > 0) {
-				System.out.print("  at ");
-				displayStackTraceRuleWithPosition(longestStack.pop());
+			for (int i = longestStack.size() - 1; i >= 0; i--) {
+				stream.print("at ");
+				displayStackTraceRuleWithPosition(stream, longestStack.get(i));
 			}
 		}
 	}
 	
-	private void displayStackTraceRuleWithPosition(RuleWithPosition ruleWithPosition) {
+	private void displayStackTraceRuleWithPosition(PrintStream stream, RuleWithPosition ruleWithPosition) {
 		StringBuilder ruleBuilder = new StringBuilder();
 		
 		Token fromToken = longestParsingState.readToken(ruleWithPosition.getFromIndex());
 		
-		ruleBuilder.append(ruleWithPosition.getRule().getName());
-		ruleBuilder.append(" from " + fromToken.getLine() + ":" + fromToken.getColumn() + ", starting with: ");
+		ruleBuilder.append(ruleWithPosition.getRule().getName() + "\n");
+		ruleBuilder.append(getPosition(fromToken.getLine(), fromToken.getColumn()));
 		
-		/* Display the next SOURCE_SNIPPET_NEXT_TOKENS tokens */
+		/* Display the next SOURCE_SNIPPET_NEXT_TOKENS tokens, until the toIndex */
 		int i;
-		for (i = ruleWithPosition.getFromIndex(); i < ruleWithPosition.getFromIndex() + STACK_TRACE_RULE_WINDOW && i <= longestParsingState.lexerIndex + 1; i++) {
+		for (i = ruleWithPosition.getFromIndex(); i < ruleWithPosition.getFromIndex() + STACK_TRACE_RULE_STARTING_WITH_TOKENS && i < ruleWithPosition.getToIndex() && i < longestParsingState.lexerSize; i++) {
 			ruleBuilder.append(longestParsingState.readToken(i).getValue());
 			ruleBuilder.append(" ");
 		}
 
-		/* Display "..." if there are still more tokens available after the last one displayed */
-		if (i <= longestParsingState.lexerIndex + 1) ruleBuilder.append("...");
+		/* Display "..." if there are still more tokens available after the last one displayed before the toIndex */
+		if (i < ruleWithPosition.getToIndex() && i < longestParsingState.lexerSize) ruleBuilder.append("...");
 
-		System.out.println(ruleBuilder);
+		stream.println(ruleBuilder);
 	}
 	
-  private void displaySourceCode() {
+	private String getPosition(int line, int column) {
+		return "  " + String.format("%1$#" + LINE_AND_COLUMN_LEFT_PAD_LENGTH + "s", line) + " : " + String.format("%1$#" + LINE_AND_COLUMN_LEFT_PAD_LENGTH + "s", column) + "  : ";
+	}
+	
+  private void displaySourceSnippet(PrintStream stream) {
   	Token failedToken = longestParsingState.readToken(longestIndex);
 
     List<Token> tokens = getTokensToDisplayAroundOutpostMatcherToken();
@@ -177,7 +239,7 @@ public class ExtendedStackTrace implements ParsingEventListener {
       if (currentLine != previousLine) {
       	/* Flush the previous line */
       	if (previousLine != 0) {
-      		System.out.println(lineBuilder.toString());
+      		stream.println(lineBuilder.toString());
       	}
       	
       	/* Prepare the new one */
@@ -192,7 +254,7 @@ public class ExtendedStackTrace implements ParsingEventListener {
         }
         
         /* Flush the empty lines (to avoid side effects in displayToken, where the column of the token is used for padding) */
-        System.out.print(lineBuilder.toString());
+        stream.print(lineBuilder.toString());
         lineBuilder = new StringBuilder();
         
       	/* Start the new line */
@@ -202,11 +264,11 @@ public class ExtendedStackTrace implements ParsingEventListener {
       displayToken(lineBuilder, token);
     }
     
-    if (tokens.size() > 0) System.out.println(lineBuilder.toString());
+    if (tokens.size() > 0) stream.println(lineBuilder.toString());
   }
   
   private void displayToken(StringBuilder lineBuilder, Token token) {
-    while (lineBuilder.length() - SOURCE_CODE_LINE_HEADER_WIDTH < token.getColumn()) {
+    while (lineBuilder.length() - LINE_AND_COLUMN_LEFT_PAD_LENGTH < token.getColumn()) {
       lineBuilder.append(" ");
     }
     lineBuilder.append(token.getValue());
@@ -215,7 +277,7 @@ public class ExtendedStackTrace implements ParsingEventListener {
   private void displaySourceCodeLineHeader(StringBuilder lineBuilder, int currentLine, int parsingErrorLine) {
     String line = (parsingErrorLine == currentLine) ? "-->" : Integer.toString(currentLine);
     
-    for (int i = 0; i < SOURCE_CODE_LINE_HEADER_WIDTH - line.length() - 1; i++) {
+    for (int i = 0; i < LINE_AND_COLUMN_LEFT_PAD_LENGTH - line.length() - 1; i++) {
       lineBuilder.append(" ");
     }
     

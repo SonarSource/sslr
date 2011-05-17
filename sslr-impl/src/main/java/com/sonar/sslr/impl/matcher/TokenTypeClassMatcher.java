@@ -18,7 +18,7 @@ public class TokenTypeClassMatcher extends TokenMatcher {
   }
   
   @Override
-  public String getDefinition(boolean isRoot) {
+  public String getDefinition(boolean isRoot, boolean isVerbose) {
   	return typeClass.getName() + ".class";
   }
 

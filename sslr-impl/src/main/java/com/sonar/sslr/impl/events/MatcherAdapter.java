@@ -56,8 +56,8 @@ public class MatcherAdapter extends Matcher {
   }
 
   @Override
-  public String getDefinition(boolean isRoot) {
-    return "MatcherAdapter(" + this.matcher.getDefinition(isRoot) + ")";
+  public String getDefinition(boolean isRoot, boolean isVerbose) {
+    return (isVerbose) ? "MatcherAdapter(" + this.matcher.getDefinition(isRoot, isVerbose) + ")" : this.matcher.getDefinition(isRoot, isVerbose);
   }
 
   @Override

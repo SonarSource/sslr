@@ -25,8 +25,8 @@ public class NotMatcher extends Matcher {
   }
   
   @Override
-  public String getDefinition(boolean isRoot) {
-  	return "not(" + super.children[0].getDefinition(false) + ")";
+  public String getDefinition(boolean isRoot, boolean isVerbose) {
+  	return "not(" + super.children[0].getDefinition(false, isVerbose) + ")";
   }
 
 }

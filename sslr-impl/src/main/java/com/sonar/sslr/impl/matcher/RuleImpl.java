@@ -160,8 +160,8 @@ public class RuleImpl extends Matcher implements Rule {
   }
 
   @Override
-  public String getDefinition(boolean isRoot) {
-    return (isRoot) ? name + ".is(" + super.children[0].getDefinition(false) + ")" : name;
+  public String getDefinition(boolean isRoot, boolean isVerbose) {
+    return (isRoot) ? name + ".is(" + super.children[0].getDefinition(false, isVerbose) + ")" : name;
   }
 
   public RuleImpl setListener(AstListener listener) {

@@ -27,7 +27,7 @@ public class TokenTypesMatcher extends TokenMatcher {
   }
   
   @Override
-  public String getDefinition(boolean isRoot) {
+  public String getDefinition(boolean isRoot, boolean isVerbose) {
   	StringBuilder expr = new StringBuilder("isOneOfThem(");
     for (int i = 0; i < tokenTypesArray.length; i++) {
       expr.append(tokenTypesArray[i].getName());

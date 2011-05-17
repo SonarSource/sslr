@@ -48,7 +48,7 @@ public class RuleImplTest {
   @Test
   public void testGetDefinition() {
     assertEquals("JavaClassDefinition.is(and(\"public\", or(\"class\", \"interface\"), opt(and(\"implements\", WORD, o2n(and(\",\", WORD))))))", javaClassDefinition.getDefinition());
-    assertEquals("JavaClassDefinition", javaClassDefinition.getDefinition(false));
+    assertEquals("JavaClassDefinition", javaClassDefinition.getDefinition(false, true));
   }
   
   @Test

@@ -30,8 +30,8 @@ public class InclusiveTillMatcher extends Matcher {
   }
   
   @Override
-  public String getDefinition(boolean isRoot) {
-  	return "till(" + super.children[0].getDefinition(false) + ")";
+  public String getDefinition(boolean isRoot, boolean isVerbose) {
+  	return "till(" + super.children[0].getDefinition(false, isVerbose) + ")";
   }
 
   static class WordsTokenType implements TokenType {

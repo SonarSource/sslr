@@ -46,7 +46,7 @@ public class BridgeMatcher extends Matcher {
   }
   
   @Override
-  public String getDefinition(boolean isRoot) {
+  public String getDefinition(boolean isRoot, boolean isVerbose) {
   	return "bridge(" + from.getName() + ", " + to.getName() + ")";
   }
 

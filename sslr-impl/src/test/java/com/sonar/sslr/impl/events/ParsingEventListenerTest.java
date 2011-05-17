@@ -7,6 +7,10 @@ package com.sonar.sslr.impl.events;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -25,31 +29,32 @@ import static com.sonar.sslr.impl.matcher.Matchers.*;
 import static org.junit.Assert.*;
 
 public class ParsingEventListenerTest {
+	private PrintStream stream;
 
 	private ParsingEventListener parsingEventListener = new ParsingEventListener(){
 
 		public void enterRule(RuleImpl rule, ParsingState parsingState) {
-			System.out.println("Entered rule " + rule.getName() + " at index " + parsingState.lexerIndex);
+			stream.println("Entered rule " + rule.getName() + " at index " + parsingState.lexerIndex);
 		}
 
 		public void exitWithMatchRule(RuleImpl rule, ParsingState parsingState, AstNode astNode) {
-			System.out.println("Exit rule " + rule.getName() + " with match until index " + parsingState.lexerIndex);
+			stream.println("Exit rule " + rule.getName() + " with match until index " + parsingState.lexerIndex);
 		}
 
 		public void exitWithoutMatchRule(RuleImpl rule, ParsingState parsingState, RecognitionExceptionImpl re) {
-			System.out.println("Exit rule " + rule.getName() + " without match");
+			stream.println("Exit rule " + rule.getName() + " without match");
 		}
 
 		public void enterMatcher(Matcher matcher, ParsingState parsingState) {
-			System.out.println("Entered matcher " + matcher + " at index " + parsingState.lexerIndex);
+			stream.println("Entered matcher " + matcher + " at index " + parsingState.lexerIndex);
 		}
 
 		public void exitWithMatchMatcher(Matcher matcher, ParsingState parsingState, AstNode astNode) {
-			System.out.println("Exit matcher " + matcher + " with match until index " + parsingState.lexerIndex);
+			stream.println("Exit matcher " + matcher + " with match until index " + parsingState.lexerIndex);
 		}
 
 		public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState, RecognitionExceptionImpl re) {
-			System.out.println("Exit matcher " + matcher + " without match");
+			stream.println("Exit matcher " + matcher + " without match");
 		}
 		
 	};
@@ -69,7 +74,7 @@ public class ParsingEventListenerTest {
 	private class MyTestGrammarParser extends Parser<MyTestGrammar> {
 		
 	  public MyTestGrammarParser(MyTestGrammar g) {
-	  	super(g, new IdentifierLexer(), new MyTestGrammarDecorator());
+	  	super(g, new IdentifierLexer(), new MyTestGrammarDecorator(), new EventAdapterDecorator<MyTestGrammar>(parsingEventListener));
 	  }
 	  
 	}
@@ -77,14 +82,10 @@ public class ParsingEventListenerTest {
 	private class MyTestGrammarDecorator implements GrammarDecorator<MyTestGrammar> {
 		public void decorate(MyTestGrammar t) {
 			GrammarRuleLifeCycleManager.initializeRuleFields(t, MyTestGrammar.class);
-			
-			///*
-			t.root.is("bonjour", longestOne(t.rule1, t.rule2, and("hehe", "huhu")), EOF);
+
+			t.root.is("bonjour", longestOne(t.rule1, t.rule2), and("olaa", "uhu"), EOF);
 			t.rule1.is("hehe");
 			t.rule2.is("hehe", "huhu");
-			//*/
-			
-			//t.root.is(or(and("4", "+", t.root), "4")); /* A recursive grammar */
 		}
 	}
 	
@@ -92,21 +93,13 @@ public class ParsingEventListenerTest {
 	public void ok() {
 		MyTestGrammarParser p = new MyTestGrammarParser(new MyTestGrammar());
 		p.disableMemoizer();
-		p.enableExtendedStackTrace();
 		
-		try {
-			p.parse("bonjour hehe huhu haha");
-			System.out.println("*** PARSE SUCCESSFUL ***");
-		}
-		catch (Exception ex) {
-			System.out.println("*** FAILED TO PARSE ***");
-		}
-		
-		System.out.println("*** STACK TRACE ***");
-		p.printExtendedStackTrace();
-		
-		System.out.println("");
-		System.out.println("Grammar = " + ((RuleImpl)p.getRootRule()).getDefinition());
+		/*
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		PrintStream stream = new PrintStream(baos);
+		p.parse("bonjour hehe huhu olaa uhu");
+		System.out.println(baos.toString());
+		*/
 	}
 	
 }
