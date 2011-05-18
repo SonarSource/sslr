@@ -208,7 +208,7 @@ public class ExtendedStackTrace implements ParsingEventListener {
 		
 		Token fromToken = longestParsingState.readToken(ruleWithPosition.getFromIndex());
 		
-		ruleBuilder.append(ruleWithPosition.getRule().getName() + "\n");
+		ruleBuilder.append(ruleWithPosition.getRule().getName() + System.getProperty("line.separator"));
 		ruleBuilder.append(getPosition(fromToken.getLine(), fromToken.getColumn()));
 		
 		/* Display the next SOURCE_SNIPPET_NEXT_TOKENS tokens, until the toIndex */
@@ -249,7 +249,7 @@ public class ExtendedStackTrace implements ParsingEventListener {
         /* Handle the potential empty lines between the previous and current token */
         while (previousLine < currentLine) {
         	displaySourceCodeLineHeader(lineBuilder, previousLine, failedToken.getLine());
-        	lineBuilder.append("\n");
+        	lineBuilder.append(System.getProperty("line.separator"));
         	previousLine++;
         }
         

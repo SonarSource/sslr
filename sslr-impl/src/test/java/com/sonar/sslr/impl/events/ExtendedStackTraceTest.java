@@ -87,21 +87,21 @@ public class ExtendedStackTraceTest {
 		}
 		
 		StringBuilder expected = new StringBuilder();
-		expected.append("Source Snippet:" + "\n");
-		expected.append("---------------" + "\n");
-		expected.append("  --> bonjour hehe huhu hahaEOF" + "\n");
-		expected.append("---------------" + "\n");
-		expected.append("" + "\n");
-		expected.append("on matcher and(\"olaa\", \"uhu\")" + "\n");
-		expected.append("       1 :     18  : \"olaa\" expected but \"haha\" [IDENTIFIER] found" + "\n");
-		expected.append("at root" + "\n");
-		expected.append("       1 :      0  : bonjour hehe huhu " + "\n");
-		expected.append("" + "\n");
-		expected.append("Last successful tokens:" + "\n");
-		expected.append("-----------------------" + "\n");
-		expected.append("  \"huhu\" at 1:13 consumed by root" + "\n");
-		expected.append("  \"hehe\" at 1:8 consumed by root" + "\n");
-		expected.append("  \"bonjour\" at 1:0 consumed by root" + "\n");
+		expected.append("Source Snippet:" + System.getProperty("line.separator"));
+		expected.append("---------------" + System.getProperty("line.separator"));
+		expected.append("  --> bonjour hehe huhu hahaEOF" + System.getProperty("line.separator"));
+		expected.append("---------------" + System.getProperty("line.separator"));
+		expected.append("" + System.getProperty("line.separator"));
+		expected.append("on matcher and(\"olaa\", \"uhu\")" + System.getProperty("line.separator"));
+		expected.append("       1 :     18  : \"olaa\" expected but \"haha\" [IDENTIFIER] found" + System.getProperty("line.separator"));
+		expected.append("at root" + System.getProperty("line.separator"));
+		expected.append("       1 :      0  : bonjour hehe huhu " + System.getProperty("line.separator"));
+		expected.append("" + System.getProperty("line.separator"));
+		expected.append("Last successful tokens:" + System.getProperty("line.separator"));
+		expected.append("-----------------------" + System.getProperty("line.separator"));
+		expected.append("  \"huhu\" at 1:13 consumed by root" + System.getProperty("line.separator"));
+		expected.append("  \"hehe\" at 1:8 consumed by root" + System.getProperty("line.separator"));
+		expected.append("  \"bonjour\" at 1:0 consumed by root" + System.getProperty("line.separator"));
 		
 		assertEquals(baos.toString(), expected.toString());
 		
@@ -121,26 +121,25 @@ public class ExtendedStackTraceTest {
 		}
 		
 		expected = new StringBuilder();
-		expected.append("Source Snippet:" + "\n");
-		expected.append("---------------" + "\n");
-		expected.append("  --> bonjour hehe huhu hahaEOF" + "\n");
-		expected.append("---------------" + "\n");
-		expected.append("" + "\n");
-		expected.append("on matcher \"wtf\"" + "\n");
-		expected.append("       1 :     18  : \"wtf\" expected but \"haha\" [IDENTIFIER] found" + "\n");
-		expected.append("at rule2" + "\n");
-		expected.append("       1 :      8  : hehe huhu " + "\n");
-		expected.append("at root" + "\n");
-		expected.append("       1 :      0  : bonjour " + "\n");
-		expected.append("" + "\n");
-		expected.append("Last successful tokens:" + "\n");
-		expected.append("-----------------------" + "\n");
-		expected.append("  \"huhu\" at 1:13 consumed by rule2" + "\n");
-		expected.append("  \"hehe\" at 1:8 consumed by rule2" + "\n");
-		expected.append("  \"bonjour\" at 1:0 consumed by root" + "\n");
+		expected.append("Source Snippet:" + System.getProperty("line.separator"));
+		expected.append("---------------" + System.getProperty("line.separator"));
+		expected.append("  --> bonjour hehe huhu hahaEOF" + System.getProperty("line.separator"));
+		expected.append("---------------" + System.getProperty("line.separator"));
+		expected.append("" + System.getProperty("line.separator"));
+		expected.append("on matcher \"wtf\"" + System.getProperty("line.separator"));
+		expected.append("       1 :     18  : \"wtf\" expected but \"haha\" [IDENTIFIER] found" + System.getProperty("line.separator"));
+		expected.append("at rule2" + System.getProperty("line.separator"));
+		expected.append("       1 :      8  : hehe huhu " + System.getProperty("line.separator"));
+		expected.append("at root" + System.getProperty("line.separator"));
+		expected.append("       1 :      0  : bonjour " + System.getProperty("line.separator"));
+		expected.append("" + System.getProperty("line.separator"));
+		expected.append("Last successful tokens:" + System.getProperty("line.separator"));
+		expected.append("-----------------------" + System.getProperty("line.separator"));
+		expected.append("  \"huhu\" at 1:13 consumed by rule2" + System.getProperty("line.separator"));
+		expected.append("  \"hehe\" at 1:8 consumed by rule2" + System.getProperty("line.separator"));
+		expected.append("  \"bonjour\" at 1:0 consumed by root" + System.getProperty("line.separator"));
 		
 		assertEquals(baos.toString(), expected.toString());
-		
 	}
 	
 }
