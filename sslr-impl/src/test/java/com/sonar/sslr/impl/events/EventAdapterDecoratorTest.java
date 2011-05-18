@@ -83,7 +83,6 @@ public class EventAdapterDecoratorTest {
 		p = new MyTestGrammarParser(false, new MyTestGrammar());
 		p.enableExtendedStackTrace();
 		p.parse("bonjour hehe huhu olaa uhu");
-		System.out.println(p.getRootRule().getDefinition());
 		assertEquals(p.getRootRule().getDefinition(), "RuleImplAdapter(root.is(MatcherAdapter(MemoizerMatcher(MatcherAdapter(and(MatcherAdapter(\"bonjour\"), MatcherAdapter(MemoizerMatcher(MatcherAdapter(longestOne(MatcherAdapter(MemoizerMatcher(RuleImplAdapter(rule1))), MatcherAdapter(MemoizerMatcher(RuleImplAdapter(rule2))))))), MatcherAdapter(MemoizerMatcher(MatcherAdapter(and(MatcherAdapter(\"olaa\"), MatcherAdapter(\"uhu\"))))), MatcherAdapter(EOF)))))))");
 	}
 	

@@ -93,13 +93,50 @@ public class ParsingEventListenerTest {
 	public void ok() {
 		MyTestGrammarParser p = new MyTestGrammarParser(new MyTestGrammar());
 		p.disableMemoizer();
-		
-		/*
+	
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		PrintStream stream = new PrintStream(baos);
+		this.stream = new PrintStream(baos);
 		p.parse("bonjour hehe huhu olaa uhu");
-		System.out.println(baos.toString());
-		*/
+		
+		StringBuilder expected = new StringBuilder();
+		expected.append("Entered rule root at index 0" + "\n");
+		expected.append("Entered matcher and(MatcherAdapter(\"bonjour\"), MatcherAdapter(longestOne(RuleImplAdapter(rule1), RuleImplAdapter(rule2))), MatcherAdapter(and(MatcherAdapter(\"olaa\"), MatcherAdapter(\"uhu\"))), MatcherAdapter(EOF)) at index 0" + "\n");
+		expected.append("Entered matcher \"bonjour\" at index 0" + "\n");
+		expected.append("Exit matcher \"bonjour\" with match until index 1" + "\n");
+		expected.append("Entered matcher longestOne(RuleImplAdapter(rule1), RuleImplAdapter(rule2)) at index 1" + "\n");
+		expected.append("Entered rule rule1 at index 1" + "\n");
+		expected.append("Entered matcher \"hehe\" at index 1" + "\n");
+		expected.append("Exit matcher \"hehe\" with match until index 2" + "\n");
+		expected.append("Exit rule rule1 with match until index 2" + "\n");
+		expected.append("Entered rule rule2 at index 1" + "\n");
+		expected.append("Entered matcher and(MatcherAdapter(\"hehe\"), MatcherAdapter(\"huhu\")) at index 1" + "\n");
+		expected.append("Entered matcher \"hehe\" at index 1" + "\n");
+		expected.append("Exit matcher \"hehe\" with match until index 2" + "\n");
+		expected.append("Entered matcher \"huhu\" at index 2" + "\n");
+		expected.append("Exit matcher \"huhu\" with match until index 3" + "\n");
+		expected.append("Exit matcher and(MatcherAdapter(\"hehe\"), MatcherAdapter(\"huhu\")) with match until index 3" + "\n");
+		expected.append("Exit rule rule2 with match until index 3" + "\n");
+		expected.append("Entered rule rule2 at index 1" + "\n");
+		expected.append("Entered matcher and(MatcherAdapter(\"hehe\"), MatcherAdapter(\"huhu\")) at index 1" + "\n");
+		expected.append("Entered matcher \"hehe\" at index 1" + "\n");
+		expected.append("Exit matcher \"hehe\" with match until index 2" + "\n");
+		expected.append("Entered matcher \"huhu\" at index 2" + "\n");
+		expected.append("Exit matcher \"huhu\" with match until index 3" + "\n");
+		expected.append("Exit matcher and(MatcherAdapter(\"hehe\"), MatcherAdapter(\"huhu\")) with match until index 3" + "\n");
+		expected.append("Exit rule rule2 with match until index 3" + "\n");
+		expected.append("Exit matcher longestOne(RuleImplAdapter(rule1), RuleImplAdapter(rule2)) with match until index 3" + "\n");
+		expected.append("Entered matcher and(MatcherAdapter(\"olaa\"), MatcherAdapter(\"uhu\")) at index 3" + "\n");
+		expected.append("Entered matcher \"olaa\" at index 3" + "\n");
+		expected.append("Exit matcher \"olaa\" with match until index 4" + "\n");
+		expected.append("Entered matcher \"uhu\" at index 4" + "\n");
+		expected.append("Exit matcher \"uhu\" with match until index 5" + "\n");
+		expected.append("Exit matcher and(MatcherAdapter(\"olaa\"), MatcherAdapter(\"uhu\")) with match until index 5" + "\n");
+		expected.append("Entered matcher EOF at index 5" + "\n");
+		expected.append("Exit matcher EOF with match until index 6" + "\n");
+		expected.append("Exit matcher and(MatcherAdapter(\"bonjour\"), MatcherAdapter(longestOne(RuleImplAdapter(rule1), RuleImplAdapter(rule2))), MatcherAdapter(and(MatcherAdapter(\"olaa\"), MatcherAdapter(\"uhu\"))), MatcherAdapter(EOF)) with match until index 6" + "\n");
+		expected.append("Exit rule root with match until index 6" + "\n");
+		
+		assertEquals(baos.toString(), expected.toString());
 	}
 	
 }

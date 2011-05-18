@@ -14,6 +14,7 @@ import static org.junit.Assert.*;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.GrammarDecorator;
+import com.sonar.sslr.api.LeftRecursiveRule;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.GrammarRuleLifeCycleManager;
 import com.sonar.sslr.impl.Parser;
@@ -34,6 +35,8 @@ public class MemoizerAdapterDecoratorTest {
 		public Rule rule1;
 		public Rule rule2;
 		
+		public LeftRecursiveRule left;
+		
 		public Rule getRootRule() {
 	    return root;
 	  }
@@ -42,8 +45,8 @@ public class MemoizerAdapterDecoratorTest {
 	
 	private class MyTestGrammarParser extends Parser<MyTestGrammar> {
 		
-	  public MyTestGrammarParser(boolean cyclic, MyTestGrammar g) {
-	  	super(g, new IdentifierLexer(), (cyclic) ? new MyTestGrammarDecoratorCyclic() : new MyTestGrammarDecorator());
+	  public MyTestGrammarParser(boolean leftRecursive, boolean cyclic, MyTestGrammar g) {
+	  	super(g, new IdentifierLexer(), (leftRecursive) ? new MyTestGrammarDecoratorLeft() : ((cyclic) ? new MyTestGrammarDecoratorCyclic() : new MyTestGrammarDecorator()));
 	  }
 	  
 	}
@@ -66,15 +69,28 @@ public class MemoizerAdapterDecoratorTest {
 		}
 	}
 	
+	private class MyTestGrammarDecoratorLeft implements GrammarDecorator<MyTestGrammar> {
+		public void decorate(MyTestGrammar t) {
+			GrammarRuleLifeCycleManager.initializeRuleFields(t, MyTestGrammar.class);
+
+			t.root.is(t.left, EOF); /* A left recursive grammar */
+			t.left.is(or(and(t.left, "PLUS", t.left), "three"));
+		}
+	}
+	
 	@Test
 	public void ok() {
-		MyTestGrammarParser p = new MyTestGrammarParser(false, new MyTestGrammar());
+		MyTestGrammarParser p = new MyTestGrammarParser(false, false, new MyTestGrammar());
 		p.parse("bonjour hehe huhu olaa uhu");
 		assertEquals(p.getRootRule().getDefinition(), "root.is(MemoizerMatcher(and(\"bonjour\", MemoizerMatcher(longestOne(MemoizerMatcher(rule1), MemoizerMatcher(rule2))), MemoizerMatcher(and(\"olaa\", \"uhu\")), EOF)))");
 		
-		p = new MyTestGrammarParser(true, new MyTestGrammar());
+		p = new MyTestGrammarParser(false, true, new MyTestGrammar());
 		p.parse("four PLUS four PLUS four");
 		assertEquals(p.getRootRule().getDefinition(), "root.is(MemoizerMatcher(or(MemoizerMatcher(and(\"four\", \"PLUS\", MemoizerMatcher(root))), \"four\")))");
+		
+		p = new MyTestGrammarParser(true, false, new MyTestGrammar());
+		p.parse("three PLUS three PLUS three");
+		assertEquals(p.getRootRule().getDefinition(), "root.is(MemoizerMatcher(and(MemoizerMatcher(left), EOF)))");
 	}
 	
 }
