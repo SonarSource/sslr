@@ -83,7 +83,7 @@ public class ExtendedStackTraceTest {
 			p.parse("bonjour hehe huhu haha");
 			throw new  IllegalStateException();
 		} catch (RecognitionExceptionImpl ex) {
-			p.printExtendedStackTrace(new PrintStream(baos));
+			p.printStackTrace(new PrintStream(baos));
 		}
 		
 		StringBuilder expected = new StringBuilder();
@@ -117,7 +117,7 @@ public class ExtendedStackTraceTest {
 			p.parse("bonjour hehe huhu haha");
 			throw new  IllegalStateException();
 		} catch (RecognitionExceptionImpl ex) {
-			p.printExtendedStackTrace(new PrintStream(baos));
+			p.printStackTrace(new PrintStream(baos));
 		}
 		
 		expected = new StringBuilder();

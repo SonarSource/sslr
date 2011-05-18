@@ -7,6 +7,9 @@ package com.sonar.sslr.test.parser;
 
 import static com.sonar.sslr.impl.matcher.Matchers.opt;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import org.apache.commons.lang.StringUtils;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -32,18 +35,20 @@ class ParseMatcher extends BaseMatcher<Parser> {
     if (parser.getRootRule() == null) {
       throw new IllegalStateException("The root rule of the parser is null. No grammar decorator seems to be activated.");
     }
-    parser.getRootRule().and(opt(GenericTokenType.EOF));
 
     try {
       parser.parse(sourceCode);
     } catch (RecognitionExceptionImpl e) {
-      String message = ParsingStackTrace.generateFullStackTrace(parser.getParsingState());
+    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    	parser.printStackTrace(new PrintStream(baos));
+    	String message = baos.toString();
+    	
       if (StringUtils.isEmpty(message)) {
         message = e.getMessage();
       }
       throw new AssertionError(message);
     }
-    return !parser.getParsingState().hasNextToken();
+    return !parser.getParsingState().hasNextToken() || parser.getParsingState().readToken(parser.getParsingState().lexerIndex).getType() == GenericTokenType.EOF;
   }
 
   public void describeTo(Description desc) {

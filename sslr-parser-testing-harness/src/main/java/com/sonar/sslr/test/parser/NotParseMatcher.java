@@ -27,14 +27,13 @@ class NotParseMatcher extends BaseMatcher<Parser> {
       return false;
     }
     Parser parser = (Parser) obj;
-    parser.getRootRule().and(opt(GenericTokenType.EOF));
 
     try {
       parser.parse(sourceCode);
     } catch (RecognitionExceptionImpl e) {
       return true;
     }
-    if(parser.getParsingState().hasNextToken()){
+    if(parser.getParsingState().hasNextToken() && parser.getParsingState().readToken(parser.getParsingState().lexerIndex).getType() != GenericTokenType.EOF){
       return true;
     }
     return false;

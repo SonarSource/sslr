@@ -31,6 +31,12 @@ public class ExtendedStackTrace implements ParsingEventListener {
 	private int longestIndex = -1;
 	private ParsingState longestParsingState;
 	
+	public void initialize() {
+		currentStack = new Stack<MatcherWithPosition>();
+		longestStack = new Stack<RuleWithPosition>();
+		longestIndex = -1;
+	}
+	
 	private class MatcherWithPosition {
 		
 		private Matcher matcher;

@@ -66,11 +66,14 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 		this.enableExtendedStackTrace = true;
 	}
 	
-	public void printExtendedStackTrace(PrintStream stream) {
+	public void printStackTrace(PrintStream stream) {
 		if (this.eventAdapterDecorator == null || !(this.eventAdapterDecorator.getParsingEventListener() instanceof ExtendedStackTrace)) {
-			throw new IllegalStateException("The extended stack trace mode needs to be enabled in order to be able to call this method.");
+			/* Basic stack trace */
+			stream.append(ParsingStackTrace.generateFullStackTrace(getParsingState()));
+		} else {
+			/* Extended stack trace */
+			((ExtendedStackTrace)this.eventAdapterDecorator.getParsingEventListener()).printExtendedStackTrace(stream);
 		}
-		((ExtendedStackTrace)this.eventAdapterDecorator.getParsingEventListener()).printExtendedStackTrace(stream);
 	}
 	
 	protected void decorate() {
@@ -100,6 +103,11 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 
 	public final AstNode parse(List<Token> tokens) {
 		decorate(); /* FIXME: Is there a better place to do this? Perhaps with a Parser Builder! */
+		
+		/* (Re)initialize the extended stack trace */
+		if (enableExtendedStackTrace) {
+			((ExtendedStackTrace)this.eventAdapterDecorator.getParsingEventListener()).initialize();
+		}
 		
 		/* Now wrap the root rule (only if required) */
 		if (enableExtendedStackTrace) {
