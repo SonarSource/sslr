@@ -53,6 +53,7 @@ public class MatcherAdapter extends Matcher {
       parsingEventListener.exitWithoutMatchMatcher(matcher, parsingState, re);
       throw re;
     }
+    
   }
 
   @Override

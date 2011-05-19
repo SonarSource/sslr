@@ -44,6 +44,7 @@ public class RuleImplAdapter extends RuleImpl {
       parsingEventListener.exitWithoutMatchRule(ruleImpl, parsingState, re);
       throw re;
     }
+    
   }
 
   @Override

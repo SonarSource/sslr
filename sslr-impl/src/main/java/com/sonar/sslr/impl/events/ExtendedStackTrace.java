@@ -144,7 +144,7 @@ public class ExtendedStackTrace implements ParsingEventListener {
 			}
 			
 			/* Copy the current stack to the longest stack (deep-copy / clone) */
-			longestStack.empty();
+			longestStack = new Stack<RuleWithPosition>();
 			for (MatcherWithPosition currentMatcherWithPosition: currentStack) {
 				if (currentMatcherWithPosition instanceof RuleWithPosition) {
 					RuleWithPosition currentRuleWithPosition = (RuleWithPosition)currentMatcherWithPosition;
@@ -253,11 +253,13 @@ public class ExtendedStackTrace implements ParsingEventListener {
         previousLine++;
       	
         /* Handle the potential empty lines between the previous and current token */
-        while (previousLine < currentLine) {
-        	displaySourceCodeLineHeader(lineBuilder, previousLine, failedToken.getLine());
-        	lineBuilder.append(System.getProperty("line.separator"));
-        	previousLine++;
-        }
+        if (previousLine != 1) {
+	        while (previousLine < currentLine) {
+	        	displaySourceCodeLineHeader(lineBuilder, previousLine, failedToken.getLine());
+	        	lineBuilder.append(System.getProperty("line.separator"));
+	        	previousLine++;
+	        }
+        } else previousLine = currentLine;
         
         /* Flush the empty lines (to avoid side effects in displayToken, where the column of the token is used for padding) */
         stream.print(lineBuilder.toString());

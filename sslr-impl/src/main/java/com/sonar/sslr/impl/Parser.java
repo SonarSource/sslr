@@ -136,6 +136,7 @@ public abstract class Parser<GRAMMAR extends Grammar> {
 			GrammarRuleLifeCycleManager.notifyEndParsing(grammar);
 			afterEachFile();
 		}
+		
 	}
 
 	public void beforeEachFile() {
