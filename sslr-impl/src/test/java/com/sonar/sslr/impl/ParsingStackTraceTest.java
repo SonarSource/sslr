@@ -22,7 +22,6 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 import com.sonar.sslr.impl.matcher.TokenValueMatcher;
 
-@Ignore
 public class ParsingStackTraceTest {
 
   private List<Token> tokens = lex("package com.test;\n" + "import java.util.*;\n" + "public abstract clas MyClass {\n"
@@ -51,10 +50,10 @@ public class ParsingStackTraceTest {
     expected.append("    4    public abstract void run();\n");
     expected.append("    5 }\n");
     expected.append("------\n");
-    expected.append("Expected : <class> but was : <clas [IDENTIFIER]> ('Dummy for unit tests': Line 3 / Column 16)\n");
-    expected.append("  at classDeclaration := public abstract class\n");
-    expected.append("  at classBlock := classDeclaration\n");
-    expected.append("  at compilationUnit := packageDeclaration importDeclaration classBlock\n");
+    expected.append("Expected : <\"class\"> but was : <clas [IDENTIFIER]> ('Dummy for unit tests': Line 3 / Column 16)\n");
+    expected.append("  at classDeclaration\n");
+    expected.append("  at classBlock\n");
+    expected.append("  at compilationUnit\n");
 
     assertEquals(expected.toString(), ParsingStackTrace.generateFullStackTrace(state));
   }
@@ -69,10 +68,10 @@ public class ParsingStackTraceTest {
 
     StringBuilder expected = new StringBuilder();
     expected
-        .append("Expected : <class> but was : <clas [IDENTIFIER]> (copy book 'Dummy for unit tests': Line 3 / Column 16 called from file 'file1': Line 20)\n");
-    expected.append("  at classDeclaration := public abstract class\n");
-    expected.append("  at classBlock := classDeclaration\n");
-    expected.append("  at compilationUnit := packageDeclaration importDeclaration classBlock\n");
+        .append("Expected : <\"class\"> but was : <clas [IDENTIFIER]> (copy book 'Dummy for unit tests': Line 3 / Column 16 called from file 'file1': Line 20)\n");
+    expected.append("  at classDeclaration\n");
+    expected.append("  at classBlock\n");
+    expected.append("  at compilationUnit\n");
 
     assertEquals(expected.toString(), ParsingStackTrace.generate(state));
   }
@@ -89,11 +88,11 @@ public class ParsingStackTraceTest {
     expected.append("    2 import java.util.*;\n");
     expected.append("-->   public abstract\n");
     expected.append("------\n");
-    expected.append("Expected : <class> but was : <EOF> ('Dummy for unit tests')\n");
-    expected.append("  at classDeclaration := public abstract class\n");
-    expected.append("  at classBlock := classDeclaration\n");
-    expected.append("  at compilationUnit := packageDeclaration importDeclaration classBlock\n");
-
+    expected.append("Expected : <\"class\"> but was : <EOF> ('Dummy for unit tests')\n");
+    expected.append("  at classDeclaration\n");
+    expected.append("  at classBlock\n");
+    expected.append("  at compilationUnit\n");
+    
     assertEquals(expected.toString(), ParsingStackTrace.generateFullStackTrace(state));
   }
 
