@@ -23,8 +23,8 @@ public class OptMatcher extends Matcher {
   }
   
   @Override
-  public String getDefinition(boolean isRoot, boolean isVerbose) {
-  	return "opt(" + super.children[0].getDefinition(false, isVerbose) + ")";
+  public String toString() {
+  	return "opt";
   }
 
 }

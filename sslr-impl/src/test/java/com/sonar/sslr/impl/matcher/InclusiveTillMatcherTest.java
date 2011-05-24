@@ -7,6 +7,7 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static com.sonar.sslr.impl.matcher.Matchers.adjacent;
 import static com.sonar.sslr.impl.matcher.Matchers.till;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
@@ -21,9 +22,10 @@ public class InclusiveTillMatcherTest {
     assertThat(till("four"), match("one two three four"));
     assertThat(till("three"), not(match("one two three four")));
   }
-
+  
   @Test
-  public void testGetDefinition() {
-    assertEquals("till(\"public\")", till("public").getDefinition());
+  public void testToString() {
+  	assertEquals(till("(").toString(), "till");
   }
+
 }

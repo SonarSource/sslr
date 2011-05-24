@@ -14,7 +14,7 @@ public class BooleanMatcher extends Matcher {
 
   private final boolean internalState;
 
-  public BooleanMatcher(boolean internalState) {
+	public BooleanMatcher(boolean internalState) {
   	super();
   	
     this.internalState = internalState;
@@ -30,7 +30,7 @@ public class BooleanMatcher extends Matcher {
   }
   
   @Override
-  public String getDefinition(boolean isRoot, boolean isVerbose) {
+  public String toString() {
   	return (internalState) ? "isTrue()" : "isFalse()";
   }
 

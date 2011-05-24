@@ -7,6 +7,7 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static com.sonar.sslr.impl.matcher.Matchers.adjacent;
 import static com.sonar.sslr.impl.matcher.Matchers.bridge;
 import static com.sonar.sslr.impl.matcher.MyPunctuator.*;
 import static org.hamcrest.Matchers.not;
@@ -43,11 +44,6 @@ public class BridgeMatcherTest {
     assertThat(bridge(LEFT, RIGHT), not(match(createTokens(LEFT, LEFT, RIGHT))));
   }
 
-  @Test
-  public void testGetDefinition() {
-    assertEquals("bridge(LEFT, RIGHT)", bridge(LEFT, RIGHT).getDefinition());
-  }
-
   private static List<Token> createTokens(TokenType... types) {
     List<Token> tokens = Lists.newArrayList();
     for (TokenType type : types) {
@@ -55,4 +51,10 @@ public class BridgeMatcherTest {
     }
     return tokens;
   }
+  
+  @Test
+  public void testToString() {
+  	assertEquals(bridge(LEFT, RIGHT).toString(), "bridge(LEFT, RIGHT)");
+  }
+  
 }

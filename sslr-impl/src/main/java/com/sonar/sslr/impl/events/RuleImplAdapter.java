@@ -25,11 +25,11 @@ public class RuleImplAdapter extends RuleImpl {
 
     this.ruleImpl = ruleImpl;
     this.parsingEventListener = parsingEventListener;
+    this.children = new Matcher[]{ruleImpl};
   }
-
-  @Override
-  public String getDefinition(boolean isRoot, boolean isVerbose) {
-    return (isVerbose) ? "RuleImplAdapter(" + this.ruleImpl.getDefinition(isRoot, isVerbose) + ")" : this.ruleImpl.getDefinition(isRoot, isVerbose);
+  
+  public RuleImpl getRuleImpl() {
+  	return ruleImpl;
   }
 
   @Override
@@ -115,7 +115,7 @@ public class RuleImplAdapter extends RuleImpl {
 
   @Override
   public String toString() {
-    return this.ruleImpl.toString();
+    return "RuleImplAdapter";
   }
 
   @Override
@@ -155,11 +155,6 @@ public class RuleImplAdapter extends RuleImpl {
   @Override
   public void recoveryRule() {
     this.ruleImpl.recoveryRule();
-  }
-
-  @Override
-  public Matcher[] getChildren() {
-    return this.ruleImpl.getChildren();
   }
 
   @Override

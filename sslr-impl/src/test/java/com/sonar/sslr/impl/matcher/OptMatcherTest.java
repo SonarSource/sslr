@@ -7,6 +7,7 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static com.sonar.sslr.impl.matcher.Matchers.adjacent;
 import static com.sonar.sslr.impl.matcher.Matchers.isFalse;
 import static com.sonar.sslr.impl.matcher.Matchers.isTrue;
 import static com.sonar.sslr.impl.matcher.Matchers.opt;
@@ -23,10 +24,10 @@ public class OptMatcherTest {
     assertThat(opt(isFalse()), not(match("one")));
     assertThat(opt(isTrue()), match("one"));
   }
-
+  
   @Test
-  public void testGetDefinition() {
-    assertEquals("opt(\"implements\")", Matchers.opt("implements").getDefinition());
-    assertEquals("opt(and(\"implements\", \"b\"))", Matchers.opt("implements", "b").getDefinition());
+  public void testToString() {
+  	assertEquals(opt("(").toString(), "opt");
   }
+
 }

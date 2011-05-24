@@ -6,6 +6,7 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import static com.sonar.sslr.impl.matcher.Matchers.anyToken;
 import static com.sonar.sslr.test.lexer.TokenUtils.lex;
 import static org.junit.Assert.assertEquals;
 
@@ -27,7 +28,8 @@ public class AnyTokenMatcherTest {
   }
   
   @Test
-  public void testGetDefinition() {
-  	assertEquals("anyToken()", new AnyTokenMatcher().getDefinition());
+  public void testToString() {
+  	assertEquals(anyToken().toString(), "anyToken()");
   }
+  
 }

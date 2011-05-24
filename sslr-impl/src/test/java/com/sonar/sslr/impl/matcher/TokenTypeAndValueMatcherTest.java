@@ -6,6 +6,7 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import static com.sonar.sslr.impl.matcher.Matchers.token;
 import static com.sonar.sslr.test.lexer.TokenUtils.lex;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -14,7 +15,6 @@ import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
-import com.sonar.sslr.impl.MockTokenType;
 import com.sonar.sslr.impl.ParsingState;
 
 public class TokenTypeAndValueMatcherTest {
@@ -27,10 +27,10 @@ public class TokenTypeAndValueMatcherTest {
     assertTrue(node.is(GenericTokenType.IDENTIFIER));
     assertEquals("print", node.getTokenValue());
   }
-
+  
   @Test
-  public void testGetDefinition() {
-  	TokenTypeAndValueMatcher matcher = new TokenTypeAndValueMatcher(MockTokenType.WORD, "print");
-    assertEquals("token(WORD, \"print\")", matcher.getDefinition());
+  public void testToString() {
+  	assertEquals(token(GenericTokenType.IDENTIFIER, "hello").toString(), "token(IDENTIFIER, \"hello\")");
   }
+
 }

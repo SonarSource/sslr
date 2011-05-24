@@ -19,11 +19,7 @@ public class MatcherAdapter extends Matcher {
   public MatcherAdapter(ParsingEventListener parsingEventListener, Matcher matcher) {
     this.matcher = matcher;
     this.parsingEventListener = parsingEventListener;
-  }
-
-  @Override
-  public Matcher[] getChildren() {
-    return this.matcher.getChildren();
+    this.children = new Matcher[]{matcher};
   }
 
   @Override
@@ -57,11 +53,6 @@ public class MatcherAdapter extends Matcher {
   }
 
   @Override
-  public String getDefinition(boolean isRoot, boolean isVerbose) {
-    return (isVerbose) ? "MatcherAdapter(" + this.matcher.getDefinition(isRoot, isVerbose) + ")" : this.matcher.getDefinition(isRoot, isVerbose);
-  }
-
-  @Override
   public boolean equals(Object obj) {
     return this.matcher.equals(obj);
   }
@@ -73,7 +64,7 @@ public class MatcherAdapter extends Matcher {
 
   @Override
   public String toString() {
-    return this.matcher.toString();
+    return "MatcherAdapter";
   }
 
 }

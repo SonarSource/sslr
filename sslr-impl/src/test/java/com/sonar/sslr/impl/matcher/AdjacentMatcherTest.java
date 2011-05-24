@@ -22,9 +22,10 @@ public class AdjacentMatcherTest {
     assertThat(and("myMacro", adjacent("(")), match("myMacro("));
     assertThat(and("myMacro", adjacent("(")), not(match("myMacro (")));
   }
- 
+  
   @Test
-  public void testGetDefinition() {
-    assertEquals("adjacent(\"public\")", adjacent("public").getDefinition());
+  public void testToString() {
+  	assertEquals(adjacent("(").toString(), "adjacent");
   }
+ 
 }

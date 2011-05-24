@@ -10,9 +10,9 @@ import com.sonar.sslr.api.Token;
 
 public class TokenValueMatcher extends TokenMatcher {
 
-  private String tokenValue;
+  private final String tokenValue;
 
-  public TokenValueMatcher(String tokenValue) {
+	public TokenValueMatcher(String tokenValue) {
     this(tokenValue, false);
   }
 
@@ -20,15 +20,15 @@ public class TokenValueMatcher extends TokenMatcher {
     super(hasToBeSkippedFromAst);
     this.tokenValue = tokenValue;
   }
-  
-  @Override
-  public String getDefinition(boolean isRoot, boolean isVerbose) {
-  	return "\"" + tokenValue.replace("\"", "\\\"") + "\"";
-  }
 
   @Override
   protected boolean isExpectedToken(Token token) {
     return tokenValue.hashCode() == token.getValue().hashCode() && tokenValue.equals(token.getValue());
+  }
+  
+  @Override
+  public String toString() {
+  	return "\"" + tokenValue.replace("\"", "\\\"") + "\"";
   }
 
 }

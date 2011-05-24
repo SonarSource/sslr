@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.impl.MockTokenType;
 import com.sonar.sslr.impl.ParsingState;
 
 public class TokenValueMatcherTest {
@@ -23,11 +24,10 @@ public class TokenValueMatcherTest {
 
     assertEquals("print", node.getTokenValue());
   }
-
+  
   @Test
-  public void testGetDefinition() {
-    TokenValueMatcher matcher = new TokenValueMatcher("print");
-    assertEquals("\"print\"", matcher.getDefinition());
+  public void testToString() {
+  	assertEquals(new TokenValueMatcher("print").toString(), "\"print\"");
   }
 
 }

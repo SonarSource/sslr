@@ -13,6 +13,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.MockTokenType;
@@ -43,8 +44,8 @@ public class TokenTypesMatcherTest {
   }
   
   @Test
-  public void testGetDefinition() {
-  	assertEquals("isOneOfThem(WORD, WORD1, WORD2)", new TokenTypesMatcher(MockTokenType.values()).getDefinition());
+  public void testToString() {
+  	assertEquals(new TokenTypesMatcher(MockTokenType.values()).toString(), "isOneOfThem");
   }
 
 }

@@ -7,6 +7,7 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static com.sonar.sslr.impl.matcher.Matchers.adjacent;
 import static com.sonar.sslr.impl.matcher.Matchers.isFalse;
 import static com.sonar.sslr.impl.matcher.Matchers.isTrue;
 import static com.sonar.sslr.impl.matcher.Matchers.one2n;
@@ -25,8 +26,8 @@ public class OneToNMatcherTest {
   }
 
   @Test
-  public void testGetDefinition() {
-  	assertEquals("one2n(\"public\")", one2n("public").getDefinition());
-    assertEquals("one2n(and(\"public\", \"void\", \"class\"))", one2n("public", "void", "class").getDefinition());
+  public void testToString() {
+  	assertEquals(one2n("(").toString(), "one2n");
   }
+  
 }

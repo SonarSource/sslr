@@ -25,10 +25,10 @@ public class ZeroToNMatcherTest  {
     assertThat(o2n(isFalse()), not(match("one")));
     assertThat(o2n(isTrue()), match("one two three"));
   }
-
+  
   @Test
-  public void testGetDefinition() {
-  	assertEquals("o2n(\"public\")", o2n("public").getDefinition());
-    assertEquals("o2n(and(\"public\", \"void\", \"class\"))", o2n("public", "void", "class").getDefinition());
+  public void testToString() {
+  	assertEquals(o2n("print").toString(), "o2n");
   }
+
 }

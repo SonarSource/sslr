@@ -18,6 +18,7 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.matcher.Matcher;
+import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
 public class RuleImplAdapterTest {
@@ -35,10 +36,8 @@ public class RuleImplAdapterTest {
 	public void testGetDefinition() {
 		RuleImplAdapter adapter = new RuleImplAdapter(null, rule);
 		
-		assertEquals(adapter.getDefinition(true, true), "RuleImplAdapter(rule.is(\"bonjour\"))");
-		assertEquals(adapter.getDefinition(false, true), "RuleImplAdapter(rule)");
-		assertEquals(adapter.getDefinition(true, false), "rule.is(\"bonjour\")");
-		assertEquals(adapter.getDefinition(false, false), "rule");
+		assertEquals(MatcherTreePrinter.printWithAdapters(adapter), "RuleImplAdapter(rule)");
+		assertEquals(MatcherTreePrinter.print(adapter), "rule.is(\"bonjour\")");
 	}
 	
 	@Test

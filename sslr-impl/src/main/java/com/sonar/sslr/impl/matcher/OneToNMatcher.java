@@ -38,8 +38,8 @@ public class OneToNMatcher extends Matcher {
   }
   
   @Override
-  public String getDefinition(boolean isRoot, boolean isVerbose) {
-  	return "one2n(" + super.children[0].getDefinition(false, isVerbose) + ")";
+  public String toString() {
+  	return "one2n";
   }
 
 }

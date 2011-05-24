@@ -32,8 +32,8 @@ public class AdjacentMatcher extends Matcher {
   }
   
   @Override
-  public String getDefinition(boolean isRoot, boolean isVerbose) {
-  	return "adjacent(" + super.children[0].getDefinition(false, isVerbose) + ")";
+  public String toString() {
+  	return "adjacent";
   }
   
 }

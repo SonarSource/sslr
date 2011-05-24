@@ -25,8 +25,8 @@ public class AnyTokenButNotMatcher extends Matcher {
   }
   
   @Override
-  public String getDefinition(boolean isRoot, boolean isVerbose) {
-  	return "anyTokenButNot(" + super.children[0].getDefinition(false, isVerbose) + ")";
+  public String toString() {
+  	return "anyTokenButNot";
   }
   
 }

@@ -22,6 +22,7 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.events.IdentifierLexer;
 import com.sonar.sslr.impl.matcher.Matcher;
+import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
 import static com.sonar.sslr.impl.matcher.Matchers.*;
@@ -82,15 +83,15 @@ public class MemoizerAdapterDecoratorTest {
 	public void ok() {
 		MyTestGrammarParser p = new MyTestGrammarParser(false, false, new MyTestGrammar());
 		p.parse("bonjour hehe huhu olaa uhu");
-		assertEquals(p.getRootRule().getDefinition(), "root.is(MemoizerMatcher(and(\"bonjour\", MemoizerMatcher(longestOne(MemoizerMatcher(rule1), MemoizerMatcher(rule2))), MemoizerMatcher(and(\"olaa\", \"uhu\")), EOF)))");
+		assertEquals(MatcherTreePrinter.printWithAdapters(p.getRootRule()), "root.is(MemoizerMatcher(and(\"bonjour\", MemoizerMatcher(longestOne(MemoizerMatcher(rule1), MemoizerMatcher(rule2))), MemoizerMatcher(and(\"olaa\", \"uhu\")), EOF)))");
 		
 		p = new MyTestGrammarParser(false, true, new MyTestGrammar());
 		p.parse("four PLUS four PLUS four");
-		assertEquals(p.getRootRule().getDefinition(), "root.is(MemoizerMatcher(or(MemoizerMatcher(and(\"four\", \"PLUS\", MemoizerMatcher(root))), \"four\")))");
+		assertEquals(MatcherTreePrinter.printWithAdapters(p.getRootRule()), "root.is(MemoizerMatcher(or(MemoizerMatcher(and(\"four\", \"PLUS\", MemoizerMatcher(root))), \"four\")))");
 		
 		p = new MyTestGrammarParser(true, false, new MyTestGrammar());
 		p.parse("three PLUS three PLUS three");
-		assertEquals(p.getRootRule().getDefinition(), "root.is(MemoizerMatcher(and(MemoizerMatcher(left), EOF)))");
+		assertEquals(MatcherTreePrinter.printWithAdapters(p.getRootRule()), "root.is(MemoizerMatcher(and(MemoizerMatcher(left), EOF)))");
 	}
 	
 }

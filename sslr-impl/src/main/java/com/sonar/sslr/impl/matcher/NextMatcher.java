@@ -24,8 +24,8 @@ public class NextMatcher extends Matcher {
   }
   
   @Override
-  public String getDefinition(boolean isRoot, boolean isVerbose) {
-  	return "next(" + super.children[0].getDefinition(false, isVerbose) + ")";
+  public String toString() {
+  	return "next";
   }
 
 }

@@ -25,23 +25,15 @@ public class TokenTypesMatcher extends TokenMatcher {
     }
     tokenTypesArray = types;
   }
-  
-  @Override
-  public String getDefinition(boolean isRoot, boolean isVerbose) {
-  	StringBuilder expr = new StringBuilder("isOneOfThem(");
-    for (int i = 0; i < tokenTypesArray.length; i++) {
-      expr.append(tokenTypesArray[i].getName());
-      if (i < tokenTypesArray.length - 1) {
-        expr.append(", ");
-      }
-    }
-    expr.append(")");
-    return expr.toString();
-  }
 
   @Override
   protected boolean isExpectedToken(Token token) {
     return tokenTypes.contains(token.getType());
+  }
+  
+  @Override
+  public String toString() {
+  	return "isOneOfThem";
   }
   
 }

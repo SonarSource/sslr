@@ -7,6 +7,7 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static com.sonar.sslr.impl.matcher.Matchers.adjacent;
 import static com.sonar.sslr.impl.matcher.Matchers.atLeastOne;
 import static com.sonar.sslr.impl.matcher.Matchers.isFalse;
 import static com.sonar.sslr.impl.matcher.Matchers.isTrue;
@@ -26,9 +27,10 @@ public class AtLeastOneMatcherTest {
     assertThat(atLeastOne(isFalse(), isTrue()), match("two"));
     assertThat(atLeastOne(isFalse(), isFalse()), not(match("one two")));
   }
-
+  
   @Test
-  public void testGetDefinition() {
-    assertEquals("atLeastOne(\"public\", \"class\", \"MyClass\")", atLeastOne("public", "class", "MyClass").getDefinition());
+  public void testToString() {
+  	assertEquals(atLeastOne("(").toString(), "atLeastOne");
   }
+
 }

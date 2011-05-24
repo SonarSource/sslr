@@ -7,6 +7,7 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static com.sonar.sslr.impl.matcher.Matchers.adjacent;
 import static com.sonar.sslr.impl.matcher.Matchers.isFalse;
 import static com.sonar.sslr.impl.matcher.Matchers.isTrue;
 import static com.sonar.sslr.impl.matcher.Matchers.or;
@@ -24,9 +25,10 @@ public class OrMatcherTest {
     assertThat(or(isTrue(), isFalse()), match("one"));
     assertThat(or(isFalse(), isFalse()), not(match("one")));
   }
-
+  
   @Test
-  public void testGetDefinition() {
-    assertEquals("or(\"extends\", \"implements\")", or("extends", "implements").getDefinition());
+  public void testToString() {
+  	assertEquals(or("(").toString(), "or");
   }
+
 }

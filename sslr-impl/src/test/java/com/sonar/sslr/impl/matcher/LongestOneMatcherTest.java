@@ -7,6 +7,7 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static com.sonar.sslr.impl.matcher.Matchers.adjacent;
 import static com.sonar.sslr.impl.matcher.Matchers.longestOne;
 import static com.sonar.sslr.impl.matcher.Matchers.and;
 import static org.hamcrest.Matchers.not;
@@ -25,9 +26,10 @@ public class LongestOneMatcherTest {
     assertThat(longestOne("hehe", and("hehe", "haha")), not(match("hehe haha huhu")));
     assertThat(longestOne(and("hehe", "haha"), "hehe"), not(match("hehe haha huhu")));
   }
-
+  
   @Test
-  public void testGetDefinition() {
-  	assertEquals("longestOne(\"hehe\", \"huhu\")", longestOne("hehe", "huhu").getDefinition());
+  public void testToString() {
+  	assertEquals(longestOne("(").toString(), "longestOne");
   }
+
 }

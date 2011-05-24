@@ -7,6 +7,7 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static com.sonar.sslr.impl.matcher.Matchers.adjacent;
 import static com.sonar.sslr.impl.matcher.Matchers.and;
 import static com.sonar.sslr.impl.matcher.Matchers.isFalse;
 import static com.sonar.sslr.impl.matcher.Matchers.isTrue;
@@ -24,9 +25,10 @@ public class AndMatcherTest {
     assertThat(and(isTrue(), isFalse()), not(match("one two")));
     assertThat(and(isFalse(), isFalse()), not(match("one two")));
   }
-
+  
   @Test
-  public void testGetDefinition() {
-    assertEquals("and(\"public\", \"class\", \"MyClass\")", and("public", "class", "MyClass").getDefinition());
+  public void testToString() {
+  	assertEquals(and("(", ")").toString(), "and"); /* With a single argument, the and() is removed automatically */
   }
+
 }

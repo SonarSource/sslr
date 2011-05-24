@@ -15,6 +15,7 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.matcher.Matcher;
+import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 import com.sonar.sslr.impl.matcher.MemoizerMatcher;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
@@ -197,9 +198,9 @@ public class ExtendedStackTrace implements ParsingEventListener {
 			stream.println("[ Not a single match ]");
 		}
 		else {
-			stream.println("on matcher " + longesOutertMatcherWithPosition.getMatcher().getDefinition(true, false));
+			stream.println("on matcher " + MatcherTreePrinter.print(longesOutertMatcherWithPosition.getMatcher()));
 			stream.print(getPosition(longestParsingState.readToken(longestIndex).getLine(), longestParsingState.readToken(longestIndex).getColumn()));
-			stream.print(longestMatcherWithPosition.getMatcher().getDefinition(true, false) + " expected but ");
+			stream.print(MatcherTreePrinter.print(longestMatcherWithPosition.getMatcher()) + " expected but ");
 			stream.println("\"" + longestParsingState.readToken(longestIndex).getValue().replace("\"", "\\\"") + "\"" + " [" + longestParsingState.readToken(longestIndex).getType() + "] found");
 			
 			for (int i = longestStack.size() - 1; i >= 0; i--) {

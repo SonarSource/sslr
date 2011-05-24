@@ -7,6 +7,7 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static com.sonar.sslr.impl.matcher.Matchers.adjacent;
 import static com.sonar.sslr.impl.matcher.Matchers.and;
 import static com.sonar.sslr.impl.matcher.Matchers.next;
 import static org.hamcrest.Matchers.not;
@@ -22,10 +23,10 @@ public class NextMatcherTest {
     assertThat(and(next("one"), "one"), match("one"));
     assertThat(and(next("two"), "one"), not(match("one")));
   }
-
+  
   @Test
-  public void testGetDefinition() {
-  	assertEquals("next(\"extends\")", next("extends").getDefinition());
-    assertEquals("next(and(\"extends\", \"implements\"))", next("extends", "implements").getDefinition());
+  public void testToString() {
+  	assertEquals(next("(").toString(), "next");
   }
+
 }

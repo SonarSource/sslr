@@ -24,17 +24,6 @@ public abstract class Matcher implements AstNodeSkippingPolicy {
     return this.children;
   }
 
-  public String getDefinition() {
-    return getDefinition(true, true);
-  }
-
-  public abstract String getDefinition(boolean isRoot, boolean isVerbose);
-
-  @Override
-  public String toString() {
-    return getDefinition();
-  }
-
   public void setParentRule(RuleImpl parentRule) {
     this.parentRule = parentRule;
     for (Matcher child : this.children) {

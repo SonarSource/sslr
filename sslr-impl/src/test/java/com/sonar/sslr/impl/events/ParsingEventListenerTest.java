@@ -23,6 +23,7 @@ import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.matcher.Matcher;
+import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
 import static com.sonar.sslr.impl.matcher.Matchers.*;
@@ -46,15 +47,15 @@ public class ParsingEventListenerTest {
 		}
 
 		public void enterMatcher(Matcher matcher, ParsingState parsingState) {
-			stream.println("Entered matcher " + matcher + " at index " + parsingState.lexerIndex);
+			stream.println("Entered matcher " + MatcherTreePrinter.printWithAdapters(matcher) + " at index " + parsingState.lexerIndex);
 		}
 
 		public void exitWithMatchMatcher(Matcher matcher, ParsingState parsingState, AstNode astNode) {
-			stream.println("Exit matcher " + matcher + " with match until index " + parsingState.lexerIndex);
+			stream.println("Exit matcher " + MatcherTreePrinter.printWithAdapters(matcher) + " with match until index " + parsingState.lexerIndex);
 		}
 
 		public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState, RecognitionExceptionImpl re) {
-			stream.println("Exit matcher " + matcher + " without match");
+			stream.println("Exit matcher " + MatcherTreePrinter.printWithAdapters(matcher) + " without match");
 		}
 		
 	};

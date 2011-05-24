@@ -12,19 +12,19 @@ public class TokenTypeClassMatcher extends TokenMatcher {
 
   private final Class typeClass;
 
-  public TokenTypeClassMatcher(Class typeClass) {
+	public TokenTypeClassMatcher(Class typeClass) {
     super(false);
     this.typeClass = typeClass;
-  }
-  
-  @Override
-  public String getDefinition(boolean isRoot, boolean isVerbose) {
-  	return typeClass.getName() + ".class";
   }
 
   @Override
   protected boolean isExpectedToken(Token token) {
     return typeClass == token.getType().getClass();
+  }
+  
+  @Override
+  public String toString() {
+  	return typeClass.getCanonicalName() + ".class";
   }
   
 }

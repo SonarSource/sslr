@@ -21,6 +21,7 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.events.IdentifierLexer;
 import com.sonar.sslr.impl.matcher.Matcher;
+import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 import com.sonar.sslr.impl.matcher.RuleImpl;
 
 import static com.sonar.sslr.impl.matcher.Matchers.*;
@@ -72,18 +73,21 @@ public class EventAdapterDecoratorTest {
 		p.disableMemoizer();
 		p.enableExtendedStackTrace();
 		p.parse("bonjour hehe huhu olaa uhu");
-		assertEquals(p.getRootRule().getDefinition(), "RuleImplAdapter(root.is(MatcherAdapter(and(MatcherAdapter(\"bonjour\"), MatcherAdapter(longestOne(RuleImplAdapter(rule1), RuleImplAdapter(rule2))), MatcherAdapter(and(MatcherAdapter(\"olaa\"), MatcherAdapter(\"uhu\"))), MatcherAdapter(EOF)))))");
+		assertEquals(MatcherTreePrinter.printWithAdapters(p.getRootRule()), "RuleImplAdapter(root)");
+		assertEquals(MatcherTreePrinter.printWithAdapters(((RuleImplAdapter)p.getGrammar().root).getRuleImpl()), "root.is(MatcherAdapter(and(MatcherAdapter(\"bonjour\"), MatcherAdapter(longestOne(RuleImplAdapter(rule1), RuleImplAdapter(rule2))), MatcherAdapter(and(MatcherAdapter(\"olaa\"), MatcherAdapter(\"uhu\"))), MatcherAdapter(EOF))))");
 		
 		p = new MyTestGrammarParser(true, new MyTestGrammar());
 		p.disableMemoizer();
 		p.enableExtendedStackTrace();
 		p.parse("four PLUS four PLUS four");
-		assertEquals(p.getRootRule().getDefinition(), "RuleImplAdapter(root.is(MatcherAdapter(or(MatcherAdapter(and(MatcherAdapter(\"four\"), MatcherAdapter(\"PLUS\"), RuleImplAdapter(root))), MatcherAdapter(\"four\")))))");
+		assertEquals(MatcherTreePrinter.printWithAdapters(p.getRootRule()), "RuleImplAdapter(root)");
+		assertEquals(MatcherTreePrinter.printWithAdapters(((RuleImplAdapter)p.getGrammar().root).getRuleImpl()), "root.is(MatcherAdapter(or(MatcherAdapter(and(MatcherAdapter(\"four\"), MatcherAdapter(\"PLUS\"), RuleImplAdapter(root))), MatcherAdapter(\"four\"))))");
 		
 		p = new MyTestGrammarParser(false, new MyTestGrammar());
 		p.enableExtendedStackTrace();
 		p.parse("bonjour hehe huhu olaa uhu");
-		assertEquals(p.getRootRule().getDefinition(), "RuleImplAdapter(root.is(MatcherAdapter(MemoizerMatcher(MatcherAdapter(and(MatcherAdapter(\"bonjour\"), MatcherAdapter(MemoizerMatcher(MatcherAdapter(longestOne(MatcherAdapter(MemoizerMatcher(RuleImplAdapter(rule1))), MatcherAdapter(MemoizerMatcher(RuleImplAdapter(rule2))))))), MatcherAdapter(MemoizerMatcher(MatcherAdapter(and(MatcherAdapter(\"olaa\"), MatcherAdapter(\"uhu\"))))), MatcherAdapter(EOF)))))))");
+		assertEquals(MatcherTreePrinter.printWithAdapters(p.getRootRule()), "RuleImplAdapter(root)");
+		assertEquals(MatcherTreePrinter.printWithAdapters(((RuleImplAdapter)p.getGrammar().root).getRuleImpl()), "root.is(MatcherAdapter(MemoizerMatcher(MatcherAdapter(and(MatcherAdapter(\"bonjour\"), MatcherAdapter(MemoizerMatcher(MatcherAdapter(longestOne(MatcherAdapter(MemoizerMatcher(RuleImplAdapter(rule1))), MatcherAdapter(MemoizerMatcher(RuleImplAdapter(rule2))))))), MatcherAdapter(MemoizerMatcher(MatcherAdapter(and(MatcherAdapter(\"olaa\"), MatcherAdapter(\"uhu\"))))), MatcherAdapter(EOF))))))");
 	}
 	
 }

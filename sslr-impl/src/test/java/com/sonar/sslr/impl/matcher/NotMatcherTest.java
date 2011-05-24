@@ -7,6 +7,7 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static com.sonar.sslr.impl.matcher.Matchers.adjacent;
 import static com.sonar.sslr.impl.matcher.Matchers.and;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
@@ -21,9 +22,10 @@ public class NotMatcherTest {
     assertThat(and("one", Matchers.not("two"), "three"), match("one three"));
     assertThat(and("one", Matchers.not("two"), "two"), not(match("one two")));
   }
-
+  
   @Test
-  public void testGetDefinition() {
-    assertEquals("not(\"implements\")", Matchers.not("implements").getDefinition());
+  public void testToString() {
+  	assertEquals(Matchers.not("(").toString(), "not");
   }
+
 }

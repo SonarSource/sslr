@@ -7,6 +7,7 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static com.sonar.sslr.impl.matcher.Matchers.adjacent;
 import static com.sonar.sslr.impl.matcher.Matchers.and;
 import static com.sonar.sslr.impl.matcher.Matchers.exclusiveTill;
 import static org.junit.Assert.assertEquals;
@@ -21,9 +22,10 @@ public class ExclusiveTillMatcherTest {
     assertThat(and(exclusiveTill("four"), "four"), match("one two three four"));
     assertThat(and(exclusiveTill("two", "three"), "two", "three", "four"), match("one two three four"));
   }
-
+  
   @Test
-  public void testGetDefinition() {
-    assertEquals("exclusiveTill(\"public\", \"private\")", exclusiveTill("public", "private").getDefinition());
+  public void testToString() {
+  	assertEquals(exclusiveTill("(").toString(), "exclusiveTill");
   }
+
 }

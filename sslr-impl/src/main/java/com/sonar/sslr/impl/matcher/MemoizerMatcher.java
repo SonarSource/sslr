@@ -52,8 +52,8 @@ public class MemoizerMatcher extends Matcher {
   }
   
   @Override
-  public String getDefinition(boolean isRoot, boolean isVerbose) {
-  	return (isVerbose) ? "MemoizerMatcher(" + super.children[0].getDefinition(false, isVerbose) + ")" : super.children[0].getDefinition(false, isVerbose);
+  public String toString() {
+  	return "MemoizerMatcher";
   }
-
+  
 }

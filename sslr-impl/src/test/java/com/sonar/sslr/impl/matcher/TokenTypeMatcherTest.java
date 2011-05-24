@@ -26,10 +26,10 @@ public class TokenTypeMatcherTest {
 
     assertTrue(node.is(GenericTokenType.IDENTIFIER));
   }
-
+  
   @Test
-  public void testGetDefinition() {
-    TokenTypeMatcher matcher = new TokenTypeMatcher(MockTokenType.WORD);
-    assertEquals("WORD", matcher.getDefinition());
+  public void testToString() {
+  	assertEquals(new TokenTypeMatcher(GenericTokenType.IDENTIFIER).toString(), "IDENTIFIER");
   }
+
 }

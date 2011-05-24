@@ -44,18 +44,16 @@ public class RuleImplTest {
     opMatcher = opt("implements", WORD, o2n(",", WORD));
     javaClassDefinition.is("public", or("class", "interface"), opMatcher);
   }
-
-  @Test
-  public void testGetDefinition() {
-    assertEquals("JavaClassDefinition.is(and(\"public\", or(\"class\", \"interface\"), opt(and(\"implements\", WORD, o2n(and(\",\", WORD))))))", javaClassDefinition.getDefinition());
-    assertEquals("JavaClassDefinition", javaClassDefinition.getDefinition(false, true));
-  }
   
   @Test
   public void getName() {
     assertEquals("JavaClassDefinition", javaClassDefinition.getName());
   }
-
+  
+  @Test
+  public void getToString() {
+    assertEquals("JavaClassDefinition", javaClassDefinition.getName());
+  }
 
   @Test(expected = IllegalStateException.class)
   public void testEmptyIs() {
@@ -99,43 +97,43 @@ public class RuleImplTest {
   public void testIsOr() {
     RuleImpl myRule = new RuleImpl("MyRule");
     myRule.isOr("option1", "option2");
-    assertThat(myRule.getDefinition(), is("MyRule.is(or(\"option1\", \"option2\"))"));
+    assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(or(\"option1\", \"option2\"))"));
   }
 
   @Test
   public void testIs() {
     RuleImpl myRule = new RuleImpl("MyRule");
     myRule.is("option1");
-    assertThat(myRule.getDefinition(), is("MyRule.is(\"option1\")"));
+    assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(\"option1\")"));
   }
 
   @Test
   public void testOverride() {
     RuleImpl myRule = new RuleImpl("MyRule");
     myRule.is("option1");
-    assertThat(myRule.getDefinition(), is("MyRule.is(\"option1\")"));
+    assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(\"option1\")"));
     myRule.override("option2");
-    assertThat(myRule.getDefinition(), is("MyRule.is(\"option2\")"));
+    assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(\"option2\")"));
   }
 
   @Test
   public void testOr() {
     RuleImpl myRule = new RuleImpl("MyRule");
     myRule.is("option1");
-    assertThat(myRule.getDefinition(), is("MyRule.is(\"option1\")"));
+    assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(\"option1\")"));
     myRule.or("option2");
-    assertThat(myRule.getDefinition(), is("MyRule.is(or(\"option1\", \"option2\"))"));
+    assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(or(\"option1\", \"option2\"))"));
     myRule.or("option3", "option4");
-    assertThat(myRule.getDefinition(), is("MyRule.is(or(or(\"option1\", \"option2\"), and(\"option3\", \"option4\")))"));
+    assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(or(or(\"option1\", \"option2\"), and(\"option3\", \"option4\")))"));
   }
 
   @Test
   public void testOrBefore() {
     RuleImpl myRule = new RuleImpl("MyRule");
     myRule.is("option1");
-    assertThat(myRule.getDefinition(), is("MyRule.is(\"option1\")"));
+    assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(\"option1\")"));
     myRule.orBefore("option2");
-    assertThat(myRule.getDefinition(), is("MyRule.is(or(\"option2\", \"option1\"))"));
+    assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(or(\"option2\", \"option1\"))"));
   }
 
   @Test

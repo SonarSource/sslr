@@ -23,15 +23,15 @@ public class TokenTypeAndValueMatcher extends TokenMatcher {
     this.type = type;
     this.value = value;
   }
-  
-  @Override
-  public String getDefinition(boolean isRoot, boolean isVerbose) {
-  	return "token(" + type.getName() + ", \"" + value.replace("\"", "\\\"") + "\")";
-  }
 
   @Override
   protected boolean isExpectedToken(Token token) {
     return type == token.getType() && value.equals(token.getValue());
+  }
+  
+  @Override
+  public String toString() {
+  	return "token(" + type.getName() + ", \"" + value.replace("\"", "\\\"") + "\")";
   }
   
 }

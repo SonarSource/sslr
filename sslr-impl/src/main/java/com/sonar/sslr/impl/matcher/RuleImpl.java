@@ -159,11 +159,6 @@ public class RuleImpl extends Matcher implements Rule {
     return this;
   }
 
-  @Override
-  public String getDefinition(boolean isRoot, boolean isVerbose) {
-    return (isRoot) ? name + ".is(" + super.children[0].getDefinition(false, isVerbose) + ")" : name;
-  }
-
   public RuleImpl setListener(AstListener listener) {
     this.listener = listener;
     return this;
@@ -199,5 +194,10 @@ public class RuleImpl extends Matcher implements Rule {
   public void endParsing() {
   	/* Nothing, used by left recurisve rule only so far */
 	}
+  
+  @Override
+  public String toString() {
+  	return getName();
+  }
   
 }
