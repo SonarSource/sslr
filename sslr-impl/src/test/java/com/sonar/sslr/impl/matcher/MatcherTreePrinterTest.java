@@ -6,15 +6,15 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
-import static com.sonar.sslr.impl.matcher.Matchers.*;
-import static org.hamcrest.Matchers.not;
+import static com.sonar.sslr.impl.matcher.Matchers.and;
+import static com.sonar.sslr.impl.matcher.Matchers.o2n;
+import static com.sonar.sslr.impl.matcher.Matchers.or;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import com.sonar.sslr.impl.events.MatcherAdapter;
 import com.sonar.sslr.impl.events.RuleImplAdapter;
-import com.sonar.sslr.impl.events.MatcherAdapter;;
 
 public class MatcherTreePrinterTest {
 

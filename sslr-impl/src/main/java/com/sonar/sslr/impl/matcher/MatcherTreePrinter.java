@@ -11,56 +11,80 @@ import com.sonar.sslr.impl.events.MatcherAdapter;
 import com.sonar.sslr.impl.events.RuleImplAdapter;
 
 public class MatcherTreePrinter {
-	
-	public static String print(Matcher matcher) {
-		return print(matcher, 0, false);
-	}
-	
-	public static String printWithAdapters(Matcher matcher) {
-		return print(matcher, 0, true);
-	}
-	
-	private static String print(Matcher matcher, int level, boolean showAdapters) {
-		HashSet<String> implicitAnd = new HashSet<String>(){
-			{
-				OptMatcher.class.getCanonicalName();
-				NextMatcher.class.getCanonicalName();
-				ZeroToNMatcher.class.getCanonicalName();
-				OneToNMatcher.class.getCanonicalName();
-			}
-		};
-		
-		Matcher[] children = matcher.getChildren();
-		
-		if (!showAdapters && (matcher instanceof MemoizerMatcher || matcher instanceof RuleImplAdapter || matcher instanceof MatcherAdapter)) {
-			/* Skip this adapter matcher */
-			return print(children[0], level, showAdapters);
-		} else {
-			StringBuilder result = new StringBuilder(matcher.toString());
-			if (!(matcher instanceof RuleImplAdapter) && matcher instanceof RuleImpl && level == 0) result.append(".is");
-			
-			if (children.length > 0 && (matcher instanceof RuleImplAdapter || !(matcher instanceof RuleImpl) || level == 0)) {
-				result.append("(");
 
-				if (children.length == 1 && children[0] instanceof AndMatcher && children[0].getChildren().length == 1 && implicitAnd.contains(matcher.getClass().getCanonicalName())) {
-					/* Remove the implicitly added and matcher (which contains only a single child) */
-					result.append(print(matcher.children[0].children[0], level + 1, showAdapters));
-				}
-				else {
-					/* Display the children */
-			    for (int i = 0; i < children.length; i++) {
-			    	result.append(print(children[i], level + 1, showAdapters));
-			      if (i < children.length - 1) {
-			      	result.append(", ");
-			      }
-			    }
-		    }
-				
-				result.append(")");
-			}
-	    
-	    return result.toString();
-		}
-	}
-	
+  private static HashSet<String> implicitAnd = new HashSet<String>() {
+
+    {
+      OptMatcher.class.getCanonicalName();
+      NextMatcher.class.getCanonicalName();
+      ZeroToNMatcher.class.getCanonicalName();
+      OneToNMatcher.class.getCanonicalName();
+    }
+  };
+
+  public static String print(Matcher matcher) {
+    return print(matcher, true, false);
+  }
+
+  public static String printWithAdapters(Matcher matcher) {
+    return print(matcher, true, true);
+  }
+
+  private static String print(Matcher matcher, boolean expandRule, boolean showAdapters) {
+    Matcher[] children = matcher.getChildren();
+    StringBuilder result = new StringBuilder(matcher.toString());
+
+    if (isAdapter(matcher) && !showAdapters) {
+      /* Skip this adapter matcher */
+      return print(children[0], true, showAdapters);
+    }
+
+    if (isRule(matcher) && expandRule) {
+      result.append(".is");
+    }
+
+    if (hasChildren(children) && !isRuleToBeCollapsed(matcher, expandRule)) {
+      result.append("(");
+
+      if (hasOnlyOneAndMatcherWhichHasOnlyOneChild(matcher)) {
+        /* Remove the implicitly added and matcher (which contains only a single child) */
+        result.append(print(matcher.children[0].children[0], false, showAdapters));
+      } else {
+        /* Display the children */
+        for (int i = 0; i < children.length; i++) {
+          result.append(print(children[i], false, showAdapters));
+          if (i < children.length - 1) {
+            result.append(", ");
+          }
+        }
+      }
+
+      result.append(")");
+    }
+
+    return result.toString();
+  }
+
+  private static boolean hasOnlyOneAndMatcherWhichHasOnlyOneChild(Matcher matcher) {
+    Matcher[] children = matcher.getChildren();
+    return children.length == 1 && children[0] instanceof AndMatcher && children[0].getChildren().length == 1
+        && implicitAnd.contains(matcher.getClass().getCanonicalName());
+  }
+
+  private static boolean hasChildren(Matcher[] children) {
+    return children.length > 0;
+  }
+
+  private static boolean isAdapter(Matcher matcher) {
+    return matcher instanceof MemoizerMatcher || matcher instanceof RuleImplAdapter || matcher instanceof MatcherAdapter;
+  }
+
+  private static boolean isRule(Matcher matcher) {
+    return !(matcher instanceof RuleImplAdapter) && matcher instanceof RuleImpl;
+  }
+
+  private static boolean isRuleToBeCollapsed(Matcher matcher, boolean expandRule) {
+    return isRule(matcher) && !expandRule;
+  }
+
 }
