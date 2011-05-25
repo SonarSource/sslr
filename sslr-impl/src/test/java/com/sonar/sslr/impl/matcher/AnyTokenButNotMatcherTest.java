@@ -7,7 +7,7 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
-import static com.sonar.sslr.impl.matcher.Matchers.adjacent;
+import static com.sonar.sslr.impl.matcher.CfgFunctions.Advanced.anyTokenButNot;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -18,13 +18,13 @@ public class AnyTokenButNotMatcherTest {
 
   @Test
   public void ok() {
-    assertThat(Matchers.anyTokenButNot("two"), match("one"));
-    assertThat(Matchers.anyTokenButNot("one"), not(match("one")));
+    assertThat(anyTokenButNot("two"), match("one"));
+    assertThat(anyTokenButNot("one"), not(match("one")));
   }
-  
+
   @Test
   public void testToString() {
-  	assertEquals(Matchers.anyTokenButNot("(").toString(), "anyTokenButNot");
+    assertEquals(anyTokenButNot("(").toString(), "anyTokenButNot");
   }
 
 }

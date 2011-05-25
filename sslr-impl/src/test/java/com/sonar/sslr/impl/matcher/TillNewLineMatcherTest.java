@@ -7,7 +7,8 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
-import static com.sonar.sslr.impl.matcher.Matchers.*;
+import static com.sonar.sslr.impl.matcher.CfgFunctions.Advanced.tillNewLine;
+import static com.sonar.sslr.impl.matcher.CfgFunctions.Standard.and;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 

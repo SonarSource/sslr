@@ -7,8 +7,8 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
-import static com.sonar.sslr.impl.matcher.Matchers.adjacent;
-import static com.sonar.sslr.impl.matcher.Matchers.and;
+import static com.sonar.sslr.impl.matcher.CfgFunctions.Advanced.adjacent;
+import static com.sonar.sslr.impl.matcher.CfgFunctions.Standard.and;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -22,10 +22,10 @@ public class AdjacentMatcherTest {
     assertThat(and("myMacro", adjacent("(")), match("myMacro("));
     assertThat(and("myMacro", adjacent("(")), not(match("myMacro (")));
   }
-  
+
   @Test
   public void testToString() {
-  	assertEquals(adjacent("(").toString(), "adjacent");
+    assertEquals(adjacent("(").toString(), "adjacent");
   }
- 
+
 }

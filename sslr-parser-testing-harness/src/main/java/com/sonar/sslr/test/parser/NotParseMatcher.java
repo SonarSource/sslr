@@ -5,8 +5,6 @@
  */
 package com.sonar.sslr.test.parser;
 
-import static com.sonar.sslr.impl.matcher.Matchers.opt;
-
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
@@ -33,7 +31,8 @@ class NotParseMatcher extends BaseMatcher<Parser> {
     } catch (RecognitionExceptionImpl e) {
       return true;
     }
-    if(parser.getParsingState().hasNextToken() && parser.getParsingState().readToken(parser.getParsingState().lexerIndex).getType() != GenericTokenType.EOF){
+    if (parser.getParsingState().hasNextToken()
+        && parser.getParsingState().readToken(parser.getParsingState().lexerIndex).getType() != GenericTokenType.EOF) {
       return true;
     }
     return false;

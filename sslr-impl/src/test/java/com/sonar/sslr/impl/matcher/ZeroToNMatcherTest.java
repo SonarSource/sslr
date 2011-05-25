@@ -6,17 +6,15 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import org.junit.Test;
-
-import static com.sonar.sslr.impl.matcher.Matchers.isFalse;
-import static com.sonar.sslr.impl.matcher.Matchers.isTrue;
-import static com.sonar.sslr.impl.matcher.Matchers.o2n;
-
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static com.sonar.sslr.impl.matcher.CfgFunctions.Advanced.isFalse;
+import static com.sonar.sslr.impl.matcher.CfgFunctions.Advanced.isTrue;
+import static com.sonar.sslr.impl.matcher.CfgFunctions.Standard.o2n;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
+import org.junit.Test;
 
 public class ZeroToNMatcherTest  {
 

@@ -8,8 +8,8 @@ package com.sonar.sslr.dsl.calculator;
 import static com.sonar.sslr.dsl.DslTokenType.DOUBLE;
 import static com.sonar.sslr.dsl.DslTokenType.INTEGER;
 import static com.sonar.sslr.dsl.DslTokenType.WORD;
-import static com.sonar.sslr.impl.matcher.Matchers.opt;
-import static com.sonar.sslr.impl.matcher.Matchers.or;
+import static com.sonar.sslr.impl.matcher.CfgFunctions.Standard.opt;
+import static com.sonar.sslr.impl.matcher.CfgFunctions.Standard.or;
 
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.dsl.Dsl;

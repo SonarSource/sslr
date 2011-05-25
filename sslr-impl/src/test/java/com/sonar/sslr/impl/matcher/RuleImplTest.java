@@ -7,9 +7,9 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.MockTokenType.WORD;
-import static com.sonar.sslr.impl.matcher.Matchers.o2n;
-import static com.sonar.sslr.impl.matcher.Matchers.opt;
-import static com.sonar.sslr.impl.matcher.Matchers.or;
+import static com.sonar.sslr.impl.matcher.CfgFunctions.Standard.o2n;
+import static com.sonar.sslr.impl.matcher.CfgFunctions.Standard.opt;
+import static com.sonar.sslr.impl.matcher.CfgFunctions.Standard.or;
 import static com.sonar.sslr.test.lexer.TokenUtils.lex;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;

@@ -5,8 +5,6 @@
  */
 package com.sonar.sslr.test.parser;
 
-import static com.sonar.sslr.impl.matcher.Matchers.opt;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
@@ -16,7 +14,6 @@ import org.hamcrest.Description;
 
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.impl.ParsingStackTrace;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
 class ParseMatcher extends BaseMatcher<Parser> {
@@ -39,16 +36,17 @@ class ParseMatcher extends BaseMatcher<Parser> {
     try {
       parser.parse(sourceCode);
     } catch (RecognitionExceptionImpl e) {
-    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    	parser.printStackTrace(new PrintStream(baos));
-    	String message = baos.toString();
-    	
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      parser.printStackTrace(new PrintStream(baos));
+      String message = baos.toString();
+
       if (StringUtils.isEmpty(message)) {
         message = e.getMessage();
       }
       throw new AssertionError(message);
     }
-    return !parser.getParsingState().hasNextToken() || parser.getParsingState().readToken(parser.getParsingState().lexerIndex).getType() == GenericTokenType.EOF;
+    return !parser.getParsingState().hasNextToken()
+        || parser.getParsingState().readToken(parser.getParsingState().lexerIndex).getType() == GenericTokenType.EOF;
   }
 
   public void describeTo(Description desc) {

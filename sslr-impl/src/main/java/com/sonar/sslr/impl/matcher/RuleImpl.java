@@ -65,7 +65,7 @@ public class RuleImpl extends Matcher implements Rule {
       throw new IllegalStateException("The rule '" + name + "' has already been defined somewhere in the grammar.");
     }
     checkIfThereIsAtLeastOneMatcher(matchers);
-    setMatcher(Matchers.and(matchers));
+    setMatcher(CfgFunctions.Standard.and(matchers));
     return this;
   }
 
@@ -74,7 +74,7 @@ public class RuleImpl extends Matcher implements Rule {
    */
   public RuleImpl override(Object... matchers) {
     checkIfThereIsAtLeastOneMatcher(matchers);
-    setMatcher(Matchers.and(matchers));
+    setMatcher(CfgFunctions.Standard.and(matchers));
     return this;
   }
 
@@ -97,7 +97,7 @@ public class RuleImpl extends Matcher implements Rule {
       throw new IllegalStateException("The rule '" + name + "' has already been defined somewhere in the grammar.");
     }
     checkIfThereIsAtLeastOneMatcher(matchers);
-    setMatcher(Matchers.or(matchers));
+    setMatcher(CfgFunctions.Standard.or(matchers));
     return this;
   }
 
@@ -106,7 +106,7 @@ public class RuleImpl extends Matcher implements Rule {
     if (super.children.length == 0) {
       throw new IllegalStateException("The Rule.or(...) can't be called if the method Rule.is(...) hasn't been called first.");
     }
-    setMatcher(Matchers.or(super.children[0], Matchers.and(matchers)));
+    setMatcher(CfgFunctions.Standard.or(super.children[0], CfgFunctions.Standard.and(matchers)));
     return this;
   }
 
@@ -115,7 +115,7 @@ public class RuleImpl extends Matcher implements Rule {
     if (super.children.length == 0) {
       throw new IllegalStateException("The Rule.and(...) can't be called if the method Rule.is(...) hasn't been called first.");
     }
-    setMatcher(Matchers.and(super.children[0], Matchers.and(matchers)));
+    setMatcher(CfgFunctions.Standard.and(super.children[0], CfgFunctions.Standard.and(matchers)));
     return this;
   }
 
@@ -124,7 +124,7 @@ public class RuleImpl extends Matcher implements Rule {
     if (super.children.length == 0) {
       throw new IllegalStateException("The Rule.or(...) can't be called if the method Rule.is(...) hasn't been called first.");
     }
-    setMatcher(Matchers.or(Matchers.and(matchers), super.children[0]));
+    setMatcher(CfgFunctions.Standard.or(CfgFunctions.Standard.and(matchers), super.children[0]));
     return this;
   }
 

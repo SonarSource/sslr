@@ -6,7 +6,7 @@
 package com.sonar.sslr.dsl.internal.controlflow;
 
 import static com.sonar.sslr.dsl.DslTokenType.INTEGER;
-import static com.sonar.sslr.impl.matcher.Matchers.o2n;
+import static com.sonar.sslr.impl.matcher.CfgFunctions.Standard.o2n;
 
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.dsl.CommandListDsl;
