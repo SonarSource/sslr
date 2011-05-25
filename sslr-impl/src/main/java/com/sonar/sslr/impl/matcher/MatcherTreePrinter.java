@@ -5,86 +5,61 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import java.util.HashSet;
-
 import com.sonar.sslr.impl.events.MatcherAdapter;
 import com.sonar.sslr.impl.events.RuleImplAdapter;
 
 public class MatcherTreePrinter {
 
-  private static HashSet<String> implicitAnd = new HashSet<String>() {
+	public static String print(Matcher matcher) {
+		return print(matcher, true, false);
+	}
 
-    {
-      OptMatcher.class.getCanonicalName();
-      NextMatcher.class.getCanonicalName();
-      ZeroToNMatcher.class.getCanonicalName();
-      OneToNMatcher.class.getCanonicalName();
-    }
-  };
+	public static String printWithAdapters(Matcher matcher) {
+		return print(matcher, true, true);
+	}
 
-  public static String print(Matcher matcher) {
-    return print(matcher, true, false);
-  }
+	private static String print(Matcher matcher, boolean expandRule, boolean showAdapters) {
+		Matcher[] children = matcher.getChildren();
 
-  public static String printWithAdapters(Matcher matcher) {
-    return print(matcher, true, true);
-  }
+		if (isAdapter(matcher) && !showAdapters) {
+			/* Skip this adapter matcher */
+			return print(children[0], expandRule, showAdapters);
+		}
 
-  private static String print(Matcher matcher, boolean expandRule, boolean showAdapters) {
-    Matcher[] children = matcher.getChildren();
-    StringBuilder result = new StringBuilder(matcher.toString());
+		StringBuilder result = new StringBuilder(matcher.toString());
+		if (isRuleImpl(matcher) && expandRule) result.append(".is");
 
-    if (isAdapter(matcher) && !showAdapters) {
-      /* Skip this adapter matcher */
-      return print(children[0], true, showAdapters);
-    }
+		if (hasChildren(children) && isNotRuleImplToCollapse(matcher, expandRule)) {
+			result.append("(");
 
-    if (isRule(matcher) && expandRule) {
-      result.append(".is");
-    }
+			/* Display the children */
+			for (int i = 0; i < children.length; i++) {
+				result.append(print(children[i], false, showAdapters));
+				if (i < children.length - 1) {
+					result.append(", ");
+				}
+			}
 
-    if (hasChildren(children) && !isRuleToBeCollapsed(matcher, expandRule)) {
-      result.append("(");
+			result.append(")");
+		}
 
-      if (hasOnlyOneAndMatcherWhichHasOnlyOneChild(matcher)) {
-        /* Remove the implicitly added and matcher (which contains only a single child) */
-        result.append(print(matcher.children[0].children[0], false, showAdapters));
-      } else {
-        /* Display the children */
-        for (int i = 0; i < children.length; i++) {
-          result.append(print(children[i], false, showAdapters));
-          if (i < children.length - 1) {
-            result.append(", ");
-          }
-        }
-      }
+		return result.toString();
+	}
 
-      result.append(")");
-    }
+	private static boolean isNotRuleImplToCollapse(Matcher matcher, boolean expandRule) {
+		return !(isRuleImpl(matcher) && !expandRule);
+	}
 
-    return result.toString();
-  }
+	private static boolean hasChildren(Matcher[] children) {
+		return children.length > 0;
+	}
 
-  private static boolean hasOnlyOneAndMatcherWhichHasOnlyOneChild(Matcher matcher) {
-    Matcher[] children = matcher.getChildren();
-    return children.length == 1 && children[0] instanceof AndMatcher && children[0].getChildren().length == 1
-        && implicitAnd.contains(matcher.getClass().getCanonicalName());
-  }
+	private static boolean isRuleImpl(Matcher matcher) {
+		return !(matcher instanceof RuleImplAdapter) && matcher instanceof RuleImpl;
+	}
 
-  private static boolean hasChildren(Matcher[] children) {
-    return children.length > 0;
-  }
-
-  private static boolean isAdapter(Matcher matcher) {
-    return matcher instanceof MemoizerMatcher || matcher instanceof RuleImplAdapter || matcher instanceof MatcherAdapter;
-  }
-
-  private static boolean isRule(Matcher matcher) {
-    return !(matcher instanceof RuleImplAdapter) && matcher instanceof RuleImpl;
-  }
-
-  private static boolean isRuleToBeCollapsed(Matcher matcher, boolean expandRule) {
-    return isRule(matcher) && !expandRule;
-  }
-
+	private static boolean isAdapter(Matcher matcher) {
+		return (matcher instanceof MemoizerMatcher || matcher instanceof RuleImplAdapter || matcher instanceof MatcherAdapter);
+	}
+	
 }

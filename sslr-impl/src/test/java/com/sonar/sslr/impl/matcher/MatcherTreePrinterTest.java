@@ -6,9 +6,7 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.Matchers.and;
-import static com.sonar.sslr.impl.matcher.Matchers.o2n;
-import static com.sonar.sslr.impl.matcher.Matchers.or;
+import static com.sonar.sslr.impl.matcher.Matchers.*;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
