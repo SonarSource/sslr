@@ -27,6 +27,7 @@ public class TillNewLineMatcherTest {
     assertThat(and("a", "b", "c", tillNewLine()), match("a b c"));
     assertThat(and("a", "b", "c", tillNewLine()), match("a b c \n"));
     assertThat(and("a", "b", "c", tillNewLine()), match("a b c \n\n"));
+    assertThat(and("bonjour", tillNewLine(), "hehe"), match("\n\n\nbonjour whatever wtf \n hehe"));
   }
   
   @Test
