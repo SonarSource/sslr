@@ -127,6 +127,7 @@ public class Matchers {
   public static Matcher bridge(TokenType from, TokenType to) {
     return new BridgeMatcher(from, to);
   }
+  
 
   /**
    * For unit test only Consume the next token whatever it is
@@ -147,6 +148,13 @@ public class Matchers {
    */
   public static Matcher anyToken() {
     return new AnyTokenMatcher();
+  }
+  
+  /**
+   * Consume every following token which are on the current line
+   */
+  public static Matcher tillNewLine() {
+    return new TillNewLineMatcher();
   }
 
   /**
@@ -224,11 +232,11 @@ public class Matchers {
    * 
    * <pre>
    * {@code 
-   *      -----<----------------<------------------<------ 
-   *     |                                                |  
+   *     --------<----------------<------------------<--------
+   *    |                                                     |  
    * >------element 1----element 2---- ... ----element n---------->
-   *  |                                                       |  
-   *   ------------------------->----------------------------- 
+   *    |                                                     |  
+   *     ------------------------->--------------------------- 
    * }
    * </pre>
    */
