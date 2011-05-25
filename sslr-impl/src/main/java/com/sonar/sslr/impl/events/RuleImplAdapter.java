@@ -25,11 +25,11 @@ public class RuleImplAdapter extends RuleImpl {
 
     this.ruleImpl = ruleImpl;
     this.parsingEventListener = parsingEventListener;
-    this.children = new Matcher[]{ruleImpl};
+    this.children = new Matcher[] { ruleImpl };
   }
-  
+
   public RuleImpl getRuleImpl() {
-  	return ruleImpl;
+    return ruleImpl;
   }
 
   @Override
@@ -44,7 +44,7 @@ public class RuleImplAdapter extends RuleImpl {
       parsingEventListener.exitWithoutMatchRule(ruleImpl, parsingState, re);
       throw re;
     }
-    
+
   }
 
   @Override
@@ -59,7 +59,7 @@ public class RuleImplAdapter extends RuleImpl {
 
   @Override
   public RuleImpl override(Object... matchers) {
-  	throw new NotImplementedException();
+    throw new NotImplementedException();
   }
 
   @Override
@@ -74,42 +74,27 @@ public class RuleImplAdapter extends RuleImpl {
 
   @Override
   public RuleImpl isOr(Object... matchers) {
-  	throw new NotImplementedException();
+    throw new NotImplementedException();
   }
 
   @Override
   public RuleImpl or(Object... matchers) {
-  	throw new NotImplementedException();
+    throw new NotImplementedException();
   }
 
   @Override
   public RuleImpl and(Object... matchers) {
-  	throw new NotImplementedException();
+    throw new NotImplementedException();
   }
 
   @Override
   public RuleImpl orBefore(Object... matchers) {
-  	throw new NotImplementedException();
+    throw new NotImplementedException();
   }
 
   @Override
   public RuleImpl skip() {
     this.ruleImpl.skip();
-    return this;
-  }
-
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.ruleImpl.setParentRule(parentRule);
-  }
-
-  @Override
-  public RuleImpl getParentRule() {
-    return this.ruleImpl.getParentRule();
-  }
-
-  @Override
-  public RuleImpl getRule() {
     return this;
   }
 

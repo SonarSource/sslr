@@ -9,7 +9,6 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.matcher.Matcher;
-import com.sonar.sslr.impl.matcher.RuleImpl;
 
 public class MatcherAdapter extends Matcher {
 
@@ -19,17 +18,7 @@ public class MatcherAdapter extends Matcher {
   public MatcherAdapter(ParsingEventListener parsingEventListener, Matcher matcher) {
     this.matcher = matcher;
     this.parsingEventListener = parsingEventListener;
-    this.children = new Matcher[]{matcher};
-  }
-
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    this.matcher.setParentRule(parentRule);
-  }
-
-  @Override
-  public RuleImpl getRule() {
-    return this.matcher.getRule();
+    this.children = new Matcher[] { matcher };
   }
 
   @Override
@@ -49,7 +38,7 @@ public class MatcherAdapter extends Matcher {
       parsingEventListener.exitWithoutMatchMatcher(matcher, parsingState, re);
       throw re;
     }
-    
+
   }
 
   @Override

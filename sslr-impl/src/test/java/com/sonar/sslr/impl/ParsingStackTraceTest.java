@@ -13,7 +13,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sonar.sslr.api.Grammar;
@@ -51,9 +50,6 @@ public class ParsingStackTraceTest {
     expected.append("    5 }\n");
     expected.append("------\n");
     expected.append("Expected : <\"class\"> but was : <clas [IDENTIFIER]> ('Dummy for unit tests': Line 3 / Column 16)\n");
-    expected.append("  at classDeclaration\n");
-    expected.append("  at classBlock\n");
-    expected.append("  at compilationUnit\n");
 
     assertEquals(expected.toString(), ParsingStackTrace.generateFullStackTrace(state));
   }
@@ -69,9 +65,6 @@ public class ParsingStackTraceTest {
     StringBuilder expected = new StringBuilder();
     expected
         .append("Expected : <\"class\"> but was : <clas [IDENTIFIER]> (copy book 'Dummy for unit tests': Line 3 / Column 16 called from file 'file1': Line 20)\n");
-    expected.append("  at classDeclaration\n");
-    expected.append("  at classBlock\n");
-    expected.append("  at compilationUnit\n");
 
     assertEquals(expected.toString(), ParsingStackTrace.generate(state));
   }
@@ -89,10 +82,7 @@ public class ParsingStackTraceTest {
     expected.append("-->   public abstract\n");
     expected.append("------\n");
     expected.append("Expected : <\"class\"> but was : <EOF> ('Dummy for unit tests')\n");
-    expected.append("  at classDeclaration\n");
-    expected.append("  at classBlock\n");
-    expected.append("  at compilationUnit\n");
-    
+
     assertEquals(expected.toString(), ParsingStackTrace.generateFullStackTrace(state));
   }
 

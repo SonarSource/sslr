@@ -11,7 +11,6 @@ import java.util.List;
 
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.matcher.Matcher;
-import com.sonar.sslr.impl.matcher.RuleImpl;
 import com.sonar.sslr.impl.matcher.TokenTypeMatcher;
 
 public class ParsingStackTrace {
@@ -29,7 +28,6 @@ public class ParsingStackTrace {
     }
     displayExpectedToken(parsingState.getOutpostMatcher());
     displayButWasToken(parsingState.getOutpostMatcherToken());
-    displayLastParentRules((RuleImpl) parsingState.getOutpostMatcher().getRule(), STACK_TRACE_DEPTH);
   }
 
   private void displaySourceCode() {
@@ -119,16 +117,6 @@ public class ParsingStackTrace {
       }
     }
     stackTrace.append("\n");
-  }
-
-  private void displayLastParentRules(RuleImpl ruleImpl, int level) {
-    if (level == 0 || ruleImpl == null) {
-      return;
-    }
-    stackTrace.append("  at ");
-    stackTrace.append(ruleImpl.getName());
-    stackTrace.append("\n");
-    displayLastParentRules(ruleImpl.getParentRule(), level - 1);
   }
 
   public static String generate(ParsingState state) {

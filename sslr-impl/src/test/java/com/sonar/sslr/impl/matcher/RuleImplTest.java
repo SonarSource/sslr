@@ -13,8 +13,6 @@ import static com.sonar.sslr.impl.matcher.Matchers.or;
 import static com.sonar.sslr.test.lexer.TokenUtils.lex;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
@@ -44,12 +42,12 @@ public class RuleImplTest {
     opMatcher = opt("implements", WORD, o2n(",", WORD));
     javaClassDefinition.is("public", or("class", "interface"), opMatcher);
   }
-  
+
   @Test
   public void getName() {
     assertEquals("JavaClassDefinition", javaClassDefinition.getName());
   }
-  
+
   @Test
   public void getToString() {
     assertEquals("JavaClassDefinition", javaClassDefinition.getName());
@@ -134,26 +132,6 @@ public class RuleImplTest {
     assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(\"option1\")"));
     myRule.orBefore("option2");
     assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(or(\"option2\", \"option1\"))"));
-  }
-
-  @Test
-  public void testGetParentRule() {
-    assertSame(javaClassDefinition, javaClassDefinition.getRule());
-    assertSame(javaClassDefinition, opMatcher.getRule());
-  }
-
-  @Test
-  public void testSetParentRule() {
-    RuleImpl parentRule1 = new RuleImpl("ParentRule1");
-    RuleImpl parentRule2 = new RuleImpl("ParentRule2");
-
-    RuleImpl childRule = new RuleImpl("ChildRule");
-
-    parentRule1.is(childRule);
-    assertSame(parentRule1, childRule.getParentRule());
-
-    parentRule2.is(childRule);
-    assertNull(childRule.getParentRule());
   }
 
   @Test

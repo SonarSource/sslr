@@ -134,29 +134,7 @@ public class RuleImpl extends Matcher implements Rule {
   }
 
   protected void setMatcher(Matcher matcher) {
-    super.children = new Matcher[]{ matcher };
-    matcher.setParentRule(this);
-  }
-
-  @Override
-  public void setParentRule(RuleImpl parentRule) {
-    if (this.parentRule != null && parentRule != this.parentRule) {
-      hasSeveralParents = true;
-    }
-    if (hasSeveralParents) {
-      this.parentRule = null;
-      return;
-    }
-    this.parentRule = parentRule;
-  }
-
-  public RuleImpl getParentRule() {
-    return parentRule;
-  }
-
-  @Override
-  public RuleImpl getRule() {
-    return this;
+    super.children = new Matcher[] { matcher };
   }
 
   public RuleImpl setListener(AstListener listener) {
@@ -179,25 +157,25 @@ public class RuleImpl extends Matcher implements Rule {
     return this;
   }
 
-	public Class getAdapter() {
+  public Class getAdapter() {
     return adapterClass;
   }
-  
+
   public String getName() {
-  	return name;
+    return name;
   }
 
   public void recoveryRule() {
     recoveryRule = true;
   }
-  
+
   public void endParsing() {
-  	/* Nothing, used by left recurisve rule only so far */
-	}
-  
+    /* Nothing, used by left recurisve rule only so far */
+  }
+
   @Override
   public String toString() {
-  	return getName();
+    return getName();
   }
-  
+
 }
