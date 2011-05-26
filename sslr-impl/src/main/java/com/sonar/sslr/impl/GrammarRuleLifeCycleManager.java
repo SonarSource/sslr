@@ -11,9 +11,7 @@ import org.apache.commons.lang.ClassUtils;
 
 import com.sonar.sslr.api.LeftRecursiveRule;
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.impl.events.ParsingEventListener;
-import com.sonar.sslr.impl.matcher.LeftRecursiveRuleImpl;
-import com.sonar.sslr.impl.matcher.RuleImpl;
+import com.sonar.sslr.impl.matcher.RuleBuilder;
 
 /**
  * Utility class for handling grammar rule life cycle
@@ -37,9 +35,9 @@ public final class GrammarRuleLifeCycleManager {
       String fieldName = field.getName();
       try {
         if (field.getType() == LeftRecursiveRule.class) {
-        	field.set(rules, new LeftRecursiveRuleImpl(fieldName));
+          field.set(rules, new RuleBuilder(fieldName, true));
         } else if (field.getType() == Rule.class) {
-        	field.set(rules, new RuleImpl(fieldName));
+          field.set(rules, new RuleBuilder(fieldName, false));
         }
       } catch (Exception e) {
         throw new RuntimeException("Unable to instanciate the rule '" + grammar.getName() + "." + fieldName + "'", e);
@@ -59,10 +57,10 @@ public final class GrammarRuleLifeCycleManager {
       if (ClassUtils.isAssignable(field.getType(), Rule.class)) {
         try {
           Object rule = field.get(grammar);
-          ((Rule) rule).endParsing();
+          ((RuleBuilder) rule).getRule().endParsing();
         } catch (Exception e) {
-          throw new RuntimeException("Unable to call endParsing() method on the following rule '"
-              + grammar.getClass().getName() + "." + field.getName() + "'", e);
+          throw new RuntimeException("Unable to call endParsing() method on the following rule '" + grammar.getClass().getName() + "."
+              + field.getName() + "'", e);
         }
       }
     }

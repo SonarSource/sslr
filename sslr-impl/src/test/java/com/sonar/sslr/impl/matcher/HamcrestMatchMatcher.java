@@ -52,8 +52,8 @@ public class HamcrestMatchMatcher extends BaseMatcher<Matcher> {
       parsingStackTrace = ParsingStackTrace.generate(parsingState);
       return false;
     } finally {
-      if (obj instanceof LeftRecursiveRuleImpl) {
-        ((LeftRecursiveRuleImpl) obj).endParsing();
+      if (obj instanceof LeftRecursiveRuleMatcher) {
+        ((LeftRecursiveRuleMatcher) obj).endParsing();
       }
     }
   }

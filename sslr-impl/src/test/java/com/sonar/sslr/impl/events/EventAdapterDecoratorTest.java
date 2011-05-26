@@ -19,6 +19,7 @@ import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.GrammarRuleLifeCycleManager;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
+import com.sonar.sslr.impl.matcher.RuleBuilder;
 
 public class EventAdapterDecoratorTest {
 
@@ -68,27 +69,31 @@ public class EventAdapterDecoratorTest {
     p.disableMemoizer();
     p.enableExtendedStackTrace();
     p.parse("bonjour hehe huhu olaa uhu");
-    assertEquals(MatcherTreePrinter.printWithAdapters(p.getRootRule()), "RuleImplAdapter(root)");
+    assertEquals("RuleImplAdapter(root)", MatcherTreePrinter.printWithAdapters(p.getRootRule().getRule()));
     assertEquals(
-        MatcherTreePrinter.printWithAdapters(((RuleImplAdapter) p.getGrammar().root).getRuleImpl()),
+        printRootRuleWithAdapters(p),
         "root.is(MatcherAdapter(and(MatcherAdapter(\"bonjour\"), MatcherAdapter(longestOne(RuleImplAdapter(rule1), RuleImplAdapter(rule2))), MatcherAdapter(and(MatcherAdapter(\"olaa\"), MatcherAdapter(\"uhu\"))), MatcherAdapter(EOF))))");
 
     p = new MyTestGrammarParser(true, new MyTestGrammar());
     p.disableMemoizer();
     p.enableExtendedStackTrace();
     p.parse("four PLUS four PLUS four");
-    assertEquals(MatcherTreePrinter.printWithAdapters(p.getRootRule()), "RuleImplAdapter(root)");
+    assertEquals(MatcherTreePrinter.printWithAdapters(p.getRootRule().getRule()), "RuleImplAdapter(root)");
     assertEquals(
-        MatcherTreePrinter.printWithAdapters(((RuleImplAdapter) p.getGrammar().root).getRuleImpl()),
+        printRootRuleWithAdapters(p),
         "root.is(MatcherAdapter(or(MatcherAdapter(and(MatcherAdapter(\"four\"), MatcherAdapter(\"PLUS\"), RuleImplAdapter(root))), MatcherAdapter(\"four\"))))");
 
     p = new MyTestGrammarParser(false, new MyTestGrammar());
     p.enableExtendedStackTrace();
     p.parse("bonjour hehe huhu olaa uhu");
-    assertEquals(MatcherTreePrinter.printWithAdapters(p.getRootRule()), "RuleImplAdapter(root)");
+    assertEquals(MatcherTreePrinter.printWithAdapters(p.getRootRule().getRule()), "RuleImplAdapter(root)");
     assertEquals(
-        MatcherTreePrinter.printWithAdapters(((RuleImplAdapter) p.getGrammar().root).getRuleImpl()),
+        printRootRuleWithAdapters(p),
         "root.is(MatcherAdapter(MemoizerMatcher(MatcherAdapter(and(MatcherAdapter(\"bonjour\"), MatcherAdapter(MemoizerMatcher(MatcherAdapter(longestOne(MatcherAdapter(MemoizerMatcher(RuleImplAdapter(rule1))), MatcherAdapter(MemoizerMatcher(RuleImplAdapter(rule2))))))), MatcherAdapter(MemoizerMatcher(MatcherAdapter(and(MatcherAdapter(\"olaa\"), MatcherAdapter(\"uhu\"))))), MatcherAdapter(EOF))))))");
   }
 
+  private String printRootRuleWithAdapters(MyTestGrammarParser p) {
+    RuleMatcherAdapter ruleAdapter = (RuleMatcherAdapter) ((RuleBuilder) p.getGrammar().root).getRule();
+    return MatcherTreePrinter.printWithAdapters(ruleAdapter.getRuleImpl());
+  }
 }

@@ -297,6 +297,8 @@ public class CfgFunctions {
     } else if (object instanceof TokenType) {
       TokenType tokenType = (TokenType) object;
       matcher = new TokenTypeMatcher(tokenType, tokenType.hasToBeSkippedFromAst(null));
+    } else if (object instanceof RuleBuilder) {
+      matcher = ((RuleBuilder) object).getRule();
     } else if (object instanceof Class) {
       matcher = new TokenTypeClassMatcher((Class) object);
     } else {

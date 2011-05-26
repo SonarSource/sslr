@@ -17,7 +17,7 @@ import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 import com.sonar.sslr.impl.matcher.MemoizerMatcher;
-import com.sonar.sslr.impl.matcher.RuleImpl;
+import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class ExtendedStackTrace implements ParsingEventListener {
 	private final static int STACK_TRACE_RULE_STARTING_WITH_TOKENS = 4;
@@ -62,18 +62,18 @@ public class ExtendedStackTrace implements ParsingEventListener {
 		
 		private int toIndex;
 		
-		public RuleWithPosition(RuleImpl rule, int fromIndex) {
+		public RuleWithPosition(RuleMatcher rule, int fromIndex) {
 			super(rule, fromIndex);
 			this.toIndex = -1;
 		}
 		
-		public RuleWithPosition(RuleImpl rule, int fromIndex, int toIndex) {
+		public RuleWithPosition(RuleMatcher rule, int fromIndex, int toIndex) {
 			super(rule, fromIndex);
 			this.toIndex = toIndex;
 		}
 		
-		public RuleImpl getRule() {
-			return (RuleImpl)getMatcher();
+		public RuleMatcher getRule() {
+			return (RuleMatcher)getMatcher();
 		}
 		
 		public void setToIndex(int toIndex) {
@@ -86,7 +86,7 @@ public class ExtendedStackTrace implements ParsingEventListener {
 		
 	}
 	
-	public void enterRule(RuleImpl rule, ParsingState parsingState) {
+	public void enterRule(RuleMatcher rule, ParsingState parsingState) {
 		/* The beginning of a rule is the "end" (when partitioning) of the last one, so update the last's one toIndex */
 		RuleWithPosition lastRuleWithPosition = null;
 		for (MatcherWithPosition currentMatcherWithPosition: currentStack) {
@@ -102,11 +102,11 @@ public class ExtendedStackTrace implements ParsingEventListener {
 		currentStack.push(new RuleWithPosition(rule, parsingState.lexerIndex));
 	}
 
-	public void exitWithMatchRule(RuleImpl rule, ParsingState parsingState, AstNode astNode) {
+	public void exitWithMatchRule(RuleMatcher rule, ParsingState parsingState, AstNode astNode) {
 		currentStack.pop();
 	}
 
-	public void exitWithoutMatchRule(RuleImpl rule, ParsingState parsingState, RecognitionExceptionImpl re) {
+	public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState, RecognitionExceptionImpl re) {
 		currentStack.pop();
 	}
 

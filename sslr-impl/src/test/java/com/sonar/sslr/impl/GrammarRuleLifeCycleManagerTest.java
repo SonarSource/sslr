@@ -17,8 +17,9 @@ import org.junit.Test;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.LeftRecursiveRule;
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.impl.matcher.LeftRecursiveRuleImpl;
-import com.sonar.sslr.impl.matcher.RuleImpl;
+import com.sonar.sslr.impl.matcher.LeftRecursiveRuleMatcher;
+import com.sonar.sslr.impl.matcher.RuleBuilder;
+import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class GrammarRuleLifeCycleManagerTest {
 
@@ -30,18 +31,20 @@ public class GrammarRuleLifeCycleManagerTest {
     GrammarRuleLifeCycleManager.initializeRuleFields(grammar, SampleGrammar.class);
 
     assertThat(grammar.rule1, not(nullValue()));
-    assertThat(grammar.rule1, is(RuleImpl.class));
-    
+    assertThat(grammar.rule1, is(RuleBuilder.class));
+    assertThat(((RuleBuilder) grammar.rule1).getRule(), is(RuleMatcher.class));
+
     assertThat(grammar.rule2, not(nullValue()));
-    assertThat(grammar.rule2, is(LeftRecursiveRuleImpl.class));
+    assertThat(grammar.rule2, is(RuleBuilder.class));
+    assertThat(((RuleBuilder) grammar.rule2).getRule(), is(LeftRecursiveRuleMatcher.class));
   }
 
   @Test
   public void reinitializeLeftRecursionRuleFields() {
-    LeftRecursiveRuleImpl mockRule = mock(LeftRecursiveRuleImpl.class);
+    LeftRecursiveRuleMatcher mockRule = mock(LeftRecursiveRuleMatcher.class);
     SampleGrammar grammar = new SampleGrammar();
-    grammar.rule1 = new RuleImpl("rule1");
-    grammar.rule2 = mockRule;
+    grammar.rule1 = new RuleBuilder("rule1", false);
+    grammar.rule2 = new RuleBuilder(mockRule);
 
     GrammarRuleLifeCycleManager.notifyEndParsing(grammar);
 

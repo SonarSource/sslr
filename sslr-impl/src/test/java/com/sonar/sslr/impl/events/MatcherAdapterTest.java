@@ -19,7 +19,7 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
-import com.sonar.sslr.impl.matcher.RuleImpl;
+import com.sonar.sslr.impl.matcher.RuleMatcher;
 import com.sonar.sslr.impl.matcher.TokenValueMatcher;
 
 public class MatcherAdapterTest {
@@ -45,7 +45,7 @@ public class MatcherAdapterTest {
 		
 		MatcherAdapter adapter = new MatcherAdapter(new ParsingEventListener() {
 			
-			public void exitWithoutMatchRule(RuleImpl rule, ParsingState parsingState, RecognitionExceptionImpl re) {
+			public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState, RecognitionExceptionImpl re) {
 				state += "exitWithoutMatchRule ";
 			}
 			
@@ -53,7 +53,7 @@ public class MatcherAdapterTest {
 				state += "exitWithoutMatchMatcher ";
 			}
 			
-			public void exitWithMatchRule(RuleImpl rule, ParsingState parsingState, AstNode astNode) {
+			public void exitWithMatchRule(RuleMatcher rule, ParsingState parsingState, AstNode astNode) {
 				state += "exitWithMatchRule ";
 			}
 			
@@ -61,7 +61,7 @@ public class MatcherAdapterTest {
 				state += "exitWithMatchMatcher ";
 			}
 			
-			public void enterRule(RuleImpl rule, ParsingState parsingState) {
+			public void enterRule(RuleMatcher rule, ParsingState parsingState) {
 				state += "enterRule ";
 			}
 			

@@ -18,7 +18,8 @@ import org.junit.Test;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.matcher.RuleImpl;
+import com.sonar.sslr.impl.matcher.RuleBuilder;
+import com.sonar.sslr.impl.matcher.RuleMatcher;
 import com.sonar.sslr.impl.matcher.TokenValueMatcher;
 
 public class ParsingStackTraceTest {
@@ -27,7 +28,7 @@ public class ParsingStackTraceTest {
       + "   public abstract void run();\n" + "}\n");
   TokenValueMatcher language = new TokenValueMatcher("language");
   private ParsingState state = new ParsingState(tokens);
-  private RuleImpl compilationUnit = (RuleImpl) new JavaGrammar().getRootRule();
+  private RuleMatcher compilationUnit = ((RuleBuilder) new JavaGrammar().getRootRule()).getRule();
 
   @Before
   public void init() {

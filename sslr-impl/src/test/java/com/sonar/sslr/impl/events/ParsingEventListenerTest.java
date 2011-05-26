@@ -25,7 +25,7 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
-import com.sonar.sslr.impl.matcher.RuleImpl;
+import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class ParsingEventListenerTest {
 
@@ -33,15 +33,15 @@ public class ParsingEventListenerTest {
 
   private ParsingEventListener parsingEventListener = new ParsingEventListener() {
 
-    public void enterRule(RuleImpl rule, ParsingState parsingState) {
+    public void enterRule(RuleMatcher rule, ParsingState parsingState) {
       stream.println("Entered rule " + rule.getName() + " at index " + parsingState.lexerIndex);
     }
 
-    public void exitWithMatchRule(RuleImpl rule, ParsingState parsingState, AstNode astNode) {
+    public void exitWithMatchRule(RuleMatcher rule, ParsingState parsingState, AstNode astNode) {
       stream.println("Exit rule " + rule.getName() + " with match until index " + parsingState.lexerIndex);
     }
 
-    public void exitWithoutMatchRule(RuleImpl rule, ParsingState parsingState, RecognitionExceptionImpl re) {
+    public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState, RecognitionExceptionImpl re) {
       stream.println("Exit rule " + rule.getName() + " without match");
     }
 

@@ -31,112 +31,31 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 
-public class RuleImplTest {
+public class RuleMatcherTest {
 
-  private RuleImpl javaClassDefinition;
+  private RuleBuilder javaClassDefinition;
   private Matcher opMatcher;
 
   @Before
   public void init() {
-    javaClassDefinition = new RuleImpl("JavaClassDefinition");
+    javaClassDefinition = new RuleBuilder("JavaClassDefinition", false);
     opMatcher = opt("implements", WORD, o2n(",", WORD));
     javaClassDefinition.is("public", or("class", "interface"), opMatcher);
   }
 
   @Test
   public void getName() {
-    assertEquals("JavaClassDefinition", javaClassDefinition.getName());
+    assertEquals("JavaClassDefinition", javaClassDefinition.getRule().getName());
   }
 
   @Test
   public void getToString() {
-    assertEquals("JavaClassDefinition", javaClassDefinition.getName());
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void testEmptyIs() {
-    javaClassDefinition = new RuleImpl("JavaClassDefinition");
-    javaClassDefinition.is();
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void testEmptyIsOr() {
-    javaClassDefinition = new RuleImpl("JavaClassDefinition");
-    javaClassDefinition.isOr();
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void testEmptyOr() {
-    javaClassDefinition = new RuleImpl("JavaClassDefinition");
-    javaClassDefinition.or();
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void testCallingOrWithoutHavingCallIsFirst() {
-    javaClassDefinition = new RuleImpl("JavaClassDefinition");
-    javaClassDefinition.or("keyword");
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void testMoreThanOneDefinitionForASigleRuleWithIs() {
-    javaClassDefinition = new RuleImpl("JavaClassDefinition");
-    javaClassDefinition.is("option1");
-    javaClassDefinition.is("option2");
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void testMoreThanOneDefinitionForASigleRuleWithIsOr() {
-    javaClassDefinition = new RuleImpl("JavaClassDefinition");
-    javaClassDefinition.is("");
-    javaClassDefinition.isOr("");
-  }
-
-  @Test
-  public void testIsOr() {
-    RuleImpl myRule = new RuleImpl("MyRule");
-    myRule.isOr("option1", "option2");
-    assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(or(\"option1\", \"option2\"))"));
-  }
-
-  @Test
-  public void testIs() {
-    RuleImpl myRule = new RuleImpl("MyRule");
-    myRule.is("option1");
-    assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(\"option1\")"));
-  }
-
-  @Test
-  public void testOverride() {
-    RuleImpl myRule = new RuleImpl("MyRule");
-    myRule.is("option1");
-    assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(\"option1\")"));
-    myRule.override("option2");
-    assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(\"option2\")"));
-  }
-
-  @Test
-  public void testOr() {
-    RuleImpl myRule = new RuleImpl("MyRule");
-    myRule.is("option1");
-    assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(\"option1\")"));
-    myRule.or("option2");
-    assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(or(\"option1\", \"option2\"))"));
-    myRule.or("option3", "option4");
-    assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(or(or(\"option1\", \"option2\"), and(\"option3\", \"option4\")))"));
-  }
-
-  @Test
-  public void testOrBefore() {
-    RuleImpl myRule = new RuleImpl("MyRule");
-    myRule.is("option1");
-    assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(\"option1\")"));
-    myRule.orBefore("option2");
-    assertThat(MatcherTreePrinter.print(myRule), is("MyRule.is(or(\"option2\", \"option1\"))"));
+    assertEquals("JavaClassDefinition", javaClassDefinition.getRule().getName());
   }
 
   @Test
   public void testSetAstNodeListener() {
-    RuleImpl rule = new RuleImpl("MyRule");
+    RuleMatcher rule = new RuleMatcher("MyRule");
     AstListener listener = mock(AstListener.class);
     ParsingState parsingState = mock(ParsingState.class);
     Object output = mock(Object.class);
@@ -151,16 +70,17 @@ public class RuleImplTest {
 
   @Test
   public void testSkipFromAst() {
-    RuleImpl rule = new RuleImpl("MyRule");
+    RuleBuilder ruleBuilder = new RuleBuilder("MyRule", false);
+    RuleMatcher rule = ruleBuilder.getRule();
     assertThat(rule.hasToBeSkippedFromAst(null), is(false));
 
-    rule.skip();
+    ruleBuilder.skip();
     assertThat(rule.hasToBeSkippedFromAst(null), is(true));
   }
 
   @Test
   public void testSkipFromAstIf() {
-    RuleImpl rule = new RuleImpl("MyRule");
+    RuleMatcher rule = new RuleMatcher("MyRule");
     rule.skipIf(new SkipFromAstIfOnlyOneChild());
 
     AstNode parent = new AstNode(new Token(GenericTokenType.IDENTIFIER, "parent"));
@@ -177,8 +97,10 @@ public class RuleImplTest {
 
   @Test
   public void testRecoveryMode() {
-    RuleImpl rule = new RuleImpl("MyRule");
-    rule.is("one");
+    RuleBuilder ruleBuilder = new RuleBuilder("MyRule", false);
+    ruleBuilder.is("one");
+
+    RuleMatcher rule = ruleBuilder.getRule();
 
     ParsingState parsingState = new ParsingState(lex("one"));
     RecognictionExceptionListener listener = mock(RecognictionExceptionListener.class);

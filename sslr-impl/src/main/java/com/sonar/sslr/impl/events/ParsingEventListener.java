@@ -9,15 +9,15 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.matcher.Matcher;
-import com.sonar.sslr.impl.matcher.RuleImpl;
+import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public interface ParsingEventListener {
 	/* Rule level */
-	void enterRule(RuleImpl rule, ParsingState parsingState);
+	void enterRule(RuleMatcher rule, ParsingState parsingState);
 	
-	void exitWithMatchRule(RuleImpl rule, ParsingState parsingState, AstNode astNode);
+	void exitWithMatchRule(RuleMatcher rule, ParsingState parsingState, AstNode astNode);
 	
-	void exitWithoutMatchRule(RuleImpl rule, ParsingState parsingState, RecognitionExceptionImpl re);
+	void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState, RecognitionExceptionImpl re);
 	
 	/* Matcher level */
 	void enterMatcher(Matcher matcher, ParsingState parsingState);

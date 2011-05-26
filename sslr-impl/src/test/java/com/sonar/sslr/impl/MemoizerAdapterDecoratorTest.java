@@ -80,17 +80,18 @@ public class MemoizerAdapterDecoratorTest {
     MyTestGrammarParser p = new MyTestGrammarParser(false, false, new MyTestGrammar());
     p.parse("bonjour hehe huhu olaa uhu");
     assertEquals(
-        MatcherTreePrinter.printWithAdapters(p.getRootRule()),
+        MatcherTreePrinter.printWithAdapters(p.getRootRule().getRule()),
         "root.is(MemoizerMatcher(and(\"bonjour\", MemoizerMatcher(longestOne(MemoizerMatcher(rule1), MemoizerMatcher(rule2))), MemoizerMatcher(and(\"olaa\", \"uhu\")), EOF)))");
 
     p = new MyTestGrammarParser(false, true, new MyTestGrammar());
     p.parse("four PLUS four PLUS four");
-    assertEquals(MatcherTreePrinter.printWithAdapters(p.getRootRule()),
+    assertEquals(MatcherTreePrinter.printWithAdapters(p.getRootRule().getRule()),
         "root.is(MemoizerMatcher(or(MemoizerMatcher(and(\"four\", \"PLUS\", MemoizerMatcher(root))), \"four\")))");
 
     p = new MyTestGrammarParser(true, false, new MyTestGrammar());
     p.parse("three PLUS three PLUS three");
-    assertEquals(MatcherTreePrinter.printWithAdapters(p.getRootRule()), "root.is(MemoizerMatcher(and(MemoizerMatcher(left), EOF)))");
+    assertEquals(MatcherTreePrinter.printWithAdapters(p.getRootRule().getRule()),
+        "root.is(MemoizerMatcher(and(MemoizerMatcher(left), EOF)))");
   }
 
 }

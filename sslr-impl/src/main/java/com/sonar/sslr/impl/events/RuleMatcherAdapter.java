@@ -5,22 +5,20 @@
  */
 package com.sonar.sslr.impl.events;
 
-import org.apache.commons.lang.NotImplementedException;
-
 import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.matcher.Matcher;
-import com.sonar.sslr.impl.matcher.RuleImpl;
+import com.sonar.sslr.impl.matcher.RuleMatcher;
 
-public class RuleImplAdapter extends RuleImpl {
+public class RuleMatcherAdapter extends RuleMatcher {
 
-  private RuleImpl ruleImpl;
+  private RuleMatcher ruleImpl;
   private ParsingEventListener parsingEventListener;
 
-  public RuleImplAdapter(ParsingEventListener parsingEventListener, RuleImpl ruleImpl) {
+  public RuleMatcherAdapter(ParsingEventListener parsingEventListener, RuleMatcher ruleImpl) {
     super(ruleImpl.getName());
 
     this.ruleImpl = ruleImpl;
@@ -28,7 +26,7 @@ public class RuleImplAdapter extends RuleImpl {
     this.children = new Matcher[] { ruleImpl };
   }
 
-  public RuleImpl getRuleImpl() {
+  public RuleMatcher getRuleImpl() {
     return ruleImpl;
   }
 
@@ -53,76 +51,24 @@ public class RuleImplAdapter extends RuleImpl {
   }
 
   @Override
-  public RuleImpl is(Object... matchers) {
-    throw new NotImplementedException();
-  }
-
-  @Override
-  public RuleImpl override(Object... matchers) {
-    throw new NotImplementedException();
-  }
-
-  @Override
-  public void mockUpperCase() {
-    this.ruleImpl.mockUpperCase();
-  }
-
-  @Override
-  public void mock() {
-    this.ruleImpl.mock();
-  }
-
-  @Override
-  public RuleImpl isOr(Object... matchers) {
-    throw new NotImplementedException();
-  }
-
-  @Override
-  public RuleImpl or(Object... matchers) {
-    throw new NotImplementedException();
-  }
-
-  @Override
-  public RuleImpl and(Object... matchers) {
-    throw new NotImplementedException();
-  }
-
-  @Override
-  public RuleImpl orBefore(Object... matchers) {
-    throw new NotImplementedException();
-  }
-
-  @Override
-  public RuleImpl skip() {
-    this.ruleImpl.skip();
-    return this;
-  }
-
-  @Override
   public String toString() {
     return "RuleImplAdapter";
   }
 
   @Override
-  public RuleImpl setListener(AstListener listener) {
+  public RuleMatcher setListener(AstListener listener) {
     this.ruleImpl.setListener(listener);
     return this;
   }
 
   @Override
-  public RuleImpl skipIf(AstNodeType astNodeSkipPolicy) {
+  public RuleMatcher skipIf(AstNodeType astNodeSkipPolicy) {
     this.ruleImpl.skipIf(astNodeSkipPolicy);
     return this;
   }
 
   @Override
-  public RuleImpl skipIfOneChild() {
-    this.ruleImpl.skipIfOneChild();
-    return this;
-  }
-
-  @Override
-  public RuleImpl plug(Class adapterClass) {
+  public RuleMatcher plug(Class adapterClass) {
     this.ruleImpl.plug(adapterClass);
     return this;
   }

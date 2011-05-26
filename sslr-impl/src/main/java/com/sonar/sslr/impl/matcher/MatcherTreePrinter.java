@@ -6,7 +6,7 @@
 package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.impl.events.MatcherAdapter;
-import com.sonar.sslr.impl.events.RuleImplAdapter;
+import com.sonar.sslr.impl.events.RuleMatcherAdapter;
 
 public class MatcherTreePrinter {
 
@@ -55,11 +55,11 @@ public class MatcherTreePrinter {
 	}
 
 	private static boolean isRuleImpl(Matcher matcher) {
-		return !(matcher instanceof RuleImplAdapter) && matcher instanceof RuleImpl;
+		return !(matcher instanceof RuleMatcherAdapter) && matcher instanceof RuleMatcher;
 	}
 
 	private static boolean isAdapter(Matcher matcher) {
-		return (matcher instanceof MemoizerMatcher || matcher instanceof RuleImplAdapter || matcher instanceof MatcherAdapter);
+		return (matcher instanceof MemoizerMatcher || matcher instanceof RuleMatcherAdapter || matcher instanceof MatcherAdapter);
 	}
 	
 }
