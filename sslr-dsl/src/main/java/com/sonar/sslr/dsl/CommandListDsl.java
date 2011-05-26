@@ -13,8 +13,8 @@ import com.sonar.sslr.impl.matcher.RuleBuilder;
 
 public abstract class CommandListDsl extends Dsl {
 
-  public Rule translationUnit = new RuleBuilder("translationUnit", false);
-  public Rule command = new RuleBuilder("command", false);
+  public Rule translationUnit = RuleBuilder.newRuleBuilder("translationUnit");
+  public Rule command = RuleBuilder.newRuleBuilder("command");
 
   public CommandListDsl() {
     translationUnit.is(o2n(command), EOF);

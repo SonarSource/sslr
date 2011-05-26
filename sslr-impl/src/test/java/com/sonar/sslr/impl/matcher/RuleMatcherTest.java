@@ -38,7 +38,7 @@ public class RuleMatcherTest {
 
   @Before
   public void init() {
-    javaClassDefinition = new RuleBuilder("JavaClassDefinition", false);
+    javaClassDefinition = RuleBuilder.newRuleBuilder("JavaClassDefinition");
     opMatcher = opt("implements", WORD, o2n(",", WORD));
     javaClassDefinition.is("public", or("class", "interface"), opMatcher);
   }
@@ -70,7 +70,7 @@ public class RuleMatcherTest {
 
   @Test
   public void testSkipFromAst() {
-    RuleBuilder ruleBuilder = new RuleBuilder("MyRule", false);
+    RuleBuilder ruleBuilder = RuleBuilder.newRuleBuilder("MyRule");
     RuleMatcher rule = ruleBuilder.getRule();
     assertThat(rule.hasToBeSkippedFromAst(null), is(false));
 
@@ -97,7 +97,7 @@ public class RuleMatcherTest {
 
   @Test
   public void testRecoveryMode() {
-    RuleBuilder ruleBuilder = new RuleBuilder("MyRule", false);
+    RuleBuilder ruleBuilder = RuleBuilder.newRuleBuilder("MyRule");
     ruleBuilder.is("one");
 
     RuleMatcher rule = ruleBuilder.getRule();

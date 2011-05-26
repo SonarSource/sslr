@@ -43,8 +43,8 @@ public class GrammarRuleLifeCycleManagerTest {
   public void reinitializeLeftRecursionRuleFields() {
     LeftRecursiveRuleMatcher mockRule = mock(LeftRecursiveRuleMatcher.class);
     SampleGrammar grammar = new SampleGrammar();
-    grammar.rule1 = new RuleBuilder("rule1", false);
-    grammar.rule2 = new RuleBuilder(mockRule);
+    grammar.rule1 = RuleBuilder.newRuleBuilder("rule1");
+    grammar.rule2 = RuleBuilder.newRuleBuilder(mockRule);
 
     GrammarRuleLifeCycleManager.notifyEndParsing(grammar);
 

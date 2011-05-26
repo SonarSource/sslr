@@ -35,9 +35,9 @@ public final class GrammarRuleLifeCycleManager {
       String fieldName = field.getName();
       try {
         if (field.getType() == LeftRecursiveRule.class) {
-          field.set(rules, new RuleBuilder(fieldName, true));
+          field.set(rules, RuleBuilder.newLeftRecursiveRuleBuilder(fieldName));
         } else if (field.getType() == Rule.class) {
-          field.set(rules, new RuleBuilder(fieldName, false));
+          field.set(rules, RuleBuilder.newRuleBuilder(fieldName));
         }
       } catch (Exception e) {
         throw new RuntimeException("Unable to instanciate the rule '" + grammar.getName() + "." + fieldName + "'", e);

@@ -29,7 +29,7 @@ public class RuleImplAdapterTest {
 
   @Before
   public void init() {
-    rule = new RuleBuilder("rule", false).is("bonjour").getRule();
+    rule = RuleBuilder.newRuleBuilder("rule").is("bonjour").getRule();
   }
 
   @Test

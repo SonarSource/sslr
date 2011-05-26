@@ -15,59 +15,59 @@ public class RuleBuilderTest {
 
   @Test(expected = IllegalStateException.class)
   public void testEmptyIs() {
-    RuleBuilder javaClassDefinition = new RuleBuilder("JavaClassDefinition", false);
+    RuleBuilder javaClassDefinition = RuleBuilder.newRuleBuilder("JavaClassDefinition");
     javaClassDefinition.is();
   }
 
   @Test(expected = IllegalStateException.class)
   public void testEmptyIsOr() {
-    RuleBuilder javaClassDefinition = new RuleBuilder("JavaClassDefinition", false);
+    RuleBuilder javaClassDefinition = RuleBuilder.newRuleBuilder("JavaClassDefinition");
     javaClassDefinition.isOr();
   }
 
   @Test(expected = IllegalStateException.class)
   public void testEmptyOr() {
-    RuleBuilder javaClassDefinition = new RuleBuilder("JavaClassDefinition", false);
+    RuleBuilder javaClassDefinition = RuleBuilder.newRuleBuilder("JavaClassDefinition");
     javaClassDefinition.or();
   }
 
   @Test(expected = IllegalStateException.class)
   public void testCallingOrWithoutHavingCallIsFirst() {
-    RuleBuilder javaClassDefinition = new RuleBuilder("JavaClassDefinition", false);
+    RuleBuilder javaClassDefinition = RuleBuilder.newRuleBuilder("JavaClassDefinition");
     javaClassDefinition.or("keyword");
   }
 
   @Test(expected = IllegalStateException.class)
   public void testMoreThanOneDefinitionForASigleRuleWithIs() {
-    RuleBuilder javaClassDefinition = new RuleBuilder("JavaClassDefinition", false);
+    RuleBuilder javaClassDefinition = RuleBuilder.newRuleBuilder("JavaClassDefinition");
     javaClassDefinition.is("option1");
     javaClassDefinition.is("option2");
   }
 
   @Test(expected = IllegalStateException.class)
   public void testMoreThanOneDefinitionForASigleRuleWithIsOr() {
-    RuleBuilder javaClassDefinition = new RuleBuilder("JavaClassDefinition", false);
+    RuleBuilder javaClassDefinition = RuleBuilder.newRuleBuilder("JavaClassDefinition");
     javaClassDefinition.is("");
     javaClassDefinition.isOr("");
   }
 
   @Test
   public void testIsOr() {
-    RuleBuilder myRule = new RuleBuilder("MyRule", false);
+    RuleBuilder myRule = RuleBuilder.newRuleBuilder("MyRule");
     myRule.isOr("option1", "option2");
     assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(or(\"option1\", \"option2\"))"));
   }
 
   @Test
   public void testIs() {
-    RuleBuilder myRule = new RuleBuilder("MyRule", false);
+    RuleBuilder myRule = RuleBuilder.newRuleBuilder("MyRule");
     myRule.is("option1");
     assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(\"option1\")"));
   }
 
   @Test
   public void testOverride() {
-    RuleBuilder myRule = new RuleBuilder("MyRule", false);
+    RuleBuilder myRule = RuleBuilder.newRuleBuilder("MyRule");
     myRule.is("option1");
     assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(\"option1\")"));
     myRule.override("option2");
@@ -76,7 +76,7 @@ public class RuleBuilderTest {
 
   @Test
   public void testOr() {
-    RuleBuilder myRule = new RuleBuilder("MyRule", false);
+    RuleBuilder myRule = RuleBuilder.newRuleBuilder("MyRule");
     myRule.is("option1");
     assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(\"option1\")"));
     myRule.or("option2");
@@ -87,7 +87,7 @@ public class RuleBuilderTest {
 
   @Test
   public void testOrBefore() {
-    RuleBuilder myRule = new RuleBuilder("MyRule", false);
+    RuleBuilder myRule = RuleBuilder.newRuleBuilder("MyRule");
     myRule.is("option1");
     assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(\"option1\")"));
     myRule.orBefore("option2");

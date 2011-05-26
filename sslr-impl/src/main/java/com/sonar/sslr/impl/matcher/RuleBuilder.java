@@ -17,16 +17,25 @@ public class RuleBuilder implements Rule, LeftRecursiveRule {
 
   private RuleMatcher ruleMatcher;
 
-  public RuleBuilder(String name, boolean leftRecursiveRule) {
-    if (leftRecursiveRule) {
-      ruleMatcher = new LeftRecursiveRuleMatcher(name);
-    } else {
-      ruleMatcher = new RuleMatcher(name);
-    }
+  private RuleBuilder() {
   }
 
-  public RuleBuilder(RuleMatcher ruleMatcher) {
-    this.ruleMatcher = ruleMatcher;
+  public static RuleBuilder newLeftRecursiveRuleBuilder(String ruleName) {
+    RuleBuilder ruleBuilder = new RuleBuilder();
+    ruleBuilder.ruleMatcher = new LeftRecursiveRuleMatcher(ruleName);
+    return ruleBuilder;
+  }
+
+  public static RuleBuilder newRuleBuilder(String ruleName) {
+    RuleBuilder ruleBuilder = new RuleBuilder();
+    ruleBuilder.ruleMatcher = new RuleMatcher(ruleName);
+    return ruleBuilder;
+  }
+
+  public static RuleBuilder newRuleBuilder(RuleMatcher ruleMatcher) {
+    RuleBuilder ruleBuilder = new RuleBuilder();
+    ruleBuilder.ruleMatcher = ruleMatcher;
+    return ruleBuilder;
   }
 
   public RuleMatcher getRule() {
