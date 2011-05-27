@@ -20,8 +20,9 @@ public class RuleMatcher extends Matcher {
   protected String name;
   private AstListener listener;
   private Class adapterClass;
-  private AstNodeType astNodeType = new NeverSkipFromAst();
+  private AstNodeType astNodeSkippingPolicy = new NeverSkipFromAst();
   private boolean recoveryRule = false;
+  private AstNodeType astNodeType;
 
   public RuleMatcher(String name) {
     this.name = name;
@@ -40,15 +41,15 @@ public class RuleMatcher extends Matcher {
     }
     AstNode childNode = super.children[0].match(parsingState);
 
-    AstNode astNode = new AstNode(this, name, parsingState.peekTokenIfExists(startIndex, super.children[0]));
+    AstNode astNode = new AstNode(astNodeType, name, parsingState.peekTokenIfExists(startIndex, super.children[0]));
     astNode.setAstNodeListener(listener);
     astNode.addChild(childNode);
     return astNode;
   }
 
   public boolean hasToBeSkippedFromAst(AstNode node) {
-    if (AstNodeSkippingPolicy.class.isAssignableFrom(astNodeType.getClass())) {
-      return ((AstNodeSkippingPolicy) astNodeType).hasToBeSkippedFromAst(node);
+    if (AstNodeSkippingPolicy.class.isAssignableFrom(astNodeSkippingPolicy.getClass())) {
+      return ((AstNodeSkippingPolicy) astNodeSkippingPolicy).hasToBeSkippedFromAst(node);
     }
     return false;
   }
@@ -57,14 +58,16 @@ public class RuleMatcher extends Matcher {
     super.children = new Matcher[] { matcher };
   }
 
-  public RuleMatcher setListener(AstListener listener) {
+  public void setListener(AstListener listener) {
     this.listener = listener;
-    return this;
   }
 
-  public RuleMatcher skipIf(AstNodeType astNodeSkipPolicy) {
-    this.astNodeType = astNodeSkipPolicy;
-    return this;
+  public void skipIf(AstNodeType astNodeSkipPolicy) {
+    this.astNodeSkippingPolicy = astNodeSkipPolicy;
+  }
+
+  public void setNodeType(AstNodeType astNodeType) {
+    this.astNodeType = astNodeType;
   }
 
   public RuleMatcher plug(Class adapterClass) {

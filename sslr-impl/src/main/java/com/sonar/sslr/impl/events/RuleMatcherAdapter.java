@@ -56,15 +56,13 @@ public class RuleMatcherAdapter extends RuleMatcher {
   }
 
   @Override
-  public RuleMatcher setListener(AstListener listener) {
+  public void setListener(AstListener listener) {
     this.ruleImpl.setListener(listener);
-    return this;
   }
 
   @Override
-  public RuleMatcher skipIf(AstNodeType astNodeSkipPolicy) {
+  public void skipIf(AstNodeType astNodeSkipPolicy) {
     this.ruleImpl.skipIf(astNodeSkipPolicy);
-    return this;
   }
 
   @Override

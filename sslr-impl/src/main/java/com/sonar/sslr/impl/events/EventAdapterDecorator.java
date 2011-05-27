@@ -44,7 +44,7 @@ public class EventAdapterDecorator<GRAMMAR extends Grammar> implements GrammarDe
 
     RuleMatcher rule = root.getRule();
 
-    root.replaceRuleMatcher(new RuleMatcherAdapter(parsingEventListener, rule));
+    root.setRuleMatcher(new RuleMatcherAdapter(parsingEventListener, rule));
 
     visited = new HashSet<Matcher>();
     decorateMatcher(rule); /* Change the whole tree, recursively! */

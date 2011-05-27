@@ -112,7 +112,7 @@ public abstract class Parser<GRAMMAR extends Grammar> {
     /* Now wrap the root rule (only if required) */
     if (enableExtendedStackTrace) {
       if ( !(this.rootRule.getRule() instanceof RuleMatcherAdapter)) {
-        this.rootRule.replaceRuleMatcher(new RuleMatcherAdapter(eventAdapterDecorator.getParsingEventListener(), rootRule.getRule()));
+        this.rootRule.setRuleMatcher(new RuleMatcherAdapter(eventAdapterDecorator.getParsingEventListener(), rootRule.getRule()));
       }
     }
 

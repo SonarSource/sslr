@@ -22,19 +22,19 @@ public class RuleBuilder implements Rule, LeftRecursiveRule {
 
   public static RuleBuilder newLeftRecursiveRuleBuilder(String ruleName) {
     RuleBuilder ruleBuilder = new RuleBuilder();
-    ruleBuilder.ruleMatcher = new LeftRecursiveRuleMatcher(ruleName);
+    ruleBuilder.setRuleMatcher(new LeftRecursiveRuleMatcher(ruleName));
     return ruleBuilder;
   }
 
   public static RuleBuilder newRuleBuilder(String ruleName) {
     RuleBuilder ruleBuilder = new RuleBuilder();
-    ruleBuilder.ruleMatcher = new RuleMatcher(ruleName);
+    ruleBuilder.setRuleMatcher(new RuleMatcher(ruleName));
     return ruleBuilder;
   }
 
   public static RuleBuilder newRuleBuilder(RuleMatcher ruleMatcher) {
     RuleBuilder ruleBuilder = new RuleBuilder();
-    ruleBuilder.ruleMatcher = ruleMatcher;
+    ruleBuilder.setRuleMatcher(ruleMatcher);
     return ruleBuilder;
   }
 
@@ -42,8 +42,9 @@ public class RuleBuilder implements Rule, LeftRecursiveRule {
     return ruleMatcher;
   }
 
-  public void replaceRuleMatcher(RuleMatcher ruleMatcher) {
+  public void setRuleMatcher(RuleMatcher ruleMatcher) {
     this.ruleMatcher = ruleMatcher;
+    ruleMatcher.setNodeType(this);
   }
 
   /**
