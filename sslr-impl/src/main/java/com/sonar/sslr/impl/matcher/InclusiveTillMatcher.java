@@ -18,7 +18,7 @@ public class InclusiveTillMatcher extends Matcher {
   }
 
   public AstNode match(ParsingState parsingState) {
-    AstNode astNode = new AstNode(this, "tillMatcher", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
+    AstNode astNode = new AstNode(null, "tillMatcher", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
     StringBuilder builder = new StringBuilder();
     while (!super.children[0].isMatching(parsingState)) {
       builder.append(parsingState.popToken(this).getValue());

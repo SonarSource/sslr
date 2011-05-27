@@ -201,6 +201,9 @@ public class AstNode {
   }
 
   public boolean hasToBeSkippedFromAst() {
+    if (type == null) {
+      return true;
+    }
     if (AstNodeSkippingPolicy.class.isAssignableFrom(type.getClass())) {
       return ((AstNodeSkippingPolicy) type).hasToBeSkippedFromAst(this);
     }

@@ -22,11 +22,6 @@ public class MatcherAdapter extends Matcher {
   }
 
   @Override
-  public boolean hasToBeSkippedFromAst(AstNode node) {
-    return this.matcher.hasToBeSkippedFromAst(node);
-  }
-
-  @Override
   public AstNode match(ParsingState parsingState) {
     parsingEventListener.enterMatcher(matcher, parsingState);
 

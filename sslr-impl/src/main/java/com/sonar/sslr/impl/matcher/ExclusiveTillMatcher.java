@@ -24,7 +24,7 @@ public class ExclusiveTillMatcher extends Matcher {
       nextTokenLine = nextToken.getLine();
       nextTokenColumn = nextToken.getColumn();
     }
-    AstNode astNode = new AstNode(this, "exclusiveTillMatcher", nextToken);
+    AstNode astNode = new AstNode(null, "exclusiveTillMatcher", nextToken);
     StringBuilder builder = new StringBuilder();
     while (nothingMatch(parsingState)) {
       builder.append(parsingState.popToken(this).getValue());

@@ -27,7 +27,7 @@ public class BridgeMatcher extends Matcher {
   public AstNode match(ParsingState parsingState) {
     Token token = parsingState.peekToken(parsingState.lexerIndex, this);
     if (from == token.getType()) {
-      AstNode astNode = new AstNode(this, "bridgeMatcher", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
+      AstNode astNode = new AstNode(null, "bridgeMatcher", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
       int bridgeLevel = 0;
       do {
         token = parsingState.popToken(this);

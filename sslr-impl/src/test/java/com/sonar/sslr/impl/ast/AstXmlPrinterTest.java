@@ -13,13 +13,13 @@ import org.junit.Test;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
-import com.sonar.sslr.impl.matcher.RuleMatcher;
+import com.sonar.sslr.impl.matcher.RuleBuilder;
 
 public class AstXmlPrinterTest {
 
   @Test
   public void testPrintRuleAstNode() {
-    AstNode root = new AstNode(new RuleMatcher("expr"), "expr", new Token(new WordTokenType(), "word", 34, 12, null));
+    AstNode root = new AstNode(RuleBuilder.newRuleBuilder("expr"), "expr", new Token(new WordTokenType(), "word", 34, 12, null));
     assertEquals("<expr value=\"word\" line=\"34\" col=\"12\"/>", AstXmlPrinter.print(root));
   }
 
@@ -31,7 +31,7 @@ public class AstXmlPrinterTest {
 
   @Test
   public void testPrintFullAstNode() {
-    AstNode astNode = new AstNode(new RuleMatcher("expr"), "expr", null);
+    AstNode astNode = new AstNode(RuleBuilder.newRuleBuilder("expr"), "expr", null);
     astNode.addChild(new AstNode(new Token(new WordTokenType(), "x", 0, 0, null)));
     astNode.addChild(new AstNode(new Token(new WordTokenType(), "=")));
     astNode.addChild(new AstNode(new Token(new WordTokenType(), "4")));

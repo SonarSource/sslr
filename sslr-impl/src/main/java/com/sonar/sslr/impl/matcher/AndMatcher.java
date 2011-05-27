@@ -23,7 +23,7 @@ public class AndMatcher extends Matcher {
       childNodes[i] = super.children[i].match(parsingState);
     }
 
-    AstNode astNode = new AstNode(this, "AllMatcher", parsingState.peekTokenIfExists(startIndex, this));
+    AstNode astNode = new AstNode(null, "AllMatcher", parsingState.peekTokenIfExists(startIndex, this));
     for (int i = 0; i < childNodes.length; i++) {
       astNode.addChild(childNodes[i]);
     }

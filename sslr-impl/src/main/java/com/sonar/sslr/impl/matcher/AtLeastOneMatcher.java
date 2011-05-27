@@ -33,7 +33,7 @@ public class AtLeastOneMatcher extends Matcher {
     	throw RecognitionExceptionImpl.create();
     }
 
-    AstNode astNode = new AstNode(this, "AtLeastOneMatcher", parsingState.peekTokenIfExists(startIndex, this));
+    AstNode astNode = new AstNode(null, "AtLeastOneMatcher", parsingState.peekTokenIfExists(startIndex, this));
     for (AstNode child: childNodes) {
       astNode.addChild(child);
     }

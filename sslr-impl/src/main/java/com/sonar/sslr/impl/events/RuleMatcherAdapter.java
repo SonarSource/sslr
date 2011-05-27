@@ -45,11 +45,6 @@ public class RuleMatcherAdapter extends RuleMatcher {
   }
 
   @Override
-  public boolean hasToBeSkippedFromAst(AstNode node) {
-    return this.ruleImpl.hasToBeSkippedFromAst(node);
-  }
-
-  @Override
   public String toString() {
     return "RuleImplAdapter";
   }

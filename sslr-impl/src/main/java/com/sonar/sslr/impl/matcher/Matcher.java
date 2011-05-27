@@ -7,11 +7,10 @@
 package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.AstNodeSkippingPolicy;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
-public abstract class Matcher implements AstNodeSkippingPolicy {
+public abstract class Matcher {
 
   protected Matcher[] children;
 
@@ -21,10 +20,6 @@ public abstract class Matcher implements AstNodeSkippingPolicy {
 
   public Matcher[] getChildren() {
     return this.children;
-  }
-
-  public boolean hasToBeSkippedFromAst(AstNode node) {
-    return true;
   }
 
   public final boolean isMatching(ParsingState parsingState) {

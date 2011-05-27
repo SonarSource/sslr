@@ -24,7 +24,7 @@ public class ZeroToNMatcher extends Matcher {
         match = super.children[0].isMatching(parsingState);
         if (match) {
           if (astNode == null) {
-            astNode = new AstNode(this, "zeroToNMatcher", parsingState.peekTokenIfExists(startIndex, this));
+            astNode = new AstNode(null, "zeroToNMatcher", parsingState.peekTokenIfExists(startIndex, this));
           }
           astNode.addChild(super.children[0].match(parsingState));
         }
