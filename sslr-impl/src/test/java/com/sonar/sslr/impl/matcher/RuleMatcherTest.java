@@ -11,9 +11,7 @@ import static com.sonar.sslr.impl.matcher.CfgFunctions.Standard.o2n;
 import static com.sonar.sslr.impl.matcher.CfgFunctions.Standard.opt;
 import static com.sonar.sslr.impl.matcher.CfgFunctions.Standard.or;
 import static com.sonar.sslr.test.lexer.TokenUtils.lex;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -24,12 +22,9 @@ import org.junit.Test;
 
 import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.RecognictionExceptionListener;
 import com.sonar.sslr.api.RecognitionException;
-import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 
 public class RuleMatcherTest {
 
@@ -66,33 +61,6 @@ public class RuleMatcherTest {
     node.startListening(output);
 
     verify(listener).startListening(node, output);
-  }
-
-  @Test
-  public void testSkipFromAst() {
-    RuleBuilder ruleBuilder = RuleBuilder.newRuleBuilder("MyRule");
-    RuleMatcher rule = ruleBuilder.getRule();
-    assertThat(rule.hasToBeSkippedFromAst(null), is(false));
-
-    ruleBuilder.skip();
-    assertThat(rule.hasToBeSkippedFromAst(null), is(true));
-  }
-
-  @Test
-  public void testSkipFromAstIf() {
-    RuleMatcher rule = new RuleMatcher("MyRule");
-    rule.skipIf(new SkipFromAstIfOnlyOneChild());
-
-    AstNode parent = new AstNode(new Token(GenericTokenType.IDENTIFIER, "parent"));
-    AstNode child1 = new AstNode(new Token(GenericTokenType.IDENTIFIER, "child1"));
-    AstNode child2 = new AstNode(new Token(GenericTokenType.IDENTIFIER, "child2"));
-    parent.addChild(child1);
-    parent.addChild(child2);
-    child1.addChild(child2);
-
-    assertThat(rule.hasToBeSkippedFromAst(parent), is(false));
-    assertThat(rule.hasToBeSkippedFromAst(child2), is(false));
-    assertThat(rule.hasToBeSkippedFromAst(child1), is(true));
   }
 
   @Test

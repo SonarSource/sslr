@@ -11,6 +11,10 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.GenericTokenType;
+import com.sonar.sslr.api.Token;
+
 public class RuleBuilderTest {
 
   @Test(expected = IllegalStateException.class)
@@ -92,5 +96,30 @@ public class RuleBuilderTest {
     assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(\"option1\")"));
     myRule.orBefore("option2");
     assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(or(\"option2\", \"option1\"))"));
+  }
+
+  @Test
+  public void testSkipFromAst() {
+    RuleBuilder ruleBuilder = RuleBuilder.newRuleBuilder("MyRule");
+    assertThat(ruleBuilder.hasToBeSkippedFromAst(null), is(false));
+
+    ruleBuilder.skip();
+    assertThat(ruleBuilder.hasToBeSkippedFromAst(null), is(true));
+  }
+
+  @Test
+  public void testSkipFromAstIf() {
+    RuleBuilder ruleBuilder = RuleBuilder.newRuleBuilder("MyRule").skipIfOneChild();
+
+    AstNode parent = new AstNode(new Token(GenericTokenType.IDENTIFIER, "parent"));
+    AstNode child1 = new AstNode(new Token(GenericTokenType.IDENTIFIER, "child1"));
+    AstNode child2 = new AstNode(new Token(GenericTokenType.IDENTIFIER, "child2"));
+    parent.addChild(child1);
+    parent.addChild(child2);
+    child1.addChild(child2);
+
+    assertThat(ruleBuilder.hasToBeSkippedFromAst(parent), is(false));
+    assertThat(ruleBuilder.hasToBeSkippedFromAst(child2), is(false));
+    assertThat(ruleBuilder.hasToBeSkippedFromAst(child1), is(true));
   }
 }

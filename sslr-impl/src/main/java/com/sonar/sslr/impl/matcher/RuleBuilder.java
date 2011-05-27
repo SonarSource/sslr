@@ -7,15 +7,20 @@
 package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstListener;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.AstNodeSkippingPolicy;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.LeftRecursiveRule;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.ast.AlwaysSkipFromAst;
+import com.sonar.sslr.impl.ast.NeverSkipFromAst;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 
-public class RuleBuilder implements Rule, LeftRecursiveRule {
+public class RuleBuilder implements Rule, LeftRecursiveRule, AstNodeSkippingPolicy {
 
   private RuleMatcher ruleMatcher;
+  private Class adapterClass;
+  private AstNodeType astNodeSkippingPolicy = new NeverSkipFromAst();
 
   private RuleBuilder() {
   }
@@ -103,7 +108,7 @@ public class RuleBuilder implements Rule, LeftRecursiveRule {
   }
 
   public RuleBuilder skip() {
-    ruleMatcher.skipIf(new AlwaysSkipFromAst());
+    astNodeSkippingPolicy = new AlwaysSkipFromAst();
     return this;
   }
 
@@ -117,17 +122,17 @@ public class RuleBuilder implements Rule, LeftRecursiveRule {
   }
 
   public RuleBuilder skipIf(AstNodeType astNodeSkipPolicy) {
-    ruleMatcher.skipIf(astNodeSkipPolicy);
+    astNodeSkippingPolicy = astNodeSkipPolicy;
     return this;
   }
 
   public RuleBuilder skipIfOneChild() {
-    ruleMatcher.skipIf(new SkipFromAstIfOnlyOneChild());
+    astNodeSkippingPolicy = new SkipFromAstIfOnlyOneChild();
     return this;
   }
 
   public RuleBuilder plug(Class adapterClass) {
-    ruleMatcher.plug(adapterClass);
+    this.adapterClass = adapterClass;
     return this;
   }
 
@@ -153,11 +158,22 @@ public class RuleBuilder implements Rule, LeftRecursiveRule {
     }
   }
 
+  public Class getAdapter() {
+    return adapterClass;
+  }
+
   public void recoveryRule() {
     ruleMatcher.recoveryRule();
   }
 
   public String toString() {
     return ruleMatcher.getName();
+  }
+
+  public boolean hasToBeSkippedFromAst(AstNode node) {
+    if (AstNodeSkippingPolicy.class.isAssignableFrom(astNodeSkippingPolicy.getClass())) {
+      return ((AstNodeSkippingPolicy) astNodeSkippingPolicy).hasToBeSkippedFromAst(node);
+    }
+    return false;
   }
 }

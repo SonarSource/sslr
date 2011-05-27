@@ -19,8 +19,6 @@ public class RuleMatcher extends Matcher {
 
   protected String name;
   private AstListener listener;
-  private Class adapterClass;
-  private AstNodeType astNodeSkippingPolicy = new NeverSkipFromAst();
   private boolean recoveryRule = false;
   private AstNodeType astNodeType;
 
@@ -47,13 +45,6 @@ public class RuleMatcher extends Matcher {
     return astNode;
   }
 
-  public boolean hasToBeSkippedFromAst(AstNode node) {
-    if (AstNodeSkippingPolicy.class.isAssignableFrom(astNodeSkippingPolicy.getClass())) {
-      return ((AstNodeSkippingPolicy) astNodeSkippingPolicy).hasToBeSkippedFromAst(node);
-    }
-    return false;
-  }
-
   protected void setMatcher(Matcher matcher) {
     super.children = new Matcher[] { matcher };
   }
@@ -62,22 +53,10 @@ public class RuleMatcher extends Matcher {
     this.listener = listener;
   }
 
-  public void skipIf(AstNodeType astNodeSkipPolicy) {
-    this.astNodeSkippingPolicy = astNodeSkipPolicy;
-  }
-
   public void setNodeType(AstNodeType astNodeType) {
     this.astNodeType = astNodeType;
   }
 
-  public RuleMatcher plug(Class adapterClass) {
-    this.adapterClass = adapterClass;
-    return this;
-  }
-
-  public Class getAdapter() {
-    return adapterClass;
-  }
 
   public String getName() {
     return name;

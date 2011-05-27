@@ -7,7 +7,6 @@ package com.sonar.sslr.impl.events;
 
 import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.matcher.Matcher;
@@ -58,22 +57,6 @@ public class RuleMatcherAdapter extends RuleMatcher {
   @Override
   public void setListener(AstListener listener) {
     this.ruleImpl.setListener(listener);
-  }
-
-  @Override
-  public void skipIf(AstNodeType astNodeSkipPolicy) {
-    this.ruleImpl.skipIf(astNodeSkipPolicy);
-  }
-
-  @Override
-  public RuleMatcher plug(Class adapterClass) {
-    this.ruleImpl.plug(adapterClass);
-    return this;
-  }
-
-  @Override
-  public Class getAdapter() {
-    return this.ruleImpl.getAdapter();
   }
 
   @Override

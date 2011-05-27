@@ -10,7 +10,7 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.dsl.Dsl;
 import com.sonar.sslr.dsl.DslTokenType;
 import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.impl.matcher.RuleMatcher;
+import com.sonar.sslr.impl.matcher.RuleBuilder;
 
 public class Compiler {
 
@@ -61,8 +61,8 @@ public class Compiler {
   }
 
   private Object getAdapter(AstNode astNode) {
-    if (astNode.getType() instanceof RuleMatcher) {
-      RuleMatcher rule = (RuleMatcher) astNode.getType();
+    if (astNode.getType() instanceof RuleBuilder) {
+      RuleBuilder rule = (RuleBuilder) astNode.getType();
       if (rule.getAdapter() != null) {
         return adapters.plug(rule.getAdapter(), astNode);
       }
