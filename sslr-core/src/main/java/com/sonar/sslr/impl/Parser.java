@@ -8,24 +8,31 @@ package com.sonar.sslr.impl;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.sonar.channel.Channel;
+import org.sonar.channel.CodeReaderConfiguration;
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.GrammarDecorator;
 import com.sonar.sslr.api.LexerOutput;
+import com.sonar.sslr.api.Preprocessor;
 import com.sonar.sslr.api.RecognictionExceptionListener;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
+import com.sonar.sslr.impl.Lexer.LexerBuilder;
 import com.sonar.sslr.impl.events.EventAdapterDecorator;
 import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import com.sonar.sslr.impl.events.RuleMatcherAdapter;
 import com.sonar.sslr.impl.matcher.RuleBuilder;
 
-public abstract class Parser<GRAMMAR extends Grammar> {
+public class Parser<GRAMMAR extends Grammar> {
 
   private RuleBuilder rootRule;
   private ParsingState parsingState;
@@ -39,10 +46,35 @@ public abstract class Parser<GRAMMAR extends Grammar> {
   private boolean enableExtendedStackTrace = false;
   private EventAdapterDecorator<GRAMMAR> eventAdapterDecorator;
 
+  private Parser(ParserBuilder<GRAMMAR> builder) {
+    if (builder.lexer != null) {
+      this.lexer = builder.lexer;
+    } else {
+      this.lexer = builder.lexerBuilder.build();
+    }
+    this.grammar = builder.grammar;
+    this.enableExtendedStackTrace = builder.enableExtendedStackTrace;
+    this.enableMemoizer = builder.enableMemoizer;
+    this.listeners = builder.listeners;
+    setDecorators(builder.decorators);
+  }
+
+  /**
+   * @deprecated
+   * 
+   * @see #builder();
+   */
+  @Deprecated
   public Parser(GRAMMAR grammar, Lexer lexer, GrammarDecorator<GRAMMAR>... decorators) {
     this(grammar, lexer, Arrays.asList(decorators));
   }
 
+  /**
+   * @deprecated
+   * 
+   * @see #builder();
+   */
+  @Deprecated
   public Parser(GRAMMAR grammar, Lexer lexer, List<GrammarDecorator<GRAMMAR>> decorators) {
     this.grammar = grammar;
     this.lexer = lexer;
@@ -169,5 +201,78 @@ public abstract class Parser<GRAMMAR extends Grammar> {
     result.append("Root rule is : " + rootRule.getRule().getName() + "\n");
     result.append("and : " + lexerOutput.toString());
     return result.toString();
+  }
+
+  public static <GRAMMAR extends Grammar> ParserBuilder<GRAMMAR> builder(GRAMMAR grammar) {
+    return new ParserBuilder<GRAMMAR>(grammar);
+  }
+
+  public final static class ParserBuilder<GRAMMAR extends Grammar> {
+
+    private LexerBuilder lexerBuilder = Lexer.builder();
+    private Lexer lexer;
+    private GRAMMAR grammar;
+    private List<GrammarDecorator<GRAMMAR>> decorators = new ArrayList<GrammarDecorator<GRAMMAR>>();
+    private boolean enableExtendedStackTrace = false;
+    private boolean enableMemoizer = false;
+    private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
+
+    private ParserBuilder(GRAMMAR grammar) {
+      this.grammar = grammar;
+    }
+
+    public Parser<GRAMMAR> build() {
+      return new Parser<GRAMMAR>(this);
+    }
+
+    public ParserBuilder<GRAMMAR> optSetCharset(Charset charset) {
+      lexerBuilder.optSetCharset(charset);
+      return this;
+    }
+
+    public ParserBuilder<GRAMMAR> optSetLexer(Lexer lexer) {
+      this.lexer = lexer;
+      return this;
+    }
+
+    public ParserBuilder<GRAMMAR> optAddPreprocessor(Preprocessor preprocessor) {
+      lexerBuilder.optAddPreprocessor(preprocessor);
+      return this;
+    }
+
+    public ParserBuilder<GRAMMAR> optSetCodeReaderConfiguration(CodeReaderConfiguration conf) {
+      lexerBuilder.optSetCodeReaderConfiguration(conf);
+      return this;
+    }
+
+    public ParserBuilder<GRAMMAR> addChannel(Channel<LexerOutput> channel) {
+      lexerBuilder.addChannel(channel);
+      return this;
+    }
+
+    public ParserBuilder<GRAMMAR> optFailIfNoChannelToConsumeOneCharacter() {
+      lexerBuilder.optFailIfNoChannelToConsumeOneCharacter();
+      return this;
+    }
+
+    public ParserBuilder<GRAMMAR> addOptGrammarDecorator(GrammarDecorator<GRAMMAR> decorator) {
+      decorators.add(decorator);
+      return this;
+    }
+
+    public ParserBuilder<GRAMMAR> optEnableExtendedStackTrace() {
+      enableExtendedStackTrace = true;
+      return this;
+    }
+
+    public ParserBuilder<GRAMMAR> optDisableMemoizer() {
+      enableMemoizer = false;
+      return this;
+    }
+
+    public ParserBuilder<GRAMMAR> optAddRecognictionExceptionListener(RecognictionExceptionListener listener) {
+      listeners.add(listener);
+      return this;
+    }
   }
 }

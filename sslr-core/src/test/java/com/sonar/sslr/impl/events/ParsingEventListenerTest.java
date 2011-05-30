@@ -74,7 +74,7 @@ public class ParsingEventListenerTest {
   private class MyTestGrammarParser extends Parser<MyTestGrammar> {
 
     public MyTestGrammarParser(MyTestGrammar g) {
-      super(g, new IdentifierLexer(), new MyTestGrammarDecorator(), new EventAdapterDecorator<MyTestGrammar>(parsingEventListener));
+      super(g, IdentifierLexer.create(), new MyTestGrammarDecorator(), new EventAdapterDecorator<MyTestGrammar>(parsingEventListener));
     }
 
   }

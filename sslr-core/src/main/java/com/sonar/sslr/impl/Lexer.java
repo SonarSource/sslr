@@ -12,8 +12,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.sonar.channel.Channel;
 import org.sonar.channel.ChannelDispatcher;
 import org.sonar.channel.CodeReader;
 import org.sonar.channel.CodeReaderConfiguration;
@@ -23,7 +26,7 @@ import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Preprocessor;
 
-public abstract class Lexer {
+public class Lexer {
 
   private Charset charset = Charset.defaultCharset();
 
@@ -31,13 +34,32 @@ public abstract class Lexer {
                                                                  // consume big comment
 
   private CodeReaderConfiguration configuration = new CodeReaderConfiguration();
-
+  private ChannelDispatcher<LexerOutput> channelDispatcher;
   private Preprocessor[] preprocessors = new Preprocessor[0];
 
+  private Lexer(LexerBuilder builder) {
+    this.charset = builder.charset;
+    this.preprocessors = builder.preprocessors.toArray(new Preprocessor[0]);
+    this.configuration = builder.configuration;
+    this.channelDispatcher = builder.getChannelDispatcher();
+  }
+
+  /**
+   * @deprecated
+   * 
+   * @see #builder();
+   */
+  @Deprecated
   public Lexer() {
     this(Charset.defaultCharset());
   }
 
+  /**
+   * @deprecated
+   * 
+   * @see #builder();
+   */
+  @Deprecated
   public Lexer(Charset defaultCharset) {
     this.charset = defaultCharset;
     configuration = new CodeReaderConfiguration();
@@ -110,7 +132,9 @@ public abstract class Lexer {
     return lexerOutput;
   }
 
-  protected abstract ChannelDispatcher<LexerOutput> getChannelDispatcher();
+  protected ChannelDispatcher<LexerOutput> getChannelDispatcher() {
+    return channelDispatcher;
+  }
 
   public void startLexing() {
     for (Preprocessor preprocessor : preprocessors) {
@@ -121,6 +145,62 @@ public abstract class Lexer {
   public void endLexing(LexerOutput output) {
     for (Preprocessor preprocessor : preprocessors) {
       preprocessor.endLexing(output);
+    }
+  }
+
+  public static LexerBuilder builder() {
+    return new LexerBuilder();
+  }
+
+  public static final class LexerBuilder {
+
+    private Charset charset = Charset.defaultCharset();
+    private List<Preprocessor> preprocessors = new ArrayList<Preprocessor>();
+    private CodeReaderConfiguration configuration = new CodeReaderConfiguration();
+    private List<Channel> channels = new ArrayList<Channel>();
+    private boolean failIfNoChannelToConsumeOneCharacter = false;
+
+    private LexerBuilder() {
+
+    }
+
+    public Lexer build() {
+      return new Lexer(this);
+    }
+
+    /**
+     * Define the charset to be used in order to read the source code.
+     * 
+     * @param charset
+     * @return this LexerBuilder
+     */
+    public LexerBuilder optSetCharset(Charset charset) {
+      this.charset = charset;
+      return this;
+    }
+
+    public LexerBuilder optAddPreprocessor(Preprocessor preprocessor) {
+      preprocessors.add(preprocessor);
+      return this;
+    }
+
+    public LexerBuilder optSetCodeReaderConfiguration(CodeReaderConfiguration conf) {
+      this.configuration = conf;
+      return this;
+    }
+
+    public LexerBuilder addChannel(Channel<LexerOutput> channel) {
+      channels.add(channel);
+      return this;
+    }
+
+    public LexerBuilder optFailIfNoChannelToConsumeOneCharacter() {
+      failIfNoChannelToConsumeOneCharacter = true;
+      return this;
+    }
+
+    private ChannelDispatcher<LexerOutput> getChannelDispatcher() {
+      return new ChannelDispatcher<LexerOutput>(channels, failIfNoChannelToConsumeOneCharacter);
     }
   }
 }

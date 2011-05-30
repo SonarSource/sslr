@@ -35,14 +35,6 @@ public class ExtendedStackTraceTest {
 
   }
 
-  private class MyTestGrammarParser extends Parser<MyTestGrammar> {
-
-    public MyTestGrammarParser(boolean v1, MyTestGrammar g) {
-      super(g, new IdentifierLexer(), (v1) ? new MyTestGrammarDecoratorV1() : new MyTestGrammarDecoratorV2());
-    }
-
-  }
-
   private class MyTestGrammarDecoratorV1 implements GrammarDecorator<MyTestGrammar> {
 
     public void decorate(MyTestGrammar t) {
@@ -63,7 +55,8 @@ public class ExtendedStackTraceTest {
 
   @Test
   public void ok() {
-    MyTestGrammarParser p = new MyTestGrammarParser(true, new MyTestGrammar());
+    Parser<MyTestGrammar> p = Parser.builder(new MyTestGrammar()).optSetLexer(IdentifierLexer.create())
+        .addOptGrammarDecorator(new MyTestGrammarDecoratorV1()).build();
     p.disableMemoizer();
     p.enableExtendedStackTrace();
 
@@ -95,9 +88,8 @@ public class ExtendedStackTraceTest {
 
     assertEquals(baos.toString(), expected.toString());
 
-    p = new MyTestGrammarParser(false, new MyTestGrammar());
-    p.disableMemoizer();
-    p.enableExtendedStackTrace();
+    p = Parser.builder(new MyTestGrammar()).optSetLexer(IdentifierLexer.create()).addOptGrammarDecorator(new MyTestGrammarDecoratorV2())
+        .optDisableMemoizer().optEnableExtendedStackTrace().build();
 
     baos = new ByteArrayOutputStream();
 

@@ -37,7 +37,7 @@ public class EventAdapterDecoratorTest {
   private class MyTestGrammarParser extends Parser<MyTestGrammar> {
 
     public MyTestGrammarParser(boolean cyclic, MyTestGrammar g) {
-      super(g, new IdentifierLexer(), (cyclic) ? new MyTestGrammarDecoratorCyclic() : new MyTestGrammarDecorator());
+      super(g,  IdentifierLexer.create(), (cyclic) ? new MyTestGrammarDecoratorCyclic() : new MyTestGrammarDecorator());
     }
 
   }
@@ -61,6 +61,7 @@ public class EventAdapterDecoratorTest {
   @Test
   public void ok() {
     MyTestGrammarParser p = new MyTestGrammarParser(false, new MyTestGrammar());
+    Parser<MyTestGrammar> parser = Parser.builder(new MyTestGrammar()).build();
     p.disableMemoizer();
     p.enableExtendedStackTrace();
     p.parse("bonjour hehe huhu olaa uhu");

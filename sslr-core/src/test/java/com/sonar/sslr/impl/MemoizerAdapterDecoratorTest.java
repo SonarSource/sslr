@@ -39,8 +39,8 @@ public class MemoizerAdapterDecoratorTest {
   private class MyTestGrammarParser extends Parser<MyTestGrammar> {
 
     public MyTestGrammarParser(boolean leftRecursive, boolean cyclic, MyTestGrammar g) {
-      super(g, new IdentifierLexer(), (leftRecursive) ? new MyTestGrammarDecoratorLeft() : ((cyclic) ? new MyTestGrammarDecoratorCyclic()
-          : new MyTestGrammarDecorator()));
+      super(g, IdentifierLexer.create(), (leftRecursive) ? new MyTestGrammarDecoratorLeft()
+          : ((cyclic) ? new MyTestGrammarDecoratorCyclic() : new MyTestGrammarDecorator()));
     }
 
   }
