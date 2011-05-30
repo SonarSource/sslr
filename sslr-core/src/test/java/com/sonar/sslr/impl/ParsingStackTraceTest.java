@@ -87,7 +87,7 @@ public class ParsingStackTraceTest {
     assertEquals(expected.toString(), ParsingStackTrace.generateFullStackTrace(state));
   }
 
-  private class JavaGrammar extends Grammar {
+  public class JavaGrammar extends Grammar {
 
     public Rule compilationUnit;
     public Rule packageDeclaration;
@@ -96,7 +96,6 @@ public class ParsingStackTraceTest {
     public Rule classDeclaration;
 
     public JavaGrammar() {
-      GrammarRuleLifeCycleManager.initializeRuleFields(this, JavaGrammar.class);
       compilationUnit.is(packageDeclaration, importDeclaration, classBlock);
       classBlock.is(classDeclaration);
 

@@ -9,7 +9,6 @@ import java.lang.reflect.Field;
 
 import org.apache.commons.lang.ClassUtils;
 
-import com.sonar.sslr.api.LeftRecursiveRule;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.matcher.RuleBuilder;
 
@@ -19,30 +18,6 @@ import com.sonar.sslr.impl.matcher.RuleBuilder;
 public final class GrammarRuleLifeCycleManager {
 
   private GrammarRuleLifeCycleManager() {
-  }
-
-  /**
-   * Initializes the given grammar with standard rules.
-   * 
-   * @param rules
-   *          the grammar object to initialize
-   * @param grammar
-   *          the class that represents this grammar
-   */
-  public static void initializeRuleFields(Object rules, Class<?> grammar) {
-    Field[] fields = grammar.getDeclaredFields();
-    for (Field field : fields) {
-      String fieldName = field.getName();
-      try {
-        if (field.getType() == LeftRecursiveRule.class) {
-          field.set(rules, RuleBuilder.newLeftRecursiveRuleBuilder(fieldName));
-        } else if (field.getType() == Rule.class) {
-          field.set(rules, RuleBuilder.newRuleBuilder(fieldName));
-        }
-      } catch (Exception e) {
-        throw new RuntimeException("Unable to instanciate the rule '" + grammar.getName() + "." + fieldName + "'", e);
-      }
-    }
   }
 
   /**

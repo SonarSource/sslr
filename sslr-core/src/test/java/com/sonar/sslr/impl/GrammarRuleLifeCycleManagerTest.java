@@ -48,7 +48,7 @@ public class GrammarRuleLifeCycleManagerTest {
     verify(mockRule).endParsing();
   }
 
-  private class SampleGrammar extends Grammar {
+  public class SampleGrammar extends Grammar {
 
     public Rule rule1;
     @SuppressWarnings("unused")

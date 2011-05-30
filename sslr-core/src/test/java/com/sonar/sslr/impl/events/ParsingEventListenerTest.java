@@ -19,7 +19,6 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.GrammarDecorator;
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.impl.GrammarRuleLifeCycleManager;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
@@ -83,8 +82,6 @@ public class ParsingEventListenerTest {
   private class MyTestGrammarDecorator implements GrammarDecorator<MyTestGrammar> {
 
     public void decorate(MyTestGrammar t) {
-      GrammarRuleLifeCycleManager.initializeRuleFields(t, MyTestGrammar.class);
-
       t.root.is("bonjour", longestOne(t.rule1, t.rule2), and("olaa", "uhu"), EOF);
       t.rule1.is("hehe");
       t.rule2.is("hehe", "huhu");

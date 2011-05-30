@@ -6,7 +6,9 @@
 
 package com.sonar.sslr.api;
 
-import com.sonar.sslr.impl.GrammarRuleLifeCycleManager;
+import java.lang.reflect.Field;
+
+import com.sonar.sslr.impl.matcher.RuleBuilder;
 
 /**
  * A Grammar must be implemented to define the syntactic rules of a language.
@@ -17,7 +19,23 @@ import com.sonar.sslr.impl.GrammarRuleLifeCycleManager;
 public abstract class Grammar {
 
   public Grammar() {
-    GrammarRuleLifeCycleManager.initializeRuleFields(this, this.getClass());
+    instanciateRuleFields();
+  }
+
+  private void instanciateRuleFields() {
+    Field[] fields = this.getClass().getDeclaredFields();
+    for (Field field : fields) {
+      String fieldName = field.getName();
+      try {
+        if (field.getType() == LeftRecursiveRule.class) {
+          field.set(this, RuleBuilder.newLeftRecursiveRuleBuilder(fieldName));
+        } else if (field.getType() == Rule.class) {
+          field.set(this, RuleBuilder.newRuleBuilder(fieldName));
+        }
+      } catch (Exception e) {
+        throw new RuntimeException("Unable to instanciate the rule '" + this.getClass().getName() + "." + fieldName + "'", e);
+      }
+    }
   }
 
   /**

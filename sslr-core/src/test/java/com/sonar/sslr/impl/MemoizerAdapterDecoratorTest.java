@@ -48,8 +48,6 @@ public class MemoizerAdapterDecoratorTest {
   private class MyTestGrammarDecorator implements GrammarDecorator<MyTestGrammar> {
 
     public void decorate(MyTestGrammar t) {
-      GrammarRuleLifeCycleManager.initializeRuleFields(t, MyTestGrammar.class);
-
       t.root.is("bonjour", longestOne(t.rule1, t.rule2), and("olaa", "uhu"), EOF);
       t.rule1.is("hehe");
       t.rule2.is("hehe", "huhu");
@@ -59,8 +57,6 @@ public class MemoizerAdapterDecoratorTest {
   private class MyTestGrammarDecoratorCyclic implements GrammarDecorator<MyTestGrammar> {
 
     public void decorate(MyTestGrammar t) {
-      GrammarRuleLifeCycleManager.initializeRuleFields(t, MyTestGrammar.class);
-
       t.root.is(or(and("four", "PLUS", t.root), "four")); /* A recursive grammar */
     }
   }
@@ -68,8 +64,6 @@ public class MemoizerAdapterDecoratorTest {
   private class MyTestGrammarDecoratorLeft implements GrammarDecorator<MyTestGrammar> {
 
     public void decorate(MyTestGrammar t) {
-      GrammarRuleLifeCycleManager.initializeRuleFields(t, MyTestGrammar.class);
-
       t.root.is(t.left, EOF); /* A left recursive grammar */
       t.left.is(or(and(t.left, "PLUS", t.left), "three"));
     }
