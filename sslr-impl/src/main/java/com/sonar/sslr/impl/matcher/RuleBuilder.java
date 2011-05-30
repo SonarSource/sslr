@@ -58,7 +58,7 @@ public class RuleBuilder implements Rule, LeftRecursiveRule, AstNodeSkippingPoli
   public RuleBuilder is(Object... matchers) {
     throwExceptionIfRuleAlreadyDefined("The rule '" + ruleMatcher + "' has already been defined somewhere in the grammar.");
     throwExceptionIfEmptyListOfMatchers(matchers);
-    setMatcher(CfgFunctions.Standard.and(matchers));
+    setMatcher(GrammarFunctions.Standard.and(matchers));
     return this;
   }
 
@@ -67,7 +67,7 @@ public class RuleBuilder implements Rule, LeftRecursiveRule, AstNodeSkippingPoli
    */
   public RuleBuilder override(Object... matchers) {
     throwExceptionIfEmptyListOfMatchers(matchers);
-    setMatcher(CfgFunctions.Standard.and(matchers));
+    setMatcher(GrammarFunctions.Standard.and(matchers));
     return this;
   }
 
@@ -82,28 +82,28 @@ public class RuleBuilder implements Rule, LeftRecursiveRule, AstNodeSkippingPoli
   public RuleBuilder isOr(Object... matchers) {
     throwExceptionIfRuleAlreadyDefined("The rule '" + ruleMatcher + "' has already been defined somewhere in the grammar.");
     throwExceptionIfEmptyListOfMatchers(matchers);
-    setMatcher(CfgFunctions.Standard.or(matchers));
+    setMatcher(GrammarFunctions.Standard.or(matchers));
     return this;
   }
 
   public RuleBuilder or(Object... matchers) {
     throwExceptionIfEmptyListOfMatchers(matchers);
     throwExceptionIfRuleNotAlreadyDefined("The Rule.or(...) can't be called if the method Rule.is(...) hasn't been called first.");
-    setMatcher(CfgFunctions.Standard.or(ruleMatcher.children[0], CfgFunctions.Standard.and(matchers)));
+    setMatcher(GrammarFunctions.Standard.or(ruleMatcher.children[0], GrammarFunctions.Standard.and(matchers)));
     return this;
   }
 
   public RuleBuilder and(Object... matchers) {
     throwExceptionIfEmptyListOfMatchers(matchers);
     throwExceptionIfRuleNotAlreadyDefined("The Rule.and(...) can't be called if the method Rule.is(...) hasn't been called first.");
-    setMatcher(CfgFunctions.Standard.and(ruleMatcher.children[0], CfgFunctions.Standard.and(matchers)));
+    setMatcher(GrammarFunctions.Standard.and(ruleMatcher.children[0], GrammarFunctions.Standard.and(matchers)));
     return this;
   }
 
   public RuleBuilder orBefore(Object... matchers) {
     throwExceptionIfEmptyListOfMatchers(matchers);
     throwExceptionIfRuleNotAlreadyDefined("The Rule.or(...) can't be called if the method Rule.is(...) hasn't been called first.");
-    setMatcher(CfgFunctions.Standard.or(CfgFunctions.Standard.and(matchers), ruleMatcher.children[0]));
+    setMatcher(GrammarFunctions.Standard.or(GrammarFunctions.Standard.and(matchers), ruleMatcher.children[0]));
     return this;
   }
 

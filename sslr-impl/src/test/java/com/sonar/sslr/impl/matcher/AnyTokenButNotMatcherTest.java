@@ -7,7 +7,7 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
-import static com.sonar.sslr.impl.matcher.CfgFunctions.Advanced.anyTokenButNot;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.anyTokenButNot;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;

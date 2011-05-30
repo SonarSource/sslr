@@ -7,7 +7,7 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
-import static com.sonar.sslr.impl.matcher.CfgFunctions.Advanced.bridge;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.bridge;
 import static com.sonar.sslr.impl.matcher.MyPunctuator.CAT;
 import static com.sonar.sslr.impl.matcher.MyPunctuator.DOG;
 import static com.sonar.sslr.impl.matcher.MyPunctuator.LEFT;

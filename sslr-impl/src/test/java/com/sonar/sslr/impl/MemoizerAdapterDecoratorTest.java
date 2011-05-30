@@ -6,9 +6,9 @@
 package com.sonar.sslr.impl;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.impl.matcher.CfgFunctions.Advanced.longestOne;
-import static com.sonar.sslr.impl.matcher.CfgFunctions.Standard.and;
-import static com.sonar.sslr.impl.matcher.CfgFunctions.Standard.or;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;

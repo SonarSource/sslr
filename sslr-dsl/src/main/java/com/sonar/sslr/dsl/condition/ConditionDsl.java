@@ -5,9 +5,9 @@
  */
 package com.sonar.sslr.dsl.condition;
 
-import static com.sonar.sslr.impl.matcher.CfgFunctions.Standard.and;
-import static com.sonar.sslr.impl.matcher.CfgFunctions.Standard.opt;
-import static com.sonar.sslr.impl.matcher.CfgFunctions.Standard.or;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
 
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.dsl.Dsl;

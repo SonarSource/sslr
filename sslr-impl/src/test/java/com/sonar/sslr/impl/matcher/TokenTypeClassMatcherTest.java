@@ -30,8 +30,8 @@ public class TokenTypeClassMatcherTest {
 
   @Test
   public void testThroughMatchers() {
-    assertThat(CfgFunctions.Standard.and(GenericTokenType.class), match("word"));
-    assertThat(CfgFunctions.Standard.and(MockTokenType.class), not(match("word")));
+    assertThat(GrammarFunctions.Standard.and(GenericTokenType.class), match("word"));
+    assertThat(GrammarFunctions.Standard.and(MockTokenType.class), not(match("word")));
   }
 
   @Test

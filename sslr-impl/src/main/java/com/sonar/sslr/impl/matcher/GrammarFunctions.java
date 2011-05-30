@@ -11,9 +11,9 @@ import com.sonar.sslr.api.TokenType;
 /**
  * This class provides all the functions to define a context-free grammar
  */
-public class CfgFunctions {
+public class GrammarFunctions {
 
-  private CfgFunctions() {
+  private GrammarFunctions() {
   };
 
   public static final class Standard {
