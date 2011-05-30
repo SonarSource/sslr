@@ -56,7 +56,7 @@ public class ExtendedStackTraceTest {
   @Test
   public void ok() {
     Parser<MyTestGrammar> p = Parser.builder(new MyTestGrammar()).optSetLexer(IdentifierLexer.create())
-        .addOptGrammarDecorator(new MyTestGrammarDecoratorV1()).build();
+        .optAddGrammarDecorator(new MyTestGrammarDecoratorV1()).build();
     p.disableMemoizer();
     p.enableExtendedStackTrace();
 
@@ -88,7 +88,7 @@ public class ExtendedStackTraceTest {
 
     assertEquals(baos.toString(), expected.toString());
 
-    p = Parser.builder(new MyTestGrammar()).optSetLexer(IdentifierLexer.create()).addOptGrammarDecorator(new MyTestGrammarDecoratorV2())
+    p = Parser.builder(new MyTestGrammar()).optSetLexer(IdentifierLexer.create()).optAddGrammarDecorator(new MyTestGrammarDecoratorV2())
         .optDisableMemoizer().optEnableExtendedStackTrace().build();
 
     baos = new ByteArrayOutputStream();

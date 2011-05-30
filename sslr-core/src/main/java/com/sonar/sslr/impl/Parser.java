@@ -214,7 +214,7 @@ public class Parser<GRAMMAR extends Grammar> {
     private GRAMMAR grammar;
     private List<GrammarDecorator<GRAMMAR>> decorators = new ArrayList<GrammarDecorator<GRAMMAR>>();
     private boolean enableExtendedStackTrace = false;
-    private boolean enableMemoizer = false;
+    private boolean enableMemoizer = true;
     private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
 
     private ParserBuilder(GRAMMAR grammar) {
@@ -255,7 +255,7 @@ public class Parser<GRAMMAR extends Grammar> {
       return this;
     }
 
-    public ParserBuilder<GRAMMAR> addOptGrammarDecorator(GrammarDecorator<GRAMMAR> decorator) {
+    public ParserBuilder<GRAMMAR> optAddGrammarDecorator(GrammarDecorator<GRAMMAR> decorator) {
       decorators.add(decorator);
       return this;
     }
