@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.sonar.sslr.api.GenericTokenType;
+import com.sonar.sslr.api.GrammarFunctions;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.MockTokenType;
 

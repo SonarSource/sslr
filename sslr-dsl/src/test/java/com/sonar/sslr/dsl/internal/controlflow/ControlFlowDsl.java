@@ -5,8 +5,8 @@
  */
 package com.sonar.sslr.dsl.internal.controlflow;
 
+import static com.sonar.sslr.api.GrammarFunctions.Standard.o2n;
 import static com.sonar.sslr.dsl.DslTokenType.INTEGER;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
 
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.dsl.CommandListDsl;

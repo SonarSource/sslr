@@ -5,6 +5,7 @@
  */
 package com.sonar.sslr.api;
 
+@Deprecated
 public abstract class AstListener<OUTPUT> {
 
   public abstract void startListening(AstNode astNode, OUTPUT output);

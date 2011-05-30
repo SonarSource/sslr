@@ -5,11 +5,11 @@
  */
 package com.sonar.sslr.dsl.calculator;
 
+import static com.sonar.sslr.api.GrammarFunctions.Standard.opt;
+import static com.sonar.sslr.api.GrammarFunctions.Standard.or;
 import static com.sonar.sslr.dsl.DslTokenType.DOUBLE;
 import static com.sonar.sslr.dsl.DslTokenType.INTEGER;
 import static com.sonar.sslr.dsl.DslTokenType.WORD;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
 
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;

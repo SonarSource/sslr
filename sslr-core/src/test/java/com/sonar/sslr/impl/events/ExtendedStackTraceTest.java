@@ -6,8 +6,8 @@
 package com.sonar.sslr.impl.events;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.api.GrammarFunctions.Advanced.longestOne;
+import static com.sonar.sslr.api.GrammarFunctions.Standard.and;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;

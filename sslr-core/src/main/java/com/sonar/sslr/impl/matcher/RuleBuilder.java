@@ -10,6 +10,7 @@ import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeSkippingPolicy;
 import com.sonar.sslr.api.AstNodeType;
+import com.sonar.sslr.api.GrammarFunctions;
 import com.sonar.sslr.api.LeftRecursiveRule;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.ast.AlwaysSkipFromAst;
@@ -121,7 +122,7 @@ public class RuleBuilder implements Rule, LeftRecursiveRule, AstNodeSkippingPoli
     return this;
   }
 
-  public RuleBuilder skipIf(AstNodeType astNodeSkipPolicy) {
+  public RuleBuilder skipIf(AstNodeSkippingPolicy astNodeSkipPolicy) {
     astNodeSkippingPolicy = astNodeSkipPolicy;
     return this;
   }

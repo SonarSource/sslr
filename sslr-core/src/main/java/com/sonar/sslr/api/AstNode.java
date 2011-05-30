@@ -26,6 +26,7 @@ public class AstNode {
   private AstNode parent;
   private int fromIndex;
   private int toIndex;
+  @Deprecated
   private AstListener action = null;
 
   public AstNode(Token token) {
@@ -218,16 +219,19 @@ public class AstNode {
     return this.type == type;
   }
 
+  @Deprecated
   public void setAstNodeListener(AstListener action) {
     this.action = action;
   }
 
+  @Deprecated
   public void startListening(Object output) {
     if (action != null) {
       action.startListening(this, output);
     }
   }
 
+  @Deprecated
   public void stopListening(Object output) {
     if (action != null) {
       action.stopListening(this, output);
