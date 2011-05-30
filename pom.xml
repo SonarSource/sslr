@@ -23,11 +23,9 @@
   </scm>
 
   <modules>
-    <module>sslr-api</module>   
-    <module>sslr-impl</module>   
+    <module>sslr-core</module>   
     <module>sslr-dsl</module>  
-    <module>sslr-lexer-testing-harness</module> 
-    <module>sslr-parser-testing-harness</module>     
+    <module>sslr-testing-harness</module> 
   </modules>
 
   <build>
@@ -49,29 +47,14 @@
     <dependencies>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>sslr-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>sslr-impl</artifactId>
+        <artifactId>sslr-core</artifactId>
         <version>${project.version}</version>
       </dependency> 
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>sslr-lexer-testing-harness</artifactId>
-      <version>${project.version}</version>
-    </dependency>  
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>sslr-parser-testing-harness</artifactId>
+      <artifactId>sslr-testing-harness</artifactId>
       <version>${project.version}</version>
     </dependency>               
-      <dependency>
-        <groupId>org.codehaus.sonar</groupId>
-        <artifactId>sonar-graph</artifactId>
-        <version>${sonar.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.codehaus.sonar</groupId>
         <artifactId>sonar-channel</artifactId>
@@ -81,7 +64,12 @@
         <groupId>com.google.collections</groupId>
         <artifactId>google-collections</artifactId>
         <version>1.0</version>
-      </dependency>      
+      </dependency>    
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>2.6</version>
+      </dependency>          
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>

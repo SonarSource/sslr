@@ -13,7 +13,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>sslr-impl</artifactId>
+			<artifactId>sslr-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.sonar</groupId>
@@ -22,12 +22,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>sslr-parser-testing-harness</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>sslr-lexer-testing-harness</artifactId>
+			<artifactId>sslr-testing-harness</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
