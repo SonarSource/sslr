@@ -8,10 +8,11 @@ package com.sonar.sslr.dsl;
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
 
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.matcher.RuleBuilder;
 
-public abstract class CommandListDsl extends Dsl {
+public abstract class CommandListDsl extends Grammar {
 
   public Rule translationUnit = RuleBuilder.newRuleBuilder("translationUnit");
   public Rule command = RuleBuilder.newRuleBuilder("command");

@@ -9,11 +9,11 @@ import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
 
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.dsl.Dsl;
 import com.sonar.sslr.dsl.calculator.CalculatorDsl;
 
-public class ConditionDsl extends Dsl {
+public class ConditionDsl extends Grammar {
 
   public Rule condition;
   public Rule primaryCondition;

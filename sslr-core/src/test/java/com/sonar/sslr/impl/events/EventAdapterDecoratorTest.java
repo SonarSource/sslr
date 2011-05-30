@@ -23,7 +23,7 @@ import com.sonar.sslr.impl.matcher.RuleBuilder;
 
 public class EventAdapterDecoratorTest {
 
-  public class MyTestGrammar implements Grammar {
+  public class MyTestGrammar extends Grammar {
 
     public Rule root;
     public Rule rule1;

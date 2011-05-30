@@ -26,9 +26,6 @@ public class GrammarRuleLifeCycleManagerTest {
   @Test
   public void testInitializeRuleFields() {
     SampleGrammar grammar = new SampleGrammar();
-    assertThat(grammar.rule1, nullValue());
-
-    GrammarRuleLifeCycleManager.initializeRuleFields(grammar, SampleGrammar.class);
 
     assertThat(grammar.rule1, not(nullValue()));
     assertThat(grammar.rule1, is(RuleBuilder.class));
@@ -51,7 +48,7 @@ public class GrammarRuleLifeCycleManagerTest {
     verify(mockRule).endParsing();
   }
 
-  private class SampleGrammar implements Grammar {
+  private class SampleGrammar extends Grammar {
 
     public Rule rule1;
     @SuppressWarnings("unused")

@@ -6,6 +6,7 @@
 
 package com.sonar.sslr.dsl;
 
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.dsl.internal.Bytecode;
 import com.sonar.sslr.dsl.internal.Compiler;
 
@@ -15,7 +16,7 @@ public class DslRunner {
   private Compiler compiler;
   private DslMemory memory;
 
-  private DslRunner(Dsl dsl, String source) {
+  private DslRunner(Grammar dsl, String source) {
     compiler = new Compiler(dsl, source);
   }
 
@@ -39,7 +40,7 @@ public class DslRunner {
     return this;
   }
 
-  public static DslRunner create(Dsl dsl, String source) {
+  public static DslRunner create(Grammar dsl, String source) {
     DslRunner dslRunner = new DslRunner(dsl, source);
     dslRunner.compile();
     dslRunner.resetDslMemory();

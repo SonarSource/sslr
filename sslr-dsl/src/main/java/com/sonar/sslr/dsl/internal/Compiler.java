@@ -7,18 +7,17 @@ package com.sonar.sslr.dsl.internal;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.dsl.Dsl;
 import com.sonar.sslr.dsl.DslTokenType;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.matcher.RuleBuilder;
 
 public class Compiler {
 
-  private Dsl dsl;
+  private Grammar dsl;
   private String source;
   private AdapterRepository adapters = new AdapterRepository();
 
-  public Compiler(Dsl dsl, String source) {
+  public Compiler(Grammar dsl, String source) {
     this.dsl = dsl;
     this.source = source;
   }

@@ -22,7 +22,7 @@ import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 
 public class MemoizerAdapterDecoratorTest {
 
-  public class MyTestGrammar implements Grammar {
+  public class MyTestGrammar extends Grammar {
 
     public Rule root;
     public Rule rule1;

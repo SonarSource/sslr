@@ -11,10 +11,10 @@ import static com.sonar.sslr.dsl.DslTokenType.WORD;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
 
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.dsl.Dsl;
 
-public class CalculatorDsl extends Dsl {
+public class CalculatorDsl extends Grammar {
 
   public Rule expression;
   public Rule primaryExpression;

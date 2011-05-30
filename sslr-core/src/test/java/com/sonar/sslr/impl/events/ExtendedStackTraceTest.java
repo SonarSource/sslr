@@ -24,7 +24,7 @@ import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
 public class ExtendedStackTraceTest {
 
-  public class MyTestGrammar implements Grammar {
+  public class MyTestGrammar extends Grammar {
 
     public Rule root;
     public Rule rule1;
