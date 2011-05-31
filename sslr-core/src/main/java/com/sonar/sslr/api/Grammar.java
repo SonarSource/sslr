@@ -23,7 +23,7 @@ public abstract class Grammar {
   }
 
   private void instanciateRuleFields() {
-    Field[] fields = this.getClass().getDeclaredFields();
+    Field[] fields = this.getClass().getFields();
     for (Field field : fields) {
       String fieldName = field.getName();
       try {
