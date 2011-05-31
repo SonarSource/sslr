@@ -10,12 +10,11 @@ import static com.sonar.sslr.api.GrammarFunctions.Standard.o2n;
 
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.impl.matcher.RuleBuilder;
 
 public abstract class CommandListDsl extends Grammar {
 
-  public Rule translationUnit = RuleBuilder.newRuleBuilder("translationUnit");
-  public Rule command = RuleBuilder.newRuleBuilder("command");
+  public Rule translationUnit;
+  public Rule command;
 
   public CommandListDsl() {
     translationUnit.is(o2n(command), EOF);
