@@ -54,17 +54,21 @@ public class CommentRegexpChannel extends Channel<LexerOutput> {
       if (code.popTo(matcher, tmpBuilder) > 0) {
         String value = tmpBuilder.toString();
         
+        System.out.println("Before: " + value);
+        
         if (trimBeforeRemove) {
         	value = value.trim();
         }
         
         if (removeBefore > 0 || removeAfter > 0) {
-        	value = value.substring(removeBefore, value.length() - removeBefore + 1);
+        	value = value.substring(removeBefore, value.length() - removeAfter);
         }
         
         if (trimAfterRemove) {
         	value = value.trim();
         }
+        
+        System.out.println("After: " + value);
 
         output.addCommentToken(new Token(GenericTokenType.COMMENT, value, code.getPreviousCursor().getLine(), code.getPreviousCursor().getColumn()));
         
