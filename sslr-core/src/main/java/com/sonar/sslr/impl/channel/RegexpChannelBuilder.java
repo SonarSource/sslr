@@ -17,6 +17,22 @@ public final class RegexpChannelBuilder {
   public final static RegexpChannel regexp(TokenType type, String... regexpPiece) {
     return new RegexpChannel(type, merge(regexpPiece));
   }
+  
+  public final static CommentRegexpChannel commentRegexp(String... regexpPiece) {
+    return new CommentRegexpChannel(merge(regexpPiece));
+  }
+  
+  public final static CommentRegexpChannel commentRegexp(int removeBefore, int removeAfter, String... regexpPiece) {
+    return new CommentRegexpChannel(merge(regexpPiece), removeBefore, removeAfter);
+  }
+  
+  public final static CommentRegexpChannel commentRegexp(boolean trimBeforeRemove, boolean trimAfterRemove, String... regexpPiece) {
+    return new CommentRegexpChannel(merge(regexpPiece), trimBeforeRemove, trimAfterRemove);
+  }
+  
+  public final static CommentRegexpChannel commentRegexp(int removeBefore, int removeAfter, boolean trimBeforeRemove, boolean trimAfterRemove, String... regexpPiece) {
+    return new CommentRegexpChannel(merge(regexpPiece), removeBefore, removeAfter, trimBeforeRemove, trimAfterRemove);
+  }
 
   public final static String opt(String regexpPiece) {
     return regexpPiece + "?+";
