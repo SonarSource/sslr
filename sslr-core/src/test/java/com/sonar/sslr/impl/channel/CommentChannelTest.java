@@ -44,23 +44,10 @@ public class CommentChannelTest {
   
   @Test
   public void testCommentTrimBeforeRemove() {
-    channel = new CommentRegexpChannel("//.*", 2, 1, true, false);
+    channel = new CommentRegexpChannel("//.*", 2, 1, true);
     assertThat(channel, not(consume("This is not a comment", output)));
     assertThat(channel, consume("//My Comment    \n second line", output));
     assertThat(output, hasComment("My Commen"));
-    
-    channel = new CommentRegexpChannel("//.*", 2, 1, false, true);
-    assertThat(channel, not(consume("This is not a comment", output)));
-    assertThat(channel, consume("//My Comment    \n second line", output));
-    assertThat(output, hasComment("My Comment"));
   }
   
-  @Test
-  public void testCommentTrimAfterRemove() {
-    channel = new CommentRegexpChannel("//.*", 2, 1, false, true);
-    assertThat(channel, not(consume("This is not a comment", output)));
-    assertThat(channel, consume("//My Commen   t\n second line", output));
-    assertThat(output, hasComment("My Commen"));
-  }
-
 }

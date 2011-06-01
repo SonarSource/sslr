@@ -26,12 +26,12 @@ public final class RegexpChannelBuilder {
     return new CommentRegexpChannel(merge(regexpPiece), removeBefore, removeAfter);
   }
   
-  public final static CommentRegexpChannel commentRegexp(boolean trimBeforeRemove, boolean trimAfterRemove, String... regexpPiece) {
-    return new CommentRegexpChannel(merge(regexpPiece), trimBeforeRemove, trimAfterRemove);
+  public final static CommentRegexpChannel commentRegexp(boolean trimBeforeRemove, String... regexpPiece) {
+    return new CommentRegexpChannel(merge(regexpPiece), trimBeforeRemove);
   }
   
-  public final static CommentRegexpChannel commentRegexp(int removeBefore, int removeAfter, boolean trimBeforeRemove, boolean trimAfterRemove, String... regexpPiece) {
-    return new CommentRegexpChannel(merge(regexpPiece), removeBefore, removeAfter, trimBeforeRemove, trimAfterRemove);
+  public final static CommentRegexpChannel commentRegexp(int removeBefore, int removeAfter, boolean trimBeforeRemove, String... regexpPiece) {
+    return new CommentRegexpChannel(merge(regexpPiece), removeBefore, removeAfter, trimBeforeRemove);
   }
 
   public final static String opt(String regexpPiece) {
