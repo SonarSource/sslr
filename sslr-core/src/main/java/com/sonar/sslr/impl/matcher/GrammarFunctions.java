@@ -4,32 +4,9 @@
  * mailto:contact AT sonarsource DOT com
  */
 
-package com.sonar.sslr.api;
+package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.impl.matcher.AdjacentMatcher;
-import com.sonar.sslr.impl.matcher.AndMatcher;
-import com.sonar.sslr.impl.matcher.AnyTokenButNotMatcher;
-import com.sonar.sslr.impl.matcher.AnyTokenMatcher;
-import com.sonar.sslr.impl.matcher.AtLeastOneMatcher;
-import com.sonar.sslr.impl.matcher.BooleanMatcher;
-import com.sonar.sslr.impl.matcher.BridgeMatcher;
-import com.sonar.sslr.impl.matcher.ExclusiveTillMatcher;
-import com.sonar.sslr.impl.matcher.InclusiveTillMatcher;
-import com.sonar.sslr.impl.matcher.LongestOneMatcher;
-import com.sonar.sslr.impl.matcher.Matcher;
-import com.sonar.sslr.impl.matcher.NextMatcher;
-import com.sonar.sslr.impl.matcher.NotMatcher;
-import com.sonar.sslr.impl.matcher.OneToNMatcher;
-import com.sonar.sslr.impl.matcher.OptMatcher;
-import com.sonar.sslr.impl.matcher.OrMatcher;
-import com.sonar.sslr.impl.matcher.RuleDefinition;
-import com.sonar.sslr.impl.matcher.TillNewLineMatcher;
-import com.sonar.sslr.impl.matcher.TokenTypeAndValueMatcher;
-import com.sonar.sslr.impl.matcher.TokenTypeClassMatcher;
-import com.sonar.sslr.impl.matcher.TokenTypeMatcher;
-import com.sonar.sslr.impl.matcher.TokenTypesMatcher;
-import com.sonar.sslr.impl.matcher.TokenValueMatcher;
-import com.sonar.sslr.impl.matcher.ZeroToNMatcher;
+import com.sonar.sslr.api.TokenType;
 
 /**
  * This class provides all the functions to define a context-free grammar

@@ -6,7 +6,7 @@
 package com.sonar.sslr.dsl;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.api.GrammarFunctions.Standard.o2n;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
 
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;

@@ -6,7 +6,7 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.api.GrammarFunctions.Advanced.anyToken;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.anyToken;
 import static com.sonar.sslr.test.lexer.TokenUtils.lex;
 import static org.junit.Assert.assertEquals;
 

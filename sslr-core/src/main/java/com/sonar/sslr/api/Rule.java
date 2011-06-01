@@ -6,6 +6,8 @@
 
 package com.sonar.sslr.api;
 
+import com.sonar.sslr.impl.matcher.GrammarFunctions;
+
 /**
  * A Rule describes a context free grammar syntactic rule.
  * 
