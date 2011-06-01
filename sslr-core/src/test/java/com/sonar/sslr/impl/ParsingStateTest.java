@@ -20,7 +20,7 @@ import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.matcher.RuleBuilder;
+import com.sonar.sslr.impl.matcher.RuleDefinition;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class ParsingStateTest {
@@ -87,7 +87,7 @@ public class ParsingStateTest {
 
     state.popToken(new RuleMatcher("Dummy"));
     RuleMatcher myrule = new RuleMatcher("MyRule");
-    AstNode astNode = new AstNode(RuleBuilder.newRuleBuilder(myrule), "MyRule", null);
+    AstNode astNode = new AstNode(RuleDefinition.newRuleBuilder(myrule), "MyRule", null);
     astNode.setFromIndex(1);
     assertEquals(0, astNode.getToIndex());
 
@@ -104,7 +104,7 @@ public class ParsingStateTest {
     RuleMatcher myrule = new RuleMatcher("MyRule");
     state.popToken(myrule);
     state.popToken(myrule);
-    AstNode astNode = new AstNode(RuleBuilder.newRuleBuilder(myrule), "MyRule", null);
+    AstNode astNode = new AstNode(RuleDefinition.newRuleBuilder(myrule), "MyRule", null);
     astNode.setFromIndex(0);
     state.memoizeAst(myrule, astNode);
 

@@ -8,7 +8,7 @@ package com.sonar.sslr.api;
 
 import java.lang.reflect.Field;
 
-import com.sonar.sslr.impl.matcher.RuleBuilder;
+import com.sonar.sslr.impl.matcher.RuleDefinition;
 
 /**
  * A Grammar must be implemented to define the syntactic rules of a language.
@@ -28,9 +28,9 @@ public abstract class Grammar {
       String fieldName = field.getName();
       try {
         if (field.getType() == LeftRecursiveRule.class) {
-          field.set(this, RuleBuilder.newLeftRecursiveRuleBuilder(fieldName));
+          field.set(this, RuleDefinition.newLeftRecursiveRuleBuilder(fieldName));
         } else if (field.getType() == Rule.class) {
-          field.set(this, RuleBuilder.newRuleBuilder(fieldName));
+          field.set(this, RuleDefinition.newRuleBuilder(fieldName));
         }
       } catch (Exception e) {
         throw new RuntimeException("Unable to instanciate the rule '" + this.getClass().getName() + "." + fieldName + "'", e);

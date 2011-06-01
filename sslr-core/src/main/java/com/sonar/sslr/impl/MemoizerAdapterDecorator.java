@@ -46,7 +46,7 @@ class MemoizerAdapterDecorator<GRAMMAR extends Grammar> implements GrammarDecora
 	}
 	
 	public void decorate(GRAMMAR grammar) {
-		RuleMatcher root = ((RuleBuilder)grammar.getRootRule()).getRule();
+		RuleMatcher root = ((RuleDefinition)grammar.getRootRule()).getRule();
 		
 		/* The root rule does not have to be memoized */
 

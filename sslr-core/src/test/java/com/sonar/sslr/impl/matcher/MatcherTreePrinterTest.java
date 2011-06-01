@@ -25,11 +25,11 @@ public class MatcherTreePrinterTest {
     assertEquals(MatcherTreePrinter.print(o2n("a")), "o2n(\"a\")");
     assertEquals(MatcherTreePrinter.print(o2n("a", "b")), "o2n(and(\"a\", \"b\"))");
 
-    RuleBuilder heheBuilder = RuleBuilder.newRuleBuilder("hehe");
+    RuleDefinition heheBuilder = RuleDefinition.newRuleBuilder("hehe");
     RuleMatcher hehe = heheBuilder.is("bonjour", heheBuilder).getRule();
     assertEquals(MatcherTreePrinter.print(hehe), "hehe.is(and(\"bonjour\", hehe))");
 
-    RuleMatcher haha = RuleBuilder.newRuleBuilder("haha").is(new MemoizerMatcher(new MatcherAdapter(null, or("a", "b")))).getRule();
+    RuleMatcher haha = RuleDefinition.newRuleBuilder("haha").is(new MemoizerMatcher(new MatcherAdapter(null, or("a", "b")))).getRule();
 
     RuleMatcherAdapter adapter = new RuleMatcherAdapter(null, haha);
 
@@ -39,7 +39,7 @@ public class MatcherTreePrinterTest {
 
   @Test
   public void testPrintWithAdapters() {
-    RuleMatcher haha = RuleBuilder.newRuleBuilder("haha").is(new MemoizerMatcher(new MatcherAdapter(null, or("a", "b")))).getRule();
+    RuleMatcher haha = RuleDefinition.newRuleBuilder("haha").is(new MemoizerMatcher(new MatcherAdapter(null, or("a", "b")))).getRule();
 
     RuleMatcherAdapter adapter = new RuleMatcherAdapter(null, haha);
 

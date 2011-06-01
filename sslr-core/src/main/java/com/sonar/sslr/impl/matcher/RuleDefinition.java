@@ -17,29 +17,29 @@ import com.sonar.sslr.impl.ast.AlwaysSkipFromAst;
 import com.sonar.sslr.impl.ast.NeverSkipFromAst;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 
-public class RuleBuilder implements Rule, LeftRecursiveRule, AstNodeSkippingPolicy {
+public class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSkippingPolicy {
 
   private RuleMatcher ruleMatcher;
   private Class adapterClass;
   private AstNodeType astNodeSkippingPolicy = new NeverSkipFromAst();
 
-  private RuleBuilder() {
+  private RuleDefinition() {
   }
 
-  public static RuleBuilder newLeftRecursiveRuleBuilder(String ruleName) {
-    RuleBuilder ruleBuilder = new RuleBuilder();
+  public static RuleDefinition newLeftRecursiveRuleBuilder(String ruleName) {
+    RuleDefinition ruleBuilder = new RuleDefinition();
     ruleBuilder.setRuleMatcher(new LeftRecursiveRuleMatcher(ruleName));
     return ruleBuilder;
   }
 
-  public static RuleBuilder newRuleBuilder(String ruleName) {
-    RuleBuilder ruleBuilder = new RuleBuilder();
+  public static RuleDefinition newRuleBuilder(String ruleName) {
+    RuleDefinition ruleBuilder = new RuleDefinition();
     ruleBuilder.setRuleMatcher(new RuleMatcher(ruleName));
     return ruleBuilder;
   }
 
-  public static RuleBuilder newRuleBuilder(RuleMatcher ruleMatcher) {
-    RuleBuilder ruleBuilder = new RuleBuilder();
+  public static RuleDefinition newRuleBuilder(RuleMatcher ruleMatcher) {
+    RuleDefinition ruleBuilder = new RuleDefinition();
     ruleBuilder.setRuleMatcher(ruleMatcher);
     return ruleBuilder;
   }
@@ -56,7 +56,7 @@ public class RuleBuilder implements Rule, LeftRecursiveRule, AstNodeSkippingPoli
   /**
    * ${@inheritDoc}
    */
-  public RuleBuilder is(Object... matchers) {
+  public RuleDefinition is(Object... matchers) {
     throwExceptionIfRuleAlreadyDefined("The rule '" + ruleMatcher + "' has already been defined somewhere in the grammar.");
     throwExceptionIfEmptyListOfMatchers(matchers);
     setMatcher(GrammarFunctions.Standard.and(matchers));
@@ -66,7 +66,7 @@ public class RuleBuilder implements Rule, LeftRecursiveRule, AstNodeSkippingPoli
   /**
    * ${@inheritDoc}
    */
-  public RuleBuilder override(Object... matchers) {
+  public RuleDefinition override(Object... matchers) {
     throwExceptionIfEmptyListOfMatchers(matchers);
     setMatcher(GrammarFunctions.Standard.and(matchers));
     return this;
@@ -80,35 +80,35 @@ public class RuleBuilder implements Rule, LeftRecursiveRule, AstNodeSkippingPoli
     setMatcher(new TokenValueMatcher(ruleMatcher.getName()));
   }
 
-  public RuleBuilder isOr(Object... matchers) {
+  public RuleDefinition isOr(Object... matchers) {
     throwExceptionIfRuleAlreadyDefined("The rule '" + ruleMatcher + "' has already been defined somewhere in the grammar.");
     throwExceptionIfEmptyListOfMatchers(matchers);
     setMatcher(GrammarFunctions.Standard.or(matchers));
     return this;
   }
 
-  public RuleBuilder or(Object... matchers) {
+  public RuleDefinition or(Object... matchers) {
     throwExceptionIfEmptyListOfMatchers(matchers);
     throwExceptionIfRuleNotAlreadyDefined("The Rule.or(...) can't be called if the method Rule.is(...) hasn't been called first.");
     setMatcher(GrammarFunctions.Standard.or(ruleMatcher.children[0], GrammarFunctions.Standard.and(matchers)));
     return this;
   }
 
-  public RuleBuilder and(Object... matchers) {
+  public RuleDefinition and(Object... matchers) {
     throwExceptionIfEmptyListOfMatchers(matchers);
     throwExceptionIfRuleNotAlreadyDefined("The Rule.and(...) can't be called if the method Rule.is(...) hasn't been called first.");
     setMatcher(GrammarFunctions.Standard.and(ruleMatcher.children[0], GrammarFunctions.Standard.and(matchers)));
     return this;
   }
 
-  public RuleBuilder orBefore(Object... matchers) {
+  public RuleDefinition orBefore(Object... matchers) {
     throwExceptionIfEmptyListOfMatchers(matchers);
     throwExceptionIfRuleNotAlreadyDefined("The Rule.or(...) can't be called if the method Rule.is(...) hasn't been called first.");
     setMatcher(GrammarFunctions.Standard.or(GrammarFunctions.Standard.and(matchers), ruleMatcher.children[0]));
     return this;
   }
 
-  public RuleBuilder skip() {
+  public RuleDefinition skip() {
     astNodeSkippingPolicy = new AlwaysSkipFromAst();
     return this;
   }
@@ -117,22 +117,22 @@ public class RuleBuilder implements Rule, LeftRecursiveRule, AstNodeSkippingPoli
     ruleMatcher.children = new Matcher[] { matcher };
   }
 
-  public RuleBuilder setListener(AstListener listener) {
+  public RuleDefinition setListener(AstListener listener) {
     ruleMatcher.setListener(listener);
     return this;
   }
 
-  public RuleBuilder skipIf(AstNodeSkippingPolicy astNodeSkipPolicy) {
+  public RuleDefinition skipIf(AstNodeSkippingPolicy astNodeSkipPolicy) {
     astNodeSkippingPolicy = astNodeSkipPolicy;
     return this;
   }
 
-  public RuleBuilder skipIfOneChild() {
+  public RuleDefinition skipIfOneChild() {
     astNodeSkippingPolicy = new SkipFromAstIfOnlyOneChild();
     return this;
   }
 
-  public RuleBuilder plug(Class adapterClass) {
+  public RuleDefinition plug(Class adapterClass) {
     this.adapterClass = adapterClass;
     return this;
   }

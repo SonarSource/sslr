@@ -22,7 +22,7 @@ import com.sonar.sslr.impl.matcher.NotMatcher;
 import com.sonar.sslr.impl.matcher.OneToNMatcher;
 import com.sonar.sslr.impl.matcher.OptMatcher;
 import com.sonar.sslr.impl.matcher.OrMatcher;
-import com.sonar.sslr.impl.matcher.RuleBuilder;
+import com.sonar.sslr.impl.matcher.RuleDefinition;
 import com.sonar.sslr.impl.matcher.TillNewLineMatcher;
 import com.sonar.sslr.impl.matcher.TokenTypeAndValueMatcher;
 import com.sonar.sslr.impl.matcher.TokenTypeClassMatcher;
@@ -320,8 +320,8 @@ public class GrammarFunctions {
     } else if (object instanceof TokenType) {
       TokenType tokenType = (TokenType) object;
       matcher = new TokenTypeMatcher(tokenType, tokenType.hasToBeSkippedFromAst(null));
-    } else if (object instanceof RuleBuilder) {
-      matcher = ((RuleBuilder) object).getRule();
+    } else if (object instanceof RuleDefinition) {
+      matcher = ((RuleDefinition) object).getRule();
     } else if (object instanceof Class) {
       matcher = new TokenTypeClassMatcher((Class) object);
     } else {

@@ -30,11 +30,11 @@ import com.sonar.sslr.impl.Lexer.LexerBuilder;
 import com.sonar.sslr.impl.events.EventAdapterDecorator;
 import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import com.sonar.sslr.impl.events.RuleMatcherAdapter;
-import com.sonar.sslr.impl.matcher.RuleBuilder;
+import com.sonar.sslr.impl.matcher.RuleDefinition;
 
 public class Parser<GRAMMAR extends Grammar> {
 
-  private RuleBuilder rootRule;
+  private RuleDefinition rootRule;
   private ParsingState parsingState;
   private LexerOutput lexerOutput;
   private Lexer lexer;
@@ -85,7 +85,7 @@ public class Parser<GRAMMAR extends Grammar> {
     for (GrammarDecorator<GRAMMAR> decorator : decorators) {
       decorator.decorate(grammar);
     }
-    this.rootRule = (RuleBuilder) grammar.getRootRule();
+    this.rootRule = (RuleDefinition) grammar.getRootRule();
   }
 
   public void disableMemoizer() {
@@ -188,12 +188,12 @@ public class Parser<GRAMMAR extends Grammar> {
     return lexerOutput;
   }
 
-  public final RuleBuilder getRootRule() {
+  public final RuleDefinition getRootRule() {
     return rootRule;
   }
 
   public final void setRootRule(Rule rootRule) {
-    this.rootRule = (RuleBuilder) rootRule;
+    this.rootRule = (RuleDefinition) rootRule;
   }
 
   public String toString() {

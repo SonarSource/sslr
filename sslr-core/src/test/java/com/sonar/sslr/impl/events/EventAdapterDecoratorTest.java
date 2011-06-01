@@ -18,7 +18,7 @@ import com.sonar.sslr.api.GrammarDecorator;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
-import com.sonar.sslr.impl.matcher.RuleBuilder;
+import com.sonar.sslr.impl.matcher.RuleDefinition;
 
 public class EventAdapterDecoratorTest {
 
@@ -89,7 +89,7 @@ public class EventAdapterDecoratorTest {
   }
 
   private String printRootRuleWithAdapters(MyTestGrammarParser p) {
-    RuleMatcherAdapter ruleAdapter = (RuleMatcherAdapter) ((RuleBuilder) p.getGrammar().root).getRule();
+    RuleMatcherAdapter ruleAdapter = (RuleMatcherAdapter) ((RuleDefinition) p.getGrammar().root).getRule();
     return MatcherTreePrinter.printWithAdapters(ruleAdapter.getRuleImpl());
   }
 }

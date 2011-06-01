@@ -10,7 +10,7 @@ import java.util.HashSet;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.GrammarDecorator;
 import com.sonar.sslr.impl.matcher.Matcher;
-import com.sonar.sslr.impl.matcher.RuleBuilder;
+import com.sonar.sslr.impl.matcher.RuleDefinition;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class EventAdapterDecorator<GRAMMAR extends Grammar> implements GrammarDecorator<GRAMMAR> {
@@ -40,7 +40,7 @@ public class EventAdapterDecorator<GRAMMAR extends Grammar> implements GrammarDe
   }
 
   public void decorate(GRAMMAR grammar) {
-    RuleBuilder root = (RuleBuilder) grammar.getRootRule();
+    RuleDefinition root = (RuleDefinition) grammar.getRootRule();
 
     RuleMatcher rule = root.getRule();
 

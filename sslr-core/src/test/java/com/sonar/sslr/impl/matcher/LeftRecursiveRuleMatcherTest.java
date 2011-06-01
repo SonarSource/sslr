@@ -19,7 +19,7 @@ public class LeftRecursiveRuleMatcherTest {
 
   @Test
   public void testSimpleRecursiveRule() throws Exception {
-    RuleBuilder recursiveRule = RuleBuilder.newLeftRecursiveRuleBuilder("recursiveRule");
+    RuleDefinition recursiveRule = RuleDefinition.newLeftRecursiveRuleBuilder("recursiveRule");
     recursiveRule.isOr("1", and(recursiveRule, "+", "1"));
 
     assertThat(recursiveRule.getRule(), match("1 + 1 + 1 + 1"));
@@ -27,16 +27,16 @@ public class LeftRecursiveRuleMatcherTest {
 
   @Test
   public void testPreventMatchersToConsumeTokens() throws Exception {
-    RuleBuilder rule = RuleBuilder.newLeftRecursiveRuleBuilder("rule");
+    RuleDefinition rule = RuleDefinition.newLeftRecursiveRuleBuilder("rule");
     rule.isOr("y", and(rule, "and", "x"), "z");
     assertThat(rule.getRule(), not(match("z and x y")));
   }
 
   @Test
   public void testRecursionCase8() throws Exception {
-    RuleBuilder a = RuleBuilder.newLeftRecursiveRuleBuilder("a");
-    RuleBuilder b = RuleBuilder.newLeftRecursiveRuleBuilder("b");
-    RuleBuilder c = RuleBuilder.newRuleBuilder("c");
+    RuleDefinition a = RuleDefinition.newLeftRecursiveRuleBuilder("a");
+    RuleDefinition b = RuleDefinition.newLeftRecursiveRuleBuilder("b");
+    RuleDefinition c = RuleDefinition.newRuleBuilder("c");
 
     a.isOr(and(b, "x", "y"), "x");
     b.is(c);
@@ -47,9 +47,9 @@ public class LeftRecursiveRuleMatcherTest {
 
   @Test
   public void testMultipleSequentialCallsToMatch() throws Exception {
-    RuleBuilder a = RuleBuilder.newLeftRecursiveRuleBuilder("a");
-    RuleBuilder b = RuleBuilder.newRuleBuilder("b");
-    RuleBuilder c = RuleBuilder.newRuleBuilder("c");
+    RuleDefinition a = RuleDefinition.newLeftRecursiveRuleBuilder("a");
+    RuleDefinition b = RuleDefinition.newRuleBuilder("b");
+    RuleDefinition c = RuleDefinition.newRuleBuilder("c");
 
     a.isOr(and(b, "x", "y"), "x");
     b.is(c);
@@ -61,9 +61,9 @@ public class LeftRecursiveRuleMatcherTest {
 
   @Test
   public void testRecursionCase5() throws Exception {
-    RuleBuilder pnae = RuleBuilder.newLeftRecursiveRuleBuilder("pnae");
-    RuleBuilder ma = RuleBuilder.newRuleBuilder("ma");
-    RuleBuilder inve = RuleBuilder.newRuleBuilder("inve");
+    RuleDefinition pnae = RuleDefinition.newLeftRecursiveRuleBuilder("pnae");
+    RuleDefinition ma = RuleDefinition.newRuleBuilder("ma");
+    RuleDefinition inve = RuleDefinition.newRuleBuilder("inve");
 
     pnae.isOr(ma, inve, "PNAE");
     ma.is(pnae, "MA");
@@ -74,9 +74,9 @@ public class LeftRecursiveRuleMatcherTest {
 
   @Test
   public void testRecursionCase6() throws Exception {
-    RuleBuilder pnae = RuleBuilder.newLeftRecursiveRuleBuilder("pnae");
-    RuleBuilder ma = RuleBuilder.newRuleBuilder("ma");
-    RuleBuilder pe = RuleBuilder.newRuleBuilder("pe");
+    RuleDefinition pnae = RuleDefinition.newLeftRecursiveRuleBuilder("pnae");
+    RuleDefinition ma = RuleDefinition.newRuleBuilder("ma");
+    RuleDefinition pe = RuleDefinition.newRuleBuilder("pe");
 
     pnae.isOr(ma, "PNAE");
     ma.is(pe, "MA");
@@ -87,10 +87,10 @@ public class LeftRecursiveRuleMatcherTest {
 
   @Test
   public void testRecursionCase7() throws Exception {
-    RuleBuilder pnae = RuleBuilder.newLeftRecursiveRuleBuilder("pnae");
-    RuleBuilder ma = RuleBuilder.newRuleBuilder("ma");
-    RuleBuilder inve = RuleBuilder.newRuleBuilder("inve");
-    RuleBuilder pe = RuleBuilder.newRuleBuilder("pe");
+    RuleDefinition pnae = RuleDefinition.newLeftRecursiveRuleBuilder("pnae");
+    RuleDefinition ma = RuleDefinition.newRuleBuilder("ma");
+    RuleDefinition inve = RuleDefinition.newRuleBuilder("inve");
+    RuleDefinition pe = RuleDefinition.newRuleBuilder("pe");
 
     pnae.isOr(ma, inve, "PNAE");
     ma.is(pe, "MA");
@@ -102,9 +102,9 @@ public class LeftRecursiveRuleMatcherTest {
 
   @Test
   public void testRecursionCase3() throws Exception {
-    RuleBuilder exp = RuleBuilder.newLeftRecursiveRuleBuilder("exp");
-    RuleBuilder sn = RuleBuilder.newRuleBuilder("sn");
-    RuleBuilder inve = RuleBuilder.newRuleBuilder("inve");
+    RuleDefinition exp = RuleDefinition.newLeftRecursiveRuleBuilder("exp");
+    RuleDefinition sn = RuleDefinition.newRuleBuilder("sn");
+    RuleDefinition inve = RuleDefinition.newRuleBuilder("inve");
 
     exp.isOr(inve, sn);
     sn.is("SN");
@@ -115,10 +115,10 @@ public class LeftRecursiveRuleMatcherTest {
 
   @Test
   public void testRecursionCase4() throws Exception {
-    RuleBuilder exp = RuleBuilder.newLeftRecursiveRuleBuilder("exp");
-    RuleBuilder sn = RuleBuilder.newRuleBuilder("sn");
-    RuleBuilder ma = RuleBuilder.newRuleBuilder("ma");
-    RuleBuilder inve = RuleBuilder.newRuleBuilder("inve");
+    RuleDefinition exp = RuleDefinition.newLeftRecursiveRuleBuilder("exp");
+    RuleDefinition sn = RuleDefinition.newRuleBuilder("sn");
+    RuleDefinition ma = RuleDefinition.newRuleBuilder("ma");
+    RuleDefinition inve = RuleDefinition.newRuleBuilder("inve");
 
     // I add "ma" rule between "inve" and "sn" : OK
     exp.isOr(inve, ma, sn);
@@ -131,10 +131,10 @@ public class LeftRecursiveRuleMatcherTest {
 
   @Test
   public void testRecursionCase1() throws Exception {
-    RuleBuilder exp = RuleBuilder.newLeftRecursiveRuleBuilder("exp");
-    RuleBuilder sn = RuleBuilder.newRuleBuilder("sn");
-    RuleBuilder ma = RuleBuilder.newRuleBuilder("ma");
-    RuleBuilder inve = RuleBuilder.newRuleBuilder("inve");
+    RuleDefinition exp = RuleDefinition.newLeftRecursiveRuleBuilder("exp");
+    RuleDefinition sn = RuleDefinition.newRuleBuilder("sn");
+    RuleDefinition ma = RuleDefinition.newRuleBuilder("ma");
+    RuleDefinition inve = RuleDefinition.newRuleBuilder("inve");
 
     // I pass "ma" rule before "inve" rule : KO
     exp.isOr(ma, inve, sn);
@@ -147,10 +147,10 @@ public class LeftRecursiveRuleMatcherTest {
 
   @Test
   public void testRecursionCase2() throws Exception {
-    RuleBuilder exp = RuleBuilder.newLeftRecursiveRuleBuilder("exp");
-    RuleBuilder sn = RuleBuilder.newLeftRecursiveRuleBuilder("sn");
-    RuleBuilder ma = RuleBuilder.newLeftRecursiveRuleBuilder("ma");
-    RuleBuilder inve = RuleBuilder.newLeftRecursiveRuleBuilder("inve");
+    RuleDefinition exp = RuleDefinition.newLeftRecursiveRuleBuilder("exp");
+    RuleDefinition sn = RuleDefinition.newLeftRecursiveRuleBuilder("sn");
+    RuleDefinition ma = RuleDefinition.newLeftRecursiveRuleBuilder("ma");
+    RuleDefinition inve = RuleDefinition.newLeftRecursiveRuleBuilder("inve");
 
     // This is the exact way (order is important) it is described in the real C# grammar specification
     exp.isOr(sn, ma, inve);
@@ -163,11 +163,11 @@ public class LeftRecursiveRuleMatcherTest {
 
   @Test
   public void testRecursionCase9() throws Exception {
-    RuleBuilder exp = RuleBuilder.newLeftRecursiveRuleBuilder("exp");
-    RuleBuilder sn = RuleBuilder.newLeftRecursiveRuleBuilder("sn");
-    RuleBuilder ma = RuleBuilder.newLeftRecursiveRuleBuilder("ma");
-    RuleBuilder singleMa = RuleBuilder.newLeftRecursiveRuleBuilder("singleMa");
-    RuleBuilder inve = RuleBuilder.newLeftRecursiveRuleBuilder("inve");
+    RuleDefinition exp = RuleDefinition.newLeftRecursiveRuleBuilder("exp");
+    RuleDefinition sn = RuleDefinition.newLeftRecursiveRuleBuilder("sn");
+    RuleDefinition ma = RuleDefinition.newLeftRecursiveRuleBuilder("ma");
+    RuleDefinition singleMa = RuleDefinition.newLeftRecursiveRuleBuilder("singleMa");
+    RuleDefinition inve = RuleDefinition.newLeftRecursiveRuleBuilder("inve");
 
     exp.isOr(sn, inve, singleMa, ma);
     sn.is("SN");
@@ -180,11 +180,11 @@ public class LeftRecursiveRuleMatcherTest {
 
   @Test
   public void testRecursionCase10() throws Exception {
-    RuleBuilder exp = RuleBuilder.newLeftRecursiveRuleBuilder("exp");
-    RuleBuilder sn = RuleBuilder.newLeftRecursiveRuleBuilder("sn");
-    RuleBuilder ma = RuleBuilder.newLeftRecursiveRuleBuilder("ma");
-    RuleBuilder singleMa = RuleBuilder.newLeftRecursiveRuleBuilder("singleMa");
-    RuleBuilder inve = RuleBuilder.newLeftRecursiveRuleBuilder("inve");
+    RuleDefinition exp = RuleDefinition.newLeftRecursiveRuleBuilder("exp");
+    RuleDefinition sn = RuleDefinition.newLeftRecursiveRuleBuilder("sn");
+    RuleDefinition ma = RuleDefinition.newLeftRecursiveRuleBuilder("ma");
+    RuleDefinition singleMa = RuleDefinition.newLeftRecursiveRuleBuilder("singleMa");
+    RuleDefinition inve = RuleDefinition.newLeftRecursiveRuleBuilder("inve");
 
     exp.isOr(sn, inve, singleMa, ma);
     sn.is("SN");
@@ -197,10 +197,10 @@ public class LeftRecursiveRuleMatcherTest {
 
   @Test
   public void testRecursionCase11() throws Exception {
-    RuleBuilder exp = RuleBuilder.newLeftRecursiveRuleBuilder("exp");
-    RuleBuilder sn = RuleBuilder.newLeftRecursiveRuleBuilder("sn");
-    RuleBuilder ma = RuleBuilder.newLeftRecursiveRuleBuilder("ma");
-    RuleBuilder inve = RuleBuilder.newLeftRecursiveRuleBuilder("inve");
+    RuleDefinition exp = RuleDefinition.newLeftRecursiveRuleBuilder("exp");
+    RuleDefinition sn = RuleDefinition.newLeftRecursiveRuleBuilder("sn");
+    RuleDefinition ma = RuleDefinition.newLeftRecursiveRuleBuilder("ma");
+    RuleDefinition inve = RuleDefinition.newLeftRecursiveRuleBuilder("inve");
 
     exp.isOr(sn, ma, inve);
     sn.is("SN");

@@ -15,63 +15,63 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 
-public class RuleBuilderTest {
+public class RuleDefinitionTest {
 
   @Test(expected = IllegalStateException.class)
   public void testEmptyIs() {
-    RuleBuilder javaClassDefinition = RuleBuilder.newRuleBuilder("JavaClassDefinition");
+    RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
     javaClassDefinition.is();
   }
 
   @Test(expected = IllegalStateException.class)
   public void testEmptyIsOr() {
-    RuleBuilder javaClassDefinition = RuleBuilder.newRuleBuilder("JavaClassDefinition");
+    RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
     javaClassDefinition.isOr();
   }
 
   @Test(expected = IllegalStateException.class)
   public void testEmptyOr() {
-    RuleBuilder javaClassDefinition = RuleBuilder.newRuleBuilder("JavaClassDefinition");
+    RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
     javaClassDefinition.or();
   }
 
   @Test(expected = IllegalStateException.class)
   public void testCallingOrWithoutHavingCallIsFirst() {
-    RuleBuilder javaClassDefinition = RuleBuilder.newRuleBuilder("JavaClassDefinition");
+    RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
     javaClassDefinition.or("keyword");
   }
 
   @Test(expected = IllegalStateException.class)
   public void testMoreThanOneDefinitionForASigleRuleWithIs() {
-    RuleBuilder javaClassDefinition = RuleBuilder.newRuleBuilder("JavaClassDefinition");
+    RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
     javaClassDefinition.is("option1");
     javaClassDefinition.is("option2");
   }
 
   @Test(expected = IllegalStateException.class)
   public void testMoreThanOneDefinitionForASigleRuleWithIsOr() {
-    RuleBuilder javaClassDefinition = RuleBuilder.newRuleBuilder("JavaClassDefinition");
+    RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
     javaClassDefinition.is("");
     javaClassDefinition.isOr("");
   }
 
   @Test
   public void testIsOr() {
-    RuleBuilder myRule = RuleBuilder.newRuleBuilder("MyRule");
+    RuleDefinition myRule = RuleDefinition.newRuleBuilder("MyRule");
     myRule.isOr("option1", "option2");
     assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(or(\"option1\", \"option2\"))"));
   }
 
   @Test
   public void testIs() {
-    RuleBuilder myRule = RuleBuilder.newRuleBuilder("MyRule");
+    RuleDefinition myRule = RuleDefinition.newRuleBuilder("MyRule");
     myRule.is("option1");
     assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(\"option1\")"));
   }
 
   @Test
   public void testOverride() {
-    RuleBuilder myRule = RuleBuilder.newRuleBuilder("MyRule");
+    RuleDefinition myRule = RuleDefinition.newRuleBuilder("MyRule");
     myRule.is("option1");
     assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(\"option1\")"));
     myRule.override("option2");
@@ -80,7 +80,7 @@ public class RuleBuilderTest {
 
   @Test
   public void testOr() {
-    RuleBuilder myRule = RuleBuilder.newRuleBuilder("MyRule");
+    RuleDefinition myRule = RuleDefinition.newRuleBuilder("MyRule");
     myRule.is("option1");
     assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(\"option1\")"));
     myRule.or("option2");
@@ -91,7 +91,7 @@ public class RuleBuilderTest {
 
   @Test
   public void testOrBefore() {
-    RuleBuilder myRule = RuleBuilder.newRuleBuilder("MyRule");
+    RuleDefinition myRule = RuleDefinition.newRuleBuilder("MyRule");
     myRule.is("option1");
     assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(\"option1\")"));
     myRule.orBefore("option2");
@@ -100,7 +100,7 @@ public class RuleBuilderTest {
 
   @Test
   public void testSkipFromAst() {
-    RuleBuilder ruleBuilder = RuleBuilder.newRuleBuilder("MyRule");
+    RuleDefinition ruleBuilder = RuleDefinition.newRuleBuilder("MyRule");
     assertThat(ruleBuilder.hasToBeSkippedFromAst(null), is(false));
 
     ruleBuilder.skip();
@@ -109,7 +109,7 @@ public class RuleBuilderTest {
 
   @Test
   public void testSkipFromAstIf() {
-    RuleBuilder ruleBuilder = RuleBuilder.newRuleBuilder("MyRule").skipIfOneChild();
+    RuleDefinition ruleBuilder = RuleDefinition.newRuleBuilder("MyRule").skipIfOneChild();
 
     AstNode parent = new AstNode(new Token(GenericTokenType.IDENTIFIER, "parent"));
     AstNode child1 = new AstNode(new Token(GenericTokenType.IDENTIFIER, "child1"));

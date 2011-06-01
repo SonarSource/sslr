@@ -28,12 +28,12 @@ import com.sonar.sslr.impl.ParsingState;
 
 public class RuleMatcherTest {
 
-  private RuleBuilder javaClassDefinition;
+  private RuleDefinition javaClassDefinition;
   private Matcher opMatcher;
 
   @Before
   public void init() {
-    javaClassDefinition = RuleBuilder.newRuleBuilder("JavaClassDefinition");
+    javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
     opMatcher = opt("implements", WORD, o2n(",", WORD));
     javaClassDefinition.is("public", or("class", "interface"), opMatcher);
   }
@@ -65,7 +65,7 @@ public class RuleMatcherTest {
 
   @Test
   public void testRecoveryMode() {
-    RuleBuilder ruleBuilder = RuleBuilder.newRuleBuilder("MyRule");
+    RuleDefinition ruleBuilder = RuleDefinition.newRuleBuilder("MyRule");
     ruleBuilder.is("one");
 
     RuleMatcher rule = ruleBuilder.getRule();

@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 import org.apache.commons.lang.ClassUtils;
 
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.impl.matcher.RuleBuilder;
+import com.sonar.sslr.impl.matcher.RuleDefinition;
 
 /**
  * Utility class for handling grammar rule life cycle
@@ -32,7 +32,7 @@ public final class GrammarRuleLifeCycleManager {
       if (ClassUtils.isAssignable(field.getType(), Rule.class)) {
         try {
           Object rule = field.get(grammar);
-          ((RuleBuilder) rule).getRule().endParsing();
+          ((RuleDefinition) rule).getRule().endParsing();
         } catch (Exception e) {
           throw new RuntimeException("Unable to call endParsing() method on the following rule '" + grammar.getClass().getName() + "."
               + field.getName() + "'", e);

@@ -19,7 +19,7 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
-import com.sonar.sslr.impl.matcher.RuleBuilder;
+import com.sonar.sslr.impl.matcher.RuleDefinition;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class RuleImplAdapterTest {
@@ -29,7 +29,7 @@ public class RuleImplAdapterTest {
 
   @Before
   public void init() {
-    rule = RuleBuilder.newRuleBuilder("rule").is("bonjour").getRule();
+    rule = RuleDefinition.newRuleBuilder("rule").is("bonjour").getRule();
   }
 
   @Test
