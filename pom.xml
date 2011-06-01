@@ -61,6 +61,11 @@
         <version>${sonar.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.codehaus.sonar</groupId>
+        <artifactId>sonar-squid</artifactId>
+        <version>${sonar.version}</version>
+      </dependency>
+      <dependency>
         <groupId>com.google.collections</groupId>
         <artifactId>google-collections</artifactId>
         <version>1.0</version>
