@@ -25,27 +25,25 @@ public class CommentRegexpChannel extends Channel<LexerOutput> {
   private final int removeBefore;
   private final int removeAfter;
   private final boolean trimBeforeRemove;
-  private final boolean trimAfterRemove;
 
   public CommentRegexpChannel(String regexp) {
-  	this(regexp, 0, 0, false, false);
+  	this(regexp, 0, 0, false);
   }
   
-  public CommentRegexpChannel(String regexp, boolean trimBeforeRemove, boolean trimAfterRemove) {
-  	this(regexp, 0, 0, trimBeforeRemove, trimAfterRemove);
+  public CommentRegexpChannel(String regexp, boolean trimBeforeRemove) {
+  	this(regexp, 0, 0, trimBeforeRemove);
   }
   
   public CommentRegexpChannel(String regexp, int removeBefore, int removeAfter) {
-  	this(regexp, removeBefore, removeAfter, false, false);
+  	this(regexp, removeBefore, removeAfter, false);
   }
   
-  public CommentRegexpChannel(String regexp, int removeBefore, int removeAfter, boolean trimBeforeRemove, boolean trimAfterRemove) {
+  public CommentRegexpChannel(String regexp, int removeBefore, int removeAfter, boolean trimBeforeRemove) {
     matcher = Pattern.compile(regexp).matcher("");
     this.regexp = regexp;
     this.removeBefore = removeBefore;
     this.removeAfter = removeAfter;
     this.trimBeforeRemove = trimBeforeRemove;
-    this.trimAfterRemove = trimAfterRemove;
   }
 
   @Override
@@ -60,10 +58,6 @@ public class CommentRegexpChannel extends Channel<LexerOutput> {
         
         if (removeBefore > 0 || removeAfter > 0) {
         	value = value.substring(removeBefore, value.length() - removeAfter);
-        }
-        
-        if (trimAfterRemove) {
-        	value = value.trim();
         }
 
         output.addCommentToken(new Token(GenericTokenType.COMMENT, value, code.getPreviousCursor().getLine(), code.getPreviousCursor().getColumn()));
