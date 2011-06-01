@@ -26,6 +26,7 @@
     <module>sslr-core</module>   
     <module>sslr-dsl</module>  
     <module>sslr-testing-harness</module> 
+    <module>sslr-squid-bridge</module>
   </modules>
 
   <build>
