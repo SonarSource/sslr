@@ -7,16 +7,21 @@
 package com.sonar.sslr.api;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 
 /**
- * A Grammar must be implemented to define the syntactic rules of a language.
+ * A Grammar is used to list and define all production rules (@link {@link Rule}) of a context-free grammar. For each production rule, a
+ * public Rule field must exist. All those public Rule fields are automatically instantiated when creating a Grammar object.
  * 
  * @see Rule
  * @see <a href="http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">Backus–Naur Form</a>
  */
 public abstract class Grammar {
+
+  private Map<String, Rule> ruleIndex = new HashMap<String, Rule>();
 
   public Grammar() {
     instanciateRuleFields();
@@ -27,11 +32,16 @@ public abstract class Grammar {
     for (Field field : fields) {
       String fieldName = field.getName();
       try {
+        Rule rule;
         if (field.getType() == LeftRecursiveRule.class) {
-          field.set(this, RuleDefinition.newLeftRecursiveRuleBuilder(fieldName));
+          rule = RuleDefinition.newLeftRecursiveRuleBuilder(fieldName);
         } else if (field.getType() == Rule.class) {
-          field.set(this, RuleDefinition.newRuleBuilder(fieldName));
+          rule = RuleDefinition.newRuleBuilder(fieldName);
+        } else {
+          continue;
         }
+        field.set(this, rule);
+        ruleIndex.put(fieldName, rule);
       } catch (Exception e) {
         throw new RuntimeException("Unable to instanciate the rule '" + this.getClass().getName() + "." + fieldName + "'", e);
       }
@@ -44,4 +54,15 @@ public abstract class Grammar {
    * @return the entry point of this Grammar
    */
   public abstract Rule getRootRule();
+
+  /**
+   * Utility method to retrieve the instance of a Rule according to its name.
+   * 
+   * @param ruleName
+   *          the rule name
+   * @return the Rule object if exists, otherwise a null value is returned
+   */
+  public Rule findRuleByName(String ruleName) {
+    return ruleIndex.get(ruleName);
+  }
 }
