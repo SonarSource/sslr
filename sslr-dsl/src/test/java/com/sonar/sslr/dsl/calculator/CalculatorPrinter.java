@@ -5,9 +5,9 @@
  */
 package com.sonar.sslr.dsl.calculator;
 
-import com.sonar.sslr.dsl.adapter.ExecutableAdapter;
+import com.sonar.sslr.dsl.bytecode.ExecutableInstruction;
 
-public class CalculatorPrinter implements ExecutableAdapter {
+public class CalculatorPrinter implements ExecutableInstruction {
 
   private AbstractExpression value;
   private StringBuilder output;

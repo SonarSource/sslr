@@ -3,8 +3,8 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.dsl.adapter;
+package com.sonar.sslr.dsl.bytecode;
 
-public interface Adapter {
+public interface ControlFlowInstruction extends Instruction {
 
 }

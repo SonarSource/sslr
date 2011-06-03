@@ -3,9 +3,9 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.dsl.adapter;
+package com.sonar.sslr.dsl.bytecode;
 
-public interface ExecutableAdapter extends Adapter {
+public interface ExecutableInstruction extends Instruction {
 
   public void execute();
 

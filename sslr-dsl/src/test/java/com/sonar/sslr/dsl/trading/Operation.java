@@ -5,9 +5,9 @@
  */
 package com.sonar.sslr.dsl.trading;
 
-import com.sonar.sslr.dsl.adapter.ExecutableAdapter;
+import com.sonar.sslr.dsl.bytecode.ExecutableInstruction;
 
-public abstract class Operation implements ExecutableAdapter {
+public abstract class Operation implements ExecutableInstruction {
 
   protected int quantitity;
   protected String product;

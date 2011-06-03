@@ -7,8 +7,10 @@
 package com.sonar.sslr.dsl;
 
 import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.dsl.internal.Bytecode;
+import com.sonar.sslr.dsl.bytecode.Bytecode;
 import com.sonar.sslr.dsl.internal.Compiler;
+import com.sonar.sslr.dsl.internal.DefaultDslLexer;
+import com.sonar.sslr.impl.Parser;
 
 public class DslRunner {
 
@@ -17,7 +19,7 @@ public class DslRunner {
   private DslMemory memory;
 
   private DslRunner(Grammar dsl, String source) {
-    compiler = new Compiler(dsl, source);
+    compiler = new Compiler(Parser.builder(dsl).optSetLexer(new DefaultDslLexer()).build(), source);
   }
 
   private DslRunner inject(Object component) {

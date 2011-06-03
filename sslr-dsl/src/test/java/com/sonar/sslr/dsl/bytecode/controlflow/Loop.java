@@ -3,11 +3,11 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.dsl.internal.controlflow;
+package com.sonar.sslr.dsl.bytecode.controlflow;
 
-import com.sonar.sslr.dsl.adapter.LoopBlockAdapter;
+import com.sonar.sslr.dsl.bytecode.LoopBlockInstruction;
 
-public class Loop implements LoopBlockAdapter {
+public class Loop implements LoopBlockInstruction {
 
   private int numberOfLoop;
   private int pendingNumberOfLoop;

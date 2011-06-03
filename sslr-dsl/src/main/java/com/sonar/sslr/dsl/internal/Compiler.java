@@ -16,42 +16,48 @@ import org.picocontainer.MutablePicoContainer;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.dsl.DslException;
-import com.sonar.sslr.dsl.adapter.ControlFlowAdapter;
+import com.sonar.sslr.dsl.bytecode.Bytecode;
+import com.sonar.sslr.dsl.bytecode.ControlFlowInstruction;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 
 public class Compiler {
 
-  private Grammar dsl;
+  private Parser<Grammar> parser;
   private String source;
 
   private MutablePicoContainer pico = new DefaultPicoContainer();
   private Map<AstNode, Object> adapterByAstNode = new HashMap<AstNode, Object>();
 
-  public Compiler(Grammar dsl, String source) {
-    this.dsl = dsl;
+  public Compiler(Parser<Grammar> parser, String source) {
+    this.parser = parser;
     this.source = source;
   }
 
-  private Bytecode transform(AstNode astNode) {
+  public Bytecode compile() {
+    AstNode ast = parser.parse(source);
     Bytecode bytecode = new Bytecode();
-    feedStmtList(astNode, bytecode);
-    injectChildrenAdapters(astNode, astNode.getChildren());
+    feedBytecode(ast, bytecode);
+    injectAdapters(ast, ast.getChildren());
     return bytecode;
   }
 
-  private void feedStmtList(AstNode astNode, Bytecode bytecode) {
-    Object adapter = getAdapter(astNode);
-    bytecode.startControlFlowAdapter(adapter);
-    feedStmtListOnChildren(astNode, bytecode);
-    bytecode.endControlFlowAdapter(adapter);
-    bytecode.addAdapter(adapter);
+  private void feedBytecode(AstNode astNode, Bytecode bytecode) {
+    Object adapter = getAdapterInstance(astNode);
+    bytecode.startControlFlowInstruction(adapter);
+    if (astNode.hasChildren()) {
+      for (AstNode child : astNode.getChildren()) {
+        feedBytecode(child, bytecode);
+      }
+    }
+    bytecode.endControlFlowInstruction(adapter);
+    bytecode.addInstruction(adapter);
   }
 
-  private void injectChildrenAdapters(AstNode astNode, List<AstNode> children) {
+  private void injectAdapters(AstNode astNode, List<AstNode> children) {
     if (children != null) {
       for (AstNode child : children) {
-        injectChildrenAdapters(child, child.getChildren());
+        injectAdapters(child, child.getChildren());
       }
     }
     Object adapterInstance = adapterByAstNode.get(astNode);
@@ -60,38 +66,37 @@ public class Compiler {
     if (adapterInstance != null) {
       Object parentAdapterInstance = findNearestParentAdapter(astNode);
       if (parentAdapterInstance != null) {
-        String methodName = "add" + Character.toUpperCase(ruleName.charAt(0)) + ruleName.substring(1);
-        for (Method method : parentAdapterInstance.getClass().getMethods()) {
-          if (method.getName().equals(methodName)) {
-            try {
-              method.invoke(parentAdapterInstance, adapterInstance);
-              return;
-            } catch (Exception e) {
-              throw new DslException("Unable to call method '" + parentAdapterInstance.getClass().getName() + "." + methodName + "("
-                  + adapterInstance.getClass().getName() + ")", e);
-            }
-          }
+        String[] methodNames = { "add" + Character.toUpperCase(ruleName.charAt(0)) + ruleName.substring(1),
+            "set" + Character.toUpperCase(ruleName.charAt(0)) + ruleName.substring(1), "add", "set" };
+        if (callMethod(parentAdapterInstance, adapterInstance, methodNames)) {
+          return;
         }
-        methodName = "add";
-        for (Method method : parentAdapterInstance.getClass().getMethods()) {
-          if (method.getName().equals(methodName)) {
-            try {
-              method.invoke(parentAdapterInstance, adapterInstance);
-              return;
-            } catch (Exception e) {
-              if ( !(parentAdapterInstance instanceof ControlFlowAdapter)) {
-                throw new DslException("Unable to call method '" + parentAdapterInstance.getClass().getName() + "." + methodName + "("
-                    + adapterInstance.getClass().getName() + ")", e);
-              }
-            }
-          }
-        }
-        if ( !(parentAdapterInstance instanceof ControlFlowAdapter)) {
-          throw new DslException("The method '" + parentAdapterInstance.getClass().getName() + "." + methodName + "("
-              + adapterInstance.getClass().getName() + ") is missing");
+
+        if ( !(parentAdapterInstance instanceof ControlFlowInstruction)) {
+          throw new DslException("Unable to inject '" + adapterInstance.getClass().getName() + "into "
+              + parentAdapterInstance.getClass().getName());
         }
       }
     }
+  }
+
+  private boolean callMethod(Object object, Object parameter, String... methodNames) {
+    for (Method method : object.getClass().getMethods()) {
+      for (String methodName : methodNames) {
+        if (method.getName().equals(methodName)) {
+          try {
+            method.invoke(object, parameter);
+            return true;
+          } catch (Exception e) {
+            if ( !(object instanceof ControlFlowInstruction)) {
+              throw new DslException("Unable to call method '" + object.getClass().getName() + "." + methodName + "("
+                  + parameter.getClass().getName() + ")", e);
+            }
+          }
+        }
+      }
+    }
+    return false;
   }
 
   private Object findNearestParentAdapter(AstNode astNode) {
@@ -104,15 +109,7 @@ public class Compiler {
     return null;
   }
 
-  private void feedStmtListOnChildren(AstNode astNode, Bytecode bytecode) {
-    if (astNode.hasChildren()) {
-      for (AstNode child : astNode.getChildren()) {
-        feedStmtList(child, bytecode);
-      }
-    }
-  }
-
-  private Object getAdapter(AstNode astNode) {
+  private Object getAdapterInstance(AstNode astNode) {
     if (astNode.getType() instanceof RuleDefinition) {
       RuleDefinition rule = (RuleDefinition) astNode.getType();
       if (rule.getAdapter() != null) {
@@ -141,11 +138,4 @@ public class Compiler {
   public void inject(Object component) {
     pico.addComponent(component);
   }
-
-  public Bytecode compile() {
-    Parser<Grammar> parser = new DefaultDslParser(dsl);
-    AstNode ast = parser.parse(source);
-    return transform(ast);
-  }
-
 }

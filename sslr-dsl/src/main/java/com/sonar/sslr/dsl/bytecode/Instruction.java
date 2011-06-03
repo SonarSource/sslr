@@ -3,9 +3,8 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.dsl;
+package com.sonar.sslr.dsl.bytecode;
 
-interface TokenFormatter {
+public interface Instruction {
 
-  public Object format(String tokenValue);
 }

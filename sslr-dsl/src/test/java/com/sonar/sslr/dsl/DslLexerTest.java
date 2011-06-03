@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import com.sonar.sslr.dsl.internal.DefaultDslLexer;
 
+
 public class DslLexerTest {
 
   DefaultDslLexer lexer = new DefaultDslLexer();

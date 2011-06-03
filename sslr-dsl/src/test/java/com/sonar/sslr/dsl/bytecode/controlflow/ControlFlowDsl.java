@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.dsl.internal.controlflow;
+package com.sonar.sslr.dsl.bytecode.controlflow;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 import static com.sonar.sslr.dsl.DslTokenType.INTEGER;
@@ -11,7 +11,7 @@ import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
 
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.dsl.adapter.ExitFlowAdapter;
+import com.sonar.sslr.dsl.bytecode.ExitFlowInstruction;
 import com.sonar.sslr.dsl.condition.ConditionDsl;
 
 public class ControlFlowDsl extends Grammar {
@@ -31,7 +31,7 @@ public class ControlFlowDsl extends Grammar {
     ifBlock.is("if", condition, o2n(command), "endif").plug(If.class);
     loop.is("do", loopNumber, "times", o2n(command), "enddo").plug(Loop.class);
     ping.is("ping").plug(Ping.class);
-    exit.is("exit").plug(ExitFlowAdapter.class);
+    exit.is("exit").plug(ExitFlowInstruction.class);
 
     loopNumber.is(INTEGER).plug(Integer.class);
   }

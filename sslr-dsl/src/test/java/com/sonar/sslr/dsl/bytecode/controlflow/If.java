@@ -3,12 +3,12 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.dsl.internal.controlflow;
+package com.sonar.sslr.dsl.bytecode.controlflow;
 
-import com.sonar.sslr.dsl.adapter.ConditionalBlockAdapter;
+import com.sonar.sslr.dsl.bytecode.ConditionalBlockInstruction;
 import com.sonar.sslr.dsl.condition.Condition;
 
-public class If implements ConditionalBlockAdapter {
+public class If implements ConditionalBlockInstruction {
 
   private Condition condition;
 

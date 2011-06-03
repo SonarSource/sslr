@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.dsl.internal;
+package com.sonar.sslr.dsl.bytecode;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -11,9 +11,10 @@ import static org.junit.Assert.assertThat;
 import org.apache.xpath.operations.String;
 import org.junit.Test;
 
-import com.sonar.sslr.dsl.adapter.ConditionalBlockAdapter;
-import com.sonar.sslr.dsl.adapter.ExecutableAdapter;
-import com.sonar.sslr.dsl.adapter.LoopBlockAdapter;
+import com.sonar.sslr.dsl.bytecode.Bytecode;
+import com.sonar.sslr.dsl.bytecode.ConditionalBlockInstruction;
+import com.sonar.sslr.dsl.bytecode.ExecutableInstruction;
+import com.sonar.sslr.dsl.bytecode.LoopBlockInstruction;
 
 public class BytecodeTest {
 
@@ -22,7 +23,7 @@ public class BytecodeTest {
   @Test
   public void shoudExecuteAdapter() {
     MyExecutableAdapter myInstruction = new MyExecutableAdapter();
-    bytecode.addAdapter(myInstruction);
+    bytecode.addInstruction(myInstruction);
     bytecode.execute();
 
     assertThat(myInstruction.hasBeenExecuted, is(true));
@@ -32,10 +33,10 @@ public class BytecodeTest {
   public void shoudExecuteConditionalBlock() {
     MyExecutableAdapter myInstruction = new MyExecutableAdapter();
     TrueConditionalBlockAdapter trueConditionalBlock = new TrueConditionalBlockAdapter();
-    bytecode.startControlFlowAdapter(trueConditionalBlock);
-    bytecode.addAdapter(myInstruction);
-    bytecode.endControlFlowAdapter(trueConditionalBlock);
-    bytecode.addAdapter(trueConditionalBlock);
+    bytecode.startControlFlowInstruction(trueConditionalBlock);
+    bytecode.addInstruction(myInstruction);
+    bytecode.endControlFlowInstruction(trueConditionalBlock);
+    bytecode.addInstruction(trueConditionalBlock);
     bytecode.execute();
 
     assertThat(myInstruction.hasBeenExecuted, is(true));
@@ -45,10 +46,10 @@ public class BytecodeTest {
   public void shoudNotExecuteConditionalBlock() {
     MyExecutableAdapter myInstruction = new MyExecutableAdapter();
     FalseConditionalBlockAdapter falseConditionalBlock = new FalseConditionalBlockAdapter();
-    bytecode.startControlFlowAdapter(falseConditionalBlock);
-    bytecode.addAdapter(myInstruction);
-    bytecode.endControlFlowAdapter(falseConditionalBlock);
-    bytecode.addAdapter(falseConditionalBlock);
+    bytecode.startControlFlowInstruction(falseConditionalBlock);
+    bytecode.addInstruction(myInstruction);
+    bytecode.endControlFlowInstruction(falseConditionalBlock);
+    bytecode.addInstruction(falseConditionalBlock);
     bytecode.execute();
 
     assertThat(myInstruction.hasBeenExecuted, is(false));
@@ -58,10 +59,10 @@ public class BytecodeTest {
   public void shoudExecuteLoopBlockThreeTimes() {
     MyExecutableAdapter myInstruction = new MyExecutableAdapter();
     ThreeLoopBlockAdapter loopBlock = new ThreeLoopBlockAdapter();
-    bytecode.startControlFlowAdapter(loopBlock);
-    bytecode.addAdapter(myInstruction);
-    bytecode.endControlFlowAdapter(loopBlock);
-    bytecode.addAdapter(loopBlock);
+    bytecode.startControlFlowInstruction(loopBlock);
+    bytecode.addInstruction(myInstruction);
+    bytecode.endControlFlowInstruction(loopBlock);
+    bytecode.addInstruction(loopBlock);
     bytecode.execute();
 
     assertThat(myInstruction.numberOfExecution, is(3));
@@ -69,11 +70,11 @@ public class BytecodeTest {
 
   @Test
   public void shoudNotThrowExceptionWhenAddingNonInstruction() {
-    bytecode.addAdapter(new String());
+    bytecode.addInstruction(new String());
     bytecode.execute();
   }
 
-  private class MyExecutableAdapter implements ExecutableAdapter {
+  private class MyExecutableAdapter implements ExecutableInstruction {
 
     private boolean hasBeenExecuted = false;
     private int numberOfExecution = 0;
@@ -84,21 +85,21 @@ public class BytecodeTest {
     }
   }
 
-  private class TrueConditionalBlockAdapter implements ConditionalBlockAdapter {
+  private class TrueConditionalBlockAdapter implements ConditionalBlockInstruction {
 
     public boolean shouldExecuteConditionalBlock() {
       return true;
     }
   }
 
-  private class FalseConditionalBlockAdapter implements ConditionalBlockAdapter {
+  private class FalseConditionalBlockAdapter implements ConditionalBlockInstruction {
 
     public boolean shouldExecuteConditionalBlock() {
       return false;
     }
   }
 
-  private class ThreeLoopBlockAdapter implements LoopBlockAdapter {
+  private class ThreeLoopBlockAdapter implements LoopBlockInstruction {
 
     int pendingLoop;
 
