@@ -7,7 +7,10 @@ package com.sonar.structural.search;
 
 import com.sonar.sslr.api.AstNode;
 
-public abstract class StructuralSearchMatcher {
+public class DirectParentNodeMatcher extends ParentNodeMatcher {
 
-  public abstract AstNode match(AstNode node);
+  @Override
+  public AstNode match(AstNode node) {
+    return null;
+  }
 }

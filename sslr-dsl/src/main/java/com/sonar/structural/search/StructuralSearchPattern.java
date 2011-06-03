@@ -5,16 +5,16 @@
  */
 package com.sonar.structural.search;
 
-public class StructuralSearchPattern {
+import com.sonar.sslr.api.AstNode;
 
-  private StructuralSearchMatcher matcher;
+public class StructuralSearchPattern extends CompositeMatcher {
 
-  public void add(StructuralSearchMatcher matcher) {
-    this.matcher = matcher;
+  public AstNode match(AstNode astNode) {
+    return matcher.match(astNode);
   }
 
-  public StructuralSearchMatcher getMatcher() {
-    return matcher;
+  public boolean isMatching(AstNode astNode) {
+    return match(astNode) != null;
   }
 
 }

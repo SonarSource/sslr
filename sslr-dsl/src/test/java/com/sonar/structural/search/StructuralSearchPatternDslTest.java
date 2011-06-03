@@ -5,30 +5,36 @@
  */
 package com.sonar.structural.search;
 
-import static com.sonar.sslr.dsl.DslTokenType.WORD;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
-import static com.sonar.sslr.test.parser.ParserMatchers.parse;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Test;
 
-import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.api.Rule;
+import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.dsl.DslRunner;
 import com.sonar.sslr.dsl.internal.DefaultDslLexer;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
+import static com.sonar.sslr.test.parser.ParserMatchers.parse;
+
+import static org.junit.Assert.assertThat;
+
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+
 public class StructuralSearchPatternDslTest {
 
   Parser<StructuralSearchPatternDsl> parser = Parser.builder(new StructuralSearchPatternDsl()).optSetLexer(new DefaultDslLexer()).build();
+  AstNode astNode = GeographyDsl.geographyParser.parse("Paris London");
+  StructuralSearchPattern pattern = new StructuralSearchPattern();
 
   @Test
   public void shouldParseExpression() {
-    assertThat(parser, parse("this(*)"));
-    assertThat(parser, parse("this(\"value1\", \"value2\")"));
+    assertThat(parser, parse("'MOVE' this(*) 'TO' 'SEND-TO'"));
+    assertThat(parser, parse("divideStmt(this(*))"));
+    assertThat(parser, parse("divideStmt('DIVIDE' this(*))"));
+    assertThat(parser, parse("divideStmt((this(myRule, anotherRule)))"));
+    assertThat(parser, parse("stmt((divideStmt(this(*))))"));
+    assertThat(parser, parse("this('value1', 'value2')"));
+    assertThat(parser, parse("this(*)(child((anotherChild)))"));
   }
 
   @Test(expected = RecognitionExceptionImpl.class)
@@ -38,29 +44,26 @@ public class StructuralSearchPatternDslTest {
 
   @Test
   public void shouldBuildTheStructuralSearchPattern() {
-    StructuralSearchPattern pattern = new StructuralSearchPattern();
     DslRunner.builder(new StructuralSearchPatternDsl(pattern), "this(*)").build();
 
-    assertThat(pattern.getMatcher(), is(instanceOf(ThisNodeMatcher.class)));
+    assertThat(pattern.matcher, is(instanceOf(ThisNodeMatcher.class)));
   }
 
-  private class Geography extends Grammar {
-
-    public Rule world;
-    public Rule nation;
-    public Rule capital;
-
-    public Geography() {
-      world.is(one2n(nation));
-      nation.is(capital);
-      capital.is(WORD);
-    }
-
-    @Override
-    public Rule getRootRule() {
-      return world;
-    }
-
+  @Test
+  public void shouldMatchAnything() {
+    DslRunner.builder(new StructuralSearchPatternDsl(pattern), "this(*)").build();
+    assertThat(pattern.isMatching(astNode), is(true));
   }
 
+  @Test
+  public void shouldMatchRuleName() {
+    DslRunner.builder(new StructuralSearchPatternDsl(pattern), "this(world)").build();
+    assertThat(pattern.isMatching(astNode), is(true));
+  }
+
+  @Test
+  public void shouldMatchTokenName() {
+    DslRunner.builder(new StructuralSearchPatternDsl(pattern), "this('Paris')").build();
+    assertThat(pattern.isMatching(astNode), is(true));
+  }
 }
