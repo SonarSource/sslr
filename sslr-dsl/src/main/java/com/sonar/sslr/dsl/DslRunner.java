@@ -6,6 +6,9 @@
 
 package com.sonar.sslr.dsl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.dsl.bytecode.Bytecode;
 import com.sonar.sslr.dsl.internal.Compiler;
@@ -16,10 +19,13 @@ public class DslRunner {
 
   private Bytecode bytecode;
   private Compiler compiler;
-  private DslMemory memory;
 
-  private DslRunner(Grammar dsl, String source) {
-    compiler = new Compiler(Parser.builder(dsl).optSetLexer(new DefaultDslLexer()).build(), source);
+  private DslRunner(Builder builder) {
+    compiler = new Compiler(builder.parser, builder.source);
+    for (Object component : builder.componentsToInject) {
+      inject(component);
+    }
+    compile();
   }
 
   private DslRunner inject(Object component) {
@@ -27,29 +33,8 @@ public class DslRunner {
     return this;
   }
 
-  public DslRunner putInMemory(String variableName, Object value) {
-    memory.put(variableName, value);
-    return this;
-  }
-
-  public Object getFromMemory(String variableName) {
-    return memory.get(variableName);
-  }
-
-  public DslRunner resetDslMemory() {
-    memory = new DslMemory();
-    inject(memory);
-    return this;
-  }
-
-  public static DslRunner create(Grammar dsl, String source, Object... injectedComponents) {
-    DslRunner dslRunner = new DslRunner(dsl, source);
-    for (Object component : injectedComponents) {
-      dslRunner.inject(component);
-    }
-    dslRunner.resetDslMemory();
-    dslRunner.compile();
-    return dslRunner;
+  public static Builder builder(Grammar dsl, String source) {
+    return new Builder(dsl, source);
   }
 
   private void compile() {
@@ -58,5 +43,34 @@ public class DslRunner {
 
   public void execute() {
     bytecode.execute();
+  }
+
+  public static class Builder {
+
+    private Grammar grammar;
+    private String source;
+    private List<Object> componentsToInject = new ArrayList<Object>();
+    private Parser<Grammar> parser;
+
+    private Builder(Grammar grammar, String source) {
+      this.grammar = grammar;
+      this.source = source;
+      this.parser = Parser.builder(grammar).optSetLexer(new DefaultDslLexer()).build();
+    }
+
+    public Builder inject(Object component) {
+      componentsToInject.add(component);
+      return this;
+    }
+
+    public Builder withParser(Parser<Grammar> parser) {
+      this.parser = parser;
+      return this;
+    }
+
+    public DslRunner build() {
+      return new DslRunner(this);
+    }
+
   }
 }

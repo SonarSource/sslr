@@ -17,8 +17,8 @@ public class SeleniumTest {
 
   @Test
   public void shouldParseAllStatements() throws URISyntaxException {
-    DslRunner.create(new SeleniumDsl(), "open 'http://www.google.com'");
-    DslRunner.create(new SeleniumDsl(), "assert that title is 'Google'");
-    DslRunner.create(new SeleniumDsl(), "assert that size <= 2 Ko");
+    DslRunner.builder(new SeleniumDsl(), "open 'http://www.google.com'").build();
+    DslRunner.builder(new SeleniumDsl(), "assert that title is 'Google'").build();
+    DslRunner.builder(new SeleniumDsl(), "assert that size <= 2 Ko").build();
   }
 }

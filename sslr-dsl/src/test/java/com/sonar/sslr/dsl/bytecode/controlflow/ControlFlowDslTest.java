@@ -20,31 +20,31 @@ public class ControlFlowDslTest {
 
   @Test
   public void shouldExecuteConditionBlock() throws URISyntaxException {
-    DslRunner.create(new ControlFlowDsl(), "if true ping ping endif", output).execute();
+    DslRunner.builder(new ControlFlowDsl(), "if true ping ping endif").inject(output).build().execute();
     assertThat(output.toString(), is("pingping"));
   }
 
   @Test
   public void shouldNotExecuteConditionBlock() throws URISyntaxException {
-    DslRunner.create(new ControlFlowDsl(), "if false ping ping ping endif", output).execute();
+    DslRunner.builder(new ControlFlowDsl(), "if false ping ping ping endif").inject(output).build().execute();
     assertThat(output.toString(), is(""));
   }
 
   @Test
   public void shouldExecuteLoopBlock() throws URISyntaxException {
-    DslRunner.create(new ControlFlowDsl(), "do 2 times ping enddo", output).execute();
+    DslRunner.builder(new ControlFlowDsl(), "do 2 times ping enddo").inject(output).build().execute();
     assertThat(output.toString(), is("pingping"));
   }
 
   @Test
   public void shouldNotExecuteLoopBlock() throws URISyntaxException {
-    DslRunner.create(new ControlFlowDsl(), "do 0 times ping ping ping enddo", output).execute();
+    DslRunner.builder(new ControlFlowDsl(), "do 0 times ping ping ping enddo").inject(output).build().execute();
     assertThat(output.toString(), is(""));
   }
 
   @Test
   public void shouldExitFlow() throws URISyntaxException {
-    DslRunner.create(new ControlFlowDsl(), "ping exit ping", output).execute();
+    DslRunner.builder(new ControlFlowDsl(), "ping exit ping").inject(output).build().execute();
     assertThat(output.toString(), is("ping"));
   }
 }
