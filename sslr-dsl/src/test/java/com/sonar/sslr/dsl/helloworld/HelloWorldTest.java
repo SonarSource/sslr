@@ -20,13 +20,13 @@ public class HelloWorldTest {
 
   @Test
   public void shouldGetHelloWorld() throws URISyntaxException {
-    DslRunner.create(new HelloWorldDsl(), "print \"hello world!\"").inject(output).execute();
+    DslRunner.create(new HelloWorldDsl(), "print \"hello world!\"", output).execute();
     assertThat(output.toString(), is("hello world!"));
   }
 
   @Test
   public void shouldGetHelloFreddy() throws URISyntaxException {
-    DslRunner.create(new HelloWorldDsl(), "print \"hello freddy!\"").inject(output).execute();
+    DslRunner.create(new HelloWorldDsl(), "print \"hello freddy!\"", output).execute();
     assertThat(output.toString(), is("hello freddy!"));
   }
 }

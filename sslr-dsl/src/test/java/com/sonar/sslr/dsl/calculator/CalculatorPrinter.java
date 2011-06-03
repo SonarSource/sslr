@@ -12,7 +12,7 @@ public class CalculatorPrinter implements ExecutableAdapter {
   private AbstractExpression value;
   private StringBuilder output;
 
-  public void setOutput(StringBuilder output) {
+  public CalculatorPrinter(StringBuilder output) {
     this.output = output;
   }
 

@@ -12,7 +12,7 @@ public class ConditionPrinter implements ExecutableAdapter {
   private Condition condition;
   private StringBuilder output;
 
-  public void setOutput(StringBuilder output) {
+  public ConditionPrinter(StringBuilder output) {
     this.output = output;
   }
 

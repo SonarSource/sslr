@@ -10,6 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.picocontainer.DefaultPicoContainer;
+import org.picocontainer.MutablePicoContainer;
+import org.picocontainer.containers.TransientPicoContainer;
+
 import com.sonar.sslr.api.AstNode;
 
 class AdapterRepository {
@@ -17,10 +21,14 @@ class AdapterRepository {
   private Map<AdapterType, List<Object>> adaptersByType = new HashMap<AdapterType, List<Object>>();
   private Map<AstNode, Object> adapterByAstNode = new HashMap<AstNode, Object>();
   private Map<Class, AdapterType> adapterTypeByClass = new HashMap<Class, AdapterType>();
+  private MutablePicoContainer pico = new DefaultPicoContainer();
 
   Object plug(Class adapterClass, AstNode node) {
     AdapterType adapterType = new AdapterType(adapterClass);
-    Object adapterInstance = adapterType.newInstance();
+    if (pico.getComponent(adapterType.getAdapterClass()) == null) {
+      pico.addComponent(adapterType.getAdapterClass());
+    }
+    Object adapterInstance = pico.getComponent(adapterType.getAdapterClass());
     plug(adapterInstance, node);
     return adapterInstance;
   }
@@ -38,13 +46,7 @@ class AdapterRepository {
   }
 
   void inject(Object component) {
-    for (AdapterType type : adaptersByType.keySet()) {
-      if (type.hasMethodWithArgumentType(component.getClass())) {
-        for (Object adapter : adaptersByType.get(type)) {
-          type.inject(adapter, component);
-        }
-      }
-    }
+    pico.addComponent(component);
   }
 
   void injectAdapter(AstNode parentNode, AstNode node) {

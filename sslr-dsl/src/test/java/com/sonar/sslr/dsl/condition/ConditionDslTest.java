@@ -20,58 +20,58 @@ public class ConditionDslTest {
 
   @Test
   public void shouldParseBasicConditions() throws URISyntaxException {
-    DslRunner.create(new ConditionPrinterDsl(), "true");
-    DslRunner.create(new ConditionPrinterDsl(), "false");
-    DslRunner.create(new ConditionPrinterDsl(), "false and true");
-    DslRunner.create(new ConditionPrinterDsl(), "false or true");
-    DslRunner.create(new ConditionPrinterDsl(), "3 = 2");
-    DslRunner.create(new ConditionPrinterDsl(), "3 != 2");
-    DslRunner.create(new ConditionPrinterDsl(), "3 not equals 2");
+    DslRunner.create(new ConditionPrinterDsl(), "true", output);
+    DslRunner.create(new ConditionPrinterDsl(), "false", output);
+    DslRunner.create(new ConditionPrinterDsl(), "false and true", output);
+    DslRunner.create(new ConditionPrinterDsl(), "false or true", output);
+    DslRunner.create(new ConditionPrinterDsl(), "3 = 2", output);
+    DslRunner.create(new ConditionPrinterDsl(), "3 != 2", output);
+    DslRunner.create(new ConditionPrinterDsl(), "3 not equals 2", output);
   }
 
   @Test
   public void shouldComputePrimaryCondition() throws URISyntaxException {
-    DslRunner.create(new ConditionPrinterDsl(), "true").inject(output).execute();
+    DslRunner.create(new ConditionPrinterDsl(), "true", output).execute();
     assertThat(output.toString(), is("true"));
   }
 
   @Test
   public void shouldComputeLogicalAnd() throws URISyntaxException {
-    DslRunner.create(new ConditionPrinterDsl(), "true && false").inject(output).execute();
+    DslRunner.create(new ConditionPrinterDsl(), "true && false", output).execute();
     assertThat(output.toString(), is("false"));
 
     output = new StringBuilder();
-    DslRunner.create(new ConditionPrinterDsl(), "true and true").inject(output).execute();
+    DslRunner.create(new ConditionPrinterDsl(), "true and true", output).execute();
     assertThat(output.toString(), is("true"));
   }
 
   @Test
   public void shouldComputeLogicalOr() throws URISyntaxException {
-    DslRunner.create(new ConditionPrinterDsl(), "true || false").inject(output).execute();
+    DslRunner.create(new ConditionPrinterDsl(), "true || false", output).execute();
     assertThat(output.toString(), is("true"));
 
     output = new StringBuilder();
-    DslRunner.create(new ConditionPrinterDsl(), "false or false").inject(output).execute();
+    DslRunner.create(new ConditionPrinterDsl(), "false or false", output).execute();
     assertThat(output.toString(), is("false"));
   }
 
   @Test
   public void shouldComputeEqual() throws URISyntaxException {
-    DslRunner.create(new ConditionPrinterDsl(), "2 equals 2").inject(output).execute();
+    DslRunner.create(new ConditionPrinterDsl(), "2 equals 2", output).execute();
     assertThat(output.toString(), is("true"));
 
     output = new StringBuilder();
-    DslRunner.create(new ConditionPrinterDsl(), "3 = 4").inject(output).execute();
+    DslRunner.create(new ConditionPrinterDsl(), "3 = 4", output).execute();
     assertThat(output.toString(), is("false"));
   }
 
   @Test
   public void shouldComputeNotEqual() throws URISyntaxException {
-    DslRunner.create(new ConditionPrinterDsl(), "2 != 2").inject(output).execute();
+    DslRunner.create(new ConditionPrinterDsl(), "2 != 2", output).execute();
     assertThat(output.toString(), is("false"));
 
     output = new StringBuilder();
-    DslRunner.create(new ConditionPrinterDsl(), "3 not equals 4").inject(output).execute();
+    DslRunner.create(new ConditionPrinterDsl(), "3 not equals 4", output).execute();
     assertThat(output.toString(), is("true"));
   }
 

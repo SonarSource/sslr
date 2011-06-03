@@ -36,14 +36,6 @@ public class AdapterClassTest {
     assertThat(adapter.hasMethodWithArgumentType(FileReader.class), is(false));
   }
 
-  @Test
-  public void shoudInjectComponent() {
-    AdapterType adapter = new AdapterType(MyAdapter.class);
-    MyAdapter myAdapter = (MyAdapter) adapter.newInstance();
-    adapter.inject(myAdapter, "hello");
-    assertThat(myAdapter.message, is("hello"));
-  }
-
   public static class MyAdapter {
 
     private String message;

@@ -20,7 +20,7 @@ public class DslRunner {
     compiler = new Compiler(dsl, source);
   }
 
-  public DslRunner inject(Object component) {
+  private DslRunner inject(Object component) {
     compiler.inject(component);
     return this;
   }
@@ -40,10 +40,13 @@ public class DslRunner {
     return this;
   }
 
-  public static DslRunner create(Grammar dsl, String source) {
+  public static DslRunner create(Grammar dsl, String source, Object... injectedComponents) {
     DslRunner dslRunner = new DslRunner(dsl, source);
-    dslRunner.compile();
+    for (Object component : injectedComponents) {
+      dslRunner.inject(component);
+    }
     dslRunner.resetDslMemory();
+    dslRunner.compile();
     return dslRunner;
   }
 
@@ -54,5 +57,4 @@ public class DslRunner {
   public void execute() {
     bytecode.execute();
   }
-
 }

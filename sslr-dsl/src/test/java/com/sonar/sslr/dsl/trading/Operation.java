@@ -15,7 +15,7 @@ public abstract class Operation implements ExecutableAdapter {
 
   protected Portfolio portfolio;
 
-  public void setPortfolio(Portfolio portfolio) {
+  public Operation(Portfolio portfolio) {
     this.portfolio = portfolio;
   }
 

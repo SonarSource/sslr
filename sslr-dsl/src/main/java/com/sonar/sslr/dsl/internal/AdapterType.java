@@ -21,12 +21,8 @@ class AdapterType {
     indexMethodsWithOneArgument();
   }
 
-  Object newInstance() {
-    try {
-      return adapterClass.newInstance();
-    } catch (Exception e) {
-      throw new DslException("Unable to instanciate DSL adapter '" + adapterClass.getName() + "'", e);
-    }
+  public Class getAdapterClass() {
+    return adapterClass;
   }
 
   private void indexMethodsWithOneArgument() {

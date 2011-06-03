@@ -14,11 +14,8 @@ public class PrintPortfolio implements ExecutableAdapter {
   private Portfolio portfolio;
   private StringBuilder output;
 
-  public void setPortfolio(Portfolio portfolio) {
+  public PrintPortfolio(Portfolio portfolio, StringBuilder output) {
     this.portfolio = portfolio;
-  }
-
-  public void setOutput(StringBuilder output) {
     this.output = output;
   }
 

@@ -12,7 +12,7 @@ public class HelloWorld implements ExecutableAdapter {
   private StringBuilder output = new StringBuilder();
   private String message;
 
-  public void setOutput(StringBuilder output) {
+  public HelloWorld(StringBuilder output) {
     this.output = output;
   }
 

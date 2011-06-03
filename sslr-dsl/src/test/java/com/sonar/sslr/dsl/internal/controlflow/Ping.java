@@ -11,7 +11,7 @@ public class Ping implements ExecutableAdapter {
 
   private StringBuilder output;
 
-  public void setOutput(StringBuilder output) {
+  public Ping(StringBuilder output) {
     this.output = output;
   }
 

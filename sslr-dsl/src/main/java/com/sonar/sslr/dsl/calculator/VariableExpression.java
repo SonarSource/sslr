@@ -12,12 +12,12 @@ public class VariableExpression implements AbstractExpression {
   private String variableName;
   private DslMemory memory;
 
-  public void setVariableName(String name) {
-    this.variableName = name;
+  public VariableExpression(DslMemory memory) {
+    this.memory = memory;
   }
 
-  public void setMemory(DslMemory memory) {
-    this.memory = memory;
+  public void setVariableName(String name) {
+    this.variableName = name;
   }
 
   public double value() {

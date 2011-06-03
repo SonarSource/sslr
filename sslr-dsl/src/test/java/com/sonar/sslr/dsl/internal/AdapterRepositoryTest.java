@@ -14,13 +14,6 @@ public class AdapterRepositoryTest {
 
   AdapterRepository adapters = new AdapterRepository();
 
-  @Test
-  public void shoudInjectComponent() {
-    MyAdapter myAdapter = (MyAdapter) adapters.plug(MyAdapter.class, null);
-    adapters.inject("hello");
-    assertThat(myAdapter.message, is("hello"));
-  }
-
   public static class MyAdapter {
 
     private String message;
