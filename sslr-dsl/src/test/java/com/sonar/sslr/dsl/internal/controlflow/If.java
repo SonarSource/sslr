@@ -12,7 +12,7 @@ public class If implements ConditionalBlockAdapter {
 
   private Condition condition;
 
-  public void setCondition(Condition condition) {
+  public void add(Condition condition) {
     this.condition = condition;
   }
 

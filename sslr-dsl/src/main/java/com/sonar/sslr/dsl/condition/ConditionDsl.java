@@ -21,15 +21,18 @@ public class ConditionDsl extends Grammar {
   public Rule logicalOr;
   public Rule equal;
   public Rule notEqual;
+  public Rule booleanValue;
   public Rule expression = new CalculatorDsl().expression;
 
   public ConditionDsl() {
     equal.is(expression, or("=", "equals"), expression).plug(Equal.class);
     notEqual.is(expression, or(and("!", "="), and("not", "equals")), expression).plug(NotEqual.class);
-    primaryCondition.isOr("true", "false").plug(PrimaryCondition.class);
+    primaryCondition.is(booleanValue).plug(PrimaryCondition.class);
     logicalAnd.is(or(primaryCondition, equal, notEqual), opt(or("and", and("&", "&")), logicalAnd)).skipIfOneChild().plug(LogicalAnd.class);
     logicalOr.is(logicalAnd, opt(or("or", and("|", "|")), logicalOr)).skipIfOneChild().plug(LogicalOr.class);
     condition.is(logicalOr).plug(Condition.class);
+
+    booleanValue.isOr("true", "false").plug(Boolean.class);
   }
 
   public Rule getRootRule() {

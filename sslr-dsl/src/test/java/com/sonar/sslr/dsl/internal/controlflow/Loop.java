@@ -12,7 +12,7 @@ public class Loop implements LoopBlockAdapter {
   private int numberOfLoop;
   private int pendingNumberOfLoop;
 
-  public void setNumberOfLoop(Integer numberOfLoop) {
+  public void add(Integer numberOfLoop) {
     this.numberOfLoop = numberOfLoop;
   }
 

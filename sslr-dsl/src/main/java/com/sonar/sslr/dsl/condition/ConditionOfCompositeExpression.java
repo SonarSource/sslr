@@ -12,7 +12,7 @@ public abstract class ConditionOfCompositeExpression implements AbstractConditio
   protected AbstractExpression firstExp;
   protected AbstractExpression secondExp;
 
-  public void addArgument(AbstractExpression exp) {
+  public void add(AbstractExpression exp) {
     if (firstExp == null) {
       firstExp = exp;
     }

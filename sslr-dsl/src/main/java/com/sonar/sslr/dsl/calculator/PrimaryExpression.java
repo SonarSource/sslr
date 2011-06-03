@@ -9,11 +9,11 @@ public class PrimaryExpression implements AbstractExpression {
 
   private double value;
 
-  public void setInteger(Integer value) {
+  public void addIntValue(Integer value) {
     this.value = value;
   }
 
-  public void setDouble(Double value) {
+  public void addDoubleValue(Double value) {
     this.value = value;
   }
 

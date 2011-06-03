@@ -16,7 +16,7 @@ public class VariableExpression implements AbstractExpression {
     this.memory = memory;
   }
 
-  public void setVariableName(String name) {
+  public void addIdentifier(String name) {
     this.variableName = name;
   }
 

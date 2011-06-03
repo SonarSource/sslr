@@ -21,7 +21,7 @@ public class HelloWorldDsl extends Grammar {
   public HelloWorldDsl() {
     translationUnit.is(o2n(command), EOF);
     command.is("print", message).plug(HelloWorld.class);
-    message.is(LITERAL);
+    message.is(LITERAL).plug(String.class);
   }
 
   @Override

@@ -5,9 +5,18 @@
  */
 package com.sonar.sslr.dsl.internal;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.picocontainer.DefaultPicoContainer;
+import org.picocontainer.MutablePicoContainer;
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.dsl.DslTokenType;
+import com.sonar.sslr.dsl.DslException;
+import com.sonar.sslr.dsl.adapter.ControlFlowAdapter;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 
@@ -15,16 +24,19 @@ public class Compiler {
 
   private Grammar dsl;
   private String source;
-  private AdapterRepository adapters = new AdapterRepository();
+
+  private MutablePicoContainer pico = new DefaultPicoContainer();
+  private Map<AstNode, Object> adapterByAstNode = new HashMap<AstNode, Object>();
 
   public Compiler(Grammar dsl, String source) {
     this.dsl = dsl;
     this.source = source;
   }
 
-  public Bytecode transform(AstNode astNode) {
+  private Bytecode transform(AstNode astNode) {
     Bytecode bytecode = new Bytecode();
     feedStmtList(astNode, bytecode);
+    injectChildrenAdapters(astNode, astNode.getChildren());
     return bytecode;
   }
 
@@ -34,21 +46,62 @@ public class Compiler {
     feedStmtListOnChildren(astNode, bytecode);
     bytecode.endControlFlowAdapter(adapter);
     bytecode.addAdapter(adapter);
-    feedParentAttributes(astNode);
   }
 
-  private void feedParentAttributes(AstNode astNode) {
-    if ( !astNode.hasChildren() && astNode.getType() instanceof DslTokenType) {
-      DslTokenType dslTokenType = (DslTokenType) astNode.getType();
-      Object adapter = dslTokenType.formatDslValue(astNode.getTokenValue());
-      if (adapter != null) {
-        adapters.plug(adapter, astNode);
-      } else if (astNode.getParent().getNumberOfChildren() == 1) {
-        adapters.plug(astNode.getTokenValue(), astNode);
+  private void injectChildrenAdapters(AstNode astNode, List<AstNode> children) {
+    if (children != null) {
+      for (AstNode child : children) {
+        injectChildrenAdapters(child, child.getChildren());
       }
-
     }
-    adapters.injectAdapter(astNode.getParent(), astNode);
+    Object adapterInstance = adapterByAstNode.get(astNode);
+    String ruleName = astNode.getName();
+
+    if (adapterInstance != null) {
+      Object parentAdapterInstance = findNearestParentAdapter(astNode);
+      if (parentAdapterInstance != null) {
+        String methodName = "add" + Character.toUpperCase(ruleName.charAt(0)) + ruleName.substring(1);
+        for (Method method : parentAdapterInstance.getClass().getMethods()) {
+          if (method.getName().equals(methodName)) {
+            try {
+              method.invoke(parentAdapterInstance, adapterInstance);
+              return;
+            } catch (Exception e) {
+              throw new DslException("Unable to call method '" + parentAdapterInstance.getClass().getName() + "." + methodName + "("
+                  + adapterInstance.getClass().getName() + ")", e);
+            }
+          }
+        }
+        methodName = "add";
+        for (Method method : parentAdapterInstance.getClass().getMethods()) {
+          if (method.getName().equals(methodName)) {
+            try {
+              method.invoke(parentAdapterInstance, adapterInstance);
+              return;
+            } catch (Exception e) {
+              if ( !(parentAdapterInstance instanceof ControlFlowAdapter)) {
+                throw new DslException("Unable to call method '" + parentAdapterInstance.getClass().getName() + "." + methodName + "("
+                    + adapterInstance.getClass().getName() + ")", e);
+              }
+            }
+          }
+        }
+        if ( !(parentAdapterInstance instanceof ControlFlowAdapter)) {
+          throw new DslException("The method '" + parentAdapterInstance.getClass().getName() + "." + methodName + "("
+              + adapterInstance.getClass().getName() + ") is missing");
+        }
+      }
+    }
+  }
+
+  private Object findNearestParentAdapter(AstNode astNode) {
+    if (astNode.getParent() != null) {
+      if (adapterByAstNode.containsKey(astNode.getParent())) {
+        return adapterByAstNode.get(astNode.getParent());
+      }
+      return findNearestParentAdapter(astNode.getParent());
+    }
+    return null;
   }
 
   private void feedStmtListOnChildren(AstNode astNode, Bytecode bytecode) {
@@ -61,17 +114,32 @@ public class Compiler {
 
   private Object getAdapter(AstNode astNode) {
     if (astNode.getType() instanceof RuleDefinition) {
-    	RuleDefinition rule = (RuleDefinition) astNode.getType();
+      RuleDefinition rule = (RuleDefinition) astNode.getType();
       if (rule.getAdapter() != null) {
-        return adapters.plug(rule.getAdapter(), astNode);
+        Object adapterInstance;
+        if (rule.getAdapter() == String.class) {
+          adapterInstance = new String(astNode.getTokenValue());
+        } else if (rule.getAdapter() == Integer.class) {
+          adapterInstance = new Integer(astNode.getTokenValue());
+        } else if (rule.getAdapter() == Double.class) {
+          adapterInstance = new Double(astNode.getTokenValue());
+        } else if (rule.getAdapter() == Boolean.class) {
+          adapterInstance = new Boolean(astNode.getTokenValue());
+        } else {
+          if (pico.getComponent(rule.getAdapter()) == null) {
+            pico.addComponent(rule.getAdapter());
+          }
+          adapterInstance = pico.getComponent(rule.getAdapter());
+        }
+        adapterByAstNode.put(astNode, adapterInstance);
+        return adapterInstance;
       }
     }
     return null;
   }
 
   public void inject(Object component) {
-    adapters.inject(component);
-
+    pico.addComponent(component);
   }
 
   public Bytecode compile() {

@@ -16,7 +16,7 @@ public class HelloWorld implements ExecutableAdapter {
     this.output = output;
   }
 
-  public void setMessage(String message) {
+  public void addMessage(String message) {
     this.message = message;
   }
 

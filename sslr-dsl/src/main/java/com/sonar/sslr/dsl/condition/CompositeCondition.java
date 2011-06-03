@@ -10,7 +10,7 @@ public abstract class CompositeCondition implements AbstractCondition {
   protected AbstractCondition firstCondition;
   protected AbstractCondition secondCondition;
 
-  public void addCondition(AbstractCondition condition) {
+  public void add(AbstractCondition condition) {
     if (firstCondition == null) {
       firstCondition = condition;
     }

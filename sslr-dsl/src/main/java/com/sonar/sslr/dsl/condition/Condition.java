@@ -9,7 +9,7 @@ public class Condition implements AbstractCondition {
 
   public AbstractCondition nestedCondition;
   
-  public void setNestedCondition(AbstractCondition condition){
+  public void add(AbstractCondition condition){
     this.nestedCondition = condition;
   }
 

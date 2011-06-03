@@ -24,10 +24,13 @@ public class CalculatorDsl extends Grammar {
   public Rule addExpression;
   public Rule variable;
   public Rule parenthesisExpression;
+  public Rule intValue;
+  public Rule doubleValue;
+  public Rule identifier;
 
   public CalculatorDsl() {
-    variable.is(WORD).plug(VariableExpression.class);
-    primaryExpression.isOr(INTEGER, DOUBLE).plug(PrimaryExpression.class);
+    variable.is(identifier).plug(VariableExpression.class);
+    primaryExpression.isOr(intValue, doubleValue).plug(PrimaryExpression.class);
     parenthesisExpression.is("(", expression, ")").plug(Calculator.class);
     multiplyExpression.is(or(primaryExpression, parenthesisExpression, variable), opt("*", multiplyExpression)).skipIfOneChild()
         .plug(MultiplyExpression.class);
@@ -35,6 +38,11 @@ public class CalculatorDsl extends Grammar {
     substractExpression.is(divideExpression, opt("-", substractExpression)).skipIfOneChild().plug(SubstractExpression.class);
     addExpression.is(substractExpression, opt("+", addExpression)).skipIfOneChild().plug(AddExpression.class);
     expression.is(addExpression).plug(Calculator.class);
+
+    intValue.is(INTEGER).plug(Integer.class);
+    doubleValue.is(DOUBLE).plug(Double.class);
+    identifier.is(WORD).plug(String.class);
+
   }
 
   public Rule getRootRule() {

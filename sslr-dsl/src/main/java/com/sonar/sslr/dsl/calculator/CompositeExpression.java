@@ -10,7 +10,7 @@ public abstract class CompositeExpression implements AbstractExpression {
   protected AbstractExpression firstExp;
   protected AbstractExpression secondExp;
 
-  public void addArgument(AbstractExpression exp) {
+  public void add(AbstractExpression exp) {
     if (firstExp == null) {
       firstExp = exp;
     }

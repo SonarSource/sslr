@@ -29,14 +29,14 @@ public class StockTradingTest {
   @Test
   public void shouldBuyProduct() throws URISyntaxException {
     DslRunner.create(new StockTradingDsl(), "buy 500 'AAPL' at 179.30", portfolio).execute();
-    assertThat(portfolio.getQuantityOf("AAPL"), is(500));
+    assertThat(portfolio.getQuantityOf("'AAPL'"), is(500));
     assertThat(portfolio.getTotalAmount(), is(500 * 179.30));
   }
 
   @Test
   public void shouldSellProduct() throws URISyntaxException {
     DslRunner.create(new StockTradingDsl(), "sell 500 'AAPL' at 179.30", portfolio).execute();
-    assertThat(portfolio.getQuantityOf("AAPL"), is( -500));
+    assertThat(portfolio.getQuantityOf("'AAPL'"), is( -500));
     assertThat(portfolio.getTotalAmount(), is( -500 * 179.30));
   }
 
@@ -44,6 +44,6 @@ public class StockTradingTest {
   public void shouldPrintPortfolio() throws URISyntaxException {
     DslRunner.create(new StockTradingDsl(), "buy 500 'AAPL' at 179.30 \n" + "sell 250 'AAPL' at 179.30\n" + "print portfolio\n", portfolio,
         output).execute();
-    assertThat(output.toString(), is("250 AAPL"));
+    assertThat(output.toString(), is("250 'AAPL'"));
   }
 }

@@ -33,9 +33,9 @@ public class StockTradingDsl extends Grammar {
     sell.is("sell", quantity, product, "at", price).plug(Sell.class);
     printPortfolio.is("print", "portfolio").plug(PrintPortfolio.class);
 
-    quantity.is(INTEGER);
-    product.is(LITERAL);
-    price.is(DOUBLE);
+    quantity.is(INTEGER).plug(Integer.class);
+    product.is(LITERAL).plug(String.class);
+    price.is(DOUBLE).plug(Double.class);
   }
 
   @Override

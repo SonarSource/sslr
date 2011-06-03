@@ -9,8 +9,8 @@ public class PrimaryCondition implements AbstractCondition {
 
   public boolean value;
 
-  public void setBoolean(String value) {
-    this.value = Boolean.parseBoolean(value);
+  public void add(Boolean value) {
+    this.value = value;
   }
 
   public boolean value() {

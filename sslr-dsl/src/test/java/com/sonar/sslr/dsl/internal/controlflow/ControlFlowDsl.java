@@ -20,6 +20,7 @@ public class ControlFlowDsl extends Grammar {
   public Rule command;
   public Rule ifBlock;
   public Rule loop;
+  public Rule loopNumber;
   public Rule ping;
   public Rule exit;
   public Rule condition = new ConditionDsl().condition;
@@ -28,9 +29,11 @@ public class ControlFlowDsl extends Grammar {
     translationUnit.is(o2n(command), EOF);
     command.isOr(ifBlock, ping, loop, exit);
     ifBlock.is("if", condition, o2n(command), "endif").plug(If.class);
-    loop.is("do", INTEGER, "times", o2n(command), "enddo").plug(Loop.class);
+    loop.is("do", loopNumber, "times", o2n(command), "enddo").plug(Loop.class);
     ping.is("ping").plug(Ping.class);
     exit.is("exit").plug(ExitFlowAdapter.class);
+
+    loopNumber.is(INTEGER).plug(Integer.class);
   }
 
   @Override

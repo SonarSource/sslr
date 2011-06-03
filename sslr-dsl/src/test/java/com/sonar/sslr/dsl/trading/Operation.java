@@ -19,15 +19,15 @@ public abstract class Operation implements ExecutableAdapter {
     this.portfolio = portfolio;
   }
 
-  public void setQuantity(Integer quantity) {
+  public void addQuantity(Integer quantity) {
     this.quantitity = quantity;
   }
 
-  public void setProduct(String product) {
+  public void addProduct(String product) {
     this.product = product;
   }
 
-  public void setPrice(Double price) {
+  public void addPrice(Double price) {
     this.price = price;
   }
 }

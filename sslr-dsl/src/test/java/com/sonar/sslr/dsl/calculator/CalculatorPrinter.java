@@ -16,7 +16,7 @@ public class CalculatorPrinter implements ExecutableAdapter {
     this.output = output;
   }
 
-  public void setValue(Calculator value) {
+  public void addExpression(Calculator value) {
     this.value = value;
   }
 

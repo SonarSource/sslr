@@ -9,7 +9,7 @@ public class Calculator implements AbstractExpression {
 
   private AbstractExpression value;
 
-  public void setValue(AbstractExpression value) {
+  public void add(AbstractExpression value) {
     this.value = value;
   }
 

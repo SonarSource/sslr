@@ -16,7 +16,7 @@ public class ConditionPrinter implements ExecutableAdapter {
     this.output = output;
   }
 
-  public void setValue(Condition condition) {
+  public void add(Condition condition) {
     this.condition = condition;
   }
 
