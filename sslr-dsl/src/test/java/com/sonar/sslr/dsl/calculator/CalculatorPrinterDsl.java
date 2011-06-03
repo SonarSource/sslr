@@ -5,14 +5,25 @@
  */
 package com.sonar.sslr.dsl.calculator;
 
+import static com.sonar.sslr.api.GenericTokenType.EOF;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
+
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.dsl.CommandListDsl;
 
-public class CalculatorPrinterDsl extends CommandListDsl {
+public class CalculatorPrinterDsl extends Grammar {
 
+  public Rule translationUnit;
+  public Rule command;
   public Rule expression = new CalculatorDsl().expression;
 
   public CalculatorPrinterDsl() {
+    translationUnit.is(o2n(command), EOF);
     command.is(expression).plug(CalculatorPrinter.class);
+  }
+
+  @Override
+  public Rule getRootRule() {
+    return translationUnit;
   }
 }

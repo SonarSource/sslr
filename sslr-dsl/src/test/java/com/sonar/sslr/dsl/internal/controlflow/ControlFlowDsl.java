@@ -5,16 +5,19 @@
  */
 package com.sonar.sslr.dsl.internal.controlflow;
 
+import static com.sonar.sslr.api.GenericTokenType.EOF;
 import static com.sonar.sslr.dsl.DslTokenType.INTEGER;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
 
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.dsl.CommandListDsl;
 import com.sonar.sslr.dsl.adapter.ExitFlowAdapter;
 import com.sonar.sslr.dsl.condition.ConditionDsl;
 
-public class ControlFlowDsl extends CommandListDsl {
+public class ControlFlowDsl extends Grammar {
 
+  public Rule translationUnit;
+  public Rule command;
   public Rule ifBlock;
   public Rule loop;
   public Rule ping;
@@ -22,10 +25,16 @@ public class ControlFlowDsl extends CommandListDsl {
   public Rule condition = new ConditionDsl().condition;
 
   public ControlFlowDsl() {
+    translationUnit.is(o2n(command), EOF);
     command.isOr(ifBlock, ping, loop, exit);
     ifBlock.is("if", condition, o2n(command), "endif").plug(If.class);
     loop.is("do", INTEGER, "times", o2n(command), "enddo").plug(Loop.class);
     ping.is("ping").plug(Ping.class);
     exit.is("exit").plug(ExitFlowAdapter.class);
+  }
+
+  @Override
+  public Rule getRootRule() {
+    return translationUnit;
   }
 }
