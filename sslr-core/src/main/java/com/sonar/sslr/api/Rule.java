@@ -116,7 +116,7 @@ public interface Rule extends AstNodeType {
    * 
    * @return this rule
    */
-  public Rule plug(Class adapter);
+  public Rule plug(Object adapter);
 
   /**
    * A recovery rule notify RecognitionExceptionListener(s) of a parsing error before consuming bad tokens.

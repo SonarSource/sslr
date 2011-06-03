@@ -19,7 +19,7 @@ import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 public class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSkippingPolicy {
 
   private RuleMatcher ruleMatcher;
-  private Class adapterClass;
+  private Object adapter;
   private AstNodeType astNodeSkippingPolicy = new NeverSkipFromAst();
 
   private RuleDefinition() {
@@ -131,8 +131,8 @@ public class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSkippingP
     return this;
   }
 
-  public RuleDefinition plug(Class adapterClass) {
-    this.adapterClass = adapterClass;
+  public RuleDefinition plug(Object adapter) {
+    this.adapter = adapter;
     return this;
   }
 
@@ -158,8 +158,8 @@ public class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSkippingP
     }
   }
 
-  public Class getAdapter() {
-    return adapterClass;
+  public Object getAdapter() {
+    return adapter;
   }
 
   public void recoveryRule() {

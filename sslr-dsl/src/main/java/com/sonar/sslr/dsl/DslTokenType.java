@@ -23,6 +23,10 @@ public class DslTokenType implements TokenType {
   public final String getValue() {
     return name;
   }
+  
+  public String toString(){
+    return name;
+  }
 
   public boolean hasToBeSkippedFromAst(AstNode node) {
     return false;

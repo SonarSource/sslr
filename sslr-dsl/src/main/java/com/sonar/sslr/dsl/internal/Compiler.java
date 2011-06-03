@@ -122,6 +122,8 @@ public class Compiler {
           adapterInstance = new Double(astNode.getTokenValue());
         } else if (rule.getAdapter() == Boolean.class) {
           adapterInstance = new Boolean(astNode.getTokenValue());
+        } else if ( !(rule.getAdapter() instanceof Class)) {
+          adapterInstance = rule.getAdapter();
         } else {
           if (pico.getComponent(rule.getAdapter()) == null) {
             pico.addComponent(rule.getAdapter());

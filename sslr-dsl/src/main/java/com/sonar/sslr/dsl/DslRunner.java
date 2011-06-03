@@ -23,14 +23,9 @@ public class DslRunner {
   private DslRunner(Builder builder) {
     compiler = new Compiler(builder.parser, builder.source);
     for (Object component : builder.componentsToInject) {
-      inject(component);
+      compiler.inject(component);
     }
     compile();
-  }
-
-  private DslRunner inject(Object component) {
-    compiler.inject(component);
-    return this;
   }
 
   public static Builder builder(Grammar dsl, String source) {
