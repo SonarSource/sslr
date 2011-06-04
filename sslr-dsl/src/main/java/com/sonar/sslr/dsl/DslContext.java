@@ -8,7 +8,7 @@ package com.sonar.sslr.dsl;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DslMemory {
+public class DslContext {
 
   private Map<String, Object> memory = new HashMap<String, Object>();
 

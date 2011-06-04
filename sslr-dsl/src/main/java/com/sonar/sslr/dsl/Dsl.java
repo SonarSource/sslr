@@ -19,12 +19,15 @@ public class Dsl {
 
   private Bytecode bytecode;
   private Compiler compiler;
+  private DslContext context;
 
   private Dsl(Builder builder) {
     compiler = new Compiler(builder.parser, builder.source);
     for (Object component : builder.componentsToInject) {
       compiler.inject(component);
     }
+    this.context = builder.context;
+    compiler.inject(context);
     bytecode = compiler.compile();
   }
 
@@ -36,12 +39,21 @@ public class Dsl {
     bytecode.execute();
   }
 
+  public void put(String variableName, Object value) {
+    context.put(variableName, value);
+  }
+
+  public Object get(String variableName) {
+    return context.get(variableName);
+  }
+
   public static class Builder {
 
     private Grammar grammar;
     private String source;
     private List<Object> componentsToInject = new ArrayList<Object>();
     private Parser<Grammar> parser;
+    private DslContext context = new DslContext();
 
     private Builder(Grammar grammar, String source) {
       this.grammar = grammar;
@@ -56,6 +68,11 @@ public class Dsl {
 
     public Builder withParser(Parser<Grammar> parser) {
       this.parser = parser;
+      return this;
+    }
+
+    public Builder put(String variableName, Object value) {
+      context.put(variableName, value);
       return this;
     }
 

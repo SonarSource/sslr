@@ -27,7 +27,7 @@ public class DefaultDslLexer extends Lexer {
   @Override
   protected ChannelDispatcher<LexerOutput> getChannelDispatcher() {
     List<Channel> channels = new ArrayList<Channel>();
-    channels.add(new RegexpChannel(WORD, "\\p{Alpha}[\\p{Alpha}\\d]+"));
+    channels.add(new RegexpChannel(WORD, "\\p{Alpha}[\\p{Alpha}\\d_]+"));
     channels.add(new RegexpChannel(DOUBLE, "\\d++\\.\\d++"));
     channels.add(new RegexpChannel(INTEGER, "\\d++"));
     channels.add(new RegexpChannel(LITERAL, "\".*?\""));

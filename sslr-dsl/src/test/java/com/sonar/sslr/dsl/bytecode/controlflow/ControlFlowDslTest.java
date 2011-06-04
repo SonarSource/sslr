@@ -5,14 +5,15 @@
  */
 package com.sonar.sslr.dsl.bytecode.controlflow;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-
 import java.net.URISyntaxException;
 
 import org.junit.Test;
 
 import com.sonar.sslr.dsl.Dsl;
+
+import static org.junit.Assert.assertThat;
+
+import static org.hamcrest.Matchers.is;
 
 public class ControlFlowDslTest {
 
@@ -45,6 +46,18 @@ public class ControlFlowDslTest {
   @Test
   public void shouldExitFlow() throws URISyntaxException {
     Dsl.builder(new ControlFlowDsl(), "ping exit ping").inject(output).compile().execute();
+    assertThat(output.toString(), is("ping"));
+  }
+
+  @Test
+  public void shouldNotExecuteProcedureDefinition() throws URISyntaxException {
+    Dsl.builder(new ControlFlowDsl(), "procedure my_procedure ping ping end").inject(output).compile().execute();
+    assertThat(output.toString(), is(""));
+  }
+
+  @Test
+  public void shouldCallProcedure() throws URISyntaxException {
+    Dsl.builder(new ControlFlowDsl(), "call my_procedure exit procedure my_procedure ping end").inject(output).compile().execute();
     assertThat(output.toString(), is("ping"));
   }
 }

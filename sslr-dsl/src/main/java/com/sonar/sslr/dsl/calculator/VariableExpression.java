@@ -5,14 +5,14 @@
  */
 package com.sonar.sslr.dsl.calculator;
 
-import com.sonar.sslr.dsl.DslMemory;
+import com.sonar.sslr.dsl.DslContext;
 
 public class VariableExpression implements AbstractExpression {
 
   private String variableName;
-  private DslMemory memory;
+  private DslContext memory;
 
-  public VariableExpression(DslMemory memory) {
+  public VariableExpression(DslContext memory) {
     this.memory = memory;
   }
 

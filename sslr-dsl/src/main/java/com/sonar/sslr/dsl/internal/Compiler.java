@@ -8,7 +8,6 @@ package com.sonar.sslr.dsl.internal;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.picocontainer.DefaultPicoContainer;
@@ -19,6 +18,7 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.dsl.DslException;
 import com.sonar.sslr.dsl.bytecode.Bytecode;
 import com.sonar.sslr.dsl.bytecode.ControlFlowInstruction;
+import com.sonar.sslr.dsl.bytecode.ProcedureDefinition;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 
@@ -38,14 +38,14 @@ public class Compiler {
   public Bytecode compile() {
     AstNode ast = parser.parse(source);
     parser = null; // to garbage the tree of matchers
+    instantiateAndInjectAdapters(ast);
     Bytecode bytecode = new Bytecode();
     feedBytecode(ast, bytecode);
-    injectAdapters(ast, ast.getChildren());
     return bytecode;
   }
 
   private void feedBytecode(AstNode astNode, Bytecode bytecode) {
-    Object adapter = getAdapterInstance(astNode);
+    Object adapter = adapterByAstNode.get(astNode);
     bytecode.startControlFlowInstruction(adapter);
     if (astNode.hasChildren()) {
       for (AstNode child : astNode.getChildren()) {
@@ -56,10 +56,11 @@ public class Compiler {
     bytecode.addInstruction(adapter);
   }
 
-  private void injectAdapters(AstNode astNode, List<AstNode> children) {
-    if (children != null) {
-      for (AstNode child : children) {
-        injectAdapters(child, child.getChildren());
+  private void instantiateAndInjectAdapters(AstNode astNode) {
+    instanciateAdapter(astNode);
+    if (astNode.getChildren() != null) {
+      for (AstNode child : astNode.getChildren()) {
+        instantiateAndInjectAdapters(child);
       }
     }
     Object adapterInstance = adapterByAstNode.get(astNode);
@@ -74,7 +75,7 @@ public class Compiler {
           return;
         }
 
-        if ( !(parentAdapterInstance instanceof ControlFlowInstruction)) {
+        if ( !(parentAdapterInstance instanceof ControlFlowInstruction) && !(parentAdapterInstance instanceof ProcedureDefinition)) {
           throw new DslException("Unable to inject '" + adapterInstance.getClass().getName() + "into "
               + parentAdapterInstance.getClass().getName());
         }
@@ -90,7 +91,7 @@ public class Compiler {
             method.invoke(object, parameter);
             return true;
           } catch (Exception e) {
-            if ( !(object instanceof ControlFlowInstruction)) {
+            if ( !(object instanceof ControlFlowInstruction) && !(object instanceof ProcedureDefinition)) {
               throw new DslException("Unable to call method '" + object.getClass().getName() + "." + methodName + "("
                   + parameter.getClass().getName() + ")", e);
             }
@@ -111,7 +112,7 @@ public class Compiler {
     return null;
   }
 
-  private Object getAdapterInstance(AstNode astNode) {
+  private void instanciateAdapter(AstNode astNode) {
     if (astNode.getType() instanceof RuleDefinition) {
       RuleDefinition rule = (RuleDefinition) astNode.getType();
       if (rule.getAdapter() != null) {
@@ -127,10 +128,10 @@ public class Compiler {
           adapterInstance = pico.getComponent(rule.getAdapter());
         }
         adapterByAstNode.put(astNode, adapterInstance);
-        return adapterInstance;
+        return;
       }
     }
-    return null;
+    return;
   }
 
   private Object newInstance(Class adapterClass, String tokenValue) {

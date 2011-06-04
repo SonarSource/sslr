@@ -5,15 +5,15 @@
  */
 package com.sonar.sslr.dsl.calculator;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-
 import java.net.URISyntaxException;
 
 import org.junit.Test;
 
-import com.sonar.sslr.dsl.DslMemory;
 import com.sonar.sslr.dsl.Dsl;
+
+import static org.junit.Assert.assertThat;
+
+import static org.hamcrest.Matchers.is;
 
 public class CalculatorDslTest {
 
@@ -59,10 +59,7 @@ public class CalculatorDslTest {
 
   @Test
   public void shouldComputeVariables() throws URISyntaxException {
-    DslMemory memory = new DslMemory();
-    memory.put("var1", 4.2);
-    memory.put("var2", 2.0);
-    Dsl.builder(new CalculatorPrinterDsl(), "(var1 * var2)").inject(output).inject(memory).compile().execute();
+    Dsl.builder(new CalculatorPrinterDsl(), "(var1 * var2)").inject(output).put("var1", 4.2).put("var2", 2.0).compile().execute();
     assertThat(output.toString(), is("8.4"));
   }
 

@@ -12,19 +12,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import com.sonar.sslr.dsl.DslException;
 
 public class Bytecode {
 
   private InstructionBlock mainBlock = new InstructionBlock();
+
   private Stack<ControlFlowInstruction> pendingControlFlowInstructions = new Stack<ControlFlowInstruction>();
   private Map<ControlFlowInstruction, InstructionBlock> controlFlowBlocks = new HashMap<ControlFlowInstruction, Bytecode.InstructionBlock>();
+
+  private Stack<String> pendingProdecureDefinitions = new Stack<String>();
+  private Map<String, InstructionBlock> procedureBlocks = new HashMap<String, Bytecode.InstructionBlock>();
 
   public void execute() {
     try {
       execute(mainBlock);
     } catch (ExitFlow exitFlow) {
     }
-
   }
 
   private void execute(InstructionBlock block) {
@@ -42,6 +46,9 @@ public class Bytecode {
         while (loopBlockAdapter.shouldExecuteLoopBlockIteration()) {
           execute(controlFlowBlocks.get(loopBlockAdapter));
         }
+      } else if (adapter instanceof ProcedureCallInstruction) {
+        ProcedureCallInstruction procedureCall = (ProcedureCallInstruction) adapter;
+        execute(procedureBlocks.get(procedureCall.getProcedureNameToCall()));
       } else if (adapter instanceof ExitFlowInstruction) {
         throw new ExitFlow();
       }
@@ -50,10 +57,12 @@ public class Bytecode {
 
   public void addInstruction(Object adapter) {
     if (adapter instanceof Instruction) {
-      if (pendingControlFlowInstructions.empty()) {
+      if (pendingControlFlowInstructions.empty() && pendingProdecureDefinitions.empty()) {
         mainBlock.add((Instruction) adapter);
-      } else {
+      } else if ( !pendingControlFlowInstructions.empty()) {
         controlFlowBlocks.get(pendingControlFlowInstructions.peek()).add((Instruction) adapter);
+      } else if ( !pendingProdecureDefinitions.empty()) {
+        procedureBlocks.get(pendingProdecureDefinitions.peek()).add((Instruction) adapter);
       }
     }
   }
@@ -63,12 +72,22 @@ public class Bytecode {
       ControlFlowInstruction controlFlowAdapter = (ControlFlowInstruction) adapter;
       pendingControlFlowInstructions.push(controlFlowAdapter);
       controlFlowBlocks.put(controlFlowAdapter, new InstructionBlock());
+    } else if (adapter instanceof ProcedureDefinition) {
+      ProcedureDefinition procedureDefinition = (ProcedureDefinition) adapter;
+      if ( !pendingControlFlowInstructions.empty()) {
+        throw new DslException("It' forbidden to define the procedure '" + procedureDefinition.getProcedureName()
+            + "' inside a control flow instruction.");
+      }
+      pendingProdecureDefinitions.push(procedureDefinition.getProcedureName());
+      procedureBlocks.put(procedureDefinition.getProcedureName(), new InstructionBlock());
     }
   }
 
-  public void endControlFlowInstruction(Object controlFlowAdapter) {
-    if (controlFlowAdapter instanceof ControlFlowInstruction) {
+  public void endControlFlowInstruction(Object adapter) {
+    if (adapter instanceof ControlFlowInstruction) {
       pendingControlFlowInstructions.pop();
+    } else if (adapter instanceof ProcedureDefinition) {
+      pendingProdecureDefinitions.pop();
     }
   }
 
