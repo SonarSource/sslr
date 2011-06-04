@@ -9,7 +9,7 @@ import java.net.URISyntaxException;
 
 import org.junit.Test;
 
-import com.sonar.sslr.dsl.DslRunner;
+import com.sonar.sslr.dsl.Dsl;
 
 public class SeleniumTest {
 
@@ -17,8 +17,8 @@ public class SeleniumTest {
 
   @Test
   public void shouldParseAllStatements() throws URISyntaxException {
-    DslRunner.builder(new SeleniumDsl(), "open 'http://www.google.com'").build();
-    DslRunner.builder(new SeleniumDsl(), "assert that title is 'Google'").build();
-    DslRunner.builder(new SeleniumDsl(), "assert that size <= 2 Ko").build();
+    Dsl.builder(new SeleniumDsl(), "open 'http://www.google.com'").compile();
+    Dsl.builder(new SeleniumDsl(), "assert that title is 'Google'").compile();
+    Dsl.builder(new SeleniumDsl(), "assert that size <= 2 Ko").compile();
   }
 }

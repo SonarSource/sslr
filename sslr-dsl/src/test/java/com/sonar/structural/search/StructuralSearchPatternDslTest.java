@@ -8,7 +8,7 @@ package com.sonar.structural.search;
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.dsl.DslRunner;
+import com.sonar.sslr.dsl.Dsl;
 import com.sonar.sslr.dsl.internal.DefaultDslLexer;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.RecognitionExceptionImpl;
@@ -44,26 +44,26 @@ public class StructuralSearchPatternDslTest {
 
   @Test
   public void shouldBuildTheStructuralSearchPattern() {
-    DslRunner.builder(new StructuralSearchPatternDsl(pattern), "this(*)").build();
+    Dsl.builder(new StructuralSearchPatternDsl(pattern), "this(*)").compile();
 
     assertThat(pattern.matcher, is(instanceOf(ThisNodeMatcher.class)));
   }
 
   @Test
   public void shouldMatchAnything() {
-    DslRunner.builder(new StructuralSearchPatternDsl(pattern), "this(*)").build();
+    Dsl.builder(new StructuralSearchPatternDsl(pattern), "this(*)").compile();
     assertThat(pattern.isMatching(astNode), is(true));
   }
 
   @Test
   public void shouldMatchRuleName() {
-    DslRunner.builder(new StructuralSearchPatternDsl(pattern), "this(world)").build();
+    Dsl.builder(new StructuralSearchPatternDsl(pattern), "this(world)").compile();
     assertThat(pattern.isMatching(astNode), is(true));
   }
 
   @Test
   public void shouldMatchTokenName() {
-    DslRunner.builder(new StructuralSearchPatternDsl(pattern), "this('Paris')").build();
+    Dsl.builder(new StructuralSearchPatternDsl(pattern), "this('Paris')").compile();
     assertThat(pattern.isMatching(astNode), is(true));
   }
 }

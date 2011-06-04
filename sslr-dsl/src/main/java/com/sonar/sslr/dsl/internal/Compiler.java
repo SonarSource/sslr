@@ -5,6 +5,7 @@
  */
 package com.sonar.sslr.dsl.internal;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,7 @@ public class Compiler {
 
   public Bytecode compile() {
     AstNode ast = parser.parse(source);
+    parser = null; // to garbage the tree of matchers
     Bytecode bytecode = new Bytecode();
     feedBytecode(ast, bytecode);
     injectAdapters(ast, ast.getChildren());
@@ -114,16 +116,10 @@ public class Compiler {
       RuleDefinition rule = (RuleDefinition) astNode.getType();
       if (rule.getAdapter() != null) {
         Object adapterInstance;
-        if (rule.getAdapter() == String.class) {
-          adapterInstance = new String(astNode.getTokenValue());
-        } else if (rule.getAdapter() == Integer.class) {
-          adapterInstance = new Integer(astNode.getTokenValue());
-        } else if (rule.getAdapter() == Double.class) {
-          adapterInstance = new Double(astNode.getTokenValue());
-        } else if (rule.getAdapter() == Boolean.class) {
-          adapterInstance = new Boolean(astNode.getTokenValue());
-        } else if ( !(rule.getAdapter() instanceof Class)) {
+        if ( !(rule.getAdapter() instanceof Class)) {
           adapterInstance = rule.getAdapter();
+        } else if (astNodeHasOnlyOneLeafChild(astNode) && isAdapterWithStringConstructor((Class) rule.getAdapter())) {
+          adapterInstance = newInstance((Class) rule.getAdapter(), astNode.getTokenValue());
         } else {
           if (pico.getComponent(rule.getAdapter()) == null) {
             pico.addComponent(rule.getAdapter());
@@ -135,6 +131,28 @@ public class Compiler {
       }
     }
     return null;
+  }
+
+  private Object newInstance(Class adapterClass, String tokenValue) {
+    try {
+      Constructor stringConstructor = adapterClass.getConstructor(String.class);
+      return stringConstructor.newInstance(tokenValue);
+    } catch (Exception e) {
+      throw new DslException("Unable to instantiate adapter '" + adapterClass.getName() + "' with String parameter", e);
+    }
+  }
+
+  private boolean astNodeHasOnlyOneLeafChild(AstNode astNode) {
+    return astNode.getChildren().size() == 1 && !astNode.getChild(0).hasChildren();
+  }
+
+  private boolean isAdapterWithStringConstructor(Class adapterClass) {
+    try {
+      adapterClass.getConstructor(String.class);
+    } catch (NoSuchMethodException e) {
+      return false;
+    }
+    return true;
   }
 
   public void inject(Object component) {

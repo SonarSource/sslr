@@ -5,6 +5,7 @@
  */
 package com.sonar.sslr.dsl.helloworld;
 
+import com.sonar.sslr.dsl.Literal;
 import com.sonar.sslr.dsl.bytecode.ExecutableInstruction;
 
 public class HelloWorld implements ExecutableInstruction {
@@ -16,8 +17,8 @@ public class HelloWorld implements ExecutableInstruction {
     this.output = output;
   }
 
-  public void addMessage(String message) {
-    this.message = message;
+  public void addMessage(Literal message) {
+    this.message = message.toString();
   }
 
   public void execute() {

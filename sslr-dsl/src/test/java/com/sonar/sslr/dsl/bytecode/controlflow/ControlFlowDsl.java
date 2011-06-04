@@ -6,7 +6,7 @@
 package com.sonar.sslr.dsl.bytecode.controlflow;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.dsl.DslTokenType.INTEGER;
+import static com.sonar.sslr.dsl.DefaultDslTokenType.INTEGER;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
 
 import com.sonar.sslr.api.Grammar;

@@ -12,7 +12,7 @@ import java.net.URISyntaxException;
 
 import org.junit.Test;
 
-import com.sonar.sslr.dsl.DslRunner;
+import com.sonar.sslr.dsl.Dsl;
 
 public class HelloWorldTest {
 
@@ -20,13 +20,13 @@ public class HelloWorldTest {
 
   @Test
   public void shouldGetHelloWorld() throws URISyntaxException {
-    DslRunner.builder(new HelloWorldDsl(), "print \"hello world!\"").inject(output).build().execute();
-    assertThat(output.toString(), is("\"hello world!\""));
+    Dsl.builder(new HelloWorldDsl(), "print 'hello world!'").inject(output).compile().execute();
+    assertThat(output.toString(), is("hello world!"));
   }
 
   @Test
   public void shouldGetHelloFreddy() throws URISyntaxException {
-    DslRunner.builder(new HelloWorldDsl(), "print \"hello freddy!\"").inject(output).build().execute();
-    assertThat(output.toString(), is("\"hello freddy!\""));
+    Dsl.builder(new HelloWorldDsl(), "print 'hello freddy!'").inject(output).compile().execute();
+    assertThat(output.toString(), is("hello freddy!"));
   }
 }

@@ -12,7 +12,7 @@ import java.net.URISyntaxException;
 
 import org.junit.Test;
 
-import com.sonar.sslr.dsl.DslRunner;
+import com.sonar.sslr.dsl.Dsl;
 
 public class StockTradingTest {
 
@@ -21,29 +21,29 @@ public class StockTradingTest {
 
   @Test
   public void shouldParseAllStatements() throws URISyntaxException {
-    DslRunner.builder(new StockTradingDsl(), "buy 500 'AAPL' at 179.30").inject(portfolio).build();
-    DslRunner.builder(new StockTradingDsl(), "sell 500 'AAPL' at 179.30 ").inject(portfolio).build();
-    DslRunner.builder(new StockTradingDsl(), "print portfolio").inject(portfolio).inject(output).build();
+    Dsl.builder(new StockTradingDsl(), "buy 500 'AAPL' at 179.30").inject(portfolio).compile();
+    Dsl.builder(new StockTradingDsl(), "sell 500 'AAPL' at 179.30 ").inject(portfolio).compile();
+    Dsl.builder(new StockTradingDsl(), "print portfolio").inject(portfolio).inject(output).compile();
   }
 
   @Test
   public void shouldBuyProduct() throws URISyntaxException {
-    DslRunner.builder(new StockTradingDsl(), "buy 500 'AAPL' at 179.30").inject(portfolio).build().execute();
+    Dsl.builder(new StockTradingDsl(), "buy 500 'AAPL' at 179.30").inject(portfolio).compile().execute();
     assertThat(portfolio.getQuantityOf("'AAPL'"), is(500));
     assertThat(portfolio.getTotalAmount(), is(500 * 179.30));
   }
 
   @Test
   public void shouldSellProduct() throws URISyntaxException {
-    DslRunner.builder(new StockTradingDsl(), "sell 500 'AAPL' at 179.30").inject(portfolio).build().execute();
+    Dsl.builder(new StockTradingDsl(), "sell 500 'AAPL' at 179.30").inject(portfolio).compile().execute();
     assertThat(portfolio.getQuantityOf("'AAPL'"), is( -500));
     assertThat(portfolio.getTotalAmount(), is( -500 * 179.30));
   }
 
   @Test
   public void shouldPrintPortfolio() throws URISyntaxException {
-    DslRunner.builder(new StockTradingDsl(), "buy 500 'AAPL' at 179.30 \n" + "sell 250 'AAPL' at 179.30\n" + "print portfolio\n")
-        .inject(portfolio).inject(output).build().execute();
+    Dsl.builder(new StockTradingDsl(), "buy 500 'AAPL' at 179.30 \n" + "sell 250 'AAPL' at 179.30\n" + "print portfolio\n")
+        .inject(portfolio).inject(output).compile().execute();
     assertThat(output.toString(), is("250 'AAPL'"));
   }
 }

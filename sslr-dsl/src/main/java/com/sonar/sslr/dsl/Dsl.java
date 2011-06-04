@@ -15,25 +15,21 @@ import com.sonar.sslr.dsl.internal.Compiler;
 import com.sonar.sslr.dsl.internal.DefaultDslLexer;
 import com.sonar.sslr.impl.Parser;
 
-public class DslRunner {
+public class Dsl {
 
   private Bytecode bytecode;
   private Compiler compiler;
 
-  private DslRunner(Builder builder) {
+  private Dsl(Builder builder) {
     compiler = new Compiler(builder.parser, builder.source);
     for (Object component : builder.componentsToInject) {
       compiler.inject(component);
     }
-    compile();
+    bytecode = compiler.compile();
   }
 
   public static Builder builder(Grammar dsl, String source) {
     return new Builder(dsl, source);
-  }
-
-  private void compile() {
-    bytecode = compiler.compile();
   }
 
   public void execute() {
@@ -63,8 +59,8 @@ public class DslRunner {
       return this;
     }
 
-    public DslRunner build() {
-      return new DslRunner(this);
+    public Dsl compile() {
+      return new Dsl(this);
     }
 
   }

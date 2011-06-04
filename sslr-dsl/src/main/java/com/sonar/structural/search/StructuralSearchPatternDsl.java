@@ -7,10 +7,11 @@ package com.sonar.structural.search;
 
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
+import com.sonar.sslr.dsl.Literal;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.dsl.DslTokenType.LITERAL;
-import static com.sonar.sslr.dsl.DslTokenType.WORD;
+import static com.sonar.sslr.dsl.DefaultDslTokenType.LITERAL;
+import static com.sonar.sslr.dsl.DefaultDslTokenType.WORD;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
@@ -36,20 +37,28 @@ public class StructuralSearchPatternDsl extends Grammar {
   public Rule ruleValue;
 
   public StructuralSearchPatternDsl(StructuralSearchPattern structuralSearchPattern) {
-    pattern.is(or(sequenceMatcher, parentMatcher), EOF).plug(structuralSearchPattern);
+    pattern.is(or(sequenceMatcher, parentMatcher), EOF);
     parentMatcher.isOr(directParentMatcher, indirectParentMatcher);
-    directParentMatcher.is(ruleValue, "(", or(sequenceMatcher, parentMatcher), ")").plug(DirectParentNodeMatcher.class);
-    indirectParentMatcher.is(ruleValue, "(", "(", or(sequenceMatcher, parentMatcher), ")", ")").plug(IndirectParentNodeMatcher.class);
+    directParentMatcher.is(ruleValue, "(", or(sequenceMatcher, parentMatcher), ")");
+    indirectParentMatcher.is(ruleValue, "(", "(", or(sequenceMatcher, parentMatcher), ")", ")");
 
     sequenceMatcher.is(o2n(not("this"), or(nodeValue, tokenValue)), thisNodeMatcher, o2n(or(nodeValue, tokenValue)));
-    thisNodeMatcher.is("this", "(", or("*", tokenOrRuleValueList), ")", opt("(", childMatcher, ")")).plug(ThisNodeMatcher.class);
+    thisNodeMatcher.is("this", "(", or("*", tokenOrRuleValueList), ")", opt("(", childMatcher, ")"));
 
     childMatcher.isOr(directChildMatcher, indirectChildMatcher);
-    directChildMatcher.is(ruleValue, opt("(", or(childMatcher), ")")).plug(DirectChildNodeMatcher.class);
-    indirectChildMatcher.is("(", ruleValue, opt("(", or(childMatcher), ")"), ")").plug(IndirectChildNodeMatcher.class);
+    directChildMatcher.is(ruleValue, opt("(", or(childMatcher), ")"));
+    indirectChildMatcher.is("(", ruleValue, opt("(", or(childMatcher), ")"), ")");
 
     tokenOrRuleValueList.is(one2n(or(tokenValue, nodeValue), opt(",")));
-    tokenValue.is(LITERAL).plug(String.class);
+
+    pattern.plug(structuralSearchPattern);
+    directParentMatcher.plug(DirectParentNodeMatcher.class);
+    indirectParentMatcher.plug(IndirectParentNodeMatcher.class);
+    thisNodeMatcher.plug(ThisNodeMatcher.class);
+    directChildMatcher.plug(DirectChildNodeMatcher.class);
+    indirectChildMatcher.plug(IndirectChildNodeMatcher.class);
+
+    tokenValue.is(LITERAL).plug(Literal.class);
     nodeValue.is(WORD).plug(String.class);
     ruleValue.is(WORD).plug(String.class);
   }

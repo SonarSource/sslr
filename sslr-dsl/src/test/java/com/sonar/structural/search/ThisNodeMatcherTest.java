@@ -8,6 +8,7 @@ package com.sonar.structural.search;
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.dsl.Literal;
 
 import static org.junit.Assert.assertThat;
 
@@ -35,7 +36,7 @@ public class ThisNodeMatcherTest {
 
   @Test
   public void shouldMatchTokenValue() {
-    matcher.addTokenValue("\"Paris\"");
+    matcher.addTokenValue(new Literal("'Paris'"));
     assertThat(matcher.match(astNode), is(astNode));
   }
 

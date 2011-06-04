@@ -6,9 +6,9 @@
 package com.sonar.sslr.dsl.trading;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.dsl.DslTokenType.DOUBLE;
-import static com.sonar.sslr.dsl.DslTokenType.INTEGER;
-import static com.sonar.sslr.dsl.DslTokenType.LITERAL;
+import static com.sonar.sslr.dsl.DefaultDslTokenType.DOUBLE;
+import static com.sonar.sslr.dsl.DefaultDslTokenType.INTEGER;
+import static com.sonar.sslr.dsl.DefaultDslTokenType.LITERAL;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
 
 import com.sonar.sslr.api.Grammar;

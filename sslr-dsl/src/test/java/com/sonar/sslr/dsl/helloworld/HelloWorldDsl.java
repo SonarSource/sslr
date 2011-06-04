@@ -5,27 +5,25 @@
  */
 package com.sonar.sslr.dsl.helloworld;
 
-import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.dsl.DslTokenType.LITERAL;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
-
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
+import com.sonar.sslr.dsl.Literal;
+
+import static com.sonar.sslr.api.GenericTokenType.EOF;
+import static com.sonar.sslr.dsl.DefaultDslTokenType.LITERAL;
 
 public class HelloWorldDsl extends Grammar {
 
-  public Rule translationUnit;
-  public Rule command;
+  public Rule helloWorld;
   public Rule message;
 
   public HelloWorldDsl() {
-    translationUnit.is(o2n(command), EOF);
-    command.is("print", message).plug(HelloWorld.class);
-    message.is(LITERAL).plug(String.class);
+    helloWorld.is("print", message, EOF).plug(HelloWorld.class);
+    message.is(LITERAL).plug(Literal.class);
   }
 
   @Override
   public Rule getRootRule() {
-    return translationUnit;
+    return helloWorld;
   }
 }

@@ -5,9 +5,9 @@
  */
 package com.sonar.sslr.dsl.calculator;
 
-import static com.sonar.sslr.dsl.DslTokenType.DOUBLE;
-import static com.sonar.sslr.dsl.DslTokenType.INTEGER;
-import static com.sonar.sslr.dsl.DslTokenType.WORD;
+import static com.sonar.sslr.dsl.DefaultDslTokenType.DOUBLE;
+import static com.sonar.sslr.dsl.DefaultDslTokenType.INTEGER;
+import static com.sonar.sslr.dsl.DefaultDslTokenType.WORD;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
 

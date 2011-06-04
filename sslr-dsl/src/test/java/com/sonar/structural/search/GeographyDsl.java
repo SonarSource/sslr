@@ -5,7 +5,7 @@
  */
 package com.sonar.structural.search;
 
-import static com.sonar.sslr.dsl.DslTokenType.WORD;
+import static com.sonar.sslr.dsl.DefaultDslTokenType.WORD;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
 
 import com.sonar.sslr.api.Grammar;

@@ -9,14 +9,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.dsl.Literal;
 
 public class ThisNodeMatcher extends CompositeMatcher {
 
   private Set<String> tokenValues = new HashSet<String>();
   private Set<String> nodeValues = new HashSet<String>();
 
-  public void addTokenValue(String value) {
-    tokenValues.add(value.substring(1, value.length() - 1));
+  public void addTokenValue(Literal value) {
+    tokenValues.add(value.toString());
   }
 
   public void addNodeValue(String value) {
