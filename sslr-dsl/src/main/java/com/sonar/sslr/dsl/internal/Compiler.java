@@ -63,12 +63,18 @@ public class Compiler {
         instantiateAndInjectAdapters(child);
       }
     }
-    Object adapterInstance = adapterByAstNode.get(astNode);
-    String ruleName = astNode.getName();
 
+    Object adapterInstance = adapterByAstNode.get(astNode);
     if (adapterInstance != null) {
-      Object parentAdapterInstance = findNearestParentAdapter(astNode);
-      if (parentAdapterInstance != null) {
+      injectAdapterIntoNearestParentWithAdapter(astNode, adapterInstance);
+    }
+  }
+
+  private void injectAdapterIntoNearestParentWithAdapter(AstNode astNode, Object adapterInstance) {
+    if (astNode.getParent() != null) {
+      if (adapterByAstNode.containsKey(astNode.getParent())) {
+        String ruleName = astNode.getName();
+        Object parentAdapterInstance = adapterByAstNode.get(astNode.getParent());
         String[] methodNames = { "add" + Character.toUpperCase(ruleName.charAt(0)) + ruleName.substring(1),
             "set" + Character.toUpperCase(ruleName.charAt(0)) + ruleName.substring(1), "add", "set" };
         if (callMethod(parentAdapterInstance, adapterInstance, methodNames)) {
@@ -80,6 +86,7 @@ public class Compiler {
               + parentAdapterInstance.getClass().getName());
         }
       }
+      injectAdapterIntoNearestParentWithAdapter(astNode.getParent(), adapterInstance);
     }
   }
 
@@ -100,16 +107,6 @@ public class Compiler {
       }
     }
     return false;
-  }
-
-  private Object findNearestParentAdapter(AstNode astNode) {
-    if (astNode.getParent() != null) {
-      if (adapterByAstNode.containsKey(astNode.getParent())) {
-        return adapterByAstNode.get(astNode.getParent());
-      }
-      return findNearestParentAdapter(astNode.getParent());
-    }
-    return null;
   }
 
   private void instanciateAdapter(AstNode astNode) {

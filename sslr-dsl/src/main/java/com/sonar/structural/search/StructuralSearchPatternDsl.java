@@ -30,7 +30,6 @@ public class StructuralSearchPatternDsl extends Grammar {
   public Rule directChildMatcher;
   public Rule indirectChildMatcher;
   public Rule sequenceMatcher;
-  public Rule tokenOrRuleValueList;
   public Rule ruleValueList;
   public Rule tokenValue;
   public Rule nodeValue;
@@ -43,13 +42,11 @@ public class StructuralSearchPatternDsl extends Grammar {
     indirectParentMatcher.is(ruleValue, "(", "(", or(sequenceMatcher, parentMatcher), ")", ")");
 
     sequenceMatcher.is(o2n(not("this"), or(nodeValue, tokenValue)), thisNodeMatcher, o2n(or(nodeValue, tokenValue)));
-    thisNodeMatcher.is("this", "(", or("*", tokenOrRuleValueList), ")", opt("(", childMatcher, ")"));
+    thisNodeMatcher.is("this", "(", or("*", one2n(or(tokenValue, nodeValue), opt(","))), ")", opt("(", childMatcher, ")"));
 
     childMatcher.isOr(directChildMatcher, indirectChildMatcher);
     directChildMatcher.is(ruleValue, opt("(", or(childMatcher), ")"));
     indirectChildMatcher.is("(", ruleValue, opt("(", or(childMatcher), ")"), ")");
-
-    tokenOrRuleValueList.is(one2n(or(tokenValue, nodeValue), opt(",")));
 
     pattern.plug(structuralSearchPattern);
     directParentMatcher.plug(DirectParentNodeMatcher.class);

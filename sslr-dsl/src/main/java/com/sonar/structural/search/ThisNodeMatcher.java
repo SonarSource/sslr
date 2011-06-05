@@ -16,12 +16,12 @@ public class ThisNodeMatcher extends CompositeMatcher {
   private Set<String> tokenValues = new HashSet<String>();
   private Set<String> nodeValues = new HashSet<String>();
 
-  public void addTokenValue(Literal value) {
-    tokenValues.add(value.toString());
+  public void addTokenValue(Literal tokenValue) {
+    tokenValues.add(tokenValue.toString());
   }
 
-  public void addNodeValue(String value) {
-    nodeValues.add(value);
+  public void addNodeValue(String nodeValue) {
+    nodeValues.add(nodeValue);
   }
 
   @Override
