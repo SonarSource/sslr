@@ -15,7 +15,7 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 
-public class ComplexityVisitorTest {
+public class CounterVisitorTest {
 
   private Rule ifStmt = RuleDefinition.newRuleBuilder("ifStmt");
   private SourceProject project = new SourceProject("myProject");
@@ -25,7 +25,7 @@ public class ComplexityVisitorTest {
   public void shouldIncrementTheComplexityWhenVisitingANode() {
     assertThat(project.getInt(MyMetrics.COMPLEXITY), is(0));
 
-    ComplexityVisitor visitor = ComplexityVisitor.builder().setContext(context).setMetricDef(MyMetrics.COMPLEXITY).subscribeTo(ifStmt)
+    CounterVisitor visitor = CounterVisitor.builder().setContext(context).setMetricDef(MyMetrics.COMPLEXITY).subscribeTo(ifStmt)
         .build();
 
     visitor.visitNode(null);

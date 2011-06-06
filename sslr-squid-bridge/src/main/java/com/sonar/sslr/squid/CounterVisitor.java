@@ -14,7 +14,7 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.Grammar;
 
-public class ComplexityVisitor extends SquidAstVisitor<Grammar> {
+public class CounterVisitor extends SquidAstVisitor<Grammar> {
 
   private MetricDef metric;
   private LinkedList<AstNodeType> astNodeTypes = new LinkedList<AstNodeType>();
@@ -63,13 +63,13 @@ public class ComplexityVisitor extends SquidAstVisitor<Grammar> {
       return this;
     }
 
-    public ComplexityVisitor build() {
-      return new ComplexityVisitor(context, this);
+    public CounterVisitor build() {
+      return new CounterVisitor(context, this);
     }
 
   }
 
-  private ComplexityVisitor(SquidAstVisitorContext<? extends Grammar> context, Builder builder) {
+  private CounterVisitor(SquidAstVisitorContext<? extends Grammar> context, Builder builder) {
     this.context = context;
     this.metric = builder.metric;
     this.astNodeTypes = builder.astNodeTypes;
