@@ -5,28 +5,30 @@
  */
 package com.sonar.sslr.dsl.helloworld;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-
 import java.net.URISyntaxException;
 
 import org.junit.Test;
 
 import com.sonar.sslr.dsl.Dsl;
 
+import static org.junit.Assert.assertThat;
+
+import static org.hamcrest.Matchers.is;
+
 public class HelloWorldTest {
 
   StringBuilder output = new StringBuilder();
+  Dsl.Builder builder = Dsl.builder().setGrammar(new HelloWorldDsl()).inject(output);
 
   @Test
   public void shouldGetHelloWorld() throws URISyntaxException {
-    Dsl.builder(new HelloWorldDsl(), "print 'hello world!'").inject(output).compile().execute();
+    builder.withSource("print 'hello world!'").compile().execute();
     assertThat(output.toString(), is("hello world!"));
   }
 
   @Test
   public void shouldGetHelloFreddy() throws URISyntaxException {
-    Dsl.builder(new HelloWorldDsl(), "print 'hello freddy!'").inject(output).compile().execute();
+    builder.withSource("print 'hello freddy!'").compile().execute();
     assertThat(output.toString(), is("hello freddy!"));
   }
 }

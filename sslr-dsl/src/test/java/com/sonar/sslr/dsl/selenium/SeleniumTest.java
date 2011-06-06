@@ -14,11 +14,12 @@ import com.sonar.sslr.dsl.Dsl;
 public class SeleniumTest {
 
   Selenium selenium = new Selenium();
+  Dsl.Builder builder = Dsl.builder().setGrammar(new SeleniumDsl());
 
   @Test
   public void shouldParseAllStatements() throws URISyntaxException {
-    Dsl.builder(new SeleniumDsl(), "open 'http://www.google.com'").compile();
-    Dsl.builder(new SeleniumDsl(), "assert that title is 'Google'").compile();
-    Dsl.builder(new SeleniumDsl(), "assert that size <= 2 Ko").compile();
+    builder.withSource("open 'http://www.google.com'").compile();
+    builder.withSource("assert that title is 'Google'").compile();
+    builder.withSource("assert that size <= 2 Ko").compile();
   }
 }

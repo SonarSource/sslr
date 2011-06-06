@@ -9,9 +9,8 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.dsl.Literal;
 
-import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.LITERAL;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.WORD;
+import static com.sonar.sslr.dsl.DslTokenType.LITERAL;
+import static com.sonar.sslr.dsl.DslTokenType.WORD;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
@@ -36,7 +35,7 @@ public class StructuralSearchPatternDsl extends Grammar {
   public Rule ruleValue;
 
   public StructuralSearchPatternDsl(StructuralSearchPattern structuralSearchPattern) {
-    pattern.is(or(sequenceMatcher, parentMatcher), EOF);
+    pattern.is(or(sequenceMatcher, parentMatcher));
     parentMatcher.isOr(directParentMatcher, indirectParentMatcher);
     directParentMatcher.is(ruleValue, "(", or(sequenceMatcher, parentMatcher), ")");
     indirectParentMatcher.is(ruleValue, "(", "(", or(sequenceMatcher, parentMatcher), ")", ")");

@@ -5,11 +5,10 @@
  */
 package com.sonar.sslr.dsl.condition;
 
-import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
-
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
+
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
 
 public class ConditionPrinterDsl extends Grammar {
 
@@ -18,7 +17,7 @@ public class ConditionPrinterDsl extends Grammar {
   public Rule condition = new ConditionDsl().condition;
 
   public ConditionPrinterDsl() {
-    translationUnit.is(o2n(command), EOF);
+    translationUnit.is(o2n(command));
     command.is(condition).plug(ConditionPrinter.class);
   }
 

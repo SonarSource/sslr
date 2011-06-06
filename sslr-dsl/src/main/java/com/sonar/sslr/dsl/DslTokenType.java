@@ -8,7 +8,7 @@ package com.sonar.sslr.dsl;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.TokenType;
 
-public enum DefaultDslTokenType implements TokenType {
+public enum DslTokenType implements TokenType {
 
   WORD, LITERAL, INTEGER, PUNCTUATOR, DOUBLE;
 

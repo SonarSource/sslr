@@ -11,10 +11,6 @@ import static org.junit.Assert.assertThat;
 import org.apache.xpath.operations.String;
 import org.junit.Test;
 
-import com.sonar.sslr.dsl.bytecode.Bytecode;
-import com.sonar.sslr.dsl.bytecode.ConditionalBlockInstruction;
-import com.sonar.sslr.dsl.bytecode.ExecutableInstruction;
-import com.sonar.sslr.dsl.bytecode.LoopBlockInstruction;
 
 public class BytecodeTest {
 

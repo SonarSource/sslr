@@ -5,36 +5,26 @@
  */
 package com.sonar.sslr.dsl.internal;
 
-import static com.sonar.sslr.dsl.DefaultDslTokenType.DOUBLE;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.INTEGER;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.LITERAL;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.PUNCTUATOR;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.WORD;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.sonar.channel.Channel;
-import org.sonar.channel.ChannelDispatcher;
-
-import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.impl.Lexer;
 import com.sonar.sslr.impl.channel.BlackHoleChannel;
 import com.sonar.sslr.impl.channel.RegexpChannel;
 
-public class DefaultDslLexer extends Lexer {
+import static com.sonar.sslr.dsl.DslTokenType.DOUBLE;
+import static com.sonar.sslr.dsl.DslTokenType.INTEGER;
+import static com.sonar.sslr.dsl.DslTokenType.LITERAL;
+import static com.sonar.sslr.dsl.DslTokenType.PUNCTUATOR;
+import static com.sonar.sslr.dsl.DslTokenType.WORD;
 
-  @Override
-  protected ChannelDispatcher<LexerOutput> getChannelDispatcher() {
-    List<Channel> channels = new ArrayList<Channel>();
-    channels.add(new RegexpChannel(WORD, "\\p{Alpha}[\\p{Alpha}\\d_]+"));
-    channels.add(new RegexpChannel(DOUBLE, "\\d++\\.\\d++"));
-    channels.add(new RegexpChannel(INTEGER, "\\d++"));
-    channels.add(new RegexpChannel(LITERAL, "\".*?\""));
-    channels.add(new RegexpChannel(LITERAL, "'.*?'"));
-    channels.add(new BlackHoleChannel("[\\s]"));
-    channels.add(new RegexpChannel(PUNCTUATOR, "."));
-    return new ChannelDispatcher<LexerOutput>(channels, true);
+public class DefaultDslLexer {
+
+  private DefaultDslLexer() {
+
   }
 
+  public static Lexer create() {
+    return Lexer.builder().optFailIfNoChannelToConsumeOneCharacter().addChannel(new RegexpChannel(WORD, "\\p{Alpha}[\\p{Alpha}\\d_]+"))
+        .addChannel(new RegexpChannel(DOUBLE, "\\d++\\.\\d++")).addChannel(new RegexpChannel(INTEGER, "\\d++"))
+        .addChannel(new RegexpChannel(LITERAL, "\".*?\"")).addChannel(new RegexpChannel(LITERAL, "'.*?'"))
+        .addChannel(new BlackHoleChannel("[\\s]")).addChannel(new RegexpChannel(PUNCTUATOR, ".")).build();
+  }
 }

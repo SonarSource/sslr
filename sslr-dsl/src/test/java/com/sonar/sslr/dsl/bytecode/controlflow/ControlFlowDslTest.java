@@ -18,46 +18,47 @@ import static org.hamcrest.Matchers.is;
 public class ControlFlowDslTest {
 
   StringBuilder output = new StringBuilder();
+  Dsl.Builder builder = Dsl.builder().setGrammar(new ControlFlowDsl()).inject(output);
 
   @Test
   public void shouldExecuteConditionBlock() throws URISyntaxException {
-    Dsl.builder(new ControlFlowDsl(), "if true ping ping endif").inject(output).compile().execute();
+    builder.withSource("if true ping ping endif").compile().execute();
     assertThat(output.toString(), is("pingping"));
   }
 
   @Test
   public void shouldNotExecuteConditionBlock() throws URISyntaxException {
-    Dsl.builder(new ControlFlowDsl(), "if false ping ping ping endif").inject(output).compile().execute();
+    builder.withSource("if false ping ping ping endif").compile().execute();
     assertThat(output.toString(), is(""));
   }
 
   @Test
   public void shouldExecuteLoopBlock() throws URISyntaxException {
-    Dsl.builder(new ControlFlowDsl(), "do 2 times ping enddo").inject(output).compile().execute();
+    builder.withSource("do 2 times ping enddo").compile().execute();
     assertThat(output.toString(), is("pingping"));
   }
 
   @Test
   public void shouldNotExecuteLoopBlock() throws URISyntaxException {
-    Dsl.builder(new ControlFlowDsl(), "do 0 times ping ping ping enddo").inject(output).compile().execute();
+    builder.withSource("do 0 times ping ping ping enddo").compile().execute();
     assertThat(output.toString(), is(""));
   }
 
   @Test
   public void shouldExitFlow() throws URISyntaxException {
-    Dsl.builder(new ControlFlowDsl(), "ping exit ping").inject(output).compile().execute();
+    builder.withSource("ping exit ping").compile().execute();
     assertThat(output.toString(), is("ping"));
   }
 
   @Test
   public void shouldNotExecuteProcedureDefinition() throws URISyntaxException {
-    Dsl.builder(new ControlFlowDsl(), "procedure my_procedure ping ping end").inject(output).compile().execute();
+    builder.withSource("procedure my_procedure ping ping end").compile().execute();
     assertThat(output.toString(), is(""));
   }
 
   @Test
   public void shouldCallProcedure() throws URISyntaxException {
-    Dsl.builder(new ControlFlowDsl(), "call my_procedure exit procedure my_procedure ping end").inject(output).compile().execute();
+    builder.withSource("call my_procedure exit procedure my_procedure ping end").compile().execute();
     assertThat(output.toString(), is("ping"));
   }
 }

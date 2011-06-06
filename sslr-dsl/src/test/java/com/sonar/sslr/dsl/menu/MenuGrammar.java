@@ -9,8 +9,7 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.dsl.Literal;
 
-import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.LITERAL;
+import static com.sonar.sslr.dsl.DslTokenType.LITERAL;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
 
 public class MenuGrammar extends Grammar {
@@ -25,7 +24,7 @@ public class MenuGrammar extends Grammar {
   public Rule orderMenu;
 
   public MenuGrammar(Menu menuAdapter) {
-    compilationUnit.is(menu, opt(printMenu), opt(orderMenu), EOF);
+    compilationUnit.is(menu, opt(printMenu), opt(orderMenu));
     menu.is("menu", "is", opt(appetizer), mainCourse, dessert).plug(menuAdapter);
     appetizer.is("appetizer", choice);
     mainCourse.is("main", "course", choice);

@@ -15,23 +15,24 @@ import static org.hamcrest.Matchers.is;
 
 public class MenuDslTest {
 
+  Menu menu = new Menu();
+  Dsl.Builder builder = Dsl.builder().setGrammar(new MenuGrammar(menu));
+
   @Test
   public void shouldParse() {
-    Dsl.builder(new MenuGrammar(new Menu()), "menu is main course  'King Prawns' dessert 'Ice Cream' ").compile();
+    builder.withSource("menu is main course  'King Prawns' dessert 'Ice Cream' ").compile();
   }
 
   @Test
   public void shouldFeedMenuObject() {
-    Menu menu = new Menu();
-    Dsl.builder(new MenuGrammar(menu), "menu is main course  'King Prawns' dessert 'Ice Cream' ").compile();
+    builder.withSource("menu is main course  'King Prawns' dessert 'Ice Cream' ").compile();
     assertThat(menu.mainCourse, is("King Prawns"));
     assertThat(menu.dessert, is("Ice Cream"));
   }
 
   @Test
   public void shouldExecuteDsl() {
-    Menu menu = new Menu();
-    Dsl.builder(new MenuGrammar(menu), "menu is main course  'King Prawns' dessert 'Ice Cream' print menu").compile().execute();
+    builder.withSource("menu is main course  'King Prawns' dessert 'Ice Cream' print menu").compile().execute();
   }
 
 }

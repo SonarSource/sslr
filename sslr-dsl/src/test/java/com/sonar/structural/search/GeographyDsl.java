@@ -5,25 +5,26 @@
  */
 package com.sonar.structural.search;
 
-import static com.sonar.sslr.dsl.DefaultDslTokenType.WORD;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
-
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.dsl.internal.DefaultDslLexer;
+import com.sonar.sslr.impl.Lexer;
 import com.sonar.sslr.impl.Parser;
-import static com.sonar.sslr.api.GenericTokenType.*;
+import com.sonar.sslr.impl.channel.RegexpChannel;
+
+import static com.sonar.sslr.dsl.DslTokenType.WORD;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
 
 public class GeographyDsl extends Grammar {
 
-  public static final Parser<GeographyDsl> geographyParser = Parser.builder(new GeographyDsl()).optSetLexer(new DefaultDslLexer()).build();
+  public static final Parser<GeographyDsl> geographyParser = Parser.builder(new GeographyDsl())
+      .optSetLexer(Lexer.builder().addChannel(new RegexpChannel(WORD, "\\p{Alpha}[\\p{Alpha}\\d_]+")).build()).build();
 
   public Rule world;
   public Rule nation;
   public Rule capital;
 
   public GeographyDsl() {
-    world.is(one2n(nation), EOF);
+    world.is(one2n(nation));
     nation.is(capital);
     capital.is(WORD);
   }

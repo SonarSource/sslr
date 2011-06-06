@@ -5,6 +5,7 @@
  */
 package com.sonar.sslr.dsl.internal;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -26,17 +27,35 @@ public class Compiler {
 
   private Parser<Grammar> parser;
   private String source;
+  private File sourceFile;
 
   private MutablePicoContainer pico = new DefaultPicoContainer();
   private Map<AstNode, Object> adapterByAstNode = new HashMap<AstNode, Object>();
 
-  public Compiler(Parser<Grammar> parser, String source) {
-    this.parser = parser;
-    this.source = source;
+  private Compiler() {
+  }
+
+  public static Compiler create(Parser<Grammar> parser, String source) {
+    Compiler compiler = new Compiler();
+    compiler.parser = parser;
+    compiler.source = source;
+    return compiler;
+  }
+
+  public static Compiler create(Parser<Grammar> parser, File sourceFile) {
+    Compiler compiler = new Compiler();
+    compiler.parser = parser;
+    compiler.sourceFile = sourceFile;
+    return compiler;
   }
 
   public Bytecode compile() {
-    AstNode ast = parser.parse(source);
+    AstNode ast = null;
+    if (source != null) {
+      ast = parser.parse(source);
+    } else {
+      ast = parser.parse(sourceFile);
+    }
     parser = null; // to garbage the tree of matchers
     instantiateAndInjectAdapters(ast);
     Bytecode bytecode = new Bytecode();

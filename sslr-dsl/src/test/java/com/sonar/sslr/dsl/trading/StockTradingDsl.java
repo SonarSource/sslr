@@ -5,14 +5,13 @@
  */
 package com.sonar.sslr.dsl.trading;
 
-import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.DOUBLE;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.INTEGER;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.LITERAL;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
-
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
+
+import static com.sonar.sslr.dsl.DslTokenType.DOUBLE;
+import static com.sonar.sslr.dsl.DslTokenType.INTEGER;
+import static com.sonar.sslr.dsl.DslTokenType.LITERAL;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
 
 public class StockTradingDsl extends Grammar {
 
@@ -26,7 +25,7 @@ public class StockTradingDsl extends Grammar {
   public Rule price;
 
   public StockTradingDsl() {
-    translationUnit.is(o2n(command), EOF);
+    translationUnit.is(o2n(command));
     command.isOr(buy, sell, printPortfolio);
 
     buy.is("buy", quantity, product, "at", price).plug(Buy.class);

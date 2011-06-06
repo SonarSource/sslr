@@ -10,9 +10,8 @@ import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.dsl.bytecode.ExitFlowInstruction;
 import com.sonar.sslr.dsl.condition.ConditionDsl;
 
-import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.INTEGER;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.WORD;
+import static com.sonar.sslr.dsl.DslTokenType.INTEGER;
+import static com.sonar.sslr.dsl.DslTokenType.WORD;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
 
 public class ControlFlowDsl extends Grammar {
@@ -31,7 +30,7 @@ public class ControlFlowDsl extends Grammar {
   public Rule condition = new ConditionDsl().condition;
 
   public ControlFlowDsl() {
-    translationUnit.is(o2n(command), o2n(procedureDefinition), EOF);
+    translationUnit.is(o2n(command), o2n(procedureDefinition));
     command.isOr(ifBlock, ping, loop, procedureCall, exit);
     ifBlock.is("if", condition, o2n(command), "endif").plug(If.class);
     loop.is("do", loopNumber, "times", o2n(command), "enddo").plug(Loop.class);

@@ -9,8 +9,7 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.dsl.Literal;
 
-import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.LITERAL;
+import static com.sonar.sslr.dsl.DslTokenType.LITERAL;
 
 public class HelloWorldDsl extends Grammar {
 
@@ -18,7 +17,7 @@ public class HelloWorldDsl extends Grammar {
   public Rule message;
 
   public HelloWorldDsl() {
-    helloWorld.is("print", message, EOF).plug(HelloWorld.class);
+    helloWorld.is("print", message).plug(HelloWorld.class);
     message.is(LITERAL).plug(Literal.class);
   }
 

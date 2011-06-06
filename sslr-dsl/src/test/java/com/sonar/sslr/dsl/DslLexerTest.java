@@ -5,20 +5,21 @@
  */
 package com.sonar.sslr.dsl;
 
-import static com.sonar.sslr.dsl.DefaultDslTokenType.INTEGER;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.PUNCTUATOR;
-import static com.sonar.sslr.dsl.DefaultDslTokenType.WORD;
-import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Test;
 
 import com.sonar.sslr.dsl.internal.DefaultDslLexer;
+import com.sonar.sslr.impl.Lexer;
 
+import static com.sonar.sslr.dsl.DslTokenType.INTEGER;
+import static com.sonar.sslr.dsl.DslTokenType.PUNCTUATOR;
+import static com.sonar.sslr.dsl.DslTokenType.WORD;
+import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
+
+import static org.junit.Assert.assertThat;
 
 public class DslLexerTest {
 
-  DefaultDslLexer lexer = new DefaultDslLexer();
+  Lexer lexer = DefaultDslLexer.create();
 
   @Test
   public void shouldLexIdentifier() {
