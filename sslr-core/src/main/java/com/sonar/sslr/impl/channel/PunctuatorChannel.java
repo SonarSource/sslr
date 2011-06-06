@@ -20,12 +20,12 @@ import com.sonar.sslr.api.TokenType;
 
 public class PunctuatorChannel extends Channel<LexerOutput> {
 
-  public Multimap<Character, TokenType> specialChars;
+  public final Multimap<Character, TokenType> specialChars;
 
-  public PunctuatorChannel(TokenType... characters) {
+  public PunctuatorChannel(TokenType... punctuators) {
     specialChars = HashMultimap.create();
-    for (TokenType specialChar : characters) {
-      specialChars.put(Character.valueOf(specialChar.getValue().charAt(0)), specialChar);
+    for (TokenType punctuator : punctuators) {
+      specialChars.put(Character.valueOf(punctuator.getValue().charAt(0)), punctuator);
     }
   }
 
@@ -33,11 +33,23 @@ public class PunctuatorChannel extends Channel<LexerOutput> {
   public boolean consume(CodeReader code, LexerOutput output) {
     Character nextChar = Character.valueOf((char) code.peek());
     if (specialChars.containsKey(nextChar)) {
+    	
+    	int tokenLine = code.getCursor().getLine();
+    	int tokenColumn = code.getCursor().getColumn();
+    	
+    	/* The first characters matches at least one punctuator, go ahead with the matcher */
       EndSpecialCharsMatcher matcher = new EndSpecialCharsMatcher(specialChars.get(nextChar));
-      code.popTo(matcher, new EmptyAppendable());
-      String value = matcher.getSpecialchar().getValue();
-      output.addTokenAndProcess(matcher.getSpecialchar(), value, code.getPreviousCursor().getLine(), code.getPreviousCursor().getColumn());
-      return true;
+      code.peekTo(matcher, EmptyAppendable.getInstance());
+      if (matcher.getSpecialchar() != null) {
+      	/* There was a complete match, consume the characters */
+      	for (int i = 0; i < matcher.getSpecialchar().getValue().length(); i++) {
+      		code.pop();
+      	}
+      	
+        String value = matcher.getSpecialchar().getValue();
+        output.addTokenAndProcess(matcher.getSpecialchar(), value, tokenLine, tokenColumn);
+        return true;
+      }
     }
     return false;
   }
@@ -54,15 +66,17 @@ public class PunctuatorChannel extends Channel<LexerOutput> {
     }
 
     public boolean match(int nextChar) {
-      index++;
       for (TokenType tokenType : matchtingChars) {
-        if (tokenType.getValue().length() < index + 1) {
+        if (tokenType.getValue().length() == index) {
           specialChar = tokenType;
           specialCharsToRemove.add(tokenType);
         } else if (tokenType.getValue().charAt(index) != (char) nextChar) {
           specialCharsToRemove.add(tokenType);
         }
       }
+      
+      index++;
+      
       matchtingChars.removeAll(specialCharsToRemove);
       specialCharsToRemove.clear();
       if (matchtingChars.size() == 0) {
@@ -79,6 +93,16 @@ public class PunctuatorChannel extends Channel<LexerOutput> {
 
   private static class EmptyAppendable implements Appendable {
 
+  	/* Singleton */
+  	private static final EmptyAppendable instance = new EmptyAppendable();
+  	
+  	private EmptyAppendable() { }
+  	
+    public static EmptyAppendable getInstance() {
+    	return EmptyAppendable.instance;
+    }
+  	
+    /* Dummy implementation */
     public Appendable append(CharSequence csq) throws IOException {
       return this;
     }
@@ -92,4 +116,5 @@ public class PunctuatorChannel extends Channel<LexerOutput> {
     }
 
   }
+  
 }

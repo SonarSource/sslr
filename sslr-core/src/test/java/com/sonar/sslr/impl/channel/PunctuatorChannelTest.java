@@ -38,6 +38,8 @@ public class PunctuatorChannelTest {
 
     assertThat(channel, consume("*=,", output));
     assertThat(output, hasToken("*=", MyPunctuatorAndOperator.MUL_ASSIGN));
+    
+    assertFalse(channel.consume(new CodeReader("!"), output));
   }
 
   @Test
@@ -46,7 +48,7 @@ public class PunctuatorChannelTest {
   }
 
   private enum MyPunctuatorAndOperator implements TokenType {
-    STAR("*"), COLON(","), EQUAL("="), EQUAL_OP("=="), MUL_ASSIGN("*=");
+    STAR("*"), COLON(","), EQUAL("="), EQUAL_OP("=="), MUL_ASSIGN("*="), NOT_EQUAL("!=");
 
     private final String value;
 
