@@ -8,7 +8,7 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.RecognitionExceptionImpl;
+import com.sonar.sslr.impl.BacktrackingException;
 
 public class MemoizerMatcher extends Matcher {
 
@@ -25,7 +25,7 @@ public class MemoizerMatcher extends Matcher {
       AstNode node = super.children[0].match(state);
       memoizeAstNode(node, startingIndex, state);
       return state.lexerIndex;
-    } catch (RecognitionExceptionImpl e) {
+    } catch (BacktrackingException e) {
       return -1;
     } finally {
       state.lexerIndex = startingIndex;

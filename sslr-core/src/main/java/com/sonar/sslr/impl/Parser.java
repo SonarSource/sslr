@@ -24,6 +24,7 @@ import com.sonar.sslr.api.GrammarDecorator;
 import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Preprocessor;
 import com.sonar.sslr.api.RecognictionExceptionListener;
+import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.Lexer.LexerBuilder;
@@ -154,14 +155,14 @@ public class Parser<GRAMMAR extends Grammar> {
       parsingState = new ParsingState(tokens);
       parsingState.setListeners(listeners);
       return rootRule.getRule().match(parsingState);
-    } catch (RecognitionExceptionImpl e) {
+    } catch (BacktrackingException e) {
       if (parsingState != null) {
-        throw new RecognitionExceptionImpl(parsingState);
+        throw new RecognitionException(parsingState);
       } else {
         throw e;
       }
     } catch (StackOverflowError e) {
-      throw new RecognitionExceptionImpl("The grammar seems to contain a left recursion which is not compatible with LL(*) parser.",
+      throw new RecognitionException("The grammar seems to contain a left recursion which is not compatible with LL(*) parser.",
           parsingState, e);
     } finally {
       GrammarRuleLifeCycleManager.notifyEndParsing(grammar);

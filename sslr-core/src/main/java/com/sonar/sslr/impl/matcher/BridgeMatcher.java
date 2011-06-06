@@ -9,7 +9,7 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.RecognitionExceptionImpl;
+import com.sonar.sslr.impl.BacktrackingException;
 
 public class BridgeMatcher extends Matcher {
 
@@ -41,7 +41,7 @@ public class BridgeMatcher extends Matcher {
       } while (token.getType() != to || bridgeLevel != 0);
       return astNode;
     } else {
-      throw RecognitionExceptionImpl.create();
+      throw BacktrackingException.create();
     }
   }
 

@@ -8,12 +8,9 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.AstNodeSkippingPolicy;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.RecognitionExceptionImpl;
-import com.sonar.sslr.impl.ast.NeverSkipFromAst;
 
 public class RuleMatcher extends Matcher {
 
@@ -32,7 +29,7 @@ public class RuleMatcher extends Matcher {
       throw new IllegalStateException("The rule '" + name + "' hasn't beed defined.");
     }
     if (recoveryRule) {
-      RecognitionException recognitionException = new RecognitionExceptionImpl(parsingState);
+      RecognitionException recognitionException = new RecognitionException(parsingState);
       if (super.children[0].isMatching(parsingState)) {
         parsingState.notifyListerners(recognitionException);
       }

@@ -17,9 +17,10 @@ import org.junit.Test;
 
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.GrammarDecorator;
+import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Rule;
+import com.sonar.sslr.impl.BacktrackingException;
 import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
 public class ExtendedStackTraceTest {
 
@@ -65,7 +66,7 @@ public class ExtendedStackTraceTest {
     try {
       p.parse("bonjour hehe huhu haha");
       throw new IllegalStateException();
-    } catch (RecognitionExceptionImpl ex) {
+    } catch (RecognitionException ex) {
       p.printStackTrace(new PrintStream(baos));
     }
 
@@ -96,7 +97,7 @@ public class ExtendedStackTraceTest {
     try {
       p.parse("bonjour hehe huhu haha");
       throw new IllegalStateException();
-    } catch (RecognitionExceptionImpl ex) {
+    } catch (RecognitionException ex) {
       p.printStackTrace(new PrintStream(baos));
     }
 

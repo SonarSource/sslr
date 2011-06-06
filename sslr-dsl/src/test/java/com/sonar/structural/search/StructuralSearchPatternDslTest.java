@@ -5,20 +5,18 @@
  */
 package com.sonar.structural.search;
 
+import static com.sonar.sslr.test.parser.ParserMatchers.parse;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.dsl.Dsl;
 import com.sonar.sslr.dsl.internal.DefaultDslLexer;
 import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.impl.RecognitionExceptionImpl;
-
-import static com.sonar.sslr.test.parser.ParserMatchers.parse;
-
-import static org.junit.Assert.assertThat;
-
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
 
 public class StructuralSearchPatternDslTest {
 
@@ -37,7 +35,7 @@ public class StructuralSearchPatternDslTest {
     assertThat(parser, parse("this(*)(child((anotherChild)))"));
   }
 
-  @Test(expected = RecognitionExceptionImpl.class)
+  @Test(expected = RecognitionException.class)
   public void shouldNotParseExpression() {
     parser.parse("this(*");
   }

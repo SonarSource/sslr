@@ -20,8 +20,8 @@ import org.sonar.squid.measures.MetricDef;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.impl.RecognitionExceptionImpl;
 import com.sonar.sslr.impl.ast.AstWalker;
 
 public final class AstScanner<GRAMMAR extends Grammar> {
@@ -69,7 +69,7 @@ public final class AstScanner<GRAMMAR extends Grammar> {
         context.setComments(null);
         context.setFile(null);
         astWalker = null;
-      } catch (RecognitionExceptionImpl e) {
+      } catch (RecognitionException e) {
         LOG.error("Unable to parse PLSQL source file : " + file.getAbsolutePath(), e);
       } catch (Exception e) {
         String errorMessage = "Sonar is unable to analyze file : '" + (file == null ? "null" : file.getAbsolutePath()) + "'";

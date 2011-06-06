@@ -13,8 +13,8 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
 import com.sonar.sslr.api.GenericTokenType;
+import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.impl.RecognitionExceptionImpl;
 
 class ParseMatcher extends BaseMatcher<Parser> {
 
@@ -35,7 +35,7 @@ class ParseMatcher extends BaseMatcher<Parser> {
 
     try {
       parser.parse(sourceCode);
-    } catch (RecognitionExceptionImpl e) {
+    } catch (RecognitionException e) {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       parser.printStackTrace(new PrintStream(baos));
       String message = baos.toString();

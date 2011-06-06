@@ -8,7 +8,7 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.RecognitionExceptionImpl;
+import com.sonar.sslr.impl.BacktrackingException;
 
 public class OneToNMatcher extends Matcher {
 
@@ -32,7 +32,7 @@ public class OneToNMatcher extends Matcher {
       }
     } while (match);
     if (loop == 0) {
-      throw RecognitionExceptionImpl.create();
+      throw BacktrackingException.create();
     }
     return astNode;
   }

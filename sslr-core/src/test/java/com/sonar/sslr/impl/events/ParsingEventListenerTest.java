@@ -21,7 +21,7 @@ import com.sonar.sslr.api.GrammarDecorator;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.RecognitionExceptionImpl;
+import com.sonar.sslr.impl.BacktrackingException;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
@@ -40,7 +40,7 @@ public class ParsingEventListenerTest {
       stream.println("Exit rule " + rule.getName() + " with match until index " + parsingState.lexerIndex);
     }
 
-    public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState, RecognitionExceptionImpl re) {
+    public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState, BacktrackingException re) {
       stream.println("Exit rule " + rule.getName() + " without match");
     }
 
@@ -53,7 +53,7 @@ public class ParsingEventListenerTest {
           .println("Exit matcher " + MatcherTreePrinter.printWithAdapters(matcher) + " with match until index " + parsingState.lexerIndex);
     }
 
-    public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState, RecognitionExceptionImpl re) {
+    public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState, BacktrackingException re) {
       stream.println("Exit matcher " + MatcherTreePrinter.printWithAdapters(matcher) + " without match");
     }
 

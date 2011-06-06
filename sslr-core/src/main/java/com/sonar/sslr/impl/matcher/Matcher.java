@@ -8,7 +8,7 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.RecognitionExceptionImpl;
+import com.sonar.sslr.impl.BacktrackingException;
 
 public abstract class Matcher {
 
@@ -32,7 +32,7 @@ public abstract class Matcher {
     try {
       match(parsingState);
       return parsingState.lexerIndex;
-    } catch (RecognitionExceptionImpl e) {
+    } catch (BacktrackingException e) {
       return -1;
     } finally {
       parsingState.lexerIndex = indexBeforeStarting;

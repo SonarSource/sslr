@@ -7,7 +7,7 @@ package com.sonar.sslr.impl.events;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.RecognitionExceptionImpl;
+import com.sonar.sslr.impl.BacktrackingException;
 import com.sonar.sslr.impl.matcher.Matcher;
 
 public class MatcherAdapter extends Matcher {
@@ -29,7 +29,7 @@ public class MatcherAdapter extends Matcher {
       AstNode astNode = this.matcher.match(parsingState);
       parsingEventListener.exitWithMatchMatcher(matcher, parsingState, astNode);
       return astNode;
-    } catch (RecognitionExceptionImpl re) {
+    } catch (BacktrackingException re) {
       parsingEventListener.exitWithoutMatchMatcher(matcher, parsingState, re);
       throw re;
     }

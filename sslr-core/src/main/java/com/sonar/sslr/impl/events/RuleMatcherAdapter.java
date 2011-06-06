@@ -8,7 +8,7 @@ package com.sonar.sslr.impl.events;
 import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.RecognitionExceptionImpl;
+import com.sonar.sslr.impl.BacktrackingException;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
@@ -37,7 +37,7 @@ public class RuleMatcherAdapter extends RuleMatcher {
       AstNode astNode = this.ruleImpl.match(parsingState);
       parsingEventListener.exitWithMatchRule(ruleImpl, parsingState, astNode);
       return astNode;
-    } catch (RecognitionExceptionImpl re) {
+    } catch (BacktrackingException re) {
       parsingEventListener.exitWithoutMatchRule(ruleImpl, parsingState, re);
       throw re;
     }

@@ -9,7 +9,7 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.RecognitionExceptionImpl;
+import com.sonar.sslr.impl.BacktrackingException;
 
 public abstract class TokenMatcher extends Matcher {
 
@@ -28,7 +28,7 @@ public abstract class TokenMatcher extends Matcher {
         return new AstNode(token);
       }
     } else {
-      throw RecognitionExceptionImpl.create();
+      throw BacktrackingException.create();
     }
   }
 

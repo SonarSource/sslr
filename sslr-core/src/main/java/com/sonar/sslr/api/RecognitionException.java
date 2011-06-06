@@ -5,28 +5,38 @@
  */
 package com.sonar.sslr.api;
 
+import com.sonar.sslr.impl.ParsingStackTrace;
+import com.sonar.sslr.impl.ParsingState;
+
 /**
  * If a parsing error is encountered, an exception which implements this RecognitionException is thrown by the Parser. This
  * RecognitionException allows to get some contextual information about the parsing error like the parsing stack trace.
  */
-public interface RecognitionException {
+public class RecognitionException extends RuntimeException {
+
+  private int line;
+
+  public RecognitionException(ParsingState parsingState) {
+    super(ParsingStackTrace.generateFullStackTrace(parsingState));
+    if (parsingState.getOutpostMatcherToken() != null) {
+      line = parsingState.getOutpostMatcherToken().getLine();
+    }
+  }
+
+  public RecognitionException(String message, ParsingState parsingState, Throwable e) {
+    super(message + "\n" + ParsingStackTrace.generateFullStackTrace(parsingState), e);
+    if (parsingState.getOutpostMatcherToken() != null) {
+      line = parsingState.getOutpostMatcherToken().getLine();
+    }
+  }
 
   /**
    * Line where the parsing error has occurred.
    * 
    * @return line
    */
-  public int getLine();
+  public int getLine() {
+    return line;
+  }
 
-  /**
-   * The full parsing stack trace. Here is an example :
-   * <p>
-   * Expected : <language> but was : <lang [WORD]> ('file1': Line 34 / Column 46)
-   *       at ParentRule := ((language | implements))
-   *       at GrandParentRule := (ParentRule)
-   * </p>
-   * 
-   * @return parsing stack trace.
-   */
-  public String getMessage();
 }

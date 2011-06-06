@@ -40,14 +40,14 @@ public class ParsingState {
 
   public Token popToken(Matcher matcher) {
     if (pendingLeftRecursion) {
-      throw RecognitionExceptionImpl.create();
+      throw BacktrackingException.create();
     }
     if (lexerIndex >= outpostMatcherTokenIndex) {
       outpostMatcherTokenIndex = lexerIndex;
       outpostMatcher = matcher;
     }
     if (lexerIndex >= lexerSize) {
-      throw RecognitionExceptionImpl.create();
+      throw BacktrackingException.create();
     }
     return tokens[lexerIndex++];
   }
@@ -58,14 +58,14 @@ public class ParsingState {
 
   public Token peekToken(int index, Matcher matcher) {
     if (pendingLeftRecursion) {
-      throw RecognitionExceptionImpl.create();
+      throw BacktrackingException.create();
     }
     if (index > outpostMatcherTokenIndex) {
       outpostMatcherTokenIndex = index;
       outpostMatcher = matcher;
     }
     if (index >= lexerSize) {
-      throw RecognitionExceptionImpl.create();
+      throw BacktrackingException.create();
     }
     return tokens[index];
   }
@@ -139,7 +139,7 @@ public class ParsingState {
   public Token peekTokenIfExists(int index, Matcher matcher) {
     try {
       return peekToken(index, matcher);
-    } catch (RecognitionExceptionImpl e) {
+    } catch (BacktrackingException e) {
       return null;
     }
   }

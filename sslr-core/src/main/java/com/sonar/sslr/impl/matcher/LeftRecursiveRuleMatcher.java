@@ -12,7 +12,7 @@ import java.util.Stack;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.RecognitionExceptionImpl;
+import com.sonar.sslr.impl.BacktrackingException;
 
 /**
  * Implementation of a Rule that support left recursion.
@@ -41,7 +41,7 @@ public class LeftRecursiveRuleMatcher extends RuleMatcher {
 
     // Stop recursion When this rule is already in the parsing stack
     if ( !matchStartIndexes.isEmpty() && (matchStartIndexes.peek() == mostLeftLexerIndex)) {
-      throw RecognitionExceptionImpl.create();
+      throw BacktrackingException.create();
     }
 
     try {
@@ -59,7 +59,7 @@ public class LeftRecursiveRuleMatcher extends RuleMatcher {
           partialAstNodes.put(mostLeftLexerIndex, currentNode);
           currentNode = super.match(parsingState);
         }
-      } catch (RecognitionExceptionImpl e) {
+      } catch (BacktrackingException e) {
       } finally {
         parsingState.lexerIndex = mostRightLexerIndex;
         parsingState.stopLeftRecursion();
