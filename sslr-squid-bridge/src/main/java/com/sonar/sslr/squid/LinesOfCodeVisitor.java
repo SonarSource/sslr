@@ -13,19 +13,18 @@ import com.sonar.sslr.api.AstAndTokenVisitor;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.squid.SquidAstVisitor;
 
 /**
  * Visitor that computes the number of lines of code of a file.
  */
-public class LinesOfCodeVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> implements AstAndTokenVisitor {
-	
-	private final MetricDef metric;
-	private int lastTokenLine;
-	
-	public LinesOfCodeVisitor(MetricDef metric) {
-		this.metric = metric;
-	}
+public class LinesOfCodeVisitor extends SquidAstVisitor<Grammar> implements AstAndTokenVisitor {
+
+  private final MetricDef metric;
+  private int lastTokenLine;
+
+  public LinesOfCodeVisitor(MetricDef metric) {
+    this.metric = metric;
+  }
 
   /**
    * {@inheritDoc}
@@ -35,11 +34,11 @@ public class LinesOfCodeVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor
     lastTokenLine = -1;
   }
 
-	/**
+  /**
    * {@inheritDoc}
    */
   public void visitToken(Token token) {
-  	if (token.getType() != EOF && lastTokenLine != token.getLine()) {
+    if (token.getType() != EOF && lastTokenLine != token.getLine()) {
       peekSourceCode().add(metric, 1);
       lastTokenLine = token.getLine();
     }

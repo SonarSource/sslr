@@ -10,17 +10,16 @@ import org.sonar.squid.measures.MetricDef;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.squid.SquidAstVisitor;
 
-public class FilesVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> {
+public class FilesVisitor extends SquidAstVisitor<Grammar> {
 
-	private final MetricDef metric;
-	
-	public FilesVisitor(MetricDef metric) {
-		this.metric = metric;
-	}
-	
-	public void visitFile(AstNode astNode) {
+  private final MetricDef metric;
+
+  public FilesVisitor(MetricDef metric) {
+    this.metric = metric;
+  }
+
+  public void visitFile(AstNode astNode) {
     SourceFile cobolFile = new SourceFile(getFile().getAbsolutePath().replace('\\', '/'), getFile().getName());
     addSourceCode(cobolFile);
     peekSourceCode().setMeasure(metric, 1);
