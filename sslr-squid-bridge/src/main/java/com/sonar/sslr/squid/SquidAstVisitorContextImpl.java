@@ -20,8 +20,10 @@ public class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends SquidAs
   private GRAMMAR grammar;
   private Comments comments;
   private File file;
+  private SourceProject project;
 
   public SquidAstVisitorContextImpl(SourceProject project) {
+    this.project = project;
     sourceCodeStack.add(project);
   }
 
@@ -61,6 +63,11 @@ public class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends SquidAs
   @Override
   public final File getFile() {
     return file;
+  }
+
+  @Override
+  public final SourceProject getProject() {
+    return project;
   }
 
   @Override
