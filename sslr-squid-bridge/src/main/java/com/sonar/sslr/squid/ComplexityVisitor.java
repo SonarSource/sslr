@@ -18,6 +18,7 @@ public class ComplexityVisitor extends SquidAstVisitor<Grammar> {
 
   private MetricDef metric;
   private LinkedList<AstNodeType> astNodeTypes = new LinkedList<AstNodeType>();
+  private final SquidAstVisitorContext<? extends Grammar> context;
 
   public static Builder builder() {
     return new Builder();
@@ -27,12 +28,18 @@ public class ComplexityVisitor extends SquidAstVisitor<Grammar> {
 
     private MetricDef metric;
     private LinkedList<AstNodeType> astNodeTypes = new LinkedList<AstNodeType>();
+    private SquidAstVisitorContext<? extends Grammar> context;
 
     private Builder() {
     }
 
     public Builder setMetricDef(MetricDef metric) {
       this.metric = metric;
+      return this;
+    }
+
+    public Builder setContext(SquidAstVisitorContext<? extends Grammar> context) {
+      this.context = context;
       return this;
     }
 
@@ -57,15 +64,13 @@ public class ComplexityVisitor extends SquidAstVisitor<Grammar> {
     }
 
     public ComplexityVisitor build() {
-      return new ComplexityVisitor(this);
+      return new ComplexityVisitor(context, this);
     }
 
   }
 
-  private ComplexityVisitor() {
-  }
-
-  private ComplexityVisitor(Builder builder) {
+  private ComplexityVisitor(SquidAstVisitorContext<? extends Grammar> context, Builder builder) {
+    this.context = context;
     this.metric = builder.metric;
     this.astNodeTypes = builder.astNodeTypes;
   }
@@ -79,7 +84,7 @@ public class ComplexityVisitor extends SquidAstVisitor<Grammar> {
 
   @Override
   public void visitNode(AstNode astNode) {
-    peekSourceCode().add(metric, 1);
+    context.peekSourceCode().add(metric, 1);
   }
 
 }

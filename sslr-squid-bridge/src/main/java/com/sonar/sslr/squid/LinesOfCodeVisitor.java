@@ -21,8 +21,10 @@ public class LinesOfCodeVisitor extends SquidAstVisitor<Grammar> implements AstA
 
   private final MetricDef metric;
   private int lastTokenLine;
+  private final SquidAstVisitorContext<? extends Grammar> context;
 
-  public LinesOfCodeVisitor(MetricDef metric) {
+  public LinesOfCodeVisitor(SquidAstVisitorContext<? extends Grammar> context, MetricDef metric) {
+    this.context = context;
     this.metric = metric;
   }
 
@@ -39,7 +41,7 @@ public class LinesOfCodeVisitor extends SquidAstVisitor<Grammar> implements AstA
    */
   public void visitToken(Token token) {
     if (token.getType() != EOF && lastTokenLine != token.getLine()) {
-      peekSourceCode().add(metric, 1);
+      context.peekSourceCode().add(metric, 1);
       lastTokenLine = token.getLine();
     }
   }

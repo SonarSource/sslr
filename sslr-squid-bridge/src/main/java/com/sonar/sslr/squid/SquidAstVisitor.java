@@ -5,18 +5,14 @@
  */
 package com.sonar.sslr.squid;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 import org.sonar.squid.api.CodeVisitor;
-import org.sonar.squid.api.SourceCode;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.AstVisitor;
-import com.sonar.sslr.api.Comments;
 import com.sonar.sslr.api.Grammar;
 
 /**
@@ -25,12 +21,8 @@ import com.sonar.sslr.api.Grammar;
  * Methods are visited in the following sequential order : init(), visitFile(), visitNode(), leaveNode(), leaveFile() and destroy()
  */
 public class SquidAstVisitor<GRAMMAR extends Grammar> implements CodeVisitor, AstVisitor {
-	
-  private Stack<SourceCode> sourceCodeStack;
-  protected GRAMMAR grammar;
-  private Comments comments;
-  private File file;
-  private List<AstNodeType> astNodeTypesToVisit = new ArrayList<AstNodeType>();
+
+  private final List<AstNodeType> astNodeTypesToVisit = new ArrayList<AstNodeType>();
 
   /**
    * This method can't be overridden. The method subscribeTo(AstNodeType... astNodeTypes) must be used to while overriding the public void
@@ -47,53 +39,6 @@ public class SquidAstVisitor<GRAMMAR extends Grammar> implements CodeVisitor, As
     for (AstNodeType type : astNodeTypes) {
       astNodeTypesToVisit.add(type);
     }
-  }
-
-  /**
-   * Do not use
-   */
-  public final void setSourceCodeStack(Stack<SourceCode> sourceCodeStack) {
-    this.sourceCodeStack = sourceCodeStack;
-  }
-
-  /**
-   * Do not use
-   */
-  public final void setGrammar(GRAMMAR grammar) {
-    this.grammar = grammar;
-  }
-
-  /**
-   * Do not use
-   */
-  public final void setComments(Comments comments) {
-    this.comments = comments;
-  }
-
-  public final Comments getComments() {
-    return comments;
-  }
-
-  /**
-   * Do not use
-   */
-  public final void addSourceCode(SourceCode child) {
-    peekSourceCode().addChild(child);
-    sourceCodeStack.add(child);
-  }
-
-  /**
-   * Do not use
-   */
-  public final void popSourceCode() {
-    sourceCodeStack.pop();
-  }
-
-  /**
-   * Do not use
-   */
-  public final SourceCode peekSourceCode() {
-    return sourceCodeStack.peek();
   }
 
   /**
@@ -132,17 +77,4 @@ public class SquidAstVisitor<GRAMMAR extends Grammar> implements CodeVisitor, As
    */
   public void destroy() {
   }
-
-  public final void setFile(File file) {
-    this.file = file;
-  }
-
-  public final File getFile() {
-    return file;
-  }
-
-  public final GRAMMAR getGrammar() {
-    return grammar;
-  }
-
 }

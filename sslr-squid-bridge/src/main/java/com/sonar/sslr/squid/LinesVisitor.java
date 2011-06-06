@@ -19,8 +19,10 @@ import com.sonar.sslr.api.Token;
 public class LinesVisitor extends SquidAstVisitor<Grammar> implements AstAndTokenVisitor {
 
   private final MetricDef metric;
+  private final SquidAstVisitorContext<? extends Grammar> context;
 
-  public LinesVisitor(MetricDef metric) {
+  public LinesVisitor(SquidAstVisitorContext<? extends Grammar> context, MetricDef metric) {
+    this.context = context;
     this.metric = metric;
   }
 
@@ -29,7 +31,7 @@ public class LinesVisitor extends SquidAstVisitor<Grammar> implements AstAndToke
    */
   public void visitToken(Token token) {
     if (token.getType() == EOF) {
-      peekSourceCode().setMeasure(metric, token.getLine());
+      context.peekSourceCode().setMeasure(metric, token.getLine());
     }
   }
 

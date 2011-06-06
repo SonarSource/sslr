@@ -14,19 +14,21 @@ import com.sonar.sslr.api.Grammar;
 public class FilesVisitor extends SquidAstVisitor<Grammar> {
 
   private final MetricDef metric;
+  private final SquidAstVisitorContext<? extends Grammar> context;
 
-  public FilesVisitor(MetricDef metric) {
+  public FilesVisitor(SquidAstVisitorContext<? extends Grammar> context, MetricDef metric) {
+    this.context = context;
     this.metric = metric;
   }
 
   public void visitFile(AstNode astNode) {
-    SourceFile cobolFile = new SourceFile(getFile().getAbsolutePath().replace('\\', '/'), getFile().getName());
-    addSourceCode(cobolFile);
-    peekSourceCode().setMeasure(metric, 1);
+    SourceFile cobolFile = new SourceFile(context.getFile().getAbsolutePath().replace('\\', '/'), context.getFile().getName());
+    context.addSourceCode(cobolFile);
+    context.peekSourceCode().setMeasure(metric, 1);
   }
 
   public void leaveFile(AstNode astNode) {
-    popSourceCode();
+    context.popSourceCode();
   }
 
 }

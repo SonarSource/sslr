@@ -20,11 +20,13 @@ public class CommentsVisitor extends SquidAstVisitor<Grammar> {
 
   private HashSet<Integer> comments;
   private HashSet<Integer> blankComments;
+  private final SquidAstVisitorContext<? extends Grammar> context;
 
   private MetricDef commentMetric;
   private MetricDef blankCommentMetric;
 
-  public CommentsVisitor(MetricDef commentMetric, MetricDef blankCommentMetric) {
+  public CommentsVisitor(SquidAstVisitorContext<? extends Grammar> context, MetricDef commentMetric, MetricDef blankCommentMetric) {
+    this.context = context;
     this.commentMetric = commentMetric;
     this.blankCommentMetric = blankCommentMetric;
   }
@@ -68,7 +70,7 @@ public class CommentsVisitor extends SquidAstVisitor<Grammar> {
    */
   @Override
   public void leaveFile(AstNode astNode) {
-    for (Token comment : getComments()) {
+    for (Token comment : context.getComments()) {
       String[] commentLines = comment.getValue().split("\n", -1);
       int line = comment.getLine();
 
@@ -83,8 +85,8 @@ public class CommentsVisitor extends SquidAstVisitor<Grammar> {
       }
     }
 
-    peekSourceCode().add(commentMetric, comments.size());
-    peekSourceCode().add(blankCommentMetric, blankComments.size());
+    context.peekSourceCode().add(commentMetric, comments.size());
+    context.peekSourceCode().add(blankCommentMetric, blankComments.size());
   }
 
 }
