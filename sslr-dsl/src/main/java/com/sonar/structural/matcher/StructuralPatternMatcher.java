@@ -17,7 +17,7 @@ public class StructuralPatternMatcher {
 
   public static final StructuralPatternMatcher compile(String structuralSearchPatternDsl) {
     StructuralPatternMatcher pattern = new StructuralPatternMatcher();
-    Dsl.builder().setGrammar(new StructuralSearchPatternGrammar(pattern.matcher)).withSource(structuralSearchPatternDsl).compile();
+    Dsl.builder().setGrammar(new StructuralPatternMatcherGrammar(pattern.matcher)).withSource(structuralSearchPatternDsl).compile();
     return pattern;
   }
 

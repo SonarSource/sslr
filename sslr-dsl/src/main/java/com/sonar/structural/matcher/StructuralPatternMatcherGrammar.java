@@ -17,7 +17,7 @@ import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
 
-public class StructuralSearchPatternGrammar extends Grammar {
+public class StructuralPatternMatcherGrammar extends Grammar {
 
   public Rule compilationUnit;
   public Rule matcher;
@@ -37,7 +37,7 @@ public class StructuralSearchPatternGrammar extends Grammar {
   public Rule nodeNameOrTokenValue;
   public Rule ruleName;
 
-  public StructuralSearchPatternGrammar(PatternMatcher patternMatcher) {
+  public StructuralPatternMatcherGrammar(PatternMatcher patternMatcher) {
     compilationUnit.is(or(sequenceMatcher, parentMatcher));
     parentMatcher.isOr(directParentMatcher, indirectParentMatcher);
     directParentMatcher.is(ruleName, "(", or(sequenceMatcher, parentMatcher), ")");
