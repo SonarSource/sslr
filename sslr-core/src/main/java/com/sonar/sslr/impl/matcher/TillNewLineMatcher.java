@@ -6,6 +6,8 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import static com.sonar.sslr.api.GenericTokenType.EOF;
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
@@ -20,10 +22,10 @@ public class TillNewLineMatcher extends Matcher {
   public AstNode match(ParsingState parsingState) {
   	int currentLine = (parsingState.lexerIndex - 1 >= 0) ? parsingState.readToken(parsingState.lexerIndex - 1).getLine() : 1;
 
-    for (int i = parsingState.lexerIndex; i < parsingState.lexerSize && parsingState.peekToken(this).getLine() == currentLine; i++) {
+    for (int i = parsingState.lexerIndex; i < parsingState.lexerSize && parsingState.peekToken(this).getLine() == currentLine && parsingState.peekToken(this).getType() != EOF; i++) {
     	parsingState.popToken(this);
     }
-  	
+ 
     return null;
   }
   

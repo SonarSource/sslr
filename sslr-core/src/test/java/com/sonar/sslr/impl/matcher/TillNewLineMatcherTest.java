@@ -6,6 +6,7 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import static com.sonar.sslr.api.GenericTokenType.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.tillNewLine;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
@@ -29,6 +30,8 @@ public class TillNewLineMatcherTest {
     assertThat(and("a", "b", "c", tillNewLine()), match("a b c \n"));
     assertThat(and("a", "b", "c", tillNewLine()), match("a b c \n\n"));
     assertThat(and("bonjour", tillNewLine(), "hehe"), match("\n\n\nbonjour whatever wtf \n hehe"));
+    assertThat(and("bonjour", tillNewLine()), match("bonjour hehe hoho huhu"));
+    /* TODO: missing test that tillNewLine() does not consume the EOF, because match() does not add the EOF implicitly */
   }
   
   @Test
