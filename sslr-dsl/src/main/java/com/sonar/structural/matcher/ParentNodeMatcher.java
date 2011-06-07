@@ -3,11 +3,11 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.structural.search;
+package com.sonar.structural.matcher;
 
 import com.sonar.sslr.api.AstNode;
 
-public abstract class ChildNodeMatcher extends CompositeMatcher {
+public abstract class ParentNodeMatcher extends CompositeMatcher {
 
   protected String ruleName;
 
@@ -17,16 +17,13 @@ public abstract class ChildNodeMatcher extends CompositeMatcher {
 
   @Override
   public final AstNode match(AstNode node) {
-    node = matchChildren(node);
+    node = matcher.match(node);
     if (node != null) {
-      if (matcher != null) {
-        return matcher.match(node);
-      } else {
-        return node;
-      }
+      return matchParents(node);
+    } else {
+      return null;
     }
-    return null;
   }
 
-  protected abstract AstNode matchChildren(AstNode node);
+  public abstract AstNode matchParents(AstNode node);
 }

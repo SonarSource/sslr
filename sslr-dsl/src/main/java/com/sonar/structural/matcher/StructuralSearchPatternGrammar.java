@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.structural.search;
+package com.sonar.structural.matcher;
 
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.LeftRecursiveRule;
@@ -19,7 +19,7 @@ import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
 
 public class StructuralSearchPatternGrammar extends Grammar {
 
-  public Rule pattern;
+  public Rule compilationUnit;
   public Rule matcher;
   public Rule thisMatcher;
   public Rule parentMatcher;
@@ -29,31 +29,31 @@ public class StructuralSearchPatternGrammar extends Grammar {
   public Rule directChildMatcher;
   public Rule indirectChildMatcher;
   public Rule sequenceMatcher;
-  public Rule beforeMatcher;
-  public LeftRecursiveRule afterMatcher;
+  public LeftRecursiveRule beforeMatcher;
+  public Rule afterMatcher;
   public Rule ruleValueList;
   public Rule tokenValue;
   public Rule nodeName;
   public Rule nodeNameOrTokenValue;
   public Rule ruleName;
 
-  public StructuralSearchPatternGrammar(StructuralSearchPattern structuralSearchPattern) {
-    pattern.is(or(sequenceMatcher, parentMatcher));
+  public StructuralSearchPatternGrammar(PatternMatcher patternMatcher) {
+    compilationUnit.is(or(sequenceMatcher, parentMatcher));
     parentMatcher.isOr(directParentMatcher, indirectParentMatcher);
     directParentMatcher.is(ruleName, "(", or(sequenceMatcher, parentMatcher), ")");
     indirectParentMatcher.is(ruleName, "(", "(", or(sequenceMatcher, parentMatcher), ")", ")");
 
     sequenceMatcher.is(opt(beforeMatcher), thisMatcher, opt(afterMatcher));
-    beforeMatcher.is(not("this"), nodeNameOrTokenValue, opt(beforeMatcher));
-    afterMatcher.is(opt(afterMatcher), nodeNameOrTokenValue);
+    beforeMatcher.is(opt(beforeMatcher), not("this"), nodeNameOrTokenValue);
+    afterMatcher.is(nodeNameOrTokenValue, opt(afterMatcher));
 
-    thisMatcher.is("this", "(", or("*", one2n(nodeNameOrTokenValue, opt(","))), ")", opt("(", childMatcher, ")"));
+    thisMatcher.is("this", "(", or("*", one2n(nodeNameOrTokenValue, opt("or"))), ")", opt("(", childMatcher, ")"));
 
     childMatcher.isOr(directChildMatcher, indirectChildMatcher);
     directChildMatcher.is(ruleName, opt("(", or(childMatcher), ")"));
     indirectChildMatcher.is("(", ruleName, opt("(", or(childMatcher), ")"), ")");
 
-    pattern.plug(structuralSearchPattern);
+    compilationUnit.plug(patternMatcher);
     directParentMatcher.plug(DirectParentNodeMatcher.class);
     indirectParentMatcher.plug(IndirectParentNodeMatcher.class);
     thisMatcher.plug(ThisNodeMatcher.class);
@@ -69,12 +69,8 @@ public class StructuralSearchPatternGrammar extends Grammar {
     ruleName.is(WORD).plug(String.class);
   }
 
-  public StructuralSearchPatternGrammar() {
-    this(new StructuralSearchPattern());
-  }
-
   @Override
   public Rule getRootRule() {
-    return pattern;
+    return compilationUnit;
   }
 }

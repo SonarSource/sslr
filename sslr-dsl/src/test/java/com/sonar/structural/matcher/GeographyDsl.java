@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.structural.search;
+package com.sonar.structural.matcher;
 
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;

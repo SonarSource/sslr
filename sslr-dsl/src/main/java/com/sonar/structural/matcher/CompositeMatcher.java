@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.structural.search;
+package com.sonar.structural.matcher;
 
 import com.sonar.sslr.api.AstNode;
 
@@ -16,4 +16,8 @@ public abstract class CompositeMatcher {
   }
 
   public abstract AstNode match(AstNode node);
+
+  public final boolean isMatching(AstNode node) {
+    return match(node) != null;
+  }
 }

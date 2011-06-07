@@ -124,6 +124,20 @@ public class AstNode {
   }
 
   /**
+   * Get the previous sibling AstNode in the tree and if this node doesn't exist try to get the next AST Node of the parent.
+   */
+  public AstNode previousAstNode() {
+    AstNode previousSibling = previousSibling();
+    if (previousSibling != null) {
+      return previousSibling;
+    }
+    if (parent != null) {
+      return parent.previousAstNode();
+    }
+    return null;
+  }
+
+  /**
    * Get the next sibling AstNode if exists in the tree.
    * 
    * @return next sibling AstNode

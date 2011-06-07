@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.structural.search;
+package com.sonar.structural.matcher;
 
 import com.sonar.sslr.api.AstNode;
 
@@ -22,6 +22,16 @@ public class SequenceMatcher extends CompositeMatcher {
 
   @Override
   public AstNode match(AstNode node) {
-    return matcher.match(node);
+    node = matcher.match(node);
+    if (node != null) {
+      if (beforeMatcher != null && !beforeMatcher.isMatching(node)) {
+        return null;
+      }
+      if (afterMatcher != null && !afterMatcher.isMatching(node)) {
+        return null;
+      }
+      return node;
+    }
+    return null;
   }
 }
