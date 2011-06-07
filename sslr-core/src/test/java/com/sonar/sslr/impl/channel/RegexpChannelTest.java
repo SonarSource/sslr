@@ -13,7 +13,6 @@ import static org.junit.Assert.assertThat;
 import static org.sonar.test.channel.ChannelMatchers.consume;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.sonar.channel.CodeReader;
 
@@ -31,8 +30,6 @@ public class RegexpChannelTest {
   }
 
   @Test
-  @Ignore
-  // TODO: Remove ignore
   public void testRegexpToHandleInlineComment() {
     channel = new RegexpChannel(GenericTokenType.COMMENT, "//.*");
     assertThat(channel, not(consume("This is not a comment", output)));
