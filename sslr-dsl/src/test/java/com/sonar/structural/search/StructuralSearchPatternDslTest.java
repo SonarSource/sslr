@@ -5,26 +5,26 @@
  */
 package com.sonar.structural.search;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.AstNodeBrowser;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.dsl.Dsl;
 
 import static org.junit.Assert.assertThat;
 
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 public class StructuralSearchPatternDslTest {
 
-  AstNode astNode = GeographyDsl.geographyParser.parse("Paris London");
+  AstNode world = GeographyDsl.geographyParser.parse("Paris London");
+  AstNode france = new AstNodeBrowser(world).findFirstChild(GeographyDsl.grammar.nation).getResult();
+  AstNode paris = new AstNodeBrowser(france).findFirstChild(GeographyDsl.grammar.capital).getResult();
   StructuralSearchPattern pattern = new StructuralSearchPattern();
-  Dsl.Builder builder = Dsl.builder().setGrammar(new StructuralSearchPatternDsl(pattern));
+  Dsl.Builder builder = Dsl.builder().setGrammar(new StructuralSearchPatternGrammar(pattern));
 
   @Test
-  @Ignore
   public void shouldParseExpression() {
     builder.withSource("'MOVE' this(*) 'TO' 'SEND-TO'").compile();
     builder.withSource("divideStmt(this(*))").compile();
@@ -41,26 +41,83 @@ public class StructuralSearchPatternDslTest {
   }
 
   @Test
-  public void shouldBuildTheStructuralSearchPattern() {
+  public void shouldMatchAnything() {
     builder.withSource("this(*)").compile();
-    assertThat(pattern.matcher, is(instanceOf(ThisNodeMatcher.class)));
+    assertThat(pattern.isMatching(world), is(true));
   }
 
   @Test
-  public void shouldMatchAnything() {
-    builder.withSource("this(*)").compile();
-    assertThat(pattern.isMatching(astNode), is(true));
+  public void shouldMatchDirectParent() {
+    builder.withSource("world(this(*))").compile();
+    assertThat(pattern.isMatching(france), is(true));
+
+    builder.withSource("world(nation(this(*)))").compile();
+    assertThat(pattern.isMatching(paris), is(true));
+
+    builder.withSource("unknownRule(this(*))").compile();
+    assertThat(pattern.isMatching(france), is(false));
+  }
+
+  @Test
+  public void shouldMatchIndirectParent() {
+    builder.withSource("world((this(*)))").compile();
+    assertThat(pattern.isMatching(paris), is(true));
+
+    builder.withSource("world((this(*)))").compile();
+    assertThat(pattern.isMatching(france), is(true));
+
+    builder.withSource("world((this(unknownRule)))").compile();
+    assertThat(pattern.isMatching(france), is(false));
+
+    builder.withSource("unknown((this(*)))").compile();
+    assertThat(pattern.isMatching(paris), is(false));
+  }
+
+  @Test
+  public void shouldMatchDirectChild() {
+    builder.withSource("this(*)(nation)").compile();
+    assertThat(pattern.isMatching(world), is(true));
+
+    builder.withSource("this(*)(nation(capital))").compile();
+    assertThat(pattern.isMatching(world), is(true));
+
+    builder.withSource("this(unknowRule)(nation(capital))").compile();
+    assertThat(pattern.isMatching(world), is(false));
+
+    builder.withSource("this(*)(nation(nation))").compile();
+    assertThat(pattern.isMatching(world), is(false));
+
+    builder.withSource("this(*)(nation)").compile();
+    assertThat(pattern.isMatching(france), is(false));
+  }
+
+  @Test
+  public void shouldMatchIndirectChild() {
+    builder.withSource("this(*)((capital))").compile();
+    assertThat(pattern.isMatching(world), is(true));
+
+    builder.withSource("this(unknownRule)((capital))").compile();
+    assertThat(pattern.isMatching(world), is(false));
+
+    builder.withSource("this(*)((unknown))").compile();
+    assertThat(pattern.isMatching(world), is(false));
   }
 
   @Test
   public void shouldMatchRuleName() {
     builder.withSource("this(world)").compile();
-    assertThat(pattern.isMatching(astNode), is(true));
+    assertThat(pattern.isMatching(world), is(true));
+
+    builder.withSource("this(unknownRuleName)").compile();
+    assertThat(pattern.isMatching(world), is(false));
   }
 
   @Test
   public void shouldMatchTokenName() {
     builder.withSource("this('Paris')").compile();
-    assertThat(pattern.isMatching(astNode), is(true));
+    assertThat(pattern.isMatching(world), is(true));
+
+    builder.withSource("this('Unknown token value')").compile();
+    assertThat(pattern.isMatching(world), is(false));
   }
 }

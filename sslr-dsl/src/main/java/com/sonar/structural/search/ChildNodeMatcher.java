@@ -5,6 +5,8 @@
  */
 package com.sonar.structural.search;
 
+import com.sonar.sslr.api.AstNode;
+
 public abstract class ChildNodeMatcher extends CompositeMatcher {
 
   protected String ruleName;
@@ -12,4 +14,19 @@ public abstract class ChildNodeMatcher extends CompositeMatcher {
   public void addRuleName(String name) {
     ruleName = name;
   }
+
+  @Override
+  public final AstNode match(AstNode node) {
+    node = matchChildren(node);
+    if (node != null) {
+      if (matcher != null) {
+        return matcher.match(node);
+      } else {
+        return node;
+      }
+    }
+    return null;
+  }
+
+  protected abstract AstNode matchChildren(AstNode node);
 }

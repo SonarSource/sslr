@@ -16,7 +16,8 @@ import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
 
 public class GeographyDsl extends Grammar {
 
-  public static final Parser<GeographyDsl> geographyParser = Parser.builder(new GeographyDsl())
+  public static final GeographyDsl grammar = new GeographyDsl();
+  public static final Parser<GeographyDsl> geographyParser = Parser.builder(grammar)
       .optSetLexer(Lexer.builder().addChannel(new RegexpChannel(WORD, "\\p{Alpha}[\\p{Alpha}\\d_]+")).build()).build();
 
   public Rule world;

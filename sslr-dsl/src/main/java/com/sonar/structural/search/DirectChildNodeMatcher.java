@@ -10,7 +10,12 @@ import com.sonar.sslr.api.AstNode;
 public class DirectChildNodeMatcher extends ChildNodeMatcher {
 
   @Override
-  public AstNode match(AstNode node) {
+  public AstNode matchChildren(AstNode node) {
+    for (AstNode child : node.getChildren()) {
+      if (child.getName().equals(ruleName)) {
+        return child;
+      }
+    }
     return null;
   }
 }

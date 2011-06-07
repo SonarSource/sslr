@@ -20,30 +20,37 @@ public class ThisNodeMatcher extends CompositeMatcher {
     tokenValues.add(tokenValue.toString());
   }
 
-  public void addNodeValue(String nodeValue) {
+  public void addNodeName(String nodeValue) {
     nodeValues.add(nodeValue);
   }
 
   @Override
   public AstNode match(AstNode node) {
     if (tokenValues.isEmpty() && nodeValues.isEmpty()) {
-      return node;
+      return matchChildMatcher(node);
     }
     if ( !tokenValues.isEmpty()) {
       for (String tokenValue : tokenValues) {
         if (node.getTokenValue().equals(tokenValue)) {
-          return node;
+          return matchChildMatcher(node);
         }
       }
     }
     if ( !nodeValues.isEmpty()) {
       for (String nodeValue : nodeValues) {
         if (node.getName().equals(nodeValue)) {
-          return node;
+          return matchChildMatcher(node);
         }
       }
     }
-
     return null;
+  }
+
+  private AstNode matchChildMatcher(AstNode node) {
+    if (matcher == null) {
+      return node;
+    } else {
+      return matcher.match(node);
+    }
   }
 }

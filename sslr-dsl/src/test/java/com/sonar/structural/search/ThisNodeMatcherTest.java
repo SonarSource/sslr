@@ -22,15 +22,15 @@ public class ThisNodeMatcherTest {
 
   @Test
   public void shouldNotMatch() {
-    matcher.addNodeValue("something");
-    matcher.addNodeValue("something");
+    matcher.addNodeName("something");
+    matcher.addNodeName("something");
     assertThat(matcher.match(astNode), is(nullValue()));
   }
 
   @Test
   public void shouldMatchNodeName() {
-    matcher.addNodeValue("something");
-    matcher.addNodeValue("world");
+    matcher.addNodeName("something");
+    matcher.addNodeName("world");
     assertThat(matcher.match(astNode), is(astNode));
   }
 

@@ -101,7 +101,7 @@ public class Compiler {
         }
 
         if ( !(parentAdapterInstance instanceof ControlFlowInstruction) && !(parentAdapterInstance instanceof ProcedureDefinition)) {
-          throw new DslException("Unable to inject '" + adapterInstance.getClass().getName() + "into "
+          throw new DslException("Unable to inject '" + adapterInstance.getClass().getName() + " into "
               + parentAdapterInstance.getClass().getName());
         }
       }
