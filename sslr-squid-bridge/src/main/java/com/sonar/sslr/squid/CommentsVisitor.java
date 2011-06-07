@@ -32,7 +32,6 @@ public class CommentsVisitor extends SquidAstVisitor<Grammar> {
   }
 
   private void addBlankCommentLine(int line) {
-  	System.out.println("blank line " + line);
     /* Mark the line as empty comment only if it does not already have a non-empty comment */
     if ( !comments.contains(line)) {
       blankComments.add(line);
@@ -40,7 +39,6 @@ public class CommentsVisitor extends SquidAstVisitor<Grammar> {
   }
 
   private void addCommentLine(int line) {
-  	System.out.println("comment line " + line);
     /* If there is an empty comment at that line, then remove it first */
     if (blankComments.contains(line)) {
       blankComments.remove(line);
@@ -50,7 +48,6 @@ public class CommentsVisitor extends SquidAstVisitor<Grammar> {
   }
 
   private boolean isBlank(String commentLine) {
-  	System.out.println("input = " + commentLine);
     for (int i = 0; i < commentLine.length(); i++) {
       if (Character.isLetter(commentLine.charAt(i)))
         return false;
@@ -74,7 +71,6 @@ public class CommentsVisitor extends SquidAstVisitor<Grammar> {
   @Override
   public void leaveFile(AstNode astNode) {
     for (Token comment : context.getComments()) {
-    	System.out.println("got comment: " + comment.getValue());
       String[] commentLines = comment.getValue().split("\n", -1);
       int line = comment.getLine();
 

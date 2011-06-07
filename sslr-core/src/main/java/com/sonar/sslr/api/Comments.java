@@ -6,15 +6,16 @@
 
 package com.sonar.sslr.api;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
+
+import com.google.common.collect.ListMultimap;
 
 public class Comments implements Iterable<Token> {
 
-  private Map<Integer, Token> comments = new HashMap<Integer, Token>();
+  private ListMultimap<Integer, Token> comments;
 
-  public Comments(Map<Integer, Token> comments) {
+  public Comments(ListMultimap<Integer, Token> comments) {
     this.comments = comments;
   }
 
@@ -22,7 +23,7 @@ public class Comments implements Iterable<Token> {
     return comments.values().iterator();
   }
 
-  public Token getCommentAtLine(int line) {
+  public List<Token> getCommentAtLine(int line) {
     return comments.get(line);
   }
 

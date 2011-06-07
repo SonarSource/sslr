@@ -30,7 +30,7 @@ class HasCommentMatcher extends BaseMatcher<LexerOutput> {
       return false;
     }
     LexerOutput output = (LexerOutput) obj;
-    for (Token comment : output.getCommentTokens().values()) {
+    for (Token comment : output.getCommentTokens()) {
       if (comment.getValue().equals(commentValue)) {
         if (commentLine > -1 && comment.getLine() != commentLine) {
           continue;

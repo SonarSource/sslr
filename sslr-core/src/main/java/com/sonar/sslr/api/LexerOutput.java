@@ -7,16 +7,18 @@ package com.sonar.sslr.api;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
 
 public class LexerOutput {
 
   private File file = null;
   private List<Token> tokens = new ArrayList<Token>(1000);
   private List<Token> preprocessingTokens = new ArrayList<Token>();
-  private Map<Integer, Token> comments = new HashMap<Integer, Token>();
+  private ListMultimap<Integer, Token> comments = LinkedListMultimap.<Integer, Token>create();
   private final Preprocessor[] preprocessors;
 
   public LexerOutput(Preprocessor... preprocessors) {
@@ -169,8 +171,8 @@ public class LexerOutput {
     comments.put(token.getLine(), token);
   }
 
-  public Map<Integer, Token> getCommentTokens() {
-    return comments;
+  public Collection<Token> getCommentTokens() {
+    return comments.values();
   }
 
   public Token get(int i) {
