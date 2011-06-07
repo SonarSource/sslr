@@ -7,7 +7,7 @@ package com.sonar.sslr.impl.events;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
@@ -53,6 +53,14 @@ public class ExtendedStackTraceTest {
       t.rule2.is("hehe", "huhu", "wtf");
     }
   }
+  
+  private class MyTestGrammarDecoratorV3 implements GrammarDecorator<MyTestGrammar> {
+
+    public void decorate(MyTestGrammar t) {
+      t.root.is("bonjour", "hehe", EOF, "next");
+    }
+  }
+
 
   @Test
   public void ok() {
@@ -120,6 +128,43 @@ public class ExtendedStackTraceTest {
     expected.append("  \"hehe\" at 1:8 consumed by rule2" + System.getProperty("line.separator"));
     expected.append("  \"bonjour\" at 1:0 consumed by root" + System.getProperty("line.separator"));
 
+    assertEquals(baos.toString(), expected.toString());
+  }
+  
+  @Test
+  public void okTillEof() {
+  	Parser<MyTestGrammar> p = Parser.builder(new MyTestGrammar()).optSetLexer(IdentifierLexer.create())
+    		.optAddGrammarDecorator(new MyTestGrammarDecoratorV3()).build();
+		p.disableMemoizer();
+		p.enableExtendedStackTrace();
+		
+		try {
+		  p.parse("bonjour hehe");
+		  throw new IllegalStateException();
+		} catch (RecognitionException ex) {
+		  
+		}
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		
+		p.printStackTrace(new PrintStream(baos)); /* This should not lead to an error */
+
+		StringBuilder expected = new StringBuilder();
+    expected.append("Source Snippet:" + System.getProperty("line.separator"));
+    expected.append("---------------" + System.getProperty("line.separator"));
+    expected.append("  --> bonjour heheEOF" + System.getProperty("line.separator"));
+    expected.append("---------------" + System.getProperty("line.separator"));
+    expected.append("" + System.getProperty("line.separator"));
+    expected.append("on matcher \"next\"" + System.getProperty("line.separator"));
+    expected.append("       1 :     12  : and(\"bonjour\", \"hehe\", EOF, \"next\") expected but \"EOF\" [EOF] found" + System.getProperty("line.separator"));
+    expected.append("at root" + System.getProperty("line.separator"));
+    expected.append("       1 :      0  : bonjour hehe EOF " + System.getProperty("line.separator"));
+    expected.append("" + System.getProperty("line.separator"));
+    expected.append("Last successful tokens:" + System.getProperty("line.separator"));
+    expected.append("-----------------------" + System.getProperty("line.separator"));
+    expected.append("  \"hehe\" at 1:8 consumed by root" + System.getProperty("line.separator"));
+    expected.append("  \"bonjour\" at 1:0 consumed by root" + System.getProperty("line.separator"));
+		
     assertEquals(baos.toString(), expected.toString());
   }
 

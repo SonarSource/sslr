@@ -122,7 +122,7 @@ public class ExtendedStackTrace implements ParsingEventListener {
 		/* Handle the longest path */
 		if (parsingState.lexerIndex > longestIndex) {
 			/* New longest path! */
-			longestIndex = parsingState.lexerIndex;
+			longestIndex = (parsingState.lexerIndex == parsingState.lexerSize) ? parsingState.lexerIndex - 1 : parsingState.lexerIndex; /* Handle the case in which EOF is successfully consumed by the grammar, but more is expected */			
 			longestMatcherWithPosition = currentStack.peek();
 			
 			/* Set the longest matcher to the outer most one starting at the current index (but ignorning MemoizerMatchers) */
@@ -168,7 +168,7 @@ public class ExtendedStackTrace implements ParsingEventListener {
 		
 		stream.println();
 		displayStackTrace(stream);
-		
+
 		stream.println();
 		stream.println("Last successful tokens:");
 		stream.println("-----------------------");
@@ -237,7 +237,7 @@ public class ExtendedStackTrace implements ParsingEventListener {
 	
   private void displaySourceSnippet(PrintStream stream) {
   	Token failedToken = longestParsingState.readToken(longestIndex);
-
+  	
     List<Token> tokens = getTokensToDisplayAroundOutpostMatcherToken();
     int previousLine = 0;
     StringBuilder lineBuilder = new StringBuilder();
