@@ -31,7 +31,7 @@ public class TillNewLineMatcherTest {
     assertThat(and("a", "b", "c", tillNewLine()), match("a b c \n\n"));
     assertThat(and("bonjour", tillNewLine(), "hehe"), match("\n\n\nbonjour whatever wtf \n hehe"));
     assertThat(and("bonjour", tillNewLine()), match("bonjour hehe hoho huhu"));
-    /* TODO: missing test that tillNewLine() does not consume the EOF, because match() does not add the EOF implicitly */
+    assertThat(and("bonjour", tillNewLine(), EOF), match("bonjour hehe hoho huhu EOF"));
   }
   
   @Test

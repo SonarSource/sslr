@@ -50,7 +50,11 @@ public class TokenUtils {
       int linePosition = reader.getLinePosition();
       int columnPosition = reader.getColumnPosition();
       if (reader.popTo(matcher, nextStringToken) != -1) {
-        token = new Token(GenericTokenType.IDENTIFIER, nextStringToken.toString(), linePosition, columnPosition);
+      	if (nextStringToken.toString().equals("EOF")) {
+      		token = new Token(GenericTokenType.EOF, nextStringToken.toString(), linePosition, columnPosition);
+      	} else {
+      		token = new Token(GenericTokenType.IDENTIFIER, nextStringToken.toString(), linePosition, columnPosition);
+      	}
       } else if (Character.isWhitespace(reader.peek())) {
         reader.pop();
         continue;
