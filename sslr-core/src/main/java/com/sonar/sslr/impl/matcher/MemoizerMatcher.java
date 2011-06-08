@@ -17,8 +17,9 @@ public class MemoizerMatcher extends Matcher {
   }
 
   public int matchToIndex(ParsingState state) {
-    if (state.hasMemoizedAst(this)) {
-      return state.getMemoizedAst(this).getToIndex();
+  	AstNode memoizedAstNode = state.getMemoizedAst(this);
+    if (memoizedAstNode != null) {
+      return memoizedAstNode.getToIndex();
     }
     int startingIndex = state.lexerIndex;
     try {
@@ -42,8 +43,10 @@ public class MemoizerMatcher extends Matcher {
 
   @Override
   public AstNode match(ParsingState state) {
-    if (state.hasMemoizedAst(this)) {
-      return state.getMemoizedAst(this);
+  	AstNode memoizedAstNode = state.getMemoizedAst(this);
+    if (memoizedAstNode != null) {
+      state.lexerIndex = memoizedAstNode.getToIndex();
+      return memoizedAstNode;
     }
     int startingIndex = state.lexerIndex;
     AstNode node = super.children[0].match(state);

@@ -112,6 +112,6 @@ public class ParsingStateTest {
     assertTrue(state.hasMemoizedAst(myrule));
     assertNotNull(state.getMemoizedAst(myrule));
 
-    assertEquals(2, state.lexerIndex);
+    assertEquals(0, state.lexerIndex);
   }
 }

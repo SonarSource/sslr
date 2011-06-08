@@ -129,9 +129,7 @@ public class ParsingState {
 
   public AstNode getMemoizedAst(Matcher matcher) {
     if (hasMemoizedAst(matcher)) {
-      AstNode astNode = astNodeMemoization[lexerIndex];
-      lexerIndex = astNode.getToIndex();
-      return astNode;
+      return astNodeMemoization[lexerIndex];
     }
     return null;
   }

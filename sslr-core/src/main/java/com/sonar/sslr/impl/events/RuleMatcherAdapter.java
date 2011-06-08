@@ -7,6 +7,7 @@ package com.sonar.sslr.impl.events;
 
 import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingException;
 import com.sonar.sslr.impl.matcher.Matcher;
@@ -42,6 +43,12 @@ public class RuleMatcherAdapter extends RuleMatcher {
       throw re;
     }
 
+  }
+  
+  @Override
+  public void setNodeType(AstNodeType astNodeType) {
+  	super.setNodeType(astNodeType);
+    this.ruleImpl.setNodeType(astNodeType);
   }
 
   @Override
