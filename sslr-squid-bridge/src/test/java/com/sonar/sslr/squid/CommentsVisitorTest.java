@@ -40,12 +40,15 @@ public class CommentsVisitorTest {
     comments.put(8, new Token(GenericTokenType.COMMENT, "  hehe  ", 8, 0));
     comments.put(8, new Token(GenericTokenType.COMMENT, "  ", 8, 0));
     
+    comments.put(10, new Token(GenericTokenType.COMMENT, "   ", 10, 0));
+    comments.put(10, new Token(GenericTokenType.COMMENT, " test ", 10, 0));
+    
     context.setComments(new Comments(comments));
 
     visitor.visitFile(null);
     visitor.leaveFile(null);
 
-    assertThat(project.getInt(MyMetrics.COMMENT_LINES), is(2));
+    assertThat(project.getInt(MyMetrics.COMMENT_LINES), is(3));
     assertThat(project.getInt(MyMetrics.BLANK_COMMENT_LINES), is(3));
   }
 }

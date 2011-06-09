@@ -34,7 +34,7 @@ public class CommentsVisitor extends SquidAstVisitor<Grammar> {
 
   private void addBlankCommentLine(int line) {
     /* Mark the line as empty comment only if it does not already have a non-empty comment */
-    if ( !comments.contains(line)) {
+    if (!comments.contains(line)) {
       blankComments.add(line);
     }
   }
