@@ -3,13 +3,14 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.structural.matcher;
+package com.sonar.structural.pattern;
 
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeBrowser;
 import com.sonar.sslr.api.RecognitionException;
+import com.sonar.structural.pattern.StructuralPatternMatcher;
 
 import static org.junit.Assert.assertThat;
 

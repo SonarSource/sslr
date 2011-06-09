@@ -26,6 +26,7 @@
     <module>sslr-core</module>   
     <module>sslr-dsl</module>  
     <module>sslr-squid-bridge</module>
+    <module>sslr-structural-pattern-matcher</module>
   </modules>
 
   <build>
@@ -50,7 +51,12 @@
         <artifactId>sslr-core</artifactId>
         <version>${project.version}</version>
       </dependency> 
-            <dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>sslr-dsl</artifactId>
+        <version>${project.version}</version>
+      </dependency>       
+      <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>sslr-core</artifactId>
         <version>${project.version}</version>
