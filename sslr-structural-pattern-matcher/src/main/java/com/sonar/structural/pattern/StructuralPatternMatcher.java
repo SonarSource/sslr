@@ -6,6 +6,7 @@
 package com.sonar.structural.pattern;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.dsl.Dsl;
 
 public class StructuralPatternMatcher {
@@ -15,9 +16,14 @@ public class StructuralPatternMatcher {
   private StructuralPatternMatcher() {
   };
 
-  public static final StructuralPatternMatcher compile(String structuralSearchPatternDsl) {
+  public static final StructuralPatternMatcher compile(String structuralPattern) {
     StructuralPatternMatcher pattern = new StructuralPatternMatcher();
-    Dsl.builder().setGrammar(new StructuralPatternMatcherGrammar(pattern.matcher)).withSource(structuralSearchPatternDsl).compile();
+    try {
+      Dsl.builder().setGrammar(new StructuralPatternMatcherGrammar(pattern.matcher)).withSource(structuralPattern).compile();
+    } catch (RecognitionException e) {
+      throw new StructuralPatternMatcherException("The following structural pattern is incorrect : " + structuralPattern
+          + System.getProperty("line.separator") + e.getMessage());
+    }
     return pattern;
   }
 
