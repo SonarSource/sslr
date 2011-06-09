@@ -14,7 +14,7 @@ public class Token {
   private Token followingToken;
   private TokenType type;
   private String value;
-  private int line = 0;
+  private int line = 1;
   private int column = 0;
   private File file;
   private boolean generatedCode = false;
@@ -83,28 +83,29 @@ public class Token {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (o == null || getClass() != o.getClass() || this.hashCode() != o.hashCode())
-      return false;
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + column;
+		result = prime * result + line;
+		return result;
+	}
 
-    Token token = (Token) o;
-
-    if (type != null ? type != token.type : token.type != null)
-      return false;
-    if (value != null ? !value.equals(token.value) : token.value != null)
-      return false;
-
-    return true;
-  }
-
-  @Override
-  public int hashCode() {
-    int result = type != null ? type.hashCode() : 0;
-    result = 31 * result + (value != null ? value.hashCode() : 0);
-    return result;
-  }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Token other = (Token) obj;
+		if (column != other.column)
+			return false;
+		if (line != other.line)
+			return false;
+		return true;
+	}
 
   @Override
   public String toString() {

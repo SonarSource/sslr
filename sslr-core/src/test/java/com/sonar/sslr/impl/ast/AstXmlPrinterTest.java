@@ -32,15 +32,15 @@ public class AstXmlPrinterTest {
   @Test
   public void testPrintFullAstNode() {
     AstNode astNode = new AstNode(RuleDefinition.newRuleBuilder("expr"), "expr", null);
-    astNode.addChild(new AstNode(new Token(new WordTokenType(), "x", 0, 0, null)));
+    astNode.addChild(new AstNode(new Token(new WordTokenType(), "x", 1, 0, null)));
     astNode.addChild(new AstNode(new Token(new WordTokenType(), "=")));
     astNode.addChild(new AstNode(new Token(new WordTokenType(), "4")));
 
     StringBuilder expectedResult = new StringBuilder();
     expectedResult.append("<expr>\n");
-    expectedResult.append("  <WORD value=\"x\" line=\"0\" col=\"0\"/>\n");
-    expectedResult.append("  <WORD value=\"=\" line=\"0\" col=\"0\"/>\n");
-    expectedResult.append("  <WORD value=\"4\" line=\"0\" col=\"0\"/>\n");
+    expectedResult.append("  <WORD value=\"x\" line=\"1\" col=\"0\"/>\n");
+    expectedResult.append("  <WORD value=\"=\" line=\"1\" col=\"0\"/>\n");
+    expectedResult.append("  <WORD value=\"4\" line=\"1\" col=\"0\"/>\n");
     expectedResult.append("</expr>");
     assertEquals(expectedResult.toString(), AstXmlPrinter.print(astNode));
   }
