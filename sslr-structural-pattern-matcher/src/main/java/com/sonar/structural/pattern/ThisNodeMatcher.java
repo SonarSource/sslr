@@ -8,6 +8,8 @@ package com.sonar.structural.pattern;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.dsl.Literal;
 
@@ -17,7 +19,7 @@ public class ThisNodeMatcher extends CompositeMatcher {
   private Set<String> nodeValues = new HashSet<String>();
 
   public void addTokenValue(Literal tokenValue) {
-    tokenValues.add(tokenValue.toString());
+    tokenValues.add(StringUtils.remove(tokenValue.toString(), '\\'));
   }
 
   public void addNodeName(String nodeValue) {

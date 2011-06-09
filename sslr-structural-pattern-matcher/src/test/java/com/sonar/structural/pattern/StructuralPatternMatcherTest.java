@@ -25,7 +25,7 @@ public class StructuralPatternMatcherTest {
   @Test
   public void shouldParseExpression() {
     StructuralPatternMatcher.compile("'MOVE' this(*) 'TO' 'SEND-TO'");
-    StructuralPatternMatcher.compile("divideStmt(this(*))");
+    StructuralPatternMatcher.compile("divideStmt(this('\\'escaped\\''))");
     StructuralPatternMatcher.compile("divideStmt('DIVIDE' this(*))");
     StructuralPatternMatcher.compile("divideStmt((this(myRule or anotherRule)))");
     StructuralPatternMatcher.compile("stmt((divideStmt(this(*))))");
