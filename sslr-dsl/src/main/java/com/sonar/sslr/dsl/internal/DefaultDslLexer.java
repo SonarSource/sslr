@@ -24,7 +24,7 @@ public class DefaultDslLexer {
   public static Lexer create() {
     return Lexer.builder().optFailIfNoChannelToConsumeOneCharacter().addChannel(new RegexpChannel(WORD, "\\p{Alpha}[\\p{Alpha}\\d_]+"))
         .addChannel(new RegexpChannel(DOUBLE, "\\d++\\.\\d++")).addChannel(new RegexpChannel(INTEGER, "\\d++"))
-        .addChannel(new RegexpChannel(LITERAL, "\".*?\"")).addChannel(new RegexpChannel(LITERAL, "'.*?'"))
+        .addChannel(new RegexpChannel(LITERAL, "\"(.*?)\"")).addChannel(new RegexpChannel(LITERAL, "'.*?'"))
         .addChannel(new BlackHoleChannel("[\\s]")).addChannel(new RegexpChannel(PUNCTUATOR, ".")).build();
   }
 }

@@ -5,16 +5,13 @@
  */
 package com.sonar.structural.pattern;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeBrowser;
-import com.sonar.sslr.api.RecognitionException;
-import com.sonar.structural.pattern.StructuralPatternMatcher;
-
-import static org.junit.Assert.assertThat;
-
-import static org.hamcrest.Matchers.is;
 
 public class StructuralPatternMatcherTest {
 
@@ -36,7 +33,7 @@ public class StructuralPatternMatcherTest {
     StructuralPatternMatcher.compile("this(*)(child((anotherChild)))");
   }
 
-  @Test(expected = RecognitionException.class)
+  @Test(expected = StructuralPatternMatcherException.class)
   public void shouldNotParseExpression() {
     StructuralPatternMatcher.compile("this(*");
   }
