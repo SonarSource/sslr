@@ -18,7 +18,7 @@ public class LexerOutput {
   private File file = null;
   private List<Token> tokens = new ArrayList<Token>(1000);
   private List<Token> preprocessingTokens = new ArrayList<Token>();
-  private ListMultimap<Integer, Token> comments = LinkedListMultimap.<Integer, Token>create();
+  private ListMultimap<Integer, Token> comments = LinkedListMultimap.<Integer, Token> create();
   private final Preprocessor[] preprocessors;
 
   public LexerOutput(Preprocessor... preprocessors) {
@@ -169,6 +169,13 @@ public class LexerOutput {
       token.setFile(file);
     }
     comments.put(token.getLine(), token);
+  }
+
+  public void addCommentTokenAndErasePreviousCommentOnSameLineIfExist(Token token) {
+    if (comments.containsKey(token.getLine())) {
+      comments.removeAll(token.getLine());
+    }
+    addCommentToken(token);
   }
 
   public Collection<Token> getCommentTokens() {
