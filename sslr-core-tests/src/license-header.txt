@@ -1,0 +1,3 @@
+Sonar, open source software quality management tool.
+Copyright (C) ${year} SonarSource SA
+mailto:contact AT sonarsource DOT com

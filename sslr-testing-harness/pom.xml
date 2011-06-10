@@ -7,29 +7,17 @@
 		<artifactId>sslr</artifactId>
 		<version>1.4-SNAPSHOT</version>
 	</parent>
-
-	<artifactId>sslr-dsl</artifactId>
-	<name>SonarSource :: Language Recognizer :: DSL</name>
+	<artifactId>sslr-testing-harness</artifactId>
+	<name>SonarSource :: Language Recognizer :: Testing Harness</name>
 
 	<dependencies>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
+			<groupId>com.sonarsource.sslr</groupId>
 			<artifactId>sslr-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.picocontainer</groupId>
-			<artifactId>picocontainer</artifactId>
-			<version>2.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.sonar</groupId>
-			<artifactId>sonar-testing-harness</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>sslr-testing-harness</artifactId>
-			<scope>test</scope>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
 		</dependency>
 	</dependencies>
 </project>

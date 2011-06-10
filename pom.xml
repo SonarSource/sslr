@@ -24,6 +24,8 @@
 
   <modules>
     <module>sslr-core</module>   
+    <module>sslr-testing-harness</module>       
+    <module>sslr-core-tests</module>       
     <module>sslr-dsl</module>  
     <module>sslr-squid-bridge</module>
     <module>sslr-structural-pattern-matcher</module>
@@ -58,9 +60,8 @@
       </dependency>       
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>sslr-core</artifactId>
+        <artifactId>sslr-testing-harness</artifactId>
         <version>${project.version}</version>
-        <type>test-jar</type>
       </dependency> 
       <dependency>
         <groupId>org.codehaus.sonar</groupId>
@@ -102,6 +103,21 @@
         <artifactId>logback-classic</artifactId>
         <version>0.9.15</version>
       </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.8.1</version>
+      </dependency> 
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>1.8.5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-all</artifactId>
+        <version>1.1</version>
+      </dependency>             
       <dependency>
         <groupId>org.codehaus.sonar</groupId>
         <artifactId>sonar-testing-harness</artifactId>
