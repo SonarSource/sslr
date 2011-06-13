@@ -22,7 +22,7 @@ public class FilesVisitor extends SquidAstVisitor<Grammar> {
   }
 
   public void visitFile(AstNode astNode) {
-    SourceFile file = new SourceFile(context.getFile().getAbsolutePath().replace('\\', '/'), context.getFile().getName());
+    SourceFile file = new SourceFile(context.getFile().getAbsolutePath(), context.getFile().getName());
     context.addSourceCode(file);
     context.peekSourceCode().setMeasure(metric, 1);
   }

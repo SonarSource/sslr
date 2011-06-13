@@ -14,9 +14,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.squid.api.AnalysisException;
-import org.sonar.squid.api.SourceCodeTreeDecorator;
-import org.sonar.squid.api.SourceProject;
-import org.sonar.squid.measures.MetricDef;
+import org.sonar.squid.api.SourceCodeSearchEngine;
+import org.sonar.squid.indexer.SquidIndex;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
@@ -30,6 +29,7 @@ public final class AstScanner<GRAMMAR extends Grammar> {
   private SquidAstVisitorContextImpl<GRAMMAR> context;
   private Parser<GRAMMAR> parser;
   private List<SquidAstVisitor<? extends Grammar>> visitors = new ArrayList<SquidAstVisitor<? extends Grammar>>();
+  private SquidIndex indexer = new SquidIndex();
 
   private AstScanner() {
   }
@@ -39,20 +39,16 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     this.visitors = builder.visitors;
     this.context = builder.context;
     this.context.setGrammar(parser.getGrammar());
+    this.context.getProject().setSourceCodeIndexer(indexer);
+    indexer.index(context.getProject());
+  }
+
+  public SourceCodeSearchEngine getIndex() {
+    return indexer;
   }
 
   public void scanFile(File plSqlFile) {
     scanFiles(Arrays.asList(plSqlFile));
-  }
-
-  public SourceProject getProject() {
-    return context.getProject();
-  }
-
-  public SourceProject decorateSourceCodeTreeWith(MetricDef... metrics) {
-    SourceCodeTreeDecorator decorator = new SourceCodeTreeDecorator(context.getProject());
-    decorator.decorateWith(metrics);
-    return context.getProject();
   }
 
   public void scanFiles(Collection<File> files) {

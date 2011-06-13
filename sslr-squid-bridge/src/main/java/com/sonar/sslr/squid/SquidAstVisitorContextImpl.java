@@ -65,7 +65,6 @@ public class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends SquidAs
     return file;
   }
 
-  @Override
   public final SourceProject getProject() {
     return project;
   }

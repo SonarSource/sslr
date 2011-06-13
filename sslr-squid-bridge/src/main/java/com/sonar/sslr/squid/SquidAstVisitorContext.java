@@ -26,6 +26,4 @@ public abstract class SquidAstVisitorContext<GRAMMAR extends Grammar> {
   public abstract void popSourceCode();
 
   public abstract SourceCode peekSourceCode();
-
-  public abstract SourceProject getProject();
 }
