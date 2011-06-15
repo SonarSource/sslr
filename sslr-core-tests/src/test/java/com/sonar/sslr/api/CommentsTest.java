@@ -44,7 +44,7 @@ public class CommentsTest {
     list.put(15, newCommentToken("", 15, 0));
     list.put(16, newCommentToken("z", 16, 0));
 
-    comments = new Comments(list);
+    comments = new Comments(list, new DefaultCommentAnalyser());
   }
 
   @Test
@@ -109,6 +109,18 @@ public class CommentsTest {
 
     assertThat(comments.isThereCommentBeforeLine(16), is(false));
     assertThat(comments.isThereCommentBeforeLine(17), is(true));
+  }
+  
+  private class DefaultCommentAnalyser extends CommentAnalyser {
+
+    public boolean isBlank(String commentLine) {
+      for (int i = 0; i < commentLine.length(); i++) {
+        if (Character.isLetterOrDigit(commentLine.charAt(i)))
+          return false;
+      }
+
+      return true;
+    }
   }
 
 }

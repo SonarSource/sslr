@@ -11,6 +11,9 @@ import java.util.List;
 
 import com.google.common.collect.ListMultimap;
 
+/**
+ * Utility class to manipulate comment tokens
+ */
 public class Comments implements Iterable<Token> {
 
   private ListMultimap<Integer, Token> comments;
@@ -25,26 +28,46 @@ public class Comments implements Iterable<Token> {
     this.analyser = analyser;
   }
 
+  /**
+   * Iterates over the collection of comment tokens
+   */
   public Iterator<Token> iterator() {
     return comments.values().iterator();
   }
 
+  /**
+   * Return the number of comment tokens
+   */
   public int size() {
     return comments.size();
   }
 
+  /**
+   * 
+   * @param line
+   *          the line where we expect to find some comment tokens
+   * @return true if there is at least one comment token at provided line
+   */
   public boolean hasCommentTokensAtLine(int line) {
     return !getCommentTokensAtLine(line).isEmpty();
   }
 
+  /**
+   * 
+   * @param line
+   *          the line where we expect to find some comment tokens
+   * @return the list of comment tokens on this line
+   */
   public List<Token> getCommentTokensAtLine(int line) {
     return comments.get(line);
   }
 
-  public boolean isBlank(int line) {
-    return isBlank(getCommentTokensAtLine(line));
-  }
-
+  /**
+   * 
+   * @param commentValue
+   *          the value of the comment
+   * @return true if the value is considered to be a blank comment
+   */
   public boolean isBlank(String commentValue) {
     if (analyser == null) {
       throw new UnsupportedOperationException(
@@ -53,14 +76,9 @@ public class Comments implements Iterable<Token> {
     return analyser.isBlank(commentValue);
   }
 
-  private boolean isBlank(List<Token> comments) {
-    for (Token comment : comments) {
-      if ( !isBlank(comment.getValue()))
-        return false;
-    }
-    return true;
-  }
-
+  /**
+   * @deprecated see {@link #isBlank(String)}
+   */
   @Deprecated
   public static boolean isBlankComment(String comment) {
     for (int i = 0; i < comment.length(); i++) {
@@ -72,6 +90,9 @@ public class Comments implements Iterable<Token> {
     return true;
   }
 
+  /**
+   * @deprecated see {@link #isBlank(int)}
+   */
   @Deprecated
   public boolean isBlankComment(int line) {
     if (hasCommentTokensAtLine(line)) {
@@ -80,6 +101,9 @@ public class Comments implements Iterable<Token> {
     return false;
   }
 
+  /**
+   * @deprecated see {@link #getCommentTokensAtLine(int)}
+   */
   @Deprecated
   public Token getCommentAtLine(int line) {
     if (hasCommentTokensAtLine(line)) {
@@ -88,18 +112,27 @@ public class Comments implements Iterable<Token> {
     return null;
   }
 
-  @Deprecated
+  /**
+   * 
+   * @param line
+   *          the line above which some non-blank comment tokens are expected to be found
+   * @return true if there is a list one non-blank comment tokens before the provided line
+   */
   public boolean isThereCommentBeforeLine(int line) {
     int commentLine = line - 1;
-    while (isThereCommentAtLine(commentLine)) {
-      if ( !isBlankComment(commentLine)) {
-        return true;
+    while (hasCommentTokensAtLine(commentLine)) {
+      for (Token comment : getCommentTokensAtLine(commentLine)) {
+        if ( !isBlank(comment.getValue()))
+          return true;
       }
       commentLine--;
     }
     return false;
   }
 
+  /**
+   * @deprecated see {@link #hasCommentTokensAtLine(int)}
+   */
   @Deprecated
   public boolean isThereCommentAtLine(int commentLine) {
     return hasCommentTokensAtLine(commentLine);
