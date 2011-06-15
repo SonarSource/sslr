@@ -49,8 +49,6 @@ public class CounterVisitor extends SquidAstVisitor<Grammar> {
     }
 
     public Builder subscribeTo(AstNodeType... astNodeTypes) {
-      this.astNodeTypes = new LinkedList<AstNodeType>();
-
       for (AstNodeType astNodeType : astNodeTypes) {
         this.astNodeTypes.add(astNodeType);
       }
