@@ -5,20 +5,20 @@
  */
 package com.sonar.sslr.squid;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Test;
 import org.sonar.squid.api.SourceProject;
 
+import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.sonar.sslr.api.CommentAnalyser;
 import com.sonar.sslr.api.Comments;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Token;
 
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.ListMultimap;
+import static org.junit.Assert.assertThat;
+
+import static org.hamcrest.Matchers.is;
 
 public class CommentsVisitorTest {
 
@@ -32,23 +32,35 @@ public class CommentsVisitorTest {
 
     CommentsVisitor visitor = new CommentsVisitor(context, MyMetrics.COMMENT_LINES, MyMetrics.BLANK_COMMENT_LINES);
 
-    ListMultimap<Integer, Token> comments = LinkedListMultimap.<Integer, Token>create();
+    ListMultimap<Integer, Token> comments = LinkedListMultimap.<Integer, Token> create();
     comments.put(1, new Token(GenericTokenType.COMMENT, "     ", 1, 0));
     comments.put(3, new Token(GenericTokenType.COMMENT, "  \r\n   ", 3, 0));
     comments.put(5, new Token(GenericTokenType.COMMENT, "  my comment  ", 5, 0));
-    
+
     comments.put(8, new Token(GenericTokenType.COMMENT, "  hehe  ", 8, 0));
     comments.put(8, new Token(GenericTokenType.COMMENT, "  ", 8, 0));
-    
+
     comments.put(10, new Token(GenericTokenType.COMMENT, "   ", 10, 0));
     comments.put(10, new Token(GenericTokenType.COMMENT, " test ", 10, 0));
-    
-    context.setComments(new Comments(comments));
+
+    context.setComments(new Comments(comments, new MyCommentAnayser()));
 
     visitor.visitFile(null);
     visitor.leaveFile(null);
 
     assertThat(project.getInt(MyMetrics.COMMENT_LINES), is(3));
     assertThat(project.getInt(MyMetrics.BLANK_COMMENT_LINES), is(3));
+  }
+
+  private class MyCommentAnayser extends CommentAnalyser {
+
+    public boolean isBlank(String commentLine) {
+      for (int i = 0; i < commentLine.length(); i++) {
+        if (Character.isLetterOrDigit(commentLine.charAt(i)))
+          return false;
+      }
+
+      return true;
+    }
   }
 }

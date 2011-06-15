@@ -10,7 +10,6 @@ import java.util.HashSet;
 import org.sonar.squid.measures.MetricDef;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Comments;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Token;
 
@@ -34,7 +33,7 @@ public class CommentsVisitor extends SquidAstVisitor<Grammar> {
 
   private void addBlankCommentLine(int line) {
     /* Mark the line as empty comment only if it does not already have a non-empty comment */
-    if (!comments.contains(line)) {
+    if ( !comments.contains(line)) {
       blankComments.add(line);
     }
   }
@@ -67,7 +66,7 @@ public class CommentsVisitor extends SquidAstVisitor<Grammar> {
       int line = comment.getLine();
 
       for (String commentLine : commentLines) {
-        if (Comments.isBlank(commentLine)) {
+        if (context.getComments().isBlank(commentLine)) {
           addBlankCommentLine(line);
         } else {
           addCommentLine(line);

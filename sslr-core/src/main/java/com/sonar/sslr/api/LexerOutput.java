@@ -164,6 +164,10 @@ public class LexerOutput {
     return new Comments(comments);
   }
 
+  public Comments getComments(CommentAnalyser commentAnalyser) {
+    return new Comments(comments, commentAnalyser);
+  }
+
   public void addCommentToken(Token token) {
     if (file != null) {
       token.setFile(file);

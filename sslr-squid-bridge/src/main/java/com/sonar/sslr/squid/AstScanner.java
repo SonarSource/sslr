@@ -18,6 +18,7 @@ import org.sonar.squid.api.SourceCodeSearchEngine;
 import org.sonar.squid.indexer.SquidIndex;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.CommentAnalyser;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.Parser;
@@ -30,6 +31,7 @@ public final class AstScanner<GRAMMAR extends Grammar> {
   private Parser<GRAMMAR> parser;
   private List<SquidAstVisitor<? extends Grammar>> visitors = new ArrayList<SquidAstVisitor<? extends Grammar>>();
   private SquidIndex indexer = new SquidIndex();
+  private CommentAnalyser commentAnalyser;
 
   private AstScanner() {
   }
@@ -40,6 +42,7 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     this.context = builder.context;
     this.context.setGrammar(parser.getGrammar());
     this.context.getProject().setSourceCodeIndexer(indexer);
+    this.commentAnalyser = builder.commentAnalyser;
     indexer.index(context.getProject());
   }
 
@@ -58,7 +61,7 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     for (File file : files) {
       try {
         AstNode ast = parser.parse(file);
-        context.setComments(parser.getLexerOutput().getComments());
+        context.setComments(parser.getLexerOutput().getComments(commentAnalyser));
         context.setFile(file);
         AstWalker astWalker = new AstWalker(visitors);
         astWalker.walkAndVisit(ast);
@@ -86,9 +89,15 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     private Parser<GRAMMAR> parser;
     private List<SquidAstVisitor<? extends Grammar>> visitors = new ArrayList<SquidAstVisitor<? extends Grammar>>();
     private SquidAstVisitorContextImpl<GRAMMAR> context;
+    private CommentAnalyser commentAnalyser;
 
     public Builder<GRAMMAR> setParser(Parser<GRAMMAR> parser) {
       this.parser = parser;
+      return this;
+    }
+
+    public Builder<GRAMMAR> setCommentAnalyser(CommentAnalyser commentAnalyser) {
+      this.commentAnalyser = commentAnalyser;
       return this;
     }
 
