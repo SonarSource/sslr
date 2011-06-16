@@ -22,8 +22,8 @@ public class MatcherTreePrinterTest {
   public void testPrint() {
     assertEquals(MatcherTreePrinter.print(or("test")), "or(\"test\")");
     assertEquals(MatcherTreePrinter.print(and("a", "b")), "and(\"a\", \"b\")");
-    assertEquals(MatcherTreePrinter.print(o2n("a")), "o2n(\"a\")");
-    assertEquals(MatcherTreePrinter.print(o2n("a", "b")), "o2n(and(\"a\", \"b\"))");
+    assertEquals(MatcherTreePrinter.print(o2n("a")), "opt(one2n(\"a\"))");
+    assertEquals(MatcherTreePrinter.print(o2n("a", "b")), "opt(one2n(and(\"a\", \"b\")))");
 
     RuleDefinition heheBuilder = RuleDefinition.newRuleBuilder("hehe");
     RuleMatcher hehe = heheBuilder.is("bonjour", heheBuilder).getRule();

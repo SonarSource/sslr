@@ -32,14 +32,7 @@ public class GrammarFunctions {
      * </pre>
      */
     public static Matcher o2n(Object... objects) {
-      Matcher[] matchers = convertToMatchers(objects);
-      if (matchers.length == 0) {
-        throw new IllegalStateException("You must define at least one matcher.");
-      } else if (matchers.length == 1) {
-        return new ZeroToNMatcher(matchers[0]);
-      } else {
-        return new ZeroToNMatcher(new AndMatcher(matchers));
-      }
+      return opt(one2n(objects));
     }
 
     /**
