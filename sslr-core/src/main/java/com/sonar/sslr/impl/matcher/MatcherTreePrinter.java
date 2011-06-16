@@ -30,7 +30,11 @@ public class MatcherTreePrinter {
 		if (isRuleImpl(matcher) && expandRule) result.append(".is");
 
 		if (hasChildren(children) && isNotRuleImplToCollapse(matcher, expandRule)) {
-			result.append("(");
+			if (result.length() >= 1 && result.charAt(result.length() - 1) == ')') {
+				result.deleteCharAt(result.length() - 1);
+				result.append(", ");
+			}
+			else result.append("(");
 
 			/* Display the children */
 			for (int i = 0; i < children.length; i++) {

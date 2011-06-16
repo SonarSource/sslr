@@ -132,6 +132,20 @@ public class GrammarFunctions {
   }
 
   public static final class Advanced {
+  	
+    /**
+     * Match only if the sub-matcher consumes either exactly, less than or more than the given number of tokens n.
+     */
+    public static Matcher tokenCount(TokenCountMatcher.Operator operator, int n, Object... objects) {
+      Matcher[] matchers = convertToMatchers(objects);
+      if (matchers.length == 0) {
+        throw new IllegalStateException("You must define at least one matcher.");
+      } else if (matchers.length == 1) {
+        return new TokenCountMatcher(operator, n, matchers[0]);
+      } else {
+        return new TokenCountMatcher(operator, n, new AndMatcher(matchers));
+      }
+    }
 
     /**
      * Match the element if and only if the first token of this element is adjacent to the previous consumed token.
