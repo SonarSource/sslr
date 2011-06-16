@@ -16,17 +16,19 @@ public class SourceCodeBuilderVisitor extends SquidAstVisitor<Grammar> {
 
 	private final SquidAstVisitorContext<? extends Grammar> context;
 	private final SourceCodeBuilderCallback callback;
-	private final AstNodeType astNodeType;
+	private final AstNodeType[] astNodeTypes;
 	
-  public SourceCodeBuilderVisitor(SquidAstVisitorContext<? extends Grammar> context, SourceCodeBuilderCallback callback, AstNodeType astNodeType) {
+  public SourceCodeBuilderVisitor(SquidAstVisitorContext<? extends Grammar> context, SourceCodeBuilderCallback callback, AstNodeType... astNodeTypes) {
     this.context = context;
     this.callback = callback;
-    this.astNodeType = astNodeType;
+    this.astNodeTypes = astNodeTypes;
   }
   
   @Override
   public void init() {
-    subscribeTo(astNodeType);
+  	for (AstNodeType astNodeType: astNodeTypes) {
+  		subscribeTo(astNodeType);
+		}
   }
 	
   /**
