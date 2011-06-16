@@ -15,14 +15,14 @@ import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class RuleMatcherAdapter extends RuleMatcher {
 
-  private RuleMatcher ruleImpl;
-  private ParsingEventListener parsingEventListener;
+  private final RuleMatcher ruleImpl;
+  private final ParsingEventListener[] parsingEventListeners;
 
-  public RuleMatcherAdapter(ParsingEventListener parsingEventListener, RuleMatcher ruleImpl) {
+  public RuleMatcherAdapter(RuleMatcher ruleImpl, ParsingEventListener... parsingEventListeners) {
     super(ruleImpl.getName());
 
     this.ruleImpl = ruleImpl;
-    this.parsingEventListener = parsingEventListener;
+    this.parsingEventListeners = parsingEventListeners;
     this.children = new Matcher[] { ruleImpl };
   }
 
@@ -32,14 +32,20 @@ public class RuleMatcherAdapter extends RuleMatcher {
 
   @Override
   public AstNode match(ParsingState parsingState) {
-    parsingEventListener.enterRule(ruleImpl, parsingState);
+  	for (ParsingEventListener parsingEventListener: parsingEventListeners) {
+  		parsingEventListener.enterRule(ruleImpl, parsingState);
+  	}
 
     try {
       AstNode astNode = this.ruleImpl.match(parsingState);
-      parsingEventListener.exitWithMatchRule(ruleImpl, parsingState, astNode);
+      for (ParsingEventListener parsingEventListener: parsingEventListeners) {
+      	parsingEventListener.exitWithMatchRule(ruleImpl, parsingState, astNode);
+      }
       return astNode;
     } catch (BacktrackingException re) {
-      parsingEventListener.exitWithoutMatchRule(ruleImpl, parsingState, re);
+    	for (ParsingEventListener parsingEventListener: parsingEventListeners) {
+    		parsingEventListener.exitWithoutMatchRule(ruleImpl, parsingState, re);
+    	}
       throw re;
     }
 

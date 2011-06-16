@@ -34,7 +34,7 @@ public class RuleImplAdapterTest {
 
   @Test
   public void testGetDefinition() {
-    RuleMatcherAdapter adapter = new RuleMatcherAdapter(null, rule);
+    RuleMatcherAdapter adapter = new RuleMatcherAdapter(rule, null);
 
     assertEquals(MatcherTreePrinter.printWithAdapters(adapter), "RuleImplAdapter(rule)");
     assertEquals(MatcherTreePrinter.print(adapter), "rule.is(\"bonjour\")");
@@ -43,7 +43,7 @@ public class RuleImplAdapterTest {
   @Test
   public void testMatch() {
 
-    RuleMatcherAdapter adapter = new RuleMatcherAdapter(new ParsingEventListener() {
+    RuleMatcherAdapter adapter = new RuleMatcherAdapter(rule, new ParsingEventListener() {
 
       public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState, BacktrackingException re) {
         state += "exitWithoutMatchRule ";
@@ -68,7 +68,7 @@ public class RuleImplAdapterTest {
       public void enterMatcher(Matcher matcher, ParsingState parsingState) {
         state += "enterMatcher ";
       }
-    }, rule);
+    });
 
     state = "";
     assertThat(adapter, match("bonjour"));

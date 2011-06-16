@@ -31,9 +31,9 @@ public class MatcherTreePrinterTest {
     RuleMatcher hehe = heheBuilder.is("bonjour", heheBuilder).getRule();
     assertEquals(MatcherTreePrinter.print(hehe), "hehe.is(and(\"bonjour\", hehe))");
 
-    RuleMatcher haha = RuleDefinition.newRuleBuilder("haha").is(new MemoizerMatcher(new MatcherAdapter(null, or("a", "b")))).getRule();
+    RuleMatcher haha = RuleDefinition.newRuleBuilder("haha").is(new MemoizerMatcher(new MatcherAdapter(or("a", "b"), null))).getRule();
 
-    RuleMatcherAdapter adapter = new RuleMatcherAdapter(null, haha);
+    RuleMatcherAdapter adapter = new RuleMatcherAdapter(haha, null);
 
     assertEquals(MatcherTreePrinter.print(adapter), "haha.is(or(\"a\", \"b\"))");
     assertEquals(MatcherTreePrinter.print(adapter.getRuleImpl()), "haha.is(or(\"a\", \"b\"))");
@@ -41,9 +41,9 @@ public class MatcherTreePrinterTest {
 
   @Test
   public void testPrintWithAdapters() {
-    RuleMatcher haha = RuleDefinition.newRuleBuilder("haha").is(new MemoizerMatcher(new MatcherAdapter(null, or("a", "b")))).getRule();
+    RuleMatcher haha = RuleDefinition.newRuleBuilder("haha").is(new MemoizerMatcher(new MatcherAdapter(or("a", "b"), null))).getRule();
 
-    RuleMatcherAdapter adapter = new RuleMatcherAdapter(null, haha);
+    RuleMatcherAdapter adapter = new RuleMatcherAdapter(haha, null);
 
     assertEquals(MatcherTreePrinter.printWithAdapters(adapter), "RuleImplAdapter(haha)");
     assertEquals(MatcherTreePrinter.printWithAdapters(adapter.getRuleImpl()), "haha.is(MemoizerMatcher(MatcherAdapter(or(\"a\", \"b\"))))");

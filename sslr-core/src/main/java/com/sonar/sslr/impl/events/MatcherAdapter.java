@@ -12,25 +12,31 @@ import com.sonar.sslr.impl.matcher.Matcher;
 
 public class MatcherAdapter extends Matcher {
 
-  private Matcher matcher;
-  private ParsingEventListener parsingEventListener;
+  private final Matcher matcher;
+  private final ParsingEventListener[] parsingEventListeners;
 
-  public MatcherAdapter(ParsingEventListener parsingEventListener, Matcher matcher) {
+  public MatcherAdapter(Matcher matcher, ParsingEventListener... parsingEventListeners) {
     this.matcher = matcher;
-    this.parsingEventListener = parsingEventListener;
+    this.parsingEventListeners = parsingEventListeners;
     this.children = new Matcher[] { matcher };
   }
 
   @Override
   public AstNode match(ParsingState parsingState) {
-    parsingEventListener.enterMatcher(matcher, parsingState);
+  	for (ParsingEventListener parsingEventListener: parsingEventListeners) {
+  		parsingEventListener.enterMatcher(matcher, parsingState);
+  	}
 
     try {
       AstNode astNode = this.matcher.match(parsingState);
-      parsingEventListener.exitWithMatchMatcher(matcher, parsingState, astNode);
+      for (ParsingEventListener parsingEventListener: parsingEventListeners) {
+      	parsingEventListener.exitWithMatchMatcher(matcher, parsingState, astNode);
+      }
       return astNode;
     } catch (BacktrackingException re) {
-      parsingEventListener.exitWithoutMatchMatcher(matcher, parsingState, re);
+    	for (ParsingEventListener parsingEventListener: parsingEventListeners) {
+    		parsingEventListener.exitWithoutMatchMatcher(matcher, parsingState, re);
+    	}
       throw re;
     }
 

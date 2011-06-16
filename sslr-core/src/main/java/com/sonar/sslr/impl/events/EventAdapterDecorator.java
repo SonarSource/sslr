@@ -16,10 +16,10 @@ import com.sonar.sslr.impl.matcher.RuleMatcher;
 public class EventAdapterDecorator<GRAMMAR extends Grammar> implements GrammarDecorator<GRAMMAR> {
 
   private HashSet<Matcher> visited;
-  private ParsingEventListener parsingEventListener;
+  private ParsingEventListener[] parsingEventListeners;
 
-  public EventAdapterDecorator(ParsingEventListener parsingEventListener) {
-    this.parsingEventListener = parsingEventListener;
+  public EventAdapterDecorator(ParsingEventListener... parsingEventListeners) {
+    this.parsingEventListeners = parsingEventListeners;
   }
 
   private void decorateMatcher(Matcher matcher) {
@@ -32,9 +32,9 @@ public class EventAdapterDecorator<GRAMMAR extends Grammar> implements GrammarDe
       decorateMatcher(matcher.getChildren()[i]); /* Recursive */
 
       if (matcher.getChildren()[i] instanceof RuleMatcher) {
-        matcher.getChildren()[i] = new RuleMatcherAdapter(parsingEventListener, (RuleMatcher) matcher.getChildren()[i]);
+        matcher.getChildren()[i] = new RuleMatcherAdapter((RuleMatcher) matcher.getChildren()[i], parsingEventListeners);
       } else {
-        matcher.getChildren()[i] = new MatcherAdapter(parsingEventListener, matcher.getChildren()[i]);
+        matcher.getChildren()[i] = new MatcherAdapter(matcher.getChildren()[i], parsingEventListeners);
       }
     }
   }
@@ -44,14 +44,14 @@ public class EventAdapterDecorator<GRAMMAR extends Grammar> implements GrammarDe
 
     RuleMatcher rule = root.getRule();
 
-    root.setRuleMatcher(new RuleMatcherAdapter(parsingEventListener, rule));
+    root.setRuleMatcher(new RuleMatcherAdapter(rule, parsingEventListeners));
 
     visited = new HashSet<Matcher>();
     decorateMatcher(rule); /* Change the whole tree, recursively! */
   }
 
-  public ParsingEventListener getParsingEventListener() {
-    return this.parsingEventListener;
+  public ParsingEventListener[] getParsingEventListeners() {
+    return this.parsingEventListeners;
   }
 
 }
