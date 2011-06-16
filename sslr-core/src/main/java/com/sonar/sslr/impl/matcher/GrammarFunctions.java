@@ -233,13 +233,6 @@ public class GrammarFunctions {
     }
 
     /**
-     * Consume the next token if and only if its type and its value match the provided ones.
-     */
-    public static Matcher token(TokenType type, String value) {
-      return new TokenTypeAndValueMatcher(type, value);
-    }
-
-    /**
      * Optionally match each element in sequential order but at least one must match.
      * 
      * <pre>
