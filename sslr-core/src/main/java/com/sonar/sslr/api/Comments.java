@@ -8,6 +8,8 @@ package com.sonar.sslr.api;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.google.common.collect.ListMultimap;
 
@@ -33,6 +35,13 @@ public class Comments implements Iterable<Token> {
    */
   public Iterator<Token> iterator() {
     return comments.values().iterator();
+  }
+
+  /**
+   * Get the sorted list of lines containing at least a comment
+   */
+  public SortedSet<Integer> getLinesOfComment() {
+    return new TreeSet<Integer>(comments.keySet());
   }
 
   /**
