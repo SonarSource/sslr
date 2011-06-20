@@ -72,15 +72,14 @@ public class AdaptersDecorator<GRAMMAR extends Grammar> implements GrammarDecora
   }
 
   public void decorate(GRAMMAR grammar) {
-    RuleDefinition root = (RuleDefinition) grammar.getRootRule();
+    RuleDefinition root = (RuleDefinition)grammar.getRootRule();
     
     RuleMatcher originalRule = root.getRule();
-    Matcher memoizedRule = memoize(originalRule);
-    Matcher eventizedRule = eventize(originalRule, memoizedRule);
+    Matcher eventizedRule = eventize(originalRule, originalRule);
     
     root.setRuleMatcher(!(eventizedRule instanceof RuleMatcher) ? originalRule : (RuleMatcher)eventizedRule);
 
-    decorateMatcher((memoizedRule instanceof MemoizerMatcher) ? memoizedRule.getChildren()[0] : memoizedRule); /* Change the whole tree, recursively! */
+    decorateMatcher(originalRule); /* Change the whole tree, recursively! */
   }
 
   public ParsingEventListener[] getParsingEventListeners() {

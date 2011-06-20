@@ -91,7 +91,7 @@ public class AdaptersDecoratorTest {
     p = createParser(new MyTestGrammarAcyclic());
     p.enableExtendedStackTrace();
     p.parse("bonjour hehe huhu olaa uhu");
-    assertEquals(printNewRootRuleWithAdapters(p), "RuleImplAdapter(MemoizerMatcher(root))");
+    assertEquals(printNewRootRuleWithAdapters(p), "RuleImplAdapter(root)");
     assertEquals(
         printOriginalRootRuleWithAdapters(p),
         "root.is(MatcherAdapter(MemoizerMatcher(and(MatcherAdapter(\"bonjour\"), MatcherAdapter(MemoizerMatcher(longestOne(RuleImplAdapter(MemoizerMatcher(rule1)), RuleImplAdapter(MemoizerMatcher(rule2))))), MatcherAdapter(MemoizerMatcher(and(MatcherAdapter(\"olaa\"), MatcherAdapter(\"uhu\")))), MatcherAdapter(EOF)))))");
