@@ -5,7 +5,9 @@
  */
 package com.sonar.sslr.impl.events;
 
+import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
@@ -42,6 +44,13 @@ public class Profiler implements ParsingEventListener {
 
 	public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState, BacktrackingException re) {
 
+	}
+	
+	public void printProfiler(PrintStream stream) {
+		stream.println("How many distinct rules were hit: " + rulesCounter.size());
+		//for (Map.Entry<RuleMatcher, Integer> rule: rulesCounter) {
+			
+		//}
 	}
 
 }
