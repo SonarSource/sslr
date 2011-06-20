@@ -23,7 +23,6 @@ import com.sonar.sslr.impl.matcher.TokenValueMatcher;
 
 public class AdaptersDecorator<GRAMMAR extends Grammar> implements GrammarDecorator<GRAMMAR> {
 
-  private HashSet<Matcher> visited;
   private final ParsingEventListener[] parsingEventListeners;
   private final boolean enableMemoization;
   
@@ -34,6 +33,8 @@ public class AdaptersDecorator<GRAMMAR extends Grammar> implements GrammarDecora
   
   private Matcher memoize(Matcher matcher) {
   	if (enableMemoization) {
+  		if (matcher instanceof MemoizerMatcher) throw new RuntimeException("WTF THIS SHOULD NEVER HAPPEN!!!!");
+  		
 			if (!(matcher instanceof TokenValueMatcher) && !(matcher instanceof TokenTypeMatcher) && !(matcher instanceof TokenTypeClassMatcher)) {
 				return new MemoizerMatcher(matcher);
 			}
@@ -53,41 +54,31 @@ public class AdaptersDecorator<GRAMMAR extends Grammar> implements GrammarDecora
   	
   	return memoizedMatcher;
   }
+  
+  private boolean isAdapter(Matcher matcher) {
+  	return matcher instanceof MemoizerMatcher || matcher instanceof RuleMatcherAdapter || matcher instanceof MatcherAdapter;
+  }
 
   private void decorateMatcher(Matcher matcher) {
-    /* Visitor logic */
-    if (visited.contains(matcher)) {
-    	/* This matcher was already visited */
-      return;
-    }
-    visited.add(matcher);
-
     for (int i = 0; i < matcher.getChildren().length; i++) {
-      decorateMatcher(matcher.getChildren()[i]); /* Recursive */
-      
-      Matcher originalChild = matcher.getChildren()[i];
-      visited.add(originalChild);
-      
-      Matcher memoizedChild = memoize(originalChild);
-      visited.add(memoizedChild);
-      
-      Matcher eventizedChild = eventize(originalChild, memoizedChild);
-      visited.add(eventizedChild);
-      
-      matcher.getChildren()[i] = eventizedChild;
+    	Matcher originalChild = matcher.getChildren()[i];
+    	if (!isAdapter(originalChild)) {
+	      Matcher memoizedChild = memoize(originalChild);
+	      Matcher eventizedChild = eventize(originalChild, memoizedChild);
+	
+	      matcher.getChildren()[i] = eventizedChild;
+	    	
+	      decorateMatcher(originalChild); /* Recursive */
+    	}
     }
   }
 
   public void decorate(GRAMMAR grammar) {
     RuleDefinition root = (RuleDefinition) grammar.getRootRule();
-
-    visited = new HashSet<Matcher>();
     
     RuleMatcher originalRule = root.getRule();
     Matcher memoizedRule = memoize(originalRule);
-    if (originalRule != memoizedRule) visited.add(memoizedRule);
     Matcher eventizedRule = eventize(originalRule, memoizedRule);
-    if (originalRule != eventizedRule) visited.add(eventizedRule);
     
     root.setRuleMatcher(!(eventizedRule instanceof RuleMatcher) ? originalRule : (RuleMatcher)eventizedRule);
 
