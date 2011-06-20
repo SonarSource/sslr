@@ -33,8 +33,6 @@ public class AdaptersDecorator<GRAMMAR extends Grammar> implements GrammarDecora
   
   private Matcher memoize(Matcher matcher) {
   	if (enableMemoization) {
-  		if (matcher instanceof MemoizerMatcher) throw new RuntimeException("WTF THIS SHOULD NEVER HAPPEN!!!!");
-  		
 			if (!(matcher instanceof TokenValueMatcher) && !(matcher instanceof TokenTypeMatcher) && !(matcher instanceof TokenTypeClassMatcher)) {
 				return new MemoizerMatcher(matcher);
 			}
