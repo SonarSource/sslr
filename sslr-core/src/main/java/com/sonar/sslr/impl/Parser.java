@@ -28,7 +28,6 @@ import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.Lexer.LexerBuilder;
-import com.sonar.sslr.impl.events.EventAdapterDecorator;
 import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import com.sonar.sslr.impl.events.Profiler;
 import com.sonar.sslr.impl.events.RuleMatcherAdapter;
@@ -47,7 +46,7 @@ public class Parser<GRAMMAR extends Grammar> {
   private boolean enableMemoizer = true;
   private Profiler profiler;
   private ExtendedStackTrace extendedStackTrace;
-  private EventAdapterDecorator<GRAMMAR> eventAdapterDecorator;
+  private AdaptersDecorator<GRAMMAR> adapterDecorator;
 
   private Parser(ParserBuilder<GRAMMAR> builder) {
     if (builder.lexer != null) {
@@ -105,7 +104,7 @@ public class Parser<GRAMMAR extends Grammar> {
   }
 
   public void printStackTrace(PrintStream stream) {
-    if (this.eventAdapterDecorator == null || this.extendedStackTrace == null) {
+    if (this.adapterDecorator == null || this.extendedStackTrace == null) {
       /* Basic stack trace */
       stream.append(ParsingStackTrace.generateFullStackTrace(getParsingState()));
     } else {
@@ -118,23 +117,23 @@ public class Parser<GRAMMAR extends Grammar> {
     if (isDecorated)
       return;
     isDecorated = true;
-
-    if (enableMemoizer) {
-      new MemoizerAdapterDecorator<GRAMMAR>().decorate(grammar);
-    }
     
     if (this.profiler != null && this.extendedStackTrace != null) {
-    	this.eventAdapterDecorator = new EventAdapterDecorator<GRAMMAR>(this.profiler, this.extendedStackTrace);
-      this.eventAdapterDecorator.decorate(grammar);
+    	this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer, this.profiler, this.extendedStackTrace);
+      this.adapterDecorator.decorate(grammar);
     }
     else if (this.profiler != null) {
-    	this.eventAdapterDecorator = new EventAdapterDecorator<GRAMMAR>(this.profiler);
-      this.eventAdapterDecorator.decorate(grammar);
+    	this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer, this.profiler);
+      this.adapterDecorator.decorate(grammar);
     }
     else if (this.extendedStackTrace != null) {
-      this.eventAdapterDecorator = new EventAdapterDecorator<GRAMMAR>(this.extendedStackTrace);
-      this.eventAdapterDecorator.decorate(grammar);
+      this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer, this.extendedStackTrace);
+      this.adapterDecorator.decorate(grammar);
+    } else if (this.enableMemoizer) {
+    	this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer);
+      this.adapterDecorator.decorate(grammar);
     }
+    
   }
 
   public void addListener(RecognictionExceptionListener listerner) {
@@ -162,7 +161,7 @@ public class Parser<GRAMMAR extends Grammar> {
     /* Now wrap the root rule (only if required) */
     if (this.extendedStackTrace != null) {
       if ( !(this.rootRule.getRule() instanceof RuleMatcherAdapter)) {
-        this.rootRule.setRuleMatcher(new RuleMatcherAdapter(rootRule.getRule(), eventAdapterDecorator.getParsingEventListeners()));
+        this.rootRule.setRuleMatcher(new RuleMatcherAdapter(rootRule.getRule(), adapterDecorator.getParsingEventListeners()));
       }
     }
 

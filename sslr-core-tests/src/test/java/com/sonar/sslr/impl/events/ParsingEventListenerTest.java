@@ -17,8 +17,8 @@ import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.api.GrammarDecorator;
 import com.sonar.sslr.api.Rule;
+import com.sonar.sslr.impl.AdaptersDecorator;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingException;
@@ -49,8 +49,7 @@ public class ParsingEventListenerTest {
     }
 
     public void exitWithMatchMatcher(Matcher matcher, ParsingState parsingState, AstNode astNode) {
-      stream
-          .println("Exit matcher " + MatcherTreePrinter.printWithAdapters(matcher) + " with match until index " + parsingState.lexerIndex);
+      stream.println("Exit matcher " + MatcherTreePrinter.printWithAdapters(matcher) + " with match until index " + parsingState.lexerIndex);
     }
 
     public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState, BacktrackingException re) {
@@ -71,26 +70,22 @@ public class ParsingEventListenerTest {
 
   }
 
-  private class MyTestGrammarParser extends Parser<MyTestGrammar> {
-
-    public MyTestGrammarParser(MyTestGrammar g) {
-      super(g, IdentifierLexer.create(), new MyTestGrammarDecorator(), new EventAdapterDecorator<MyTestGrammar>(parsingEventListener));
-    }
-
+  public Parser<MyTestGrammar> createParser() {
+    return Parser.builder((MyTestGrammar)new MyTestGrammarDecorator()).optSetLexer(IdentifierLexer.create()).optAddGrammarDecorator(new AdaptersDecorator<ParsingEventListenerTest.MyTestGrammar>(false, parsingEventListener)).build();
   }
+  
+  private class MyTestGrammarDecorator extends MyTestGrammar {
 
-  private class MyTestGrammarDecorator implements GrammarDecorator<MyTestGrammar> {
-
-    public void decorate(MyTestGrammar t) {
-      t.root.is("bonjour", longestOne(t.rule1, t.rule2), and("olaa", "uhu"), EOF);
-      t.rule1.is("hehe");
-      t.rule2.is("hehe", "huhu");
+    public MyTestGrammarDecorator() {
+      root.is("bonjour", longestOne(rule1, rule2), and("olaa", "uhu"), EOF);
+      rule1.is("hehe");
+      rule2.is("hehe", "huhu");
     }
   }
 
   @Test
   public void ok() {
-    MyTestGrammarParser p = new MyTestGrammarParser(new MyTestGrammar());
+  	Parser<MyTestGrammar> p = createParser();
     p.disableMemoizer();
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();

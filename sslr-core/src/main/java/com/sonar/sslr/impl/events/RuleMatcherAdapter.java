@@ -11,19 +11,22 @@ import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingException;
 import com.sonar.sslr.impl.matcher.Matcher;
+import com.sonar.sslr.impl.matcher.MemoizerMatcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class RuleMatcherAdapter extends RuleMatcher {
 
   private final RuleMatcher ruleImpl;
+  private final Matcher ruleImplMemoized;
   private final ParsingEventListener[] parsingEventListeners;
 
-  public RuleMatcherAdapter(RuleMatcher ruleImpl, ParsingEventListener... parsingEventListeners) {
-    super(ruleImpl.getName());
+  public RuleMatcherAdapter(Matcher ruleImplMemoized, ParsingEventListener... parsingEventListeners) {
+    super((ruleImplMemoized instanceof MemoizerMatcher) ? ((RuleMatcher)ruleImplMemoized.getChildren()[0]).getName() : ((RuleMatcher)ruleImplMemoized).getName());
 
-    this.ruleImpl = ruleImpl;
+    this.ruleImpl = (ruleImplMemoized instanceof MemoizerMatcher) ? (RuleMatcher)ruleImplMemoized.getChildren()[0] : (RuleMatcher)ruleImplMemoized;
+    this.ruleImplMemoized = ruleImplMemoized;
     this.parsingEventListeners = parsingEventListeners;
-    this.children = new Matcher[] { ruleImpl };
+    this.children = new Matcher[] { ruleImplMemoized };
   }
 
   public RuleMatcher getRuleImpl() {
