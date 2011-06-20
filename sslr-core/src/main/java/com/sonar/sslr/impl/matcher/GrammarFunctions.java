@@ -305,7 +305,7 @@ public class GrammarFunctions {
       try {
         matcher = (Matcher) object;
       } catch (ClassCastException e) {
-        throw new IllegalStateException("The matcher object can't be anything else than a Matcher, String or TokenType. Object = " + object);
+        throw new IllegalStateException("The matcher object can't be anything else than a Rule, Matcher, String, TokenType or Class. Object = " + object);
       }
     }
 
