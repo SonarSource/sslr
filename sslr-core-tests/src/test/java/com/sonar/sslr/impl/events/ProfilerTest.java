@@ -60,11 +60,6 @@ public class ProfilerTest {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     this.stream = new PrintStream(baos);
     p.parse("hehe");
-    
-    System.out.println();
-    System.out.println("root: " + MatcherTreePrinter.printWithAdapters(((RuleDefinition)p.getGrammar().root).getRule()));
-    System.out.println("original root: " + MatcherTreePrinter.printWithAdapters(((RuleMatcherAdapter)((RuleDefinition)p.getGrammar().root).getRule()).getRuleImpl()));
-    System.out.println("rule1: " + MatcherTreePrinter.printWithAdapters(((RuleDefinition)p.getGrammar().rule1).getRule()));
   }
 
 }

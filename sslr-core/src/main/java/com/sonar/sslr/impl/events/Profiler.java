@@ -5,6 +5,8 @@
  */
 package com.sonar.sslr.impl.events;
 
+import java.util.HashMap;
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingException;
@@ -12,9 +14,14 @@ import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class Profiler implements ParsingEventListener {
+	
+	private HashMap<RuleMatcher, Integer> rulesCounter = new HashMap<RuleMatcher, Integer>();
 
 	public void enterRule(RuleMatcher rule, ParsingState parsingState) {
-		System.out.println("enter rule! " + rule.getName());
+		Integer hits = rulesCounter.get(rule);
+		if (hits == null) hits = 0;
+		
+		rulesCounter.put(rule, hits + 1);
 	}
 
 	public void exitWithMatchRule(RuleMatcher rule, ParsingState parsingState, AstNode astNode) {
@@ -26,7 +33,7 @@ public class Profiler implements ParsingEventListener {
 	}
 
 	public void enterMatcher(Matcher matcher, ParsingState parsingState) {
-		System.out.println("Enter matcher " + matcher);
+
 	}
 
 	public void exitWithMatchMatcher(Matcher matcher, ParsingState parsingState, AstNode astNode) {
