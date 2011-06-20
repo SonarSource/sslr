@@ -19,6 +19,9 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.AdaptersDecorator;
 import com.sonar.sslr.impl.Parser;
+import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
+import com.sonar.sslr.impl.matcher.RuleDefinition;
+import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class ProfilerTest {
 
@@ -29,7 +32,6 @@ public class ProfilerTest {
 
     public Rule root;
     public Rule rule1;
-    public Rule rule2;
 
     public Rule getRootRule() {
       return root;
@@ -38,15 +40,15 @@ public class ProfilerTest {
   }
   
   public Parser<MyTestGrammar> createParser() {
-    return Parser.builder((MyTestGrammar)new MyTestGrammarDecorator()).optSetLexer(IdentifierLexer.create()).optAddGrammarDecorator(new AdaptersDecorator<ProfilerTest.MyTestGrammar>(false, profiler)).build();
+    return Parser.builder((MyTestGrammar)new MyTestGrammarDecorator()).optSetLexer(IdentifierLexer.create()).optEnableProfiler().build();
   }
 
   private class MyTestGrammarDecorator extends MyTestGrammar {
 
     public MyTestGrammarDecorator() {
-      root.is(or(and(rule1, "fail"), rule1), EOF);
+      root.is(and(or(and(rule1, "fail"), rule1), EOF));
       rule1.is("hehe");
-      rule2.is("hehe", "huhu");
+
     }
   }
 
@@ -58,6 +60,11 @@ public class ProfilerTest {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     this.stream = new PrintStream(baos);
     p.parse("hehe");
+    
+    System.out.println();
+    System.out.println("root: " + MatcherTreePrinter.printWithAdapters(((RuleDefinition)p.getGrammar().root).getRule()));
+    System.out.println("original root: " + MatcherTreePrinter.printWithAdapters(((RuleMatcherAdapter)((RuleDefinition)p.getGrammar().root).getRule()).getRuleImpl()));
+    System.out.println("rule1: " + MatcherTreePrinter.printWithAdapters(((RuleDefinition)p.getGrammar().rule1).getRule()));
   }
 
 }

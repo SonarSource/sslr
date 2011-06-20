@@ -9,16 +9,20 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingException;
 import com.sonar.sslr.impl.matcher.Matcher;
+import com.sonar.sslr.impl.matcher.MemoizerMatcher;
+import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class MatcherAdapter extends Matcher {
 
   private final Matcher matcher;
+  private final Matcher matcherMemoized;
   private final ParsingEventListener[] parsingEventListeners;
 
-  public MatcherAdapter(Matcher matcher, ParsingEventListener... parsingEventListeners) {
-    this.matcher = matcher;
+  public MatcherAdapter(Matcher matcherMemoized, ParsingEventListener... parsingEventListeners) {
+    this.matcher = (matcherMemoized instanceof MemoizerMatcher) ? matcherMemoized.getChildren()[0] : matcherMemoized;
+    this.matcherMemoized = matcherMemoized;
     this.parsingEventListeners = parsingEventListeners;
-    this.children = new Matcher[] { matcher };
+    this.children = new Matcher[] { matcherMemoized };
   }
 
   @Override
