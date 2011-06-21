@@ -48,9 +48,10 @@ public class Profiler implements ParsingEventListener {
 	
 	public void printProfiler(PrintStream stream) {
 		stream.println("How many distinct rules were hit: " + rulesCounter.size());
-		//for (Map.Entry<RuleMatcher, Integer> rule: rulesCounter) {
-			
-		//}
+		stream.println("Hits per rule:");
+		for (Map.Entry<RuleMatcher, Integer> rule: rulesCounter.entrySet()) {
+			System.out.println(" - " + rule.getKey().getName() + ":\t\t\t" + rule.getValue());
+		}
 	}
 
 }

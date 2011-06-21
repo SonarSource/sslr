@@ -112,6 +112,10 @@ public class Parser<GRAMMAR extends Grammar> {
       this.extendedStackTrace.printExtendedStackTrace(stream);
     }
   }
+  
+  public void printProfiler(PrintStream stream) {
+  	if (this.adapterDecorator != null && this.profiler != null) this.profiler.printProfiler(stream);
+  }
 
   protected void decorate() {
     if (isDecorated)

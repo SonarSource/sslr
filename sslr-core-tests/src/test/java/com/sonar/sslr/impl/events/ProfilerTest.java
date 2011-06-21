@@ -32,6 +32,7 @@ public class ProfilerTest {
 
     public Rule root;
     public Rule rule1;
+    public Rule rule2;
 
     public Rule getRootRule() {
       return root;
@@ -46,9 +47,9 @@ public class ProfilerTest {
   private class MyTestGrammarDecorator extends MyTestGrammar {
 
     public MyTestGrammarDecorator() {
-      root.is(and(or(and(rule1, "fail"), rule1), EOF));
+      root.is(and(or(and(rule1, "fail"), rule1, rule2), EOF));
       rule1.is("hehe");
-
+      rule2.is("hoho");
     }
   }
 
@@ -59,7 +60,9 @@ public class ProfilerTest {
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     this.stream = new PrintStream(baos);
-    p.parse("hehe");
+    p.parse("hoho");
+    
+    //p.printProfiler(System.out);
   }
 
 }
