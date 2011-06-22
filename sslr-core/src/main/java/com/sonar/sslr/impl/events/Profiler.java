@@ -125,6 +125,26 @@ public class Profiler extends ParsingEventListener {
 	}
 
 	@Override
+	public void beginLex() {
+		lexerTimer.start();
+	}
+
+	@Override
+	public void endLex() {
+		lexerTimer.stop();
+	}
+
+	@Override
+	public void beginParse() {
+		parserTimer.start();
+	}
+
+	@Override
+	public void endParse() {
+		parserTimer.stop();
+	}
+
+	@Override
 	public void enterRule(RuleMatcher rule, ParsingState parsingState) {
 		getRuleCounter(rule).hit();
 		startMatch(rule, parsingState);
@@ -163,17 +183,20 @@ public class Profiler extends ParsingEventListener {
 	}
 	
 	public void printProfiler(PrintStream stream) {
+		stream.println("Lexer time: " + nsToMs(lexerTimer.cpuTime) + "ms");
+		stream.println("Parser time: " + nsToMs(parserTimer.cpuTime) + "ms");
 		stream.println("How many distinct rules were hit: " + ruleStats.size());
+		stream.println();
 		stream.println("Rule statistics:");
 		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
 			RuleCounter counter = rule.getValue();
 
-			System.out.print(String.format(" - %-25s", rule.getKey()));
-			System.out.print("Hits: " + String.format("%4d", counter.hits) + "       ");
-			System.out.print("Backtracks: " + String.format("%4d", counter.backtracks) + " (lookahead avg: " + String.format("%6.2f", counter.getAverageLookahead()) + ", max: " + String.format("%3d", counter.getMaxLookahead()) + ")" + "       ");
-			System.out.print("Memoizer: " + String.format("%4d", counter.memoizedHits) + " hits, " + String.format("%4d", counter.memoizedMisses) + " misses"  + "       ");
-			System.out.print("Total CPU Time: " + String.format("%6d", nsToMs(counter.getTotalNonMemoizedHitCpuTime())) + "ms" + "       ");
-			System.out.println();
+			stream.print(String.format(" - %-25s", rule.getKey()));
+			stream.print("Hits: " + String.format("%4d", counter.hits) + "       ");
+			stream.print("Backtracks: " + String.format("%4d", counter.backtracks) + " (lookahead avg: " + String.format("%6.2f", counter.getAverageLookahead()) + ", max: " + String.format("%3d", counter.getMaxLookahead()) + ")" + "       ");
+			stream.print("Memoizer: " + String.format("%4d", counter.memoizedHits) + " hits, " + String.format("%4d", counter.memoizedMisses) + " misses"  + "       ");
+			stream.print("Total CPU Time: " + String.format("%6d", nsToMs(counter.getTotalNonMemoizedHitCpuTime())) + "ms" + "       ");
+			stream.println();
 		}
 	}
 	
