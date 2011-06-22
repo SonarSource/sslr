@@ -183,9 +183,13 @@ public class Profiler extends ParsingEventListener {
 	}
 	
 	public void printProfiler(PrintStream stream) {
-		stream.println("Lexer time: " + nsToMs(lexerTimer.cpuTime) + "ms");
-		stream.println("Parser time: " + nsToMs(parserTimer.cpuTime) + "ms");
+		stream.println("Lexer CPU time: " + nsToMs(lexerTimer.cpuTime) + "ms");
+		stream.println("Parser CPU time: " + nsToMs(parserTimer.cpuTime) + "ms");
 		stream.println("How many distinct rules were hit: " + ruleStats.size());
+		stream.println("How many times rules were hit: " + getHits());
+		stream.println("How many backtracks: " + getBacktracks() + " (lookahead avg: " + String.format("%.2f", getAverageLookahead()) + ", max: " + getMaxLookahead() + ")");
+		stream.println("Memoizer: ? hits, ? misses");
+		stream.println("Total CPU Time: " + "ms");
 		stream.println();
 		stream.println("Rule statistics:");
 		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
@@ -198,6 +202,60 @@ public class Profiler extends ParsingEventListener {
 			stream.print("Total CPU Time: " + String.format("%6d", nsToMs(counter.getTotalNonMemoizedHitCpuTime())) + "ms" + "       ");
 			stream.println();
 		}
+	}
+	
+	private long getHits() {
+		long hits = 0;
+		
+		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
+			RuleCounter counter = rule.getValue();
+			
+			hits += counter.hits;
+		}
+		
+		return hits;
+	}
+	
+	private long getBacktracks() {
+		long backtracks = 0;
+		
+		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
+			RuleCounter counter = rule.getValue();
+			
+			backtracks += counter.backtracks;
+		}
+		
+		return backtracks;
+	}
+	
+	private double getAverageLookahead() {
+		double totalLookahead = 0;
+		int lookaheads = 0;
+		
+		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
+			RuleCounter counter = rule.getValue();
+			
+			for (Integer lookahead: counter.lookaheads) {
+				totalLookahead += lookahead;
+				lookaheads++;
+			}
+		}
+		
+		return (lookaheads == 0) ? 0 : totalLookahead / lookaheads;
+	}
+	
+	private int getMaxLookahead() {
+		int maxLookahead = 0;
+
+		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
+			RuleCounter counter = rule.getValue();
+			
+			for (Integer lookahead: counter.lookaheads) {
+				if (lookahead > maxLookahead) maxLookahead = lookahead;
+			}
+		}
+		
+		return maxLookahead;
 	}
 	
 	private RuleCounter getRuleCounter(RuleMatcher rule) {
