@@ -11,7 +11,7 @@ import com.sonar.sslr.impl.ParsingState;
 
 public class OptMatcher extends Matcher {
 
-  public OptMatcher(Matcher matcher) {
+  protected OptMatcher(Matcher matcher) {
     super(matcher);
   }
 

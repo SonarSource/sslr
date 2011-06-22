@@ -22,8 +22,7 @@ public class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSkippingP
   private Object adapter;
   private AstNodeType astNodeSkippingPolicy = new NeverSkipFromAst();
 
-  private RuleDefinition() {
-  }
+  private RuleDefinition() { }
 
   public static RuleDefinition newLeftRecursiveRuleBuilder(String ruleName) {
     RuleDefinition ruleBuilder = new RuleDefinition();

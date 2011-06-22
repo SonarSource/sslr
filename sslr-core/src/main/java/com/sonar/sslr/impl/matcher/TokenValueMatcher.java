@@ -12,11 +12,11 @@ public class TokenValueMatcher extends TokenMatcher {
 
   private final String tokenValue;
 
-	public TokenValueMatcher(String tokenValue) {
+	protected TokenValueMatcher(String tokenValue) {
     this(tokenValue, false);
   }
 
-  public TokenValueMatcher(String tokenValue, boolean hasToBeSkippedFromAst) {
+  protected TokenValueMatcher(String tokenValue, boolean hasToBeSkippedFromAst) {
     super(hasToBeSkippedFromAst);
     this.tokenValue = tokenValue;
   }

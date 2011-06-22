@@ -38,8 +38,8 @@ public class AdaptersDecoratorTest {
 
   }
   
-  public Parser<MyTestGrammar> createParser(MyTestGrammar grammar) {
-  	return Parser.builder(grammar).optSetLexer(IdentifierLexer.create()).build();
+  public Parser<MyTestGrammar> createParser(boolean memoizer, boolean extendedStackTrace, MyTestGrammar grammar) {
+  	return Parser.builder(grammar).optSetLexer(IdentifierLexer.create()).withMemoizer(memoizer).withExtendedStackTrace(extendedStackTrace).build();
   }
 
   private class MyTestGrammarLeft extends MyTestGrammar {
@@ -70,26 +70,21 @@ public class AdaptersDecoratorTest {
 
   @Test
   public void okAdapters() {
-  	Parser<MyTestGrammar> p = createParser(new MyTestGrammarAcyclic());
-    p.disableMemoizer();
-    p.enableExtendedStackTrace();
+  	Parser<MyTestGrammar> p = createParser(false, true, new MyTestGrammarAcyclic());
     p.parse("bonjour hehe huhu olaa uhu");
     assertEquals(printNewRootRuleWithAdapters(p), "RuleImplAdapter(root)");
     assertEquals(
         printOriginalRootRuleWithAdapters(p),
         "root.is(MatcherAdapter(and(MatcherAdapter(\"bonjour\"), MatcherAdapter(longestOne(RuleImplAdapter(rule1), RuleImplAdapter(rule2))), MatcherAdapter(and(MatcherAdapter(\"olaa\"), MatcherAdapter(\"uhu\"))), MatcherAdapter(EOF))))");
 
-    p = createParser(new MyTestGrammarCyclic());
-    p.disableMemoizer();
-    p.enableExtendedStackTrace();
+    p = createParser(false, true, new MyTestGrammarCyclic());
     p.parse("four PLUS four PLUS four");
     assertEquals(printNewRootRuleWithAdapters(p), "RuleImplAdapter(root)");
     assertEquals(
         printOriginalRootRuleWithAdapters(p),
         "root.is(MatcherAdapter(or(MatcherAdapter(and(MatcherAdapter(\"four\"), MatcherAdapter(\"PLUS\"), RuleImplAdapter(root))), MatcherAdapter(\"four\"))))");
 
-    p = createParser(new MyTestGrammarAcyclic());
-    p.enableExtendedStackTrace();
+    p = createParser(true, true, new MyTestGrammarAcyclic());
     p.parse("bonjour hehe huhu olaa uhu");
     assertEquals(printNewRootRuleWithAdapters(p), "RuleImplAdapter(root)");
     assertEquals(
@@ -99,20 +94,20 @@ public class AdaptersDecoratorTest {
   
   @Test
   public void okMemoizer() {
-  	Parser<MyTestGrammar> p = createParser(new MyTestGrammarAcyclic());
+  	Parser<MyTestGrammar> p = createParser(true, false, new MyTestGrammarAcyclic());
   	
     p.parse("bonjour hehe huhu olaa uhu");
     assertEquals(
     		MatcherTreePrinter.printWithAdapters(p.getRootRule().getRule()),
         "root.is(MemoizerMatcher(and(\"bonjour\", MemoizerMatcher(longestOne(MemoizerMatcher(rule1), MemoizerMatcher(rule2))), MemoizerMatcher(and(\"olaa\", \"uhu\")), EOF)))");
 
-    p = createParser(new MyTestGrammarCyclic());
+    p = createParser(true, false, new MyTestGrammarCyclic());
     p.parse("four PLUS four PLUS four");
     assertEquals(
     		MatcherTreePrinter.printWithAdapters(p.getRootRule().getRule()),
         "root.is(MemoizerMatcher(or(MemoizerMatcher(and(\"four\", \"PLUS\", MemoizerMatcher(root))), \"four\")))");
 
-    p = createParser(new MyTestGrammarLeft());
+    p = createParser(true, false, new MyTestGrammarLeft());
     p.parse("three PLUS three PLUS three");
     assertEquals(
     		MatcherTreePrinter.printWithAdapters(p.getRootRule().getRule()),

@@ -22,7 +22,7 @@ public class TokenCountMatcher extends Matcher {
 		GREATER_THAN
 	}
 	
-  public TokenCountMatcher(Operator operator, int n, Matcher matcher) {
+  protected TokenCountMatcher(Operator operator, int n, Matcher matcher) {
   	super(matcher);
   	
   	this.operator = operator;

@@ -15,7 +15,7 @@ public abstract class TokenMatcher extends Matcher {
 
   private final boolean hasToBeSkippedFromAst;
 
-  public TokenMatcher(boolean hasToBeSkippedFromAst) {
+  protected TokenMatcher(boolean hasToBeSkippedFromAst) {
     this.hasToBeSkippedFromAst = hasToBeSkippedFromAst;
   }
 

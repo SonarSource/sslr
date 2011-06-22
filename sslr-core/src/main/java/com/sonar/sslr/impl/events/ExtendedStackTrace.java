@@ -19,24 +19,18 @@ import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 import com.sonar.sslr.impl.matcher.MemoizerMatcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
-public class ExtendedStackTrace implements ParsingEventListener {
+public class ExtendedStackTrace extends ParsingEventListener {
 	private final static int STACK_TRACE_RULE_STARTING_WITH_TOKENS = 4;
 	private final static int SOURCE_CODE_TOKENS_WINDOW = 30;
 	private final static int LINE_AND_COLUMN_LEFT_PAD_LENGTH = 6;
 	private final static int LAST_SUCCESSFUL_TOKENS_WINDOW = 7;
 	
-	private Stack<MatcherWithPosition> currentStack = new Stack<MatcherWithPosition>();
-	private Stack<RuleWithPosition> longestStack = new Stack<RuleWithPosition>();
+	private Stack<MatcherWithPosition> currentStack;
+	private Stack<RuleWithPosition> longestStack;
 	private MatcherWithPosition longesOutertMatcherWithPosition;
 	private MatcherWithPosition longestMatcherWithPosition;
-	private int longestIndex = -1;
+	private int longestIndex;
 	private ParsingState longestParsingState;
-	
-	public void initialize() {
-		currentStack = new Stack<MatcherWithPosition>();
-		longestStack = new Stack<RuleWithPosition>();
-		longestIndex = -1;
-	}
 	
 	private class MatcherWithPosition {
 		
@@ -86,6 +80,14 @@ public class ExtendedStackTrace implements ParsingEventListener {
 		
 	}
 	
+	@Override
+	public void beginParse() {
+		currentStack = new Stack<MatcherWithPosition>();
+		longestStack = new Stack<RuleWithPosition>();
+		longestIndex = -1;
+	}
+
+	@Override
 	public void enterRule(RuleMatcher rule, ParsingState parsingState) {
 		/* The beginning of a rule is the "end" (when partitioning) of the last one, so update the last's one toIndex */
 		RuleWithPosition lastRuleWithPosition = null;
@@ -102,22 +104,27 @@ public class ExtendedStackTrace implements ParsingEventListener {
 		currentStack.push(new RuleWithPosition(rule, parsingState.lexerIndex));
 	}
 
+	@Override
 	public void exitWithMatchRule(RuleMatcher rule, ParsingState parsingState, AstNode astNode) {
 		currentStack.pop();
 	}
 
+	@Override
 	public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState, BacktrackingException re) {
 		currentStack.pop();
 	}
 
+	@Override
 	public void enterMatcher(Matcher matcher, ParsingState parsingState) {
 		currentStack.push(new MatcherWithPosition(matcher, parsingState.lexerIndex));
 	}
 
+	@Override
 	public void exitWithMatchMatcher(Matcher matcher, ParsingState parsingState, AstNode astNode) {	
 		currentStack.pop();
 	}
 
+	@Override
 	public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState, BacktrackingException re) {
 		/* Handle the longest path */
 		if (parsingState.lexerIndex > longestIndex) {

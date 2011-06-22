@@ -13,7 +13,7 @@ import com.sonar.sslr.impl.BacktrackingException;
 
 public class AdjacentMatcher extends Matcher {
 	
-  public AdjacentMatcher(Matcher matcher) {
+  protected AdjacentMatcher(Matcher matcher) {
   	super(matcher);
   }
 

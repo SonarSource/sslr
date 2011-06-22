@@ -10,7 +10,7 @@ import com.sonar.sslr.api.Token;
 
 public class AnyTokenMatcher extends TokenMatcher {
 	
-  public AnyTokenMatcher() {
+	protected AnyTokenMatcher() {
     super(false);
   }
 

@@ -13,7 +13,7 @@ import com.sonar.sslr.impl.ParsingState;
 
 public class InclusiveTillMatcher extends Matcher {
 
-  public InclusiveTillMatcher(Matcher matcher) {
+	protected InclusiveTillMatcher(Matcher matcher) {
   	super(matcher);
   }
 

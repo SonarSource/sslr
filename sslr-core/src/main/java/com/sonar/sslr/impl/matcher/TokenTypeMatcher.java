@@ -13,11 +13,11 @@ public class TokenTypeMatcher extends TokenMatcher {
 
   private final TokenType type;
 
-	public TokenTypeMatcher(TokenType type) {
+	protected TokenTypeMatcher(TokenType type) {
     this(type, false);
   }
 
-  public TokenTypeMatcher(TokenType type, boolean hasToBeSkippedFromAst) {
+  protected TokenTypeMatcher(TokenType type, boolean hasToBeSkippedFromAst) {
     super(hasToBeSkippedFromAst);
     this.type = type;
   }

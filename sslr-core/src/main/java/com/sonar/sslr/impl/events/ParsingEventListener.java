@@ -11,18 +11,32 @@ import com.sonar.sslr.impl.BacktrackingException;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
-public interface ParsingEventListener {
+public abstract class ParsingEventListener {
+	/* Parsing level */
+	public void beginLex() { };
+	
+	public void endLex() { };
+	
+	public void beginParse() { };
+	
+	public void endParse() { };
+	
 	/* Rule level */
-	void enterRule(RuleMatcher rule, ParsingState parsingState);
+	public void enterRule(RuleMatcher rule, ParsingState parsingState) { };
 	
-	void exitWithMatchRule(RuleMatcher rule, ParsingState parsingState, AstNode astNode);
+	public void exitWithMatchRule(RuleMatcher rule, ParsingState parsingState, AstNode astNode) { };
 	
-	void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState, BacktrackingException re);
+	public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState, BacktrackingException re) { };
 	
 	/* Matcher level */
-	void enterMatcher(Matcher matcher, ParsingState parsingState);
+	public void enterMatcher(Matcher matcher, ParsingState parsingState) { };
 	
-	void exitWithMatchMatcher(Matcher matcher, ParsingState parsingState, AstNode astNode);
+	public void exitWithMatchMatcher(Matcher matcher, ParsingState parsingState, AstNode astNode) { };
 	
-	void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState, BacktrackingException re);
+	public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState, BacktrackingException re) { };
+	
+	/* Memoization level */
+	public void memoizerHit(Matcher matcher, ParsingState parsingState) { };
+	
+	public void memoizerMiss(Matcher matcher, ParsingState parsingState) { };
 }

@@ -13,8 +13,7 @@ import com.sonar.sslr.api.TokenType;
  */
 public class GrammarFunctions {
 
-  private GrammarFunctions() {
-  };
+  private GrammarFunctions() { }
 
   public static final class Standard {
 
@@ -47,13 +46,10 @@ public class GrammarFunctions {
      * </pre>
      */
     public static Matcher one2n(Object... elements) {
-      Matcher[] matchers = convertToMatchers(elements);
-      if (matchers.length == 0) {
+      if (elements.length == 0) {
         throw new IllegalStateException("You must define at least one matcher.");
-      } else if (matchers.length == 1) {
-        return new OneToNMatcher(matchers[0]);
       } else {
-        return new OneToNMatcher(new AndMatcher(matchers));
+        return new OneToNMatcher(and(elements));
       }
     }
 
@@ -69,10 +65,11 @@ public class GrammarFunctions {
      * </pre>
      */
     public static Matcher opt(Object... elements) {
-      if (elements.length == 1) {
-        return new OptMatcher(convertToMatcher(elements[0]));
+      if (elements.length == 0) {
+        throw new IllegalStateException("You must define at least one matcher.");
+      } else {
+      	return new OptMatcher(and(elements));
       }
-      return new OptMatcher(new AndMatcher(convertToMatchers(elements)));
     }
 
     /**
@@ -91,7 +88,13 @@ public class GrammarFunctions {
      * </pre>
      */
     public static Matcher or(Object... elements) {
-      return new OrMatcher(convertToMatchers(elements));
+      if (elements.length == 0) {
+        throw new IllegalStateException("You must define at least one matcher.");
+      } else if (elements.length == 1) {
+      	return convertToMatcher(elements[0]);
+      } else {
+      	return new OrMatcher(convertToMatchers(elements));
+      }
     }
 
     /**
@@ -104,11 +107,15 @@ public class GrammarFunctions {
      * </pre>
      */
     public static Matcher and(Object... elements) {
-      if (elements.length == 1) {
+    	if (elements.length == 0) {
+    		throw new IllegalStateException("You must define at least one matcher.");
+    	} else if (elements.length == 1) {
         return convertToMatcher(elements[0]);
+      } else {
+      	return new AndMatcher(convertToMatchers(elements));
       }
-      return new AndMatcher(convertToMatchers(elements));
     }
+    
   }
 
   public static final class Predicate {
@@ -124,11 +131,13 @@ public class GrammarFunctions {
      * Syntactic predicate to check that the next tokens match some elements.
      */
     public static Matcher next(Object... elements) {
-      if (elements.length == 1) {
-        return new NextMatcher(convertToMatcher(elements[0]));
+      if (elements.length == 0) {
+      	throw new IllegalStateException("You must define at least one matcher.");
+      } else {
+      	return new NextMatcher(Standard.and(elements));
       }
-      return new NextMatcher(new AndMatcher(convertToMatchers(elements)));
     }
+    
   }
 
   public static final class Advanced {
@@ -136,14 +145,11 @@ public class GrammarFunctions {
     /**
      * Match only if the sub-matcher consumes either exactly, less than or more than the given number of tokens n.
      */
-    public static Matcher tokenCount(TokenCountMatcher.Operator operator, int n, Object... objects) {
-      Matcher[] matchers = convertToMatchers(objects);
-      if (matchers.length == 0) {
+    public static Matcher tokenCount(TokenCountMatcher.Operator operator, int n, Object... elements) {
+      if (elements.length == 0) {
         throw new IllegalStateException("You must define at least one matcher.");
-      } else if (matchers.length == 1) {
-        return new TokenCountMatcher(operator, n, matchers[0]);
       } else {
-        return new TokenCountMatcher(operator, n, new AndMatcher(matchers));
+        return new TokenCountMatcher(operator, n, Standard.and(elements));
       }
     }
 
@@ -218,7 +224,7 @@ public class GrammarFunctions {
     }
 
     /**
-     * Consume all tokens as long as the element is not encountered. The first token of the element is also consumed.
+     * Consume all tokens as long as the element is not encountered. The element is also consumed.
      * 
      * <pre>
      * {@code 
@@ -227,9 +233,9 @@ public class GrammarFunctions {
      * </pre>
      */
     public static Matcher till(Object element) {
-      return new InclusiveTillMatcher(convertToMatcher(element));
+    	return new InclusiveTillMatcher(convertToMatcher(element));
     }
-
+    
     /**
      * Consume all tokens as long one of the provided elements is not encountered.
      * 

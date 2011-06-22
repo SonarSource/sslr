@@ -9,28 +9,15 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingException;
+import com.sonar.sslr.impl.events.ParsingEventListener;
 
 public class MemoizerMatcher extends Matcher {
+	
+	private final ParsingEventListener[] parsingEventListeners;
 
-  public MemoizerMatcher(Matcher proxiedMatcher) {
+  public MemoizerMatcher(Matcher proxiedMatcher, ParsingEventListener... parsingEventListeners) {
     super(proxiedMatcher);
-  }
-
-  public int matchToIndex(ParsingState state) {
-  	AstNode memoizedAstNode = state.getMemoizedAst(this);
-    if (memoizedAstNode != null) {
-      return memoizedAstNode.getToIndex();
-    }
-    int startingIndex = state.lexerIndex;
-    try {
-      AstNode node = super.children[0].match(state);
-      memoizeAstNode(node, startingIndex, state);
-      return state.lexerIndex;
-    } catch (BacktrackingException e) {
-      return -1;
-    } finally {
-      state.lexerIndex = startingIndex;
-    }
+    this.parsingEventListeners = parsingEventListeners;
   }
 
   private void memoizeAstNode(AstNode node, int startingIndex, ParsingState state) {
@@ -45,9 +32,19 @@ public class MemoizerMatcher extends Matcher {
   public AstNode match(ParsingState state) {
   	AstNode memoizedAstNode = state.getMemoizedAst(this);
     if (memoizedAstNode != null) {
+
+    	for (ParsingEventListener parsingEventListener: parsingEventListeners) {
+    		parsingEventListener.memoizerHit(super.children[0], state);
+    	}
+    	
       state.lexerIndex = memoizedAstNode.getToIndex();
       return memoizedAstNode;
     }
+    
+    for (ParsingEventListener parsingEventListener: parsingEventListeners) {
+  		parsingEventListener.memoizerMiss(super.children[0], state);
+  	}
+    
     int startingIndex = state.lexerIndex;
     AstNode node = super.children[0].match(state);
     memoizeAstNode(node, startingIndex, state);

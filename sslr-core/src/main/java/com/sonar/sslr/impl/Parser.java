@@ -29,6 +29,7 @@ import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.Lexer.LexerBuilder;
 import com.sonar.sslr.impl.events.ExtendedStackTrace;
+import com.sonar.sslr.impl.events.ParsingEventListener;
 import com.sonar.sslr.impl.events.Profiler;
 import com.sonar.sslr.impl.events.RuleMatcherAdapter;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
@@ -43,10 +44,10 @@ public class Parser<GRAMMAR extends Grammar> {
   private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
 
   private boolean isDecorated = false;
-  private boolean enableMemoizer = true;
-  private Profiler profiler;
-  private ExtendedStackTrace extendedStackTrace;
-  private AdaptersDecorator<GRAMMAR> adapterDecorator;
+  private final boolean enableMemoizer;
+  private final Profiler profiler;
+  private final ExtendedStackTrace extendedStackTrace;
+  private final AdaptersDecorator<GRAMMAR> adapterDecorator;
 
   private Parser(ParserBuilder<GRAMMAR> builder) {
     if (builder.lexer != null) {
@@ -55,11 +56,25 @@ public class Parser<GRAMMAR extends Grammar> {
       this.lexer = builder.lexerBuilder.build();
     }
     this.grammar = builder.grammar;
-    if (builder.enableProfiler) this.profiler = new Profiler();
-    if (builder.enableExtendedStackTrace) this.extendedStackTrace = new ExtendedStackTrace();
+    this.profiler = (builder.enableProfiler) ? new Profiler() : null;
+    this.extendedStackTrace = (builder.enableExtendedStackTrace) ? new ExtendedStackTrace() : null;
     this.enableMemoizer = builder.enableMemoizer;
     this.listeners = builder.listeners;
     setDecorators(builder.decorators);
+    
+    if (this.profiler != null && this.extendedStackTrace != null) {
+    	this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer, this.profiler, this.extendedStackTrace);
+    }
+    else if (this.profiler != null) {
+    	this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer, this.profiler);
+    }
+    else if (this.extendedStackTrace != null) {
+      this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer, this.extendedStackTrace);
+    } else if (this.enableMemoizer) {
+    	this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer);
+    } else {
+    	this.adapterDecorator = null;
+    }
   }
 
   /**
@@ -82,6 +97,11 @@ public class Parser<GRAMMAR extends Grammar> {
     this.grammar = grammar;
     this.lexer = lexer;
     setDecorators(decorators);
+    
+    this.profiler = null;
+    this.extendedStackTrace = null;
+    this.enableMemoizer = true;
+    this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer);
   }
 
   protected void setDecorators(List<GrammarDecorator<GRAMMAR>> decorators) {
@@ -89,18 +109,6 @@ public class Parser<GRAMMAR extends Grammar> {
       decorator.decorate(grammar);
     }
     this.rootRule = (RuleDefinition) grammar.getRootRule();
-  }
-
-  public void disableMemoizer() {
-    this.enableMemoizer = false;
-  }
-  
-  public void enableProfiler() {
-    if (this.profiler == null) this.profiler = new Profiler();
-  }
-
-  public void enableExtendedStackTrace() {
-    if (this.extendedStackTrace == null) this.extendedStackTrace = new ExtendedStackTrace();
   }
 
   public void printStackTrace(PrintStream stream) {
@@ -118,23 +126,10 @@ public class Parser<GRAMMAR extends Grammar> {
   }
 
   protected void decorate() {
-    if (isDecorated)
-      return;
+    if (isDecorated) return;
     isDecorated = true;
     
-    if (this.profiler != null && this.extendedStackTrace != null) {
-    	this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer, this.profiler, this.extendedStackTrace);
-      this.adapterDecorator.decorate(grammar);
-    }
-    else if (this.profiler != null) {
-    	this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer, this.profiler);
-      this.adapterDecorator.decorate(grammar);
-    }
-    else if (this.extendedStackTrace != null) {
-      this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer, this.extendedStackTrace);
-      this.adapterDecorator.decorate(grammar);
-    } else if (this.enableMemoizer) {
-    	this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer);
+    if (this.adapterDecorator != null) {
       this.adapterDecorator.decorate(grammar);
     }
     
@@ -145,23 +140,48 @@ public class Parser<GRAMMAR extends Grammar> {
   }
 
   public final AstNode parse(File file) {
+  	/* Fire the beginLex event */
+  	if (this.adapterDecorator != null) {
+	  	for (ParsingEventListener listener: adapterDecorator.getParsingEventListeners()) {
+	    	listener.beginLex();
+	    }
+  	}
+  	
     lexerOutput = lexer.lex(file);
+    
+    /* Fire the endLex event */
+    if (this.adapterDecorator != null) {
+	  	for (ParsingEventListener listener: adapterDecorator.getParsingEventListeners()) {
+	    	listener.endLex();
+	    }
+    }
+    
     return parse(lexerOutput.getTokens());
   }
 
   public final AstNode parse(String source) {
+  	/* Fire the beginLex event */
+  	if (this.adapterDecorator != null) {
+	  	for (ParsingEventListener listener: adapterDecorator.getParsingEventListeners()) {
+	    	listener.beginLex();
+	    }
+  	}
+  	
     lexerOutput = lexer.lex(source);
+    
+    /* Fire the endLex event */
+    if (this.adapterDecorator != null) {
+	  	for (ParsingEventListener listener: adapterDecorator.getParsingEventListeners()) {
+	    	listener.endLex();
+	    }
+    }
+    
     return parse(lexerOutput.getTokens());
   }
 
   public final AstNode parse(List<Token> tokens) {
     decorate(); /* FIXME: Is there a better place to do this? Perhaps with a Parser Builder! */
-
-    /* (Re)initialize the extended stack trace */
-    if (this.extendedStackTrace != null) {
-      this.extendedStackTrace.initialize();
-    }
-
+    
     /* Now wrap the root rule (only if required) */
     if (this.extendedStackTrace != null) {
       if ( !(this.rootRule.getRule() instanceof RuleMatcherAdapter)) {
@@ -170,7 +190,14 @@ public class Parser<GRAMMAR extends Grammar> {
     }
 
     parsingState = null;
-    beforeEachFile();
+    
+    /* Fire the beginParse event */
+    if (this.adapterDecorator != null) {
+	    for (ParsingEventListener listener: adapterDecorator.getParsingEventListeners()) {
+	    	listener.beginParse();
+	    }
+    }
+    
     try {
       parsingState = new ParsingState(tokens);
       parsingState.setListeners(listeners);
@@ -186,15 +213,15 @@ public class Parser<GRAMMAR extends Grammar> {
           parsingState, e);
     } finally {
       GrammarRuleLifeCycleManager.notifyEndParsing(grammar);
-      afterEachFile();
+      
+      /* Fire the endParse event */
+      if (this.adapterDecorator != null) {
+	      for (ParsingEventListener listener: adapterDecorator.getParsingEventListeners()) {
+	      	listener.endParse();
+	      }
+      }
     }
 
-  }
-
-  public void beforeEachFile() {
-  }
-
-  public void afterEachFile() {
   }
 
   public final ParsingState getParsingState() {
@@ -282,18 +309,18 @@ public class Parser<GRAMMAR extends Grammar> {
       return this;
     }
 
-    public ParserBuilder<GRAMMAR> optEnableExtendedStackTrace() {
-      enableExtendedStackTrace = true;
+    public ParserBuilder<GRAMMAR> withExtendedStackTrace(boolean enable) {
+      this.enableExtendedStackTrace = enable;
       return this;
     }
     
-    public ParserBuilder<GRAMMAR> optEnableProfiler() {
-    	enableProfiler = true;
+    public ParserBuilder<GRAMMAR> withProfiler(boolean enable) {
+    	this.enableProfiler = enable;
     	return this;
     }
 
-    public ParserBuilder<GRAMMAR> optDisableMemoizer() {
-      enableMemoizer = false;
+    public ParserBuilder<GRAMMAR> withMemoizer(boolean enable) {
+      this.enableMemoizer = enable;
       return this;
     }
 
@@ -301,5 +328,7 @@ public class Parser<GRAMMAR extends Grammar> {
       listeners.add(listener);
       return this;
     }
+    
   }
+  
 }

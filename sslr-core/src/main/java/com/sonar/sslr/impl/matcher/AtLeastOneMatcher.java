@@ -14,7 +14,7 @@ import com.sonar.sslr.impl.BacktrackingException;
 
 public class AtLeastOneMatcher extends Matcher {
 	
-  public AtLeastOneMatcher(Matcher... matchers) {
+	protected AtLeastOneMatcher(Matcher... matchers) {
   	super(matchers);
   }
 

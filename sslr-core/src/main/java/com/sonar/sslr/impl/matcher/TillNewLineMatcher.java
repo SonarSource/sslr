@@ -15,7 +15,7 @@ import com.sonar.sslr.impl.ParsingState;
 
 public class TillNewLineMatcher extends Matcher {
 
-  public TillNewLineMatcher() {
+  protected TillNewLineMatcher() {
   	super();
   }
 

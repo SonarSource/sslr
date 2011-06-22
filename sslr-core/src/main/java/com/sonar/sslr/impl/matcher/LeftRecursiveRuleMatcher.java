@@ -22,7 +22,7 @@ public class LeftRecursiveRuleMatcher extends RuleMatcher {
   private Stack<Integer> matchStartIndexes = new Stack<Integer>();
   private Map<Integer, AstNode> partialAstNodes = new HashMap<Integer, AstNode>();
 
-  public LeftRecursiveRuleMatcher(String name) {
+  protected LeftRecursiveRuleMatcher(String name) {
     super(name);
   }
 

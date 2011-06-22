@@ -16,7 +16,7 @@ public class BridgeMatcher extends Matcher {
   private final TokenType from;
   private final TokenType to;
 
-  public BridgeMatcher(TokenType from, TokenType to) {
+  protected BridgeMatcher(TokenType from, TokenType to) {
   	super();
   	
     this.from = from;

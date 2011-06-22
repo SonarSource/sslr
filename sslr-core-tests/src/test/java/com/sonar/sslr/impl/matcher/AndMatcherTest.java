@@ -27,7 +27,8 @@ public class AndMatcherTest {
   
   @Test
   public void testToString() {
-  	assertEquals(and("(", ")").toString(), "and"); /* With a single argument, the and() is removed automatically */
+  	assertEquals(and("(").toString(), "\"(\"");
+  	assertEquals(and("(", ")").toString(), "and");
   }
 
 }

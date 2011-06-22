@@ -20,13 +20,11 @@ import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
-import com.sonar.sslr.impl.matcher.TokenValueMatcher;
 
 public class ParsingStackTraceTest {
 
   private List<Token> tokens = lex("package com.test;\n" + "import java.util.*;\n" + "public abstract clas MyClass {\n"
       + "   public abstract void run();\n" + "}\n");
-  TokenValueMatcher language = new TokenValueMatcher("language");
   private ParsingState state = new ParsingState(tokens);
   private RuleMatcher compilationUnit = ((RuleDefinition) new JavaGrammar().getRootRule()).getRule();
 

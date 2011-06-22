@@ -32,7 +32,7 @@ public class MatcherAdapter extends Matcher {
   	}
 
     try {
-      AstNode astNode = this.matcher.match(parsingState);
+      AstNode astNode = this.matcherMemoized.match(parsingState);
       for (ParsingEventListener parsingEventListener: parsingEventListeners) {
       	parsingEventListener.exitWithMatchMatcher(matcher, parsingState, astNode);
       }

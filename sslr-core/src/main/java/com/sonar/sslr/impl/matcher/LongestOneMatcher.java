@@ -12,7 +12,7 @@ import com.sonar.sslr.impl.BacktrackingException;
 
 public class LongestOneMatcher extends Matcher {
 
-  public LongestOneMatcher(Matcher... matchers) {
+	protected LongestOneMatcher(Matcher... matchers) {
   	super(matchers);
   }
 

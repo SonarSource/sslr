@@ -12,7 +12,7 @@ import com.sonar.sslr.impl.BacktrackingException;
 
 public class OneToNMatcher extends Matcher {
 
-  public OneToNMatcher(Matcher matcher) {
+  protected OneToNMatcher(Matcher matcher) {
     super(matcher);
   }
 

@@ -14,7 +14,7 @@ public class BooleanMatcher extends Matcher {
 
   private final boolean internalState;
 
-	public BooleanMatcher(boolean internalState) {
+  protected BooleanMatcher(boolean internalState) {
   	super();
   	
     this.internalState = internalState;

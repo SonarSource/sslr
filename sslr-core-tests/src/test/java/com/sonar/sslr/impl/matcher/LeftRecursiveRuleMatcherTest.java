@@ -12,6 +12,7 @@ import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -193,24 +194,6 @@ public class LeftRecursiveRuleMatcherTest {
     ma.is(exp, "MA", "INVE");
 
     assertThat(exp.getRule(), match("SN MA INVE"));
-  }
-
-  @Test
-  public void testRecursionCase11() throws Exception {
-    RuleDefinition exp = RuleDefinition.newLeftRecursiveRuleBuilder("exp");
-    RuleDefinition sn = RuleDefinition.newLeftRecursiveRuleBuilder("sn");
-    RuleDefinition ma = RuleDefinition.newLeftRecursiveRuleBuilder("ma");
-    RuleDefinition inve = RuleDefinition.newLeftRecursiveRuleBuilder("inve");
-
-    exp.isOr(sn, ma, inve);
-    sn.is("SN");
-    ma.is(exp, "MA");
-    inve.is(exp, "INVE");
-
-    assertThat(ma.getRule(), match("SN MA MA"));
-    assertThat(inve.getRule(), match("SN INVE"));
-    assertThat(inve.getRule(), match("SN MA INVE MA INVE"));
-
   }
 
 }

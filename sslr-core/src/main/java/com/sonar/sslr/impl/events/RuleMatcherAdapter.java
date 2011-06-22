@@ -40,7 +40,7 @@ public class RuleMatcherAdapter extends RuleMatcher {
   	}
 
     try {
-      AstNode astNode = this.ruleImpl.match(parsingState);
+      AstNode astNode = this.ruleImplMemoized.match(parsingState);
       for (ParsingEventListener parsingEventListener: parsingEventListeners) {
       	parsingEventListener.exitWithMatchRule(ruleImpl, parsingState, astNode);
       }

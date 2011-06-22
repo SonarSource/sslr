@@ -14,7 +14,7 @@ public abstract class Matcher {
 
   protected Matcher[] children;
 
-  public Matcher(Matcher... children) {
+  protected Matcher(Matcher... children) {
     this.children = children;
   }
 
@@ -26,7 +26,7 @@ public abstract class Matcher {
     return matchToIndex(parsingState) >= 0;
   }
 
-  public int matchToIndex(ParsingState parsingState) {
+  public final int matchToIndex(ParsingState parsingState) {
     int indexBeforeStarting = parsingState.lexerIndex;
     boolean leftRecursionState = parsingState.hasPendingLeftRecursion();
     try {

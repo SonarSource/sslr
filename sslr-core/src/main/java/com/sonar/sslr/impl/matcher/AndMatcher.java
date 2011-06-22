@@ -11,7 +11,7 @@ import com.sonar.sslr.impl.ParsingState;
 
 public class AndMatcher extends Matcher {
 	
-  public AndMatcher(Matcher... matchers) {
+	protected AndMatcher(Matcher... matchers) {
   	super(matchers);
   }
 

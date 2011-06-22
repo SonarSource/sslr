@@ -12,7 +12,7 @@ import com.sonar.sslr.impl.BacktrackingException;
 
 public class OrMatcher extends Matcher {
 
-  public OrMatcher(Matcher... matchers) {
+  protected OrMatcher(Matcher... matchers) {
     super(matchers);
   }
 

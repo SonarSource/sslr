@@ -8,6 +8,7 @@ package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isFalse;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isTrue;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static org.hamcrest.Matchers.not;
@@ -27,7 +28,8 @@ public class OrMatcherTest {
   
   @Test
   public void testToString() {
-  	assertEquals(or("(").toString(), "or");
+  	assertEquals(or("(").toString(), "\"(\"");
+  	assertEquals(or("(", ")").toString(), "or");
   }
 
 }

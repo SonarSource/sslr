@@ -6,6 +6,7 @@
 
 package com.sonar.sslr.impl.events;
 
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
@@ -20,7 +21,6 @@ import com.sonar.sslr.impl.BacktrackingException;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
-import com.sonar.sslr.impl.matcher.TokenValueMatcher;
 
 public class MatcherAdapterTest {
 	
@@ -29,12 +29,12 @@ public class MatcherAdapterTest {
 	
 	@Before
 	public void init() {
-		matcher = new TokenValueMatcher("bonjour");
+		matcher = and("bonjour");
 	}
 	
 	@Test
 	public void testGetDefinition() {
-		MatcherAdapter adapter = new MatcherAdapter(matcher, null);
+		MatcherAdapter adapter = new MatcherAdapter(matcher, (ParsingEventListener[])null);
 		
 		assertEquals(MatcherTreePrinter.printWithAdapters(adapter), "MatcherAdapter(\"bonjour\")");
 		assertEquals(MatcherTreePrinter.print(adapter), "\"bonjour\"");

@@ -12,7 +12,8 @@ import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.ParsingState;
 
 public class ExclusiveTillMatcher extends Matcher {
-  public ExclusiveTillMatcher(Matcher... matchers) {
+	
+	protected ExclusiveTillMatcher(Matcher... matchers) {
   	super(matchers);
   }
 

@@ -19,7 +19,7 @@ public class RuleMatcher extends Matcher {
   private boolean recoveryRule = false;
   private AstNodeType astNodeType;
 
-  public RuleMatcher(String name) {
+  protected RuleMatcher(String name) {
     this.name = name;
   }
 

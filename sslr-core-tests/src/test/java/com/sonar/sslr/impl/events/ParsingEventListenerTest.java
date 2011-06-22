@@ -71,7 +71,7 @@ public class ParsingEventListenerTest {
   }
 
   public Parser<MyTestGrammar> createParser() {
-    return Parser.builder((MyTestGrammar)new MyTestGrammarDecorator()).optSetLexer(IdentifierLexer.create()).optAddGrammarDecorator(new AdaptersDecorator<ParsingEventListenerTest.MyTestGrammar>(false, parsingEventListener)).build();
+    return Parser.builder((MyTestGrammar)new MyTestGrammarDecorator()).withMemoizer(false).optSetLexer(IdentifierLexer.create()).optAddGrammarDecorator(new AdaptersDecorator<ParsingEventListenerTest.MyTestGrammar>(false, parsingEventListener)).build();
   }
   
   private class MyTestGrammarDecorator extends MyTestGrammar {
@@ -86,7 +86,6 @@ public class ParsingEventListenerTest {
   @Test
   public void ok() {
   	Parser<MyTestGrammar> p = createParser();
-    p.disableMemoizer();
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     this.stream = new PrintStream(baos);

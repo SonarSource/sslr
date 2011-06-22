@@ -12,7 +12,7 @@ import com.sonar.sslr.impl.BacktrackingException;
 
 public class AnyTokenButNotMatcher extends Matcher {
 	
-  public AnyTokenButNotMatcher(Matcher matcher) {
+	protected AnyTokenButNotMatcher(Matcher matcher) {
   	super(matcher);
   }
 
