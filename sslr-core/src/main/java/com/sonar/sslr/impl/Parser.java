@@ -244,13 +244,6 @@ public class Parser<GRAMMAR extends Grammar> {
     this.rootRule = (RuleDefinition) rootRule;
   }
 
-  public String toString() {
-    StringBuilder result = new StringBuilder();
-    result.append("Root rule is : " + rootRule.getRule().getName() + "\n");
-    result.append("and : " + lexerOutput.toString());
-    return result.toString();
-  }
-
   public static <GRAMMAR extends Grammar> ParserBuilder<GRAMMAR> builder(GRAMMAR grammar) {
     return new ParserBuilder<GRAMMAR>(grammar);
   }
