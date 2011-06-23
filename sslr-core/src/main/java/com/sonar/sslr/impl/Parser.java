@@ -28,9 +28,7 @@ import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.Lexer.LexerBuilder;
-import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import com.sonar.sslr.impl.events.ParsingEventListener;
-import com.sonar.sslr.impl.events.Profiler;
 import com.sonar.sslr.impl.events.RuleMatcherAdapter;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 
@@ -45,8 +43,7 @@ public class Parser<GRAMMAR extends Grammar> {
 
   private boolean isDecorated = false;
   private final boolean enableMemoizer;
-  private final Profiler profiler;
-  private final ExtendedStackTrace extendedStackTrace;
+  private final ParsingEventListener[] parsingEventListeners;
   private final AdaptersDecorator<GRAMMAR> adapterDecorator;
 
   private Parser(ParserBuilder<GRAMMAR> builder) {
@@ -56,26 +53,17 @@ public class Parser<GRAMMAR extends Grammar> {
       this.lexer = builder.lexerBuilder.build();
     }
     this.grammar = builder.grammar;
-    this.profiler = (builder.enableProfiler) ? new Profiler() : null;
-    this.extendedStackTrace = (builder.enableExtendedStackTrace) ? new ExtendedStackTrace() : null;
+    this.parsingEventListeners = builder.parsingEventListeners;
     this.enableMemoizer = builder.enableMemoizer;
     this.listeners = builder.listeners;
     setDecorators(builder.decorators);
     
-    if (this.profiler != null && this.extendedStackTrace != null) {
-    	this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer, this.profiler, this.extendedStackTrace);
-    }
-    else if (this.profiler != null) {
-    	this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer, this.profiler);
-    }
-    else if (this.extendedStackTrace != null) {
-      this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer, this.extendedStackTrace);
-    } else if (this.enableMemoizer) {
-    	this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer);
+    if (this.enableMemoizer || this.parsingEventListeners.length > 0) {
+    	this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer, this.parsingEventListeners);
     } else {
     	this.adapterDecorator = null;
     }
-  }
+  }	
 
   /**
    * @deprecated
@@ -98,8 +86,7 @@ public class Parser<GRAMMAR extends Grammar> {
     this.lexer = lexer;
     setDecorators(decorators);
     
-    this.profiler = null;
-    this.extendedStackTrace = null;
+    this.parsingEventListeners = new ParsingEventListener[0];
     this.enableMemoizer = true;
     this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer);
   }
@@ -112,17 +99,7 @@ public class Parser<GRAMMAR extends Grammar> {
   }
 
   public void printStackTrace(PrintStream stream) {
-    if (this.adapterDecorator == null || this.extendedStackTrace == null) {
-      /* Basic stack trace */
-      stream.append(ParsingStackTrace.generateFullStackTrace(getParsingState()));
-    } else {
-      /* Extended stack trace */
-      this.extendedStackTrace.printExtendedStackTrace(stream);
-    }
-  }
-  
-  public void printProfiler(PrintStream stream) {
-  	if (this.adapterDecorator != null && this.profiler != null) this.profiler.printProfiler(stream);
+  	stream.append(ParsingStackTrace.generateFullStackTrace(getParsingState()));
   }
 
   protected void decorate() {
@@ -141,19 +118,15 @@ public class Parser<GRAMMAR extends Grammar> {
 
   public final AstNode parse(File file) {
   	/* Fire the beginLex event */
-  	if (this.adapterDecorator != null) {
-	  	for (ParsingEventListener listener: adapterDecorator.getParsingEventListeners()) {
-	    	listener.beginLex();
-	    }
-  	}
+  	for (ParsingEventListener listener: this.parsingEventListeners) {
+    	listener.beginLex();
+    }
   	
     lexerOutput = lexer.lex(file);
     
     /* Fire the endLex event */
-    if (this.adapterDecorator != null) {
-	  	for (ParsingEventListener listener: adapterDecorator.getParsingEventListeners()) {
-	    	listener.endLex();
-	    }
+  	for (ParsingEventListener listener: this.parsingEventListeners) {
+    	listener.endLex();
     }
     
     return parse(lexerOutput.getTokens());
@@ -161,19 +134,15 @@ public class Parser<GRAMMAR extends Grammar> {
 
   public final AstNode parse(String source) {
   	/* Fire the beginLex event */
-  	if (this.adapterDecorator != null) {
-	  	for (ParsingEventListener listener: adapterDecorator.getParsingEventListeners()) {
-	    	listener.beginLex();
-	    }
-  	}
+  	for (ParsingEventListener listener: this.parsingEventListeners) {
+    	listener.beginLex();
+    }
   	
     lexerOutput = lexer.lex(source);
     
     /* Fire the endLex event */
-    if (this.adapterDecorator != null) {
-	  	for (ParsingEventListener listener: adapterDecorator.getParsingEventListeners()) {
-	    	listener.endLex();
-	    }
+  	for (ParsingEventListener listener: this.parsingEventListeners) {
+    	listener.endLex();
     }
     
     return parse(lexerOutput.getTokens());
@@ -183,19 +152,17 @@ public class Parser<GRAMMAR extends Grammar> {
     decorate(); /* FIXME: Is there a better place to do this? Perhaps with a Parser Builder! */
     
     /* Now wrap the root rule (only if required) */
-    if (this.extendedStackTrace != null) {
-      if ( !(this.rootRule.getRule() instanceof RuleMatcherAdapter)) {
-        this.rootRule.setRuleMatcher(new RuleMatcherAdapter(rootRule.getRule(), adapterDecorator.getParsingEventListeners()));
+    if (this.parsingEventListeners.length > 0) {
+      if (!(this.rootRule.getRule() instanceof RuleMatcherAdapter)) {
+        this.rootRule.setRuleMatcher(new RuleMatcherAdapter(rootRule.getRule(), this.parsingEventListeners));
       }
     }
 
     parsingState = null;
     
     /* Fire the beginParse event */
-    if (this.adapterDecorator != null) {
-	    for (ParsingEventListener listener: adapterDecorator.getParsingEventListeners()) {
-	    	listener.beginParse();
-	    }
+    for (ParsingEventListener listener: this.parsingEventListeners) {
+    	listener.beginParse();
     }
     
     try {
@@ -215,10 +182,8 @@ public class Parser<GRAMMAR extends Grammar> {
       GrammarRuleLifeCycleManager.notifyEndParsing(grammar);
       
       /* Fire the endParse event */
-      if (this.adapterDecorator != null) {
-	      for (ParsingEventListener listener: adapterDecorator.getParsingEventListeners()) {
-	      	listener.endParse();
-	      }
+      for (ParsingEventListener listener: this.parsingEventListeners) {
+      	listener.endParse();
       }
     }
 
@@ -254,8 +219,7 @@ public class Parser<GRAMMAR extends Grammar> {
     private Lexer lexer;
     private GRAMMAR grammar;
     private List<GrammarDecorator<GRAMMAR>> decorators = new ArrayList<GrammarDecorator<GRAMMAR>>();
-    private boolean enableExtendedStackTrace = false;
-    private boolean enableProfiler = false;
+    private ParsingEventListener[] parsingEventListeners = new ParsingEventListener[0];
     private boolean enableMemoizer = true;
     private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
 
@@ -301,14 +265,9 @@ public class Parser<GRAMMAR extends Grammar> {
       decorators.add(decorator);
       return this;
     }
-
-    public ParserBuilder<GRAMMAR> withExtendedStackTrace(boolean enable) {
-      this.enableExtendedStackTrace = enable;
-      return this;
-    }
     
-    public ParserBuilder<GRAMMAR> withProfiler(boolean enable) {
-    	this.enableProfiler = enable;
+    public ParserBuilder<GRAMMAR> withParsingEventListeners(ParsingEventListener... parsingEventListeners) {
+    	this.parsingEventListeners = parsingEventListeners;
     	return this;
     }
 

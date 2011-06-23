@@ -17,6 +17,7 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.LeftRecursiveRule;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.Parser;
+import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import com.sonar.sslr.impl.events.IdentifierLexer;
 import com.sonar.sslr.impl.events.RuleMatcherAdapter;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
@@ -39,7 +40,9 @@ public class AdaptersDecoratorTest {
   }
   
   public Parser<MyTestGrammar> createParser(boolean memoizer, boolean extendedStackTrace, MyTestGrammar grammar) {
-  	return Parser.builder(grammar).optSetLexer(IdentifierLexer.create()).withMemoizer(memoizer).withExtendedStackTrace(extendedStackTrace).build();
+  	Parser.ParserBuilder<MyTestGrammar> builder = Parser.builder(grammar).optSetLexer(IdentifierLexer.create()).withMemoizer(memoizer);
+  	if (extendedStackTrace) builder.withParsingEventListeners(new ExtendedStackTrace());
+  	return builder.build();
   }
 
   private class MyTestGrammarLeft extends MyTestGrammar {

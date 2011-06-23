@@ -19,7 +19,6 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.GrammarDecorator;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.impl.BacktrackingException;
 import com.sonar.sslr.impl.Parser;
 
 public class ExtendedStackTraceTest {
@@ -60,12 +59,13 @@ public class ExtendedStackTraceTest {
       t.root.is("bonjour", "hehe", EOF, "next");
     }
   }
-
-
+  
   @Test
   public void ok() {
+  	ExtendedStackTrace extendedStackTrace = new ExtendedStackTrace();
+  	
     Parser<MyTestGrammar> p = Parser.builder(new MyTestGrammar()).optSetLexer(IdentifierLexer.create())
-        .optAddGrammarDecorator(new MyTestGrammarDecoratorV1()).withMemoizer(false).withExtendedStackTrace(true).build();
+        .optAddGrammarDecorator(new MyTestGrammarDecoratorV1()).withMemoizer(false).withParsingEventListeners(extendedStackTrace).build();
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -73,7 +73,7 @@ public class ExtendedStackTraceTest {
       p.parse("bonjour hehe huhu haha");
       throw new IllegalStateException();
     } catch (RecognitionException ex) {
-      p.printStackTrace(new PrintStream(baos));
+    	extendedStackTrace.printExtendedStackTrace(new PrintStream(baos));
     }
 
     StringBuilder expected = new StringBuilder();
@@ -96,7 +96,7 @@ public class ExtendedStackTraceTest {
     assertEquals(baos.toString(), expected.toString());
 
     p = Parser.builder(new MyTestGrammar()).optSetLexer(IdentifierLexer.create()).optAddGrammarDecorator(new MyTestGrammarDecoratorV2())
-        .withMemoizer(false).withExtendedStackTrace(true).build();
+        .withMemoizer(false).withParsingEventListeners(extendedStackTrace).build();
 
     baos = new ByteArrayOutputStream();
 
@@ -104,7 +104,7 @@ public class ExtendedStackTraceTest {
       p.parse("bonjour hehe huhu haha");
       throw new IllegalStateException();
     } catch (RecognitionException ex) {
-      p.printStackTrace(new PrintStream(baos));
+    	extendedStackTrace.printExtendedStackTrace(new PrintStream(baos));
     }
 
     expected = new StringBuilder();
@@ -131,8 +131,10 @@ public class ExtendedStackTraceTest {
   
   @Test
   public void okTillEof() {
+  	ExtendedStackTrace extendedStackTrace = new ExtendedStackTrace();
+  	
   	Parser<MyTestGrammar> p = Parser.builder(new MyTestGrammar()).optSetLexer(IdentifierLexer.create())
-    		.optAddGrammarDecorator(new MyTestGrammarDecoratorV3()).withMemoizer(false).withExtendedStackTrace(true).build();
+    		.optAddGrammarDecorator(new MyTestGrammarDecoratorV3()).withMemoizer(false).withParsingEventListeners(extendedStackTrace).build();
 		
 		try {
 		  p.parse("bonjour hehe");
@@ -143,7 +145,7 @@ public class ExtendedStackTraceTest {
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		
-		p.printStackTrace(new PrintStream(baos)); /* This should not lead to an error */
+		extendedStackTrace.printExtendedStackTrace(new PrintStream(baos)); /* This should not lead to an error */
 
 		StringBuilder expected = new StringBuilder();
     expected.append("Source Snippet:" + System.getProperty("line.separator"));

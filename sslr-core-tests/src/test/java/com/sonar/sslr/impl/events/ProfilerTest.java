@@ -9,8 +9,12 @@ import static com.sonar.sslr.api.GenericTokenType.EOF;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.impl.events.DelayMatcher.delay;
 
+import static org.junit.Assert.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 
@@ -19,14 +23,13 @@ import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.Parser;
 
 public class ProfilerTest {
-
-  private PrintStream stream;
+	
+	Profiler profiler = new Profiler();
 
   public class MyTestGrammar extends Grammar {
 
     public Rule root;
     public Rule rule1;
-
 
     public Rule getRootRule() {
       return root;
@@ -35,7 +38,7 @@ public class ProfilerTest {
   }
   
   public Parser<MyTestGrammar> createParser(boolean memoization, MyTestGrammar myTestGrammarImpl) {
-    return Parser.builder(myTestGrammarImpl).optSetLexer(IdentifierLexer.create()).withProfiler(true).withMemoizer(memoization).build();
+    return Parser.builder(myTestGrammarImpl).optSetLexer(IdentifierLexer.create()).withParsingEventListeners(profiler).withMemoizer(memoization).build();
   }
 
   private class MyTestGrammarDelay extends MyTestGrammar {
@@ -58,23 +61,23 @@ public class ProfilerTest {
 
   @Test
   public void ok() {
-  	Parser<MyTestGrammar> p = createParser(false, new MyTestGrammarDelay());
-
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    this.stream = new PrintStream(baos);
+  	Parser<MyTestGrammar> p = createParser(true, new MyTestGrammarDelay());
+  	profiler.initialize();
     p.parse("hehe wtf");
-    
-    p.printProfiler(System.out);
-    
+    ProfilerStream.print(profiler, System.out);
+    System.out.println("");
+
+    p = createParser(false, new MyTestGrammarDelay());
+    profiler.initialize();
+    p.parse("hehe wtf");
+    ProfilerStream.print(profiler, System.out);
     System.out.println("");
     
     p = createParser(false, new MyTestGrammarBacktrack());
-
-    baos = new ByteArrayOutputStream();
-    this.stream = new PrintStream(baos);
+    profiler.initialize();
     p.parse("hehe huhu hoho");
-    
-    p.printProfiler(System.out);
+    ProfilerStream.print(profiler, System.out);
+    System.out.println("");
   }
 
 }

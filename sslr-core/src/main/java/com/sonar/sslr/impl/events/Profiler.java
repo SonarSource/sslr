@@ -6,11 +6,14 @@
 package com.sonar.sslr.impl.events;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.Map.Entry;
 import java.lang.management.*;
 
 import com.sonar.sslr.api.AstNode;
@@ -21,17 +24,24 @@ import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class Profiler extends ParsingEventListener {
 	
-	private class RuleCounter {
+	public class RuleCounter {
 		
 		 private int hits = 0;
 		 private int matches = 0;
 		 private int backtracks = 0;
 		 private int memoizedHits = 0;
 		 private int memoizedMisses = 0;
-		 private LinkedList<Long> nonMemoizedHitsCpuTime = new LinkedList<Long>();
-		 private LinkedList<Integer> lookaheads = new LinkedList<Integer>();
-		 private LinkedList<Long> backtracksCpuTime = new LinkedList<Long>();
 		 
+		 private long totalNonMemoizedHitsCpuTime = 0;
+
+		 private int maxLookahead = 0;
+		 private long totalLookaheads = 0;
+		 private int lookaheadsCounter = 0;
+		 
+		 private long maxBacktrackCpuTime = 0;
+		 private long totalBacktracksCpuTime = 0;
+		 private long backtracksCpuTimeCounter;
+
 		 private void hit() {
 			 hits += 1;
 		 }
@@ -53,36 +63,60 @@ public class Profiler extends ParsingEventListener {
 		 }
 		 
 		 private void addNonMemoizedHitCpuTime(long cpuTime) {
-			 nonMemoizedHitsCpuTime.add(cpuTime);
+			 totalNonMemoizedHitsCpuTime += cpuTime;
 		 }
 		 
 		 private void addLookahead(int lookahead) {
-			 lookaheads.add(lookahead);
+			 if (lookahead > maxLookahead) maxLookahead = lookahead;
+			 totalLookaheads += lookahead;
+			 lookaheadsCounter++;
 		 }
 		 
 		 private void addBacktrackCpuTime(long cpuTime) {
-			 backtracksCpuTime.add(cpuTime);
+			 if (cpuTime > maxBacktrackCpuTime) maxBacktrackCpuTime = cpuTime;
+			 totalBacktracksCpuTime += cpuTime;
+			 backtracksCpuTimeCounter++;
 		 }
 		 
-		 private long getTotalNonMemoizedHitCpuTime() {
-			 return sum(nonMemoizedHitsCpuTime);
+		 public long getTotalNonMemoizedHitCpuTime() {
+			 return totalNonMemoizedHitsCpuTime;
 		 }
 		 
-		 private double getAverageLookahead() {
-			 return average(lookaheads);
+		 public double getAverageLookahead() {
+			 return (lookaheadsCounter == 0) ? 0 : totalLookaheads / (double)lookaheadsCounter;
 		 }
 		 
-		 private long getMaxLookahead() {
-			 return max(lookaheads);
+		 public int getMaxLookahead() {
+			 return maxLookahead;
 		 }
 		 
-		 private double getAverageBacktracksCpuTime() {
-			 return average(backtracksCpuTime);
+		 public double getAverageBacktracksCpuTime() {
+			 return (backtracksCpuTimeCounter == 0) ? 0 : totalBacktracksCpuTime / (double)backtracksCpuTimeCounter;
 		 }
 		 
-		 private long getMaxBacktrackCpuTime() {
-			 return max(backtracksCpuTime);
+		 public long getMaxBacktrackCpuTime() {
+			 return maxBacktrackCpuTime;
 		 }
+
+		public int getHits() {
+			return hits;
+		}
+
+		public int getMatches() {
+			return matches;
+		}
+
+		public int getBacktracks() {
+			return backtracks;
+		}
+
+		public int getMemoizedHits() {
+			return memoizedHits;
+		}
+
+		public int getMemoizedMisses() {
+			return memoizedMisses;
+		}
 		 
 	}
 	
@@ -130,7 +164,7 @@ public class Profiler extends ParsingEventListener {
 		initialize();
 	}
 
-	private void initialize() {
+	public void initialize() {
 		ruleStats = new HashMap<RuleMatcher, RuleCounter>();
 		timers = new Stack<Timer>();
 		matches = new Stack<Match>();
@@ -196,29 +230,15 @@ public class Profiler extends ParsingEventListener {
 		}
 	}
 	
-	public void printProfiler(PrintStream stream) {
-		stream.println("Lexer CPU time: " + nsToMs(lexerTimer.cpuTime) + "ms");
-		stream.println("Parser CPU time: " + nsToMs(parserTimer.cpuTime) + "ms");
-		stream.println("How many distinct rules were hit: " + ruleStats.size());
-		stream.println("How many times rules were hit: " + getHits());
-		stream.println("How many backtracks: " + getBacktracks() + " (time avg: " + nsToMs(getAverageBacktrackCpuTime()) + "ms, max: " + nsToMs(getMaxBacktrackCpuTime()) + "ms, lookahead avg: " + String.format("%.2f", getAverageLookahead()) + ", max: " + getMaxLookahead() + ")");
-		stream.println("Memoizer: " + getMemoizedHits() + " hits, " + getMemoizedMisses() + " misses");
-		stream.println("Total non memoized hits CPU Time: " + nsToMs(getTotalNonMemoizedHitCpuTime()) + "ms");
-		stream.println();
-		stream.println("Rule statistics:");
-		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
-			RuleCounter counter = rule.getValue();
-
-			stream.print(String.format(" - %-25s", rule.getKey()));
-			stream.print("Hits: " + String.format("%4d", counter.hits) + "       ");
-			stream.print("Backtracks: " + String.format("%4d", counter.backtracks) + " (time avg: " + String.format("%8.3f", nsToMs(counter.getAverageBacktracksCpuTime())) + "ms, max: " + String.format("%5d", nsToMs(counter.getMaxBacktrackCpuTime())) + "ms, lookahead avg: " + String.format("%6.2f", counter.getAverageLookahead()) + ", max: " + String.format("%3d", counter.getMaxLookahead()) + ")" + "       ");
-			stream.print("Memoizer: " + String.format("%4d", counter.memoizedHits) + " hits, " + String.format("%4d", counter.memoizedMisses) + " misses"  + "       ");
-			stream.print("Total CPU Time: " + String.format("%6d", nsToMs(counter.getTotalNonMemoizedHitCpuTime())) + "ms" + "       ");
-			stream.println();
-		}
+	public long getLexerCpuTime() {
+		return lexerTimer.cpuTime;
 	}
 	
-	private long getHits() {
+	public long getParserCpuTime() {
+		return parserTimer.cpuTime;
+	}
+	
+	public long getHits() {
 		long hits = 0;
 		
 		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
@@ -230,7 +250,7 @@ public class Profiler extends ParsingEventListener {
 		return hits;
 	}
 	
-	private long getBacktracks() {
+	public long getBacktracks() {
 		long backtracks = 0;
 		
 		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
@@ -242,67 +262,59 @@ public class Profiler extends ParsingEventListener {
 		return backtracks;
 	}
 	
-	private double getAverageBacktrackCpuTime() {
+	public double getAverageBacktrackCpuTime() {
 		double totalBacktracksCpuTime = 0;
-		int backtracks = 0;
+		long backtracks = 0;
 		
 		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
 			RuleCounter counter = rule.getValue();
 			
-			for (Long backtrackCpuTime: counter.backtracksCpuTime) {
-				totalBacktracksCpuTime += backtrackCpuTime;
-				backtracks++;
-			}
+			totalBacktracksCpuTime += counter.totalBacktracksCpuTime;
+			backtracks += counter.backtracksCpuTimeCounter;
 		}
 		
 		return (backtracks == 0) ? 0 : totalBacktracksCpuTime / backtracks;
 	}
 	
-	private long getMaxBacktrackCpuTime() {
+	public long getMaxBacktrackCpuTime() {
 		long maxBacktrackCpuTime = 0;
 
 		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
 			RuleCounter counter = rule.getValue();
-			
-			for (Long backtrackCpuTime: counter.backtracksCpuTime) {
-				if (backtrackCpuTime > maxBacktrackCpuTime) maxBacktrackCpuTime = backtrackCpuTime;
-			}
+		
+			if (counter.getMaxBacktrackCpuTime() > maxBacktrackCpuTime) maxBacktrackCpuTime = counter.getMaxBacktrackCpuTime();
 		}
 		
 		return maxBacktrackCpuTime;
 	}
 	
-	private double getAverageLookahead() {
+	public double getAverageLookahead() {
 		double totalLookahead = 0;
-		int lookaheads = 0;
+		int lookaheadsCounter = 0;
 		
 		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
 			RuleCounter counter = rule.getValue();
 			
-			for (Integer lookahead: counter.lookaheads) {
-				totalLookahead += lookahead;
-				lookaheads++;
-			}
+			totalLookahead += counter.totalLookaheads;
+			lookaheadsCounter += counter.lookaheadsCounter;
 		}
 		
-		return (lookaheads == 0) ? 0 : totalLookahead / lookaheads;
+		return (lookaheadsCounter == 0) ? 0 : totalLookahead / lookaheadsCounter;
 	}
 	
-	private int getMaxLookahead() {
+	public int getMaxLookahead() {
 		int maxLookahead = 0;
 
 		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
 			RuleCounter counter = rule.getValue();
 			
-			for (Integer lookahead: counter.lookaheads) {
-				if (lookahead > maxLookahead) maxLookahead = lookahead;
-			}
+			if (counter.getMaxLookahead() > maxLookahead) maxLookahead = counter.getMaxLookahead();
 		}
 		
 		return maxLookahead;
 	}
 	
-	private long getMemoizedHits() {
+	public long getMemoizedHits() {
 		long memoizerHits = 0;
 		
 		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
@@ -314,7 +326,7 @@ public class Profiler extends ParsingEventListener {
 		return memoizerHits;
 	}
 	
-	private long getMemoizedMisses() {
+	public long getMemoizedMisses() {
 		long memoizerMisses = 0;
 		
 		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
@@ -326,7 +338,7 @@ public class Profiler extends ParsingEventListener {
 		return memoizerMisses;
 	}
 	
-	private long getTotalNonMemoizedHitCpuTime() {
+	public long getTotalNonMemoizedHitCpuTime() {
 		long totalNonMemoizedHitCpuTime = 0;
 		
 		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
@@ -418,41 +430,9 @@ public class Profiler extends ParsingEventListener {
 		timers.peek().abort();
 	}
 
-	private long getCpuTime( ) {
+	private static long getCpuTime( ) {
     ThreadMXBean bean = ManagementFactory.getThreadMXBean();
     return bean.isCurrentThreadCpuTimeSupported() ? bean.getCurrentThreadCpuTime( ) : 0L;
-	}
-	
-	private static long max(Collection<? extends Number> collection) {
-		long max = 0;
-		
-		for (final Number number: collection) {
-			if (number.longValue() > max) max = number.longValue();
-		}
-		
-		return max;
-	}
-	
-	private static double average(Collection<? extends Number> collection) {
-		return (collection.size() == 0) ? 0 : sum(collection) / (double)collection.size();
-	}
-	
-	private static long sum(Collection<? extends Number> collection) {
-		long sum = 0;
-		
-		for (final Number number: collection) {
-			sum += number.longValue();
-		}
-		
-		return sum;
-	}
-	
-	private static long nsToMs(long ns) {
-		return ns / 1000000L;
-	}
-	
-	private static double nsToMs(double ns) {
-		return ns / 1000000L;
 	}
 	
 }
