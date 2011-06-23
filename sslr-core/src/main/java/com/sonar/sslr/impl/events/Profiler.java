@@ -30,6 +30,7 @@ public class Profiler extends ParsingEventListener {
 		 private int memoizedMisses = 0;
 		 private LinkedList<Long> nonMemoizedHitsCpuTime = new LinkedList<Long>();
 		 private LinkedList<Integer> lookaheads = new LinkedList<Integer>();
+		 private LinkedList<Long> backtracksCpuTime = new LinkedList<Long>();
 		 
 		 private void hit() {
 			 hits += 1;
@@ -59,6 +60,10 @@ public class Profiler extends ParsingEventListener {
 			 lookaheads.add(lookahead);
 		 }
 		 
+		 private void addBacktrackCpuTime(long cpuTime) {
+			 backtracksCpuTime.add(cpuTime);
+		 }
+		 
 		 private long getTotalNonMemoizedHitCpuTime() {
 			 return sum(nonMemoizedHitsCpuTime);
 		 }
@@ -69,6 +74,14 @@ public class Profiler extends ParsingEventListener {
 		 
 		 private long getMaxLookahead() {
 			 return max(lookaheads);
+		 }
+		 
+		 private double getAverageBacktracksCpuTime() {
+			 return average(backtracksCpuTime);
+		 }
+		 
+		 private long getMaxBacktrackCpuTime() {
+			 return max(backtracksCpuTime);
 		 }
 		 
 	}
@@ -103,6 +116,7 @@ public class Profiler extends ParsingEventListener {
 		
 		private int startIndex = -1;
 		private boolean wasMemoized = false;
+		private Timer timer = new Timer();
 		
 	}
 	
@@ -187,9 +201,9 @@ public class Profiler extends ParsingEventListener {
 		stream.println("Parser CPU time: " + nsToMs(parserTimer.cpuTime) + "ms");
 		stream.println("How many distinct rules were hit: " + ruleStats.size());
 		stream.println("How many times rules were hit: " + getHits());
-		stream.println("How many backtracks: " + getBacktracks() + " (lookahead avg: " + String.format("%.2f", getAverageLookahead()) + ", max: " + getMaxLookahead() + ")");
-		stream.println("Memoizer: ? hits, ? misses");
-		stream.println("Total CPU Time: " + "ms");
+		stream.println("How many backtracks: " + getBacktracks() + " (time avg: " + nsToMs(getAverageBacktrackCpuTime()) + "ms, max: " + nsToMs(getMaxBacktrackCpuTime()) + "ms, lookahead avg: " + String.format("%.2f", getAverageLookahead()) + ", max: " + getMaxLookahead() + ")");
+		stream.println("Memoizer: " + getMemoizedHits() + " hits, " + getMemoizedMisses() + " misses");
+		stream.println("Total non memoized hits CPU Time: " + nsToMs(getTotalNonMemoizedHitCpuTime()) + "ms");
 		stream.println();
 		stream.println("Rule statistics:");
 		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
@@ -197,7 +211,7 @@ public class Profiler extends ParsingEventListener {
 
 			stream.print(String.format(" - %-25s", rule.getKey()));
 			stream.print("Hits: " + String.format("%4d", counter.hits) + "       ");
-			stream.print("Backtracks: " + String.format("%4d", counter.backtracks) + " (lookahead avg: " + String.format("%6.2f", counter.getAverageLookahead()) + ", max: " + String.format("%3d", counter.getMaxLookahead()) + ")" + "       ");
+			stream.print("Backtracks: " + String.format("%4d", counter.backtracks) + " (time avg: " + String.format("%8.3f", nsToMs(counter.getAverageBacktracksCpuTime())) + "ms, max: " + String.format("%5d", nsToMs(counter.getMaxBacktrackCpuTime())) + "ms, lookahead avg: " + String.format("%6.2f", counter.getAverageLookahead()) + ", max: " + String.format("%3d", counter.getMaxLookahead()) + ")" + "       ");
 			stream.print("Memoizer: " + String.format("%4d", counter.memoizedHits) + " hits, " + String.format("%4d", counter.memoizedMisses) + " misses"  + "       ");
 			stream.print("Total CPU Time: " + String.format("%6d", nsToMs(counter.getTotalNonMemoizedHitCpuTime())) + "ms" + "       ");
 			stream.println();
@@ -226,6 +240,36 @@ public class Profiler extends ParsingEventListener {
 		}
 		
 		return backtracks;
+	}
+	
+	private double getAverageBacktrackCpuTime() {
+		double totalBacktracksCpuTime = 0;
+		int backtracks = 0;
+		
+		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
+			RuleCounter counter = rule.getValue();
+			
+			for (Long backtrackCpuTime: counter.backtracksCpuTime) {
+				totalBacktracksCpuTime += backtrackCpuTime;
+				backtracks++;
+			}
+		}
+		
+		return (backtracks == 0) ? 0 : totalBacktracksCpuTime / backtracks;
+	}
+	
+	private long getMaxBacktrackCpuTime() {
+		long maxBacktrackCpuTime = 0;
+
+		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
+			RuleCounter counter = rule.getValue();
+			
+			for (Long backtrackCpuTime: counter.backtracksCpuTime) {
+				if (backtrackCpuTime > maxBacktrackCpuTime) maxBacktrackCpuTime = backtrackCpuTime;
+			}
+		}
+		
+		return maxBacktrackCpuTime;
 	}
 	
 	private double getAverageLookahead() {
@@ -258,6 +302,42 @@ public class Profiler extends ParsingEventListener {
 		return maxLookahead;
 	}
 	
+	private long getMemoizedHits() {
+		long memoizerHits = 0;
+		
+		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
+			RuleCounter counter = rule.getValue();
+			
+			memoizerHits += counter.memoizedHits;
+		}
+		
+		return memoizerHits;
+	}
+	
+	private long getMemoizedMisses() {
+		long memoizerMisses = 0;
+		
+		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
+			RuleCounter counter = rule.getValue();
+			
+			memoizerMisses += counter.memoizedMisses;
+		}
+		
+		return memoizerMisses;
+	}
+	
+	private long getTotalNonMemoizedHitCpuTime() {
+		long totalNonMemoizedHitCpuTime = 0;
+		
+		for (Map.Entry<RuleMatcher, RuleCounter> rule: ruleStats.entrySet()) {
+			RuleCounter counter = rule.getValue();
+			
+			totalNonMemoizedHitCpuTime += counter.getTotalNonMemoizedHitCpuTime();
+		}
+		
+		return totalNonMemoizedHitCpuTime;
+	}
+	
 	private RuleCounter getRuleCounter(RuleMatcher rule) {
 		RuleCounter counter = ruleStats.get(rule);
 		if (counter == null) {
@@ -272,6 +352,7 @@ public class Profiler extends ParsingEventListener {
 		Match match = new Match();
 		match.startIndex = parsingState.lexerIndex;
 		match.wasMemoized = false;
+		match.timer.start();
 		matches.push(match);
 	}
 	
@@ -286,7 +367,11 @@ public class Profiler extends ParsingEventListener {
 				counter.match();
 			} else {
 				/* Backtrack */
+				match.timer.stop();
 				counter.backtrack();
+				
+				/* Save the backtracking time */
+				counter.addBacktrackCpuTime(match.timer.cpuTime);
 				
 				/* Compute the lookahead */
 				int lookahead = parsingState.lexerIndex - match.startIndex + 1;
@@ -363,6 +448,10 @@ public class Profiler extends ParsingEventListener {
 	}
 	
 	private static long nsToMs(long ns) {
+		return ns / 1000000L;
+	}
+	
+	private static double nsToMs(double ns) {
 		return ns / 1000000L;
 	}
 	
