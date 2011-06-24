@@ -5,15 +5,9 @@
  */
 package com.sonar.sslr.impl.events;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.Map.Entry;
 import java.lang.management.*;
 
 import com.sonar.sslr.api.AstNode;
@@ -430,7 +424,7 @@ public class Profiler extends ParsingEventListener {
 		timers.peek().abort();
 	}
 
-	private static long getCpuTime( ) {
+	private static long getCpuTime() {
     ThreadMXBean bean = ManagementFactory.getThreadMXBean();
     return bean.isCurrentThreadCpuTimeSupported() ? bean.getCurrentThreadCpuTime( ) : 0L;
 	}

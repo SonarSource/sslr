@@ -7,6 +7,9 @@ package com.sonar.sslr.impl.events;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.matcher.Matcher;
@@ -31,10 +34,15 @@ public class DelayMatcher extends Matcher {
 
 	@Override
 	public AstNode match(ParsingState parsingState) {
-		long startTime = System.currentTimeMillis();
-		while (System.currentTimeMillis() < startTime + delay);
+		long startTime = getCpuTime();
+		while (getCpuTime() < startTime + delay*1000000L);
 		
 		return super.children[0].match(parsingState);
+	}
+	
+	private static long getCpuTime() {
+    ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+    return bean.isCurrentThreadCpuTimeSupported() ? bean.getCurrentThreadCpuTime( ) : 0L;
 	}
 
 }
