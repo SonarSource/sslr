@@ -33,7 +33,7 @@ public class DelayMatcher extends Matcher {
 	}
 
 	@Override
-	public AstNode match(ParsingState parsingState) {
+	public AstNode matchWorker(ParsingState parsingState) {
 		long startTime = getCpuTime();
 		while (getCpuTime() < startTime + delay*1000000L);
 		

@@ -17,7 +17,7 @@ public class AdjacentMatcher extends Matcher {
   	super(matcher);
   }
 
-  public AstNode match(ParsingState parsingState) {
+  public AstNode matchWorker(ParsingState parsingState) {
     int index = parsingState.lexerIndex;
     Token nextToken = parsingState.peekToken(index, this);
     Token previousToken = parsingState.readToken(index - 1);

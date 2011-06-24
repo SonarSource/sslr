@@ -29,7 +29,7 @@ public class TokenCountMatcher extends Matcher {
   	this.n = n;
   }
 
-  public AstNode match(ParsingState parsingState) {
+  public AstNode matchWorker(ParsingState parsingState) {
     int startIndex = parsingState.lexerIndex;
     AstNode astNode = super.children[0].match(parsingState);
     int stopIndex = parsingState.lexerIndex;

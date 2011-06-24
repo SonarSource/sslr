@@ -16,7 +16,7 @@ public class OneToNMatcher extends Matcher {
     super(matcher);
   }
 
-  public AstNode match(ParsingState parsingState) {
+  public AstNode matchWorker(ParsingState parsingState) {
     int startIndex = parsingState.lexerIndex;
     AstNode astNode = null;
     boolean match = true;

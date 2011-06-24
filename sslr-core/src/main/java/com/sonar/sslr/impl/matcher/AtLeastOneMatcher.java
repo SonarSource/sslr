@@ -18,7 +18,7 @@ public class AtLeastOneMatcher extends Matcher {
   	super(matchers);
   }
 
-  public AstNode match(ParsingState parsingState) {
+  public AstNode matchWorker(ParsingState parsingState) {
   	ArrayList<AstNode> childNodes = new ArrayList<AstNode>();
     int startIndex = parsingState.lexerIndex;
 

@@ -29,12 +29,12 @@ public class MemoizerMatcher extends Matcher {
   }
 
   @Override
-  public AstNode match(ParsingState state) {
+  public AstNode matchWorker(ParsingState state) {
   	AstNode memoizedAstNode = state.getMemoizedAst(this);
     if (memoizedAstNode != null) {
 
     	for (ParsingEventListener parsingEventListener: parsingEventListeners) {
-    		parsingEventListener.memoizerHit(super.children[0], state);
+    		parsingEventListener.memoizerHit((Matcher)super.children[0], state);
     	}
     	
       state.lexerIndex = memoizedAstNode.getToIndex();
@@ -42,7 +42,7 @@ public class MemoizerMatcher extends Matcher {
     }
     
     for (ParsingEventListener parsingEventListener: parsingEventListeners) {
-  		parsingEventListener.memoizerMiss(super.children[0], state);
+  		parsingEventListener.memoizerMiss((Matcher)super.children[0], state);
   	}
     
     int startingIndex = state.lexerIndex;

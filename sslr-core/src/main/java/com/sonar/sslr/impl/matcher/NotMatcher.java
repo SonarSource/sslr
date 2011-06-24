@@ -16,7 +16,7 @@ public class NotMatcher extends Matcher {
     super(matcher);
   }
 
-  public AstNode match(ParsingState parsingState) {
+  public AstNode matchWorker(ParsingState parsingState) {
     if (super.children[0].isMatching(parsingState)) {
       throw BacktrackingException.create();
     } else {

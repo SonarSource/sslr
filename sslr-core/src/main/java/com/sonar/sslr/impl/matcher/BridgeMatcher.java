@@ -24,7 +24,7 @@ public class BridgeMatcher extends Matcher {
   }
 
   @Override
-  public AstNode match(ParsingState parsingState) {
+  public AstNode matchWorker(ParsingState parsingState) {
     Token token = parsingState.peekToken(parsingState.lexerIndex, this);
     if (from == token.getType()) {
       AstNode astNode = new AstNode(null, "bridgeMatcher", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));

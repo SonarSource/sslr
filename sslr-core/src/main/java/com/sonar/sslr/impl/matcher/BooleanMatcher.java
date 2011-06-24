@@ -20,7 +20,7 @@ public class BooleanMatcher extends Matcher {
     this.internalState = internalState;
   }
 
-  public AstNode match(ParsingState parsingState) {
+  public AstNode matchWorker(ParsingState parsingState) {
     parsingState.peekToken(this);
     if (internalState) {
       return new AstNode(null, "trueMatcher", parsingState.popToken(this));

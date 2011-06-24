@@ -5,15 +5,12 @@
  */
 package com.sonar.sslr.impl;
 
-import java.util.HashSet;
-
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.GrammarDecorator;
 import com.sonar.sslr.impl.events.MatcherAdapter;
 import com.sonar.sslr.impl.events.ParsingEventListener;
 import com.sonar.sslr.impl.events.RuleMatcherAdapter;
 import com.sonar.sslr.impl.matcher.Matcher;
-import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 import com.sonar.sslr.impl.matcher.MemoizerMatcher;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
@@ -59,7 +56,7 @@ public class AdaptersDecorator<GRAMMAR extends Grammar> implements GrammarDecora
 
   private void decorateMatcher(Matcher matcher) {
     for (int i = 0; i < matcher.getChildren().length; i++) {
-    	Matcher originalChild = matcher.getChildren()[i];
+    	Matcher originalChild = (Matcher)matcher.getChildren()[i];
     	if (!isAdapter(originalChild)) {
 	      Matcher memoizedChild = memoize(originalChild);
 	      Matcher eventizedChild = eventize(originalChild, memoizedChild);

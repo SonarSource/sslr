@@ -15,7 +15,7 @@ public class AndMatcher extends Matcher {
   	super(matchers);
   }
 
-  public AstNode match(ParsingState parsingState) {
+  public AstNode matchWorker(ParsingState parsingState) {
     AstNode[] childNodes = new AstNode[super.children.length];
     int startIndex = parsingState.lexerIndex;
 

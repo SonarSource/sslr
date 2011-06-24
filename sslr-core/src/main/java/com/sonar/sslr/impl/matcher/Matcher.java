@@ -40,6 +40,8 @@ public abstract class Matcher {
     }
   }
 
-  public abstract AstNode match(ParsingState parsingState);
+  public AstNode match(ParsingState parsingState) { return matchWorker(parsingState); }
 
+  public AstNode matchWorker(ParsingState parsingState) { return null; }
+  
 }

@@ -19,7 +19,7 @@ public abstract class TokenMatcher extends Matcher {
     this.hasToBeSkippedFromAst = hasToBeSkippedFromAst;
   }
 
-  public AstNode match(ParsingState parsingState) {
+  public AstNode matchWorker(ParsingState parsingState) {
     if (isExpectedToken(parsingState.peekToken(parsingState.lexerIndex, this))) {
       Token token = parsingState.popToken(this);
       if (hasToBeSkippedFromAst) {

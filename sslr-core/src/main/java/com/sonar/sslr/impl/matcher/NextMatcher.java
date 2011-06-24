@@ -16,7 +16,7 @@ public class NextMatcher extends Matcher {
     super(matcher);
   }
 
-  public AstNode match(ParsingState parsingState) {
+  public AstNode matchWorker(ParsingState parsingState) {
     if (super.children[0].isMatching(parsingState)) {
       return null;
     }
