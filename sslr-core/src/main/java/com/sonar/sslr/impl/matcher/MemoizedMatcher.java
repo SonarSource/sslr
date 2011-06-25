@@ -13,6 +13,9 @@ import com.sonar.sslr.impl.events.ParsingEventListener;
 
 public abstract class MemoizedMatcher extends Matcher {
 
+  private int lastMemoizedAstIndex = -1;
+  private AstNode lastMemoizedAst = null;
+
   public MemoizedMatcher(Matcher... children) {
     super(children);
   }
@@ -21,7 +24,7 @@ public abstract class MemoizedMatcher extends Matcher {
     enterEvent(parsingState);
 
     /* Memoizer lookup */
-    AstNode memoizedAstNode = parsingState.getMemoizedAst(this);
+    AstNode memoizedAstNode = getMemoizedAst(parsingState);
     if (memoizedAstNode != null) {
       memoizerHitEvent(parsingState);
       parsingState.lexerIndex = memoizedAstNode.getToIndex();
@@ -30,21 +33,30 @@ public abstract class MemoizedMatcher extends Matcher {
     }
     memoizerMissEvent(parsingState);
 
+    int startingIndex = parsingState.lexerIndex;
+
     try {
-      int startingIndex = parsingState.lexerIndex;
       AstNode astNode = matchWorker(parsingState);
       if (astNode != null) {
         astNode.setFromIndex(startingIndex);
         astNode.setToIndex(parsingState.lexerIndex);
-        parsingState.memoizeAst(this, astNode);
+        memoizeAst(parsingState, astNode);
       }
 
       exitWithMatchEvent(parsingState, astNode);
       return astNode;
     } catch (BacktrackingEvent re) {
-      exitWithoutMatchEvent(parsingState, re);
+      exitWithoutMatchEvent(parsingState);
       throw re;
     }
+  }
+
+  private void memoizeAst(ParsingState parsingState, AstNode astNode) {
+    parsingState.memoizeAst(this, astNode);
+  }
+
+  private final AstNode getMemoizedAst(ParsingState parsingState) {
+    return parsingState.getMemoizedAst(this);
   }
 
   protected abstract AstNode matchWorker(ParsingState parsingState);
@@ -81,17 +93,17 @@ public abstract class MemoizedMatcher extends Matcher {
     }
   }
 
-  private final void exitWithoutMatchEvent(ParsingState parsingState, BacktrackingEvent re) {
+  private final void exitWithoutMatchEvent(ParsingState parsingState) {
     if (parsingState.parsingEventListeners != null) {
       if (this instanceof RuleMatcher) {
         /* Fire the exitWithoutMatchRule event */
         for (ParsingEventListener listener : parsingState.parsingEventListeners) {
-          listener.exitWithoutMatchRule((RuleMatcher) this, parsingState, re);
+          listener.exitWithoutMatchRule((RuleMatcher) this, parsingState);
         }
       } else {
         /* Fire the exitWithoutMatchMatcher event */
         for (ParsingEventListener listener : parsingState.parsingEventListeners) {
-          listener.exitWithoutMatchMatcher(this, parsingState, re);
+          listener.exitWithoutMatchMatcher(this, parsingState);
         }
       }
     }

@@ -5,11 +5,6 @@
  */
 package com.sonar.sslr.impl.events;
 
-import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
-import static org.junit.Assert.assertEquals;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
@@ -20,10 +15,15 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
+
+import static com.sonar.sslr.api.GenericTokenType.EOF;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+
+import static org.junit.Assert.assertEquals;
 
 public class ParsingEventListenerTest {
 
@@ -31,33 +31,33 @@ public class ParsingEventListenerTest {
 
   private ParsingEventListener parsingEventListener = new ParsingEventListener() {
 
-  	@Override
+    @Override
     public void enterRule(RuleMatcher rule, ParsingState parsingState) {
       stream.println("Entered rule " + rule.getName() + " at index " + parsingState.lexerIndex);
     }
 
-  	@Override
+    @Override
     public void exitWithMatchRule(RuleMatcher rule, ParsingState parsingState, AstNode astNode) {
       stream.println("Exit rule " + rule.getName() + " with match until index " + parsingState.lexerIndex);
     }
 
-  	@Override
-    public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState, BacktrackingEvent re) {
+    @Override
+    public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState) {
       stream.println("Exit rule " + rule.getName() + " without match");
     }
 
-  	@Override
+    @Override
     public void enterMatcher(Matcher matcher, ParsingState parsingState) {
       stream.println("Entered matcher " + MatcherTreePrinter.print(matcher) + " at index " + parsingState.lexerIndex);
     }
 
-  	@Override
+    @Override
     public void exitWithMatchMatcher(Matcher matcher, ParsingState parsingState, AstNode astNode) {
       stream.println("Exit matcher " + MatcherTreePrinter.print(matcher) + " with match until index " + parsingState.lexerIndex);
     }
 
-  	@Override
-    public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState, BacktrackingEvent re) {
+    @Override
+    public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState) {
       stream.println("Exit matcher " + MatcherTreePrinter.print(matcher) + " without match");
     }
 
@@ -76,9 +76,10 @@ public class ParsingEventListenerTest {
   }
 
   public Parser<MyTestGrammar> createParser() {
-    return Parser.builder((MyTestGrammar)new MyTestGrammarDecorator()).optSetLexer(IdentifierLexer.create()).withParsingEventListeners(parsingEventListener).build();
+    return Parser.builder((MyTestGrammar) new MyTestGrammarDecorator()).optSetLexer(IdentifierLexer.create())
+        .withParsingEventListeners(parsingEventListener).build();
   }
-  
+
   private class MyTestGrammarDecorator extends MyTestGrammar {
 
     public MyTestGrammarDecorator() {
@@ -90,7 +91,7 @@ public class ParsingEventListenerTest {
 
   @Test
   public void ok() {
-  	Parser<MyTestGrammar> p = createParser();
+    Parser<MyTestGrammar> p = createParser();
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     this.stream = new PrintStream(baos);
@@ -128,7 +129,7 @@ public class ParsingEventListenerTest {
     expected.println("Exit matcher EOF with match until index 6");
     expected.println("Exit matcher and(\"bonjour\", longestOne(rule1, rule2), and(\"olaa\", \"uhu\"), EOF) with match until index 6");
     expected.println("Exit rule root with match until index 6");
-    
+
     assertEquals(baos.toString(), baosExpected.toString());
   }
 
