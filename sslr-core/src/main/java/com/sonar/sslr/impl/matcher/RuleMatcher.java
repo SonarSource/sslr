@@ -12,7 +12,7 @@ import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.ParsingState;
 
-public class RuleMatcher extends Matcher {
+public class RuleMatcher extends MemoizedMatcher {
 
   protected String name;
   private AstListener listener;

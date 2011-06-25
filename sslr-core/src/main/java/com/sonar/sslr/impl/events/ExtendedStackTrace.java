@@ -16,7 +16,6 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingException;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
-import com.sonar.sslr.impl.matcher.MemoizerMatcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class ExtendedStackTrace extends ParsingEventListener {
@@ -134,7 +133,7 @@ public class ExtendedStackTrace extends ParsingEventListener {
 			
 			/* Set the longest matcher to the outer most one starting at the current index (but ignorning MemoizerMatchers) */
 			for (MatcherWithPosition currentMatcherWithPosition: currentStack) {
-				if (currentMatcherWithPosition instanceof MatcherWithPosition && currentMatcherWithPosition.getFromIndex() == parsingState.lexerIndex && !(currentMatcherWithPosition.getMatcher() instanceof MemoizerMatcher)) {
+				if (currentMatcherWithPosition instanceof MatcherWithPosition && currentMatcherWithPosition.getFromIndex() == parsingState.lexerIndex) {
 					longesOutertMatcherWithPosition = currentMatcherWithPosition;
 					break;
 				}

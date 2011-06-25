@@ -15,11 +15,13 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.RecognictionExceptionListener;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Token;
+import com.sonar.sslr.impl.events.ParsingEventListener;
 import com.sonar.sslr.impl.matcher.Matcher;
+import com.sonar.sslr.impl.matcher.MemoizedMatcher;
 
 public class ParsingState {
 
-  private List<Matcher> notifiedMatchers = Lists.newArrayList();
+  private List<MemoizedMatcher> notifiedMatchers = Lists.newArrayList();
   private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
   private final Token[] tokens;
   public int lexerIndex = 0;
@@ -28,14 +30,15 @@ public class ParsingState {
   private int outpostMatcherTokenIndex = -1;
   private Matcher outpostMatcher;
   private AstNode[] astNodeMemoization;
-  private Matcher[] astMatcherMemoization;
+  private MemoizedMatcher[] astMatcherMemoization;
   private boolean pendingLeftRecursion = false;
+  private ParsingEventListener[] parsingEventListeners;
 
   public ParsingState(List<Token> tokens) {
     this.tokens = tokens.toArray(new Token[0]);
     lexerSize = this.tokens.length;
     astNodeMemoization = new AstNode[lexerSize + 1];
-    astMatcherMemoization = new Matcher[lexerSize + 1];
+    astMatcherMemoization = new MemoizedMatcher[lexerSize + 1];
   }
 
   public Token popToken(Matcher matcher) {
@@ -107,7 +110,7 @@ public class ParsingState {
     return tokens[lexerSize - 1].getLine();
   }
 
-  public void memoizeAst(Matcher matcher, AstNode astNode) {
+  public void memoizeAst(MemoizedMatcher matcher, AstNode astNode) {
     astNode.setToIndex(lexerIndex);
     astNodeMemoization[astNode.getFromIndex()] = astNode;
     astMatcherMemoization[astNode.getFromIndex()] = matcher;
@@ -120,14 +123,14 @@ public class ParsingState {
     }
   }
 
-  public boolean hasMemoizedAst(Matcher matcher) {
+  public boolean hasMemoizedAst(MemoizedMatcher matcher) {
     if ( !pendingLeftRecursion && astMatcherMemoization[lexerIndex] == matcher) {
       return true;
     }
     return false;
   }
 
-  public AstNode getMemoizedAst(Matcher matcher) {
+  public AstNode getMemoizedAst(MemoizedMatcher matcher) {
     if (hasMemoizedAst(matcher)) {
       return astNodeMemoization[lexerIndex];
     }
@@ -154,11 +157,11 @@ public class ParsingState {
     notifiedMatchers.clear();
   }
 
-  public void matcherNotified(Matcher matcher) {
+  public void matcherNotified(MemoizedMatcher matcher) {
     notifiedMatchers.add(matcher);
   }
 
-  public boolean hasMatcherBeenNotified(Matcher matcher) {
+  public boolean hasMatcherBeenNotified(MemoizedMatcher matcher) {
     return notifiedMatchers.contains(matcher);
   }
 
@@ -179,4 +182,13 @@ public class ParsingState {
       listener.addRecognitionException(recognitionException);
     }
   }
+  
+  public void setParsingEventListeners(ParsingEventListener... parsingEventListeners) {
+  	this.parsingEventListeners = parsingEventListeners;
+  }
+  
+  public ParsingEventListener[] getParsingEventListenrs() {
+  	return this.parsingEventListeners;
+  }
+  
 }

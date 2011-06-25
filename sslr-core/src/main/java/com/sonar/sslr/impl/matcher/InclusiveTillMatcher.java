@@ -11,7 +11,7 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.ParsingState;
 
-public class InclusiveTillMatcher extends Matcher {
+public class InclusiveTillMatcher extends MemoizedMatcher {
 
 	protected InclusiveTillMatcher(Matcher matcher) {
   	super(matcher);

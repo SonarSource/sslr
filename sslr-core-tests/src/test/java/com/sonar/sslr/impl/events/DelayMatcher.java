@@ -13,8 +13,9 @@ import java.lang.management.ThreadMXBean;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.matcher.Matcher;
+import com.sonar.sslr.impl.matcher.MemoizedMatcher;
 
-public class DelayMatcher extends Matcher {
+public class DelayMatcher extends MemoizedMatcher {
 	
 	private final long delay;
 	

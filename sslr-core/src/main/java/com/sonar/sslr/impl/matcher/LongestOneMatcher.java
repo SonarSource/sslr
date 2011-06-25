@@ -10,17 +10,17 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingException;
 
-public class LongestOneMatcher extends Matcher {
+public class LongestOneMatcher extends MemoizedMatcher {
 
 	protected LongestOneMatcher(Matcher... matchers) {
   	super(matchers);
   }
 
   public AstNode matchWorker(ParsingState parsingState) {
-  	IMatcher longestMatcher = null;
+  	Matcher longestMatcher = null;
   	int longestMatchIndex = -1;
   	
-    for (IMatcher matcher : super.children) {
+    for (Matcher matcher : super.children) {
     	int matcherIndex = matcher.matchToIndex(parsingState);
       if (matcherIndex >= 0) {
         /* This matcher could parse the input [as well], but for longer than the current longest matcher? */

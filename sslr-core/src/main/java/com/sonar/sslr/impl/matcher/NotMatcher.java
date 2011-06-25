@@ -10,7 +10,7 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingException;
 
-public class NotMatcher extends Matcher {
+public class NotMatcher extends MemoizedMatcher {
 	
 	protected NotMatcher(Matcher matcher) {
     super(matcher);

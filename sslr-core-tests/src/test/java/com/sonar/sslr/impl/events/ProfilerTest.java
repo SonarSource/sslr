@@ -42,8 +42,8 @@ public class ProfilerTest {
 
   }
   
-  public Parser<MyTestGrammar> createParser(boolean memoization, MyTestGrammar myTestGrammarImpl) {
-    return Parser.builder(myTestGrammarImpl).optSetLexer(IdentifierLexer.create()).withParsingEventListeners(profiler).withMemoizer(memoization).build();
+  public Parser<MyTestGrammar> createParser(MyTestGrammar myTestGrammarImpl) {
+    return Parser.builder(myTestGrammarImpl).optSetLexer(IdentifierLexer.create()).withParsingEventListeners(profiler).build();
   }
 
   private class MyTestGrammarDelay extends MyTestGrammar {
@@ -66,7 +66,7 @@ public class ProfilerTest {
 
   @Test
   public void ok() {
-  	Parser<MyTestGrammar> p = createParser(true, new MyTestGrammarDelay());
+  	Parser<MyTestGrammar> p = createParser(new MyTestGrammarDelay());
   	profiler.initialize();
     p.parse("hehe wtf");
     
@@ -84,7 +84,7 @@ public class ProfilerTest {
     assertThat(profiler.getMaxLookahead(), equalTo(0));
     
     assertThat(profiler.getMemoizedHits(), equalTo(1L));
-    assertThat(profiler.getMemoizedMisses(), equalTo(1L));
+    assertThat(profiler.getMemoizedMisses(), equalTo(2L));
     
     assertThat(nsToMs(profiler.getTotalNonMemoizedHitCpuTime()), greaterThan(2300L));
     assertThat(nsToMs(profiler.getTotalNonMemoizedHitCpuTime()), lessThan(2700L));
@@ -116,7 +116,7 @@ public class ProfilerTest {
     		assertThat(counter.getMaxLookahead(), equalTo(0));
     		
     		assertThat(counter.getMemoizedHits(), equalTo(0));
-    		assertThat(counter.getMemoizedMisses(), equalTo(0));
+    		assertThat(counter.getMemoizedMisses(), equalTo(1));
     		
         assertThat(nsToMs(counter.getTotalNonMemoizedHitCpuTime()), greaterThan(800L));
         assertThat(nsToMs(counter.getTotalNonMemoizedHitCpuTime()), lessThan(1200L));
@@ -125,66 +125,7 @@ public class ProfilerTest {
     	}
     }
     
-    p = createParser(false, new MyTestGrammarDelay());
-    profiler.initialize();
-    p.parse("hehe wtf");
-    
-    assertThat(nsToMs(profiler.getLexerCpuTime()), lessThan(50L));
-    
-    assertThat(nsToMs(profiler.getParserCpuTime()), greaterThan(3800L));
-    assertThat(nsToMs(profiler.getParserCpuTime()), lessThan(4200L));
-    
-    assertThat(profiler.getHits(), equalTo(3L));
-    
-    assertThat(profiler.getBacktracks(), equalTo(0L));
-    assertThat(profiler.getAverageBacktrackCpuTime(), equalTo(0.0));
-    assertThat(profiler.getMaxBacktrackCpuTime(), equalTo(0L));
-    assertThat(profiler.getAverageLookahead(), equalTo(0.0));
-    assertThat(profiler.getMaxLookahead(), equalTo(0));
-    
-    assertThat(profiler.getMemoizedHits(), equalTo(0L));
-    assertThat(profiler.getMemoizedMisses(), equalTo(0L));
-    
-    assertThat(nsToMs(profiler.getTotalNonMemoizedHitCpuTime()), greaterThan(3800L));
-    assertThat(nsToMs(profiler.getTotalNonMemoizedHitCpuTime()), lessThan(4200L));
-    
-    for (Map.Entry<RuleMatcher, Profiler.RuleCounter> entry: profiler.ruleStats.entrySet()) {
-    	Profiler.RuleCounter counter = entry.getValue();
-    	
-    	if (entry.getKey().getName().equals("rule1")) {
-    		assertThat(counter.getHits(), equalTo(2));
-    		
-    		assertThat(counter.getBacktracks(), equalTo(0));
-    		assertThat(counter.getAverageBacktracksCpuTime(), equalTo(0.0));
-    		assertThat(counter.getMaxBacktrackCpuTime(), equalTo(0L));
-    		assertThat(counter.getAverageLookahead(), equalTo(0.0));
-    		assertThat(counter.getMaxLookahead(), equalTo(0));
-    		
-    		assertThat(counter.getMemoizedHits(), equalTo(0));
-    		assertThat(counter.getMemoizedMisses(), equalTo(0));
-    		
-        assertThat(nsToMs(counter.getTotalNonMemoizedHitCpuTime()), greaterThan(2800L));
-        assertThat(nsToMs(counter.getTotalNonMemoizedHitCpuTime()), lessThan(3200L));
-    	} else if (entry.getKey().getName().equals("root")) {
-    		assertThat(counter.getHits(), equalTo(1));
-    		
-    		assertThat(counter.getBacktracks(), equalTo(0));
-    		assertThat(counter.getAverageBacktracksCpuTime(), equalTo(0.0));
-    		assertThat(counter.getMaxBacktrackCpuTime(), equalTo(0L));
-    		assertThat(counter.getAverageLookahead(), equalTo(0.0));
-    		assertThat(counter.getMaxLookahead(), equalTo(0));
-    		
-    		assertThat(counter.getMemoizedHits(), equalTo(0));
-    		assertThat(counter.getMemoizedMisses(), equalTo(0));
-    		
-        assertThat(nsToMs(counter.getTotalNonMemoizedHitCpuTime()), greaterThan(800L));
-        assertThat(nsToMs(counter.getTotalNonMemoizedHitCpuTime()), lessThan(1200L));
-    	} else {
-    		throw new IllegalStateException();
-    	}
-    }
-    
-    p = createParser(false, new MyTestGrammarBacktrack());
+    p = createParser(new MyTestGrammarBacktrack());
     profiler.initialize();
     p.parse("hehe huhu hoho");
     
@@ -204,7 +145,7 @@ public class ProfilerTest {
     assertThat(profiler.getMaxLookahead(), equalTo(4));
     
     assertThat(profiler.getMemoizedHits(), equalTo(0L));
-    assertThat(profiler.getMemoizedMisses(), equalTo(0L));
+    assertThat(profiler.getMemoizedMisses(), equalTo(2L));
     
     assertThat(nsToMs(profiler.getTotalNonMemoizedHitCpuTime()), greaterThan(300L));
     assertThat(nsToMs(profiler.getTotalNonMemoizedHitCpuTime()), lessThan(700L));
@@ -224,7 +165,7 @@ public class ProfilerTest {
     		assertThat(counter.getMaxLookahead(), equalTo(4));
     		
     		assertThat(counter.getMemoizedHits(), equalTo(0));
-    		assertThat(counter.getMemoizedMisses(), equalTo(0));
+    		assertThat(counter.getMemoizedMisses(), equalTo(1));
     		
         assertThat(nsToMs(counter.getTotalNonMemoizedHitCpuTime()), greaterThan(300L));
         assertThat(nsToMs(counter.getTotalNonMemoizedHitCpuTime()), lessThan(700L));
@@ -238,7 +179,7 @@ public class ProfilerTest {
     		assertThat(counter.getMaxLookahead(), equalTo(0));
     		
     		assertThat(counter.getMemoizedHits(), equalTo(0));
-    		assertThat(counter.getMemoizedMisses(), equalTo(0));
+    		assertThat(counter.getMemoizedMisses(), equalTo(1));
     		
         assertThat(nsToMs(counter.getTotalNonMemoizedHitCpuTime()), lessThan(50L));
     	} else {

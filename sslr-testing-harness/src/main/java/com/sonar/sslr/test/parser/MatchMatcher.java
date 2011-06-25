@@ -13,14 +13,14 @@ import com.sonar.sslr.impl.Lexer;
 import com.sonar.sslr.impl.ParsingStackTrace;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingException;
-import com.sonar.sslr.impl.matcher.Matcher;
+import com.sonar.sslr.impl.matcher.MemoizedMatcher;
 
-class MatchMatcher extends BaseMatcher<Matcher> {
+class MatchMatcher extends BaseMatcher<MemoizedMatcher> {
 
   private final String sourceCode;
   private final Lexer lexer;
   private String parsingStackTrace;
-  private Matcher matcher;
+  private MemoizedMatcher matcher;
 
   public MatchMatcher(String sourceCode, Lexer lexer) {
     this.sourceCode = sourceCode;
@@ -28,10 +28,10 @@ class MatchMatcher extends BaseMatcher<Matcher> {
   }
 
   public boolean matches(Object obj) {
-    if ( !(obj instanceof Matcher)) {
+    if ( !(obj instanceof MemoizedMatcher)) {
       return false;
     }
-    matcher = (Matcher) obj;
+    matcher = (MemoizedMatcher) obj;
     ParsingState parsingState = new ParsingState(lexer.lex(sourceCode).getTokens());
     try {
       matcher.match(parsingState);

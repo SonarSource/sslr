@@ -29,7 +29,6 @@ import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.Lexer.LexerBuilder;
 import com.sonar.sslr.impl.events.ParsingEventListener;
-import com.sonar.sslr.impl.events.RuleMatcherAdapter;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 
 public class Parser<GRAMMAR extends Grammar> {
@@ -40,11 +39,7 @@ public class Parser<GRAMMAR extends Grammar> {
   private Lexer lexer;
   private GRAMMAR grammar;
   private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
-
-  private boolean isDecorated = false;
-  private final boolean enableMemoizer;
   private final ParsingEventListener[] parsingEventListeners;
-  private final AdaptersDecorator<GRAMMAR> adapterDecorator;
 
   private Parser(ParserBuilder<GRAMMAR> builder) {
     if (builder.lexer != null) {
@@ -54,15 +49,8 @@ public class Parser<GRAMMAR extends Grammar> {
     }
     this.grammar = builder.grammar;
     this.parsingEventListeners = builder.parsingEventListeners;
-    this.enableMemoizer = builder.enableMemoizer;
     this.listeners = builder.listeners;
     setDecorators(builder.decorators);
-    
-    if (this.enableMemoizer || this.parsingEventListeners.length > 0) {
-    	this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer, this.parsingEventListeners);
-    } else {
-    	this.adapterDecorator = null;
-    }
   }	
 
   /**
@@ -85,10 +73,7 @@ public class Parser<GRAMMAR extends Grammar> {
     this.grammar = grammar;
     this.lexer = lexer;
     setDecorators(decorators);
-    
     this.parsingEventListeners = new ParsingEventListener[0];
-    this.enableMemoizer = true;
-    this.adapterDecorator = new AdaptersDecorator<GRAMMAR>(this.enableMemoizer);
   }
 
   protected void setDecorators(List<GrammarDecorator<GRAMMAR>> decorators) {
@@ -101,17 +86,7 @@ public class Parser<GRAMMAR extends Grammar> {
   public void printStackTrace(PrintStream stream) {
   	stream.append(ParsingStackTrace.generateFullStackTrace(getParsingState()));
   }
-
-  protected void decorate() {
-    if (isDecorated) return;
-    isDecorated = true;
-    
-    if (this.adapterDecorator != null) {
-      this.adapterDecorator.decorate(grammar);
-    }
-    
-  }
-
+  
   public void addListener(RecognictionExceptionListener listerner) {
     listeners.add(listerner);
   }
@@ -149,15 +124,6 @@ public class Parser<GRAMMAR extends Grammar> {
   }
 
   public final AstNode parse(List<Token> tokens) {
-    decorate(); /* FIXME: Is there a better place to do this? Perhaps with a Parser Builder! */
-    
-    /* Now wrap the root rule (only if required) */
-    if (this.parsingEventListeners.length > 0) {
-      if (!(this.rootRule.getRule() instanceof RuleMatcherAdapter)) {
-        this.rootRule.setRuleMatcher(new RuleMatcherAdapter(rootRule.getRule(), this.parsingEventListeners));
-      }
-    }
-
     parsingState = null;
     
     /* Fire the beginParse event */
@@ -168,6 +134,7 @@ public class Parser<GRAMMAR extends Grammar> {
     try {
       parsingState = new ParsingState(tokens);
       parsingState.setListeners(listeners);
+      parsingState.setParsingEventListeners(parsingEventListeners);
       return rootRule.getRule().match(parsingState);
     } catch (BacktrackingException e) {
       if (parsingState != null) {
@@ -220,7 +187,6 @@ public class Parser<GRAMMAR extends Grammar> {
     private GRAMMAR grammar;
     private List<GrammarDecorator<GRAMMAR>> decorators = new ArrayList<GrammarDecorator<GRAMMAR>>();
     private ParsingEventListener[] parsingEventListeners = new ParsingEventListener[0];
-    private boolean enableMemoizer = true;
     private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
 
     private ParserBuilder(GRAMMAR grammar) {
@@ -269,11 +235,6 @@ public class Parser<GRAMMAR extends Grammar> {
     public ParserBuilder<GRAMMAR> withParsingEventListeners(ParsingEventListener... parsingEventListeners) {
     	this.parsingEventListeners = parsingEventListeners;
     	return this;
-    }
-
-    public ParserBuilder<GRAMMAR> withMemoizer(boolean enable) {
-      this.enableMemoizer = enable;
-      return this;
     }
 
     public ParserBuilder<GRAMMAR> optAddRecognictionExceptionListener(RecognictionExceptionListener listener) {

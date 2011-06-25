@@ -11,7 +11,7 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.ParsingState;
 
-public class ExclusiveTillMatcher extends Matcher {
+public class ExclusiveTillMatcher extends MemoizedMatcher {
 	
 	protected ExclusiveTillMatcher(Matcher... matchers) {
   	super(matchers);
@@ -36,7 +36,7 @@ public class ExclusiveTillMatcher extends Matcher {
   }
 
   private boolean nothingMatch(ParsingState parsingState) {
-    for (IMatcher matcher : super.children) {
+    for (Matcher matcher : super.children) {
       if (matcher.isMatching(parsingState)) {
         return false;
       }

@@ -12,7 +12,7 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingException;
 
-public class AtLeastOneMatcher extends Matcher {
+public class AtLeastOneMatcher extends MemoizedMatcher {
 	
 	protected AtLeastOneMatcher(Matcher... matchers) {
   	super(matchers);

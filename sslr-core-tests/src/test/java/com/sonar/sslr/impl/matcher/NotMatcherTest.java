@@ -24,59 +24,6 @@ public class NotMatcherTest {
     
     assertThat(and(opt(not(and("one", "two")), "one"), opt(and("one", "two"))), match("one"));
     assertThat(and(opt(not(and("one", "two")), "one"), opt(and("one", "two"))), match("one two"));
-    
-    assertThat(
-    		new MemoizerMatcher(
-    				and(
-    						new MemoizerMatcher(
-	    						opt(
-	    								new MemoizerMatcher(
-	    										not(
-	    												new MemoizerMatcher(
-	    														and("one", "two")
-	    												)
-	    										)
-	    								),
-	    								"one"
-	    						)
-	    					),
-	    					new MemoizerMatcher(
-		    						opt(
-		    								new MemoizerMatcher(
-		    										and("one", "two")
-		    								)
-    								)
-    						)
-    				)
-    		),
-    		match("one"));
-    
-    assertThat(
-    		new MemoizerMatcher(
-    				and(
-    						new MemoizerMatcher(
-	    						opt(
-	    								new MemoizerMatcher(
-	    										not(
-	    												new MemoizerMatcher(
-	    														and("one", "two")
-	    												)
-	    										)
-	    								),
-	    								"one"
-	    						)
-	    					),
-	    					new MemoizerMatcher(
-		    						opt(
-		    								new MemoizerMatcher(
-		    										and("one", "two")
-		    								)
-    								)
-    						)
-    				)
-    		),
-    		match("one two"));
-
   }
 
   @Test

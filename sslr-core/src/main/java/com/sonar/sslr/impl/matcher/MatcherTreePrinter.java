@@ -5,26 +5,14 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.impl.events.MatcherAdapter;
-import com.sonar.sslr.impl.events.RuleMatcherAdapter;
-
 public class MatcherTreePrinter {
 
-	public static String print(IMatcher matcher) {
-		return print(matcher, true, false);
+	public static String print(Matcher matcher) {
+		return print(matcher, true);
 	}
-
-	public static String printWithAdapters(IMatcher matcher) {
-		return print(matcher, true, true);
-	}
-
-	private static String print(IMatcher matcher, boolean expandRule, boolean showAdapters) {
-		IMatcher[] children = matcher.getChildren();
-
-		if (isAdapter(matcher) && !showAdapters) {
-			/* Skip this adapter matcher */
-			return print(children[0], expandRule, showAdapters);
-		}
+	
+	private static String print(Matcher matcher, boolean expandRule) {
+		Matcher[] children = matcher.getChildren();
 
 		StringBuilder result = new StringBuilder(matcher.toString());
 		if (isRuleImpl(matcher) && expandRule) result.append(".is");
@@ -38,7 +26,7 @@ public class MatcherTreePrinter {
 
 			/* Display the children */
 			for (int i = 0; i < children.length; i++) {
-				result.append(print(children[i], false, showAdapters));
+				result.append(print(children[i], false));
 				if (i < children.length - 1) {
 					result.append(", ");
 				}
@@ -50,20 +38,16 @@ public class MatcherTreePrinter {
 		return result.toString();
 	}
 
-	private static boolean isNotRuleImplToCollapse(IMatcher matcher, boolean expandRule) {
+	private static boolean isNotRuleImplToCollapse(Matcher matcher, boolean expandRule) {
 		return !(isRuleImpl(matcher) && !expandRule);
 	}
 
-	private static boolean hasChildren(IMatcher[] children) {
+	private static boolean hasChildren(Matcher[] children) {
 		return children.length > 0;
 	}
 
-	private static boolean isRuleImpl(IMatcher matcher) {
-		return !(matcher instanceof RuleMatcherAdapter) && matcher instanceof RuleMatcher;
-	}
-
-	private static boolean isAdapter(IMatcher matcher) {
-		return (matcher instanceof MemoizerMatcher || matcher instanceof RuleMatcherAdapter || matcher instanceof MatcherAdapter);
+	private static boolean isRuleImpl(Matcher matcher) {
+		return matcher instanceof RuleMatcher;
 	}
 	
 }

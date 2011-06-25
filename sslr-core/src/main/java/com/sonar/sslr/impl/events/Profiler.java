@@ -13,7 +13,7 @@ import java.lang.management.*;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingException;
-import com.sonar.sslr.impl.matcher.Matcher;
+import com.sonar.sslr.impl.matcher.MemoizedMatcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class Profiler extends ParsingEventListener {
@@ -206,7 +206,7 @@ public class Profiler extends ParsingEventListener {
 	}
 	
 	@Override
-	public void memoizerHit(Matcher matcher, ParsingState parsingState) {
+	public void memoizerHit(MemoizedMatcher matcher, ParsingState parsingState) {
 		if (matcher instanceof RuleMatcher) {
 			/* Match */
 			matches.peek().wasMemoized = true;
@@ -218,7 +218,7 @@ public class Profiler extends ParsingEventListener {
 	}
 	
 	@Override
-	public void memoizerMiss(Matcher matcher, ParsingState parsingState) {
+	public void memoizerMiss(MemoizedMatcher matcher, ParsingState parsingState) {
 		if (matcher instanceof RuleMatcher) {
 			getRuleCounter((RuleMatcher)matcher).memoizedMiss();
 		}

@@ -12,7 +12,7 @@ import com.sonar.sslr.impl.Parser;
 
 public class ParserMatchers {
 
-  public final static Matcher<com.sonar.sslr.impl.matcher.Matcher> match(String sourceCode, Lexer lexer) {
+  public final static Matcher<com.sonar.sslr.impl.matcher.MemoizedMatcher> match(String sourceCode, Lexer lexer) {
     return new MatchMatcher(sourceCode, lexer);
   }
 

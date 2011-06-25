@@ -10,7 +10,7 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingException;
 
-public class BooleanMatcher extends Matcher {
+public class BooleanMatcher extends MemoizedMatcher {
 
   private final boolean internalState;
 

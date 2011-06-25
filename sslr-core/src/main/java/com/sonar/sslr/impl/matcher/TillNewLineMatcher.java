@@ -13,7 +13,7 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.ParsingState;
 
-public class TillNewLineMatcher extends Matcher {
+public class TillNewLineMatcher extends MemoizedMatcher {
 
   protected TillNewLineMatcher() {
   	super();

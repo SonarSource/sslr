@@ -11,7 +11,7 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingException;
 
-public class TokenCountMatcher extends Matcher {
+public class TokenCountMatcher extends MemoizedMatcher {
 	
 	private final Operator operator;
 	private final int n;

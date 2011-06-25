@@ -10,7 +10,7 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingException;
 
-public class OneToNMatcher extends Matcher {
+public class OneToNMatcher extends MemoizedMatcher {
 
   protected OneToNMatcher(Matcher matcher) {
     super(matcher);

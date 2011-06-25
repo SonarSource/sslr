@@ -11,7 +11,7 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingException;
 
-public abstract class TokenMatcher extends Matcher {
+public abstract class TokenMatcher extends NonMemoizedMatcher {
 
   private final boolean hasToBeSkippedFromAst;
 

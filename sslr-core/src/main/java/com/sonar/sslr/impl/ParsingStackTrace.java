@@ -16,7 +16,6 @@ import com.sonar.sslr.impl.matcher.TokenTypeMatcher;
 public class ParsingStackTrace {
 
   private final StringBuilder stackTrace = new StringBuilder();
-  private static final int STACK_TRACE_DEPTH = 8;
   private final ParsingState parsingState;
   private final static int SOURCE_CODE_TOKENS_WINDOW = 30;
   private final static int SOURCE_CODE_LINE_HEADER_WIDTH = 6;
