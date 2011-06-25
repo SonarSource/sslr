@@ -36,7 +36,7 @@ public class RuleMatcher extends MemoizedMatcher {
     }
     AstNode childNode = super.children[0].match(parsingState);
 
-    AstNode astNode = new AstNode(astNodeType, name, parsingState.peekTokenIfExists(startIndex, (Matcher)super.children[0]));
+    AstNode astNode = new AstNode(astNodeType, name, parsingState.peekTokenIfExists(startIndex, (Matcher) super.children[0]));
     astNode.setAstNodeListener(listener);
     astNode.addChild(childNode);
     return astNode;
@@ -54,17 +54,12 @@ public class RuleMatcher extends MemoizedMatcher {
     this.astNodeType = astNodeType;
   }
 
-
   public String getName() {
     return name;
   }
 
   public void recoveryRule() {
     recoveryRule = true;
-  }
-
-  public void endParsing() {
-    /* Nothing, used by left recurisve rule only so far */
   }
 
   @Override

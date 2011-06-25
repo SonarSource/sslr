@@ -5,6 +5,9 @@
  */
 package com.sonar.sslr.impl.matcher;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
@@ -56,5 +59,22 @@ public abstract class Matcher {
         }
       }
     }
+  }
+
+  public final void endParsing() {
+    endParsing(new HashSet<Matcher>());
+  }
+
+  private final void endParsing(Set<Matcher> alreadyVisitedMatchers) {
+    reinitialize();
+    alreadyVisitedMatchers.add(this);
+    for (Matcher child : children) {
+      if ( !alreadyVisitedMatchers.contains(child)) {
+        child.endParsing(alreadyVisitedMatchers);
+      }
+    }
+  }
+
+  protected void reinitialize() {
   }
 }

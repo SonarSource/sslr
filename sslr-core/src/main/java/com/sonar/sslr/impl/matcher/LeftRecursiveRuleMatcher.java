@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Stack;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingEvent;
+import com.sonar.sslr.impl.ParsingState;
 
 /**
  * Implementation of a Rule that support left recursion.
@@ -25,7 +25,7 @@ public class LeftRecursiveRuleMatcher extends RuleMatcher {
   protected LeftRecursiveRuleMatcher(String name) {
     super(name);
   }
-  
+
   @Override
   public AstNode matchWorker(ParsingState parsingState) {
 
@@ -72,7 +72,8 @@ public class LeftRecursiveRuleMatcher extends RuleMatcher {
     }
   }
 
-  public void endParsing() {
+  @Override
+  public void reinitialize() {
     matchStartIndexes = new Stack<Integer>();
     partialAstNodes = new HashMap<Integer, AstNode>();
   }

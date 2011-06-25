@@ -140,7 +140,7 @@ public class Parser<GRAMMAR extends Grammar> {
       throw new RecognitionException("The grammar seems to contain a left recursion which is not compatible with LL(*) parser.",
           parsingState, e);
     } finally {
-      GrammarRuleLifeCycleManager.notifyEndParsing(grammar);
+      rootRule.getRule().endParsing();
 
       throwEndParseEvent();
     }
