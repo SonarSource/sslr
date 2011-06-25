@@ -6,16 +6,16 @@
 
 package com.sonar.sslr.impl;
 
-public class BacktrackingException extends RuntimeException {
+public class BacktrackingEvent extends RuntimeException {
 
   private static final long serialVersionUID = 9043689248001323911L;
 
-  private static BacktrackingException exception = new BacktrackingException();
+  private static BacktrackingEvent exception = new BacktrackingEvent();
 
-  private BacktrackingException() {
+  private BacktrackingEvent() {
   }
 
-  public static BacktrackingException create() {
+  public static BacktrackingEvent create() {
     return exception;
   }
 }

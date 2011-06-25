@@ -17,7 +17,7 @@ import org.hamcrest.Description;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingStackTrace;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.BacktrackingException;
+import com.sonar.sslr.impl.BacktrackingEvent;
 
 public class HamcrestMatchMatcher extends BaseMatcher<Matcher> {
   private final List<Token> tokens;
@@ -48,7 +48,7 @@ public class HamcrestMatchMatcher extends BaseMatcher<Matcher> {
         return false;
       }
       return true;
-    } catch (BacktrackingException e) {
+    } catch (BacktrackingEvent e) {
       parsingStackTrace = ParsingStackTrace.generate(parsingState);
       return false;
     } finally {

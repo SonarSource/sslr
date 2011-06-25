@@ -12,7 +12,7 @@ import java.lang.management.*;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.BacktrackingException;
+import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.matcher.MemoizedMatcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
@@ -200,7 +200,7 @@ public class Profiler extends ParsingEventListener {
 	}
 
 	@Override
-	public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState, BacktrackingException re) {
+	public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState, BacktrackingEvent re) {
 		stopMatch(rule, parsingState, true);
 		stopRecordingTime(rule);
 	}

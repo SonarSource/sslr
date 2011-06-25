@@ -39,7 +39,7 @@ public class Parser<GRAMMAR extends Grammar> {
   private Lexer lexer;
   private GRAMMAR grammar;
   private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
-  private final ParsingEventListener[] parsingEventListeners;
+  private ParsingEventListener[] parsingEventListeners;
 
   private Parser(ParserBuilder<GRAMMAR> builder) {
     if (builder.lexer != null) {
@@ -51,7 +51,7 @@ public class Parser<GRAMMAR extends Grammar> {
     this.parsingEventListeners = builder.parsingEventListeners;
     this.listeners = builder.listeners;
     setDecorators(builder.decorators);
-  }	
+  }
 
   /**
    * @deprecated
@@ -73,7 +73,6 @@ public class Parser<GRAMMAR extends Grammar> {
     this.grammar = grammar;
     this.lexer = lexer;
     setDecorators(decorators);
-    this.parsingEventListeners = new ParsingEventListener[0];
   }
 
   protected void setDecorators(List<GrammarDecorator<GRAMMAR>> decorators) {
@@ -84,59 +83,54 @@ public class Parser<GRAMMAR extends Grammar> {
   }
 
   public void printStackTrace(PrintStream stream) {
-  	stream.append(ParsingStackTrace.generateFullStackTrace(getParsingState()));
+    stream.append(ParsingStackTrace.generateFullStackTrace(getParsingState()));
   }
-  
+
   public void addListener(RecognictionExceptionListener listerner) {
     listeners.add(listerner);
   }
 
   public final AstNode parse(File file) {
-  	/* Fire the beginLex event */
-  	for (ParsingEventListener listener: this.parsingEventListeners) {
-    	listener.beginLex();
-    }
-  	
+    throwBeginLexEvent();
     lexerOutput = lexer.lex(file);
-    
-    /* Fire the endLex event */
-  	for (ParsingEventListener listener: this.parsingEventListeners) {
-    	listener.endLex();
-    }
-    
+    throwEndLexEvent();
     return parse(lexerOutput.getTokens());
   }
 
   public final AstNode parse(String source) {
-  	/* Fire the beginLex event */
-  	for (ParsingEventListener listener: this.parsingEventListeners) {
-    	listener.beginLex();
-    }
-  	
+    throwBeginLexEvent();
     lexerOutput = lexer.lex(source);
-    
-    /* Fire the endLex event */
-  	for (ParsingEventListener listener: this.parsingEventListeners) {
-    	listener.endLex();
-    }
-    
+    throwEndLexEvent();
     return parse(lexerOutput.getTokens());
+  }
+
+  private final void throwEndLexEvent() {
+    if (parsingEventListeners != null) {
+      for (ParsingEventListener listener : this.parsingEventListeners) {
+        listener.endLex();
+      }
+    }
+  }
+
+  private final void throwBeginLexEvent() {
+    if (parsingEventListeners != null) {
+      for (ParsingEventListener listener : this.parsingEventListeners) {
+        listener.beginLex();
+      }
+    }
   }
 
   public final AstNode parse(List<Token> tokens) {
     parsingState = null;
-    
-    /* Fire the beginParse event */
-    for (ParsingEventListener listener: this.parsingEventListeners) {
-    	listener.beginParse();
-    }
-    
+
+    throwBeginParseEvent();
+
     try {
       parsingState = new ParsingState(tokens);
       parsingState.setListeners(listeners);
-      parsingState.setParsingEventListeners(parsingEventListeners);
+      parsingState.parsingEventListeners = parsingEventListeners;
       return rootRule.getRule().match(parsingState);
-    } catch (BacktrackingException e) {
+    } catch (BacktrackingEvent e) {
       if (parsingState != null) {
         throw new RecognitionException(parsingState);
       } else {
@@ -147,13 +141,26 @@ public class Parser<GRAMMAR extends Grammar> {
           parsingState, e);
     } finally {
       GrammarRuleLifeCycleManager.notifyEndParsing(grammar);
-      
-      /* Fire the endParse event */
-      for (ParsingEventListener listener: this.parsingEventListeners) {
-      	listener.endParse();
-      }
+
+      throwEndParseEvent();
     }
 
+  }
+
+  private final void throwEndParseEvent() {
+    if (parsingEventListeners != null) {
+      for (ParsingEventListener listener : this.parsingEventListeners) {
+        listener.endParse();
+      }
+    }
+  }
+
+  private final void throwBeginParseEvent() {
+    if (parsingEventListeners != null) {
+      for (ParsingEventListener listener : this.parsingEventListeners) {
+        listener.beginParse();
+      }
+    }
   }
 
   public final ParsingState getParsingState() {
@@ -186,7 +193,7 @@ public class Parser<GRAMMAR extends Grammar> {
     private Lexer lexer;
     private GRAMMAR grammar;
     private List<GrammarDecorator<GRAMMAR>> decorators = new ArrayList<GrammarDecorator<GRAMMAR>>();
-    private ParsingEventListener[] parsingEventListeners = new ParsingEventListener[0];
+    private ParsingEventListener[] parsingEventListeners;
     private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
 
     private ParserBuilder(GRAMMAR grammar) {
@@ -231,17 +238,17 @@ public class Parser<GRAMMAR extends Grammar> {
       decorators.add(decorator);
       return this;
     }
-    
+
     public ParserBuilder<GRAMMAR> withParsingEventListeners(ParsingEventListener... parsingEventListeners) {
-    	this.parsingEventListeners = parsingEventListeners;
-    	return this;
+      this.parsingEventListeners = parsingEventListeners;
+      return this;
     }
 
     public ParserBuilder<GRAMMAR> optAddRecognictionExceptionListener(RecognictionExceptionListener listener) {
       listeners.add(listener);
       return this;
     }
-    
+
   }
-  
+
 }

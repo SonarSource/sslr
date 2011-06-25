@@ -8,10 +8,10 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
+import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.BacktrackingException;
 
-public abstract class TokenMatcher extends NonMemoizedMatcher {
+public abstract class TokenMatcher extends MemoizedMatcher {
 
   private final boolean hasToBeSkippedFromAst;
 
@@ -28,10 +28,10 @@ public abstract class TokenMatcher extends NonMemoizedMatcher {
         return new AstNode(token);
       }
     } else {
-      throw BacktrackingException.create();
+      throw BacktrackingEvent.create();
     }
   }
 
   protected abstract boolean isExpectedToken(Token token);
-  
+
 }

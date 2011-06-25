@@ -12,7 +12,7 @@ import org.hamcrest.Description;
 import com.sonar.sslr.impl.Lexer;
 import com.sonar.sslr.impl.ParsingStackTrace;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.BacktrackingException;
+import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.matcher.MemoizedMatcher;
 
 class MatchMatcher extends BaseMatcher<MemoizedMatcher> {
@@ -36,7 +36,7 @@ class MatchMatcher extends BaseMatcher<MemoizedMatcher> {
     try {
       matcher.match(parsingState);
       return true;
-    } catch (BacktrackingException e) {
+    } catch (BacktrackingEvent e) {
       parsingStackTrace = ParsingStackTrace.generateFullStackTrace(parsingState);
       return false;
     }

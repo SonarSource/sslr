@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.BacktrackingException;
+import com.sonar.sslr.impl.BacktrackingEvent;
 
 public class AtLeastOneMatcher extends MemoizedMatcher {
 	
@@ -30,7 +30,7 @@ public class AtLeastOneMatcher extends MemoizedMatcher {
     
     if (childNodes.size() < 1) {
     	/* At least one constraint violated */
-    	throw BacktrackingException.create();
+    	throw BacktrackingEvent.create();
     }
 
     AstNode astNode = new AstNode(null, "AtLeastOneMatcher", parsingState.peekTokenIfExists(startIndex, this));

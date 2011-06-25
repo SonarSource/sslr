@@ -32,7 +32,7 @@ public class ParsingState {
   private AstNode[] astNodeMemoization;
   private MemoizedMatcher[] astMatcherMemoization;
   private boolean pendingLeftRecursion = false;
-  private ParsingEventListener[] parsingEventListeners;
+  public ParsingEventListener[] parsingEventListeners;
 
   public ParsingState(List<Token> tokens) {
     this.tokens = tokens.toArray(new Token[0]);
@@ -43,14 +43,14 @@ public class ParsingState {
 
   public Token popToken(Matcher matcher) {
     if (pendingLeftRecursion) {
-      throw BacktrackingException.create();
+      throw BacktrackingEvent.create();
     }
     if (lexerIndex >= outpostMatcherTokenIndex) {
       outpostMatcherTokenIndex = lexerIndex;
       outpostMatcher = matcher;
     }
     if (lexerIndex >= lexerSize) {
-      throw BacktrackingException.create();
+      throw BacktrackingEvent.create();
     }
     return tokens[lexerIndex++];
   }
@@ -61,14 +61,14 @@ public class ParsingState {
 
   public Token peekToken(int index, Matcher matcher) {
     if (pendingLeftRecursion) {
-      throw BacktrackingException.create();
+      throw BacktrackingEvent.create();
     }
     if (index > outpostMatcherTokenIndex) {
       outpostMatcherTokenIndex = index;
       outpostMatcher = matcher;
     }
     if (index >= lexerSize) {
-      throw BacktrackingException.create();
+      throw BacktrackingEvent.create();
     }
     return tokens[index];
   }
@@ -140,7 +140,7 @@ public class ParsingState {
   public Token peekTokenIfExists(int index, Matcher matcher) {
     try {
       return peekToken(index, matcher);
-    } catch (BacktrackingException e) {
+    } catch (BacktrackingEvent e) {
       return null;
     }
   }
@@ -182,13 +182,4 @@ public class ParsingState {
       listener.addRecognitionException(recognitionException);
     }
   }
-  
-  public void setParsingEventListeners(ParsingEventListener... parsingEventListeners) {
-  	this.parsingEventListeners = parsingEventListeners;
-  }
-  
-  public ParsingEventListener[] getParsingEventListenrs() {
-  	return this.parsingEventListeners;
-  }
-  
 }

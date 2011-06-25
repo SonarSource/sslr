@@ -9,7 +9,7 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.BacktrackingException;
+import com.sonar.sslr.impl.BacktrackingEvent;
 
 public class TokenCountMatcher extends MemoizedMatcher {
 	
@@ -39,21 +39,21 @@ public class TokenCountMatcher extends MemoizedMatcher {
     switch (operator) {
     	case EQUAL:
     		if (consumedTokens != n) {
-    			throw BacktrackingException.create();
+    			throw BacktrackingEvent.create();
     		}
     		break;
     	case LESS_THAN:
     		if (consumedTokens >= n) {
-    			throw BacktrackingException.create();
+    			throw BacktrackingEvent.create();
     		}
     		break;
     	case GREATER_THAN:
     		if (consumedTokens <= n) {
-    			throw BacktrackingException.create();
+    			throw BacktrackingEvent.create();
     		}
     		break;
     	default:
-    		throw BacktrackingException.create();
+    		throw BacktrackingEvent.create();
     }
     
     return astNode;

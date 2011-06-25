@@ -13,7 +13,7 @@ import java.util.Stack;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.BacktrackingException;
+import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
@@ -109,7 +109,7 @@ public class ExtendedStackTrace extends ParsingEventListener {
 	}
 
 	@Override
-	public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState, BacktrackingException re) {
+	public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState, BacktrackingEvent re) {
 		currentStack.pop();
 	}
 
@@ -124,7 +124,7 @@ public class ExtendedStackTrace extends ParsingEventListener {
 	}
 
 	@Override
-	public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState, BacktrackingException re) {
+	public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState, BacktrackingEvent re) {
 		/* Handle the longest path */
 		if (parsingState.lexerIndex > longestIndex) {
 			/* New longest path! */

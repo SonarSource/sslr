@@ -8,7 +8,7 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.BacktrackingException;
+import com.sonar.sslr.impl.BacktrackingEvent;
 
 public class AnyTokenButNotMatcher extends MemoizedMatcher {
 	
@@ -18,7 +18,7 @@ public class AnyTokenButNotMatcher extends MemoizedMatcher {
 
   public AstNode matchWorker(ParsingState parsingState) {
     if (super.children[0].isMatching(parsingState)) {
-      throw BacktrackingException.create();
+      throw BacktrackingEvent.create();
     } else {
       return new AstNode(parsingState.popToken(this));
     }

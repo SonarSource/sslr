@@ -9,7 +9,7 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.BacktrackingException;
+import com.sonar.sslr.impl.BacktrackingEvent;
 
 public class AdjacentMatcher extends MemoizedMatcher {
 	
@@ -27,7 +27,7 @@ public class AdjacentMatcher extends MemoizedMatcher {
       node.addChild(super.children[0].match(parsingState));
       return node;
     } else {
-      throw BacktrackingException.create();
+      throw BacktrackingEvent.create();
     }
   }
   
