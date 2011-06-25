@@ -10,16 +10,16 @@ import com.sonar.sslr.impl.events.RuleMatcherAdapter;
 
 public class MatcherTreePrinter {
 
-	public static String print(Matcher matcher) {
+	public static String print(IMatcher matcher) {
 		return print(matcher, true, false);
 	}
 
-	public static String printWithAdapters(Matcher matcher) {
+	public static String printWithAdapters(IMatcher matcher) {
 		return print(matcher, true, true);
 	}
 
-	private static String print(Matcher matcher, boolean expandRule, boolean showAdapters) {
-		Matcher[] children = matcher.getChildren();
+	private static String print(IMatcher matcher, boolean expandRule, boolean showAdapters) {
+		IMatcher[] children = matcher.getChildren();
 
 		if (isAdapter(matcher) && !showAdapters) {
 			/* Skip this adapter matcher */
@@ -50,19 +50,19 @@ public class MatcherTreePrinter {
 		return result.toString();
 	}
 
-	private static boolean isNotRuleImplToCollapse(Matcher matcher, boolean expandRule) {
+	private static boolean isNotRuleImplToCollapse(IMatcher matcher, boolean expandRule) {
 		return !(isRuleImpl(matcher) && !expandRule);
 	}
 
-	private static boolean hasChildren(Matcher[] children) {
+	private static boolean hasChildren(IMatcher[] children) {
 		return children.length > 0;
 	}
 
-	private static boolean isRuleImpl(Matcher matcher) {
+	private static boolean isRuleImpl(IMatcher matcher) {
 		return !(matcher instanceof RuleMatcherAdapter) && matcher instanceof RuleMatcher;
 	}
 
-	private static boolean isAdapter(Matcher matcher) {
+	private static boolean isAdapter(IMatcher matcher) {
 		return (matcher instanceof MemoizerMatcher || matcher instanceof RuleMatcherAdapter || matcher instanceof MatcherAdapter);
 	}
 	

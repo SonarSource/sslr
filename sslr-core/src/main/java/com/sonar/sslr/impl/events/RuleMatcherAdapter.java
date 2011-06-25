@@ -21,9 +21,9 @@ public class RuleMatcherAdapter extends RuleMatcher {
   private final ParsingEventListener[] parsingEventListeners;
 
   public RuleMatcherAdapter(Matcher ruleImplMemoized, ParsingEventListener... parsingEventListeners) {
-    super((ruleImplMemoized instanceof MemoizerMatcher) ? ((RuleMatcher)ruleImplMemoized.getChildren()[0]).getName() : ((RuleMatcher)ruleImplMemoized).getName());
+    super((ruleImplMemoized instanceof MemoizerMatcher) ? ((RuleMatcher)ruleImplMemoized.children[0]).getName() : ((RuleMatcher)ruleImplMemoized).getName());
 
-    this.ruleImpl = (ruleImplMemoized instanceof MemoizerMatcher) ? (RuleMatcher)ruleImplMemoized.getChildren()[0] : (RuleMatcher)ruleImplMemoized;
+    this.ruleImpl = (ruleImplMemoized instanceof MemoizerMatcher) ? (RuleMatcher)ruleImplMemoized.children[0] : (RuleMatcher)ruleImplMemoized;
     this.ruleImplMemoized = ruleImplMemoized;
     this.parsingEventListeners = parsingEventListeners;
     this.children = new Matcher[] { ruleImplMemoized };
@@ -34,7 +34,7 @@ public class RuleMatcherAdapter extends RuleMatcher {
   }
 
   @Override
-  public AstNode match(ParsingState parsingState) {
+  public AstNode matchWorker(ParsingState parsingState) {
   	for (ParsingEventListener parsingEventListener: parsingEventListeners) {
   		parsingEventListener.enterRule(ruleImpl, parsingState);
   	}

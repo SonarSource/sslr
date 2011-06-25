@@ -17,7 +17,7 @@ public class ExclusiveTillMatcher extends Matcher {
   	super(matchers);
   }
 
-  public AstNode match(ParsingState parsingState) {
+  public AstNode matchWorker(ParsingState parsingState) {
     Token nextToken = parsingState.peekTokenIfExists(parsingState.lexerIndex, this);
     int nextTokenLine = 0;
     int nextTokenColumn = 0;
@@ -36,7 +36,7 @@ public class ExclusiveTillMatcher extends Matcher {
   }
 
   private boolean nothingMatch(ParsingState parsingState) {
-    for (Matcher matcher : super.children) {
+    for (IMatcher matcher : super.children) {
       if (matcher.isMatching(parsingState)) {
         return false;
       }

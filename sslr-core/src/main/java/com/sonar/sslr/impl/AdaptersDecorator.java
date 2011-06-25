@@ -55,13 +55,13 @@ public class AdaptersDecorator<GRAMMAR extends Grammar> implements GrammarDecora
   }
 
   private void decorateMatcher(Matcher matcher) {
-    for (int i = 0; i < matcher.getChildren().length; i++) {
-    	Matcher originalChild = (Matcher)matcher.getChildren()[i];
+    for (int i = 0; i < matcher.children.length; i++) {
+    	Matcher originalChild = (Matcher)matcher.children[i];
     	if (!isAdapter(originalChild)) {
 	      Matcher memoizedChild = memoize(originalChild);
 	      Matcher eventizedChild = eventize(originalChild, memoizedChild);
 	
-	      matcher.getChildren()[i] = eventizedChild;
+	      matcher.children[i] = eventizedChild;
 	    	
 	      decorateMatcher(originalChild); /* Recursive */
     	}

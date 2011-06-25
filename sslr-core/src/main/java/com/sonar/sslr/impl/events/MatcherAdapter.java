@@ -10,7 +10,6 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingException;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MemoizerMatcher;
-import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class MatcherAdapter extends Matcher {
 
@@ -19,14 +18,14 @@ public class MatcherAdapter extends Matcher {
   private final ParsingEventListener[] parsingEventListeners;
 
   public MatcherAdapter(Matcher matcherMemoized, ParsingEventListener... parsingEventListeners) {
-    this.matcher = (matcherMemoized instanceof MemoizerMatcher) ? matcherMemoized.getChildren()[0] : matcherMemoized;
+    this.matcher = (matcherMemoized instanceof MemoizerMatcher) ? (Matcher)matcherMemoized.getChildren()[0] : matcherMemoized;
     this.matcherMemoized = matcherMemoized;
     this.parsingEventListeners = parsingEventListeners;
     this.children = new Matcher[] { matcherMemoized };
   }
 
   @Override
-  public AstNode match(ParsingState parsingState) {
+  public AstNode matchWorker(ParsingState parsingState) {
   	for (ParsingEventListener parsingEventListener: parsingEventListeners) {
   		parsingEventListener.enterMatcher(matcher, parsingState);
   	}

@@ -25,9 +25,9 @@ public class LeftRecursiveRuleMatcher extends RuleMatcher {
   protected LeftRecursiveRuleMatcher(String name) {
     super(name);
   }
-
+  
   @Override
-  public AstNode match(ParsingState parsingState) {
+  public AstNode matchWorker(ParsingState parsingState) {
 
     int mostLeftLexerIndex = parsingState.lexerIndex;
 
@@ -47,7 +47,7 @@ public class LeftRecursiveRuleMatcher extends RuleMatcher {
     try {
       matchStartIndexes.push(mostLeftLexerIndex);
 
-      AstNode currentNode = super.match(parsingState);
+      AstNode currentNode = super.matchWorker(parsingState);
 
       int mostRightLexerIndex = mostLeftLexerIndex;
       try {
@@ -57,7 +57,7 @@ public class LeftRecursiveRuleMatcher extends RuleMatcher {
           parsingState.lexerIndex = mostLeftLexerIndex;
           parsingState.startLeftRecursion();
           partialAstNodes.put(mostLeftLexerIndex, currentNode);
-          currentNode = super.match(parsingState);
+          currentNode = super.matchWorker(parsingState);
         }
       } catch (BacktrackingException e) {
       } finally {

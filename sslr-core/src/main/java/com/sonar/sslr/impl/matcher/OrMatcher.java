@@ -16,8 +16,8 @@ public class OrMatcher extends Matcher {
     super(matchers);
   }
 
-  public AstNode match(ParsingState parsingState) {
-    for (Matcher matcher : super.children) {
+  public AstNode matchWorker(ParsingState parsingState) {
+    for (IMatcher matcher : super.children) {
       if (matcher.isMatching(parsingState)) {
         return matcher.match(parsingState);
       }

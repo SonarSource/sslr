@@ -16,11 +16,11 @@ public class LongestOneMatcher extends Matcher {
   	super(matchers);
   }
 
-  public AstNode match(ParsingState parsingState) {
-  	Matcher longestMatcher = null;
+  public AstNode matchWorker(ParsingState parsingState) {
+  	IMatcher longestMatcher = null;
   	int longestMatchIndex = -1;
   	
-    for (Matcher matcher : super.children) {
+    for (IMatcher matcher : super.children) {
     	int matcherIndex = matcher.matchToIndex(parsingState);
       if (matcherIndex >= 0) {
         /* This matcher could parse the input [as well], but for longer than the current longest matcher? */

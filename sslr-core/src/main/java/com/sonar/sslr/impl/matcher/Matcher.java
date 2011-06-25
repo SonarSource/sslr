@@ -10,18 +10,18 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingException;
 
-public abstract class Matcher {
+public abstract class Matcher implements IMatcher {
 
-  protected Matcher[] children;
+  public IMatcher[] children;
 
   protected Matcher(Matcher... children) {
     this.children = children;
   }
-
-  public Matcher[] getChildren() {
-    return this.children;
+  
+  public final IMatcher[] getChildren() {
+  	return this.children;
   }
-
+  
   public final boolean isMatching(ParsingState parsingState) {
     return matchToIndex(parsingState) >= 0;
   }
@@ -40,8 +40,8 @@ public abstract class Matcher {
     }
   }
 
-  public AstNode match(ParsingState parsingState) { return matchWorker(parsingState); }
+  public final AstNode match(ParsingState parsingState) { return matchWorker(parsingState); }
 
-  public AstNode matchWorker(ParsingState parsingState) { return null; }
+  protected abstract AstNode matchWorker(ParsingState parsingState);
   
 }

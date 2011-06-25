@@ -23,7 +23,7 @@ public class RuleMatcher extends Matcher {
     this.name = name;
   }
 
-  public AstNode match(ParsingState parsingState) {
+  public AstNode matchWorker(ParsingState parsingState) {
     int startIndex = parsingState.lexerIndex;
     if (super.children.length == 0) {
       throw new IllegalStateException("The rule '" + name + "' hasn't beed defined.");
@@ -36,7 +36,7 @@ public class RuleMatcher extends Matcher {
     }
     AstNode childNode = super.children[0].match(parsingState);
 
-    AstNode astNode = new AstNode(astNodeType, name, parsingState.peekTokenIfExists(startIndex, super.children[0]));
+    AstNode astNode = new AstNode(astNodeType, name, parsingState.peekTokenIfExists(startIndex, (Matcher)super.children[0]));
     astNode.setAstNodeListener(listener);
     astNode.addChild(childNode);
     return astNode;
