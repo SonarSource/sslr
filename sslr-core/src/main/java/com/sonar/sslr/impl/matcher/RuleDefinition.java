@@ -15,6 +15,7 @@ import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.ast.AlwaysSkipFromAst;
 import com.sonar.sslr.impl.ast.NeverSkipFromAst;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
+import com.sonar.sslr.impl.matcher.GrammarFunctions.Standard;
 
 public class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSkippingPolicy {
 
@@ -22,7 +23,8 @@ public class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSkippingP
   private Object adapter;
   private AstNodeType astNodeSkippingPolicy = new NeverSkipFromAst();
 
-  private RuleDefinition() { }
+  private RuleDefinition() {
+  }
 
   public static RuleDefinition newLeftRecursiveRuleBuilder(String ruleName) {
     RuleDefinition ruleBuilder = new RuleDefinition();
@@ -70,12 +72,8 @@ public class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSkippingP
     return this;
   }
 
-  public void mockUpperCase() {
-    setMatcher(new TokenValueMatcher(ruleMatcher.getName().toUpperCase()));
-  }
-
   public void mock() {
-    setMatcher(new TokenValueMatcher(ruleMatcher.getName()));
+    setMatcher(Standard.or(ruleMatcher.getName(), ruleMatcher.getName().toUpperCase()));
   }
 
   public RuleDefinition isOr(Object... matchers) {
@@ -133,10 +131,6 @@ public class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSkippingP
   public RuleDefinition plug(Object adapter) {
     this.adapter = adapter;
     return this;
-  }
-
-  public void endParsing() {
-    ruleMatcher.endParsing();
   }
 
   private void throwExceptionIfRuleAlreadyDefined(String exceptionMessage) {

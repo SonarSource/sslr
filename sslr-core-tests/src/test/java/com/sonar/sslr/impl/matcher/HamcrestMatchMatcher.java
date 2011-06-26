@@ -53,7 +53,7 @@ public class HamcrestMatchMatcher extends BaseMatcher<Matcher> {
       return false;
     } finally {
       if (obj instanceof LeftRecursiveRuleMatcher) {
-        ((LeftRecursiveRuleMatcher) obj).endParsing();
+        ((LeftRecursiveRuleMatcher) obj).reinitializeMatcherTree();
       }
     }
   }

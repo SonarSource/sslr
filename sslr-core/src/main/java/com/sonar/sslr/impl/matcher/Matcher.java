@@ -61,20 +61,23 @@ public abstract class Matcher {
     }
   }
 
-  public final void endParsing() {
-    endParsing(new HashSet<Matcher>());
+  public final void reinitializeMatcherTree() {
+    reinitializeMatcherTree(new HashSet<Matcher>());
   }
 
-  private final void endParsing(Set<Matcher> alreadyVisitedMatchers) {
+  private final void reinitializeMatcherTree(Set<Matcher> alreadyVisitedMatchers) {
     reinitialize();
     alreadyVisitedMatchers.add(this);
     for (Matcher child : children) {
       if ( !alreadyVisitedMatchers.contains(child)) {
-        child.endParsing(alreadyVisitedMatchers);
+        child.reinitializeMatcherTree(alreadyVisitedMatchers);
       }
     }
   }
 
+  /**
+   * This method can be overridden by any matcher to reinitialize a state between each file parsing
+   */
   protected void reinitialize() {
   }
 }
