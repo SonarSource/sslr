@@ -41,7 +41,7 @@ public class ParsingState {
     astMatcherMemoization = new MemoizedMatcher[lexerSize + 1];
   }
 
-  public Token popToken(Matcher matcher) {
+  public final Token popToken(Matcher matcher) {
     if (pendingLeftRecursion) {
       throw BacktrackingEvent.create();
     }
@@ -55,11 +55,11 @@ public class ParsingState {
     return tokens[lexerIndex++];
   }
 
-  public boolean hasNextToken() {
+  public final boolean hasNextToken() {
     return lexerIndex < lexerSize;
   }
 
-  public Token peekToken(int index, Matcher matcher) {
+  public final Token peekToken(int index, Matcher matcher) {
     if (pendingLeftRecursion) {
       throw BacktrackingEvent.create();
     }
@@ -77,67 +77,67 @@ public class ParsingState {
     return pendingLeftRecursion;
   }
 
-  public Token peekToken(Matcher matcher) {
+  public final Token peekToken(Matcher matcher) {
     return peekToken(lexerIndex, matcher);
   }
 
-  public Token readToken(int tokenIndex) {
+  public final Token readToken(int tokenIndex) {
     if (tokenIndex >= tokens.length) {
       return null;
     }
     return tokens[tokenIndex];
   }
 
-  public Matcher getOutpostMatcher() {
+  public final Matcher getOutpostMatcher() {
     return outpostMatcher;
   }
 
-  public Token getOutpostMatcherToken() {
+  public final Token getOutpostMatcherToken() {
     if (outpostMatcherTokenIndex >= lexerSize || outpostMatcherTokenIndex == -1) {
       return null;
     }
     return tokens[outpostMatcherTokenIndex];
   }
 
-  public int getOutpostMatcherTokenIndex() {
+  public final int getOutpostMatcherTokenIndex() {
     return outpostMatcherTokenIndex;
   }
 
-  public int getOutpostMatcherTokenLine() {
+  public final int getOutpostMatcherTokenLine() {
     if (outpostMatcherTokenIndex < lexerSize) {
       return tokens[outpostMatcherTokenIndex].getLine();
     }
     return tokens[lexerSize - 1].getLine();
   }
 
-  public void memoizeAst(MemoizedMatcher matcher, AstNode astNode) {
+  public final void memoizeAst(MemoizedMatcher matcher, AstNode astNode) {
     astNode.setToIndex(lexerIndex);
     astNodeMemoization[astNode.getFromIndex()] = astNode;
     astMatcherMemoization[astNode.getFromIndex()] = matcher;
   }
 
-  public void deleteMemoizedAstAfter(int index) {
+  public final void deleteMemoizedAstAfter(int index) {
     for (int i = index; i <= outpostMatcherTokenIndex; i++) {
       astMatcherMemoization[i] = null;
       astNodeMemoization[i] = null;
     }
   }
 
-  public boolean hasMemoizedAst(MemoizedMatcher matcher) {
+  public final boolean hasMemoizedAst(MemoizedMatcher matcher) {
     if ( !pendingLeftRecursion && astMatcherMemoization[lexerIndex] == matcher) {
       return true;
     }
     return false;
   }
 
-  public AstNode getMemoizedAst(MemoizedMatcher matcher) {
+  public final AstNode getMemoizedAst(MemoizedMatcher matcher) {
     if (hasMemoizedAst(matcher)) {
       return astNodeMemoization[lexerIndex];
     }
     return null;
   }
 
-  public Token peekTokenIfExists(int index, Matcher matcher) {
+  public final Token peekTokenIfExists(int index, Matcher matcher) {
     try {
       return peekToken(index, matcher);
     } catch (BacktrackingEvent e) {
@@ -145,39 +145,39 @@ public class ParsingState {
     }
   }
 
-  public void startLeftRecursion() {
+  public final void startLeftRecursion() {
     pendingLeftRecursion = true;
   }
 
-  public void stopLeftRecursion() {
+  public final void stopLeftRecursion() {
     pendingLeftRecursion = false;
   }
 
-  public void reinitNotifiedMatchersList() {
+  public final void reinitNotifiedMatchersList() {
     notifiedMatchers.clear();
   }
 
-  public void matcherNotified(MemoizedMatcher matcher) {
+  public final void matcherNotified(MemoizedMatcher matcher) {
     notifiedMatchers.add(matcher);
   }
 
-  public boolean hasMatcherBeenNotified(MemoizedMatcher matcher) {
+  public final boolean hasMatcherBeenNotified(MemoizedMatcher matcher) {
     return notifiedMatchers.contains(matcher);
   }
 
-  public void setLeftRecursionState(boolean leftRecursionState) {
+  public final void setLeftRecursionState(boolean leftRecursionState) {
     this.pendingLeftRecursion = leftRecursionState;
   }
 
-  protected void setListeners(Set<RecognictionExceptionListener> listeners) {
+  protected final void setListeners(Set<RecognictionExceptionListener> listeners) {
     this.listeners = listeners;
   }
 
-  public void addListener(RecognictionExceptionListener listener) {
+  public final void addListener(RecognictionExceptionListener listener) {
     listeners.add(listener);
   }
 
-  public void notifyListerners(RecognitionException recognitionException) {
+  public final void notifyListerners(RecognitionException recognitionException) {
     for (RecognictionExceptionListener listener : listeners) {
       listener.addRecognitionException(recognitionException);
     }
