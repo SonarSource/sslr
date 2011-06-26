@@ -13,9 +13,6 @@ import com.sonar.sslr.impl.events.ParsingEventListener;
 
 public abstract class MemoizedMatcher extends Matcher {
 
-  private int lastMemoizedAstIndex = -1;
-  private AstNode lastMemoizedAst = null;
-
   public MemoizedMatcher(Matcher... children) {
     super(children);
   }
@@ -51,7 +48,7 @@ public abstract class MemoizedMatcher extends Matcher {
     }
   }
 
-  private void memoizeAst(ParsingState parsingState, AstNode astNode) {
+  private final void memoizeAst(ParsingState parsingState, AstNode astNode) {
     parsingState.memoizeAst(this, astNode);
   }
 

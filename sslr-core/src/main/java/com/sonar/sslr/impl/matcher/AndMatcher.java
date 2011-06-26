@@ -15,7 +15,8 @@ public class AndMatcher extends MemoizedMatcher {
   	super(matchers);
   }
 
-  public AstNode matchWorker(ParsingState parsingState) {
+	@Override
+  protected final AstNode matchWorker(ParsingState parsingState) {
     AstNode[] childNodes = new AstNode[super.children.length];
     int startIndex = parsingState.lexerIndex;
 

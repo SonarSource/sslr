@@ -8,8 +8,8 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
-import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingEvent;
+import com.sonar.sslr.impl.ParsingState;
 
 public class BridgeMatcher extends MemoizedMatcher {
 
@@ -17,14 +17,14 @@ public class BridgeMatcher extends MemoizedMatcher {
   private final TokenType to;
 
   protected BridgeMatcher(TokenType from, TokenType to) {
-  	super();
-  	
+    super();
+
     this.from = from;
     this.to = to;
   }
 
   @Override
-  public AstNode matchWorker(ParsingState parsingState) {
+  protected final AstNode matchWorker(ParsingState parsingState) {
     Token token = parsingState.peekToken(parsingState.lexerIndex, this);
     if (from == token.getType()) {
       AstNode astNode = new AstNode(null, "bridgeMatcher", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
@@ -47,7 +47,7 @@ public class BridgeMatcher extends MemoizedMatcher {
 
   @Override
   public String toString() {
-  	return "bridge(" + from.getName() + ", " + to.getName() + ")";
+    return "bridge(" + from.getName() + ", " + to.getName() + ")";
   }
-  
+
 }

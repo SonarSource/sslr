@@ -7,7 +7,6 @@
 package com.sonar.sslr.impl.matcher;
 
 import java.util.HashSet;
-import java.util.ArrayList;
 import java.util.Set;
 
 import com.sonar.sslr.api.Token;
@@ -27,13 +26,13 @@ public class TokenTypesMatcher extends TokenMatcher {
   }
 
   @Override
-  protected boolean isExpectedToken(Token token) {
+  protected final boolean isExpectedToken(Token token) {
     return tokenTypes.contains(token.getType());
   }
-  
+
   @Override
   public String toString() {
-  	return "isOneOfThem";
+    return "isOneOfThem";
   }
-  
+
 }

@@ -12,12 +12,12 @@ import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.ParsingState;
 
 public class ExclusiveTillMatcher extends MemoizedMatcher {
-	
-	protected ExclusiveTillMatcher(Matcher... matchers) {
-  	super(matchers);
+
+  protected ExclusiveTillMatcher(Matcher... matchers) {
+    super(matchers);
   }
 
-  public AstNode matchWorker(ParsingState parsingState) {
+  protected final AstNode matchWorker(ParsingState parsingState) {
     Token nextToken = parsingState.peekTokenIfExists(parsingState.lexerIndex, this);
     int nextTokenLine = 0;
     int nextTokenColumn = 0;
@@ -35,7 +35,7 @@ public class ExclusiveTillMatcher extends MemoizedMatcher {
     return astNode;
   }
 
-  private boolean nothingMatch(ParsingState parsingState) {
+  private final boolean nothingMatch(ParsingState parsingState) {
     for (Matcher matcher : super.children) {
       if (matcher.isMatching(parsingState)) {
         return false;
@@ -43,10 +43,10 @@ public class ExclusiveTillMatcher extends MemoizedMatcher {
     }
     return true;
   }
-  
+
   @Override
   public String toString() {
-  	return "exclusiveTill";
+    return "exclusiveTill";
   }
 
   static class WordsTokenType implements TokenType {
@@ -64,5 +64,5 @@ public class ExclusiveTillMatcher extends MemoizedMatcher {
     }
 
   }
-  
+
 }

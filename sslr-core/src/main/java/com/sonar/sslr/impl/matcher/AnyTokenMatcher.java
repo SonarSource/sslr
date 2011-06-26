@@ -9,19 +9,19 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.Token;
 
 public class AnyTokenMatcher extends TokenMatcher {
-	
-	protected AnyTokenMatcher() {
+
+  protected AnyTokenMatcher() {
     super(false);
   }
 
   @Override
-  protected boolean isExpectedToken(Token token) {
+  protected final boolean isExpectedToken(Token token) {
     return true;
   }
-  
+
   @Override
   public String toString() {
-  	return "anyToken()";
+    return "anyToken()";
   }
 
 }

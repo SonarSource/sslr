@@ -19,7 +19,8 @@ public abstract class TokenMatcher extends MemoizedMatcher {
     this.hasToBeSkippedFromAst = hasToBeSkippedFromAst;
   }
 
-  public AstNode matchWorker(ParsingState parsingState) {
+  @Override
+  protected final AstNode matchWorker(ParsingState parsingState) {
     if (isExpectedToken(parsingState.peekToken(parsingState.lexerIndex, this))) {
       Token token = parsingState.popToken(this);
       if (hasToBeSkippedFromAst) {

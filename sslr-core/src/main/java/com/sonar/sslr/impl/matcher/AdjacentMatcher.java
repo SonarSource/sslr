@@ -17,7 +17,8 @@ public class AdjacentMatcher extends MemoizedMatcher {
   	super(matcher);
   }
 
-  public AstNode matchWorker(ParsingState parsingState) {
+  @Override
+  protected final AstNode matchWorker(ParsingState parsingState) {
     int index = parsingState.lexerIndex;
     Token nextToken = parsingState.peekToken(index, this);
     Token previousToken = parsingState.readToken(index - 1);
@@ -32,7 +33,7 @@ public class AdjacentMatcher extends MemoizedMatcher {
   }
   
   @Override
-  public String toString() {
+  public final String toString() {
   	return "adjacent";
   }
   

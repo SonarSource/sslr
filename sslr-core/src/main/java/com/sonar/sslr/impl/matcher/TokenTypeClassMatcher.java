@@ -18,7 +18,7 @@ public class TokenTypeClassMatcher extends TokenMatcher {
   }
 
   @Override
-  protected boolean isExpectedToken(Token token) {
+  protected final boolean isExpectedToken(Token token) {
     return typeClass == token.getType().getClass();
   }
   

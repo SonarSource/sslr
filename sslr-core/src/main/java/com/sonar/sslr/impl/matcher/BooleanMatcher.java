@@ -7,20 +7,21 @@
 package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingEvent;
+import com.sonar.sslr.impl.ParsingState;
 
 public class BooleanMatcher extends MemoizedMatcher {
 
   private final boolean internalState;
 
   protected BooleanMatcher(boolean internalState) {
-  	super();
-  	
+    super();
+
     this.internalState = internalState;
   }
 
-  public AstNode matchWorker(ParsingState parsingState) {
+  @Override
+  protected final AstNode matchWorker(ParsingState parsingState) {
     parsingState.peekToken(this);
     if (internalState) {
       return new AstNode(null, "trueMatcher", parsingState.popToken(this));
@@ -28,10 +29,10 @@ public class BooleanMatcher extends MemoizedMatcher {
       throw BacktrackingEvent.create();
     }
   }
-  
+
   @Override
   public String toString() {
-  	return (internalState) ? "isTrue()" : "isFalse()";
+    return (internalState) ? "isTrue()" : "isFalse()";
   }
 
 }

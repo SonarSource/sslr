@@ -16,7 +16,8 @@ public class AnyTokenButNotMatcher extends MemoizedMatcher {
   	super(matcher);
   }
 
-  public AstNode matchWorker(ParsingState parsingState) {
+	@Override
+  protected final AstNode matchWorker(ParsingState parsingState) {
     if (super.children[0].isMatching(parsingState)) {
       throw BacktrackingEvent.create();
     } else {

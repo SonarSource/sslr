@@ -13,14 +13,15 @@ import com.sonar.sslr.impl.ParsingState;
 
 public class InclusiveTillMatcher extends MemoizedMatcher {
 
-	protected InclusiveTillMatcher(Matcher matcher) {
-  	super(matcher);
+  protected InclusiveTillMatcher(Matcher matcher) {
+    super(matcher);
   }
 
-  public AstNode matchWorker(ParsingState parsingState) {
+  @Override
+  protected final AstNode matchWorker(ParsingState parsingState) {
     AstNode astNode = new AstNode(null, "tillMatcher", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
     StringBuilder builder = new StringBuilder();
-    while (!super.children[0].isMatching(parsingState)) {
+    while ( !super.children[0].isMatching(parsingState)) {
       builder.append(parsingState.popToken(this).getValue());
       builder.append(" ");
     }
@@ -28,12 +29,12 @@ public class InclusiveTillMatcher extends MemoizedMatcher {
     astNode.addChild(super.children[0].match(parsingState));
     return astNode;
   }
-  
+
   @Override
   public String toString() {
-  	return "till";
+    return "till";
   }
-  
+
   static class WordsTokenType implements TokenType {
 
     public String getName() {
@@ -49,5 +50,5 @@ public class InclusiveTillMatcher extends MemoizedMatcher {
     }
 
   }
-  
+
 }

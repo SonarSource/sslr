@@ -13,7 +13,7 @@ public class TokenTypeMatcher extends TokenMatcher {
 
   private final TokenType type;
 
-	protected TokenTypeMatcher(TokenType type) {
+  protected TokenTypeMatcher(TokenType type) {
     this(type, false);
   }
 
@@ -23,13 +23,13 @@ public class TokenTypeMatcher extends TokenMatcher {
   }
 
   @Override
-  protected boolean isExpectedToken(Token token) {
+  protected final boolean isExpectedToken(Token token) {
     return type == token.getType();
   }
-  
+
   @Override
   public String toString() {
-  	return type.getName();
+    return type.getName();
   }
-  
+
 }

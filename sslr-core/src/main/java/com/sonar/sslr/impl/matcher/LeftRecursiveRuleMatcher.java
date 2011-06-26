@@ -27,7 +27,7 @@ public class LeftRecursiveRuleMatcher extends RuleMatcher {
   }
 
   @Override
-  public AstNode matchWorker(ParsingState parsingState) {
+  protected final AstNode matchWorker(ParsingState parsingState) {
 
     int mostLeftLexerIndex = parsingState.lexerIndex;
 

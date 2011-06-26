@@ -23,7 +23,8 @@ public class RuleMatcher extends MemoizedMatcher {
     this.name = name;
   }
 
-  public AstNode matchWorker(ParsingState parsingState) {
+  @Override
+  protected AstNode matchWorker(ParsingState parsingState) {
     int startIndex = parsingState.lexerIndex;
     if (super.children.length == 0) {
       throw new IllegalStateException("The rule '" + name + "' hasn't beed defined.");
