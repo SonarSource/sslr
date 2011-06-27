@@ -18,6 +18,8 @@ import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public final class ProfilerStream {
 	
+	private ProfilerStream() { }
+	
 	public static long nsToMs(long ns) {
 		return ns / 1000000L;
 	}

@@ -10,7 +10,6 @@ import java.util.Stack;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.matcher.Matcher;
-import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class ExtendedStackTrace extends ParsingEventListener {

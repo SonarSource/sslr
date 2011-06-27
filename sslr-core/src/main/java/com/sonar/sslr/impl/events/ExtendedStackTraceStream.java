@@ -13,12 +13,14 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.events.ExtendedStackTrace.RuleWithPosition;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 
-public class ExtendedStackTraceStream {
+public final class ExtendedStackTraceStream {
 	
-  private final static int STACK_TRACE_RULE_STARTING_WITH_TOKENS = 4;
-  private final static int SOURCE_CODE_TOKENS_WINDOW = 30;
-  private final static int LINE_AND_COLUMN_LEFT_PAD_LENGTH = 6;
-  private final static int LAST_SUCCESSFUL_TOKENS_WINDOW = 7;
+  private static final int STACK_TRACE_RULE_STARTING_WITH_TOKENS = 4;
+  private static final int SOURCE_CODE_TOKENS_WINDOW = 30;
+  private static final int LINE_AND_COLUMN_LEFT_PAD_LENGTH = 6;
+  private static final int LAST_SUCCESSFUL_TOKENS_WINDOW = 7;
+  
+  private ExtendedStackTraceStream() { }
 	
   public static void print(ExtendedStackTrace extendedStackTrace, PrintStream stream) {
     stream.println("Source Snippet:");
@@ -61,7 +63,9 @@ public class ExtendedStackTraceStream {
             lineBuilder.append(System.getProperty("line.separator"));
             previousLine++;
           }
-        } else previousLine = currentLine;
+        } else {
+        	previousLine = currentLine;
+        }
 
         /* Flush the empty lines (to avoid side effects in displayToken, where the column of the token is used for padding) */
         stream.print(lineBuilder.toString());
@@ -74,8 +78,9 @@ public class ExtendedStackTraceStream {
       displayToken(lineBuilder, token);
     }
 
-    if (tokens.size() > 0)
+    if (tokens.size() > 0) {
       stream.println(lineBuilder.toString());
+    }
   }
   
   private static List<Token> getTokensToDisplayAroundOutpostMatcherToken(ExtendedStackTrace extendedStackTrace) {
