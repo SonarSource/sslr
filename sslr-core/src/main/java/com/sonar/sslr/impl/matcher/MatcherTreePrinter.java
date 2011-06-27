@@ -12,7 +12,7 @@ public class MatcherTreePrinter {
 	}
 	
 	private static String print(Matcher matcher, boolean expandRule) {
-		Matcher[] children = matcher.getChildren();
+		Matcher[] children = matcher.children;
 
 		StringBuilder result = new StringBuilder(matcher.toString());
 		if (isRuleImpl(matcher) && expandRule) result.append(".is");

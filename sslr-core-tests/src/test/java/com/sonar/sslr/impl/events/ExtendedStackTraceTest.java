@@ -73,7 +73,7 @@ public class ExtendedStackTraceTest {
       p.parse("bonjour hehe huhu haha");
       throw new IllegalStateException();
     } catch (RecognitionException ex) {
-    	extendedStackTrace.printExtendedStackTrace(new PrintStream(baos));
+    	ExtendedStackTraceStream.print(extendedStackTrace, new PrintStream(baos));
     }
 
     StringBuilder expected = new StringBuilder();
@@ -92,7 +92,7 @@ public class ExtendedStackTraceTest {
     expected.append("  \"huhu\" at 1:13 consumed by root" + System.getProperty("line.separator"));
     expected.append("  \"hehe\" at 1:8 consumed by root" + System.getProperty("line.separator"));
     expected.append("  \"bonjour\" at 1:0 consumed by root" + System.getProperty("line.separator"));
-
+    
     assertEquals(baos.toString(), expected.toString());
 
     p = Parser.builder(new MyTestGrammar()).optSetLexer(IdentifierLexer.create()).optAddGrammarDecorator(new MyTestGrammarDecoratorV2())
@@ -104,7 +104,7 @@ public class ExtendedStackTraceTest {
       p.parse("bonjour hehe huhu haha");
       throw new IllegalStateException();
     } catch (RecognitionException ex) {
-    	extendedStackTrace.printExtendedStackTrace(new PrintStream(baos));
+    	ExtendedStackTraceStream.print(extendedStackTrace, new PrintStream(baos));
     }
 
     expected = new StringBuilder();
@@ -145,7 +145,7 @@ public class ExtendedStackTraceTest {
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		
-		extendedStackTrace.printExtendedStackTrace(new PrintStream(baos)); /* This should not lead to an error */
+		ExtendedStackTraceStream.print(extendedStackTrace, new PrintStream(baos)); /* This should not lead to an error */
 
 		StringBuilder expected = new StringBuilder();
     expected.append("Source Snippet:" + System.getProperty("line.separator"));
@@ -154,7 +154,7 @@ public class ExtendedStackTraceTest {
     expected.append("---------------" + System.getProperty("line.separator"));
     expected.append("" + System.getProperty("line.separator"));
     expected.append("on matcher \"next\"" + System.getProperty("line.separator"));
-    expected.append("       1 :     12  : and(\"bonjour\", \"hehe\", EOF, \"next\") expected but \"EOF\" [EOF] found" + System.getProperty("line.separator"));
+    expected.append("       1 :     12  : \"next\" expected but \"EOF\" [EOF] found" + System.getProperty("line.separator"));
     expected.append("at root" + System.getProperty("line.separator"));
     expected.append("       1 :      0  : bonjour hehe EOF " + System.getProperty("line.separator"));
     expected.append("" + System.getProperty("line.separator"));
@@ -162,7 +162,7 @@ public class ExtendedStackTraceTest {
     expected.append("-----------------------" + System.getProperty("line.separator"));
     expected.append("  \"hehe\" at 1:8 consumed by root" + System.getProperty("line.separator"));
     expected.append("  \"bonjour\" at 1:0 consumed by root" + System.getProperty("line.separator"));
-		
+
     assertEquals(baos.toString(), expected.toString());
   }
 

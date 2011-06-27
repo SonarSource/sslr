@@ -21,10 +21,6 @@ public abstract class Matcher {
     this.children = children;
   }
 
-  public final Matcher[] getChildren() {
-    return this.children;
-  }
-
   public final boolean isMatching(ParsingState parsingState) {
     return matchToIndex(parsingState) >= 0;
   }
