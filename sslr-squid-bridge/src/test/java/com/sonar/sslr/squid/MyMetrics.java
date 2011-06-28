@@ -10,7 +10,7 @@ import org.sonar.squid.measures.CalculatedMetricFormula;
 import org.sonar.squid.measures.MetricDef;
 
 public enum MyMetrics implements MetricDef {
-  COMPLEXITY, LINES_OF_CODE, LINES, FILES, COMMENT_LINES, BLANK_COMMENT_LINES;
+  COMPLEXITY, LINES_OF_CODE, LINES, FILES, COMMENT_LINES, BLANK_COMMENT_LINES, COMMENTED_LINES_OF_CODE;
 
   public String getName() {
     return name();
