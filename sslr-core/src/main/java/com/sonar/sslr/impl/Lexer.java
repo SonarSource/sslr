@@ -174,33 +174,35 @@ public class Lexer {
      * @param charset
      * @return this LexerBuilder
      */
-    public LexerBuilder optSetCharset(Charset charset) {
+    public LexerBuilder withCharset(Charset charset) {
       this.charset = charset;
       return this;
     }
 
-    public LexerBuilder optAddPreprocessor(Preprocessor preprocessor) {
+    public LexerBuilder withPreprocessor(Preprocessor preprocessor) {
       preprocessors.add(preprocessor);
       return this;
     }
 
-    public LexerBuilder optSetCodeReaderConfiguration(CodeReaderConfiguration conf) {
+    public LexerBuilder withCodeReaderConfiguration(CodeReaderConfiguration conf) {
       this.configuration = conf;
       return this;
     }
 
-    public LexerBuilder addChannel(Channel<LexerOutput> channel) {
+    public LexerBuilder withChannel(Channel<LexerOutput> channel) {
       channels.add(channel);
       return this;
     }
 
-    public LexerBuilder optFailIfNoChannelToConsumeOneCharacter() {
-      failIfNoChannelToConsumeOneCharacter = true;
+    public LexerBuilder withFailIfNoChannelToConsumeOneCharacter(boolean failIfNoChannelToConsumeOneCharacter) {
+      this.failIfNoChannelToConsumeOneCharacter = failIfNoChannelToConsumeOneCharacter;
       return this;
     }
 
     private ChannelDispatcher<LexerOutput> getChannelDispatcher() {
       return new ChannelDispatcher<LexerOutput>(channels, failIfNoChannelToConsumeOneCharacter);
     }
+ 
   }
+  
 }

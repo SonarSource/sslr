@@ -106,7 +106,7 @@ public class Dsl {
       if (lexer == null) {
         lexer = DefaultDslLexer.create();
       }
-      return Parser.builder(grammar).optSetLexer(lexer).build();
+      return Parser.builder(grammar).withLexer(lexer).build();
     }
 
     public Dsl compile() {

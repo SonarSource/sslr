@@ -22,13 +22,13 @@ public class DefaultDslLexer {
   }
 
   public static Lexer create() {
-    return Lexer.builder().optFailIfNoChannelToConsumeOneCharacter()
-    .addChannel(new RegexpChannel(WORD, "\\p{Alpha}[\\p{Alpha}\\d_]++")) 
-    .addChannel(new RegexpChannel(DOUBLE, "\\d++\\.\\d++"))
-    .addChannel(new RegexpChannel(INTEGER, "\\d++"))
-    .addChannel(new RegexpChannel(LITERAL, "\"([^\\\\\"]|\\\\.)*\""))
-    .addChannel(new RegexpChannel(LITERAL, "'([^\\\\']|\\\\.)*'"))
-    .addChannel(new BlackHoleChannel("[\\s]"))
-    .addChannel(new RegexpChannel(PUNCTUATOR, ".")).build();
+    return Lexer.builder().withFailIfNoChannelToConsumeOneCharacter(true)
+    .withChannel(new RegexpChannel(WORD, "\\p{Alpha}[\\p{Alpha}\\d_]++")) 
+    .withChannel(new RegexpChannel(DOUBLE, "\\d++\\.\\d++"))
+    .withChannel(new RegexpChannel(INTEGER, "\\d++"))
+    .withChannel(new RegexpChannel(LITERAL, "\"([^\\\\\"]|\\\\.)*\""))
+    .withChannel(new RegexpChannel(LITERAL, "'([^\\\\']|\\\\.)*'"))
+    .withChannel(new BlackHoleChannel("[\\s]"))
+    .withChannel(new RegexpChannel(PUNCTUATOR, ".")).build();
   }
 }

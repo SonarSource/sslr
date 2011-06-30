@@ -64,8 +64,8 @@ public class ExtendedStackTraceTest {
   public void ok() {
   	ExtendedStackTrace extendedStackTrace = new ExtendedStackTrace();
   	
-    Parser<MyTestGrammar> p = Parser.builder(new MyTestGrammar()).optSetLexer(IdentifierLexer.create())
-        .optAddGrammarDecorator(new MyTestGrammarDecoratorV1()).withParsingEventListeners(extendedStackTrace).build();
+    Parser<MyTestGrammar> p = Parser.builder(new MyTestGrammar()).withLexer(IdentifierLexer.create())
+        .withGrammarDecorator(new MyTestGrammarDecoratorV1()).withParsingEventListeners(extendedStackTrace).build();
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -95,7 +95,7 @@ public class ExtendedStackTraceTest {
     
     assertEquals(baos.toString(), expected.toString());
 
-    p = Parser.builder(new MyTestGrammar()).optSetLexer(IdentifierLexer.create()).optAddGrammarDecorator(new MyTestGrammarDecoratorV2())
+    p = Parser.builder(new MyTestGrammar()).withLexer(IdentifierLexer.create()).withGrammarDecorator(new MyTestGrammarDecoratorV2())
         .withParsingEventListeners(extendedStackTrace).build();
 
     baos = new ByteArrayOutputStream();
@@ -133,8 +133,8 @@ public class ExtendedStackTraceTest {
   public void okTillEof() {
   	ExtendedStackTrace extendedStackTrace = new ExtendedStackTrace();
   	
-  	Parser<MyTestGrammar> p = Parser.builder(new MyTestGrammar()).optSetLexer(IdentifierLexer.create())
-    		.optAddGrammarDecorator(new MyTestGrammarDecoratorV3()).withParsingEventListeners(extendedStackTrace).build();
+  	Parser<MyTestGrammar> p = Parser.builder(new MyTestGrammar()).withLexer(IdentifierLexer.create())
+    		.withGrammarDecorator(new MyTestGrammarDecoratorV3()).withParsingEventListeners(extendedStackTrace).build();
 		
 		try {
 		  p.parse("bonjour hehe");

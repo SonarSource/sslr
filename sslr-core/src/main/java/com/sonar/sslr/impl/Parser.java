@@ -204,37 +204,37 @@ public class Parser<GRAMMAR extends Grammar> {
       return new Parser<GRAMMAR>(this);
     }
 
-    public ParserBuilder<GRAMMAR> optSetCharset(Charset charset) {
-      lexerBuilder.optSetCharset(charset);
+    public ParserBuilder<GRAMMAR> withCharset(Charset charset) {
+      lexerBuilder.withCharset(charset);
       return this;
     }
 
-    public ParserBuilder<GRAMMAR> optSetLexer(Lexer lexer) {
+    public ParserBuilder<GRAMMAR> withLexer(Lexer lexer) {
       this.lexer = lexer;
       return this;
     }
 
-    public ParserBuilder<GRAMMAR> optAddPreprocessor(Preprocessor preprocessor) {
-      lexerBuilder.optAddPreprocessor(preprocessor);
+    public ParserBuilder<GRAMMAR> withPreprocessor(Preprocessor preprocessor) {
+      lexerBuilder.withPreprocessor(preprocessor);
       return this;
     }
 
-    public ParserBuilder<GRAMMAR> optSetCodeReaderConfiguration(CodeReaderConfiguration conf) {
-      lexerBuilder.optSetCodeReaderConfiguration(conf);
+    public ParserBuilder<GRAMMAR> withCodeReaderConfiguration(CodeReaderConfiguration conf) {
+      lexerBuilder.withCodeReaderConfiguration(conf);
       return this;
     }
 
-    public ParserBuilder<GRAMMAR> addChannel(Channel<LexerOutput> channel) {
-      lexerBuilder.addChannel(channel);
+    public ParserBuilder<GRAMMAR> withChannel(Channel<LexerOutput> channel) {
+      lexerBuilder.withChannel(channel);
       return this;
     }
 
-    public ParserBuilder<GRAMMAR> optFailIfNoChannelToConsumeOneCharacter() {
-      lexerBuilder.optFailIfNoChannelToConsumeOneCharacter();
+    public ParserBuilder<GRAMMAR> withFailIfNoChannelToConsumeOneCharacter(boolean failIfNoChannelToConsumeOneCharacter) {
+      lexerBuilder.withFailIfNoChannelToConsumeOneCharacter(failIfNoChannelToConsumeOneCharacter);
       return this;
     }
 
-    public ParserBuilder<GRAMMAR> optAddGrammarDecorator(GrammarDecorator<GRAMMAR> decorator) {
+    public ParserBuilder<GRAMMAR> withGrammarDecorator(GrammarDecorator<GRAMMAR> decorator) {
       decorators.add(decorator);
       return this;
     }
@@ -244,7 +244,7 @@ public class Parser<GRAMMAR extends Grammar> {
       return this;
     }
 
-    public ParserBuilder<GRAMMAR> optAddRecognictionExceptionListener(RecognictionExceptionListener listener) {
+    public ParserBuilder<GRAMMAR> withRecognictionExceptionListener(RecognictionExceptionListener listener) {
       listeners.add(listener);
       return this;
     }
