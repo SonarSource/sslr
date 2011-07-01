@@ -96,7 +96,7 @@ public final class AstScanner<GRAMMAR extends Grammar> {
 
     private Parser<GRAMMAR> parser;
     private List<SquidAstVisitor<? extends Grammar>> visitors = new ArrayList<SquidAstVisitor<? extends Grammar>>();
-    private List<AuditListener> auditListeners;
+    private List<AuditListener> auditListeners = new ArrayList<AuditListener>();
     private SquidAstVisitorContextImpl<GRAMMAR> context;
     private CommentAnalyser commentAnalyser;
 
