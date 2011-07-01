@@ -60,23 +60,39 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     }
     for (File file : files) {
       try {
+        context.setFile(file);
         AstNode ast = parser.parse(file);
         context.setComments(parser.getLexerOutput().getComments(commentAnalyser));
-        context.setFile(file);
         AstWalker astWalker = new AstWalker(visitors);
         astWalker.walkAndVisit(ast);
         context.setComments(null);
         context.setFile(null);
         astWalker = null;
       } catch (RecognitionException e) {
+      	for (SquidAstVisitor<? extends Grammar> visitor: visitors) {
+      		visitor.visitFile(null);
+      	}
+      	
       	for (AuditListener auditListener: auditListeners) {
       		auditListener.processRecognitionException(e);
       	}
       	
+      	for (SquidAstVisitor<? extends Grammar> visitor: visitors) {
+      		visitor.leaveFile(null);
+      	}
+      	
         LOG.error("Unable to parse source file : " + file.getAbsolutePath(), e);
       } catch (Exception e) {
+      	for (SquidAstVisitor<? extends Grammar> visitor: visitors) {
+      		visitor.visitFile(null);
+      	}
+      	
       	for (AuditListener auditListener: auditListeners) {
       		auditListener.processException(e);
+      	}
+      	
+      	for (SquidAstVisitor<? extends Grammar> visitor: visitors) {
+      		visitor.leaveFile(null);
       	}
       	
         String errorMessage = "Sonar is unable to analyze file : '" + (file == null ? "null" : file.getAbsolutePath()) + "'";
