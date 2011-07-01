@@ -95,7 +95,7 @@ public class CommentsVisitor extends SquidAstVisitor<Grammar> {
    */
   @Override
   public void leaveFile(AstNode astNode) {
-  	if (astNode == null) return;
+  	if (context.getComments() == null) return;
   	
     for (Token comment : context.getComments()) {
       String[] commentLines = comment.getValue().split("\n", -1);
