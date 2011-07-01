@@ -13,5 +13,5 @@ public interface RecognictionExceptionListener {
   /**
    * This method is called when a recognition exception occurs
    */
-  public void addRecognitionException(RecognitionException e);
+  public void processRecognitionException(RecognitionException e);
 }
