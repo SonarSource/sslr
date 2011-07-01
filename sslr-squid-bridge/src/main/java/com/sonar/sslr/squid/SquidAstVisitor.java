@@ -77,4 +77,5 @@ public class SquidAstVisitor<GRAMMAR extends Grammar> implements CodeVisitor, As
    */
   public void destroy() {
   }
+  
 }

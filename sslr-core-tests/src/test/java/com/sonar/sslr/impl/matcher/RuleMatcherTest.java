@@ -60,7 +60,7 @@ public class RuleMatcherTest {
     parsingState.addListener(listener);
     rule.match(parsingState);
 
-    verify(listener, times(0)).addRecognitionException((RecognitionException) anyObject());
+    verify(listener, times(0)).processRecognitionException((RecognitionException) anyObject());
 
     rule.recoveryRule();
     parsingState = new ParsingState(lex("one"));
@@ -68,6 +68,6 @@ public class RuleMatcherTest {
     parsingState.addListener(listener);
     rule.match(parsingState);
 
-    verify(listener, times(1)).addRecognitionException((RecognitionException) anyObject());
+    verify(listener, times(1)).processRecognitionException((RecognitionException) anyObject());
   }
 }

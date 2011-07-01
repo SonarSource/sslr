@@ -18,6 +18,7 @@ import org.sonar.squid.api.SourceCodeSearchEngine;
 import org.sonar.squid.indexer.SquidIndex;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.AuditListener;
 import com.sonar.sslr.api.CommentAnalyser;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.RecognitionException;
@@ -27,18 +28,17 @@ import com.sonar.sslr.impl.ast.AstWalker;
 public final class AstScanner<GRAMMAR extends Grammar> {
 
   private static final Logger LOG = LoggerFactory.getLogger(AstScanner.class);
-  private SquidAstVisitorContextImpl<GRAMMAR> context;
-  private Parser<GRAMMAR> parser;
-  private List<SquidAstVisitor<? extends Grammar>> visitors = new ArrayList<SquidAstVisitor<? extends Grammar>>();
-  private SquidIndex indexer = new SquidIndex();
-  private CommentAnalyser commentAnalyser;
-
-  private AstScanner() {
-  }
+  private final SquidAstVisitorContextImpl<GRAMMAR> context;
+  private final Parser<GRAMMAR> parser;
+  private final List<SquidAstVisitor<? extends Grammar>> visitors;
+  private final List<AuditListener> auditListeners;
+  private final SquidIndex indexer = new SquidIndex();
+  private final CommentAnalyser commentAnalyser;
 
   private AstScanner(Builder<GRAMMAR> builder) {
     this.parser = builder.parser;
-    this.visitors = builder.visitors;
+    this.visitors = new ArrayList<SquidAstVisitor<? extends Grammar>>(builder.visitors);
+    this.auditListeners = new ArrayList<AuditListener>(builder.auditListeners);
     this.context = builder.context;
     this.context.setGrammar(parser.getGrammar());
     this.context.getProject().setSourceCodeIndexer(indexer);
@@ -69,8 +69,16 @@ public final class AstScanner<GRAMMAR extends Grammar> {
         context.setFile(null);
         astWalker = null;
       } catch (RecognitionException e) {
-        LOG.error("Unable to parse PLSQL source file : " + file.getAbsolutePath(), e);
+      	for (AuditListener auditListener: auditListeners) {
+      		auditListener.processRecognitionException(e);
+      	}
+      	
+        LOG.error("Unable to parse source file : " + file.getAbsolutePath(), e);
       } catch (Exception e) {
+      	for (AuditListener auditListener: auditListeners) {
+      		auditListener.processException(e);
+      	}
+      	
         String errorMessage = "Sonar is unable to analyze file : '" + (file == null ? "null" : file.getAbsolutePath()) + "'";
         throw new AnalysisException(errorMessage, e);
       }
@@ -88,6 +96,7 @@ public final class AstScanner<GRAMMAR extends Grammar> {
 
     private Parser<GRAMMAR> parser;
     private List<SquidAstVisitor<? extends Grammar>> visitors = new ArrayList<SquidAstVisitor<? extends Grammar>>();
+    private List<AuditListener> auditListeners;
     private SquidAstVisitorContextImpl<GRAMMAR> context;
     private CommentAnalyser commentAnalyser;
 
@@ -102,6 +111,10 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     }
 
     public Builder<GRAMMAR> withSquidAstVisitor(SquidAstVisitor<? extends Grammar> visitor) {
+    	if (visitor instanceof AuditListener) {
+    		auditListeners.add((AuditListener)visitor);
+    	}
+    	
       visitors.add(visitor);
       return this;
     }
