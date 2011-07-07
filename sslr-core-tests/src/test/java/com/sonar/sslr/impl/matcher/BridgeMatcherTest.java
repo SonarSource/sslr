@@ -21,8 +21,12 @@ import java.util.List;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
+import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.impl.events.IdentifierLexer;
 
 public class BridgeMatcherTest {
 	
@@ -57,6 +61,14 @@ public class BridgeMatcherTest {
   @Test
   public void testToString() {
   	assertEquals(bridge(LEFT, RIGHT).toString(), "bridge(LEFT, RIGHT)");
+  }
+  
+  @Test
+  public void testAstNodeTokens() {
+  	ParsingState state = new ParsingState(IdentifierLexer.create().lex("one ").getTokens());
+  	AstNode astNode = bridge(GenericTokenType.IDENTIFIER, GenericTokenType.EOF).match(state);
+  	assertEquals(2, state.lexerIndex);
+  	assertEquals(2, astNode.getChildren().size());
   }
   
 }

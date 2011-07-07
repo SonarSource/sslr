@@ -13,8 +13,11 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Ignore;
 import org.junit.Test;
+
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.impl.events.IdentifierLexer;
 
 public class InclusiveTillMatcherTest {
 
@@ -27,9 +30,16 @@ public class InclusiveTillMatcherTest {
   }
   
   @Test
-  @Ignore
   public void testToString() {
   	assertEquals(till("(").toString(), "till");
+  }
+  
+  @Test
+  public void testAstNodeTokens() {
+  	ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three four").getTokens());
+  	AstNode astNode = till("three").match(state);
+  	assertEquals(3, state.lexerIndex);
+  	assertEquals(3, astNode.getChildren().size());
   }
 
 }

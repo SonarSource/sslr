@@ -7,6 +7,7 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.api.GenericTokenType.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.till;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.tillNewLine;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
@@ -14,6 +15,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.impl.events.IdentifierLexer;
 
 public class TillNewLineMatcherTest {
 
@@ -37,6 +42,14 @@ public class TillNewLineMatcherTest {
   @Test
   public void testToString() {
   	assertEquals(tillNewLine().toString(), "tillNewLine()");
+  }
+  
+  @Test
+  public void testAstNodeTokens() {
+  	ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three\nfour").getTokens());
+  	AstNode astNode = tillNewLine().match(state);
+  	assertEquals(3, state.lexerIndex);
+  	assertEquals(3, astNode.getChildren().size());
   }
 
 }

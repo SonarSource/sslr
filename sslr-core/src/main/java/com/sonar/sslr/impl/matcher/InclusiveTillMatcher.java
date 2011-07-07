@@ -8,7 +8,6 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.ParsingState;
 
 public class InclusiveTillMatcher extends MemoizedMatcher {
@@ -19,13 +18,13 @@ public class InclusiveTillMatcher extends MemoizedMatcher {
 
   @Override
   protected final AstNode matchWorker(ParsingState parsingState) {
-    AstNode astNode = new AstNode(null, "tillMatcher", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
-    StringBuilder builder = new StringBuilder();
-    while ( !super.children[0].isMatching(parsingState)) {
-      builder.append(parsingState.popToken(this).getValue());
-      builder.append(" ");
+    AstNode astNode = new AstNode(null, "till", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
+
+    while (!super.children[0].isMatching(parsingState)) {
+    	Token token = parsingState.popToken(this);
+      astNode.addChild(new AstNode(token));
     }
-    astNode.addChild(new AstNode(new Token(new WordsTokenType(), builder.toString())));
+    
     astNode.addChild(super.children[0].match(parsingState));
     return astNode;
   }
@@ -33,22 +32,6 @@ public class InclusiveTillMatcher extends MemoizedMatcher {
   @Override
   public String toString() {
     return "till";
-  }
-
-  static class WordsTokenType implements TokenType {
-
-    public String getName() {
-      return "WORDS";
-    }
-
-    public boolean hasToBeSkippedFromAst(AstNode node) {
-      return false;
-    }
-
-    public String getValue() {
-      return "WORDS";
-    }
-
   }
 
 }

@@ -32,6 +32,7 @@ public class BridgeMatcher extends MemoizedMatcher {
       do {
         token = parsingState.popToken(this);
         astNode.addChild(new AstNode(token));
+        
         if (token.getType() == from) {
           bridgeLevel++;
         }
