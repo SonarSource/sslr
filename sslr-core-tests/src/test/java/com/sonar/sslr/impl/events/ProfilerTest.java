@@ -13,14 +13,9 @@ import static com.sonar.sslr.impl.events.ProfilerStream.*;
 import static org.hamcrest.MatcherAssert.assertThat; 
 import static org.hamcrest.Matchers.*; 
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.Test;
-import org.mockito.internal.matchers.LessThan;
 
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;

@@ -75,7 +75,7 @@ public final class ExtendedStackTraceStream {
         displaySourceCodeLineHeader(lineBuilder, token.getLine(), failedToken.getLine());
       }
 
-      displayToken(lineBuilder, token);
+      previousLine = displayToken(lineBuilder, token, failedToken.getLine());
     }
 
     if (tokens.size() > 0) {
@@ -107,11 +107,26 @@ public final class ExtendedStackTraceStream {
     lineBuilder.append(" ");
   }
   
-  private static void displayToken(StringBuilder lineBuilder, Token token) {
+  private static int displayToken(StringBuilder lineBuilder, Token token, int parsingErrorLine) {
+  	int currentLine = token.getLine();
+  	String[] tokenLines = token.getValue().replace("\r", "").split("\n", -1);
+  	
+  	/* Display the first line */
     while (lineBuilder.length() - LINE_AND_COLUMN_LEFT_PAD_LENGTH < token.getColumn()) {
       lineBuilder.append(" ");
     }
-    lineBuilder.append(token.getValue());
+    lineBuilder.append(tokenLines[0]);
+    
+    /* Display the following lines */
+    for (int i = 1; i < tokenLines.length; i++) {
+    	currentLine++;
+    	lineBuilder.append(System.getProperty("line.separator"));
+    	displaySourceCodeLineHeader(lineBuilder, currentLine, parsingErrorLine);
+    	
+    	lineBuilder.append(tokenLines[i]);
+    }
+    
+    return currentLine;
   }
   
   private static void displayStackTrace(ExtendedStackTrace extendedStackTrace, PrintStream stream) {

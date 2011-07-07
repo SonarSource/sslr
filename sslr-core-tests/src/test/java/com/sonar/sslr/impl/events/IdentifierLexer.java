@@ -20,7 +20,8 @@ public class IdentifierLexer {
 
   public static Lexer create() {
     return Lexer.builder().withChannel(regexp(COMMENT, "!COMMENT!"))
-        .withChannel(new IdentifierAndKeywordChannel("[a-zA-Z][a-zA-Z0-9]*", true)).withChannel(new BlackHoleChannel("[ \t\r\n]+"))
+        .withChannel(new IdentifierAndKeywordChannel("[a-zA-Z][a-zA-Z0-9]*|![ \t\r\n]+!", true))
+        .withChannel(new BlackHoleChannel("[ \t\r\n]+"))
         .withFailIfNoChannelToConsumeOneCharacter(true).build();
   }
 }
