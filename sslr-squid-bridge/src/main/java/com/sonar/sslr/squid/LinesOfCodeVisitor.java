@@ -24,8 +24,6 @@ public class LinesOfCodeVisitor extends SquidAstVisitor<Grammar> implements AstA
   private int lastTokenLine;
   private final SquidAstVisitorContext<? extends Grammar> context;
 
-  private SourceCode squidSourceCode;
-
   public LinesOfCodeVisitor(SquidAstVisitorContext<? extends Grammar> context, MetricDef metric) {
     this.context = context;
     this.metric = metric;
@@ -37,7 +35,6 @@ public class LinesOfCodeVisitor extends SquidAstVisitor<Grammar> implements AstA
   @Override
   public void visitFile(AstNode node) {
     lastTokenLine = -1;
-    squidSourceCode = context.peekSourceCode();
   }
 
   /**
@@ -49,7 +46,7 @@ public class LinesOfCodeVisitor extends SquidAstVisitor<Grammar> implements AstA
     	String[] tokenLines = token.getValue().split("\n", -1);
 
     	int firstLineAlreadyCounted = (lastTokenLine == token.getLine()) ? 1 : 0;
-    	squidSourceCode.add(metric, tokenLines.length - firstLineAlreadyCounted);
+    	context.peekSourceCode().add(metric, tokenLines.length - firstLineAlreadyCounted);
     	
     	lastTokenLine = token.getLine() + tokenLines.length - 1;
     }
