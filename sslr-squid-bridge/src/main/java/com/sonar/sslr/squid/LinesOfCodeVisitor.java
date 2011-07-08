@@ -40,9 +40,14 @@ public class LinesOfCodeVisitor extends SquidAstVisitor<Grammar> implements AstA
    * {@inheritDoc}
    */
   public void visitToken(Token token) {
-    if (token.getType() != EOF && lastTokenLine != token.getLine()) {
-      context.peekSourceCode().add(metric, 1);
-      lastTokenLine = token.getLine();
+    if (token.getType() != EOF) {
+    	/* Handle all the lines of the token */
+    	String[] tokenLines = token.getValue().split("\n", -1);
+
+    	int firstLineAlreadyCounted = (lastTokenLine == token.getLine()) ? 1 : 0;
+    	context.peekSourceCode().add(metric, tokenLines.length - firstLineAlreadyCounted);
+    	
+    	lastTokenLine = token.getLine() + tokenLines.length - 1;
     }
   }
 

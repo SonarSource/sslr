@@ -37,5 +37,15 @@ public class LinesOfCodeVisitorTest {
 
     visitor.visitToken(new Token(GenericTokenType.IDENTIFIER, "value", 3, 0));
     assertThat(project.getInt(MyMetrics.LINES_OF_CODE), is(2));
+    
+    visitor.visitToken(new Token(GenericTokenType.IDENTIFIER, "multi-line-value\nline2 hehe\nline 3 hehe", 4, 0));
+    assertThat(project.getInt(MyMetrics.LINES_OF_CODE), is(5));
+    
+    visitor.visitToken(new Token(GenericTokenType.IDENTIFIER, "this one is already counted!\nbut not this one!", 6, 10));
+    assertThat(project.getInt(MyMetrics.LINES_OF_CODE), is(6));
+    
+    visitor.visitToken(new Token(GenericTokenType.IDENTIFIER, "this one is already counted too!", 7, 0));
+    assertThat(project.getInt(MyMetrics.LINES_OF_CODE), is(6));
   }
+  
 }
