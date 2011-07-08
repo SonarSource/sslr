@@ -7,7 +7,7 @@ package com.sonar.sslr.squid;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 
-import org.sonar.squid.api.SourceFile;
+import org.sonar.squid.api.SourceCode;
 import org.sonar.squid.measures.MetricDef;
 
 import com.sonar.sslr.api.AstAndTokenVisitor;
@@ -24,7 +24,7 @@ public class LinesOfCodeVisitor extends SquidAstVisitor<Grammar> implements AstA
   private int lastTokenLine;
   private final SquidAstVisitorContext<? extends Grammar> context;
 
-  private SourceFile squidFile;
+  private SourceCode squidSourceCode;
 
   public LinesOfCodeVisitor(SquidAstVisitorContext<? extends Grammar> context, MetricDef metric) {
     this.context = context;
@@ -37,7 +37,7 @@ public class LinesOfCodeVisitor extends SquidAstVisitor<Grammar> implements AstA
   @Override
   public void visitFile(AstNode node) {
     lastTokenLine = -1;
-    squidFile = (SourceFile)context.peekSourceCode();
+    squidSourceCode = context.peekSourceCode();
   }
 
   /**
@@ -49,7 +49,7 @@ public class LinesOfCodeVisitor extends SquidAstVisitor<Grammar> implements AstA
     	String[] tokenLines = token.getValue().split("\n", -1);
 
     	int firstLineAlreadyCounted = (lastTokenLine == token.getLine()) ? 1 : 0;
-    	squidFile.add(metric, tokenLines.length - firstLineAlreadyCounted);
+    	squidSourceCode.add(metric, tokenLines.length - firstLineAlreadyCounted);
     	
     	lastTokenLine = token.getLine() + tokenLines.length - 1;
     }

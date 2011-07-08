@@ -25,6 +25,8 @@ public class LinesOfCodeVisitorTest {
     assertThat(project.getInt(MyMetrics.LINES_OF_CODE), is(0));
 
     LinesOfCodeVisitor visitor = new LinesOfCodeVisitor(context, MyMetrics.LINES_OF_CODE);
+    
+    visitor.visitFile(null);
 
     visitor.visitToken(new Token(GenericTokenType.EOF, "", 1, 0));
     assertThat(project.getInt(MyMetrics.LINES_OF_CODE), is(0));
