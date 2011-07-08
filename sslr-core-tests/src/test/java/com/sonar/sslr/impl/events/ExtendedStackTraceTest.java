@@ -194,8 +194,6 @@ public class ExtendedStackTraceTest {
 		ExtendedStackTraceStream.print(extendedStackTrace, new PrintStream(baos));
 		String actual = baos.toString();
 		
-		System.out.println(actual);
-		
 		StringBuilder expected = new StringBuilder();
 		expected.append("Source Snippet:" + System.getProperty("line.separator"));
 		expected.append("---------------" + System.getProperty("line.separator"));
