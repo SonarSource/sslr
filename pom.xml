@@ -4,7 +4,7 @@
   <groupId>com.sonarsource.sslr</groupId>
   <artifactId>sslr</artifactId>
   <packaging>pom</packaging>
-  <version>1.4</version>
+  <version>1.5-SNAPSHOT</version>
   <name>SonarSource :: Language Recognizer</name>
   <parent>
     <groupId>com.sonarsource.parent</groupId>
@@ -17,9 +17,9 @@
   </properties>
 
   <scm>
-    <connection>scm:svn:https://subversion.assembla.com/svn/sonarsourcecode/tags/sslr-1.4</connection>
-    <developerConnection>scm:svn:https://subversion.assembla.com/svn/sonarsourcecode/tags/sslr-1.4</developerConnection>
-    <url>https://subversion.assembla.com/svn/sonarsourcecode/tags/sslr-1.4</url>
+    <connection>scm:svn:https://subversion.assembla.com/svn/sonarsourcecode/trunk/sslr</connection>
+    <developerConnection>scm:svn:https://subversion.assembla.com/svn/sonarsourcecode/trunk/sslr</developerConnection>
+    <url>https://subversion.assembla.com/svn/sonarsourcecode/trunk/sslr</url>
   </scm>
 
   <modules>
