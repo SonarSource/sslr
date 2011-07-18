@@ -6,29 +6,22 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.BacktrackingEvent;
-import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.api.Token;
 
-public class BooleanMatcher extends MemoizedMatcher {
+public class BooleanMatcher extends TokenMatcher {
 
   private final boolean internalState;
 
   protected BooleanMatcher(boolean internalState) {
-    super();
+    super(false);
 
     this.internalState = internalState;
   }
 
-  @Override
-  protected final AstNode matchWorker(ParsingState parsingState) {
-    parsingState.peekToken(this);
-    if (internalState) {
-      return new AstNode(null, "trueMatcher", parsingState.popToken(this));
-    } else {
-      throw BacktrackingEvent.create();
-    }
-  }
+	@Override
+	protected boolean isExpectedToken(Token token) {
+		return internalState;
+	}
 
   @Override
   public String toString() {
