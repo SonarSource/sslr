@@ -6,12 +6,12 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -30,13 +30,20 @@ public class TokenTypeClassMatcherTest {
 
   @Test
   public void testThroughMatchers() {
-    assertThat(GrammarFunctions.Standard.and(GenericTokenType.class), match("word"));
-    assertThat(GrammarFunctions.Standard.and(MockTokenType.class), not(match("word")));
+    assertThat(and(GenericTokenType.class), match("word"));
+    assertThat(and(MockTokenType.class), not(match("word")));
   }
 
   @Test
   public void testToString() {
-    assertEquals(new TokenTypeClassMatcher(GenericTokenType.class).toString(), "com.sonar.sslr.api.GenericTokenType.class");
+    assertEquals(and(GenericTokenType.class).toString(), GenericTokenType.class.getCanonicalName() + ".class");
+  }
+  
+  @Test
+  public void testEqualsAndHashCode() {
+  	assertThat(and(GenericTokenType.class) == and(GenericTokenType.class), is(true));
+  	assertThat(and(GenericTokenType.class) == and(MockTokenType.class), is(false));
+  	assertThat(and(GenericTokenType.class) == adjacent("("), is(false));
   }
 
 }

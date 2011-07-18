@@ -6,11 +6,10 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isFalse;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isTrue;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -30,6 +29,13 @@ public class OrMatcherTest {
   public void testToString() {
   	assertEquals(or("(").toString(), "\"(\"");
   	assertEquals(or("(", ")").toString(), "or");
+  }
+  
+  @Test
+  public void testEqualsAndHashCode() {
+  	assertThat(or("a", "a") == or("a", "a"), is(true));
+  	assertThat(or("a", "a") == or("a", "b"), is(false));
+  	assertThat(or("a", "a") == longestOne("a", "a"), is(false));
   }
 
 }

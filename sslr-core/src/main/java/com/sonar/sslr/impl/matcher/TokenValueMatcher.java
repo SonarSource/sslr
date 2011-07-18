@@ -31,4 +31,30 @@ public class TokenValueMatcher extends TokenMatcher {
     return "\"" + tokenValue.replace("\"", "\\\"") + "\"";
   }
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + getClass().hashCode();
+		result = prime * result + ((tokenValue == null) ? 0 : tokenValue.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TokenValueMatcher other = (TokenValueMatcher) obj;
+		if (tokenValue == null) {
+			if (other.tokenValue != null)
+				return false;
+		} else if (!tokenValue.equals(other.tokenValue))
+			return false;
+		return true;
+	}
+
 }

@@ -12,7 +12,7 @@ import com.sonar.sslr.impl.ParsingState;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 
-public class TillNewLineMatcher extends MemoizedMatcher {
+public class TillNewLineMatcher extends StatelessMatcher {
 
   protected TillNewLineMatcher() {
     super();

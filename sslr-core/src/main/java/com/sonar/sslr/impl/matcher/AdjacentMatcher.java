@@ -11,7 +11,7 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingEvent;
 
-public class AdjacentMatcher extends MemoizedMatcher {
+public class AdjacentMatcher extends StatelessMatcher {
 	
   protected AdjacentMatcher(Matcher matcher) {
   	super(matcher);

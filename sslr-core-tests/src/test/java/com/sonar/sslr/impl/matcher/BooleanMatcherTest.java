@@ -8,6 +8,7 @@ package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -25,6 +26,14 @@ public class BooleanMatcherTest {
   public void testToString() {
   	assertEquals(isTrue().toString(), "isTrue()");
   	assertEquals(isFalse().toString(), "isFalse()");
+  }
+  
+  @Test
+  public void testEqualsAndHashCode() {
+  	assertThat(isTrue() == isTrue(), is(true));
+  	assertThat(isFalse() == isFalse(), is(true));
+  	assertThat(isTrue() == isFalse(), is(false));
+  	assertThat(anyToken() == tillNewLine(), is(false));
   }
   
 }

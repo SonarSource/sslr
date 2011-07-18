@@ -7,8 +7,11 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static com.sonar.sslr.impl.matcher.MyPunctuator.LEFT;
+import static com.sonar.sslr.impl.matcher.MyPunctuator.RIGHT;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -33,6 +36,14 @@ public class TokenCountMatcherTest {
   @Test
   public void testToString() {
     assertEquals(tokenCount(TokenCountMatcher.Operator.EQUAL, 2, till("b")).toString(), "tokenCount(TokenCountMatcher.Operator.EQUAL, 2)");
+  }
+  
+  @Test
+  public void testEqualsAndHashCode() {
+  	assertThat(tokenCount(TokenCountMatcher.Operator.EQUAL, 0, till("b")) == tokenCount(TokenCountMatcher.Operator.EQUAL, 0, till("b")), is(true));
+  	assertThat(tokenCount(TokenCountMatcher.Operator.EQUAL, 0, till("b")) == tokenCount(TokenCountMatcher.Operator.LESS_THAN, 0, till("b")), is(false));
+  	assertThat(tokenCount(TokenCountMatcher.Operator.EQUAL, 0, till("b")) == tokenCount(TokenCountMatcher.Operator.EQUAL, 0, till("z")), is(false));
+  	assertThat(tokenCount(TokenCountMatcher.Operator.EQUAL, 0, till("b")) == isOneOfThem(LEFT, RIGHT), is(false));
   }
 
 }

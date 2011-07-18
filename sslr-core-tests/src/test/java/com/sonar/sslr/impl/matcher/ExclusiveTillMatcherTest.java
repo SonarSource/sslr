@@ -6,9 +6,10 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.exclusiveTill;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -38,6 +39,13 @@ public class ExclusiveTillMatcherTest {
   	AstNode astNode = exclusiveTill("three").match(state);
   	assertEquals(2, state.lexerIndex);
   	assertEquals(2, astNode.getChildren().size());
+  }
+  
+  @Test
+  public void testEqualsAndHashCode() {
+  	assertThat(exclusiveTill("a", "a") == exclusiveTill("a", "a"), is(true));
+  	assertThat(exclusiveTill("a", "a") == exclusiveTill("a", "b"), is(false));
+  	assertThat(exclusiveTill("a", "a") == adjacent("a"), is(false));
   }
 
 }

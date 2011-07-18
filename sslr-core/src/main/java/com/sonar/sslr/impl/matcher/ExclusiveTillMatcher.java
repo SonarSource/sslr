@@ -10,7 +10,7 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
 
-public class ExclusiveTillMatcher extends MemoizedMatcher {
+public class ExclusiveTillMatcher extends StatelessMatcher {
 
   protected ExclusiveTillMatcher(Matcher... matchers) {
     super(matchers);

@@ -9,6 +9,7 @@ package com.sonar.sslr.impl.matcher;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -40,6 +41,13 @@ public class InclusiveTillMatcherTest {
   	AstNode astNode = till("three").match(state);
   	assertEquals(3, state.lexerIndex);
   	assertEquals(3, astNode.getChildren().size());
+  }
+  
+  @Test
+  public void testEqualsAndHashCode() {
+  	assertThat(till("a") == till("a"), is(true));
+  	assertThat(till("a") == till("b"), is(false));
+  	assertThat(till("a") == adjacent("a"), is(false));
   }
 
 }

@@ -6,12 +6,14 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.bridge;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static com.sonar.sslr.impl.matcher.MyPunctuator.CAT;
 import static com.sonar.sslr.impl.matcher.MyPunctuator.DOG;
 import static com.sonar.sslr.impl.matcher.MyPunctuator.LEFT;
 import static com.sonar.sslr.impl.matcher.MyPunctuator.RIGHT;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -69,6 +71,13 @@ public class BridgeMatcherTest {
   	AstNode astNode = bridge(GenericTokenType.IDENTIFIER, GenericTokenType.EOF).match(state);
   	assertEquals(2, state.lexerIndex);
   	assertEquals(2, astNode.getChildren().size());
+  }
+  
+  @Test
+  public void testEqualsAndHashCode() {
+  	assertThat(bridge(LEFT, RIGHT) == bridge(LEFT, RIGHT), is(true));
+  	assertThat(bridge(LEFT, LEFT) == bridge(LEFT, RIGHT), is(false));
+  	assertThat(bridge(LEFT, LEFT) == isOneOfThem(LEFT, RIGHT), is(false));
   }
   
 }

@@ -10,7 +10,7 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingEvent;
 
-public class LongestOneMatcher extends MemoizedMatcher {
+public class LongestOneMatcher extends StatelessMatcher {
 
 	protected LongestOneMatcher(Matcher... matchers) {
   	super(matchers);

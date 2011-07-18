@@ -9,7 +9,7 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 
-public class AndMatcher extends MemoizedMatcher {
+public class AndMatcher extends StatelessMatcher {
 	
 	protected AndMatcher(Matcher... matchers) {
   	super(matchers);

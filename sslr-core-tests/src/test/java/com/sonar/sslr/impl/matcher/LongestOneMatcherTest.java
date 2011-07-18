@@ -6,9 +6,10 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -29,6 +30,13 @@ public class LongestOneMatcherTest {
   @Test
   public void testToString() {
   	assertEquals(longestOne("(").toString(), "longestOne");
+  }
+  
+  @Test
+  public void testEqualsAndHashCode() {
+  	assertThat(longestOne("a", "a") == longestOne("a", "a"), is(true));
+  	assertThat(longestOne("a", "a") == longestOne("a", "b"), is(false));
+  	assertThat(longestOne("a", "a") == and("a", "a"), is(false));
   }
 
 }

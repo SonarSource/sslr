@@ -15,14 +15,12 @@ import com.sonar.sslr.api.TokenType;
 public class TokenTypesMatcher extends TokenMatcher {
 
   private final Set<TokenType> tokenTypes = new HashSet<TokenType>();
-  private final TokenType tokenTypesArray[];
 
   protected TokenTypesMatcher(TokenType... types) {
     super(false);
     for (TokenType keyword : types) {
       this.tokenTypes.add(keyword);
     }
-    tokenTypesArray = types;
   }
 
   @Override
@@ -34,5 +32,31 @@ public class TokenTypesMatcher extends TokenMatcher {
   public String toString() {
     return "isOneOfThem";
   }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + getClass().hashCode();
+		result = prime * result	+ ((tokenTypes == null) ? 0 : tokenTypes.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TokenTypesMatcher other = (TokenTypesMatcher) obj;
+		if (tokenTypes == null) {
+			if (other.tokenTypes != null)
+				return false;
+		} else if (!tokenTypes.equals(other.tokenTypes))
+			return false;
+		return true;
+	}
 
 }

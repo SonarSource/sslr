@@ -6,9 +6,10 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.next;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -26,6 +27,13 @@ public class NextMatcherTest {
   @Test
   public void testToString() {
   	assertEquals(next("(").toString(), "next");
+  }
+  
+  @Test
+  public void testEqualsAndHashCode() {
+  	assertThat(next("a", "a") == next("a", "a"), is(true));
+  	assertThat(next("a", "a") == next("a", "b"), is(false));
+  	assertThat(next("a", "a") == and("a", "a"), is(false));
   }
 
 }

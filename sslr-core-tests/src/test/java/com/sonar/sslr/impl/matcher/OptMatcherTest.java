@@ -6,10 +6,10 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isFalse;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isTrue;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -27,6 +27,13 @@ public class OptMatcherTest {
   @Test
   public void testToString() {
   	assertEquals(opt("(").toString(), "opt");
+  }
+  
+  @Test
+  public void testEqualsAndHashCode() {
+  	assertThat(opt("a", "a") == opt("a", "a"), is(true));
+  	assertThat(opt("a", "a") == opt("a", "b"), is(false));
+  	assertThat(opt("a", "a") == longestOne("a", "a"), is(false));
   }
 
 }

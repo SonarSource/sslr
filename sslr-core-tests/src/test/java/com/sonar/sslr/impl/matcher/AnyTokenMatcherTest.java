@@ -6,9 +6,11 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.anyToken;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
 import static com.sonar.sslr.test.lexer.TokenUtils.lex;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
@@ -30,6 +32,12 @@ public class AnyTokenMatcherTest {
   @Test
   public void testToString() {
   	assertEquals(anyToken().toString(), "anyToken()");
+  }
+  
+  @Test
+  public void testEqualsAndHashCode() {
+  	assertThat(anyToken() == anyToken(), is(true));
+  	assertThat(anyToken() == tillNewLine(), is(false));
   }
   
 }

@@ -6,8 +6,10 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.anyTokenButNot;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -25,6 +27,13 @@ public class AnyTokenButNotMatcherTest {
   @Test
   public void testToString() {
     assertEquals(anyTokenButNot("(").toString(), "anyTokenButNot");
+  }
+  
+  @Test
+  public void testEqualsAndHashCode() {
+  	assertThat(anyTokenButNot("a") == anyTokenButNot("a"), is(true));
+  	assertThat(anyTokenButNot("a") == anyTokenButNot("b"), is(false));
+  	assertThat(anyTokenButNot("a") == adjacent("a"), is(false));
   }
 
 }

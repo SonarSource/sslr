@@ -7,10 +7,12 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.api.GenericTokenType.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.anyToken;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.till;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.tillNewLine;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -50,6 +52,12 @@ public class TillNewLineMatcherTest {
   	AstNode astNode = tillNewLine().match(state);
   	assertEquals(3, state.lexerIndex);
   	assertEquals(3, astNode.getChildren().size());
+  }
+  
+  @Test
+  public void testEqualsAndHashCode() {
+  	assertThat(tillNewLine() == tillNewLine(), is(true));
+  	assertThat(tillNewLine() == anyToken(), is(false));
   }
 
 }

@@ -6,30 +6,40 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import static com.sonar.sslr.api.GenericTokenType.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.test.lexer.TokenUtils.lex;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.GenericTokenType;
-import com.sonar.sslr.impl.MockTokenType;
 import com.sonar.sslr.impl.ParsingState;
 
 public class TokenTypeMatcherTest {
 
   @Test
   public void ok() {
-    TokenTypeMatcher matcher = new TokenTypeMatcher(GenericTokenType.IDENTIFIER);
+    TokenTypeMatcher matcher = new TokenTypeMatcher(IDENTIFIER);
     AstNode node = matcher.match(new ParsingState(lex("print screen")));
 
-    assertTrue(node.is(GenericTokenType.IDENTIFIER));
+    assertTrue(node.is(IDENTIFIER));
   }
   
   @Test
   public void testToString() {
-  	assertEquals(new TokenTypeMatcher(GenericTokenType.IDENTIFIER).toString(), "IDENTIFIER");
+  	assertEquals(and(IDENTIFIER).toString(), "IDENTIFIER");
+  }
+  
+  @Test
+  public void testEqualsAndHashCode() {
+  	assertThat(and(IDENTIFIER) == and(IDENTIFIER), is(true));
+  	assertThat(and(IDENTIFIER) == and(EOF), is(false));
+  	assertThat(and(IDENTIFIER) == adjacent("("), is(false));
   }
 
 }
