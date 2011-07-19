@@ -29,6 +29,7 @@ import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.Lexer.LexerBuilder;
 import com.sonar.sslr.impl.events.ParsingEventListener;
+import com.sonar.sslr.impl.matcher.GrammarFunctions;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 
 public class Parser<GRAMMAR extends Grammar> {
@@ -51,6 +52,7 @@ public class Parser<GRAMMAR extends Grammar> {
     this.parsingEventListeners = builder.parsingEventListeners;
     this.listeners = builder.listeners;
     setDecorators(builder.decorators);
+    GrammarFunctions.resetCache();
   }
 
   /**
@@ -73,6 +75,7 @@ public class Parser<GRAMMAR extends Grammar> {
     this.grammar = grammar;
     this.lexer = lexer;
     setDecorators(decorators);
+    GrammarFunctions.resetCache();
   }
 
   protected void setDecorators(List<GrammarDecorator<GRAMMAR>> decorators) {

@@ -6,7 +6,6 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,17 +16,23 @@ import com.sonar.sslr.api.TokenType;
  */
 public class GrammarFunctions {
 	
-	private static Map<Matcher, Matcher> synchronizedMatcherCache = Collections.synchronizedMap(new HashMap<Matcher, Matcher>());
+	private static ThreadLocal<Map<Matcher, Matcher>> matcherCache = new ThreadLocal<Map<Matcher, Matcher>>() {
+		@Override protected Map<Matcher, Matcher> initialValue() {
+			return new HashMap<Matcher, Matcher>();
+		}
+	};
 	
 	private static final Matcher getCachedMatcher(Matcher matcher) {
-		synchronized(synchronizedMatcherCache) {
-			if (synchronizedMatcherCache.containsKey(matcher)) {
-				return synchronizedMatcherCache.get(matcher);
+			if (matcherCache.get().containsKey(matcher)) {
+				return matcherCache.get().get(matcher);
 			}
 			
-			synchronizedMatcherCache.put(matcher, matcher);
+			matcherCache.get().put(matcher, matcher);
 			return matcher;
-		}
+	}
+	
+	public static final void resetCache() {
+		matcherCache.set(new HashMap<Matcher, Matcher>());
 	}
 
   private GrammarFunctions() { }
