@@ -49,8 +49,7 @@
     </dependency>
     <dependency>
       <groupId>com.sonarsource.sslr</groupId>
-      <artifactId>sslr-lexer-testing-harness</artifactId>
-      <version>1.3</version>
+      <artifactId>sslr-testing-harness</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
