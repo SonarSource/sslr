@@ -66,6 +66,7 @@ public class RuleMatcherTest {
     parsingState = new ParsingState(lex("one"));
     listener = mock(RecognictionExceptionListener.class);
     parsingState.addListener(listener);
+    rule.reinitializeMatcherTree();
     rule.match(parsingState);
 
     verify(listener, times(1)).processRecognitionException((RecognitionException) anyObject());

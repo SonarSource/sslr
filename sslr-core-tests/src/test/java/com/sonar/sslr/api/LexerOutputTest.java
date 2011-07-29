@@ -24,7 +24,7 @@ import com.google.common.collect.Lists;
 public class LexerOutputTest {
 
   LexerOutput output;
-
+  
   @Test
   public void shouldAddToken() {
     output = new LexerOutput();

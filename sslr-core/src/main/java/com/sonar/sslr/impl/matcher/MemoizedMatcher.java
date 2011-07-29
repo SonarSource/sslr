@@ -1,10 +1,9 @@
+package com.sonar.sslr.impl.matcher;
 /*
  * Copyright (C) 2010 SonarSource SA
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-
-package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.BacktrackingEvent;

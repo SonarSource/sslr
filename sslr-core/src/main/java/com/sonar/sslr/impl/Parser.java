@@ -126,7 +126,7 @@ public class Parser<GRAMMAR extends Grammar> {
   public final AstNode parse(List<Token> tokens) {
     parsingState = null;
 
-    throwBeginParseEvent();
+    beginParseEvent();
 
     try {
       parsingState = new ParsingState(tokens);
@@ -145,12 +145,12 @@ public class Parser<GRAMMAR extends Grammar> {
     } finally {
       rootRule.getRule().reinitializeMatcherTree();
 
-      throwEndParseEvent();
+      endParseEvent();
     }
 
   }
 
-  private final void throwEndParseEvent() {
+  private final void endParseEvent() {
     if (parsingEventListeners != null) {
       for (ParsingEventListener listener : this.parsingEventListeners) {
         listener.endParse();
@@ -158,7 +158,7 @@ public class Parser<GRAMMAR extends Grammar> {
     }
   }
 
-  private final void throwBeginParseEvent() {
+  private final void beginParseEvent() {
     if (parsingEventListeners != null) {
       for (ParsingEventListener listener : this.parsingEventListeners) {
         listener.beginParse();

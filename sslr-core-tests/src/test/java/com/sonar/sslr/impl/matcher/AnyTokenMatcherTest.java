@@ -25,6 +25,7 @@ public class AnyTokenMatcherTest {
     AstNode node = matcher.match(new ParsingState(lex("print screen")));
     assertEquals("print", node.getTokenValue());
 
+    matcher.reinitializeMatcherTree();
     node = matcher.match(new ParsingState(lex(".")));
     assertEquals(".", node.getTokenValue());
   }

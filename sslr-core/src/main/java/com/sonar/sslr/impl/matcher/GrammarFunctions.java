@@ -16,23 +16,38 @@ import com.sonar.sslr.api.TokenType;
  */
 public class GrammarFunctions {
 	
-	private static ThreadLocal<Map<Matcher, Matcher>> matcherCache = new ThreadLocal<Map<Matcher, Matcher>>() {
+	/* TODO: Private */
+	/*
+	public static ThreadLocal<Map<Matcher, Matcher>> matcherCache = new ThreadLocal<Map<Matcher, Matcher>>() {
 		@Override protected Map<Matcher, Matcher> initialValue() {
 			return new HashMap<Matcher, Matcher>();
 		}
 	};
+	*/
+	
+	public static HashMap<Matcher, Matcher> matcherCache = new HashMap<Matcher, Matcher>();
 	
 	private static final Matcher getCachedMatcher(Matcher matcher) {
+		if (matcherCache.containsKey(matcher)) {
+			return matcherCache.get(matcher);
+		}
+		
+		matcherCache.put(matcher, matcher);
+		return matcher;
+		
+		/*
 			if (matcherCache.get().containsKey(matcher)) {
 				return matcherCache.get().get(matcher);
 			}
 			
 			matcherCache.get().put(matcher, matcher);
 			return matcher;
+			*/
 	}
 	
 	public static final void resetCache() {
-		matcherCache.set(new HashMap<Matcher, Matcher>());
+		matcherCache = new HashMap<Matcher, Matcher>();
+		//matcherCache.set(new HashMap<Matcher, Matcher>());
 	}
 
   private GrammarFunctions() { }

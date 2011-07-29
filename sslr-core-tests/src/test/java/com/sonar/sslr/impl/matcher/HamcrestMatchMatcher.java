@@ -41,6 +41,7 @@ public class HamcrestMatchMatcher extends BaseMatcher<Matcher> {
       return false;
     }
     matcher = (Matcher) obj;
+    matcher.reinitializeMatcherTree();
     ParsingState parsingState = new ParsingState(tokens);
     try {
       matcher.match(parsingState);
