@@ -11,8 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MemoizedMatcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
@@ -157,6 +161,8 @@ public class Profiler extends ParsingEventListener {
   private Stack<Match> matches;
   private Timer lexerTimer;
   private Timer parserTimer;
+  private ListMultimap<Matcher, Integer> lastMatches;
+  private ListMultimap<Matcher, Integer> lastMismatches;
 
   public Profiler() {
     initialize();
@@ -168,6 +174,8 @@ public class Profiler extends ParsingEventListener {
     matches = new Stack<Match>();
     lexerTimer = new Timer();
     parserTimer = new Timer();
+    lastMatches = LinkedListMultimap.create();
+    lastMismatches = LinkedListMultimap.create();
   }
 
   @Override
