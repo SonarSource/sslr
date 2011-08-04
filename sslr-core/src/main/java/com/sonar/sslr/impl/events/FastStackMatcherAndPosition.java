@@ -20,15 +20,9 @@ public final class FastStackMatcherAndPosition {
 	private int i;
 	
 	public FastStackMatcherAndPosition() {
-		this(true);
-	}
-	
-	private FastStackMatcherAndPosition(boolean initializeArrays) {
-		if (initializeArrays) {
-			this.matchers = new Matcher[INITIAL_CAPACITY];
-			this.fromIndex = new int[INITIAL_CAPACITY];
-			this.toIndex = new int[INITIAL_CAPACITY];
-		}
+		this.matchers = new Matcher[INITIAL_CAPACITY];
+		this.fromIndex = new int[INITIAL_CAPACITY];
+		this.toIndex = new int[INITIAL_CAPACITY];
 		this.i = 0;
 	}
 	
