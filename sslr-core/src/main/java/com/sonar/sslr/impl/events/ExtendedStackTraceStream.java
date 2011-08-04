@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.events.ExtendedStackTrace.RuleWithPosition;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
+import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public final class ExtendedStackTraceStream {
 	
@@ -133,14 +133,14 @@ public final class ExtendedStackTraceStream {
     if (extendedStackTrace.longestStack.size() == 0) {
       stream.println("[ Not a single match ]");
     } else {
-      stream.println("on matcher " + MatcherTreePrinter.print(extendedStackTrace.longestOutertMatcherWithPosition.getMatcher()));
+      stream.println("on matcher " + MatcherTreePrinter.print(extendedStackTrace.longestOutertMatcher));
       stream.print(getPosition(extendedStackTrace.longestParsingState.readToken(extendedStackTrace.longestIndex).getLine(), extendedStackTrace.longestParsingState.readToken(extendedStackTrace.longestIndex).getColumn()));
-      stream.print(MatcherTreePrinter.print(extendedStackTrace.longestMatcherWithPosition.getMatcher()) + " expected but ");
+      stream.print(MatcherTreePrinter.print(extendedStackTrace.longestMatcher) + " expected but ");
       stream.println("\"" + extendedStackTrace.longestParsingState.readToken(extendedStackTrace.longestIndex).getValue().replace("\"", "\\\"") + "\"" + " [" + extendedStackTrace.longestParsingState.readToken(extendedStackTrace.longestIndex).getType() + "] found");
 
       for (int i = extendedStackTrace.longestStack.size() - 1; i >= 0; i--) {
         stream.print("at ");
-        displayStackTraceRuleWithPosition(extendedStackTrace, stream, extendedStackTrace.longestStack.get(i));
+        displayStackTraceRuleWithPosition(extendedStackTrace, stream, i);
       }
     }
   }
@@ -150,23 +150,23 @@ public final class ExtendedStackTraceStream {
         + String.format("%1$#" + LINE_AND_COLUMN_LEFT_PAD_LENGTH + "s", column) + "  : ";
   }
   
-  private static void displayStackTraceRuleWithPosition(ExtendedStackTrace extendedStackTrace, PrintStream stream, RuleWithPosition ruleWithPosition) {
+  private static void displayStackTraceRuleWithPosition(ExtendedStackTrace extendedStackTrace, PrintStream stream, int ruleWithPosition) {
     StringBuilder ruleBuilder = new StringBuilder();
 
-    Token fromToken = extendedStackTrace.longestParsingState.readToken(ruleWithPosition.getFromIndex());
+    Token fromToken = extendedStackTrace.longestParsingState.readToken(extendedStackTrace.longestStack.getFromIndex(ruleWithPosition));
 
-    ruleBuilder.append(ruleWithPosition.getRule().getName() + System.getProperty("line.separator"));
+    ruleBuilder.append(extendedStackTrace.longestStack.getRule(ruleWithPosition).getName() + System.getProperty("line.separator"));
     ruleBuilder.append(getPosition(fromToken.getLine(), fromToken.getColumn()));
 
     /* Display the next SOURCE_SNIPPET_NEXT_TOKENS tokens, until the toIndex */
     int i;
-    for (i = ruleWithPosition.getFromIndex(); i < ruleWithPosition.getFromIndex() + STACK_TRACE_RULE_STARTING_WITH_TOKENS && i < ruleWithPosition.getToIndex() && i < extendedStackTrace.longestParsingState.lexerSize; i++) {
+    for (i = extendedStackTrace.longestStack.getFromIndex(ruleWithPosition); i < extendedStackTrace.longestStack.getFromIndex(ruleWithPosition) + STACK_TRACE_RULE_STARTING_WITH_TOKENS && i < extendedStackTrace.longestStack.getToIndex(ruleWithPosition) && i < extendedStackTrace.longestParsingState.lexerSize; i++) {
       ruleBuilder.append(extendedStackTrace.longestParsingState.readToken(i).getValue());
       ruleBuilder.append(" ");
     }
 
     /* Display "..." if there are still more tokens available after the last one displayed before the toIndex */
-    if (i < ruleWithPosition.getToIndex() && i < extendedStackTrace.longestParsingState.lexerSize) {
+    if (i < extendedStackTrace.longestStack.getToIndex(ruleWithPosition) && i < extendedStackTrace.longestParsingState.lexerSize) {
       ruleBuilder.append("...");
     }
 
@@ -178,18 +178,18 @@ public final class ExtendedStackTraceStream {
     for (int i = extendedStackTrace.longestIndex - 1; i >= extendedStackTrace.longestIndex - LAST_SUCCESSFUL_TOKENS_WINDOW && i >= 0; i--) {
       Token token = extendedStackTrace.longestParsingState.readToken(i);
       stream.println("  \"" + token.getValue().replace("\"", "\\\"") + "\" at " + token.getLine() + ":" + token.getColumn()
-          + " consumed by " + getTokenConsumer(extendedStackTrace, i).getRule().getName());
+          + " consumed by " + getTokenConsumer(extendedStackTrace, i).getName());
     }
   }
   
-  private static RuleWithPosition getTokenConsumer(ExtendedStackTrace extendedStackTrace, int lexerIndex) {
-    for (RuleWithPosition ruleWithPosition : extendedStackTrace.longestStack) {
-      if (ruleWithPosition.getFromIndex() <= lexerIndex && lexerIndex < ruleWithPosition.getToIndex()) {
-        return ruleWithPosition;
+  private static RuleMatcher getTokenConsumer(ExtendedStackTrace extendedStackTrace, int lexerIndex) {
+    for (int i = 0; i < extendedStackTrace.longestStack.size(); i++) {
+      if (extendedStackTrace.longestStack.getFromIndex(i) <= lexerIndex && lexerIndex < extendedStackTrace.longestStack.getToIndex(i)) {
+        return extendedStackTrace.longestStack.getRule(i);
       }
     }
 
-    return null;
+    throw new IllegalStateException("No token consumer was found for lexerIndex = " + lexerIndex);
   }
   
 }
