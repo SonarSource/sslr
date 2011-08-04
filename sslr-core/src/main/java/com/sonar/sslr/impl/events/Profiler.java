@@ -11,12 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimaps;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MemoizedMatcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
@@ -65,15 +61,17 @@ public class Profiler extends ParsingEventListener {
     }
 
     private void addLookahead(int lookahead) {
-      if (lookahead > maxLookahead)
+      if (lookahead > maxLookahead) {
         maxLookahead = lookahead;
+      }
       totalLookaheads += lookahead;
       lookaheadsCounter++;
     }
 
     private void addBacktrackCpuTime(long cpuTime) {
-      if (cpuTime > maxBacktrackCpuTime)
+      if (cpuTime > maxBacktrackCpuTime) {
         maxBacktrackCpuTime = cpuTime;
+      }
       totalBacktracksCpuTime += cpuTime;
       backtracksCpuTimeCounter++;
     }
@@ -128,15 +126,17 @@ public class Profiler extends ParsingEventListener {
     private long start = 0L;
 
     private void start() {
-      if (this.isAborted)
+      if (this.isAborted) {
         throw new IllegalStateException();
+      }
       this.start = getCpuTime();
       this.isTiming = true;
     }
 
     private void stop() {
-      if ( !this.isTiming)
+      if (!this.isTiming) {
         throw new IllegalStateException();
+      }
       this.cpuTime += getCpuTime() - start;
       this.isTiming = false;
     }
@@ -161,8 +161,6 @@ public class Profiler extends ParsingEventListener {
   private Stack<Match> matches;
   private Timer lexerTimer;
   private Timer parserTimer;
-  private ListMultimap<Matcher, Integer> lastMatches;
-  private ListMultimap<Matcher, Integer> lastMismatches;
 
   public Profiler() {
     initialize();
@@ -174,8 +172,6 @@ public class Profiler extends ParsingEventListener {
     matches = new Stack<Match>();
     lexerTimer = new Timer();
     parserTimer = new Timer();
-    lastMatches = LinkedListMultimap.create();
-    lastMismatches = LinkedListMultimap.create();
   }
 
   @Override
@@ -217,7 +213,7 @@ public class Profiler extends ParsingEventListener {
     stopRecordingTime(rule);
   }
 
-  @Override
+	@Override
   public void memoizerHit(MemoizedMatcher matcher, ParsingState parsingState) {
     if (matcher instanceof RuleMatcher) {
       /* Match */
