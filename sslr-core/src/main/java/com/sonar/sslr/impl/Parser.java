@@ -94,44 +94,27 @@ public class Parser<GRAMMAR extends Grammar> {
   }
 
   public final AstNode parse(File file) {
-    throwBeginLexEvent();
+    fireBeginLexEvent();
     lexerOutput = lexer.lex(file);
-    throwEndLexEvent();
+    fireEndLexEvent();
     return parse(lexerOutput.getTokens());
   }
 
   public final AstNode parse(String source) {
-    throwBeginLexEvent();
+    fireBeginLexEvent();
     lexerOutput = lexer.lex(source);
-    throwEndLexEvent();
+    fireEndLexEvent();
     return parse(lexerOutput.getTokens());
   }
 
-  private final void throwEndLexEvent() {
-    if (parsingEventListeners != null) {
-      for (ParsingEventListener listener : this.parsingEventListeners) {
-        listener.endLex();
-      }
-    }
-  }
-
-  private final void throwBeginLexEvent() {
-    if (parsingEventListeners != null) {
-      for (ParsingEventListener listener : this.parsingEventListeners) {
-        listener.beginLex();
-      }
-    }
-  }
-
   public final AstNode parse(List<Token> tokens) {
-    parsingState = null;
-
-    beginParseEvent();
+    fireBeginParseEvent();
 
     try {
       parsingState = new ParsingState(tokens);
       parsingState.setListeners(listeners);
       parsingState.parsingEventListeners = parsingEventListeners;
+      rootRule.getRule().reinitializeMatcherTree();
       return rootRule.getRule().match(parsingState);
     } catch (BacktrackingEvent e) {
       if (parsingState != null) {
@@ -143,14 +126,27 @@ public class Parser<GRAMMAR extends Grammar> {
       throw new RecognitionException("The grammar seems to contain a left recursion which is not compatible with LL(*) parser.",
           parsingState, e);
     } finally {
-      rootRule.getRule().reinitializeMatcherTree();
-
-      endParseEvent();
+      fireEndParseEvent();
     }
-
+  }
+  
+  private final void fireBeginLexEvent() {
+    if (parsingEventListeners != null) {
+      for (ParsingEventListener listener : this.parsingEventListeners) {
+        listener.beginLex();
+      }
+    }
+  }
+  
+  private final void fireEndLexEvent() {
+    if (parsingEventListeners != null) {
+      for (ParsingEventListener listener : this.parsingEventListeners) {
+        listener.endLex();
+      }
+    }
   }
 
-  private final void endParseEvent() {
+  private final void fireEndParseEvent() {
     if (parsingEventListeners != null) {
       for (ParsingEventListener listener : this.parsingEventListeners) {
         listener.endParse();
@@ -158,7 +154,7 @@ public class Parser<GRAMMAR extends Grammar> {
     }
   }
 
-  private final void beginParseEvent() {
+  private final void fireBeginParseEvent() {
     if (parsingEventListeners != null) {
       for (ParsingEventListener listener : this.parsingEventListeners) {
         listener.beginParse();
