@@ -10,28 +10,33 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+import java.util.Stack;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.matcher.Matcher;
+import com.sonar.sslr.impl.matcher.MemoizedMatcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public final class CacheSimulator extends ParsingEventListener {
 	
 	private int maximalCacheSize = 50;
 	
-	private FastStackMatcherAndPosition currentStack = new FastStackMatcherAndPosition();
-	private ListMultimap<Matcher, Integer> matchesCache = LinkedListMultimap.create();
-	private ListMultimap<Matcher, Integer> mismatchesCache = LinkedListMultimap.create();
-	private HashMap<Matcher, HashSet<Integer>> matchesSet = new HashMap<Matcher, HashSet<Integer>>();
-	private HashMap<Matcher, HashSet<Integer>> mismatchesSet = new HashMap<Matcher, HashSet<Integer>>();
+	private final Stack<Integer> cacheSizeUpperBoundStack = new Stack<Integer>();
+	private final FastStackMatcherAndPosition currentStack = new FastStackMatcherAndPosition();
+	private final ListMultimap<Matcher, Integer> matchesCache = LinkedListMultimap.create();
+	private final ListMultimap<Matcher, Integer> mismatchesCache = LinkedListMultimap.create();
+	private final HashMap<Matcher, HashSet<Integer>> matchesSet = new HashMap<Matcher, HashSet<Integer>>();
+	private final HashMap<Matcher, HashSet<Integer>> mismatchesSet = new HashMap<Matcher, HashSet<Integer>>();
 	
 	private HashMap<Integer, Integer> matchesHits;
 	private HashMap<Integer, Integer> matchesMisses;
 	private HashMap<Integer, Integer> mismatchesHits;
 	private HashMap<Integer, Integer> mismatchesMisses;
+	private int currentMemoizerHits;
+	private int currentMemoizerMisses;
 	
 	public CacheSimulator() {
 		initialize();
@@ -47,6 +52,9 @@ public final class CacheSimulator extends ParsingEventListener {
 		initializeHashMap(matchesMisses);
 		initializeHashMap(mismatchesHits);
 		initializeHashMap(mismatchesMisses);
+		
+		currentMemoizerHits = 0;
+		currentMemoizerMisses = 0;
 	}
 	
 	private void initializeHashMap(HashMap<Integer, Integer> hashMap) {
@@ -69,39 +77,71 @@ public final class CacheSimulator extends ParsingEventListener {
 		set.add(fromIndex);
 	}
 	
-	private void lookupInCache(HashMap<Matcher, HashSet<Integer>> cacheSet, Matcher matcher, List<Integer> cache, HashMap<Integer, Integer> hit, HashMap<Integer, Integer> miss, int lexerIndex) {
+	private int getFirstHit(HashMap<Matcher, HashSet<Integer>> cacheSet, int cacheSizeUpperBound, Matcher matcher, List<Integer> cache, int lexerIndex) {
+		if (cacheSizeUpperBound <= 0) return -1;
+		if (!cacheSet.containsKey(matcher) || !cacheSet.get(matcher).contains(lexerIndex)) return -1;
+		
 		ListIterator<Integer> reverseIterator = cache.listIterator(cache.size());
 		
-		if (cacheSet.containsKey(matcher) && cacheSet.get(matcher).contains(lexerIndex)) {
-			Set<Integer> alreadyCounted = new HashSet<Integer>();
-			int cacheSize = 0;
-			while (reverseIterator.hasPrevious()) {
-				Integer cachedIndex = reverseIterator.previous();
+		Set<Integer> distinctCacheEntries = new HashSet<Integer>();
+		int cacheSize = 0;
+		while (reverseIterator.hasPrevious()) {
+			Integer cachedIndex = reverseIterator.previous();
 
-				if (alreadyCounted.contains(cachedIndex)) continue;
-				alreadyCounted.add(cachedIndex);
-				cacheSize++;
-				
-				if (cachedIndex == lexerIndex) {
-					incrementHashMap(hit, cacheSize);
-					return;
-				} else if (cacheSize == maximalCacheSize) {
-					/* The hit came from the full mode */
-					incrementHashMap(hit, maximalCacheSize + 1);
-					return;
-				}
-			}
+			if (!distinctCacheEntries.add(cachedIndex)) continue;
+			cacheSize++;
 			
-			throw new IllegalStateException("We should never get here, cacheSize = " + cacheSize + ", maximalCacheSize = " + maximalCacheSize);
+			if (cachedIndex == lexerIndex) {
+				/* Hit (else miss) */
+				return cacheSize;
+			} else if (cacheSize == maximalCacheSize) {
+				/* The first hit was from the full mode */
+				return maximalCacheSize + 1;
+			} else if (cacheSize == cacheSizeUpperBound) {
+				/* Not in cache */
+				return -1;
+			}
 		}
 		
-		/* Not found in cache */
-		incrementHashMap(miss, maximalCacheSize + 1);
+		/* Cache is larger than the number of attempts so far, and no match was found */
+		return -1;
 	}
 	
-	private void lookup(Matcher matcher, int lexerIndex) {
-		lookupInCache(matchesSet, matcher, matchesCache.get(matcher), matchesHits, matchesMisses, lexerIndex);
-		lookupInCache(mismatchesSet, matcher, mismatchesCache.get(matcher), mismatchesHits, mismatchesMisses, lexerIndex);
+	private int lookupInCaches(HashMap<Matcher, HashSet<Integer>> cacheSet, int cacheSizeUpperBound, Matcher matcher, List<Integer> cache, int lexerIndex, HashMap<Integer, Integer> hits, HashMap<Integer, Integer> misses) {
+		/* Compute the first hit */
+		int firstHit = getFirstHit(cacheSet, cacheSizeUpperBound, matcher, cache, lexerIndex);
+		
+		/* Report the misses */
+		if (firstHit == -1) {
+			for (int cacheSize = 1; cacheSize <= cacheSizeUpperBound; cacheSize++) {
+				incrementHashMap(misses, cacheSize);
+			}
+		} else {
+			for (int cacheSize = 1; cacheSize < firstHit; cacheSize++) {
+				incrementHashMap(misses, cacheSize);
+			}
+		}
+		
+		/* Report the hits */
+		if (firstHit != -1) {
+			for (int cacheSize = firstHit; cacheSize <= cacheSizeUpperBound; cacheSize++) {
+				incrementHashMap(hits, cacheSize);
+			}
+		}
+		
+		/* Return the new cache upper bound */
+		return (firstHit == -1) ? cacheSizeUpperBound : firstHit - 1;
+	}
+	
+	private int lookup(int cacheSizeUpperBound, Matcher matcher, int lexerIndex) {
+		int newUpperBound = lookupInCaches(matchesSet, cacheSizeUpperBound, matcher, matchesCache.get(matcher), lexerIndex, matchesHits, matchesMisses);
+
+		if (newUpperBound == cacheSizeUpperBound) {
+			/* No positive hit, perhaps there is a negative one */
+			newUpperBound = lookupInCaches(mismatchesSet, cacheSizeUpperBound, matcher, mismatchesCache.get(matcher), lexerIndex, mismatchesHits, mismatchesMisses);
+		}
+		
+		return newUpperBound;
 	}
 	
 	@Override
@@ -111,27 +151,32 @@ public final class CacheSimulator extends ParsingEventListener {
 		mismatchesCache.clear();
 		matchesSet.clear();
 		mismatchesSet.clear();
+		
+		/* Set the initial cache size upper bound to full mode */
+		cacheSizeUpperBoundStack.clear();
+		cacheSizeUpperBoundStack.push(maximalCacheSize + 1);
 	}
 	
 	@Override
 	public void endParse() {
-		System.out.println("Hits:");
-		for (int i = 1; i <= maximalCacheSize; i++) {
-			System.out.println("\t" + String.format("%4d", i) + ": " + String.format("%8d", matchesHits.get(i)) + " matches hits, " + String.format("%8d", mismatchesHits.get(i)) + " mismatches hits");
+		System.out.println("Statistics per cache size:");
+		for (int i = 1; i <= maximalCacheSize + 1; i++) {
+			System.out.println("\t" + ((i == maximalCacheSize + 1) ? "Full" : String.format("%4d", i)) + ": " + String.format("%10d", matchesHits.get(i)) + " matches hits, " + String.format("%10d", matchesMisses.get(i)) + " matches misses, " + String.format("%10d", matchesHits.get(i) + matchesMisses.get(i)) + " total, " + String.format("%10d", mismatchesHits.get(i)) + " mismatches hits, " + String.format("%10d", mismatchesMisses.get(i)) + " mismatches misses, " + String.format("%10d", mismatchesHits.get(i) + mismatchesMisses.get(i)) + " total");
 		}
-		System.out.println("\tFull: " + String.format("%8d", matchesHits.get(maximalCacheSize + 1)) + " matches hits, " + String.format("%8d", mismatchesHits.get(maximalCacheSize + 1)) + " mismatches hits");
-		System.out.println("Misses:");
-		System.out.println("\tFull: " + String.format("%8d", matchesMisses.get(maximalCacheSize + 1)) + " matches misses, " + String.format("%8d", mismatchesMisses.get(maximalCacheSize + 1)) + " mismatches misses");
+		System.out.println("Current memoizer: " + currentMemoizerHits + " hits, " + currentMemoizerMisses + " misses, total visited matchers = " + (currentMemoizerHits + currentMemoizerMisses));
 	}
 
 	@Override
 	public void enterRule(RuleMatcher rule, ParsingState parsingState) {
-		lookup(rule, parsingState.lexerIndex);
+		int newCacheSizeUpperBound = lookup(cacheSizeUpperBoundStack.peek(), rule, parsingState.lexerIndex);
+		cacheSizeUpperBoundStack.push(newCacheSizeUpperBound);
+		
 		currentStack.push(rule, parsingState.lexerIndex);
 	}
 
 	@Override
 	public void exitWithMatchRule(RuleMatcher rule, ParsingState parsingState, AstNode astNode) {
+		cacheSizeUpperBoundStack.pop();
 		int fromIndex = currentStack.peekFromIndex();
 		addToCacheSet(matchesSet, rule, fromIndex);
 		matchesCache.put(rule, fromIndex);
@@ -140,6 +185,7 @@ public final class CacheSimulator extends ParsingEventListener {
 
 	@Override
 	public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState) {
+		cacheSizeUpperBoundStack.pop();
 		int fromIndex = currentStack.peekFromIndex();
 		addToCacheSet(mismatchesSet, rule, fromIndex);
 		mismatchesCache.put(rule, fromIndex);
@@ -148,12 +194,15 @@ public final class CacheSimulator extends ParsingEventListener {
 
 	@Override
 	public void enterMatcher(Matcher matcher, ParsingState parsingState) {
-		lookup(matcher, parsingState.lexerIndex);
+		int newCacheSizeUpperBound = lookup(cacheSizeUpperBoundStack.peek(), matcher, parsingState.lexerIndex);
+		cacheSizeUpperBoundStack.push(newCacheSizeUpperBound);
+		
 		currentStack.push(matcher, parsingState.lexerIndex);
 	}
 
 	@Override
 	public void exitWithMatchMatcher(Matcher matcher, ParsingState parsingState, AstNode astNode) {
+		cacheSizeUpperBoundStack.pop();
 		int fromIndex = currentStack.peekFromIndex();
 		addToCacheSet(matchesSet, matcher, fromIndex);
 		matchesCache.put(matcher, fromIndex);
@@ -162,10 +211,21 @@ public final class CacheSimulator extends ParsingEventListener {
 
 	@Override
 	public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState) {
+		cacheSizeUpperBoundStack.pop();
 		int fromIndex = currentStack.peekFromIndex();
 		addToCacheSet(mismatchesSet, matcher, fromIndex);
 		mismatchesCache.put(matcher, fromIndex);
 		currentStack.pop();
+	}
+
+	@Override
+	public void memoizerHit(MemoizedMatcher matcher, ParsingState parsingState) {
+		currentMemoizerHits++;
+	}
+
+	@Override
+	public void memoizerMiss(MemoizedMatcher matcher, ParsingState parsingState) {
+		currentMemoizerMisses++;
 	}
 	
 }
