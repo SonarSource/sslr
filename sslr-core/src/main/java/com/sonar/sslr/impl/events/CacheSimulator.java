@@ -24,7 +24,8 @@ public final class CacheSimulator extends ParsingEventListener {
 	
 	private int maximalCacheSize = 50;
 	
-	private final Stack<Integer> cacheSizeUpperBoundStack = new Stack<Integer>();
+	private final Stack<Integer> cacheSizeUpperBoundStackPositive = new Stack<Integer>();
+	private final Stack<Integer> cacheSizeUpperBoundStackNegative = new Stack<Integer>();
 	private final FastStackMatcherAndPosition currentStack = new FastStackMatcherAndPosition();
 	private final ListMultimap<Matcher, Integer> matchesCache = LinkedListMultimap.create();
 	private final ListMultimap<Matcher, Integer> mismatchesCache = LinkedListMultimap.create();
@@ -133,17 +134,6 @@ public final class CacheSimulator extends ParsingEventListener {
 		return (firstHit == -1) ? cacheSizeUpperBound : firstHit - 1;
 	}
 	
-	private int lookup(int cacheSizeUpperBound, Matcher matcher, int lexerIndex) {
-		int newUpperBound = lookupInCaches(matchesSet, cacheSizeUpperBound, matcher, matchesCache.get(matcher), lexerIndex, matchesHits, matchesMisses);
-
-		if (newUpperBound == cacheSizeUpperBound) {
-			/* No positive hit, perhaps there is a negative one */
-			newUpperBound = lookupInCaches(mismatchesSet, cacheSizeUpperBound, matcher, mismatchesCache.get(matcher), lexerIndex, mismatchesHits, mismatchesMisses);
-		}
-		
-		return newUpperBound;
-	}
-	
 	@Override
 	public void beginParse() {
 		currentStack.clear();
@@ -153,8 +143,11 @@ public final class CacheSimulator extends ParsingEventListener {
 		mismatchesSet.clear();
 		
 		/* Set the initial cache size upper bound to full mode */
-		cacheSizeUpperBoundStack.clear();
-		cacheSizeUpperBoundStack.push(maximalCacheSize + 1);
+		cacheSizeUpperBoundStackPositive.clear();
+		cacheSizeUpperBoundStackPositive.push(maximalCacheSize + 1);
+		
+		cacheSizeUpperBoundStackNegative.clear();
+		cacheSizeUpperBoundStackNegative.push(maximalCacheSize + 1);
 	}
 	
 	@Override
@@ -168,24 +161,28 @@ public final class CacheSimulator extends ParsingEventListener {
 
 	@Override
 	public void enterRule(RuleMatcher rule, ParsingState parsingState) {
-		int newCacheSizeUpperBound = lookup(cacheSizeUpperBoundStack.peek(), rule, parsingState.lexerIndex);
-		cacheSizeUpperBoundStack.push(newCacheSizeUpperBound);
+		cacheSizeUpperBoundStackPositive.push(lookupInCaches(matchesSet, cacheSizeUpperBoundStackPositive.peek(), rule, matchesCache.get(rule), parsingState.lexerIndex, matchesHits, matchesMisses));
+		cacheSizeUpperBoundStackNegative.push(lookupInCaches(mismatchesSet, cacheSizeUpperBoundStackNegative.peek(), rule, mismatchesCache.get(rule), parsingState.lexerIndex, mismatchesHits, mismatchesMisses));
 		
 		currentStack.push(rule, parsingState.lexerIndex);
 	}
 
 	@Override
 	public void exitWithMatchRule(RuleMatcher rule, ParsingState parsingState, AstNode astNode) {
-		cacheSizeUpperBoundStack.pop();
-		int fromIndex = currentStack.peekFromIndex();
-		addToCacheSet(matchesSet, rule, fromIndex);
-		matchesCache.put(rule, fromIndex);
+		cacheSizeUpperBoundStackNegative.pop();
+		cacheSizeUpperBoundStackPositive.pop();
+		if (astNode != null) {
+			int fromIndex = currentStack.peekFromIndex();
+			addToCacheSet(matchesSet, rule, fromIndex);
+			matchesCache.put(rule, fromIndex);
+		}
 		currentStack.pop();
 	}
 
 	@Override
 	public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState) {
-		cacheSizeUpperBoundStack.pop();
+		cacheSizeUpperBoundStackNegative.pop();
+		cacheSizeUpperBoundStackPositive.pop();
 		int fromIndex = currentStack.peekFromIndex();
 		addToCacheSet(mismatchesSet, rule, fromIndex);
 		mismatchesCache.put(rule, fromIndex);
@@ -194,24 +191,28 @@ public final class CacheSimulator extends ParsingEventListener {
 
 	@Override
 	public void enterMatcher(Matcher matcher, ParsingState parsingState) {
-		int newCacheSizeUpperBound = lookup(cacheSizeUpperBoundStack.peek(), matcher, parsingState.lexerIndex);
-		cacheSizeUpperBoundStack.push(newCacheSizeUpperBound);
+		cacheSizeUpperBoundStackPositive.push(lookupInCaches(matchesSet, cacheSizeUpperBoundStackPositive.peek(), matcher, matchesCache.get(matcher), parsingState.lexerIndex, matchesHits, matchesMisses));
+		cacheSizeUpperBoundStackNegative.push(lookupInCaches(mismatchesSet, cacheSizeUpperBoundStackNegative.peek(), matcher, matchesCache.get(matcher), parsingState.lexerIndex, mismatchesHits, mismatchesMisses));
 		
 		currentStack.push(matcher, parsingState.lexerIndex);
 	}
 
 	@Override
 	public void exitWithMatchMatcher(Matcher matcher, ParsingState parsingState, AstNode astNode) {
-		cacheSizeUpperBoundStack.pop();
-		int fromIndex = currentStack.peekFromIndex();
-		addToCacheSet(matchesSet, matcher, fromIndex);
-		matchesCache.put(matcher, fromIndex);
+		cacheSizeUpperBoundStackNegative.pop();
+		cacheSizeUpperBoundStackPositive.pop();
+		if (astNode != null) {
+			int fromIndex = currentStack.peekFromIndex();
+			addToCacheSet(matchesSet, matcher, fromIndex);
+			matchesCache.put(matcher, fromIndex);
+		}
 		currentStack.pop();
 	}
 
 	@Override
 	public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState) {
-		cacheSizeUpperBoundStack.pop();
+		cacheSizeUpperBoundStackNegative.pop();
+		cacheSizeUpperBoundStackPositive.pop();
 		int fromIndex = currentStack.peekFromIndex();
 		addToCacheSet(mismatchesSet, matcher, fromIndex);
 		mismatchesCache.put(matcher, fromIndex);
