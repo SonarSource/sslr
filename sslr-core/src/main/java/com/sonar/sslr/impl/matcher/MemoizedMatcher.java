@@ -5,6 +5,8 @@ package com.sonar.sslr.impl.matcher;
  * mailto:contact AT sonarsource DOT com
  */
 
+// Initial memoizer strategy (1, from SSLR 1.4)
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
