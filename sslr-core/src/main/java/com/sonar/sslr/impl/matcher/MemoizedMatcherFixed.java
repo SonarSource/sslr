@@ -5,29 +5,27 @@ package com.sonar.sslr.impl.matcher;
  * mailto:contact AT sonarsource DOT com
  */
 
-// Full memoizer strategy (2)
+// Fixed array memoizer strategy (4)
 
-//import java.util.HashMap;
-//import java.util.HashSet;
-//import java.util.Map;
-//import java.util.Set;
-//
-//import com.sonar.sslr.api.AstNode;
-//import com.sonar.sslr.impl.BacktrackingEvent;
-//import com.sonar.sslr.impl.ParsingState;
-//import com.sonar.sslr.impl.events.ParsingEventListener;
-//
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.impl.BacktrackingEvent;
+import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.impl.events.ParsingEventListener;
+
 //public abstract class MemoizedMatcher extends Matcher {
 //	
+//	private static final int cacheSize = 5;
 //	private static final boolean enableNegativeMemoization = true;
-//
-//	private final Map<Integer, AstNode> memoizedAstNodes = new HashMap<Integer, AstNode>();
-//	private final Set<Integer> memoizedErrors = new HashSet<Integer>();
+//	
+//	private final AstNode memoizedAstNodes[] = new AstNode[cacheSize];
+//	private final int lastErrorIndexes[] = new int[cacheSize];
 //	
 //  @Override
 //  public void reinitialize() {
-//  	memoizedAstNodes.clear();
-//  	memoizedErrors.clear();
+//  	for (int i = 0; i < cacheSize; i++) {
+//  		memoizedAstNodes[i] = null;
+//  		lastErrorIndexes[i] = -1;
+//  	}
 //  }
 //	
 //  public MemoizedMatcher(Matcher... children) {
@@ -76,23 +74,37 @@ package com.sonar.sslr.impl.matcher;
 //  }
 //
 //  private final void memoizeAst(ParsingState parsingState, AstNode astNode) {
-//    memoizedAstNodes.put(astNode.getFromIndex(), astNode);
+//  	for (int i = cacheSize - 1; i >= 1; i--) {
+//  		memoizedAstNodes[i] = memoizedAstNodes[i - 1];
+//  	}
+//  	memoizedAstNodes[0] = astNode;
 //  }
 //  
 //  private final void memoizeError(ParsingState parsingState, int startingIndex) {
-//  	memoizedErrors.add(startingIndex);
+//  	for (int i = cacheSize - 1; i >= 1; i--) {
+//  		lastErrorIndexes[i] = lastErrorIndexes[i - 1];
+//  	}
+//  	lastErrorIndexes[0] = startingIndex;
 //  }
 //
 //  private final AstNode getMemoizedAst(ParsingState parsingState) {
 //  	if (parsingState.hasPendingLeftRecursion()) return null;
 //  	
 //  	if (enableNegativeMemoization) {
-//	  	if (memoizedErrors.contains(parsingState.lexerIndex)) {
-//	  		throw BacktrackingEvent.create();
+//	  	for (int i = 0; i < cacheSize; i++) {
+//	  		if (parsingState.lexerIndex == lastErrorIndexes[i]) {
+//	  			throw BacktrackingEvent.create();
+//	  		}
 //	  	}
 //  	}
 //  	
-//    return memoizedAstNodes.get(parsingState.lexerIndex);
+//    for (int i = 0; i < cacheSize; i++) {
+//    	if (memoizedAstNodes[i] != null && parsingState.lexerIndex == memoizedAstNodes[i].getFromIndex()) {
+//    		return memoizedAstNodes[i];
+//    	}
+//    }
+//    
+//    return null;
 //  }
 //
 //  protected abstract AstNode matchWorker(ParsingState parsingState);

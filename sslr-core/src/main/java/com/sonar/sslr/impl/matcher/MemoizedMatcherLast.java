@@ -5,13 +5,8 @@ package com.sonar.sslr.impl.matcher;
  * mailto:contact AT sonarsource DOT com
  */
 
-// Full memoizer strategy (2)
+// Last only memoizer strategy (3)
 
-//import java.util.HashMap;
-//import java.util.HashSet;
-//import java.util.Map;
-//import java.util.Set;
-//
 //import com.sonar.sslr.api.AstNode;
 //import com.sonar.sslr.impl.BacktrackingEvent;
 //import com.sonar.sslr.impl.ParsingState;
@@ -21,13 +16,13 @@ package com.sonar.sslr.impl.matcher;
 //	
 //	private static final boolean enableNegativeMemoization = true;
 //
-//	private final Map<Integer, AstNode> memoizedAstNodes = new HashMap<Integer, AstNode>();
-//	private final Set<Integer> memoizedErrors = new HashSet<Integer>();
+//	private AstNode memoizedAstNode;
+//	private int lastErrorIndex;
 //	
 //  @Override
 //  public void reinitialize() {
-//  	memoizedAstNodes.clear();
-//  	memoizedErrors.clear();
+//  	memoizedAstNode = null;
+//  	lastErrorIndex = -1;
 //  }
 //	
 //  public MemoizedMatcher(Matcher... children) {
@@ -76,23 +71,23 @@ package com.sonar.sslr.impl.matcher;
 //  }
 //
 //  private final void memoizeAst(ParsingState parsingState, AstNode astNode) {
-//    memoizedAstNodes.put(astNode.getFromIndex(), astNode);
+//    memoizedAstNode = astNode;
 //  }
 //  
 //  private final void memoizeError(ParsingState parsingState, int startingIndex) {
-//  	memoizedErrors.add(startingIndex);
+//  	lastErrorIndex = startingIndex;
 //  }
 //
 //  private final AstNode getMemoizedAst(ParsingState parsingState) {
 //  	if (parsingState.hasPendingLeftRecursion()) return null;
 //  	
 //  	if (enableNegativeMemoization) {
-//	  	if (memoizedErrors.contains(parsingState.lexerIndex)) {
+//	  	if (parsingState.lexerIndex == lastErrorIndex) {
 //	  		throw BacktrackingEvent.create();
 //	  	}
 //  	}
 //  	
-//    return memoizedAstNodes.get(parsingState.lexerIndex);
+//    return (memoizedAstNode != null && parsingState.lexerIndex == memoizedAstNode.getFromIndex()) ? memoizedAstNode : null;
 //  }
 //
 //  protected abstract AstNode matchWorker(ParsingState parsingState);
