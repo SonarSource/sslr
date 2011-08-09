@@ -18,7 +18,7 @@ import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.TokenMatcher;
 import com.sonar.sslr.impl.matcher.TokenValueMatcher;
 
-public final class AutoCompletion extends ParsingEventListener {
+public final class AutoCompleter extends ParsingEventListener {
 
   private static final int maxTokens = 5;
   
@@ -36,15 +36,15 @@ public final class AutoCompletion extends ParsingEventListener {
     }
   }
   
-  public AutoCompletion(Matcher matcher) {
+  public AutoCompleter(Matcher matcher) {
     this(matcher, new ArrayList<Token>());
   }
   
-  public AutoCompletion(Matcher matcher, List<Token> tokens) {
+  public AutoCompleter(Matcher matcher, List<Token> tokens) {
     this(matcher, tokens, maxTokens);
   }
   
-  public AutoCompletion(Matcher matcher, List<Token> tokens, int maxTokens) {
+  public AutoCompleter(Matcher matcher, List<Token> tokens, int maxTokens) {
     this.matcher = matcher;
     this.maxLength = tokens.size() + maxTokens;
     this.prefixes.add(tokens);
@@ -107,7 +107,7 @@ public final class AutoCompletion extends ParsingEventListener {
 	
 	public static void main(String[] args) {
 	  
-	  AutoCompletion auto = new AutoCompletion(
+	  AutoCompleter auto = new AutoCompleter(
 	      and("hello", or("Foo", "Bar"))
 	  );
 	  
