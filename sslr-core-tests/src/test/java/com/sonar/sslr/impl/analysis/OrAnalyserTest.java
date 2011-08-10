@@ -6,20 +6,12 @@
 package com.sonar.sslr.impl.analysis;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.GenericTokenType;
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 
