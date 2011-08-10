@@ -192,7 +192,7 @@ public class OrAnalyserTest {
         }
       }
       if (!found) {
-        throw new AssertionError("Expected an prefix violation for the matcher " + MatcherTreePrinter.print(prefixAlternative));
+        throw new AssertionError("Expected a prefix violation for the matcher " + MatcherTreePrinter.print(prefixAlternative));
       }
     }
     
@@ -205,7 +205,7 @@ public class OrAnalyserTest {
         }
       }
       if (!found) {
-        throw new AssertionError("Expected an potential prefix violation for the matcher " + MatcherTreePrinter.print(potentialPrefixAlternative));
+        throw new AssertionError("Expected a potential prefix violation for the matcher " + MatcherTreePrinter.print(potentialPrefixAlternative));
       }
     }
     
