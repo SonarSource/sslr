@@ -63,6 +63,10 @@ public final class AutoCompleter extends ParsingEventListener {
     autoComplete(matcher, new LinkedList<Token>());
   }
   
+  public void autoComplete(Matcher matcher, int maxTokens) {
+    autoComplete(matcher, new LinkedList<Token>(), maxTokens);
+  }
+  
   public void autoComplete(Matcher matcher, List<Token> tokens) {
     autoComplete(matcher, tokens, maxTokens);
   }

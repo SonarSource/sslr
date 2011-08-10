@@ -18,12 +18,23 @@ import com.sonar.sslr.impl.matcher.RuleMatcher;
 public class OrAnalyser {
   
   public static final String PREFIX_EXAMPLE = "OrAnalyser.PREFIX_EXAMPLE";
+  public static final int DEFAULT_MAX_TOKENS = 3;
+  
+  private final int maxTokens;
   
   private RuleMatcher currentRule;
   
   private LinkedList<Violation> emptyAlternativeViolations;
   private LinkedList<Violation> prefixAlternativeViolations;
   private LinkedList<Violation> potentialPrefixAlternativeViolations;
+  
+  public OrAnalyser() {
+    this(DEFAULT_MAX_TOKENS);
+  }
+  
+  public OrAnalyser(int maxTokens) {
+    this.maxTokens = maxTokens;
+  }
   
   private boolean tokenEquals(Token token1, Token token2) {
     if (!token1.getType().equals(token2.getType())) return false;
@@ -91,7 +102,7 @@ public class OrAnalyser {
       List<List<List<Token>>> alternativesPartialMatches = new LinkedList<List<List<Token>>>();
       AutoCompleter autoCompleter = new AutoCompleter();
       for (Matcher alternative: matcher.children) {
-        autoCompleter.autoComplete(alternative);
+        autoCompleter.autoComplete(alternative, maxTokens);
         List<List<Token>> fullMatches = autoCompleter.getFullMatches();
         List<List<Token>> partialMatches = autoCompleter.getPartialMatches();
 
