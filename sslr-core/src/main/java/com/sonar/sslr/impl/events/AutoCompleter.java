@@ -18,8 +18,8 @@ public final class AutoCompleter extends ParsingEventListener {
 
   private static final int maxTokens = 5;
   
-  private final List<List<Token>> partialMatches = new LinkedList<List<Token>>();
-  private final List<List<Token>> fullMatches = new LinkedList<List<Token>>();
+  private List<List<Token>> partialMatches;
+  private List<List<Token>> fullMatches;
   private final Set<TokenMatcher> followingTokenMatchers = new HashSet<TokenMatcher>();
   
   private int maxLength;
@@ -68,10 +68,11 @@ public final class AutoCompleter extends ParsingEventListener {
   }
 
   public void autoComplete(Matcher matcher, List<Token> tokens, int maxTokens) {
+    this.partialMatches = new LinkedList<List<Token>>();
+    this.fullMatches = new LinkedList<List<Token>>();
+    
     this.maxLength = tokens.size() + maxTokens;
     this.prefixes.clear();
-    this.partialMatches.clear();
-    this.fullMatches.clear();
     this.prefixes.add(tokens);
     predicateLevel = 0;
     
