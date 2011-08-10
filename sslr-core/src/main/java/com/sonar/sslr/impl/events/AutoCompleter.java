@@ -32,10 +32,9 @@ public final class AutoCompleter extends ParsingEventListener {
   
   private Token tokenMatcherToToken(TokenMatcher tokenMatcher) {
     if (tokenMatcher instanceof TokenValueMatcher) {
-      String value = tokenMatcher.toString();
-      value = value.substring(1);
-      value = value.substring(0, value.length() - 1);
-      return new Token(GenericTokenType.LITERAL, value);
+      return new Token(GenericTokenType.LITERAL, ((TokenValueMatcher)tokenMatcher).getTokenValue());
+    } else if (tokenMatcher instanceof TokenTypeMatcher) {
+      return new Token(((TokenTypeMatcher)tokenMatcher).getType(), ((TokenTypeMatcher)tokenMatcher).getType().getValue());
     } else {
       throw new UnsupportedOperationException("tokenMatcherToToken() does not handle class " + tokenMatcher.getClass());
     }

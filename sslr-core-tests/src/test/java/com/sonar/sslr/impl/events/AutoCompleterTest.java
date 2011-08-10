@@ -15,7 +15,9 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
 
+import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.TokenType;
 
 public class AutoCompleterTest {
   
@@ -149,6 +151,57 @@ public class AutoCompleterTest {
     );
     
     assertMatches(auto, new String[][]{ { "foo" } }, new String[][]{});
+  }
+  
+  @Test
+  public void testCaseTokenValueWithDouleQuotes() {
+    AutoCompleter auto = new AutoCompleter();
+    
+    auto.autoComplete(
+        and("fail\"")
+    );
+    
+    assertMatches(auto, new String[][]{ { "fail\"" } }, new String[][]{});
+  }
+  
+  private enum MyTokenType implements TokenType {
+    ADD("+"), SUB("-");
+    
+    private String value;
+    
+    private MyTokenType(String value) {
+      this.value = value;
+    }
+    
+    public String getName() {
+      return name();
+    }
+
+    public String getValue() {
+      return value;
+    }
+
+    public boolean hasToBeSkippedFromAst(AstNode node) {
+      return false;
+    }
+    
+  }
+  
+  @Test
+  public void testCaseTokenType() {
+    AutoCompleter auto = new AutoCompleter();
+    
+    auto.autoComplete(
+        and(
+            or(
+                MyTokenType.ADD,
+                MyTokenType.SUB
+            ),
+            "number"
+        )
+    );
+    
+    assertMatches(auto, new String[][]{ { "+", "number" }, { "-", "number" } }, new String[][]{});
   }
   
   private void assertMatches(AutoCompleter auto, String[][] fullMatches, String[][] partialMatches) {
