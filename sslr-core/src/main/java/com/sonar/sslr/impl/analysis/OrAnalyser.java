@@ -17,7 +17,6 @@ import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class OrAnalyser {
   
-  public static final String PREFIX_ALTERNATIVE_INDEX = "OrAnalyser.PREFIX_ALTERNATIVE_INDEX";
   public static final String PREFIX_EXAMPLE = "OrAnalyser.PREFIX_EXAMPLE";
   
   private RuleMatcher currentRule;
@@ -104,7 +103,7 @@ public class OrAnalyser {
         /* Is any previous alternative full matches prefix of the current full prefixes? */
         PrefixResult prefixResult = getAnyNonEmptyPrefix(alternativesFullMatches, fullMatches);
         if (prefixResult != null) {
-          prefixAlternativeViolations.add(new Violation(alternative, currentRule, ViolationSeverity.ERROR, matcher).addOrReplaceProperty(PREFIX_ALTERNATIVE_INDEX, prefixResult.i).addOrReplaceProperty(PREFIX_EXAMPLE, prefixResult.prefix));
+          prefixAlternativeViolations.add(new Violation(alternative, currentRule, ViolationSeverity.ERROR, matcher, matcher.children[prefixResult.i]).addOrReplaceProperty(PREFIX_EXAMPLE, prefixResult.prefix));
         }
         
         /* (if not in the case above) Is any previous alternative full or partial matches prefix of the current full or partial prefixes? */
@@ -118,7 +117,7 @@ public class OrAnalyser {
           }
           
           if (prefixResult != null) {
-            potentialPrefixAlternativeViolations.add(new Violation(alternative, currentRule, ViolationSeverity.WARNING, matcher).addOrReplaceProperty(PREFIX_ALTERNATIVE_INDEX, prefixResult.i).addOrReplaceProperty(PREFIX_EXAMPLE, prefixResult.prefix));
+            potentialPrefixAlternativeViolations.add(new Violation(alternative, currentRule, ViolationSeverity.WARNING, matcher, matcher.children[prefixResult.i]).addOrReplaceProperty(PREFIX_EXAMPLE, prefixResult.prefix));
           }
         }
         

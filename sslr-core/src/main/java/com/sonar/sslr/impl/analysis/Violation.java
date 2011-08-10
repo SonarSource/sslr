@@ -75,13 +75,13 @@ public class Violation {
   }
   
   /**
-   * @return the  related matcher at index n (or throws an IllegalStateException if no such related matcher exists)
+   * @return the related matcher at index n (or null if no such matcher exists)
    */
   public Matcher getRelatedMatcher(int n) {
     try {
       return relatedMatchers[n];
     } catch (ArrayIndexOutOfBoundsException e) {
-      throw new IllegalStateException("Unable to get the related matcher at index " + n + ", only " + relatedMatchers.length + " related matchers exist.", e);
+      return null;
     }
   }
   
