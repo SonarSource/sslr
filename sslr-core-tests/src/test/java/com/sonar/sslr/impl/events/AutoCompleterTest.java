@@ -8,6 +8,7 @@ package com.sonar.sslr.impl.events;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.*;
@@ -16,6 +17,7 @@ import static org.hamcrest.Matchers.is;
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 
@@ -202,6 +204,79 @@ public class AutoCompleterTest {
     );
     
     assertMatches(auto, new String[][]{ { "+", "number" }, { "-", "number" } }, new String[][]{});
+  }
+  
+  @Test
+  public void testCasePartial1() {
+    AutoCompleter auto = new AutoCompleter();
+    
+    ArrayList<Token> tokens = new ArrayList<Token>();
+    tokens.add(new Token(GenericTokenType.LITERAL, "token1"));
+    tokens.add(new Token(GenericTokenType.LITERAL, "token2"));
+    tokens.add(new Token(GenericTokenType.LITERAL, "token4"));
+    
+    auto.autoComplete(
+        and(
+            "token1",
+            "token2",
+            or(
+                "token3",
+                "token4"
+            ),
+            opt("detect")
+        ),
+        tokens
+    );
+    
+    assertMatches(auto, new String[][]{ { "token1", "token2", "token4" } }, new String[][]{});
+  }
+  
+  @Test
+  public void testCasePartial2() {
+    AutoCompleter auto = new AutoCompleter();
+    
+    ArrayList<Token> tokens = new ArrayList<Token>();
+    tokens.add(new Token(GenericTokenType.LITERAL, "token1"));
+    tokens.add(new Token(GenericTokenType.LITERAL, "token2"));
+    
+    auto.autoComplete(
+        and(
+            "token1",
+            "token2",
+            or(
+                "token3",
+                "token4"
+            ),
+            opt("detect")
+        ),
+        tokens
+    );
+    
+    assertMatches(auto, new String[][]{ { "token1", "token2", "token3" }, { "token1", "token2", "token4" } }, new String[][]{});
+  }
+  
+  @Test
+  public void testCasePartial3() {
+    AutoCompleter auto = new AutoCompleter();
+    
+    ArrayList<Token> tokens = new ArrayList<Token>();
+    tokens.add(new Token(GenericTokenType.LITERAL, "token1"));
+    tokens.add(new Token(GenericTokenType.LITERAL, "token2"));
+    
+    auto.autoComplete(
+        and(
+            "token1",
+            "token2",
+            or(
+                "token3",
+                "token4"
+            ),
+            one2n("detect")
+        ),
+        tokens
+    );
+    
+    assertMatches(auto, new String[][]{ { "token1", "token2", "token3", "detect" }, { "token1", "token2", "token4", "detect" } }, new String[][]{});
   }
   
   private void assertMatches(AutoCompleter auto, String[][] fullMatches, String[][] partialMatches) {
