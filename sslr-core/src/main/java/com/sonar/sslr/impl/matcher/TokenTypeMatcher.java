@@ -21,6 +21,10 @@ public class TokenTypeMatcher extends TokenMatcher {
     super(hasToBeSkippedFromAst);
     this.type = type;
   }
+  
+  public TokenType getType() {
+    return type;
+  }
 
   @Override
   protected final boolean isExpectedToken(Token token) {
