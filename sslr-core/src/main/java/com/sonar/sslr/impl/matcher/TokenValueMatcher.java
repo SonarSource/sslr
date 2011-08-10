@@ -20,6 +20,10 @@ public class TokenValueMatcher extends TokenMatcher {
     super(hasToBeSkippedFromAst);
     this.tokenValue = tokenValue;
   }
+  
+  public String getTokenValue() {
+    return tokenValue;
+  }
 
   @Override
   protected final boolean isExpectedToken(Token token) {
