@@ -5,9 +5,6 @@
  */
 package com.sonar.sslr.impl.events;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.*;
-
 import java.util.*;
 
 import com.sonar.sslr.api.AstNode;
@@ -74,6 +71,8 @@ public final class AutoCompleter extends ParsingEventListener {
   public void autoComplete(Matcher matcher, List<Token> tokens, int maxTokens) {
     this.maxLength = tokens.size() + maxTokens;
     this.prefixes.clear();
+    this.partialMatches.clear();
+    this.fullMatches.clear();
     this.prefixes.add(tokens);
     predicateLevel = 0;
     
@@ -114,37 +113,13 @@ public final class AutoCompleter extends ParsingEventListener {
       prefixes = newPrefixes;
     }
 	}
-	
-	public static void main(String[] args) {
-	  
-	  AutoCompleter auto = new AutoCompleter();
-	  
-	  auto.autoComplete(
-	       or(
-	           "fail",
-	           and("fail", "ure")
-	         )    
-	  );
-
-    System.out.println("Full matches:");
-    for (List<Token> tokens: auto.fullMatches) {
-      System.out.print(" - ");
-      for (Token token: tokens) {
-        System.out.print(token.getValue() + " ");
-      }
-      System.out.println();
-    }
-    System.out.println();
-    
-    System.out.println("Partial matches:");
-    for (List<Token> tokens: auto.partialMatches) {
-      System.out.print(" - ");
-      for (Token token: tokens) {
-        System.out.print(token.getValue() + " ");
-      }
-      System.out.println();
-    }
-    
-	}
+  
+  public List<List<Token>> getFullMatches() {
+    return fullMatches;
+  }
+  
+  public List<List<Token>> getPartialMatches() {
+    return partialMatches;
+  }
 	
 }
