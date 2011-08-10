@@ -60,7 +60,7 @@ public final class AutoCompleter extends ParsingEventListener {
   }
   
   public void autoComplete(Matcher matcher) {
-    autoComplete(matcher, new ArrayList<Token>());
+    autoComplete(matcher, new LinkedList<Token>());
   }
   
   public void autoComplete(Matcher matcher, List<Token> tokens) {
