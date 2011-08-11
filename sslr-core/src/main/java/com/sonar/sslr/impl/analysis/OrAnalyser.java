@@ -151,7 +151,7 @@ public class OrAnalyser {
     RuleMatcher previousRule = null;
     if (rootMatcher instanceof RuleMatcher) {
       previousRule = currentRule;
-      currentRule = (RuleMatcher)currentRule;
+      currentRule = (RuleMatcher)rootMatcher;
     }
     
     analyse(rootMatcher);
