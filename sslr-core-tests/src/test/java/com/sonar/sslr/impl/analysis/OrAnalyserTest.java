@@ -120,7 +120,7 @@ public class OrAnalyserTest {
         )
     );
     
-    assertHasViolations(orAnalyser, new Matcher[]{}, new Matcher[]{}, new Matcher[]{ alt2 });
+    assertHasViolations(orAnalyser, new Matcher[]{}, new Matcher[]{ alt2 }, new Matcher[]{});
   }
   
   @Test
@@ -154,7 +154,75 @@ public class OrAnalyserTest {
         )
     );
     
-    assertHasViolations(orAnalyser, new Matcher[]{}, new Matcher[]{}, new Matcher[]{ alt2 });
+    assertHasViolations(orAnalyser, new Matcher[]{}, new Matcher[]{ alt2 }, new Matcher[]{});
+  }
+  
+  @Test
+  public void testCasePotentialSingleViolation() {
+    OrAnalyser orAnalyser = new OrAnalyser();
+    
+    Matcher alt1 = opt("hello");
+    Matcher alt2 = and("hello", "world");
+    
+    orAnalyser.analyseMatcherTree(
+        or(
+            alt1,
+            alt2
+        )
+    );
+    
+    assertHasViolations(orAnalyser, new Matcher[]{ alt1 }, new Matcher[]{}, new Matcher[]{});
+  }
+  
+  @Test
+  public void testCasePotentialSinglePrefixOneToken() {
+    OrAnalyser orAnalyser = new OrAnalyser();
+    
+    Matcher alt1 = or("hello", "world");
+    Matcher alt2 = or(and("hello", "un"), and("world", "deux"));
+    
+    orAnalyser.analyseMatcherTree(
+        or(
+            alt1,
+            alt2
+        )
+    );
+    
+    assertHasViolations(orAnalyser, new Matcher[]{}, new Matcher[]{ alt2 }, new Matcher[]{});
+  }
+  
+  @Test
+  public void testCasePotentialSinglePrefixOneOrTwoTokens() {
+    OrAnalyser orAnalyser = new OrAnalyser();
+    
+    Matcher alt1 = or("hello", and("world", "deux"));
+    Matcher alt2 = or(and("hello", "un"), and("world", "deux"));
+    
+    orAnalyser.analyseMatcherTree(
+        or(
+            alt1,
+            alt2
+        )
+    );
+    
+    assertHasViolations(orAnalyser, new Matcher[]{}, new Matcher[]{ alt2 }, new Matcher[]{});
+  }
+  
+  @Test
+  public void testCasePotentialSinglePrefixTwoTokens() {
+    OrAnalyser orAnalyser = new OrAnalyser();
+    
+    Matcher alt1 = or(and("hello", "un"), and("world", "deux"));
+    Matcher alt2 = or(and("hello", "un", "a"), and("world", "deux", "b"));
+    
+    orAnalyser.analyseMatcherTree(
+        or(
+            alt1,
+            alt2
+        )
+    );
+    
+    assertHasViolations(orAnalyser, new Matcher[]{}, new Matcher[]{ alt2 }, new Matcher[]{});
   }
   
   private void assertHasViolations(OrAnalyser orAnalyser, Matcher[] emptyAlternatives, Matcher[] prefixAlternatives, Matcher[] potentialPrefixAlternatives) {

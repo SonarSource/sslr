@@ -66,7 +66,7 @@ public final class OrAnalyserStream {
   
   private static void printViolations(List<Violation> violations, PrintStream stream) {
     for (Violation violation: violations) {
-      stream.println(" Violation severity: " + violation.getSeverity());
+      stream.println(" Violation severity: " + violation.getConfidence());
       stream.println(" In rule: " + ((violation.getParentRule() == null) ? "[Not Available]" : violation.getParentRule().getName()));
       stream.println(" On or matcher: " + MatcherTreePrinter.print(violation.getRelatedMatcher(0)));
       stream.println(" On alternative: " + MatcherTreePrinter.print(violation.getAffectedMatcher()));

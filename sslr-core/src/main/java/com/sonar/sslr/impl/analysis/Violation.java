@@ -14,7 +14,7 @@ public class Violation {
 
   private final Matcher affectedMatcher;
   private final RuleMatcher parentRule;
-  private final ViolationSeverity severity;
+  private final ViolationConfidence confidence;
   private final Matcher[] relatedMatchers;
   private final HashMap<String, Object> propertyBag = new HashMap<String, Object>();
   
@@ -23,17 +23,17 @@ public class Violation {
   }
   
   public Violation(Matcher affectedMatcher, RuleMatcher parentRule) {
-    this(affectedMatcher, parentRule, ViolationSeverity.ERROR, new Matcher[]{});
+    this(affectedMatcher, parentRule, ViolationConfidence.LOW, new Matcher[]{});
   }
   
-  public Violation(Matcher affectedMatcher, RuleMatcher parentRule, ViolationSeverity severity) {
-    this(affectedMatcher, parentRule, severity, new Matcher[]{});
+  public Violation(Matcher affectedMatcher, RuleMatcher parentRule, ViolationConfidence confidence) {
+    this(affectedMatcher, parentRule, confidence, new Matcher[]{});
   }
   
-  public Violation(Matcher affectedMatcher, RuleMatcher parentRule, ViolationSeverity severity, Matcher... relatedMatchers) {
+  public Violation(Matcher affectedMatcher, RuleMatcher parentRule, ViolationConfidence confidence, Matcher... relatedMatchers) {
     this.affectedMatcher = affectedMatcher;
     this.parentRule = parentRule;
-    this.severity = severity;
+    this.confidence = confidence;
     this.relatedMatchers = relatedMatchers;
   }
   
@@ -61,10 +61,10 @@ public class Violation {
   }
   
   /**
-   * @return the severity
+   * @return the confidence
    */
-  public ViolationSeverity getSeverity() {
-    return severity;
+  public ViolationConfidence getConfidence() {
+    return confidence;
   }
   
   /**

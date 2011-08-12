@@ -8,7 +8,10 @@ package com.sonar.sslr.impl.analysis;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.events.AutoCompleter;
 import com.sonar.sslr.impl.matcher.Matcher;
@@ -18,7 +21,7 @@ import com.sonar.sslr.impl.matcher.RuleMatcher;
 public class OrAnalyser {
   
   public static final String PREFIX_EXAMPLE = "OrAnalyser.PREFIX_EXAMPLE";
-  public static final int DEFAULT_MAX_TOKENS = 3;
+  public static final int DEFAULT_MAX_TOKENS = 5;
   
   private final int maxTokens;
   
@@ -42,12 +45,11 @@ public class OrAnalyser {
     return token1.getValue().equals(token2.getValue());
   }
   
-  private boolean isNonEmptyPrefix(List<Token> list1, List<Token> list2) {
-    if (list1.isEmpty()) return false;
-    if (list1.size() > list2.size()) return false;
+  private boolean isPrefix(List<Token> prefix, List<Token> subject) {
+    if (prefix.size() > subject.size()) return false;
     
-    for (int i = 0; i < list1.size(); i++) {
-      if (!tokenEquals(list1.get(i), list2.get(i))) return false;
+    for (int i = 0; i < prefix.size(); i++) {
+      if (!tokenEquals(prefix.get(i), subject.get(i))) return false;
     }
     
     return true;
@@ -61,30 +63,93 @@ public class OrAnalyser {
     return false;
   }
   
-  private class PrefixResult {
-    
-    public int i;
-    public List<Token> prefix;
-    
-  }
-  
-  private PrefixResult getAnyNonEmptyPrefix(List<List<List<Token>>> allPrefixes, List<List<Token>> subjects) {
+  private List<Token> getOnePrefix(List<List<Token>> prefixes, List<List<Token>> subjects) {
     for (List<Token> subject: subjects) {
-      for (int i = 0; i < allPrefixes.size(); i++) {
-        List<List<Token>> prefixes = allPrefixes.get(i);
-        
-        for (List<Token> prefix: prefixes) {
-          if (isNonEmptyPrefix(prefix, subject)) {
-            PrefixResult result = new PrefixResult();
-            result.i = i;
-            result.prefix = prefix;
-            return result;
-          }
+      for (List<Token> prefix: prefixes) {
+        if (isPrefix(prefix, subject)) {
+          return prefix;
         }
       }
     }
     
     return null;
+  }
+  
+  private void handleEmptyPrefixes(OrMatcher orMatcher, ListMultimap<Integer, List<Token>> fullMatches, ListMultimap<Integer, List<Token>> partialMatches) {
+    for (int alternativeIndex = 0; alternativeIndex < orMatcher.children.length; alternativeIndex++) {
+      List<List<Token>> prefixes = fullMatches.get(alternativeIndex);
+      if (prefixes == null) {
+        continue;
+      }
+      
+      if (canMatchEmptyString(prefixes)) {
+        emptyAlternativeViolations.add(new Violation(orMatcher.children[alternativeIndex], currentRule, ViolationConfidence.SURE, orMatcher));
+        fullMatches.removeAll(alternativeIndex);
+        partialMatches.removeAll(alternativeIndex);
+      }
+    }
+  }
+  
+  private void handlePrefixes(OrMatcher orMatcher, ListMultimap<Integer, List<Token>> prefixesForAllAlternatives, ListMultimap<Integer, List<Token>> subjectsForAllAlternatives, List<Violation> violationsList, ViolationConfidence violationConfidence, ListMultimap<Integer, List<Token>> otherPrefixesToDeleteFrom) {
+    for (int alternativeIndex = 0; alternativeIndex < orMatcher.children.length; alternativeIndex++) {
+      List<List<Token>> subjects = subjectsForAllAlternatives.get(alternativeIndex);
+      if (subjects == null) {
+        continue;
+      }
+      
+      for (int prefixingAlternativeIndex = 0; prefixingAlternativeIndex < alternativeIndex; prefixingAlternativeIndex++) {
+        List<List<Token>> prefixes = prefixesForAllAlternatives.get(prefixingAlternativeIndex);
+        if (prefixes == null) {
+          continue;
+        }
+        
+        List<Token> prefixExample = getOnePrefix(prefixes, subjects);
+        if (prefixExample != null) {
+          violationsList.add(new Violation(orMatcher.children[alternativeIndex], currentRule, violationConfidence, orMatcher, orMatcher.children[prefixingAlternativeIndex]).addOrReplaceProperty(PREFIX_EXAMPLE, prefixExample));
+          prefixesForAllAlternatives.removeAll(alternativeIndex);
+          if (prefixesForAllAlternatives != subjectsForAllAlternatives) subjectsForAllAlternatives.removeAll(alternativeIndex);
+          if (otherPrefixesToDeleteFrom != null) otherPrefixesToDeleteFrom.removeAll(alternativeIndex);
+          break;
+        }
+      }
+    }
+  }
+  
+  private void handlePartialPrefixes(OrMatcher orMatcher, ListMultimap<Integer, List<Token>> partialMatches, ListMultimap<Integer, List<Token>> alternativesPrefixes) {
+    ListMultimap<Integer, Integer> alreadyAdded = LinkedListMultimap.create();
+      
+    for (int prefixingAlternativeIndex = 0; prefixingAlternativeIndex < orMatcher.children.length; prefixingAlternativeIndex++) {
+      List<List<Token>> prefixes = partialMatches.get(prefixingAlternativeIndex);
+      if (prefixes == null) {
+        continue;
+      }
+      
+      for (List<Token> prefix: prefixes) {
+        boolean found = false;
+        
+        for (int subjectAlternativeIndex = prefixingAlternativeIndex + 1; !found && subjectAlternativeIndex < orMatcher.children.length; subjectAlternativeIndex++) {
+          List<List<Token>> subjects = partialMatches.get(subjectAlternativeIndex);
+          if (subjects == null) {
+            continue;
+          }
+          
+          int prefixIndex = 0;
+          for (List<Token> subject: subjects) {
+            if (isPrefix(prefix, subject)) {
+              /* We should keep both the prefix and the subject! */
+              alternativesPrefixes.put(prefixingAlternativeIndex, prefix);
+              if (alreadyAdded.get(subjectAlternativeIndex) != null && !alreadyAdded.get(subjectAlternativeIndex).contains(prefixIndex)) {
+                alreadyAdded.put(subjectAlternativeIndex, prefixIndex);
+                alternativesPrefixes.put(subjectAlternativeIndex, subject);
+              }
+              found = true;
+              break;
+            }
+            prefixIndex++;
+          }
+        }
+      }
+    }
   }
 
   private void analyse(Matcher matcher) {
@@ -98,43 +163,46 @@ public class OrAnalyser {
        * 
        */
       
-      List<List<List<Token>>> alternativesFullMatches = new LinkedList<List<List<Token>>>();
-      List<List<List<Token>>> alternativesPartialMatches = new LinkedList<List<List<Token>>>();
+      ListMultimap<Integer, List<Token>> alternativesPrefixes = LinkedListMultimap.create();
+      
+      /* Generate the first iteration prefixes, an empty one for each alternative (every alternative is to be explored) */
+      for (int alternativeIndex = 0; alternativeIndex < matcher.children.length; alternativeIndex++) {
+        alternativesPrefixes.put(alternativeIndex, new LinkedList<Token>());
+      }
+      
+      /* Iterative auto completion (one token at a time) */
       AutoCompleter autoCompleter = new AutoCompleter();
-      for (Matcher alternative: matcher.children) {
-        autoCompleter.autoComplete(alternative, maxTokens);
-        List<List<Token>> fullMatches = autoCompleter.getFullMatches();
-        List<List<Token>> partialMatches = autoCompleter.getPartialMatches();
-
-        /* Can this alternative match the empty string? */
-        if (canMatchEmptyString(fullMatches)) {
-          emptyAlternativeViolations.add(new Violation(alternative, currentRule, ViolationSeverity.ERROR, matcher));
-        }
+      for (int tokens = 0; tokens < maxTokens && !alternativesPrefixes.isEmpty(); tokens++) {
+        ListMultimap<Integer, List<Token>> fullMatches = LinkedListMultimap.create();
+        ListMultimap<Integer, List<Token>> partialMatches = LinkedListMultimap.create();
         
-        /* Is any previous alternative full matches prefix of the current full prefixes? */
-        PrefixResult prefixResult = getAnyNonEmptyPrefix(alternativesFullMatches, fullMatches);
-        if (prefixResult != null) {
-          prefixAlternativeViolations.add(new Violation(alternative, currentRule, ViolationSeverity.ERROR, matcher, matcher.children[prefixResult.i]).addOrReplaceProperty(PREFIX_EXAMPLE, prefixResult.prefix));
-        }
-        
-        /* (if not in the case above) Is any previous alternative full or partial matches prefix of the current full or partial prefixes? */
-        if (prefixResult == null) {
-          prefixResult = getAnyNonEmptyPrefix(alternativesFullMatches, partialMatches);
-          if (prefixResult == null) {
-            prefixResult = getAnyNonEmptyPrefix(alternativesPartialMatches, fullMatches);
-          }
-          if (prefixResult == null) {
-            prefixResult = getAnyNonEmptyPrefix(alternativesPartialMatches, partialMatches);
-          }
+        /* Auto complete */
+        for (Map.Entry<Integer, List<Token>> entry: alternativesPrefixes.entries()) {
+          autoCompleter.autoComplete(matcher.children[entry.getKey()], entry.getValue(), 1);
           
-          if (prefixResult != null) {
-            potentialPrefixAlternativeViolations.add(new Violation(alternative, currentRule, ViolationSeverity.WARNING, matcher, matcher.children[prefixResult.i]).addOrReplaceProperty(PREFIX_EXAMPLE, prefixResult.prefix));
-          }
+          fullMatches.putAll(entry.getKey(), autoCompleter.getFullMatches());
+          partialMatches.putAll(entry.getKey(), autoCompleter.getPartialMatches());
         }
         
-        /* Add the prefixes to the structures */
-        alternativesFullMatches.add(fullMatches);
-        alternativesPartialMatches.add(partialMatches);
+        /* Handle the empty prefixes */
+        handleEmptyPrefixes((OrMatcher)matcher, fullMatches, partialMatches);
+        
+        /* Handle the Full versus Full violations */
+        handlePrefixes((OrMatcher)matcher, fullMatches, fullMatches, prefixAlternativeViolations, ViolationConfidence.SURE, partialMatches);
+        
+        /* Handle the Full versus Partial violations */
+        handlePrefixes((OrMatcher)matcher, fullMatches, partialMatches, prefixAlternativeViolations, ViolationConfidence.HIGH, null);
+
+        /* Handle the Partial versus Full violations: Nothing to do, since those do not generate any violation actually (partial needs at least 1 more token to be complete, and hence cannot be prefix of the same length'ed full) */
+        
+        /* Put the Partial versus Partial prefixes in alternativesPrefixes for the next auto completion round */
+        alternativesPrefixes.clear();
+        handlePartialPrefixes((OrMatcher)matcher, partialMatches, alternativesPrefixes);
+      }
+      
+      if (!alternativesPrefixes.isEmpty()) {
+        /* Handle the remaining prefixes as low violations, as we were unable to better classify them */
+        handlePrefixes((OrMatcher)matcher, alternativesPrefixes, alternativesPrefixes, potentialPrefixAlternativeViolations, ViolationConfidence.LOW, null);
       }
     }
   }

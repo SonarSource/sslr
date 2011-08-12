@@ -5,6 +5,6 @@
  */
 package com.sonar.sslr.impl.analysis;
 
-public enum ViolationSeverity {
-  ERROR, WARNING
+public enum ViolationConfidence {
+  SURE, HIGH, LOW
 }
