@@ -26,7 +26,7 @@ public final class OrAnalyserStream {
       return;
     }
     
-    stream.println("Empty violations");
+    stream.println("Empty violations (" + orAnalyser.getEmptyAlternativeViolations().size() + ")");
     stream.println("----------------");
     
     printViolations(orAnalyser.getEmptyAlternativeViolations(), stream);
@@ -41,7 +41,7 @@ public final class OrAnalyserStream {
       return;
     }
     
-    stream.println("Prefix violations");
+    stream.println("Prefix violations (" + orAnalyser.getPrefixAlternativeViolations().size() + ")");
     stream.println("-----------------");
     
     printViolations(orAnalyser.getPrefixAlternativeViolations(), stream);
@@ -56,7 +56,7 @@ public final class OrAnalyserStream {
       return;
     }
     
-    stream.println("Potential prefix violations");
+    stream.println("Potential prefix violations (" + orAnalyser.getPotentialPrefixAlternativeViolations().size() + ")");
     stream.println("---------------------------");
     
     printViolations(orAnalyser.getPotentialPrefixAlternativeViolations(), stream);
