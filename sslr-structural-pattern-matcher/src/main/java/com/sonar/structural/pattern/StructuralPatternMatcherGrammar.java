@@ -39,9 +39,9 @@ public class StructuralPatternMatcherGrammar extends Grammar {
 
   public StructuralPatternMatcherGrammar(PatternMatcher patternMatcher) {
     compilationUnit.is(or(sequenceMatcher, parentMatcher));
-    parentMatcher.isOr(directParentMatcher, indirectParentMatcher);
-    directParentMatcher.is(ruleName, "(", or(sequenceMatcher, parentMatcher), ")");
-    indirectParentMatcher.is(ruleName, "(", "(", or(sequenceMatcher, parentMatcher), ")", ")");
+    parentMatcher.is(or(directParentMatcher, indirectParentMatcher));
+    directParentMatcher.is(ruleName, "(", or(sequenceMatcher, parentMatcher), ")", opt("(", childMatcher, ")"));
+    indirectParentMatcher.is(ruleName, "(", "(", or(sequenceMatcher, parentMatcher), ")", ")", opt("(", childMatcher, ")"));
 
     sequenceMatcher.is(opt(beforeMatcher), thisMatcher, opt(afterMatcher));
     beforeMatcher.is(opt(beforeMatcher), not("this"), nodeNameOrTokenValue);
