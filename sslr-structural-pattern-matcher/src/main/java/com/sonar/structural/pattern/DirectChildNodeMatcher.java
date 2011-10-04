@@ -14,7 +14,7 @@ public class DirectChildNodeMatcher extends ChildNodeMatcher {
     for (AstNode child : node.getChildren()) {
       if (child.getName().equals(ruleName)) {
         return child;
-      }
+      } 
     }
     return null;
   }

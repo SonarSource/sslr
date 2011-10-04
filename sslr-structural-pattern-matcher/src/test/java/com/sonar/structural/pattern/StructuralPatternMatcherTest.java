@@ -31,6 +31,7 @@ public class StructuralPatternMatcherTest {
     StructuralPatternMatcher.compile("stmt((divideStmt(this(*))))");
     StructuralPatternMatcher.compile("this('value1' or 'value2')");
     StructuralPatternMatcher.compile("this(*)(child((anotherChild)))");
+    StructuralPatternMatcher.compile("this(*)(('child'))");
     StructuralPatternMatcher.compile("divideStmt(this(*))(ruleName)");
   }
 
@@ -176,6 +177,15 @@ public class StructuralPatternMatcherTest {
     assertThat(pattern.isMatching(world), is(false));
 
     pattern = StructuralPatternMatcher.compile("this(*)((unknown))");
+    assertThat(pattern.isMatching(world), is(false));
+  }
+  
+  @Test
+  public void shouldMatchIndirectTokenChild() {
+    pattern = StructuralPatternMatcher.compile("this(*)(('Paris'))");
+    assertThat(pattern.isMatching(world), is(true));
+    
+    pattern = StructuralPatternMatcher.compile("this(*)(('London'))");
     assertThat(pattern.isMatching(world), is(false));
   }
 
