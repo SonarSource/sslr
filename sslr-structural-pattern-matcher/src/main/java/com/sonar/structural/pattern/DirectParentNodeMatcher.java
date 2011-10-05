@@ -11,7 +11,7 @@ public class DirectParentNodeMatcher extends ParentNodeMatcher {
 
   @Override
   public AstNode matchParents(AstNode node) {
-    if (node.getParent() != null && node.getParent().getName().equals(ruleName)) {
+    if (node.getParent() != null && node.getParent().getName().equals(rule)) {
       return node.getParent();
     }
     return null;

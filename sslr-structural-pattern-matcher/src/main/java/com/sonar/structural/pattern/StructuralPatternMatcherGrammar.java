@@ -33,24 +33,23 @@ public class StructuralPatternMatcherGrammar extends Grammar {
   public Rule afterMatcher;
   public Rule ruleValueList;
   public Rule tokenValue;
-  public Rule nodeName;
-  public Rule ruleName;
+  public Rule rule;
 
   public StructuralPatternMatcherGrammar(PatternMatcher patternMatcher) {
     compilationUnit.is(or(sequenceMatcher, parentMatcher));
     parentMatcher.is(or(directParentMatcher, indirectParentMatcher));
-    directParentMatcher.is(ruleName, "(", or(sequenceMatcher, parentMatcher), ")", opt("(", childMatcher, ")"));
-    indirectParentMatcher.is(ruleName, "(", "(", or(sequenceMatcher, parentMatcher), ")", ")", opt("(", childMatcher, ")"));
+    directParentMatcher.is(rule, "(", or(sequenceMatcher, parentMatcher), ")", opt("(", childMatcher, ")"));
+    indirectParentMatcher.is(rule, "(", "(", or(sequenceMatcher, parentMatcher), ")", ")", opt("(", childMatcher, ")"));
 
     sequenceMatcher.is(opt(beforeMatcher), thisMatcher, opt(afterMatcher));
-    beforeMatcher.is(opt(beforeMatcher), not("this"), or(nodeName, tokenValue));
-    afterMatcher.is(or(nodeName, tokenValue), opt(afterMatcher));
+    beforeMatcher.is(opt(beforeMatcher), not("this"), or(rule, tokenValue));
+    afterMatcher.is(or(rule, tokenValue), opt(afterMatcher));
 
-    thisMatcher.is("this", "(", or("*", one2n(or(nodeName, tokenValue), opt("or"))), ")", opt("(", childMatcher, ")"));
+    thisMatcher.is("this", "(", or("*", one2n(or(rule, tokenValue), opt("or"))), ")", opt("(", childMatcher, ")"));
 
     childMatcher.isOr(directChildMatcher, indirectChildMatcher);
-    directChildMatcher.is(ruleName, opt("(", or(childMatcher), ")"));
-    indirectChildMatcher.is("(", ruleName, opt("(", or(childMatcher), ")"), ")");
+    directChildMatcher.is(rule, opt("(", or(childMatcher), ")"));
+    indirectChildMatcher.is("(", rule, opt("(", or(childMatcher), ")"), ")");
     indirectChildMatcher.or("(", tokenValue, ")");
 
     compilationUnit.plug(patternMatcher);
@@ -64,8 +63,7 @@ public class StructuralPatternMatcherGrammar extends Grammar {
     indirectChildMatcher.plug(IndirectChildNodeMatcher.class);
 
     tokenValue.is(LITERAL).plug(Literal.class);
-    nodeName.is(WORD).plug(String.class);
-    ruleName.is(WORD).plug(String.class);
+    rule.is(WORD).plug(String.class);
   }
 
   @Override

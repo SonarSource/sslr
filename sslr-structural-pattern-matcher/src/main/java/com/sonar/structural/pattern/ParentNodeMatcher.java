@@ -9,11 +9,11 @@ import com.sonar.sslr.api.AstNode;
 
 public abstract class ParentNodeMatcher extends CompositeMatcher {
 
-  protected String ruleName;
+  protected String rule;
   private ChildNodeMatcher childNodeMatcher;
 
-  public void addRuleName(String name) {
-    ruleName = name;
+  public void setRule(String rule) {
+    this.rule = rule;
   }
 
   public void addChildMatcher(ChildNodeMatcher childNodeMatcher) {

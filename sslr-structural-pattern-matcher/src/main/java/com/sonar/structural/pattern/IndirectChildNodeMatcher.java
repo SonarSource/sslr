@@ -13,7 +13,7 @@ public class IndirectChildNodeMatcher extends ChildNodeMatcher {
   public AstNode matchChildren(AstNode node) {
     if (node.hasChildren()) {
       for (AstNode child : node.getChildren()) {
-        if (child.getName().equals(ruleName)) {
+        if (child.getName().equals(rule)) {
           return child;
         }
       }

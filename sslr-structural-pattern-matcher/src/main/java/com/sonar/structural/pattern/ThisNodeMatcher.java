@@ -16,19 +16,19 @@ import com.sonar.sslr.dsl.Literal;
 public class ThisNodeMatcher extends CompositeMatcher {
 
   private Set<String> tokenValues = new HashSet<String>();
-  private Set<String> nodeValues = new HashSet<String>();
+  private Set<String> rules = new HashSet<String>();
 
   public void addTokenValue(Literal tokenValue) {
     tokenValues.add(StringUtils.remove(tokenValue.toString(), '\\'));
   }
 
-  public void addNodeName(String nodeValue) {
-    nodeValues.add(nodeValue);
+  public void addRule(String rule) {
+    rules.add(rule);
   }
 
   @Override
   public AstNode match(AstNode node) {
-    if (tokenValues.isEmpty() && nodeValues.isEmpty()) {
+    if (tokenValues.isEmpty() && rules.isEmpty()) {
       return matchChildMatcher(node);
     }
     if ( !tokenValues.isEmpty()) {
@@ -38,8 +38,8 @@ public class ThisNodeMatcher extends CompositeMatcher {
         }
       }
     }
-    if ( !nodeValues.isEmpty()) {
-      for (String nodeValue : nodeValues) {
+    if ( !rules.isEmpty()) {
+      for (String nodeValue : rules) {
         if (node.getName().equals(nodeValue)) {
           return matchChildMatcher(node);
         }

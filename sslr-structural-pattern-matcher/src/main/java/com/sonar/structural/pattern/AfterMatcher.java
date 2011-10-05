@@ -11,14 +11,14 @@ import com.sonar.sslr.dsl.Literal;
 public class AfterMatcher extends CompositeMatcher {
 
   private String tokenValue;
-  private String nodeValue;
+  private String rule;
 
   public void setTokenValue(Literal tokenValue) {
     this.tokenValue = tokenValue.toString();
   }
 
-  public void setNodeName(String nodeValue) {
-    this.nodeValue = nodeValue;
+  public void setRule(String rule) {
+    this.rule = rule;
   }
 
   @Override
@@ -29,10 +29,10 @@ public class AfterMatcher extends CompositeMatcher {
         return matchNext(getLeafNode(nextNode));
       }
     }
-    if (nodeValue != null) {
+    if (rule != null) {
       AstNode nextNode = node.nextAstNode();
       while (nextNode != null) {
-        if (nextNode.getName().equals(nodeValue)) {
+        if (nextNode.getName().equals(rule)) {
           return matchNext(nextNode);
         }
         nextNode = nextNode.getFirstChild();

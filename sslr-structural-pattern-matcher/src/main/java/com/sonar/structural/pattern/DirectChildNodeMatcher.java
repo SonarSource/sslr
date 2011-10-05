@@ -12,7 +12,7 @@ public class DirectChildNodeMatcher extends ChildNodeMatcher {
   @Override
   public AstNode matchChildren(AstNode node) {
     for (AstNode child : node.getChildren()) {
-      if (child.getName().equals(ruleName)) {
+      if (child.getName().equals(rule)) {
         return child;
       } 
     }

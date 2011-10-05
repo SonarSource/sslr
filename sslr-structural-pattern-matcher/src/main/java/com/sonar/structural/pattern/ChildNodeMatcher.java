@@ -10,11 +10,11 @@ import com.sonar.sslr.dsl.Literal;
 
 public abstract class ChildNodeMatcher extends CompositeMatcher {
 
-  protected String ruleName;
+  protected String rule;
   protected String tokenValue;
 
-  public void setRuleName(String name) {
-    ruleName = name;
+  public void setRule(String name) {
+    rule = name;
   }
 
   public void setTokenValue(Literal tokenValue) {
