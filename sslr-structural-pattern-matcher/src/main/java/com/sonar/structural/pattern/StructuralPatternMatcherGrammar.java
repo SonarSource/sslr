@@ -53,7 +53,7 @@ public class StructuralPatternMatcherGrammar extends Grammar {
     indirectChildMatcher.is("(", rule, opt("(", or(childMatcher), ")"), ")");
     indirectChildMatcher.or("(", tokenValue, ")");
     
-    ruleMatcher.is(rule);
+    ruleMatcher.is(rule, opt("(", or(childMatcher), ")"));
 
     compilationUnit.plug(patternMatcher);
     directParentMatcher.plug(DirectParentNodeMatcher.class);

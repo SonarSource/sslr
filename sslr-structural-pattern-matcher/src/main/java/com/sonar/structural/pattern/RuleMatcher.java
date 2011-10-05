@@ -18,12 +18,12 @@ public class RuleMatcher extends CompositeMatcher {
   @Override
   public final AstNode match(AstNode node) {
     if(node.getName().equals(rule)){
-      return node;
+      return matchUnderlyingMatcher(node);
     }
     if (node.hasChildren()) {
       for (AstNode child : node.getChildren()) {
         if (child.getName().equals(rule)) {
-          return child;
+          return matchUnderlyingMatcher(child);
         }
       }
       for (AstNode child : node.getChildren()) {
@@ -31,6 +31,13 @@ public class RuleMatcher extends CompositeMatcher {
       }
     }
     return null;
+  }
+  
+  private AstNode matchUnderlyingMatcher(AstNode node){
+    if(matcher != null && matcher.match(node) == null){
+      return null;
+    }
+    return node;
   }
 
 }
