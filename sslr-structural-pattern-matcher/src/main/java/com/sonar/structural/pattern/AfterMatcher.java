@@ -11,38 +11,33 @@ import com.sonar.sslr.dsl.Literal;
 public class AfterMatcher extends CompositeMatcher {
 
   private String tokenValue;
-  private String rule;
+  private RuleMatcher ruleMatcher;
 
   public void setTokenValue(Literal tokenValue) {
     this.tokenValue = tokenValue.toString();
   }
 
-  public void setRule(String rule) {
-    this.rule = rule;
+  public void setRuleMatcher(RuleMatcher ruleMatcher) {
+    this.ruleMatcher = ruleMatcher;
   }
 
   @Override
   public AstNode match(AstNode node) {
+    AstNode nextNode = node.nextAstNode();
     if (tokenValue != null) {
-      AstNode nextNode = node.nextAstNode();
       if (nextNode != null && nextNode.getTokenValue().equals(tokenValue)) {
         return matchNext(getLeafNode(nextNode));
       }
     }
-    if (rule != null) {
-      AstNode nextNode = node.nextAstNode();
-      while (nextNode != null) {
-        if (nextNode.getName().equals(rule)) {
-          return matchNext(nextNode);
-        }
-        nextNode = nextNode.getFirstChild();
-      }
+    if (ruleMatcher != null) {
+      ruleMatcher.match(nextNode);
+      return matchNext(ruleMatcher.match(nextNode));
     }
     return null;
   }
 
   public AstNode matchNext(AstNode node) {
-    if (matcher != null) {
+    if (matcher != null && node != null) {
       return matcher.match(node);
     } else return node;
   }
