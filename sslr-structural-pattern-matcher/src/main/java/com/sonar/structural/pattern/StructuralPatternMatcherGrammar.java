@@ -34,7 +34,6 @@ public class StructuralPatternMatcherGrammar extends Grammar {
   public Rule ruleValueList;
   public Rule tokenValue;
   public Rule nodeName;
-  public Rule nodeNameOrTokenValue;
   public Rule ruleName;
 
   public StructuralPatternMatcherGrammar(PatternMatcher patternMatcher) {
@@ -44,10 +43,10 @@ public class StructuralPatternMatcherGrammar extends Grammar {
     indirectParentMatcher.is(ruleName, "(", "(", or(sequenceMatcher, parentMatcher), ")", ")", opt("(", childMatcher, ")"));
 
     sequenceMatcher.is(opt(beforeMatcher), thisMatcher, opt(afterMatcher));
-    beforeMatcher.is(opt(beforeMatcher), not("this"), nodeNameOrTokenValue);
-    afterMatcher.is(nodeNameOrTokenValue, opt(afterMatcher));
+    beforeMatcher.is(opt(beforeMatcher), not("this"), or(nodeName, tokenValue));
+    afterMatcher.is(or(nodeName, tokenValue), opt(afterMatcher));
 
-    thisMatcher.is("this", "(", or("*", one2n(nodeNameOrTokenValue, opt("or"))), ")", opt("(", childMatcher, ")"));
+    thisMatcher.is("this", "(", or("*", one2n(or(nodeName, tokenValue), opt("or"))), ")", opt("(", childMatcher, ")"));
 
     childMatcher.isOr(directChildMatcher, indirectChildMatcher);
     directChildMatcher.is(ruleName, opt("(", or(childMatcher), ")"));
@@ -64,7 +63,6 @@ public class StructuralPatternMatcherGrammar extends Grammar {
     directChildMatcher.plug(DirectChildNodeMatcher.class);
     indirectChildMatcher.plug(IndirectChildNodeMatcher.class);
 
-    nodeNameOrTokenValue.isOr(nodeName, tokenValue).skip();
     tokenValue.is(LITERAL).plug(Literal.class);
     nodeName.is(WORD).plug(String.class);
     ruleName.is(WORD).plug(String.class);
