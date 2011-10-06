@@ -7,7 +7,7 @@ package com.sonar.structural.pattern;
 
 import com.sonar.sslr.api.AstNode;
 
-public abstract class ParentNodeMatcher extends CompositeMatcher {
+public final class ParentNodeMatcher extends CompositeMatcher {
 
   protected String rule;
   private ChildNodeMatcher childNodeMatcher;
@@ -16,7 +16,7 @@ public abstract class ParentNodeMatcher extends CompositeMatcher {
     this.rule = rule;
   }
 
-  public void addChildMatcher(ChildNodeMatcher childNodeMatcher) {
+  public void addChildSequenceMatcher(ChildNodeMatcher childNodeMatcher) {
     this.childNodeMatcher = childNodeMatcher;
   }
 
@@ -36,5 +36,14 @@ public abstract class ParentNodeMatcher extends CompositeMatcher {
     return parentNode;
   }
 
-  public abstract AstNode matchParents(AstNode node);
+  public AstNode matchParents(AstNode node) {
+    if (node.getParent() != null) {
+      if (node.getParent().getName().equals(rule)) {
+        return node.getParent();
+      } else {
+        return matchParents(node.getParent());
+      }
+    }
+    return null;
+  }
 }

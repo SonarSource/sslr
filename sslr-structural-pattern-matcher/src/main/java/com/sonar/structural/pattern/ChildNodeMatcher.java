@@ -8,7 +8,7 @@ package com.sonar.structural.pattern;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.dsl.Literal;
 
-public abstract class ChildNodeMatcher extends CompositeMatcher {
+public final class ChildNodeMatcher extends CompositeMatcher {
 
   protected String rule;
   protected String tokenValue;
@@ -27,16 +27,15 @@ public abstract class ChildNodeMatcher extends CompositeMatcher {
       return getLeafNode(node);
     }
     node = matchChildren(node);
-    if (node != null) {
-      if (matcher != null) {
-        return matcher.match(node);
-      } else {
-        return node;
-      }
+    if (node == null) {
+      return null;
     }
-    return null;
+    if (matcher != null && matcher.match(node) == null) {
+      return null;
+    }
+    return node;
   }
-  
+
   private AstNode getLeafNode(AstNode nextNode) {
     if (nextNode.hasChildren()) {
       return getLeafNode(nextNode.getFirstChild());
@@ -44,5 +43,17 @@ public abstract class ChildNodeMatcher extends CompositeMatcher {
     return nextNode;
   }
 
-  protected abstract AstNode matchChildren(AstNode node);
+  public AstNode matchChildren(AstNode node) {
+    if (node.hasChildren()) {
+      for (AstNode child : node.getChildren()) {
+        if (child.getName().equals(rule)) {
+          return child;
+        }
+      }
+      for (AstNode child : node.getChildren()) {
+        return matchChildren(child);
+      }
+    }
+    return null;
+  }
 }

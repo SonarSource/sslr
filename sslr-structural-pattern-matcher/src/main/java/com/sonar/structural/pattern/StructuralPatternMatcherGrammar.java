@@ -24,10 +24,8 @@ public class StructuralPatternMatcherGrammar extends Grammar {
   public Rule matcher;
   public Rule thisMatcher;
   public Rule parentMatcher;
-  public Rule directParentMatcher;
-  public Rule indirectParentMatcher;
+  public Rule childSequenceMatcher;
   public Rule childMatcher;
-  public Rule indirectChildMatcher;
   public Rule ruleMatcher;
   public Rule sequenceMatcher;
   public LeftRecursiveRule beforeMatcher;
@@ -38,30 +36,30 @@ public class StructuralPatternMatcherGrammar extends Grammar {
 
   public StructuralPatternMatcherGrammar(PatternMatcher patternMatcher) {
     compilationUnit.is(or(sequenceMatcher, parentMatcher));
-    parentMatcher.is(or(directParentMatcher, indirectParentMatcher));
-    directParentMatcher.is(rule, "(", or(sequenceMatcher, parentMatcher), ")", opt("(", childMatcher, ")"));
-    indirectParentMatcher.is(rule, "(", "(", or(sequenceMatcher, parentMatcher), ")", ")", opt("(", childMatcher, ")"));
+
+    parentMatcher.is(rule,
+        or(and("(", "(", or(sequenceMatcher, parentMatcher), ")", ")"), and("(", or(sequenceMatcher, parentMatcher), ")")),
+        opt("(", childSequenceMatcher, ")"));
 
     sequenceMatcher.is(opt(beforeMatcher), thisMatcher, opt(afterMatcher));
     beforeMatcher.is(opt(beforeMatcher), not("this"), or(rule, tokenValue));
     afterMatcher.is(or(ruleMatcher, tokenValue), opt(afterMatcher));
+    
+    thisMatcher.is("this", "(", or("*", one2n(or(rule, tokenValue), opt("or"))), ")", opt("(", childSequenceMatcher, ")"));
 
-    thisMatcher.is("this", "(", or("*", one2n(or(rule, tokenValue), opt("or"))), ")", opt("(", childMatcher, ")"));
+    childSequenceMatcher.isOr(and("(", or(childMatcher), ")"), childMatcher);
+    childMatcher.is(rule, opt("(", or(childSequenceMatcher), ")"));
+    childMatcher.or(tokenValue);
 
-    childMatcher.isOr(and("(", or(indirectChildMatcher), ")"), indirectChildMatcher);
-    indirectChildMatcher.is(rule, opt("(", or(childMatcher), ")"));
-    indirectChildMatcher.or(tokenValue);
-
-    ruleMatcher.is(rule, opt("(", or(childMatcher), ")"));
+    ruleMatcher.is(rule, opt("(", or(childSequenceMatcher), ")"));
 
     compilationUnit.plug(patternMatcher);
-    directParentMatcher.plug(DirectParentNodeMatcher.class);
-    indirectParentMatcher.plug(IndirectParentNodeMatcher.class);
+    parentMatcher.plug(ParentNodeMatcher.class);
     thisMatcher.plug(ThisNodeMatcher.class);
     sequenceMatcher.plug(SequenceMatcher.class);
     beforeMatcher.plug(BeforeMatcher.class);
     afterMatcher.plug(AfterMatcher.class);
-    indirectChildMatcher.plug(IndirectChildNodeMatcher.class);
+    childMatcher.plug(ChildNodeMatcher.class);
     ruleMatcher.plug(RuleMatcher.class);
 
     tokenValue.is(LITERAL).plug(Literal.class);
