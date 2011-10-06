@@ -5,17 +5,18 @@
  */
 package com.sonar.structural.pattern;
 
+import static com.sonar.sslr.dsl.DslTokenType.LITERAL;
+import static com.sonar.sslr.dsl.DslTokenType.WORD;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
+
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.LeftRecursiveRule;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.dsl.Literal;
-
-import static com.sonar.sslr.dsl.DslTokenType.LITERAL;
-import static com.sonar.sslr.dsl.DslTokenType.WORD;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
 
 public class StructuralPatternMatcherGrammar extends Grammar {
 
@@ -26,7 +27,6 @@ public class StructuralPatternMatcherGrammar extends Grammar {
   public Rule directParentMatcher;
   public Rule indirectParentMatcher;
   public Rule childMatcher;
-  public Rule directChildMatcher;
   public Rule indirectChildMatcher;
   public Rule ruleMatcher;
   public Rule sequenceMatcher;
@@ -48,11 +48,10 @@ public class StructuralPatternMatcherGrammar extends Grammar {
 
     thisMatcher.is("this", "(", or("*", one2n(or(rule, tokenValue), opt("or"))), ")", opt("(", childMatcher, ")"));
 
-    childMatcher.isOr(directChildMatcher, indirectChildMatcher);
-    directChildMatcher.is(rule, opt("(", or(childMatcher), ")"));
-    indirectChildMatcher.is("(", rule, opt("(", or(childMatcher), ")"), ")");
-    indirectChildMatcher.or("(", tokenValue, ")");
-    
+    childMatcher.isOr(and("(", or(indirectChildMatcher), ")"), indirectChildMatcher);
+    indirectChildMatcher.is(rule, opt("(", or(childMatcher), ")"));
+    indirectChildMatcher.or(tokenValue);
+
     ruleMatcher.is(rule, opt("(", or(childMatcher), ")"));
 
     compilationUnit.plug(patternMatcher);
@@ -62,7 +61,6 @@ public class StructuralPatternMatcherGrammar extends Grammar {
     sequenceMatcher.plug(SequenceMatcher.class);
     beforeMatcher.plug(BeforeMatcher.class);
     afterMatcher.plug(AfterMatcher.class);
-    directChildMatcher.plug(DirectChildNodeMatcher.class);
     indirectChildMatcher.plug(IndirectChildNodeMatcher.class);
     ruleMatcher.plug(RuleMatcher.class);
 
