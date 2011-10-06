@@ -146,8 +146,8 @@ public final class ExtendedStackTraceStream {
   }
   
   private static String getPosition(int line, int column) {
-    return "  " + String.format("%1$#" + LINE_AND_COLUMN_LEFT_PAD_LENGTH + "s", line) + " : "
-        + String.format("%1$#" + LINE_AND_COLUMN_LEFT_PAD_LENGTH + "s", column) + "  : ";
+    return "  " + String.format("%" + LINE_AND_COLUMN_LEFT_PAD_LENGTH + "d", line) + " : "
+        + String.format("%" + LINE_AND_COLUMN_LEFT_PAD_LENGTH + "d", column) + "  : ";
   }
   
   private static void displayStackTraceRuleWithPosition(ExtendedStackTrace extendedStackTrace, PrintStream stream, int ruleWithPosition) {
