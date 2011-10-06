@@ -33,7 +33,7 @@ public class StructuralPatternMatcherTest {
     StructuralPatternMatcher.compile("this(*)(child((anotherChild)))");
     StructuralPatternMatcher.compile("this(*)(('child'))");
     StructuralPatternMatcher.compile("this(*) rule(child)");
-    StructuralPatternMatcher.compile("parent(this(*))('child1' child2 'child3')");
+    StructuralPatternMatcher.compile("parent(this(*))('child1' child2(anotherChild) 'child3')");
     StructuralPatternMatcher.compile("divideStmt(this(*))(ruleName)");
   }
 
@@ -103,7 +103,7 @@ public class StructuralPatternMatcherTest {
 
     pattern = StructuralPatternMatcher.compile("this(*) nation(capital) nation");
     assertThat(pattern.isMatching(paris), is(true));
-    
+
     pattern = StructuralPatternMatcher.compile("this(*) nation(nation) nation");
     assertThat(pattern.isMatching(paris), is(false));
 
@@ -118,7 +118,7 @@ public class StructuralPatternMatcherTest {
   }
 
   @Test
-  public void shouldMatchDirectParent() {
+  public void shouldMatchParent() {
     pattern = StructuralPatternMatcher.compile("world(this(*))");
     assertThat(pattern.isMatching(france), is(true));
 
@@ -130,7 +130,7 @@ public class StructuralPatternMatcherTest {
   }
 
   @Test
-  public void shouldMatchDirectParentWithChild() {
+  public void shouldMatchParentWithChild() {
     pattern = StructuralPatternMatcher.compile("nation(this(*))(capital)");
     assertThat(pattern.isMatching(paris), is(true));
     pattern = StructuralPatternMatcher.compile("world((this(*)))((capital))");
@@ -141,22 +141,16 @@ public class StructuralPatternMatcherTest {
   }
 
   @Test
-  public void shouldMatchIndirectParent() {
-    pattern = StructuralPatternMatcher.compile("world((this(*)))");
+  public void shouldMatchChildSequence() {
+    pattern = StructuralPatternMatcher.compile("nation(this(*))('Paris' capital 'Madrid')");
     assertThat(pattern.isMatching(paris), is(true));
 
-    pattern = StructuralPatternMatcher.compile("world((this(*)))");
-    assertThat(pattern.isMatching(france), is(true));
-
-    pattern = StructuralPatternMatcher.compile("world((this(unknownRule)))");
-    assertThat(pattern.isMatching(france), is(false));
-
-    pattern = StructuralPatternMatcher.compile("unknown((this(*)))");
+    pattern = StructuralPatternMatcher.compile("nation(this(*))('Madrid')");
     assertThat(pattern.isMatching(paris), is(false));
   }
 
   @Test
-  public void shouldMatchDirectChild() {
+  public void shouldMatchChild() {
     pattern = StructuralPatternMatcher.compile("this(*)(nation)");
     assertThat(pattern.isMatching(world), is(true));
 
@@ -171,10 +165,7 @@ public class StructuralPatternMatcherTest {
 
     pattern = StructuralPatternMatcher.compile("this(*)(nation)");
     assertThat(pattern.isMatching(france), is(false));
-  }
 
-  @Test
-  public void shouldMatchIndirectChild() {
     pattern = StructuralPatternMatcher.compile("this(*)((capital))");
     assertThat(pattern.isMatching(world), is(true));
 
@@ -184,12 +175,12 @@ public class StructuralPatternMatcherTest {
     pattern = StructuralPatternMatcher.compile("this(*)((unknown))");
     assertThat(pattern.isMatching(world), is(false));
   }
-  
+
   @Test
   public void shouldMatchIndirectTokenChild() {
     pattern = StructuralPatternMatcher.compile("this(*)(('Paris'))");
     assertThat(pattern.isMatching(world), is(true));
-    
+
     pattern = StructuralPatternMatcher.compile("this(*)(('London'))");
     assertThat(pattern.isMatching(world), is(false));
   }

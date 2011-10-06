@@ -22,7 +22,11 @@ public final class ChildSequenceMatcher extends StructuralUnitMatcher {
 
   @Override
   public final AstNode match(AstNode node) {
-    return childMatcher.match(node);
+    AstNode childNode = childMatcher.match(node);
+    if (afterMatcher != null && afterMatcher.match(childNode) == null) {
+      return null;
+    }
+    return childNode;
   }
 
 }
