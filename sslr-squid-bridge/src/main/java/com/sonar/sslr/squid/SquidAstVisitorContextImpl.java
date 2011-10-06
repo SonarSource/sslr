@@ -19,7 +19,7 @@ import com.sonar.sslr.api.Comments;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Token;
 
-public final class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends SquidAstVisitorContext<GRAMMAR> implements CodeCheck {
+public final class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends SquidAstVisitorContext<GRAMMAR> {
 
   private Stack<SourceCode> sourceCodeStack = new Stack<SourceCode>();
   private GRAMMAR grammar;
@@ -87,23 +87,22 @@ public final class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends S
   
   /** {@inheritDoc} */
   @Override
-  public void log(String messageText, AstNode node, Object... messageParameters) {
-    log(messageText, node.getToken(), messageParameters);
+  public void log(CodeCheck codeCheck, String messageText, AstNode node, Object... messageParameters) {
+    log(codeCheck, messageText, node.getToken(), messageParameters);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void log(String messageText, Token token, Object... messageParameters) {
-    CheckMessage message = new CheckMessage(this, messageText, messageParameters);
-    message = new CheckMessage(this, messageText, messageParameters);
+  public void log(CodeCheck codeCheck, String messageText, Token token, Object... messageParameters) {
+    CheckMessage message = new CheckMessage(codeCheck, messageText, messageParameters);
     message.setLine(token.getLine());
     log(message);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void log(String messageText, int line, Object... messageParameters) {
-    CheckMessage message = new CheckMessage(this, messageText, messageParameters);
+  public void log(CodeCheck codeCheck, String messageText, int line, Object... messageParameters) {
+    CheckMessage message = new CheckMessage(codeCheck, messageText, messageParameters);
     if (line > 0) {
       message.setLine(line);
     }

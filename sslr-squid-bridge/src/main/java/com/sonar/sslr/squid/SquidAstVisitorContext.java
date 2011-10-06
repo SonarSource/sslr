@@ -7,6 +7,7 @@ package com.sonar.sslr.squid;
 
 import java.io.File;
 
+import org.sonar.squid.api.CodeCheck;
 import org.sonar.squid.api.SourceCode;
 
 import com.sonar.sslr.api.AstNode;
@@ -29,33 +30,39 @@ public abstract class SquidAstVisitorContext<GRAMMAR extends Grammar> {
   public abstract SourceCode peekSourceCode();
   
   /**
-   * @param the
+   * @param codeCheck
+   *          codeCheck check from which this log generates
+   * @param messageText
    *          message to log
-   * @param the
+   * @param node
    *          AST node associated to this message. Used to associate the message to a line number.
-   * @param the
+   * @param messageParameters
    *          option message's parameters (see the java.text.MessageFormat class of the java API)
    */
-  public abstract void log(String messageText, AstNode node, Object... messageParameters);
+  public abstract void log(CodeCheck codeCheck, String messageText, AstNode node, Object... messageParameters);
   
   /**
-   * @param the
+   * @param codeCheck
+   *          codeCheck check from which this log generates
+   * @param messageText
    *          message to log
-   * @param the
+   * @param token
    *          token associated to this message. Used to associate the message to a line number.
-   * @param the
+   * @param messageParameters
    *          option message's parameters (see the java.text.MessageFormat class of the java API)
    */
-  public abstract void log(String messageText, Token token, Object... messageParameters);
+  public abstract void log(CodeCheck codeCheck, String messageText, Token token, Object... messageParameters);
   
   /**
-   * @param the
+   * @param codeCheck
+   *          codeCheck check from which this log generates
+   * @param messageText
    *          message to log
-   * @param the
+   * @param line
    *          line number to associate this to.
-   * @param the
+   * @param messageParameters
    *          option message's parameters (see the java.text.MessageFormat class of the java API)
    */
-  public abstract void log(String messageText, int line, Object... messageParameters);
+  public abstract void log(CodeCheck codeCheck, String messageText, int line, Object... messageParameters);
   
 }
