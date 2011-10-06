@@ -35,6 +35,7 @@ public class StructuralPatternMatcherTest {
     StructuralPatternMatcher.compile("this(*) rule(child)");
     StructuralPatternMatcher.compile("parent(this(*))('child1' child2(anotherChild) 'child3')");
     StructuralPatternMatcher.compile("divideStmt(this(*))(ruleName)");
+    StructuralPatternMatcher.compile("grandParent( left 'left' parent(this(*)))");
   }
 
   @Test(expected = StructuralPatternMatcherException.class)
@@ -124,6 +125,12 @@ public class StructuralPatternMatcherTest {
 
     pattern = StructuralPatternMatcher.compile("world(nation(this(*)))");
     assertThat(pattern.isMatching(paris), is(true));
+
+    pattern = StructuralPatternMatcher.compile("world('Paris' nation(this(*)))");
+    assertThat(pattern.isMatching(london), is(true));
+    
+    pattern = StructuralPatternMatcher.compile("world('Madrid' nation(this(*)))");
+    assertThat(pattern.isMatching(london), is(false));
 
     pattern = StructuralPatternMatcher.compile("unknownRule(this(*))");
     assertThat(pattern.isMatching(france), is(false));

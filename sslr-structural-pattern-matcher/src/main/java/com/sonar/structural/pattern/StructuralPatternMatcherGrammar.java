@@ -41,8 +41,8 @@ public class StructuralPatternMatcherGrammar extends Grammar {
         or(and("(", "(", or(sequenceMatcher, parentMatcher), ")", ")"), and("(", or(sequenceMatcher, parentMatcher), ")")),
         opt("(", childSequenceMatcher, ")"));
 
-    sequenceMatcher.is(opt(beforeMatcher), thisMatcher, opt(afterMatcher));
-    beforeMatcher.is(opt(beforeMatcher), not("this"), or(rule, tokenValue));
+    sequenceMatcher.is(opt(beforeMatcher), or(thisMatcher, parentMatcher), opt(afterMatcher));
+    beforeMatcher.is(opt(beforeMatcher), or(and(rule, not("(")), tokenValue));
     afterMatcher.is(or(ruleMatcher, tokenValue), opt(afterMatcher));
     
     thisMatcher.is("this", "(", or("*", one2n(or(rule, tokenValue), opt("or"))), ")", opt("(", childSequenceMatcher, ")"));
@@ -67,7 +67,7 @@ public class StructuralPatternMatcherGrammar extends Grammar {
     ruleMatcher.plug(RuleMatcher.class);
 
     tokenValue.is(LITERAL).plug(Literal.class);
-    rule.is(WORD).plug(String.class);
+    rule.is(not("this"),WORD).plug(String.class);
   }
 
   @Override
