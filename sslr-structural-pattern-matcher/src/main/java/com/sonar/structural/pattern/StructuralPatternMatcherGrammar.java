@@ -34,7 +34,7 @@ public class StructuralPatternMatcherGrammar extends Grammar {
   public Rule tokenValue;
   public Rule rule;
 
-  public StructuralPatternMatcherGrammar(PatternMatcher patternMatcher) {
+  public StructuralPatternMatcherGrammar(StructuralPatternMatcher patternMatcher) {
     compilationUnit.is(or(sequenceMatcher, parentMatcher));
 
     parentMatcher.is(rule,

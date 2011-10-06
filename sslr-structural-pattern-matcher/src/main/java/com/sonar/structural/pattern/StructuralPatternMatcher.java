@@ -9,9 +9,10 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.dsl.Dsl;
 
-public class StructuralPatternMatcher {
+public class StructuralPatternMatcher extends StructuralUnitMatcher {
 
-  private PatternMatcher matcher = new PatternMatcher();
+  private SequenceMatcher sequenceMatcher;
+  private ParentMatcher parentMatcher;
 
   private StructuralPatternMatcher() {
   };
@@ -19,7 +20,7 @@ public class StructuralPatternMatcher {
   public static final StructuralPatternMatcher compile(String structuralPattern) {
     StructuralPatternMatcher pattern = new StructuralPatternMatcher();
     try {
-      Dsl.builder().setGrammar(new StructuralPatternMatcherGrammar(pattern.matcher)).withSource(structuralPattern).compile();
+      Dsl.builder().setGrammar(new StructuralPatternMatcherGrammar(pattern)).withSource(structuralPattern).compile();
     } catch (RecognitionException e) {
       throw new StructuralPatternMatcherException("The following structural pattern is incorrect : " + structuralPattern
           + System.getProperty("line.separator") + e.getMessage());
@@ -27,7 +28,21 @@ public class StructuralPatternMatcher {
     return pattern;
   }
 
-  public boolean isMatching(AstNode astNode) {
-    return matcher.match(astNode) != null;
+  public void setSequenceMatcher(SequenceMatcher sequenceMatcher) {
+    this.sequenceMatcher = sequenceMatcher;
+  }
+
+  public void setParentMatcher(ParentMatcher parentMatcher) {
+    this.parentMatcher = parentMatcher;
+  }
+
+  public AstNode match(AstNode astNode) {
+    if (sequenceMatcher != null) {
+      return sequenceMatcher.match(astNode);
+    } else if (parentMatcher != null) {
+      return parentMatcher.match(astNode);
+    } else {
+      throw new StructuralPatternMatcherException("Nothing has been injected into the PatternMatcher object");
+    }
   }
 }
