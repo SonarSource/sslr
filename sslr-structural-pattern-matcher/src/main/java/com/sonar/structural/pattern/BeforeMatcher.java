@@ -11,15 +11,15 @@ import com.sonar.sslr.dsl.Literal;
 public class BeforeMatcher extends StructuralUnitMatcher {
 
   private String tokenValue;
-  private String rule;
+  private OnRightRuleMatcher onRightRuleMatcher;
   private BeforeMatcher previousBeforeMatcher;
 
   public void setTokenValue(Literal tokenValue) {
     this.tokenValue = tokenValue.toString();
   }
 
-  public void setRule(String rule) {
-    this.rule = rule;
+  public void setOnRightRuleMatcher(OnRightRuleMatcher onRightRuleMatcher) {
+    this.onRightRuleMatcher = onRightRuleMatcher;
   }
 
   public void setBeforeMatcher(BeforeMatcher previousBeforeMatcher) {
@@ -30,20 +30,15 @@ public class BeforeMatcher extends StructuralUnitMatcher {
   public AstNode match(AstNode node) {
     if (tokenValue != null) {
       AstNode previousNode = node.previousAstNode();
-      while (previousNode != null) {
-        if (previousNode.getTokenValue().equals(tokenValue)) {
-          return matchPrevious(previousNode);
-        }
-        previousNode = previousNode.getLastChild();
+      if (previousNode != null && previousNode.getLastToken().getValue().equals(tokenValue)) {
+        return matchPrevious(previousNode);
       }
     }
-    if (rule != null) {
+    if (onRightRuleMatcher != null) {
       AstNode previousNode = node.previousAstNode();
-      while (previousNode != null) {
-        if (previousNode.getName().equals(rule)) {
-          return matchPrevious(previousNode);
-        }
-        previousNode = previousNode.getLastChild();
+      previousNode = onRightRuleMatcher.match(previousNode);
+      if (previousNode != null) {
+        return matchPrevious(previousNode);
       }
     }
     return null;

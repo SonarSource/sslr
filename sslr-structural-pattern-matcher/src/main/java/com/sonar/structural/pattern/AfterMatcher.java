@@ -11,14 +11,14 @@ import com.sonar.sslr.dsl.Literal;
 public class AfterMatcher extends StructuralUnitMatcher {
 
   private String tokenValue;
-  private RuleMatcher ruleMatcher;
+  private OnLeftRuleMatcher ruleMatcher;
   private AfterMatcher nextAfterMatcher;
 
   public void setTokenValue(Literal tokenValue) {
     this.tokenValue = tokenValue.toString();
   }
 
-  public void setRuleMatcher(RuleMatcher ruleMatcher) {
+  public void setOnLeftRuleMatcher(OnLeftRuleMatcher ruleMatcher) {
     this.ruleMatcher = ruleMatcher;
   }
 

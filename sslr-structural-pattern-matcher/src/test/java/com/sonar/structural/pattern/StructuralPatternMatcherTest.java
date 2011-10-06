@@ -36,6 +36,7 @@ public class StructuralPatternMatcherTest {
     StructuralPatternMatcher.compile("parent(this(*))('child1' child2(anotherChild) 'child3')");
     StructuralPatternMatcher.compile("divideStmt(this(*))(ruleName)");
     StructuralPatternMatcher.compile("grandParent( left 'left' parent(this(*)))");
+    StructuralPatternMatcher.compile("parent(leftRule('token') this(*))");
   }
 
   @Test(expected = StructuralPatternMatcherException.class)
@@ -81,8 +82,11 @@ public class StructuralPatternMatcherTest {
 
   @Test
   public void shouldMatchPreviousNodes() {
-    pattern = StructuralPatternMatcher.compile("nation this(*)");
+    pattern = StructuralPatternMatcher.compile("nation('London') this(*)");
     assertThat(pattern.isMatching(madrid), is(true));
+    
+    pattern = StructuralPatternMatcher.compile("nation('Paris') this(*)");
+    assertThat(pattern.isMatching(madrid), is(false));
 
     pattern = StructuralPatternMatcher.compile("nation nation this(*)");
     assertThat(pattern.isMatching(madrid), is(true));
