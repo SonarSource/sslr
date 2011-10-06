@@ -8,10 +8,11 @@ package com.sonar.structural.pattern;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.dsl.Literal;
 
-public final class ChildMatcher extends CompositeMatcher {
+public final class ChildMatcher extends StructuralUnitMatcher {
 
   protected String rule;
   protected String tokenValue;
+  private ChildSequenceMatcher childSequenceMatcher;
 
   public void setRule(String name) {
     rule = name;
@@ -19,6 +20,10 @@ public final class ChildMatcher extends CompositeMatcher {
 
   public void setTokenValue(Literal tokenValue) {
     this.tokenValue = tokenValue.toString();
+  }
+
+  public void setChildSequenceMatcher(ChildSequenceMatcher childSequenceMatcher) {
+    this.childSequenceMatcher = childSequenceMatcher;
   }
 
   @Override
@@ -30,7 +35,7 @@ public final class ChildMatcher extends CompositeMatcher {
     if (node == null) {
       return null;
     }
-    if (matcher != null && matcher.match(node) == null) {
+    if (childSequenceMatcher != null && childSequenceMatcher.match(node) == null) {
       return null;
     }
     return node;
