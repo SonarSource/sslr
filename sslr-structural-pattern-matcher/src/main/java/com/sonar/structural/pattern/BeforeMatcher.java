@@ -54,11 +54,4 @@ public class BeforeMatcher extends StructuralUnitMatcher {
       return previousBeforeMatcher.match(node);
     } else return node;
   }
-
-  private AstNode getLeafNode(AstNode previousNode) {
-    if (previousNode.hasChildren()) {
-      return getLeafNode(previousNode.getLastChild());
-    }
-    return previousNode;
-  }
 }

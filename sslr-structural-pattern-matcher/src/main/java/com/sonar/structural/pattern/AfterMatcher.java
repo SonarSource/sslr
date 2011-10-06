@@ -29,13 +29,13 @@ public class AfterMatcher extends StructuralUnitMatcher {
   @Override
   public AstNode match(AstNode node) {
     AstNode nextNode = node.nextAstNode();
-    if (tokenValue != null) {
-      if (nextNode != null && nextNode.getTokenValue().equals(tokenValue)) {
-        return matchNext(getLeafNode(nextNode));
-      }
+    if (nextNode == null) {
+      return null;
+    }
+    if (tokenValue != null && nextNode.getTokenValue().equals(tokenValue)) {
+      return matchNext(getLeafNode(nextNode));
     }
     if (ruleMatcher != null) {
-      ruleMatcher.match(nextNode);
       return matchNext(ruleMatcher.match(nextNode));
     }
     return null;

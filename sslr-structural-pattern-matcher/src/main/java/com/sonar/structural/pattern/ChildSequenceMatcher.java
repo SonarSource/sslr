@@ -23,6 +23,9 @@ public final class ChildSequenceMatcher extends StructuralUnitMatcher {
   @Override
   public final AstNode match(AstNode node) {
     AstNode childNode = childMatcher.match(node);
+    if (childNode == null) {
+      return null;
+    }
     if (afterMatcher != null && afterMatcher.match(childNode) == null) {
       return null;
     }
