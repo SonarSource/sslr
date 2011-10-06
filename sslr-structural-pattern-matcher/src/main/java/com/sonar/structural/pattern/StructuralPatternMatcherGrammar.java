@@ -47,19 +47,23 @@ public class StructuralPatternMatcherGrammar extends Grammar {
     
     thisMatcher.is("this", "(", or("*", one2n(or(rule, tokenValue), opt("or"))), ")", opt("(", childSequenceMatcher, ")"));
 
-    childSequenceMatcher.isOr(and("(", or(childMatcher), ")"), childMatcher);
+    childSequenceMatcher.is(or(and("(", or(childMatcher), ")"), childMatcher), opt(opt(afterMatcher)));
     childMatcher.is(rule, opt("(", or(childSequenceMatcher), ")"));
     childMatcher.or(tokenValue);
 
     ruleMatcher.is(rule, opt("(", or(childSequenceMatcher), ")"));
+    
 
     compilationUnit.plug(patternMatcher);
-    parentMatcher.plug(ParentNodeMatcher.class);
+    parentMatcher.plug(ParentMatcher.class);
+    childSequenceMatcher.plug(ChildSequenceMatcher.class);
+    childMatcher.plug(ChildMatcher.class);
+    
     thisMatcher.plug(ThisNodeMatcher.class);
     sequenceMatcher.plug(SequenceMatcher.class);
     beforeMatcher.plug(BeforeMatcher.class);
     afterMatcher.plug(AfterMatcher.class);
-    childMatcher.plug(ChildNodeMatcher.class);
+    
     ruleMatcher.plug(RuleMatcher.class);
 
     tokenValue.is(LITERAL).plug(Literal.class);

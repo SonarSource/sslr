@@ -33,6 +33,7 @@ public class StructuralPatternMatcherTest {
     StructuralPatternMatcher.compile("this(*)(child((anotherChild)))");
     StructuralPatternMatcher.compile("this(*)(('child'))");
     StructuralPatternMatcher.compile("this(*) rule(child)");
+    StructuralPatternMatcher.compile("parent(this(*))('child1' child2 'child3')");
     StructuralPatternMatcher.compile("divideStmt(this(*))(ruleName)");
   }
 

@@ -7,17 +7,17 @@ package com.sonar.structural.pattern;
 
 import com.sonar.sslr.api.AstNode;
 
-public final class ParentNodeMatcher extends CompositeMatcher {
+public final class ParentMatcher extends CompositeMatcher {
 
   protected String rule;
-  private ChildNodeMatcher childNodeMatcher;
+  private ChildSequenceMatcher childSequenceMather;
 
   public void setRule(String rule) {
     this.rule = rule;
   }
 
-  public void addChildSequenceMatcher(ChildNodeMatcher childNodeMatcher) {
-    this.childNodeMatcher = childNodeMatcher;
+  public void addChildSequenceMatcher(ChildSequenceMatcher childSequenceMather) {
+    this.childSequenceMather = childSequenceMather;
   }
 
   @Override
@@ -30,7 +30,7 @@ public final class ParentNodeMatcher extends CompositeMatcher {
     if (parentNode == null) {
       return null;
     }
-    if (childNodeMatcher != null && !childNodeMatcher.isMatching(parentNode)) {
+    if (childSequenceMather != null && !childSequenceMather.isMatching(parentNode)) {
       return null;
     }
     return parentNode;

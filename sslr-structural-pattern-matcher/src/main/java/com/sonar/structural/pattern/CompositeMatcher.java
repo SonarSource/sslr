@@ -5,19 +5,11 @@
  */
 package com.sonar.structural.pattern;
 
-import com.sonar.sslr.api.AstNode;
+public abstract class CompositeMatcher extends StructuralUnitMatcher {
 
-public abstract class CompositeMatcher {
+  protected StructuralUnitMatcher matcher;
 
-  protected CompositeMatcher matcher;
-
-  public void add(CompositeMatcher matcher) {
+  public void add(StructuralUnitMatcher matcher) {
     this.matcher = matcher;
-  }
-
-  public abstract AstNode match(AstNode node);
-
-  public final boolean isMatching(AstNode node) {
-    return match(node) != null;
   }
 }

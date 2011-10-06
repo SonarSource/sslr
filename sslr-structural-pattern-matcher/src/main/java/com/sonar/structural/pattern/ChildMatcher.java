@@ -8,7 +8,7 @@ package com.sonar.structural.pattern;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.dsl.Literal;
 
-public final class ChildNodeMatcher extends CompositeMatcher {
+public final class ChildMatcher extends CompositeMatcher {
 
   protected String rule;
   protected String tokenValue;
