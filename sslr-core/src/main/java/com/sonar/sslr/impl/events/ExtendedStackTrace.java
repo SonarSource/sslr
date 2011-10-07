@@ -5,6 +5,8 @@
  */
 package com.sonar.sslr.impl.events;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Stack;
 
 import com.sonar.sslr.api.AstNode;
@@ -113,6 +115,20 @@ public class ExtendedStackTrace extends ParsingEventListener {
   	}
   	
   	return null;
+  }
+  
+  @Override
+  public String toString() {
+    PrintStream stream = null;
+    
+    try {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      stream = new PrintStream(baos);
+      ExtendedStackTraceStream.print(this, stream);
+      return baos.toString();
+    } finally {
+      if (stream != null) stream.close();
+    }
   }
 
 }

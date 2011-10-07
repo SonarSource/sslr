@@ -5,7 +5,9 @@
  */
 package com.sonar.sslr.squid;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,6 +26,8 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.ast.AstWalker;
+import com.sonar.sslr.impl.events.ExtendedStackTrace;
+import com.sonar.sslr.impl.events.ExtendedStackTraceStream;
 
 public final class AstScanner<GRAMMAR extends Grammar> {
 
@@ -34,6 +38,8 @@ public final class AstScanner<GRAMMAR extends Grammar> {
   private final List<AuditListener> auditListeners;
   private final SquidIndex indexer = new SquidIndex();
   private final CommentAnalyser commentAnalyser;
+  private Parser<GRAMMAR> debugParser;
+  private ExtendedStackTrace extendedStackTrace;
 
   private AstScanner(Builder<GRAMMAR> builder) {
     this.parser = builder.parser;
@@ -43,6 +49,8 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     this.context.setGrammar(parser.getGrammar());
     this.context.getProject().setSourceCodeIndexer(indexer);
     this.commentAnalyser = builder.commentAnalyser;
+    this.debugParser = builder.debugParser;
+    this.extendedStackTrace = builder.extendedStackTrace;
     indexer.index(context.getProject());
   }
 
@@ -69,19 +77,40 @@ public final class AstScanner<GRAMMAR extends Grammar> {
         context.setFile(null);
         astWalker = null;
       } catch (RecognitionException e) {
-      	for (SquidAstVisitor<? extends Grammar> visitor: visitors) {
-      		visitor.visitFile(null);
-      	}
-      	
-      	for (AuditListener auditListener: auditListeners) {
-      		auditListener.processRecognitionException(e);
-      	}
+        for (SquidAstVisitor<? extends Grammar> visitor: visitors) {
+          visitor.visitFile(null);
+        }
+        
+        /* Should we retry with the extended stack trace? */
+        boolean extendedStackTracePopulated = false;
+        if (this.debugParser != null && this.extendedStackTrace != null) {
+          try {
+            debugParser.parse(file);
+          } catch (RecognitionException re) {
+            extendedStackTracePopulated = true;
+          } catch (Exception e2) {
+          }
+        }
+        
+        if (extendedStackTracePopulated) {
+          RecognitionException re = new RecognitionException(extendedStackTrace);
+          
+          for (AuditListener auditListener: auditListeners) {
+            auditListener.processRecognitionException(re);
+          }
+
+          LOG.error("Unable to parse source file : " + file.getAbsolutePath() + System.getProperty("line.separator") + re.getMessage());
+        } else {
+          for (AuditListener auditListener: auditListeners) {
+            auditListener.processRecognitionException(e);
+          }
+          
+          LOG.error("Unable to parse source file : " + file.getAbsolutePath() + System.getProperty("line.separator") + e.getMessage());
+        }
       	
       	for (SquidAstVisitor<? extends Grammar> visitor: visitors) {
       		visitor.leaveFile(null);
       	}
-      	
-        LOG.error("Unable to parse source file : " + file.getAbsolutePath(), e);
       } catch (Exception e) {
       	for (SquidAstVisitor<? extends Grammar> visitor: visitors) {
       		visitor.visitFile(null);
@@ -115,6 +144,8 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     private List<AuditListener> auditListeners = new ArrayList<AuditListener>();
     private SquidAstVisitorContextImpl<GRAMMAR> context;
     private CommentAnalyser commentAnalyser;
+    private Parser<GRAMMAR> debugParser;
+    private ExtendedStackTrace extendedStackTrace;
 
     public Builder<GRAMMAR> setParser(Parser<GRAMMAR> parser) {
       this.parser = parser;
@@ -132,6 +163,12 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     	}
     	
       visitors.add(visitor);
+      return this;
+    }
+    
+    public Builder<GRAMMAR> withExtendedStackTrace(Parser<GRAMMAR> debugParser, ExtendedStackTrace extendedStackTrace) {
+      this.debugParser = debugParser;
+      this.extendedStackTrace = extendedStackTrace;
       return this;
     }
 

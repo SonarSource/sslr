@@ -7,6 +7,7 @@ package com.sonar.sslr.api;
 
 import com.sonar.sslr.impl.ParsingStackTrace;
 import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.impl.events.ExtendedStackTrace;
 
 /**
  * If a parsing error is encountered, an exception which implements this RecognitionException is thrown by the Parser. This
@@ -28,6 +29,11 @@ public class RecognitionException extends RuntimeException {
     if (parsingState.getOutpostMatcherToken() != null) {
       line = parsingState.getOutpostMatcherToken().getLine();
     }
+  }
+  
+  public RecognitionException(ExtendedStackTrace extendedStackTrace) {
+    super(extendedStackTrace.toString());
+    line = extendedStackTrace.longestParsingState.readToken(extendedStackTrace.longestIndex).getLine();
   }
 
   /**
