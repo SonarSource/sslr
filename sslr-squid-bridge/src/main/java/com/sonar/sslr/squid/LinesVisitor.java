@@ -16,13 +16,11 @@ import com.sonar.sslr.api.Token;
 /**
  * Visitor that computes the number of lines of a file.
  */
-public class LinesVisitor extends SquidAstVisitor<Grammar> implements AstAndTokenVisitor {
+public class LinesVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> implements AstAndTokenVisitor {
 
   private final MetricDef metric;
-  private final SquidAstVisitorContext<? extends Grammar> context;
 
-  public LinesVisitor(SquidAstVisitorContext<? extends Grammar> context, MetricDef metric) {
-    this.context = context;
+  public LinesVisitor(MetricDef metric) {
     this.metric = metric;
   }
 
@@ -31,7 +29,7 @@ public class LinesVisitor extends SquidAstVisitor<Grammar> implements AstAndToke
    */
   public void visitToken(Token token) {
     if (token.getType() == EOF) {
-      context.peekSourceCode().setMeasure(metric, token.getLine());
+      getContext().peekSourceCode().setMeasure(metric, token.getLine());
     }
   }
 

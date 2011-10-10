@@ -14,19 +14,17 @@ import org.sonar.squid.recognizer.CodeRecognizer;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.Parser;
 
 /**
  * Visitor that computes the number of lines of comments and the number of empty lines of comments.
  */
-public class CommentsVisitor extends SquidAstVisitor<Grammar> {
+public class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> {
 
 	private HashSet<Integer> noSonar;
 	private HashSet<Integer> commentedLinesOfCode;
   private HashSet<Integer> comments;
   private HashSet<Integer> blankComments;
   
-  private final SquidAstVisitorContext<? extends Grammar> context;
   private final boolean enableNoSonar;
   private final MetricDef commentMetric;
   private final MetricDef blankCommentMetric;
@@ -34,7 +32,6 @@ public class CommentsVisitor extends SquidAstVisitor<Grammar> {
   private final MetricDef commentedLinesOfCodeMetric;
   
   private CommentsVisitor(CommentsVisitorBuilder builder) {
-    this.context = builder.context;
     this.enableNoSonar = builder.enableNoSonar;
     this.commentMetric = builder.commentMetric;
     this.blankCommentMetric = builder.blankCommentMetric;
@@ -95,9 +92,9 @@ public class CommentsVisitor extends SquidAstVisitor<Grammar> {
    */
   @Override
   public void leaveFile(AstNode astNode) {
-  	if (context.getComments() == null) return;
+  	if (getContext().getComments() == null) return;
   	
-    for (Token comment : context.getComments()) {
+    for (Token comment : getContext().getComments()) {
       String[] commentLines = comment.getValue().split("\n", -1);
       int line = comment.getLine();
 
@@ -108,7 +105,7 @@ public class CommentsVisitor extends SquidAstVisitor<Grammar> {
       	} else if (codeRecognizer != null && codeRecognizer.isLineOfCode(commentLine)) {
       		/* Commented line of code */
       		addCommentedLineOfCode(line);
-      	} else if (blankCommentMetric != null && context.getComments().isBlank(commentLine)) {
+      	} else if (blankCommentMetric != null && getContext().getComments().isBlank(commentLine)) {
       		/* Blank lines */
           addBlankCommentLine(line);
         } else if (commentMetric != null) {
@@ -120,49 +117,46 @@ public class CommentsVisitor extends SquidAstVisitor<Grammar> {
       }
     }
 
-    if (enableNoSonar) ((SourceFile)context.peekSourceCode()).addNoSonarTagLines(noSonar);
-    if (commentedLinesOfCodeMetric != null) context.peekSourceCode().add(commentedLinesOfCodeMetric, commentedLinesOfCode.size());
-    if (commentMetric != null) context.peekSourceCode().add(commentMetric, comments.size());
-    if (blankCommentMetric != null) context.peekSourceCode().add(blankCommentMetric, blankComments.size());
+    if (enableNoSonar) ((SourceFile)getContext().peekSourceCode()).addNoSonarTagLines(noSonar);
+    if (commentedLinesOfCodeMetric != null) getContext().peekSourceCode().add(commentedLinesOfCodeMetric, commentedLinesOfCode.size());
+    if (commentMetric != null) getContext().peekSourceCode().add(commentMetric, comments.size());
+    if (blankCommentMetric != null) getContext().peekSourceCode().add(blankCommentMetric, blankComments.size());
   }
   
-  public static CommentsVisitorBuilder builder(SquidAstVisitorContext<? extends Grammar> context) {
-  	return new CommentsVisitorBuilder(context);
+  public static <GRAMMAR extends Grammar> CommentsVisitorBuilder<GRAMMAR> builder() {
+  	return new CommentsVisitorBuilder<GRAMMAR>();
   }
   
-  public final static class CommentsVisitorBuilder {
+  public final static class CommentsVisitorBuilder<GRAMMAR extends Grammar> {
   	
-  	private SquidAstVisitorContext<? extends Grammar> context;
     private boolean enableNoSonar;
     private MetricDef commentMetric;
     private MetricDef blankCommentMetric;
     private CodeRecognizer codeRecognizer;
     private MetricDef commentedLinesOfCodeMetric;
   	
-  	private CommentsVisitorBuilder(SquidAstVisitorContext<? extends Grammar> context) {
-  		this.context = context;
-  	}
+  	private CommentsVisitorBuilder() {}
   	
-    public CommentsVisitor build() {
-      return new CommentsVisitor(this);
+    public CommentsVisitor<GRAMMAR> build() {
+      return new CommentsVisitor<GRAMMAR>(this);
     }
     
-    public CommentsVisitorBuilder withNoSonar(boolean enableNoSonar) {
+    public CommentsVisitorBuilder<GRAMMAR> withNoSonar(boolean enableNoSonar) {
     	this.enableNoSonar = enableNoSonar;
     	return this;
     }
     
-    public CommentsVisitorBuilder withCommentMetric(MetricDef commentMetric) {
+    public CommentsVisitorBuilder<GRAMMAR> withCommentMetric(MetricDef commentMetric) {
     	this.commentMetric = commentMetric;
     	return this;
     }
     
-    public CommentsVisitorBuilder withBlankCommentMetric(MetricDef blankCommentMetric) {
+    public CommentsVisitorBuilder<GRAMMAR> withBlankCommentMetric(MetricDef blankCommentMetric) {
     	this.blankCommentMetric = blankCommentMetric;
     	return this;
     }
     
-    public CommentsVisitorBuilder withCommentedLinesOfCodeMetric(CodeRecognizer codeRecognizer, MetricDef commentedLinesOfCodeMetric) {
+    public CommentsVisitorBuilder<GRAMMAR> withCommentedLinesOfCodeMetric(CodeRecognizer codeRecognizer, MetricDef commentedLinesOfCodeMetric) {
     	this.codeRecognizer = codeRecognizer;
     	this.commentedLinesOfCodeMetric = commentedLinesOfCodeMetric;
     	return this;

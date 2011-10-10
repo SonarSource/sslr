@@ -14,41 +14,33 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.Grammar;
 
-public class CounterVisitor extends SquidAstVisitor<Grammar> {
+public class CounterVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> {
 
   private MetricDef metric;
   private LinkedList<AstNodeType> astNodeTypes = new LinkedList<AstNodeType>();
-  private final SquidAstVisitorContext<? extends Grammar> context;
 
-  public static Builder builder() {
-    return new Builder();
+  public static <GRAMMAR extends Grammar> Builder<GRAMMAR> builder() {
+    return new Builder<GRAMMAR>();
   }
 
-  public static class Builder {
+  public static class Builder<GRAMMAR extends Grammar> {
 
     private MetricDef metric;
     private LinkedList<AstNodeType> astNodeTypes = new LinkedList<AstNodeType>();
-    private SquidAstVisitorContext<? extends Grammar> context;
+    
+    private Builder() {}
 
-    private Builder() {
-    }
-
-    public Builder setMetricDef(MetricDef metric) {
+    public Builder<GRAMMAR> setMetricDef(MetricDef metric) {
       this.metric = metric;
       return this;
     }
 
-    public Builder setContext(SquidAstVisitorContext<? extends Grammar> context) {
-      this.context = context;
-      return this;
-    }
-
-    public Builder subscribeTo(AstNodeType astNodeType) {
+    public Builder<GRAMMAR> subscribeTo(AstNodeType astNodeType) {
       this.astNodeTypes.add(astNodeType);
       return this;
     }
 
-    public Builder subscribeTo(AstNodeType... astNodeTypes) {
+    public Builder<GRAMMAR> subscribeTo(AstNodeType... astNodeTypes) {
       for (AstNodeType astNodeType : astNodeTypes) {
         this.astNodeTypes.add(astNodeType);
       }
@@ -56,19 +48,18 @@ public class CounterVisitor extends SquidAstVisitor<Grammar> {
       return this;
     }
 
-    public Builder subscribeTo(Collection<AstNodeType> astNodeTypes) {
+    public Builder<GRAMMAR> subscribeTo(Collection<AstNodeType> astNodeTypes) {
       this.astNodeTypes = new LinkedList<AstNodeType>(astNodeTypes);
       return this;
     }
 
-    public CounterVisitor build() {
-      return new CounterVisitor(context, this);
+    public CounterVisitor<GRAMMAR> build() {
+      return new CounterVisitor<GRAMMAR>(this);
     }
 
   }
 
-  private CounterVisitor(SquidAstVisitorContext<? extends Grammar> context, Builder builder) {
-    this.context = context;
+  private CounterVisitor(Builder<GRAMMAR> builder) {
     this.metric = builder.metric;
     this.astNodeTypes = builder.astNodeTypes;
   }
@@ -82,7 +73,7 @@ public class CounterVisitor extends SquidAstVisitor<Grammar> {
 
   @Override
   public void visitNode(AstNode astNode) {
-    context.peekSourceCode().add(metric, 1);
+    getContext().peekSourceCode().add(metric, 1);
   }
 
 }

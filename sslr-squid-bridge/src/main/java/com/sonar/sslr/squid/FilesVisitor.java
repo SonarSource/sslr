@@ -11,24 +11,22 @@ import org.sonar.squid.measures.MetricDef;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 
-public class FilesVisitor extends SquidAstVisitor<Grammar> {
+public class FilesVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> {
 
   private final MetricDef metric;
-  private final SquidAstVisitorContext<? extends Grammar> context;
 
-  public FilesVisitor(SquidAstVisitorContext<? extends Grammar> context, MetricDef metric) {
-    this.context = context;
+  public FilesVisitor(MetricDef metric) {
     this.metric = metric;
   }
 
   public void visitFile(AstNode astNode) {
-    SourceFile file = new SourceFile(context.getFile().getAbsolutePath(), context.getFile().getName());
-    context.addSourceCode(file);
-    context.peekSourceCode().setMeasure(metric, 1);
+    SourceFile file = new SourceFile(getContext().getFile().getAbsolutePath(), getContext().getFile().getName());
+    getContext().addSourceCode(file);
+    getContext().peekSourceCode().setMeasure(metric, 1);
   }
 
   public void leaveFile(AstNode astNode) {
-    context.popSourceCode();
+    getContext().popSourceCode();
   }
 
 }

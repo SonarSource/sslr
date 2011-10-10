@@ -5,9 +5,7 @@
  */
 package com.sonar.sslr.squid;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,14 +25,13 @@ import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.ast.AstWalker;
 import com.sonar.sslr.impl.events.ExtendedStackTrace;
-import com.sonar.sslr.impl.events.ExtendedStackTraceStream;
 
 public final class AstScanner<GRAMMAR extends Grammar> {
 
   private static final Logger LOG = LoggerFactory.getLogger(AstScanner.class);
   private final SquidAstVisitorContextImpl<GRAMMAR> context;
   private final Parser<GRAMMAR> parser;
-  private final List<SquidAstVisitor<? extends Grammar>> visitors;
+  private final List<SquidAstVisitor<GRAMMAR>> visitors;
   private final List<AuditListener> auditListeners;
   private final SquidIndex indexer = new SquidIndex();
   private final CommentAnalyser commentAnalyser;
@@ -43,7 +40,7 @@ public final class AstScanner<GRAMMAR extends Grammar> {
 
   private AstScanner(Builder<GRAMMAR> builder) {
     this.parser = builder.parser;
-    this.visitors = new ArrayList<SquidAstVisitor<? extends Grammar>>(builder.visitors);
+    this.visitors = new ArrayList<SquidAstVisitor<GRAMMAR>>(builder.visitors);
     this.auditListeners = new ArrayList<AuditListener>(builder.auditListeners);
     this.context = builder.context;
     this.context.setGrammar(parser.getGrammar());
@@ -140,7 +137,7 @@ public final class AstScanner<GRAMMAR extends Grammar> {
   public static class Builder<GRAMMAR extends Grammar> {
 
     private Parser<GRAMMAR> parser;
-    private List<SquidAstVisitor<? extends Grammar>> visitors = new ArrayList<SquidAstVisitor<? extends Grammar>>();
+    private List<SquidAstVisitor<GRAMMAR>> visitors = new ArrayList<SquidAstVisitor<GRAMMAR>>();
     private List<AuditListener> auditListeners = new ArrayList<AuditListener>();
     private SquidAstVisitorContextImpl<GRAMMAR> context;
     private CommentAnalyser commentAnalyser;
@@ -157,7 +154,9 @@ public final class AstScanner<GRAMMAR extends Grammar> {
       return this;
     }
 
-    public Builder<GRAMMAR> withSquidAstVisitor(SquidAstVisitor<? extends Grammar> visitor) {
+    public Builder<GRAMMAR> withSquidAstVisitor(SquidAstVisitor<GRAMMAR> visitor) {
+      visitor.setContext(context);
+      
     	if (visitor instanceof AuditListener) {
     		auditListeners.add((AuditListener)visitor);
     	}

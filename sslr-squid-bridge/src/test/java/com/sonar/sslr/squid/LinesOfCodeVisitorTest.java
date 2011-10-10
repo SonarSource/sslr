@@ -24,7 +24,8 @@ public class LinesOfCodeVisitorTest {
   public void shouldIncrementTheLinesOfCodeMeasure() {
     assertThat(project.getInt(MyMetrics.LINES_OF_CODE), is(0));
 
-    LinesOfCodeVisitor visitor = new LinesOfCodeVisitor(context, MyMetrics.LINES_OF_CODE);
+    LinesOfCodeVisitor<Grammar> visitor = new LinesOfCodeVisitor<Grammar>(MyMetrics.LINES_OF_CODE);
+    visitor.setContext(context);
     
     visitor.visitFile(null);
 

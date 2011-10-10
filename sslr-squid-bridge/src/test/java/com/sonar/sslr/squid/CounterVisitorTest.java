@@ -25,8 +25,8 @@ public class CounterVisitorTest {
   public void shouldIncrementTheComplexityWhenVisitingANode() {
     assertThat(project.getInt(MyMetrics.COMPLEXITY), is(0));
 
-    CounterVisitor visitor = CounterVisitor.builder().setContext(context).setMetricDef(MyMetrics.COMPLEXITY).subscribeTo(ifStmt)
-        .build();
+    CounterVisitor<Grammar> visitor = CounterVisitor.<Grammar>builder().setMetricDef(MyMetrics.COMPLEXITY).subscribeTo(ifStmt).build();
+    visitor.setContext(context);
 
     visitor.visitNode(null);
     assertThat(project.getInt(MyMetrics.COMPLEXITY), is(1));

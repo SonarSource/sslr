@@ -27,7 +27,9 @@ public class FilesVisitorTest {
   public void shouldPushSourceFileToTheStack() {
     assertThat(project.getInt(MyMetrics.FILES), is(0));
 
-    FilesVisitor visitor = new FilesVisitor(context, MyMetrics.FILES);
+    FilesVisitor<Grammar> visitor = new FilesVisitor<Grammar>(MyMetrics.FILES);
+    visitor.setContext(context);
+    
     context.setFile(new File("SourceFile.c"));
 
     visitor.visitFile(null);

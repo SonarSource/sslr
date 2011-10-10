@@ -42,11 +42,12 @@ public class CommentsVisitorTest {
     assertThat(file.getInt(MyMetrics.COMMENT_LINES), is(0));
     assertThat(file.getInt(MyMetrics.BLANK_COMMENT_LINES), is(0));
 
-    CommentsVisitor visitor = CommentsVisitor.builder(context).withBlankCommentMetric(MyMetrics.BLANK_COMMENT_LINES)
+    CommentsVisitor<Grammar> visitor = CommentsVisitor.<Grammar>builder().withBlankCommentMetric(MyMetrics.BLANK_COMMENT_LINES)
     																													.withCommentMetric(MyMetrics.COMMENT_LINES)
     																													.withCommentedLinesOfCodeMetric(codeRecognizer, MyMetrics.COMMENTED_LINES_OF_CODE)
     																													.withNoSonar(true)
     																													.build();
+    visitor.setContext(context);
 
     ListMultimap<Integer, Token> comments = LinkedListMultimap.<Integer, Token> create();
     

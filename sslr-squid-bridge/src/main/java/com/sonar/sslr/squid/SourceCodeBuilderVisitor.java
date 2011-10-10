@@ -12,14 +12,12 @@ import com.sonar.sslr.api.Grammar;
 /**
  * Visitor that create resources.
  */
-public class SourceCodeBuilderVisitor extends SquidAstVisitor<Grammar> {
+public class SourceCodeBuilderVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> {
 
-	private final SquidAstVisitorContext<? extends Grammar> context;
 	private final SourceCodeBuilderCallback callback;
 	private final AstNodeType[] astNodeTypes;
 	
-  public SourceCodeBuilderVisitor(SquidAstVisitorContext<? extends Grammar> context, SourceCodeBuilderCallback callback, AstNodeType... astNodeTypes) {
-    this.context = context;
+  public SourceCodeBuilderVisitor(SourceCodeBuilderCallback callback, AstNodeType... astNodeTypes) {
     this.callback = callback;
     this.astNodeTypes = astNodeTypes;
   }
@@ -36,7 +34,7 @@ public class SourceCodeBuilderVisitor extends SquidAstVisitor<Grammar> {
    */
   @Override
   public void visitNode(AstNode astNode) {
-    context.addSourceCode(callback.createSourceCode(context.peekSourceCode(), astNode));
+    getContext().addSourceCode(callback.createSourceCode(getContext().peekSourceCode(), astNode));
   }
 
   /**
@@ -44,7 +42,7 @@ public class SourceCodeBuilderVisitor extends SquidAstVisitor<Grammar> {
    */
   @Override
   public void leaveNode(AstNode astNode) {
-  	context.popSourceCode();
+    getContext().popSourceCode();
   }
 
 }

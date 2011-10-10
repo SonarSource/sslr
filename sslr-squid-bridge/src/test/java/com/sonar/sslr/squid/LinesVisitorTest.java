@@ -24,7 +24,8 @@ public class LinesVisitorTest {
   public void shouldCompyteTheNumberOfLines() {
     assertThat(project.getInt(MyMetrics.LINES), is(0));
 
-    LinesVisitor visitor = new LinesVisitor(context, MyMetrics.LINES);
+    LinesVisitor<Grammar> visitor = new LinesVisitor<Grammar>(MyMetrics.LINES);
+    visitor.setContext(context);
 
     visitor.visitToken(new Token(GenericTokenType.EOF, "", 11, 0));
     assertThat(project.getInt(MyMetrics.LINES), is(11));
