@@ -130,8 +130,8 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     }
   }
 
-  public static <GRAMMAR extends Grammar> Builder<GRAMMAR> builder() {
-    return new Builder<GRAMMAR>();
+  public static <GRAMMAR extends Grammar> Builder<GRAMMAR> builder(SquidAstVisitorContextImpl<GRAMMAR> context) {
+    return new Builder<GRAMMAR>(context);
   }
 
   public static class Builder<GRAMMAR extends Grammar> {
@@ -143,6 +143,10 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     private CommentAnalyser commentAnalyser;
     private Parser<GRAMMAR> debugParser;
     private ExtendedStackTrace extendedStackTrace;
+    
+    public Builder(SquidAstVisitorContextImpl<GRAMMAR> context) {
+      this.context = context;
+    }
 
     public Builder<GRAMMAR> setParser(Parser<GRAMMAR> parser) {
       this.parser = parser;
@@ -168,11 +172,6 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     public Builder<GRAMMAR> withExtendedStackTrace(Parser<GRAMMAR> debugParser, ExtendedStackTrace extendedStackTrace) {
       this.debugParser = debugParser;
       this.extendedStackTrace = extendedStackTrace;
-      return this;
-    }
-
-    public Builder<GRAMMAR> setSquidAstVisitorContext(SquidAstVisitorContextImpl<GRAMMAR> context) {
-      this.context = context;
       return this;
     }
 
