@@ -31,7 +31,7 @@ public class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GR
   private final CodeRecognizer codeRecognizer;
   private final MetricDef commentedLinesOfCodeMetric;
   
-  private CommentsVisitor(CommentsVisitorBuilder builder) {
+  private CommentsVisitor(CommentsVisitorBuilder<GRAMMAR> builder) {
     this.enableNoSonar = builder.enableNoSonar;
     this.commentMetric = builder.commentMetric;
     this.blankCommentMetric = builder.blankCommentMetric;

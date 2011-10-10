@@ -15,7 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.squid.api.AnalysisException;
 import org.sonar.squid.api.SourceCodeSearchEngine;
+import org.sonar.squid.api.SourceCodeTreeDecorator;
+import org.sonar.squid.api.SourceProject;
+import org.sonar.squid.indexer.QueryByType;
 import org.sonar.squid.indexer.SquidIndex;
+import org.sonar.squid.measures.MetricDef;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AuditListener;
@@ -37,6 +41,7 @@ public final class AstScanner<GRAMMAR extends Grammar> {
   private final CommentAnalyser commentAnalyser;
   private Parser<GRAMMAR> debugParser;
   private ExtendedStackTrace extendedStackTrace;
+  private MetricDef[] metrics;
 
   private AstScanner(Builder<GRAMMAR> builder) {
     this.parser = builder.parser;
@@ -48,6 +53,7 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     this.commentAnalyser = builder.commentAnalyser;
     this.debugParser = builder.debugParser;
     this.extendedStackTrace = builder.extendedStackTrace;
+    this.metrics = builder.metrics;
     indexer.index(context.getProject());
   }
 
@@ -128,6 +134,16 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     for (SquidAstVisitor<? extends Grammar> visitor : visitors) {
       visitor.destroy();
     }
+   
+    decorateSquidTree();
+  }
+  
+  private void decorateSquidTree() {
+    if (metrics != null && metrics.length > 0) {
+      SourceProject project = context.getProject();
+      SourceCodeTreeDecorator decorator = new SourceCodeTreeDecorator(project);
+      decorator.decorateWith(metrics);
+    }
   }
 
   public static <GRAMMAR extends Grammar> Builder<GRAMMAR> builder(SquidAstVisitorContextImpl<GRAMMAR> context) {
@@ -143,6 +159,7 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     private CommentAnalyser commentAnalyser;
     private Parser<GRAMMAR> debugParser;
     private ExtendedStackTrace extendedStackTrace;
+    private MetricDef[] metrics;
     
     public Builder(SquidAstVisitorContextImpl<GRAMMAR> context) {
       this.context = context;
@@ -172,6 +189,11 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     public Builder<GRAMMAR> withExtendedStackTrace(Parser<GRAMMAR> debugParser, ExtendedStackTrace extendedStackTrace) {
       this.debugParser = debugParser;
       this.extendedStackTrace = extendedStackTrace;
+      return this;
+    }
+    
+    public Builder<GRAMMAR> withMetrics(MetricDef... metrics) {
+      this.metrics = metrics;
       return this;
     }
 
