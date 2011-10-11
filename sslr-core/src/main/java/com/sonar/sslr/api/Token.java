@@ -45,7 +45,7 @@ public class Token {
   }
 
   public Token(TokenType type, String value, int line, int column, File file) {
-    this(type, value, value, line, column, DEFAULT_FILE);
+    this(type, value, value, line, column, file);
   }
   
   public Token(TokenType type, String value, String originalValue, int line, int column, File file) {
