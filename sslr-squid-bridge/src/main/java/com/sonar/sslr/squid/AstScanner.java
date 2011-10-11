@@ -17,7 +17,6 @@ import org.sonar.squid.api.AnalysisException;
 import org.sonar.squid.api.SourceCodeSearchEngine;
 import org.sonar.squid.api.SourceCodeTreeDecorator;
 import org.sonar.squid.api.SourceProject;
-import org.sonar.squid.indexer.QueryByType;
 import org.sonar.squid.indexer.SquidIndex;
 import org.sonar.squid.measures.MetricDef;
 
