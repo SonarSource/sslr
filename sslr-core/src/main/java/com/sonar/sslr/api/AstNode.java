@@ -182,9 +182,9 @@ public class AstNode {
   /**
    * Get the Token's original value associated to this AstNode
    * 
-   * @return token's orignal value
+   * @return token's original value
    */
-  public String getTokenOrignalValue() {
+  public String getTokenOriginalValue() {
     if (token == null) {
       return null;
     }
