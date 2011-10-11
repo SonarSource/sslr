@@ -178,6 +178,18 @@ public class AstNode {
     }
     return token.getValue();
   }
+  
+  /**
+   * Get the Token's original value associated to this AstNode
+   * 
+   * @return token's orignal value
+   */
+  public String getTokenOrignalValue() {
+    if (token == null) {
+      return null;
+    }
+    return token.getOriginalValue();
+  }
 
   /**
    * Get the Token associated to this AstNode
