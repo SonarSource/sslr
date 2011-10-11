@@ -13,6 +13,7 @@ import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
 
+@Deprecated
 public abstract class AbstractCommentChannel extends Channel<LexerOutput> {
 
   private final char[] starter;

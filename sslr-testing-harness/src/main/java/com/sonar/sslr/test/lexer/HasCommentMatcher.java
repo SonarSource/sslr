@@ -15,14 +15,24 @@ class HasCommentMatcher extends BaseMatcher<LexerOutput> {
 
   private final String commentValue;
   private final int commentLine;
+  private final boolean originalValue;
 
   HasCommentMatcher(String commentValue) {
     this(commentValue, -1);
   }
+  
+  HasCommentMatcher(String commentValue, boolean originalValue) {
+    this(commentValue, -1, originalValue);
+  }
 
   public HasCommentMatcher(String commentValue, int commentLine) {
+    this(commentValue, commentLine, false);
+  }
+  
+  public HasCommentMatcher(String commentValue, int commentLine, boolean originalValue) {
     this.commentValue = commentValue;
     this.commentLine = commentLine;
+    this.originalValue = originalValue;
   }
 
   public boolean matches(Object obj) {
@@ -31,7 +41,8 @@ class HasCommentMatcher extends BaseMatcher<LexerOutput> {
     }
     LexerOutput output = (LexerOutput) obj;
     for (Token comment : output.getCommentTokens()) {
-      if (comment.getValue().equals(commentValue)) {
+      String value = (originalValue) ? comment.getOriginalValue() : comment.getValue();
+      if (value.equals(commentValue)) {
         if (commentLine > -1 && comment.getLine() != commentLine) {
           continue;
         }
@@ -42,6 +53,7 @@ class HasCommentMatcher extends BaseMatcher<LexerOutput> {
   }
 
   public void describeTo(Description desc) {
-    desc.appendText("Comment('" + commentValue + "')");
+    if (originalValue) desc.appendText("Comment('" + commentValue + "')");
+    else desc.appendText("OriginalComment('" + commentValue + "')");
   }
 }

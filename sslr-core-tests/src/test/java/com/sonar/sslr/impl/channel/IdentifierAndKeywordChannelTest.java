@@ -5,7 +5,7 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
+import static com.sonar.sslr.test.lexer.LexerMatchers.*;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
@@ -50,6 +50,8 @@ public class IdentifierAndKeywordChannelTest {
     channel = new IdentifierAndKeywordChannel("[a-zA-Z_][a-zA-Z_0-9]*", false, MyKeywords.values());
     assertThat(channel, consume("keyword1", output));
     assertThat(output, hasToken("KEYWORD1", MyKeywords.KEYWORD1));
+    assertThat(output, hasToken("KEYWORD1"));
+    assertThat(output, hasOriginalToken("keyword1"));
 
     assertThat(channel, consume("keyword2", output));
     assertThat(output, hasToken("KEYWORD2", MyKeywords.KeyWord2));

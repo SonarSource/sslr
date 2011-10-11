@@ -67,10 +67,20 @@ public class LexerOutput {
    * @param columnPosition
    */
   public void addTokenAndProcess(TokenType tokenType, String value, int linePosition, int columnPosition) {
-    Token token = new Token(tokenType, value, linePosition, columnPosition);
-    if (file != null) {
-      token.setFile(file);
-    }
+    addTokenAndProcess(tokenType, value, value, linePosition, columnPosition);
+  }
+  
+  /**
+   * Add a new token and notify the preprocessors
+   * 
+   * @param tokenType
+   * @param value
+   * @param originalValue
+   * @param linePosition
+   * @param columnPosition
+   */
+  public void addTokenAndProcess(TokenType tokenType, String value, String originalValue, int linePosition, int columnPosition) {
+    Token token = new Token(tokenType, value, originalValue, linePosition, columnPosition, file);
     for (Preprocessor preprocessor : preprocessors) {
       if (preprocessor.process(token, this)) {
         return;
@@ -103,9 +113,6 @@ public class LexerOutput {
   }
 
   public void addPreprocessingToken(Token token) {
-    if (file != null) {
-      token.setFile(file);
-    }
     preprocessingTokens.add(token);
   }
 
@@ -169,9 +176,6 @@ public class LexerOutput {
   }
 
   public void addCommentToken(Token token) {
-    if (file != null) {
-      token.setFile(file);
-    }
     comments.put(token.getLine(), token);
   }
 

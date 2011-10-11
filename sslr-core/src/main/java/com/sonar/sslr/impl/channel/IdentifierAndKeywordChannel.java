@@ -40,13 +40,14 @@ public class IdentifierAndKeywordChannel extends Channel<LexerOutput> {
   public boolean consume(CodeReader code, LexerOutput output) {
     if (code.popTo(matcher, tmpBuilder) > 0) {
       String word = tmpBuilder.toString();
+      String wordOriginal = tmpBuilder.toString();
       if ( !caseSensitive) {
         word = word.toUpperCase();
       }
       if (isKeyword(word)) {
-        output.addTokenAndProcess(keywordsMap.get(word), word, code.getPreviousCursor().getLine(), code.getPreviousCursor().getColumn());
+        output.addTokenAndProcess(keywordsMap.get(word), word, wordOriginal, code.getPreviousCursor().getLine(), code.getPreviousCursor().getColumn());
       } else {
-        output.addTokenAndProcess(GenericTokenType.IDENTIFIER, word, code.getPreviousCursor().getLine(), code.getPreviousCursor()
+        output.addTokenAndProcess(GenericTokenType.IDENTIFIER, word, wordOriginal, code.getPreviousCursor().getLine(), code.getPreviousCursor()
             .getColumn());
       }
       tmpBuilder.delete(0, tmpBuilder.length());

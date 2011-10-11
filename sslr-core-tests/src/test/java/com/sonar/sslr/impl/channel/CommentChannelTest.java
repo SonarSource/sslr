@@ -5,7 +5,7 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import static com.sonar.sslr.test.lexer.LexerMatchers.hasComment;
+import static com.sonar.sslr.test.lexer.LexerMatchers.*;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import static org.sonar.test.channel.ChannelMatchers.consume;
@@ -31,6 +31,7 @@ public class CommentChannelTest {
     assertThat(channel, not(consume("This is not a comment", output)));
     assertThat(channel, consume("//My Comment\n second line", output));
     assertThat(output, hasComment("//My Comment"));
+    assertThat(output, hasOriginalComment("//My Comment"));
   }
   
   @Test
@@ -39,6 +40,7 @@ public class CommentChannelTest {
     assertThat(channel, not(consume("This is not a comment", output)));
     assertThat(channel, consume("//My Comment\n second line", output));
     assertThat(output, hasComment("My Commen"));
+    assertThat(output, hasOriginalComment("//My Comment"));
   }
   
   @Test
@@ -47,6 +49,7 @@ public class CommentChannelTest {
     assertThat(channel, not(consume("This is not a comment", output)));
     assertThat(channel, consume("//My Comment    \n second line", output));
     assertThat(output, hasComment("My Commen"));
+    assertThat(output, hasOriginalComment("//My Comment    "));
   }
   
 }
