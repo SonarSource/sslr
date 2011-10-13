@@ -79,53 +79,42 @@ public final class AstScanner<GRAMMAR extends Grammar> {
         context.setFile(null);
         astWalker = null;
       } catch (RecognitionException e) {
-        for (SquidAstVisitor<? extends Grammar> visitor: visitors) {
-          visitor.visitFile(null);
-        }
+        LOG.error("Unable to parse source file : " + file.getAbsolutePath());
         
-        /* Should we retry with the extended stack trace? */
-        boolean extendedStackTracePopulated = false;
-        if (this.debugParser != null && this.extendedStackTrace != null) {
-          try {
-            debugParser.parse(file);
-          } catch (RecognitionException re) {
-            extendedStackTracePopulated = true;
-          } catch (Exception e2) {
+        try {          
+          /* Should we retry with the extended stack trace? */
+          boolean extendedStackTracePopulated = false;
+          if (this.debugParser != null && this.extendedStackTrace != null) {
+            try {
+              debugParser.parse(file);
+            } catch (RecognitionException re) {
+              extendedStackTracePopulated = true;
+            } catch (Exception e2) {
+              LOG.error("Unable to get an extended stack trace on file : " + file.getAbsolutePath(), e2);
+            }
           }
-        }
-        
-        if (extendedStackTracePopulated) {
-          RecognitionException re = new RecognitionException(extendedStackTrace);
+          
+          /* Log the recognition exception */
+          RecognitionException re = (extendedStackTracePopulated) ? new RecognitionException(extendedStackTrace) : e;
+          LOG.error(re.getMessage());
+          
+          /* Process the exception */
+          for (SquidAstVisitor<? extends Grammar> visitor: visitors) {
+            visitor.visitFile(null);
+          }
           
           for (AuditListener auditListener: auditListeners) {
             auditListener.processRecognitionException(re);
           }
-
-          LOG.error("Unable to parse source file : " + file.getAbsolutePath() + System.getProperty("line.separator") + re.getMessage());
-        } else {
-          for (AuditListener auditListener: auditListeners) {
-            auditListener.processRecognitionException(e);
-          }
-          
-          LOG.error("Unable to parse source file : " + file.getAbsolutePath() + System.getProperty("line.separator") + e.getMessage());
+        	
+        	for (SquidAstVisitor<? extends Grammar> visitor: visitors) {
+        		visitor.leaveFile(null);
+        	}
+        } catch (Exception e2) {
+          String errorMessage = "Sonar is unable to analyze file : '" + (file == null ? "null" : file.getAbsolutePath()) + "'";
+          throw new AnalysisException(errorMessage, e);
         }
-      	
-      	for (SquidAstVisitor<? extends Grammar> visitor: visitors) {
-      		visitor.leaveFile(null);
-      	}
       } catch (Exception e) {
-      	for (SquidAstVisitor<? extends Grammar> visitor: visitors) {
-      		visitor.visitFile(null);
-      	}
-      	
-      	for (AuditListener auditListener: auditListeners) {
-      		auditListener.processException(e);
-      	}
-      	
-      	for (SquidAstVisitor<? extends Grammar> visitor: visitors) {
-      		visitor.leaveFile(null);
-      	}
-      	
         String errorMessage = "Sonar is unable to analyze file : '" + (file == null ? "null" : file.getAbsolutePath()) + "'";
         throw new AnalysisException(errorMessage, e);
       }
