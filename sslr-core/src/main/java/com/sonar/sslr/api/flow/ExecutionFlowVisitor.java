@@ -10,17 +10,17 @@ public abstract class ExecutionFlowVisitor<STATEMENT extends Statement> {
 
   public void start() {
   }
-  
+
   public void visitStatement(STATEMENT stmt) {
   }
 
   public void visitMandatoryBranches() {
   }
 
-  public void visitBranch() {
+  public void visitBranch(Branch branch) {
   }
 
-  public void leaveBranch() {
+  public void leaveBranch(Branch branch) {
   }
 
   public void leaveMandatoryBranches() {

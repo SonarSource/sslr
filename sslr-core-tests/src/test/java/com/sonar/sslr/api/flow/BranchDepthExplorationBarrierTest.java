@@ -9,17 +9,15 @@ import org.junit.Test;
 
 public class BranchDepthExplorationBarrierTest {
 
-  BranchDepthExplorationBarrier barrier = new BranchDepthExplorationBarrier(3);
-
   @Test
-  public void shouldStopExecutionWhenEncounteringPreviousVisitedStatement() {
-    barrier.visitBranch();
-    barrier.visitBranch();
-    barrier.leaveBranch();
-    barrier.visitBranch();
+  public void shouldStopFlowExecutionWhenTheDepthOfBranchesIsTooImportant() {
+    BranchDepthExplorationBarrier barrier = new BranchDepthExplorationBarrier(3);
+
+    barrier.visitBranch(new Branch()); //Should not throw any flow signal
 
     try {
-      barrier.visitBranch();
+      Branch branch = new Branch(new Branch(new Branch()));
+      barrier.visitBranch(branch);
     } catch (BarrierSignal signal) {
       return;
     }

@@ -16,15 +16,9 @@ public class BranchDepthExplorationBarrier extends ExecutionFlowVisitor {
   }
 
   @Override
-  public void visitBranch() {
-    if (branchDepth >= maximumBranchDepth) {
+  public void visitBranch(Branch branch) {
+    if (branch.getDepth() >= maximumBranchDepth) {
       throw new BarrierSignal();
     }
-    branchDepth++;
-  }
-
-  @Override
-  public void leaveBranch() {
-    branchDepth--;
   }
 }

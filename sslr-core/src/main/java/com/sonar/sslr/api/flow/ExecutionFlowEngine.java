@@ -17,6 +17,7 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> implements Executi
 
   private ExecutionFlowVisitor<STATEMENT>[] visitors = new ExecutionFlowVisitor[0];
   private final FlowHandlerStack flowHandlerStack = new FlowHandlerStack();
+  private final Stack<Branch> branchStack = new Stack<Branch>();
   private STATEMENT lastStmt;
   private STATEMENT lastEndPathStmt;
   private STATEMENT firstStmt;
@@ -47,28 +48,40 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> implements Executi
     return stmtAstNodes.values();
   }
 
-  public void visitFlow(AstNode stmtToStartVisitFrom) {
+  public final void visitFlow(AstNode stmtToStartVisitFrom) {
     visitFlow(getStatement(stmtToStartVisitFrom));
   }
 
-  public void visitFlow(STATEMENT stmtToStartVisitFrom) {
+  public final void visitFlow(STATEMENT stmtToStartVisitFrom) {
     if ( !executionFlowStarted) {
+      branchStack.push(new Branch());
       this.firstStmt = stmtToStartVisitFrom;
       return;
     }
-    STATEMENT currentStmt = stmtToStartVisitFrom;
-    while (currentStmt != null) {
-      lastStmt = currentStmt;
-      callVisitStatementOnVisitors();
-      if (currentStmt.hasFlowHandler()) {
-        FlowHandler flowHandler = currentStmt.getFlowHandler();
-        flowHandler.processFlow(this);
+    Branch branch = getCurrentBranch();
+    try {
+      STATEMENT currentStmt = stmtToStartVisitFrom;
+      while (currentStmt != null) {
+        lastStmt = currentStmt;
+        callVisitStatementOnVisitors();
+        if (currentStmt.hasFlowHandler()) {
+          FlowHandler flowHandler = currentStmt.getFlowHandler();
+          flowHandler.processFlow(this);
+        }
+        currentStmt = (STATEMENT) currentStmt.getNext();
       }
-      currentStmt = (STATEMENT) currentStmt.getNext();
-    }
 
-    if (firstStmt == stmtToStartVisitFrom) {
-      callEndPathOnVisitors();
+      if (firstStmt == stmtToStartVisitFrom) {
+        callEndPathOnVisitors();
+      }
+    } catch (ExecutionFlowSignal signal) {
+      while (getCurrentBranch() != branch) {
+        branchStack.pop();
+        if (branchStack.empty()) {
+          throw new IllegalStateException("The SSLR execution of flow engine is unable to recover branch state " + branch);
+        }
+      }
+      throw signal;
     }
   }
 
@@ -89,7 +102,7 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> implements Executi
 
   public void callVisitBranchOnVisitors() {
     for (int i = 0; i < visitors.length; i++) {
-      visitors[i].visitBranch();
+      visitors[i].visitBranch(newBranch());
     }
   }
 
@@ -107,11 +120,21 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> implements Executi
 
   public void callLeaveBranchOnVisitors() {
     for (int i = 0; i < visitors.length; i++) {
-      visitors[i].leaveBranch();
+      visitors[i].leaveBranch(getCurrentBranch());
     }
   }
 
-  void start() {
+  private Branch getCurrentBranch() {
+    return branchStack.peek();
+  }
+
+  private Branch newBranch() {
+    Branch branch = new Branch(getCurrentBranch());
+    branchStack.push(branch);
+    return branch;
+  }
+
+  final void start() {
     executionFlowStarted = true;
     callStartOnVisitors();
     try {
