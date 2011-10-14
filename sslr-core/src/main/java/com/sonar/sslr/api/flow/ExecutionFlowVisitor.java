@@ -26,7 +26,7 @@ public abstract class ExecutionFlowVisitor<STATEMENT extends Statement> {
   public void leaveMandatoryBranches() {
   }
 
-  public void endPath() {
+  public void endPath(Branch branch) {
   }
 
   public void stop() {

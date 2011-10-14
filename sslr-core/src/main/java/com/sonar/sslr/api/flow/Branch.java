@@ -9,11 +9,15 @@ package com.sonar.sslr.api.flow;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sonar.sslr.api.AstNode;
+
 public class Branch {
 
   private final List<Branch> children = new ArrayList<Branch>();
   private final Branch parent;
   private final int index;
+  private Statement stmt;
+  private AstNode condition;
 
   public Branch(Branch parent) {
     this.parent = parent;
@@ -24,6 +28,26 @@ public class Branch {
   public Branch() {
     parent = null;
     index = 1;
+  }
+  
+  public final void setConditionalStatement(Statement stmt){
+    this.stmt = stmt;
+  }
+  
+  public final void setCondition(AstNode condition){
+    this.condition = condition;
+  }
+
+  public final Statement getConditionalStatement() {
+    return stmt;
+  }
+  
+  public final Branch getParent(){
+    return parent;
+  }
+
+  public final AstNode getCondition() {
+    return condition;
   }
 
   public final int getDepth() {

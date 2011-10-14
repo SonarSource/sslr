@@ -41,7 +41,7 @@ public class ExecutionFlowTest {
 
     InOrder inOrder = inOrder(visitor);
     inOrder.verify(visitor, times(1)).start();
-    inOrder.verify(visitor, times(1)).endPath();
+    inOrder.verify(visitor, times(1)).endPath(any(Branch.class));
     inOrder.verify(visitor, times(1)).stop();
   }
 
@@ -121,6 +121,6 @@ public class ExecutionFlowTest {
 
     InOrder inOrder = inOrder(visitor);
     inOrder.verify(visitor, times(1)).visitStatement(any(Statement.class), any(Branch.class));
-    inOrder.verify(visitor, times(1)).endPath();
+    inOrder.verify(visitor, times(1)).endPath(any(Branch.class));
   }
 }

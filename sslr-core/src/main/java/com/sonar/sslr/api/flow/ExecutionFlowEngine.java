@@ -88,7 +88,7 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> implements Executi
   public void callEndPathOnVisitors() {
     if (lastStmt != lastEndPathStmt) {
       for (int i = 0; i < visitors.length; i++) {
-        visitors[i].endPath();
+        visitors[i].endPath(getCurrentBranch());
       }
     }
     lastEndPathStmt = lastStmt;
@@ -100,8 +100,10 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> implements Executi
     }
   }
 
-  public void callVisitBranchOnVisitors() {
+  public void callVisitBranchOnVisitors(Statement conditionalStatement, AstNode condition) {
     Branch branch = new Branch(getCurrentBranch());
+    branch.setCondition(condition);
+    branch.setConditionalStatement(conditionalStatement);
     branchStack.push(branch);
 
     for (int i = 0; i < visitors.length; i++) {
