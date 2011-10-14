@@ -19,7 +19,7 @@ public class NotVisitTwiceTheSameStatementBarrier extends ExecutionFlowVisitor {
   }
 
   @Override
-  public void visitStatement(Statement stmt) {
+  public void visitStatement(Statement stmt, Branch branch) {
     if (stmtsInThePath.contains(stmt)) {
       throw new BarrierSignal();
     }

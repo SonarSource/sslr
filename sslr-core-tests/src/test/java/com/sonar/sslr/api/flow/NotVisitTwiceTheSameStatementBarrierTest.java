@@ -18,11 +18,11 @@ public class NotVisitTwiceTheSameStatementBarrierTest {
     Statement stmt1 = new Statement(createAstNode("myStmt1"));
     Statement stmt2 = new Statement(createAstNode("myStmt2"));
 
-    barrier.visitStatement(stmt1);
-    barrier.visitStatement(stmt2);
+    barrier.visitStatement(stmt1, null);
+    barrier.visitStatement(stmt2, null);
 
     try {
-      barrier.visitStatement(stmt1);
+      barrier.visitStatement(stmt1, null);
     } catch (BarrierSignal signal) {
       return;
     }

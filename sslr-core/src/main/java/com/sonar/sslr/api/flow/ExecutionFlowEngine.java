@@ -96,7 +96,7 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> implements Executi
 
   private void callVisitStatementOnVisitors() {
     for (int i = 0; i < visitors.length; i++) {
-      visitors[i].visitStatement(lastStmt);
+      visitors[i].visitStatement(lastStmt, getCurrentBranch());
     }
   }
 
