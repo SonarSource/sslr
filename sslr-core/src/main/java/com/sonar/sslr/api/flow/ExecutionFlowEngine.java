@@ -101,8 +101,11 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> implements Executi
   }
 
   public void callVisitBranchOnVisitors() {
+    Branch branch = new Branch(getCurrentBranch());
+    branchStack.push(branch);
+
     for (int i = 0; i < visitors.length; i++) {
-      visitors[i].visitBranch(newBranch());
+      visitors[i].visitBranch(branch);
     }
   }
 
@@ -122,16 +125,11 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> implements Executi
     for (int i = 0; i < visitors.length; i++) {
       visitors[i].leaveBranch(getCurrentBranch());
     }
+    branchStack.pop();
   }
 
   private Branch getCurrentBranch() {
     return branchStack.peek();
-  }
-
-  private Branch newBranch() {
-    Branch branch = new Branch(getCurrentBranch());
-    branchStack.push(branch);
-    return branch;
   }
 
   final void start() {
