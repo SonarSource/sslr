@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.sonarsource.sslr</groupId>
 		<artifactId>sslr</artifactId>
-		<version>1.5</version>
+		<version>1.6-SNAPSHOT</version>
 	</parent>
 	<artifactId>sslr-core-tests</artifactId>
 	<name>SonarSource :: Language Recognizer :: Core :: Tests</name>
