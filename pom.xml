@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.sonarsource.sslr</groupId>
-  <artifactId>sslr</artifactId>
-  <packaging>pom</packaging>
-  <version>1.6-SNAPSHOT</version>
-  <name>SonarSource :: Language Recognizer</name>
+
   <parent>
     <groupId>com.sonarsource.parent</groupId>
     <artifactId>parent</artifactId>
     <version>11</version>
   </parent>
 
-  <properties>
-    <sonar.version>2.4</sonar.version>
-  </properties>
+  <groupId>com.sonarsource.sslr</groupId>
+  <artifactId>sslr</artifactId>
+  <version>1.6-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>SonarSource :: Language Recognizer</name>
 
   <scm>
     <connection>scm:svn:https://subversion.assembla.com/svn/sonarsourcecode/trunk/sslr</connection>
@@ -22,29 +21,18 @@
     <url>https://subversion.assembla.com/svn/sonarsourcecode/trunk/sslr</url>
   </scm>
 
+  <properties>
+    <sonar.version>2.4</sonar.version>
+  </properties>
+
   <modules>
-    <module>sslr-core</module>   
-    <module>sslr-testing-harness</module>       
-    <module>sslr-core-tests</module>       
-    <module>sslr-dsl</module>  
+    <module>sslr-core</module>
+    <module>sslr-testing-harness</module>
+    <module>sslr-core-tests</module>
+    <module>sslr-dsl</module>
     <module>sslr-squid-bridge</module>
     <module>sslr-structural-pattern-matcher</module>
   </modules>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.2</version>
-        <configuration>
-          <archive>
-            <addMavenDescriptor>false</addMavenDescriptor>
-          </archive>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencyManagement>
     <dependencies>
@@ -52,17 +40,17 @@
         <groupId>${project.groupId}</groupId>
         <artifactId>sslr-core</artifactId>
         <version>${project.version}</version>
-      </dependency> 
+      </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>sslr-dsl</artifactId>
         <version>${project.version}</version>
-      </dependency>       
+      </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>sslr-testing-harness</artifactId>
         <version>${project.version}</version>
-      </dependency> 
+      </dependency>
       <dependency>
         <groupId>org.codehaus.sonar</groupId>
         <artifactId>sonar-channel</artifactId>
@@ -77,12 +65,12 @@
         <groupId>com.google.collections</groupId>
         <artifactId>google-collections</artifactId>
         <version>1.0</version>
-      </dependency>    
+      </dependency>
       <dependency>
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>
         <version>2.6</version>
-      </dependency>          
+      </dependency>
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
@@ -107,7 +95,7 @@
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>4.8.1</version>
-      </dependency> 
+      </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-all</artifactId>
@@ -117,7 +105,7 @@
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest-all</artifactId>
         <version>1.1</version>
-      </dependency>             
+      </dependency>
       <dependency>
         <groupId>org.codehaus.sonar</groupId>
         <artifactId>sonar-testing-harness</artifactId>
