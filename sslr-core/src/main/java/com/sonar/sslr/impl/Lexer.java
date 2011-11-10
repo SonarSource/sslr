@@ -39,7 +39,7 @@ public class Lexer {
 
   private Lexer(LexerBuilder builder) {
     this.charset = builder.charset;
-    this.preprocessors = builder.preprocessors.toArray(new Preprocessor[0]);
+    this.preprocessors = builder.preprocessors.toArray(new Preprocessor[builder.preprocessors.size()]);
     this.configuration = builder.configuration;
     this.channelDispatcher = builder.getChannelDispatcher();
   }

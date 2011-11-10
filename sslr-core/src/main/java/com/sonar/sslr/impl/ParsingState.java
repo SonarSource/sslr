@@ -35,7 +35,7 @@ public class ParsingState {
   public ParsingEventListener[] parsingEventListeners;
 
   public ParsingState(List<Token> tokens) {
-    this.tokens = tokens.toArray(new Token[0]);
+    this.tokens = tokens.toArray(new Token[tokens.size()]);
     lexerSize = this.tokens.length;
     astNodeMemoization = new AstNode[lexerSize + 1];
     astMatcherMemoization = new MemoizedMatcher[lexerSize + 1];
