@@ -15,27 +15,30 @@ import com.sonar.sslr.api.TokenType;
  * This class provides all the functions to define a context-free grammar
  */
 public class GrammarFunctions {
-	
-	private final static ThreadLocal<Map<Matcher, Matcher>> matcherCache = new ThreadLocal<Map<Matcher, Matcher>>() {
-		@Override protected Map<Matcher, Matcher> initialValue() {
-			return new HashMap<Matcher, Matcher>();
-		}
-	};
-	
-	private static final Matcher getCachedMatcher(Matcher matcher) {
-		if (matcherCache.get().containsKey(matcher)) {
-			return matcherCache.get().get(matcher);
-		}
-		
-		matcherCache.get().put(matcher, matcher);
-		return matcher;
-	}
-	
-	public static final void resetCache() {
-		matcherCache.set(new HashMap<Matcher, Matcher>());
-	}
 
-  private GrammarFunctions() { }
+  private final static ThreadLocal<Map<Matcher, Matcher>> matcherCache = new ThreadLocal<Map<Matcher, Matcher>>() {
+
+    @Override
+    protected Map<Matcher, Matcher> initialValue() {
+      return new HashMap<Matcher, Matcher>();
+    }
+  };
+
+  private static final Matcher getCachedMatcher(Matcher matcher) {
+    if (matcherCache.get().containsKey(matcher)) {
+      return matcherCache.get().get(matcher);
+    }
+
+    matcherCache.get().put(matcher, matcher);
+    return matcher;
+  }
+
+  public static final void resetCache() {
+    matcherCache.set(new HashMap<Matcher, Matcher>());
+  }
+
+  private GrammarFunctions() {
+  }
 
   public static final class Standard {
 
@@ -105,9 +108,9 @@ public class GrammarFunctions {
       if (elements == null || elements.length == 0) {
         throw new IllegalStateException("You must define at least one matcher.");
       } else if (elements.length == 1) {
-      	return convertToMatcher(elements[0]);
+        return convertToMatcher(elements[0]);
       } else {
-      	return getCachedMatcher(new OrMatcher(convertToMatchers(elements)));
+        return getCachedMatcher(new OrMatcher(convertToMatchers(elements)));
       }
     }
 
@@ -121,15 +124,15 @@ public class GrammarFunctions {
      * </pre>
      */
     public static Matcher and(Object... elements) {
-    	if (elements == null || elements.length == 0) {
-    		throw new IllegalStateException("You must define at least one matcher.");
-    	} else if (elements.length == 1) {
+      if (elements == null || elements.length == 0) {
+        throw new IllegalStateException("You must define at least one matcher.");
+      } else if (elements.length == 1) {
         return convertToMatcher(elements[0]);
       } else {
-      	return getCachedMatcher(new AndMatcher(convertToMatchers(elements)));
+        return getCachedMatcher(new AndMatcher(convertToMatchers(elements)));
       }
     }
-    
+
   }
 
   public static final class Predicate {
@@ -147,11 +150,11 @@ public class GrammarFunctions {
     public static Matcher next(Object... elements) {
       return getCachedMatcher(new NextMatcher(Standard.and(elements)));
     }
-    
+
   }
 
   public static final class Advanced {
-  	
+
     /**
      * Match only if the sub-matcher consumes either exactly, less than or more than the given number of tokens n.
      */
@@ -185,10 +188,10 @@ public class GrammarFunctions {
      * Match the next token if and only if its type belongs to the provided list
      */
     public static Matcher isOneOfThem(TokenType... types) {
-    	if (types == null || types.length == 0) {
+      if (types == null || types.length == 0) {
         throw new IllegalStateException("You must define at least one type.");
       } else {
-      	return getCachedMatcher(new TokenTypesMatcher(types));
+        return getCachedMatcher(new TokenTypesMatcher(types));
       }
     }
 
@@ -243,9 +246,9 @@ public class GrammarFunctions {
      * </pre>
      */
     public static Matcher till(Object element) {
-    	return getCachedMatcher(new InclusiveTillMatcher(convertToMatcher(element)));
+      return getCachedMatcher(new InclusiveTillMatcher(convertToMatcher(element)));
     }
-    
+
     /**
      * Consume all tokens as long one of the provided elements is not encountered.
      * 
@@ -274,12 +277,12 @@ public class GrammarFunctions {
      * </pre>
      */
     public static Matcher atLeastOne(Object... elements) {
-    	if (elements == null || elements.length == 0) {
-    		throw new IllegalStateException("You must define at least one matcher.");
-    	} else if (elements.length == 1) {
+      if (elements == null || elements.length == 0) {
+        throw new IllegalStateException("You must define at least one matcher.");
+      } else if (elements.length == 1) {
         return convertToMatcher(elements[0]);
       } else {
-      	return getCachedMatcher(new AtLeastOneMatcher(convertToMatchers(elements)));
+        return getCachedMatcher(new AtLeastOneMatcher(convertToMatchers(elements)));
       }
     }
 
@@ -304,10 +307,10 @@ public class GrammarFunctions {
   }
 
   protected static final Matcher[] convertToMatchers(Object[] objects) {
-  	if (objects == null || objects.length == 0) {
+    if (objects == null || objects.length == 0) {
       throw new IllegalStateException("You must define at least one matcher.");
     }
-  	
+
     Matcher[] matchers = new Matcher[objects.length];
     for (int i = 0; i < matchers.length; i++) {
       matchers[i] = convertToMatcher(objects[i]);
@@ -317,10 +320,10 @@ public class GrammarFunctions {
 
   @SuppressWarnings("rawtypes")
   protected static final Matcher convertToMatcher(Object object) {
-  	if (object == null) {
-  		throw new IllegalStateException("Null is not a valid matcher.");
-  	}
-  	
+    if (object == null) {
+      throw new IllegalStateException("Null is not a valid matcher.");
+    }
+
     Matcher matcher;
     if (object instanceof String) {
       matcher = getCachedMatcher(new TokenValueMatcher((String) object));
@@ -335,7 +338,8 @@ public class GrammarFunctions {
       try {
         matcher = (Matcher) object;
       } catch (ClassCastException e) {
-        throw new IllegalStateException("The matcher object can't be anything else than a Rule, Matcher, String, TokenType or Class. Object = " + object);
+        throw new IllegalStateException(
+            "The matcher object can't be anything else than a Rule, Matcher, String, TokenType or Class. Object = " + object);
       }
     }
 

@@ -9,7 +9,7 @@ package com.sonar.sslr.api;
 public class AstNodeUtils {
 
   public static AstNode createAstNode(String name) {
-    return new AstNode(GenericTokenType.IDENTIFIER, name, null);
+    return new AstNode(GenericTokenType.IDENTIFIER, name, new Token(GenericTokenType.LITERAL, "dummy"));
   }
 
 }

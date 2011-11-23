@@ -16,7 +16,7 @@ import com.sonar.sslr.api.AstNode;
 public class ExecutionFlowEngine<STATEMENT extends Statement> implements ExecutionFlow<STATEMENT> {
 
   private ExecutionFlowVisitor<STATEMENT>[] visitors = new ExecutionFlowVisitor[0];
-  private final FlowHandlerStack flowHandlerStack = new FlowHandlerStack();
+  private final FunctionCallStack flowHandlerStack = new FunctionCallStack();
   private final Stack<Branch> branchStack = new Stack<Branch>();
   private STATEMENT lastStmt;
   private STATEMENT lastEndPathStmt;
@@ -164,20 +164,29 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> implements Executi
     }
   }
 
-  public FlowHandlerStack getFlowHandlerStack() {
+  public FunctionCallStack getFlowHandlerStack() {
     return flowHandlerStack;
   }
 
-  public class FlowHandlerStack {
+  public void visitFlow(ExecutionFlowVisitor<STATEMENT>... visitors) {
+    throw new UnsupportedOperationException();
+  }
+
+  public class FunctionCallStack {
 
     private final Stack<FlowHandler> branches = new Stack<FlowHandler>();
+    private final Stack<STATEMENT> functionCalls = new Stack<STATEMENT>();
 
     public final boolean isEmpty() {
       return branches.isEmpty();
     }
 
-    public final void add(FlowHandler flowHandler) {
+    public final void add(FlowHandler flowHandler, STATEMENT functionCall) {
       branches.push(flowHandler);
+      functionCalls.push(functionCall);
+      for (int i = 0; i < visitors.length; i++) {
+        visitors[i].visitFunctionCall(functionCall);
+      }
     }
 
     public final FlowHandler peek() {
@@ -185,15 +194,15 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> implements Executi
     }
 
     public FlowHandler pop() {
+      STATEMENT functionCall = functionCalls.pop();
+      for (int i = 0; i < visitors.length; i++) {
+        visitors[i].leaveFunctionCall(functionCall);
+      }
       return branches.pop();
     }
 
     public boolean contains(FlowHandler flowHandler) {
       return branches.contains(flowHandler);
     }
-  }
-
-  public void visitFlow(ExecutionFlowVisitor<STATEMENT>... visitors) {
-    throw new UnsupportedOperationException();
   }
 }

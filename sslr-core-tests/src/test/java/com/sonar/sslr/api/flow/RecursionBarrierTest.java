@@ -9,12 +9,13 @@ import static com.sonar.sslr.api.AstNodeUtils.createAstNode;
 
 import org.junit.Test;
 
-public class NotVisitTwiceTheSameStatementBarrierTest {
+public class RecursionBarrierTest {
 
-  NotVisitTwiceTheSameStatementBarrier barrier = new NotVisitTwiceTheSameStatementBarrier();
+  RecursionBarrier barrier = new RecursionBarrier(false);
 
   @Test
   public void shouldStopExecutionWhenEncounteringPreviousVisitedStatement() {
+    barrier.start();
     Statement stmt1 = new Statement(createAstNode("myStmt1"));
     Statement stmt2 = new Statement(createAstNode("myStmt2"));
 

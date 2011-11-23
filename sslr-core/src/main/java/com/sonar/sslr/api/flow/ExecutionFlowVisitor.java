@@ -29,6 +29,12 @@ public abstract class ExecutionFlowVisitor<STATEMENT extends Statement> {
   public void endPath(Branch branch) {
   }
 
+  public void visitFunctionCall(STATEMENT functionCallStmt) {
+  }
+
+  public void leaveFunctionCall(STATEMENT functionCallStmt) {
+  }
+
   public void stop() {
   }
 }
