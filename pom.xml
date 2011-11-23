@@ -30,6 +30,7 @@
     <module>sslr-testing-harness</module>
     <module>sslr-core-tests</module>
     <module>sslr-dsl</module>
+    <module>sslr-xpath</module>    
     <module>sslr-squid-bridge</module>
     <module>sslr-structural-pattern-matcher</module>
   </modules>
