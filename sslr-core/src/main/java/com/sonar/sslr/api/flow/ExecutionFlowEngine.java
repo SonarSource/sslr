@@ -34,7 +34,7 @@ public class ExecutionFlowEngine implements ExecutionFlow {
 
   public final void visitFlow(AstNode stmtToStartVisitFrom, ExecutionFlowVisitor... visitors) {
     this.visitors = visitors;
-    visitFlow(stmtToStartVisitFrom);
+    visitFlow(getStatement(stmtToStartVisitFrom));
     start();
   }
 
@@ -46,10 +46,6 @@ public class ExecutionFlowEngine implements ExecutionFlow {
 
   public final Collection<Statement> getStatements() {
     return stmtAstNodes.values();
-  }
-
-  public final void visitFlow(AstNode stmtToStartVisitFrom) {
-    visitFlow(getStatement(stmtToStartVisitFrom));
   }
 
   public final void visitFlow(Statement stmtToStartVisitFrom) {
