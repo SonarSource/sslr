@@ -29,20 +29,20 @@ public class Branch {
     parent = null;
     index = 1;
   }
-  
-  public final void setConditionalStatement(Statement stmt){
+
+  public final void setConditionalStatement(Statement stmt) {
     this.stmt = stmt;
   }
-  
-  public final void setCondition(AstNode condition){
+
+  public final void setCondition(AstNode condition) {
     this.condition = condition;
   }
 
   public final Statement getConditionalStatement() {
     return stmt;
   }
-  
-  public final Branch getParent(){
+
+  public final Branch getParent() {
     return parent;
   }
 
@@ -70,13 +70,14 @@ public class Branch {
   }
 
   public boolean isParentOf(Branch branch) {
-    if (branch.parent == null) {
-      return false;
+    Branch parent = branch.parent;
+    while (parent != null) {
+      if (parent == this) {
+        return true;
+      }
+      parent = parent.parent;
     }
-    if (branch.parent == this) {
-      return true;
-    }
-    return isParentOf(branch.parent);
+    return false;
   }
 
   public boolean isParentOrChildOf(Branch branch) {
