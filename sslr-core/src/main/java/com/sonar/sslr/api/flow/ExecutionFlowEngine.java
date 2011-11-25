@@ -13,38 +13,38 @@ import java.util.Stack;
 
 import com.sonar.sslr.api.AstNode;
 
-public class ExecutionFlowEngine<STATEMENT extends Statement> implements ExecutionFlow<STATEMENT> {
+public class ExecutionFlowEngine implements ExecutionFlow {
 
-  private ExecutionFlowVisitor<STATEMENT>[] visitors = new ExecutionFlowVisitor[0];
+  private ExecutionFlowVisitor<Statement>[] visitors = new ExecutionFlowVisitor[0];
   private FunctionCallStack functionCallStack = new FunctionCallStack();
   private final Stack<Branch> branchStack = new Stack<Branch>();
-  private STATEMENT lastStmt;
-  private STATEMENT lastEndPathStmt;
-  private STATEMENT firstStmt;
+  private Statement lastStmt;
+  private Statement lastEndPathStmt;
+  private Statement firstStmt;
   private boolean executionFlowStarted = false;
-  private Map<AstNode, STATEMENT> stmtAstNodes = new HashMap<AstNode, STATEMENT>();
+  private Map<AstNode, Statement> stmtAstNodes = new HashMap<AstNode, Statement>();
 
-  public final void add(STATEMENT stmt) {
+  public final void add(Statement stmt) {
     stmtAstNodes.put(stmt.getAstNode(), stmt);
   }
 
-  public final STATEMENT getStatement(AstNode stmtNode) {
+  public final Statement getStatement(AstNode stmtNode) {
     return stmtAstNodes.get(stmtNode);
   }
 
-  public final void visitFlow(AstNode stmtToStartVisitFrom, ExecutionFlowVisitor<STATEMENT>... visitors) {
+  public final void visitFlow(AstNode stmtToStartVisitFrom, ExecutionFlowVisitor... visitors) {
     this.visitors = visitors;
     visitFlow(stmtToStartVisitFrom);
     start();
   }
 
-  public final void visitFlow(STATEMENT stmtToStartVisitFrom, ExecutionFlowVisitor<STATEMENT>... visitors) {
+  public final void visitFlow(Statement stmtToStartVisitFrom, ExecutionFlowVisitor... visitors) {
     this.visitors = visitors;
     visitFlow(stmtToStartVisitFrom);
     start();
   }
 
-  public final Collection<STATEMENT> getStatements() {
+  public final Collection<Statement> getStatements() {
     return stmtAstNodes.values();
   }
 
@@ -52,7 +52,7 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> implements Executi
     visitFlow(getStatement(stmtToStartVisitFrom));
   }
 
-  public final void visitFlow(STATEMENT stmtToStartVisitFrom) {
+  public final void visitFlow(Statement stmtToStartVisitFrom) {
     if ( !executionFlowStarted) {
       branchStack.push(new Branch());
       this.firstStmt = stmtToStartVisitFrom;
@@ -60,15 +60,19 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> implements Executi
     }
     Branch branch = getCurrentBranch();
     try {
-      STATEMENT currentStmt = stmtToStartVisitFrom;
+      Statement currentStmt = stmtToStartVisitFrom;
       while (currentStmt != null) {
         lastStmt = currentStmt;
         callVisitStatementOnVisitors();
         if (currentStmt.hasFlowHandler()) {
           FlowHandler flowHandler = currentStmt.getFlowHandler();
-          flowHandler.processFlow(this);
+          Statement stmt = flowHandler.processFlow(this);
+          if (stmt != null) {
+            currentStmt = stmt;
+            continue;
+          }
         }
-        currentStmt = (STATEMENT) currentStmt.getNext();
+        currentStmt = currentStmt.getNext();
       }
 
       if (firstStmt == stmtToStartVisitFrom) {
@@ -172,7 +176,7 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> implements Executi
     this.functionCallStack = functionCallStack;
   }
 
-  public void visitFlow(ExecutionFlowVisitor<STATEMENT>... visitors) {
+  public void visitFlow(ExecutionFlowVisitor... visitors) {
     throw new UnsupportedOperationException();
   }
 

@@ -81,7 +81,7 @@ public class ExecutionFlowTest {
     FlowHandler flowHandler = new FlowHandler() {
 
       @Override
-      public void processFlow(ExecutionFlowEngine flowExplorer) {
+      public Statement processFlow(ExecutionFlowEngine flowExplorer) {
         throw new StopFlowExplorationSignal();
 
       }
@@ -105,7 +105,7 @@ public class ExecutionFlowTest {
     FlowHandler flowHandler = new FlowHandler() {
 
       @Override
-      public void processFlow(ExecutionFlowEngine flowExplorer) {
+      public Statement processFlow(ExecutionFlowEngine flowExplorer) {
         throw new StopPathExplorationSignal();
 
       }

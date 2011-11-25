@@ -6,8 +6,7 @@
 
 package com.sonar.sslr.api.flow;
 
+public abstract class FlowHandler {
 
-public abstract class FlowHandler<STATEMENT extends Statement> {
-
-  public abstract void processFlow(ExecutionFlowEngine<STATEMENT> flowEngine);
+  public abstract Statement processFlow(ExecutionFlowEngine flowEngine);
 }
