@@ -16,7 +16,7 @@ import com.sonar.sslr.api.AstNode;
 public class ExecutionFlowEngine<STATEMENT extends Statement> implements ExecutionFlow<STATEMENT> {
 
   private ExecutionFlowVisitor<STATEMENT>[] visitors = new ExecutionFlowVisitor[0];
-  private final FunctionCallStack flowHandlerStack = new FunctionCallStack();
+  private FunctionCallStack functionCallStack = new FunctionCallStack();
   private final Stack<Branch> branchStack = new Stack<Branch>();
   private STATEMENT lastStmt;
   private STATEMENT lastEndPathStmt;
@@ -164,8 +164,12 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> implements Executi
     }
   }
 
-  public FunctionCallStack getFlowHandlerStack() {
-    return flowHandlerStack;
+  public FunctionCallStack getFunctionCallStack() {
+    return functionCallStack;
+  }
+
+  public void setFunctionCallStackStack(FunctionCallStack functionCallStack) {
+    this.functionCallStack = functionCallStack;
   }
 
   public void visitFlow(ExecutionFlowVisitor<STATEMENT>... visitors) {
@@ -174,19 +178,14 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> implements Executi
 
   public class FunctionCallStack {
 
-    private final Stack<FlowHandler> branches = new Stack<FlowHandler>();
-    private final Stack<STATEMENT> functionCalls = new Stack<STATEMENT>();
+    private Stack<FlowHandler> branches = new Stack<FlowHandler>();
 
     public final boolean isEmpty() {
       return branches.isEmpty();
     }
 
-    public final void add(FlowHandler flowHandler, STATEMENT functionCall) {
+    public final void add(FlowHandler flowHandler) {
       branches.push(flowHandler);
-      functionCalls.push(functionCall);
-      for (int i = 0; i < visitors.length; i++) {
-        visitors[i].visitFunctionCall(functionCall);
-      }
     }
 
     public final FlowHandler peek() {
@@ -194,15 +193,17 @@ public class ExecutionFlowEngine<STATEMENT extends Statement> implements Executi
     }
 
     public FlowHandler pop() {
-      STATEMENT functionCall = functionCalls.pop();
-      for (int i = 0; i < visitors.length; i++) {
-        visitors[i].leaveFunctionCall(functionCall);
-      }
       return branches.pop();
     }
 
     public boolean contains(FlowHandler flowHandler) {
       return branches.contains(flowHandler);
+    }
+
+    public FunctionCallStack clone() {
+      FunctionCallStack clone = new FunctionCallStack();
+      clone.branches = (Stack<FlowHandler>) branches.clone();
+      return clone;
     }
   }
 }
