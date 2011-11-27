@@ -19,7 +19,7 @@ public class ExecutionFlowEngine implements ExecutionFlow {
   private FunctionCallStack functionCallStack = new FunctionCallStack();
   private final Stack<Branch> branchStack = new Stack<Branch>();
   private int recursionStackDepth = 0;
-  private static final int MAXIMUM_RECURSION_STACK_DEPTH = 5000000;
+  private static final int MAXIMUM_RECURSION_STACK_DEPTH = 200;
   private Statement lastStmt;
   private Statement lastEndPathStmt;
   private Statement firstStmt;
@@ -57,7 +57,7 @@ public class ExecutionFlowEngine implements ExecutionFlow {
       return;
     }
     if (recursionStackDepth > MAXIMUM_RECURSION_STACK_DEPTH) {
-      //throw new BarrierSignal();
+      throw new BarrierSignal();
     }
     recursionStackDepth++;
     Branch branch = getCurrentBranch();
