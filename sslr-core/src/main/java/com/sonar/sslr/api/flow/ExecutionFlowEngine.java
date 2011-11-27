@@ -18,6 +18,8 @@ public class ExecutionFlowEngine implements ExecutionFlow {
   private ExecutionFlowVisitor<Statement>[] visitors = new ExecutionFlowVisitor[0];
   private FunctionCallStack functionCallStack = new FunctionCallStack();
   private final Stack<Branch> branchStack = new Stack<Branch>();
+  private int recursionStackDepth = 0;
+  private static final int MAXIMUM_RECURSION_STACK_DEPTH = 5000000;
   private Statement lastStmt;
   private Statement lastEndPathStmt;
   private Statement firstStmt;
@@ -54,6 +56,10 @@ public class ExecutionFlowEngine implements ExecutionFlow {
       this.firstStmt = stmtToStartVisitFrom;
       return;
     }
+    if (recursionStackDepth > MAXIMUM_RECURSION_STACK_DEPTH) {
+      //throw new BarrierSignal();
+    }
+    recursionStackDepth++;
     Branch branch = getCurrentBranch();
     try {
       Statement currentStmt = stmtToStartVisitFrom;
@@ -82,6 +88,8 @@ public class ExecutionFlowEngine implements ExecutionFlow {
         }
       }
       throw signal;
+    } finally {
+      recursionStackDepth--;
     }
   }
 
@@ -136,6 +144,7 @@ public class ExecutionFlowEngine implements ExecutionFlow {
 
   final void start() {
     executionFlowStarted = true;
+    recursionStackDepth = 0;
     callStartOnVisitors();
     try {
       visitFlow(firstStmt);
