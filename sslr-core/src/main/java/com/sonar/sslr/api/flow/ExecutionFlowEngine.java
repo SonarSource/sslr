@@ -19,7 +19,7 @@ public class ExecutionFlowEngine implements ExecutionFlow {
   private FunctionCallStack functionCallStack = new FunctionCallStack();
   private final Stack<Branch> branchStack = new Stack<Branch>();
   private int visitStackDepth = 0;
-  private static final int MAXIMUM_VISIT_STACK_DEPTH = 100;
+  private static final int MAXIMUM_VISIT_STACK_DEPTH = 200;
   private Statement lastStmt;
   private Statement lastEndPathStmt;
   private Statement firstStmt;
