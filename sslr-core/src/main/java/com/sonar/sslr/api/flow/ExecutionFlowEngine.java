@@ -17,7 +17,7 @@ public class ExecutionFlowEngine implements ExecutionFlow {
 
   private ExecutionFlowVisitor<Statement>[] visitors = new ExecutionFlowVisitor[0];
   private FunctionCallStack functionCallStack = new FunctionCallStack();
-  private final Stack<Branch> branchStack = new Stack<Branch>();
+  private Stack<Branch> branchStack = new Stack<Branch>();
   private int visitStackDepth = 0;
   private static final int MAXIMUM_VISIT_STACK_DEPTH = 200;
   private Statement lastStmt;
@@ -145,6 +145,7 @@ public class ExecutionFlowEngine implements ExecutionFlow {
   final void start() {
     executionFlowStarted = true;
     visitStackDepth = 0;
+    branchStack = new Stack<Branch>();
     callStartOnVisitors();
     try {
       visitFlow(firstStmt);
@@ -157,7 +158,9 @@ public class ExecutionFlowEngine implements ExecutionFlow {
       } catch (ExecutionFlowSignal signal) {
       }
       executionFlowStarted = false;
+      branchStack = new Stack<Branch>();
     }
+    visitors = null;
     callStopOnVisitors();
   }
 
