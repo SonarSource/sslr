@@ -52,6 +52,7 @@ public class ExecutionFlowEngine implements ExecutionFlow {
 
   public final void visitFlow(Statement stmtToStartVisitFrom) {
     if ( !executionFlowStarted) {
+      branchStack = new Stack<Branch>();
       branchStack.push(new Branch());
       this.firstStmt = stmtToStartVisitFrom;
       return;
@@ -145,7 +146,6 @@ public class ExecutionFlowEngine implements ExecutionFlow {
   final void start() {
     executionFlowStarted = true;
     visitStackDepth = 0;
-    branchStack = new Stack<Branch>();
     callStartOnVisitors();
     try {
       visitFlow(firstStmt);
@@ -160,8 +160,8 @@ public class ExecutionFlowEngine implements ExecutionFlow {
       executionFlowStarted = false;
       branchStack = new Stack<Branch>();
     }
-    visitors = null;
     callStopOnVisitors();
+    visitors = null;
   }
 
   private void callStopOnVisitors() {
