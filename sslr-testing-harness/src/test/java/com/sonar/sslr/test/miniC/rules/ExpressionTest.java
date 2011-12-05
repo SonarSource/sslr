@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.test.language.rules;
+package com.sonar.sslr.test.miniC.rules;
 
 import static com.sonar.sslr.test.parser.ParserMatchers.*;
 import static org.junit.Assert.*;
