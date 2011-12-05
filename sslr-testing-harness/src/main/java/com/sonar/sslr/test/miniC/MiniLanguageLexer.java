@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.test.language;
+package com.sonar.sslr.test.miniC;
 
 import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.*;
 

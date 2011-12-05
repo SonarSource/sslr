@@ -21,8 +21,8 @@ import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import com.sonar.sslr.impl.events.ExtendedStackTraceStream;
-import com.sonar.sslr.test.language.MiniLanguageGrammar;
-import com.sonar.sslr.test.language.MiniLanguageParser;
+import com.sonar.sslr.test.miniC.MiniLanguageGrammar;
+import com.sonar.sslr.test.miniC.MiniLanguageParser;
 
 @RunWith(value = Parameterized.class)
 public class MiniLanguageOwnExamplesTest {

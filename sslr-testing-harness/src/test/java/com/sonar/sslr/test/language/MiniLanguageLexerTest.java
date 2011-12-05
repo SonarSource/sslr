@@ -6,15 +6,16 @@
 package com.sonar.sslr.test.language;
 
 import static com.sonar.sslr.api.GenericTokenType.*;
-import static com.sonar.sslr.test.language.MiniLanguageLexer.Keywords.*;
-import static com.sonar.sslr.test.language.MiniLanguageLexer.Literals.*;
-import static com.sonar.sslr.test.language.MiniLanguageLexer.Punctuators.*;
 import static com.sonar.sslr.test.lexer.LexerMatchers.*;
+import static com.sonar.sslr.test.miniC.MiniLanguageLexer.Keywords.*;
+import static com.sonar.sslr.test.miniC.MiniLanguageLexer.Literals.*;
+import static com.sonar.sslr.test.miniC.MiniLanguageLexer.Punctuators.*;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 import com.sonar.sslr.impl.Lexer;
+import com.sonar.sslr.test.miniC.MiniLanguageLexer;
 
 public class MiniLanguageLexerTest {
 

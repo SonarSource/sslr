@@ -3,13 +3,13 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.test.language;
+package com.sonar.sslr.test.miniC;
 
 import static com.sonar.sslr.api.GenericTokenType.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.test.language.MiniLanguageLexer.Keywords.*;
-import static com.sonar.sslr.test.language.MiniLanguageLexer.Literals.*;
-import static com.sonar.sslr.test.language.MiniLanguageLexer.Punctuators.*;
+import static com.sonar.sslr.test.miniC.MiniLanguageLexer.Keywords.*;
+import static com.sonar.sslr.test.miniC.MiniLanguageLexer.Literals.*;
+import static com.sonar.sslr.test.miniC.MiniLanguageLexer.Punctuators.*;
 
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;

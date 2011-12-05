@@ -7,8 +7,8 @@ package com.sonar.sslr.test.language.rules;
 
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.test.language.MiniLanguageGrammar;
-import com.sonar.sslr.test.language.MiniLanguageParser;
+import com.sonar.sslr.test.miniC.MiniLanguageGrammar;
+import com.sonar.sslr.test.miniC.MiniLanguageParser;
 
 public abstract class RuleTest {
 
