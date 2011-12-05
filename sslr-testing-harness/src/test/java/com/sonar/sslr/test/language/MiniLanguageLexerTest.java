@@ -6,9 +6,9 @@
 package com.sonar.sslr.test.language;
 
 import static com.sonar.sslr.api.GenericTokenType.*;
-import static com.sonar.sslr.test.language.BasicLanguageLexer.Keywords.*;
-import static com.sonar.sslr.test.language.BasicLanguageLexer.Literals.*;
-import static com.sonar.sslr.test.language.BasicLanguageLexer.Punctuators.*;
+import static com.sonar.sslr.test.language.MiniLanguageLexer.Keywords.*;
+import static com.sonar.sslr.test.language.MiniLanguageLexer.Literals.*;
+import static com.sonar.sslr.test.language.MiniLanguageLexer.Punctuators.*;
 import static com.sonar.sslr.test.lexer.LexerMatchers.*;
 import static org.junit.Assert.*;
 
@@ -16,9 +16,9 @@ import org.junit.Test;
 
 import com.sonar.sslr.impl.Lexer;
 
-public class BasicLanguageLexerTest {
+public class MiniLanguageLexerTest {
 
-  Lexer lexer = BasicLanguageLexer.getLexer();
+  Lexer lexer = MiniLanguageLexer.getLexer();
 
   @Test
   public void lexIdentifiers() {

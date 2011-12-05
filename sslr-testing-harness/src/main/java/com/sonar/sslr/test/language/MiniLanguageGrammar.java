@@ -7,14 +7,14 @@ package com.sonar.sslr.test.language;
 
 import static com.sonar.sslr.api.GenericTokenType.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.test.language.BasicLanguageLexer.Keywords.*;
-import static com.sonar.sslr.test.language.BasicLanguageLexer.Literals.*;
-import static com.sonar.sslr.test.language.BasicLanguageLexer.Punctuators.*;
+import static com.sonar.sslr.test.language.MiniLanguageLexer.Keywords.*;
+import static com.sonar.sslr.test.language.MiniLanguageLexer.Literals.*;
+import static com.sonar.sslr.test.language.MiniLanguageLexer.Punctuators.*;
 
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
 
-public class BasicLanguageGrammar extends Grammar {
+public class MiniLanguageGrammar extends Grammar {
 
   public Rule binType;
   public Rule binFunctionDeclaration;
@@ -57,7 +57,7 @@ public class BasicLanguageGrammar extends Grammar {
   public Rule postfixOperator;
   public Rule primaryExpression;
 
-  public BasicLanguageGrammar() {
+  public MiniLanguageGrammar() {
     // Bins
 
     binType.is(or(

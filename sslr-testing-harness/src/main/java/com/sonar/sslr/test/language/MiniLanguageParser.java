@@ -8,13 +8,13 @@ package com.sonar.sslr.test.language;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.events.ParsingEventListener;
 
-public final class BasicLanguageParser {
+public final class MiniLanguageParser {
 
-  private BasicLanguageParser() {
+  private MiniLanguageParser() {
   }
 
-  public static Parser<BasicLanguageGrammar> create(ParsingEventListener... parsingEventListeners) {
-    return Parser.builder(new BasicLanguageGrammar()).withLexer(BasicLanguageLexer.getLexer())
+  public static Parser<MiniLanguageGrammar> create(ParsingEventListener... parsingEventListeners) {
+    return Parser.builder(new MiniLanguageGrammar()).withLexer(MiniLanguageLexer.getLexer())
         .withParsingEventListeners(parsingEventListeners).build();
   }
 

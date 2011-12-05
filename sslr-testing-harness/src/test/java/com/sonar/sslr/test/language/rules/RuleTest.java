@@ -7,13 +7,13 @@ package com.sonar.sslr.test.language.rules;
 
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.test.language.BasicLanguageGrammar;
-import com.sonar.sslr.test.language.BasicLanguageParser;
+import com.sonar.sslr.test.language.MiniLanguageGrammar;
+import com.sonar.sslr.test.language.MiniLanguageParser;
 
 public abstract class RuleTest {
 
-  protected final Parser<BasicLanguageGrammar> p = BasicLanguageParser.create();
-  protected final BasicLanguageGrammar g = p.getGrammar();
+  protected final Parser<MiniLanguageGrammar> p = MiniLanguageParser.create();
+  protected final MiniLanguageGrammar g = p.getGrammar();
 
   public final Rule getTestedRule() {
     return p.getRootRule();
