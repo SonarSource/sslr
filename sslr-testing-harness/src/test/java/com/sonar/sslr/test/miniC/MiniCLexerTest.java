@@ -7,19 +7,19 @@ package com.sonar.sslr.test.miniC;
 
 import static com.sonar.sslr.api.GenericTokenType.*;
 import static com.sonar.sslr.test.lexer.LexerMatchers.*;
-import static com.sonar.sslr.test.miniC.MiniLanguageLexer.Keywords.*;
-import static com.sonar.sslr.test.miniC.MiniLanguageLexer.Literals.*;
-import static com.sonar.sslr.test.miniC.MiniLanguageLexer.Punctuators.*;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.*;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Literals.*;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.*;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 import com.sonar.sslr.impl.Lexer;
-import com.sonar.sslr.test.miniC.MiniLanguageLexer;
+import com.sonar.sslr.test.miniC.MiniCLexer;
 
-public class MiniLanguageLexerTest {
+public class MiniCLexerTest {
 
-  Lexer lexer = MiniLanguageLexer.getLexer();
+  Lexer lexer = MiniCLexer.getLexer();
 
   @Test
   public void lexIdentifiers() {

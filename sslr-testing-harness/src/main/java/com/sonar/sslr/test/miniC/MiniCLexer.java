@@ -14,7 +14,7 @@ import com.sonar.sslr.impl.channel.BlackHoleChannel;
 import com.sonar.sslr.impl.channel.IdentifierAndKeywordChannel;
 import com.sonar.sslr.impl.channel.PunctuatorChannel;
 
-public class MiniLanguageLexer {
+public class MiniCLexer {
 
   public static enum Literals implements TokenType {
 

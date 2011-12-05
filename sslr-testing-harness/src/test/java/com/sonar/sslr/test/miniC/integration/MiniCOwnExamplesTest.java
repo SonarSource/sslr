@@ -21,24 +21,24 @@ import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import com.sonar.sslr.impl.events.ExtendedStackTraceStream;
-import com.sonar.sslr.test.miniC.MiniLanguageGrammar;
-import com.sonar.sslr.test.miniC.MiniLanguageParser;
+import com.sonar.sslr.test.miniC.MiniCGrammar;
+import com.sonar.sslr.test.miniC.MiniCParser;
 
 @RunWith(value = Parameterized.class)
-public class MiniLanguageOwnExamplesTest {
+public class MiniCOwnExamplesTest {
 
   private static ExtendedStackTrace extendedStackTrace = new ExtendedStackTrace();
 
   private File file = null;
-  private static final Parser<MiniLanguageGrammar> parser = MiniLanguageParser.create();
-  private static final Parser<MiniLanguageGrammar> parserDebug = MiniLanguageParser.create(extendedStackTrace);
+  private static final Parser<MiniCGrammar> parser = MiniCParser.create();
+  private static final Parser<MiniCGrammar> parserDebug = MiniCParser.create(extendedStackTrace);
 
   @Parameterized.Parameters
   public static Collection<Object[]> getFiles() throws URISyntaxException {
     return getParameters("OwnExamples");
   }
 
-  public MiniLanguageOwnExamplesTest(File f) {
+  public MiniCOwnExamplesTest(File f) {
     this.file = f;
   }
 
@@ -79,7 +79,7 @@ public class MiniLanguageOwnExamplesTest {
   }
 
   private static Collection<File> listFiles(String path, boolean recursive) throws URISyntaxException {
-    return FileUtils.listFiles(new File(MiniLanguageOwnExamplesTest.class.getResource(path).toURI()), null, recursive);
+    return FileUtils.listFiles(new File(MiniCOwnExamplesTest.class.getResource(path).toURI()), null, recursive);
   }
 
 }
