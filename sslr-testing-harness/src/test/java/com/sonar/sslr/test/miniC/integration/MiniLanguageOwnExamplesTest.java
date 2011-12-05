@@ -4,7 +4,7 @@
  * mailto:contact AT sonarsource DOT com
  */
 
-package com.sonar.sslr.test.language.integration;
+package com.sonar.sslr.test.miniC.integration;
 
 import java.io.File;
 import java.io.IOException;
