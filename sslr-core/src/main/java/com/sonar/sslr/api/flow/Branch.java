@@ -6,23 +6,20 @@
 
 package com.sonar.sslr.api.flow;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.sonar.sslr.api.AstNode;
 
 public class Branch {
 
-  private final List<Branch> children = new ArrayList<Branch>();
   private final Branch parent;
   private final int index;
+  private int numberOfChildren = 0;
   private Statement stmt;
   private AstNode condition;
 
   public Branch(Branch parent) {
     this.parent = parent;
-    parent.children.add(this);
-    index = parent.children.size();
+    this.parent.numberOfChildren++;
+    index = parent.numberOfChildren;
   }
 
   public Branch() {
