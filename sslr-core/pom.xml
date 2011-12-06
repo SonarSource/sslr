@@ -1,26 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>com.sonarsource.sslr</groupId>
-		<artifactId>sslr</artifactId>
-		<version>1.6-SNAPSHOT</version>
-	</parent>
-	<artifactId>sslr-core</artifactId>
-	<name>SonarSource :: Language Recognizer :: Core</name>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.sonarsource.sslr</groupId>
+    <artifactId>sslr</artifactId>
+    <version>1.6-SNAPSHOT</version>
+  </parent>
+  <artifactId>sslr-core</artifactId>
+  <name>SonarSource :: Language Recognizer :: Core</name>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.codehaus.sonar</groupId>
-			<artifactId>sonar-channel</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.collections</groupId>
-			<artifactId>google-collections</artifactId>
-		</dependency>
-	</dependencies>
+  <properties>
+    <sonar.jacoco.reportPath>../sslr-core-tests/target/jacoco.exec</sonar.jacoco.reportPath>
+    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.sonar</groupId>
+      <artifactId>sonar-channel</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.collections</groupId>
+      <artifactId>google-collections</artifactId>
+    </dependency>
+  </dependencies>
 </project>
