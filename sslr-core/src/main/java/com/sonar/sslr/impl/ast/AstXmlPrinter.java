@@ -66,7 +66,7 @@ public class AstXmlPrinter {
       writer.append(" value=\"" + node.getTokenValue() + "\"");
     }
     if (node.hasToken()) {
-      writer.append(" line=\"" + node.getTokenLine() + "\" col=\"" + node.getToken().getColumn() + "\"");
+      writer.append(" line=\"" + node.getTokenLine() + "\" column=\"" + node.getToken().getColumn() + "\"");
     }
   }
 
