@@ -20,13 +20,13 @@ public class AstXmlPrinterTest {
   @Test
   public void testPrintRuleAstNode() {
     AstNode root = new AstNode(RuleDefinition.newRuleBuilder("expr"), "expr", new Token(new WordTokenType(), "word", 34, 12, null));
-    assertEquals("<expr value=\"word\" line=\"34\" column=\"12\"/>", AstXmlPrinter.print(root));
+    assertEquals("<expr tokenValue=\"word\" tokenLine=\"34\" tokenColumn=\"12\"/>", AstXmlPrinter.print(root));
   }
 
   @Test
   public void testPrintWordAstNode() {
     AstNode root = new AstNode(new Token(new WordTokenType(), "myword", 0, 0, null));
-    assertEquals("<WORD value=\"myword\" line=\"0\" column=\"0\"/>", AstXmlPrinter.print(root));
+    assertEquals("<WORD tokenValue=\"myword\" tokenLine=\"0\" tokenColumn=\"0\"/>", AstXmlPrinter.print(root));
   }
 
   @Test
@@ -38,9 +38,9 @@ public class AstXmlPrinterTest {
 
     StringBuilder expectedResult = new StringBuilder();
     expectedResult.append("<expr>\n");
-    expectedResult.append("  <WORD value=\"x\" line=\"1\" column=\"0\"/>\n");
-    expectedResult.append("  <WORD value=\"=\" line=\"1\" column=\"0\"/>\n");
-    expectedResult.append("  <WORD value=\"4\" line=\"1\" column=\"0\"/>\n");
+    expectedResult.append("  <WORD tokenValue=\"x\" tokenLine=\"1\" tokenColumn=\"0\"/>\n");
+    expectedResult.append("  <WORD tokenValue=\"=\" tokenLine=\"1\" tokenColumn=\"0\"/>\n");
+    expectedResult.append("  <WORD tokenValue=\"4\" tokenLine=\"1\" tokenColumn=\"0\"/>\n");
     expectedResult.append("</expr>");
     assertEquals(expectedResult.toString(), AstXmlPrinter.print(astNode));
   }
