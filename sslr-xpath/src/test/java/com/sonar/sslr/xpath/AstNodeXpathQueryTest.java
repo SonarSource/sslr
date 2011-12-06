@@ -41,7 +41,6 @@ public class AstNodeXpathQueryTest {
     branch.addChild(leaf2);
 
     List<AstNode> result = expr.getValues(tree);
-    System.out.println("elements = " + result.size());
   }
 
   static class NodeType implements AstNodeType {

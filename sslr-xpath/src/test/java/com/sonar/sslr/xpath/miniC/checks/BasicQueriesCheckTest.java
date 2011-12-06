@@ -89,6 +89,16 @@ public class BasicQueriesCheckTest extends AbstractCheck {
 
   @Test
   @Ignore
+  public void testForBug() {
+    AstNodeXpathQuery<AstNode> xpath = AstNodeXpathQuery.create("/compilationUnit/declaration[@tokenLine=4]");
+    AstNode declarationAtLineFour = fileNode.getChild(1);
+    assertThat(declarationAtLineFour.is(g.declaration), is(true));
+    assertThat(declarationAtLineFour.getTokenLine(), is(4));
+    assertThat(xpath.getValue(fileNode), is(declarationAtLineFour));
+  }
+
+  @Test
+  @Ignore
   public void identifiersCountTest() {
     AstNodeXpathQuery<AstNode> xpath = AstNodeXpathQuery.create("/compilationUnit[count(//IDENTIFIER) = 2]");
     assertThat(xpath.getValue(fileNode), is(fileNode));
@@ -99,8 +109,7 @@ public class BasicQueriesCheckTest extends AbstractCheck {
   public void getIdentifiersTest() {
     AstNodeXpathQuery<AstNode> xpath = AstNodeXpathQuery.create("//IDENTIFIER");
     List<AstNode> nodes = xpath.getValues(fileNode);
-    System.out.println("how many? " + nodes.size());
-    // assertThat(xpath.query(fileNode), is(0));
+    assertThat(nodes.size(), is(2));
   }
 
 }
