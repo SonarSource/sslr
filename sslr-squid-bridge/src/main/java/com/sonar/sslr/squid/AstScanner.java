@@ -80,7 +80,7 @@ public final class AstScanner<GRAMMAR extends Grammar> {
         try {
           /* Should we retry with the extended stack trace? */
           boolean extendedStackTracePopulated = false;
-          if (this.debugParser != null && this.extendedStackTrace != null) {
+          if (e.isToRetryWithExtendStackTrace() && this.debugParser != null && this.extendedStackTrace != null) {
             try {
               debugParser.parse(file);
             } catch (RecognitionException re) {

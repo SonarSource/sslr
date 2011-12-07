@@ -83,15 +83,25 @@ public class Parser<GRAMMAR extends Grammar> {
 
   public final AstNode parse(File file) {
     fireBeginLexEvent();
-    lexerOutput = lexer.lex(file);
-    fireEndLexEvent();
+    try {
+      lexerOutput = lexer.lex(file);
+    } catch (LexerException e) {
+      throw new RecognitionException(e);
+    } finally {
+      fireEndLexEvent();
+    }
     return parse(lexerOutput.getTokens());
   }
 
   public final AstNode parse(String source) {
     fireBeginLexEvent();
-    lexerOutput = lexer.lex(source);
-    fireEndLexEvent();
+    try {
+      lexerOutput = lexer.lex(source);
+    } catch (LexerException e) {
+      throw new RecognitionException(e);
+    } finally {
+      fireEndLexEvent();
+    }
     return parse(lexerOutput.getTokens());
   }
 
