@@ -277,6 +277,16 @@ public class AstNode {
   /**
    * Find the first child among all direct children having one of the requested types.
    * 
+   * <pre>
+   * In the following case, findFirstDirectChild('B') would return 'B2' :
+   * 
+   *   A1
+   *    |__ C1
+   *    |    |__ B1 
+   *    |__ B2
+   *    |__ B3
+   * </pre>
+   * 
    * @param list
    *          of desired node types
    * @return the first child or null
@@ -294,6 +304,16 @@ public class AstNode {
 
   /**
    * Find the first child among all children and grand-children having one of the requested types.
+   * 
+   * <pre>
+   * In the following case, findFirstChild('B') would return 'B1' :
+   * 
+   *   A1
+   *    |__ C1
+   *    |    |__ B1 
+   *    |__ B2
+   *    |__ B3
+   * </pre>
    * 
    * @param AstNodeType
    *          list of desired node types
@@ -331,6 +351,16 @@ public class AstNode {
   /**
    * Find the all children among direct children having the requested type(s).
    * 
+   * <pre>
+   * In the following case, findDirectChildren('B') would return 'B2' and 'B3' :
+   * 
+   *   A1
+   *    |__ C1
+   *    |    |__ B1 
+   *    |__ B2
+   *    |__ B3
+   * </pre> 
+   * 
    * @param AstNodeType
    *          list of desired the node types
    * @return the list of matching children
@@ -350,6 +380,17 @@ public class AstNode {
   /**
    * Find the all children having the requested type(s). Be careful, this method searches among all children whatever is their depth, so
    * favor findDirectChildren(AstNodeType... nodeType) when possible.
+   * 
+   * <pre>
+   * In the following case, findChildren('B', 'C') would return 'C1', 'B1', 'B2' and 'B3' :
+   * 
+   *   A1
+   *    |__ C1
+   *    |    |__ B1 
+   *    |__ B2
+   *    |__ D1
+   *    |__ B3
+   * </pre>  
    * 
    * @param AstNodeType
    *          the node type
