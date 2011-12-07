@@ -22,7 +22,7 @@ public class IdentifiersTooLongTest {
 
   @Before
   public void init() {
-    fileNode = parse("/checks/identifiersTooLong.mc");
+    fileNode = parseFile("/checks/identifiersTooLong.mc");
   }
 
   @Test

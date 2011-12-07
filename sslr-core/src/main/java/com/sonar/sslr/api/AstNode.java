@@ -241,8 +241,18 @@ public class AstNode {
     this.toIndex = toIndex;
   }
 
-  public boolean is(AstNodeType type) {
-    return this.type == type;
+  public boolean is(AstNodeType... types) {
+    for (AstNodeType type : types) {
+      if (this.type == type) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public boolean isNot(AstNodeType... types) {
+    return !is(types);
   }
 
   @Deprecated
@@ -262,10 +272,6 @@ public class AstNode {
     if (action != null) {
       action.stopListening(this, output);
     }
-  }
-
-  public boolean isNot(AstNodeType type) {
-    return this.type != type;
   }
 
   /**
@@ -323,43 +329,47 @@ public class AstNode {
   }
 
   /**
-   * Find the all children among direct children having the requested type. As far as possible, this method should be used instead of
-   * findChildren(AstNodeType nodeType) which is more CPU intensive.
+   * Find the all children among direct children having the requested type(s).
    * 
    * @param AstNodeType
-   *          the node type
+   *          list of desired the node types
    * @return the list of matching children
    */
-  public List<AstNode> findDirectChildren(AstNodeType nodeType) {
+  public List<AstNode> findDirectChildren(AstNodeType... nodeTypes) {
     List<AstNode> nodes = new ArrayList<AstNode>();
     for (AstNode child : children) {
-      if (child.type == nodeType) {
-        nodes.add(child);
+      for (AstNodeType nodeType : nodeTypes) {
+        if (child.type == nodeType) {
+          nodes.add(child);
+        }
       }
     }
     return nodes;
   }
 
   /**
-   * Find the all children having the requested type. Be careful, this method searches among all children whatever is their depth.
+   * Find the all children having the requested type(s). Be careful, this method searches among all children whatever is their depth, so
+   * favor findDirectChildren(AstNodeType... nodeType) when possible.
    * 
    * @param AstNodeType
    *          the node type
    * @return the list of matching children
    */
-  public List<AstNode> findChildren(AstNodeType nodeType) {
+  public List<AstNode> findChildren(AstNodeType... nodeTypes) {
     List<AstNode> nodes = new ArrayList<AstNode>();
-    findChildren(nodes, nodeType);
+    findChildren(nodes, nodeTypes);
     return nodes;
   }
 
-  private void findChildren(List<AstNode> result, AstNodeType nodeType) {
-    if (is(nodeType)) {
-      result.add(this);
+  private void findChildren(List<AstNode> result, AstNodeType... nodeTypes) {
+    for (AstNodeType nodeType : nodeTypes) {
+      if (is(nodeType)) {
+        result.add(this);
+      }
     }
     if (hasChildren()) {
       for (AstNode child : children) {
-        child.findChildren(result, nodeType);
+        child.findChildren(result, nodeTypes);
       }
     }
   }

@@ -23,7 +23,7 @@ public class BasicQueriesTest {
 
   @Before
   public void init() {
-    fileNode = parse("/checks/basicQueries.mc");
+    fileNode = parseFile("/checks/basicQueries.mc");
   }
 
   @Test

@@ -26,13 +26,17 @@ public final class MiniCParser {
         .withParsingEventListeners(parsingEventListeners).build();
   }
 
-  public static AstNode parse(String filePath) {
+  public static AstNode parseFile(String filePath) {
     File file = FileUtils.toFile(MiniCParser.class.getResource(filePath));
     if (file == null || !file.exists()) {
       throw new AssertionError("The file \"" + filePath + "\" does not exist.");
     }
 
     return p.parse(file);
+  }
+
+  public static AstNode parseString(String source) {
+    return p.parse(source);
   }
 
   public static MiniCGrammar getGrammar() {

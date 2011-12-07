@@ -6,6 +6,7 @@
 
 package com.sonar.sslr.api;
 
+import static com.sonar.sslr.test.miniC.MiniCParser.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -205,21 +206,57 @@ public class AstNodeTest {
   }
 
   @Test
+  public void testIs() {
+    AstNode declarationNode = parseString("int a = 0;").getChild(0);
+
+    assertThat(declarationNode.is(getGrammar().declaration), is(true));
+    assertThat(declarationNode.is(getGrammar().compilationUnit, getGrammar().declaration), is(true));
+    assertThat(declarationNode.is(getGrammar().declaration, getGrammar().compilationUnit), is(true));
+    assertThat(declarationNode.is(getGrammar().compilationUnit), is(false));
+  }
+
+  @Test
+  public void testIsNot() {
+    AstNode declarationNode = parseString("int a = 0;").getChild(0);
+
+    assertThat(declarationNode.isNot(getGrammar().declaration), is(false));
+    assertThat(declarationNode.isNot(getGrammar().compilationUnit, getGrammar().declaration), is(false));
+    assertThat(declarationNode.isNot(getGrammar().declaration, getGrammar().compilationUnit), is(false));
+    assertThat(declarationNode.isNot(getGrammar().compilationUnit), is(true));
+  }
+
+  @Test
   public void testFindChildren() {
-    NodeType idType = new NodeType();
-    AstNode expr = new AstNode(new NodeType(), "expr", null);
-    AstNode stat = new AstNode(new NodeType(), "stat", null);
-    AstNode id1 = new AstNode(idType, "id1", null);
-    AstNode id2 = new AstNode(idType, "id2", null);
+    AstNode fileNode = parseString("int a = 0; int myFunction() { int b = 0; { int c = 0; } }");
 
-    expr.addChild(stat);
-    expr.addChild(id1);
-    stat.addChild(id2);
+    List<AstNode> binVariableDeclarationNodes = fileNode.findChildren(getGrammar().binVariableDeclaration);
+    assertThat(binVariableDeclarationNodes.size(), is(3));
+    assertThat(binVariableDeclarationNodes.get(0).getTokenValue(), is("a"));
+    assertThat(binVariableDeclarationNodes.get(1).getTokenValue(), is("b"));
+    assertThat(binVariableDeclarationNodes.get(2).getTokenValue(), is("c"));
 
-    List<AstNode> identifiers = expr.findChildren(idType);
+    List<AstNode> binVDeclarationNodes = fileNode.findChildren(getGrammar().binVariableDeclaration, getGrammar().binFunctionDeclaration);
+    assertThat(binVDeclarationNodes.size(), is(4));
+    assertThat(binVDeclarationNodes.get(0).getTokenValue(), is("a"));
+    assertThat(binVDeclarationNodes.get(1).getTokenValue(), is("myFunction"));
+    assertThat(binVDeclarationNodes.get(2).getTokenValue(), is("b"));
+    assertThat(binVDeclarationNodes.get(3).getTokenValue(), is("c"));
 
-    assertThat(identifiers.size(), is(2));
-    assertThat(identifiers, hasItems(id1, id2));
+    assertThat(fileNode.findChildren(getGrammar().multiplicativeExpression).size(), is(0));
+  }
+
+  @Test
+  public void testFindDirectChildren() {
+    AstNode fileNode = parseString("int a = 0; void myFunction() { int b = 0*3; { int c = 0; } }");
+
+    List<AstNode> declarationNodes = fileNode.findDirectChildren(getGrammar().declaration);
+    assertThat(declarationNodes.size(), is(2));
+    assertThat(declarationNodes.get(0).getTokenValue(), is("int"));
+    assertThat(declarationNodes.get(1).getTokenValue(), is("void"));
+
+    List<AstNode> binVDeclarationNodes = fileNode.findDirectChildren(getGrammar().binVariableDeclaration,
+        getGrammar().binFunctionDeclaration);
+    assertThat(binVDeclarationNodes.size(), is(0));
   }
 
   @Test
