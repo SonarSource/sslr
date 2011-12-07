@@ -8,13 +8,13 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingEvent;
+import com.sonar.sslr.impl.ParsingState;
 
 public class AdjacentMatcher extends StatelessMatcher {
-	
+
   protected AdjacentMatcher(Matcher matcher) {
-  	super(matcher);
+    super(matcher);
   }
 
   @Override
@@ -31,10 +31,10 @@ public class AdjacentMatcher extends StatelessMatcher {
       throw BacktrackingEvent.create();
     }
   }
-  
+
   @Override
   public final String toString() {
-  	return "adjacent";
+    return "adjacent";
   }
-  
+
 }

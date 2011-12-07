@@ -21,7 +21,7 @@ import com.sonar.sslr.impl.matcher.MemoizedMatcher;
 
 public class ParsingState {
 
-  private List<MemoizedMatcher> notifiedMatchers = Lists.newArrayList();
+  private final List<MemoizedMatcher> notifiedMatchers = Lists.newArrayList();
   private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
   private final Token[] tokens;
   public int lexerIndex = 0;
@@ -29,8 +29,8 @@ public class ParsingState {
   public final int lexerSize;
   private int outpostMatcherTokenIndex = -1;
   private Matcher outpostMatcher;
-  private AstNode[] astNodeMemoization;
-  private MemoizedMatcher[] astMatcherMemoization;
+  private final AstNode[] astNodeMemoization;
+  private final MemoizedMatcher[] astMatcherMemoization;
   private boolean pendingLeftRecursion = false;
   public ParsingEventListener[] parsingEventListeners;
 

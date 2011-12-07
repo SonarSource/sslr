@@ -8,11 +8,9 @@ package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -23,17 +21,17 @@ public class OptMatcherTest {
     assertThat(opt(isFalse()), not(match("one")));
     assertThat(opt(isTrue()), match("one"));
   }
-  
+
   @Test
   public void testToString() {
-  	assertEquals(opt("(").toString(), "opt");
+    assertEquals(opt("(").toString(), "opt");
   }
-  
+
   @Test
   public void testEqualsAndHashCode() {
-  	assertThat(opt("a", "a") == opt("a", "a"), is(true));
-  	assertThat(opt("a", "a") == opt("a", "b"), is(false));
-  	assertThat(opt("a", "a") == longestOne("a", "a"), is(false));
+    assertThat(opt("a", "a") == opt("a", "a"), is(true));
+    assertThat(opt("a", "a") == opt("a", "b"), is(false));
+    assertThat(opt("a", "a") == longestOne("a", "a"), is(false));
   }
 
 }

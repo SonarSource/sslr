@@ -16,42 +16,46 @@ import com.sonar.sslr.api.TokenType;
 
 public class PunctuatorChannel extends Channel<LexerOutput> {
 
-	public final TokenType[] sortedPunctuators;
+  public final TokenType[] sortedPunctuators;
   public final char[][] sortedPunctuatorsChars;
 
   public PunctuatorChannel(TokenType... punctuators) {
-  	sortedPunctuators = punctuators;
-    Arrays.<TokenType>sort(sortedPunctuators, new Comparator<TokenType>() {
-    	public int compare(TokenType a, TokenType b) {
-    		if (a.getValue().length() == b.getValue().length()) return 0;
-    		return (a.getValue().length() > b.getValue().length()) ? -1 : 1;
-    	}
-		});
-    
+    sortedPunctuators = punctuators;
+    Arrays.<TokenType> sort(sortedPunctuators, new Comparator<TokenType>() {
+
+      public int compare(TokenType a, TokenType b) {
+        if (a.getValue().length() == b.getValue().length()) {
+          return 0;
+        }
+        return a.getValue().length() > b.getValue().length() ? -1 : 1;
+      }
+    });
+
     sortedPunctuatorsChars = new char[sortedPunctuators.length][];
-    
+
     for (int i = 0; i < sortedPunctuators.length; i++) {
-			sortedPunctuatorsChars[i] = sortedPunctuators[i].getValue().toCharArray();
-		}
+      sortedPunctuatorsChars[i] = sortedPunctuators[i].getValue().toCharArray();
+    }
   }
 
   @Override
   public boolean consume(CodeReader code, LexerOutput output) {
     for (int i = 0; i < sortedPunctuators.length; i++) {
-    	if (code.peek() == sortedPunctuatorsChars[i][0] && Arrays.equals(code.peek(sortedPunctuatorsChars[i].length), sortedPunctuatorsChars[i])) {
-    		/* The punctuator matched, add the token to the lexer output */
-    		output.addTokenAndProcess(sortedPunctuators[i], sortedPunctuators[i].getValue(), code.getLinePosition(), code.getColumnPosition());
-    		
-    		/* Advance the CodeReader stream by the length of the punctuator */
-    		for (int j = 0; j < sortedPunctuatorsChars[i].length; j++) {
-    			code.pop();
-    		}
-    		
-    		return true;
-    	}
+      if (code.peek() == sortedPunctuatorsChars[i][0]
+          && Arrays.equals(code.peek(sortedPunctuatorsChars[i].length), sortedPunctuatorsChars[i])) {
+        /* The punctuator matched, add the token to the lexer output */
+        output.addTokenAndProcess(sortedPunctuators[i], sortedPunctuators[i].getValue(), code.getLinePosition(), code.getColumnPosition());
+
+        /* Advance the CodeReader stream by the length of the punctuator */
+        for (int j = 0; j < sortedPunctuatorsChars[i].length; j++) {
+          code.pop();
+        }
+
+        return true;
+      }
     }
-    
+
     return false;
   }
-  
+
 }

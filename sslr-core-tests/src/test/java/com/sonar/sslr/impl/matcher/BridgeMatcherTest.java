@@ -7,16 +7,10 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
-import static com.sonar.sslr.impl.matcher.MyPunctuator.CAT;
-import static com.sonar.sslr.impl.matcher.MyPunctuator.DOG;
-import static com.sonar.sslr.impl.matcher.MyPunctuator.LEFT;
-import static com.sonar.sslr.impl.matcher.MyPunctuator.RIGHT;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
+import static com.sonar.sslr.impl.matcher.MyPunctuator.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -31,8 +25,8 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.events.IdentifierLexer;
 
 public class BridgeMatcherTest {
-	
-	@Test
+
+  @Test
   public void shouldMatchSimpleBridge() {
     assertThat(bridge(LEFT, RIGHT), match(createTokens(LEFT, CAT, CAT, DOG, RIGHT)));
   }
@@ -59,25 +53,25 @@ public class BridgeMatcherTest {
     }
     return tokens;
   }
-  
+
   @Test
   public void testToString() {
-  	assertEquals(bridge(LEFT, RIGHT).toString(), "bridge(LEFT, RIGHT)");
+    assertEquals(bridge(LEFT, RIGHT).toString(), "bridge(LEFT, RIGHT)");
   }
-  
+
   @Test
   public void testAstNodeTokens() {
-  	ParsingState state = new ParsingState(IdentifierLexer.create().lex("one ").getTokens());
-  	AstNode astNode = bridge(GenericTokenType.IDENTIFIER, GenericTokenType.EOF).match(state);
-  	assertEquals(2, state.lexerIndex);
-  	assertEquals(2, astNode.getChildren().size());
+    ParsingState state = new ParsingState(IdentifierLexer.create().lex("one ").getTokens());
+    AstNode astNode = bridge(GenericTokenType.IDENTIFIER, GenericTokenType.EOF).match(state);
+    assertEquals(2, state.lexerIndex);
+    assertEquals(2, astNode.getChildren().size());
   }
-  
+
   @Test
   public void testEqualsAndHashCode() {
-  	assertThat(bridge(LEFT, RIGHT) == bridge(LEFT, RIGHT), is(true));
-  	assertThat(bridge(LEFT, LEFT) == bridge(LEFT, RIGHT), is(false));
-  	assertThat(bridge(LEFT, LEFT) == isOneOfThem(LEFT, RIGHT), is(false));
+    assertThat(bridge(LEFT, RIGHT) == bridge(LEFT, RIGHT), is(true));
+    assertThat(bridge(LEFT, LEFT) == bridge(LEFT, RIGHT), is(false));
+    assertThat(bridge(LEFT, LEFT) == isOneOfThem(LEFT, RIGHT), is(false));
   }
-  
+
 }

@@ -7,15 +7,16 @@
 package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingEvent;
+import com.sonar.sslr.impl.ParsingState;
 
 public class NotMatcher extends StatelessMatcher {
-	
-	protected NotMatcher(Matcher matcher) {
+
+  protected NotMatcher(Matcher matcher) {
     super(matcher);
   }
 
+  @Override
   public AstNode matchWorker(ParsingState parsingState) {
     if (super.children[0].isMatching(parsingState)) {
       throw BacktrackingEvent.create();
@@ -23,10 +24,10 @@ public class NotMatcher extends StatelessMatcher {
       return null;
     }
   }
-  
+
   @Override
   public String toString() {
-  	return "not";
+    return "not";
   }
 
 }

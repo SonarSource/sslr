@@ -5,15 +5,11 @@
  */
 package com.sonar.sslr.api.flow;
 
-import static com.sonar.sslr.api.AstNodeUtils.createAstNode;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static com.sonar.sslr.api.AstNodeUtils.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -41,7 +37,7 @@ public class ExecutionFlowTest {
 
     InOrder inOrder = inOrder(visitor);
     inOrder.verify(visitor, times(1)).start();
-    inOrder.verify(visitor, times(1)).endPath(any(Branch.class));
+    inOrder.verify(visitor, times(1)).endPath(org.mockito.Matchers.any(Branch.class));
     inOrder.verify(visitor, times(1)).stop();
   }
 
@@ -56,11 +52,11 @@ public class ExecutionFlowTest {
     ExecutionFlowVisitor visitor = mock(ExecutionFlowVisitor.class);
     flow.visitFlow(stmt1, visitor);
 
-    verify(visitor, times(3)).visitStatement(any(Statement.class), any(Branch.class));
+    verify(visitor, times(3)).visitStatement(org.mockito.Matchers.any(Statement.class), org.mockito.Matchers.any(Branch.class));
     InOrder inOrder = inOrder(visitor);
-    inOrder.verify(visitor, times(1)).visitStatement(eq(stmt1), any(Branch.class));
-    inOrder.verify(visitor, times(1)).visitStatement(eq(stmt2), any(Branch.class));
-    inOrder.verify(visitor, times(1)).visitStatement(eq(stmt3), any(Branch.class));
+    inOrder.verify(visitor, times(1)).visitStatement(eq(stmt1), org.mockito.Matchers.any(Branch.class));
+    inOrder.verify(visitor, times(1)).visitStatement(eq(stmt2), org.mockito.Matchers.any(Branch.class));
+    inOrder.verify(visitor, times(1)).visitStatement(eq(stmt3), org.mockito.Matchers.any(Branch.class));
   }
 
   @Test
@@ -72,7 +68,7 @@ public class ExecutionFlowTest {
     flow.visitFlow(stmt);
     flow.start();
 
-    verify(flowHandler, times(1)).processFlow(any(ExecutionFlowEngine.class));
+    verify(flowHandler, times(1)).processFlow(org.mockito.Matchers.any(ExecutionFlowEngine.class));
   }
 
   @Test
@@ -96,7 +92,7 @@ public class ExecutionFlowTest {
     flow.visitFlow(stmt1, visitor);
 
     InOrder inOrder = inOrder(visitor);
-    inOrder.verify(visitor, times(1)).visitStatement(any(Statement.class), any(Branch.class));
+    inOrder.verify(visitor, times(1)).visitStatement(org.mockito.Matchers.any(Statement.class), org.mockito.Matchers.any(Branch.class));
   }
 
   @Test
@@ -120,7 +116,7 @@ public class ExecutionFlowTest {
     flow.visitFlow(stmt1, visitor);
 
     InOrder inOrder = inOrder(visitor);
-    inOrder.verify(visitor, times(1)).visitStatement(any(Statement.class), any(Branch.class));
-    inOrder.verify(visitor, times(1)).endPath(any(Branch.class));
+    inOrder.verify(visitor, times(1)).visitStatement(org.mockito.Matchers.any(Statement.class), org.mockito.Matchers.any(Branch.class));
+    inOrder.verify(visitor, times(1)).endPath(org.mockito.Matchers.any(Branch.class));
   }
 }

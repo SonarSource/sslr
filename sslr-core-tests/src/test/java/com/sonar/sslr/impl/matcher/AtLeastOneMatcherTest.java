@@ -8,11 +8,9 @@ package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -26,17 +24,17 @@ public class AtLeastOneMatcherTest {
     assertThat(atLeastOne(isFalse(), isTrue()), match("two"));
     assertThat(atLeastOne(isFalse(), isFalse()), not(match("one two")));
   }
-  
+
   @Test
   public void testToString() {
-  	assertEquals(atLeastOne("(", ")").toString(), "atLeastOne");
+    assertEquals(atLeastOne("(", ")").toString(), "atLeastOne");
   }
-  
+
   @Test
   public void testEqualsAndHashCode() {
-  	assertThat(atLeastOne("a", "b") == atLeastOne("a", "b"), is(true));
-  	assertThat(atLeastOne("a", "b") == atLeastOne("a", "c"), is(false));
-  	assertThat(atLeastOne("a", "a") == and("a", "b"), is(false));
+    assertThat(atLeastOne("a", "b") == atLeastOne("a", "b"), is(true));
+    assertThat(atLeastOne("a", "b") == atLeastOne("a", "c"), is(false));
+    assertThat(atLeastOne("a", "a") == and("a", "b"), is(false));
   }
 
 }

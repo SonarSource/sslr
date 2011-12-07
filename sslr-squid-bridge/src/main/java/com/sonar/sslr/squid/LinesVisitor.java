@@ -5,7 +5,7 @@
  */
 package com.sonar.sslr.squid;
 
-import static com.sonar.sslr.api.GenericTokenType.EOF;
+import static com.sonar.sslr.api.GenericTokenType.*;
 
 import org.sonar.squid.measures.MetricDef;
 

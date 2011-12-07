@@ -24,7 +24,7 @@ public class ExecutionFlowEngine implements ExecutionFlow {
   private Statement lastEndPathStmt;
   private Statement firstStmt;
   private boolean executionFlowStarted = false;
-  private Map<AstNode, Statement> stmtAstNodes = new HashMap<AstNode, Statement>();
+  private final Map<AstNode, Statement> stmtAstNodes = new HashMap<AstNode, Statement>();
 
   public final void add(Statement stmt) {
     stmtAstNodes.put(stmt.getAstNode(), stmt);
@@ -97,16 +97,16 @@ public class ExecutionFlowEngine implements ExecutionFlow {
 
   public void callEndPathOnVisitors() {
     if (lastStmt != lastEndPathStmt) {
-      for (int i = 0; i < visitors.length; i++) {
-        visitors[i].endPath(getCurrentBranch());
+      for (ExecutionFlowVisitor<Statement> visitor : visitors) {
+        visitor.endPath(getCurrentBranch());
       }
     }
     lastEndPathStmt = lastStmt;
   }
 
   private void callVisitStatementOnVisitors() {
-    for (int i = 0; i < visitors.length; i++) {
-      visitors[i].visitStatement(lastStmt, getCurrentBranch());
+    for (ExecutionFlowVisitor<Statement> visitor : visitors) {
+      visitor.visitStatement(lastStmt, getCurrentBranch());
     }
   }
 
@@ -116,26 +116,26 @@ public class ExecutionFlowEngine implements ExecutionFlow {
     branch.setConditionalStatement(conditionalStatement);
     branchStack.push(branch);
 
-    for (int i = 0; i < visitors.length; i++) {
-      visitors[i].visitBranch(branch);
+    for (ExecutionFlowVisitor<Statement> visitor : visitors) {
+      visitor.visitBranch(branch);
     }
   }
 
   public void callVisitMandatoryBranches() {
-    for (int i = 0; i < visitors.length; i++) {
-      visitors[i].visitMandatoryBranches();
+    for (ExecutionFlowVisitor<Statement> visitor : visitors) {
+      visitor.visitMandatoryBranches();
     }
   }
 
   public void callLeaveMandatoryBranches() {
-    for (int i = 0; i < visitors.length; i++) {
-      visitors[i].leaveMandatoryBranches();
+    for (ExecutionFlowVisitor<Statement> visitor : visitors) {
+      visitor.leaveMandatoryBranches();
     }
   }
 
   public void callLeaveBranchOnVisitors() {
-    for (int i = 0; i < visitors.length; i++) {
-      visitors[i].leaveBranch(getCurrentBranch());
+    for (ExecutionFlowVisitor<Statement> visitor : visitors) {
+      visitor.leaveBranch(getCurrentBranch());
     }
     branchStack.pop();
   }
@@ -167,14 +167,14 @@ public class ExecutionFlowEngine implements ExecutionFlow {
   }
 
   private void callStopOnVisitors() {
-    for (int i = 0; i < visitors.length; i++) {
-      visitors[i].stop();
+    for (ExecutionFlowVisitor<Statement> visitor : visitors) {
+      visitor.stop();
     }
   }
 
   private void callStartOnVisitors() {
-    for (int i = 0; i < visitors.length; i++) {
-      visitors[i].start();
+    for (ExecutionFlowVisitor<Statement> visitor : visitors) {
+      visitor.start();
     }
   }
 
@@ -214,6 +214,7 @@ public class ExecutionFlowEngine implements ExecutionFlow {
       return branches.contains(flowHandler);
     }
 
+    @Override
     public FunctionCallStack clone() {
       FunctionCallStack clone = new FunctionCallStack();
       clone.branches = (Stack<FlowHandler>) branches.clone();

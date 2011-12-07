@@ -15,7 +15,7 @@ import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class ExtendedStackTrace extends ParsingEventListener {
-  
+
   public final FastStackMatcherAndPosition currentStack = new FastStackMatcherAndPosition();
   public final FastStackMatcherAndPosition longestStack = new FastStackMatcherAndPosition();
   private final Stack<Integer> currentStackRules = new Stack<Integer>();
@@ -35,9 +35,9 @@ public class ExtendedStackTrace extends ParsingEventListener {
   @Override
   public void enterRule(RuleMatcher rule, ParsingState parsingState) {
     /* The beginning of a rule is the "end" (when partitioning) of the last one, so update the last's one toIndex */
-  	int lastRuleWithPosition = getLastRuleWithPosition(currentStack);
+    int lastRuleWithPosition = getLastRuleWithPosition(currentStack);
     if (lastRuleWithPosition != -1) {
-    	currentStack.setToIndex(lastRuleWithPosition, parsingState.lexerIndex);
+      currentStack.setToIndex(lastRuleWithPosition, parsingState.lexerIndex);
     }
 
     /* Add the newly entered rule to the current stack */
@@ -47,13 +47,13 @@ public class ExtendedStackTrace extends ParsingEventListener {
 
   @Override
   public void exitWithMatchRule(RuleMatcher rule, ParsingState parsingState, AstNode astNode) {
-  	currentStackRules.pop();
+    currentStackRules.pop();
     currentStack.pop();
   }
 
   @Override
   public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState) {
-  	currentStackRules.pop();
+    currentStackRules.pop();
     currentStack.pop();
   }
 
@@ -68,20 +68,20 @@ public class ExtendedStackTrace extends ParsingEventListener {
   }
 
   @Override
-  public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState) {  
+  public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState) {
     /* Handle the longest path */
     if (enforceLexerIndexUpperBound(parsingState.lexerIndex, parsingState.lexerSize) > longestIndex) {
       /* New longest path! */
-    	longestIndex = enforceLexerIndexUpperBound(parsingState.lexerIndex, parsingState.lexerSize);
+      longestIndex = enforceLexerIndexUpperBound(parsingState.lexerIndex, parsingState.lexerSize);
       longestMatcher = currentStack.peekMatcher();
 
       /* Set the longest matcher to the outer most one starting at the same index as the current matcher */
       longestOutertMatcher = getOuterMatcher(currentStack, currentStack.peekFromIndex());
-      
+
       /* Set the current's rule toIndex */
       int lastRuleWithPosition = getLastRuleWithPosition(currentStack);
       if (lastRuleWithPosition != -1) {
-      	currentStack.setToIndex(lastRuleWithPosition, parsingState.lexerIndex);
+        currentStack.setToIndex(lastRuleWithPosition, parsingState.lexerIndex);
       }
 
       /* Copy the current stack to the longest stack (deep-copy / clone) */
@@ -92,42 +92,44 @@ public class ExtendedStackTrace extends ParsingEventListener {
 
     currentStack.pop();
   }
-  
+
   private static int enforceLexerIndexUpperBound(int index, int lexerSize) {
-  	return (index < lexerSize) ? index : lexerSize - 1;
+    return index < lexerSize ? index : lexerSize - 1;
   }
-  
+
   private static int getLastRuleWithPosition(FastStackMatcherAndPosition stack) {
-  	for (int i = stack.size() - 1; i >= 0; i--) {
-  		if (stack.getMatcher(i) instanceof RuleMatcher) {
-  			return i;
-  		}
-  	}
-  	
-  	return -1;
+    for (int i = stack.size() - 1; i >= 0; i--) {
+      if (stack.getMatcher(i) instanceof RuleMatcher) {
+        return i;
+      }
+    }
+
+    return -1;
   }
-  
+
   private static Matcher getOuterMatcher(FastStackMatcherAndPosition stack, int lexerIndex) {
-  	for (int i = 0; i < stack.size(); i++) {
-  		if (stack.getFromIndex(i) == lexerIndex) {
-  			return stack.getMatcher(i);
-  		}
-  	}
-  	
-  	return null;
+    for (int i = 0; i < stack.size(); i++) {
+      if (stack.getFromIndex(i) == lexerIndex) {
+        return stack.getMatcher(i);
+      }
+    }
+
+    return null;
   }
-  
+
   @Override
   public String toString() {
     PrintStream stream = null;
-    
+
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       stream = new PrintStream(baos);
       ExtendedStackTraceStream.print(this, stream);
       return baos.toString();
     } finally {
-      if (stream != null) stream.close();
+      if (stream != null) {
+        stream.close();
+      }
     }
   }
 

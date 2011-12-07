@@ -6,13 +6,11 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -26,28 +24,28 @@ public class InclusiveTillMatcherTest {
   public void ok() {
     assertThat(till("four"), match("one two three four"));
     assertThat(till("three"), not(match("one two three four")));
-    
+
     assertThat(till(and("three", "four")), match("one two three four"));
   }
-  
+
   @Test
   public void testToString() {
-  	assertEquals(till("(").toString(), "till");
+    assertEquals(till("(").toString(), "till");
   }
-  
+
   @Test
   public void testAstNodeTokens() {
-  	ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three four").getTokens());
-  	AstNode astNode = till("three").match(state);
-  	assertEquals(3, state.lexerIndex);
-  	assertEquals(3, astNode.getChildren().size());
+    ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three four").getTokens());
+    AstNode astNode = till("three").match(state);
+    assertEquals(3, state.lexerIndex);
+    assertEquals(3, astNode.getChildren().size());
   }
-  
+
   @Test
   public void testEqualsAndHashCode() {
-  	assertThat(till("a") == till("a"), is(true));
-  	assertThat(till("a") == till("b"), is(false));
-  	assertThat(till("a") == adjacent("a"), is(false));
+    assertThat(till("a") == till("a"), is(true));
+    assertThat(till("a") == till("b"), is(false));
+    assertThat(till("a") == adjacent("a"), is(false));
   }
 
 }

@@ -9,7 +9,7 @@ import com.sonar.sslr.api.AstNode;
 
 public abstract class Symbol {
 
-  private AstNode node;
+  private final AstNode node;
 
   public Symbol(AstNode node) {
     this.node = node;

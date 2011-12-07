@@ -15,16 +15,17 @@ public class OptMatcher extends StatelessMatcher {
     super(matcher);
   }
 
+  @Override
   public AstNode matchWorker(ParsingState parsingState) {
     if (super.children[0].isMatching(parsingState)) {
       return super.children[0].match(parsingState);
     }
     return null;
   }
-  
+
   @Override
   public String toString() {
-  	return "opt";
+    return "opt";
   }
 
 }

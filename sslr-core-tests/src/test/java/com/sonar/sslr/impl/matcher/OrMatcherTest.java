@@ -8,11 +8,9 @@ package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -24,18 +22,18 @@ public class OrMatcherTest {
     assertThat(or(isTrue(), isFalse()), match("one"));
     assertThat(or(isFalse(), isFalse()), not(match("one")));
   }
-  
+
   @Test
   public void testToString() {
-  	assertEquals(or("(").toString(), "\"(\"");
-  	assertEquals(or("(", ")").toString(), "or");
+    assertEquals(or("(").toString(), "\"(\"");
+    assertEquals(or("(", ")").toString(), "or");
   }
-  
+
   @Test
   public void testEqualsAndHashCode() {
-  	assertThat(or("a", "a") == or("a", "a"), is(true));
-  	assertThat(or("a", "a") == or("a", "b"), is(false));
-  	assertThat(or("a", "a") == longestOne("a", "a"), is(false));
+    assertThat(or("a", "a") == or("a", "a"), is(true));
+    assertThat(or("a", "a") == or("a", "b"), is(false));
+    assertThat(or("a", "a") == longestOne("a", "a"), is(false));
   }
 
 }

@@ -32,24 +32,29 @@ public class TokenTypeClassMatcher extends TokenMatcher {
     final int prime = 31;
     int result = 1;
     result = prime * result + getClass().hashCode();
-    result = prime * result + ((typeClass == null) ? 0 : typeClass.hashCode());
+    result = prime * result + (typeClass == null ? 0 : typeClass.hashCode());
     return result;
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     TokenTypeClassMatcher other = (TokenTypeClassMatcher) obj;
     if (typeClass == null) {
-      if (other.typeClass != null)
+      if (other.typeClass != null) {
         return false;
-    } else if ( !typeClass.equals(other.typeClass))
+      }
+    } else if ( !typeClass.equals(other.typeClass)) {
       return false;
+    }
     return true;
   }
 

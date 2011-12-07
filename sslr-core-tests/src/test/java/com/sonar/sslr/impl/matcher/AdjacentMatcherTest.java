@@ -8,10 +8,9 @@ package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -27,12 +26,12 @@ public class AdjacentMatcherTest {
   public void testToString() {
     assertEquals(adjacent("(").toString(), "adjacent");
   }
-  
+
   @Test
   public void testEqualsAndHashCode() {
-  	assertThat(adjacent("a") == adjacent("a"), is(true));
-  	assertThat(adjacent("a") == adjacent("b"), is(false));
-  	assertThat(adjacent("a") == anyTokenButNot("a"), is(false));
+    assertThat(adjacent("a") == adjacent("a"), is(true));
+    assertThat(adjacent("a") == adjacent("b"), is(false));
+    assertThat(adjacent("a") == anyTokenButNot("a"), is(false));
   }
 
 }

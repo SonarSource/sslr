@@ -5,12 +5,10 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
-import static com.sonar.sslr.test.lexer.LexerMatchers.hasComment;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
-import static org.sonar.test.channel.ChannelMatchers.consume;
+import static com.sonar.sslr.test.lexer.LexerMatchers.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.sonar.test.channel.ChannelMatchers.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +42,7 @@ public class RegexpChannelTest {
     assertThat(channel, consume(new CodeReader("56;"), output));
     assertThat(output, hasToken("56", GenericTokenType.CONSTANT));
   }
-  
+
   @Test
   public void testColumnNumber() {
     channel = new RegexpChannel(GenericTokenType.CONSTANT, "[0-9]*");

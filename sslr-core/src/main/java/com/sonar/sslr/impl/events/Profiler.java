@@ -83,7 +83,7 @@ public class Profiler extends ParsingEventListener {
     }
 
     public double getAverageLookahead() {
-      return (lookaheadsCounter == 0) ? 0 : totalLookaheads / (double) lookaheadsCounter;
+      return lookaheadsCounter == 0 ? 0 : totalLookaheads / (double) lookaheadsCounter;
     }
 
     public int getMaxLookahead() {
@@ -91,7 +91,7 @@ public class Profiler extends ParsingEventListener {
     }
 
     public double getAverageBacktracksCpuTime() {
-      return (backtracksCpuTimeCounter == 0) ? 0 : totalBacktracksCpuTime / (double) backtracksCpuTimeCounter;
+      return backtracksCpuTimeCounter == 0 ? 0 : totalBacktracksCpuTime / (double) backtracksCpuTimeCounter;
     }
 
     public long getMaxBacktrackCpuTime() {
@@ -136,7 +136,7 @@ public class Profiler extends ParsingEventListener {
     }
 
     private void stop() {
-      if (!this.isTiming) {
+      if ( !this.isTiming) {
         throw new IllegalStateException();
       }
       this.cpuTime += getCpuTime() - start;
@@ -154,7 +154,7 @@ public class Profiler extends ParsingEventListener {
 
     private int startIndex = -1;
     private boolean wasMemoized = false;
-    private Timer timer = new Timer();
+    private final Timer timer = new Timer();
 
   }
 
@@ -215,7 +215,7 @@ public class Profiler extends ParsingEventListener {
     stopRecordingTime(rule);
   }
 
-	@Override
+  @Override
   public void memoizerHit(MemoizedMatcher matcher, ParsingState parsingState) {
     if (matcher instanceof RuleMatcher) {
       /* Match */
@@ -277,7 +277,7 @@ public class Profiler extends ParsingEventListener {
       backtracks += counter.backtracksCpuTimeCounter;
     }
 
-    return (backtracks == 0) ? 0 : totalBacktracksCpuTime / backtracks;
+    return backtracks == 0 ? 0 : totalBacktracksCpuTime / backtracks;
   }
 
   public long getMaxBacktrackCpuTime() {
@@ -286,8 +286,9 @@ public class Profiler extends ParsingEventListener {
     for (Map.Entry<RuleMatcher, RuleCounter> rule : ruleStats.entrySet()) {
       RuleCounter counter = rule.getValue();
 
-      if (counter.getMaxBacktrackCpuTime() > maxBacktrackCpuTime)
+      if (counter.getMaxBacktrackCpuTime() > maxBacktrackCpuTime) {
         maxBacktrackCpuTime = counter.getMaxBacktrackCpuTime();
+      }
     }
 
     return maxBacktrackCpuTime;
@@ -304,7 +305,7 @@ public class Profiler extends ParsingEventListener {
       lookaheadsCounter += counter.lookaheadsCounter;
     }
 
-    return (lookaheadsCounter == 0) ? 0 : totalLookahead / lookaheadsCounter;
+    return lookaheadsCounter == 0 ? 0 : totalLookahead / lookaheadsCounter;
   }
 
   public int getMaxLookahead() {
@@ -313,8 +314,9 @@ public class Profiler extends ParsingEventListener {
     for (Map.Entry<RuleMatcher, RuleCounter> rule : ruleStats.entrySet()) {
       RuleCounter counter = rule.getValue();
 
-      if (counter.getMaxLookahead() > maxLookahead)
+      if (counter.getMaxLookahead() > maxLookahead) {
         maxLookahead = counter.getMaxLookahead();
+      }
     }
 
     return maxLookahead;
@@ -440,18 +442,20 @@ public class Profiler extends ParsingEventListener {
     ThreadMXBean bean = ManagementFactory.getThreadMXBean();
     return bean.isCurrentThreadCpuTimeSupported() ? bean.getCurrentThreadCpuTime() : 0L;
   }
-  
+
   @Override
   public String toString() {
     PrintStream stream = null;
-    
+
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       stream = new PrintStream(baos);
       ProfilerStream.print(this, stream);
       return baos.toString();
     } finally {
-      if (stream != null) stream.close();
+      if (stream != null) {
+        stream.close();
+      }
     }
   }
 

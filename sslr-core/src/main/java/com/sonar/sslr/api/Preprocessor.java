@@ -26,7 +26,8 @@ public abstract class Preprocessor {
   public abstract boolean process(Token token, LexerOutput output);
 
   /**
-   * Method calls after having lexed a source code. Some additional operations can be done by the Preprocessor on the LexerOuput if required.
+   * Method calls after having lexed a source code. Some additional operations can be done by the Preprocessor on the LexerOuput if
+   * required.
    */
   public void endLexing(LexerOutput output) {
   }

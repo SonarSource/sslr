@@ -9,24 +9,12 @@ package com.sonar.sslr.impl;
 import java.io.File;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReaderConfiguration;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.api.GrammarDecorator;
-import com.sonar.sslr.api.LexerOutput;
-import com.sonar.sslr.api.Preprocessor;
-import com.sonar.sslr.api.RecognictionExceptionListener;
-import com.sonar.sslr.api.RecognitionException;
-import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.*;
 import com.sonar.sslr.impl.Lexer.LexerBuilder;
 import com.sonar.sslr.impl.events.ParsingEventListener;
 import com.sonar.sslr.impl.matcher.GrammarFunctions;
@@ -129,7 +117,7 @@ public class Parser<GRAMMAR extends Grammar> {
       fireEndParseEvent();
     }
   }
-  
+
   private final void fireBeginLexEvent() {
     if (parsingEventListeners != null) {
       for (ParsingEventListener listener : this.parsingEventListeners) {
@@ -137,7 +125,7 @@ public class Parser<GRAMMAR extends Grammar> {
       }
     }
   }
-  
+
   private final void fireEndLexEvent() {
     if (parsingEventListeners != null) {
       for (ParsingEventListener listener : this.parsingEventListeners) {
@@ -188,12 +176,12 @@ public class Parser<GRAMMAR extends Grammar> {
 
   public final static class ParserBuilder<GRAMMAR extends Grammar> {
 
-    private LexerBuilder lexerBuilder = Lexer.builder();
+    private final LexerBuilder lexerBuilder = Lexer.builder();
     private Lexer lexer;
-    private GRAMMAR grammar;
-    private List<GrammarDecorator<GRAMMAR>> decorators = new ArrayList<GrammarDecorator<GRAMMAR>>();
+    private final GRAMMAR grammar;
+    private final List<GrammarDecorator<GRAMMAR>> decorators = new ArrayList<GrammarDecorator<GRAMMAR>>();
     private ParsingEventListener[] parsingEventListeners;
-    private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
+    private final Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
 
     private ParserBuilder(GRAMMAR grammar) {
       this.grammar = grammar;

@@ -5,14 +5,14 @@
  */
 package com.sonar.sslr.impl;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 public class LexerOutputTest {
 
@@ -25,12 +25,12 @@ public class LexerOutputTest {
     output.addToken(new Token(GenericTokenType.IDENTIFIER, "word4"));
 
     assertThat(output.size(), is(4));
-    
+
     output.removeLastTokens(3);
     assertThat(output.size(), is(1));
     assertThat(output.getLastToken().getValue(), is("word1"));
   }
-  
+
   @Test
   public void testAddPreprocessingToken() {
     LexerOutput output = new LexerOutput();
@@ -39,7 +39,7 @@ public class LexerOutputTest {
 
     assertThat(output.size(), is(1));
     assertThat(output.getLastToken().getValue(), is("Word"));
-    
+
     assertThat(output.getPreprocessingTokens().size(), is(1));
     assertThat(output.getPreprocessingTokens().get(0).getValue(), is("preprocessingWord"));
   }

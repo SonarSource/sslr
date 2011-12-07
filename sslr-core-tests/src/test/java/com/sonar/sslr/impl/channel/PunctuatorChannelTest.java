@@ -5,10 +5,9 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.sonar.test.channel.ChannelMatchers.consume;
+import static com.sonar.sslr.test.lexer.LexerMatchers.*;
+import static org.junit.Assert.*;
+import static org.sonar.test.channel.ChannelMatchers.*;
 
 import org.junit.Test;
 import org.sonar.channel.CodeReader;
@@ -19,8 +18,8 @@ import com.sonar.sslr.api.TokenType;
 
 public class PunctuatorChannelTest {
 
-  private PunctuatorChannel channel = new PunctuatorChannel(MyPunctuatorAndOperator.values());
-  private LexerOutput output = new LexerOutput();
+  private final PunctuatorChannel channel = new PunctuatorChannel(MyPunctuatorAndOperator.values());
+  private final LexerOutput output = new LexerOutput();
 
   @Test
   public void testConsumeSpecialCharacters() {
@@ -38,7 +37,7 @@ public class PunctuatorChannelTest {
 
     assertThat(channel, consume("*=,", output));
     assertThat(output, hasToken("*=", MyPunctuatorAndOperator.MUL_ASSIGN));
-    
+
     assertFalse(channel.consume(new CodeReader("!"), output));
   }
 

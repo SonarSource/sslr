@@ -19,12 +19,14 @@ public class FilesVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMM
     this.metric = metric;
   }
 
+  @Override
   public void visitFile(AstNode astNode) {
     SourceFile file = new SourceFile(getContext().getFile().getAbsolutePath(), getContext().getFile().getName());
     getContext().addSourceCode(file);
     getContext().peekSourceCode().setMeasure(metric, 1);
   }
 
+  @Override
   public void leaveFile(AstNode astNode) {
     getContext().popSourceCode();
   }

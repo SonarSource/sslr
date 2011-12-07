@@ -5,22 +5,14 @@
  */
 package com.sonar.sslr.impl.ast;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import com.sonar.sslr.api.AstAndTokenVisitor;
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.AstNodeType;
-import com.sonar.sslr.api.AstVisitor;
-import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.*;
 
 public class AstWalker {
 
-  private Map<AstNodeType, AstVisitor[]> visitorsByNodeType = new IdentityHashMap<AstNodeType, AstVisitor[]>();
-  private List<AstVisitor> visitors = new ArrayList<AstVisitor>();
+  private final Map<AstNodeType, AstVisitor[]> visitorsByNodeType = new IdentityHashMap<AstNodeType, AstVisitor[]>();
+  private final List<AstVisitor> visitors = new ArrayList<AstVisitor>();
   private AstAndTokenVisitor[] astAndTokenVisitors = new AstAndTokenVisitor[0];
   private Token lastVisitedToken = null;
 
@@ -81,7 +73,7 @@ public class AstWalker {
   private void visitChildren(AstNode ast, Object output) {
     List<AstNode> children = ast.getChildren();
     if (children != null) {
-      for (int i = 0 ; i < children.size() ; i++) {
+      for (int i = 0; i < children.size(); i++) {
         visit(ast.getChild(i), output);
       }
     }
@@ -90,15 +82,15 @@ public class AstWalker {
   private void visitToken(AstNode ast) {
     if (ast.getToken() != null && lastVisitedToken != ast.getToken()) {
       lastVisitedToken = ast.getToken();
-      for (int i = 0; i < astAndTokenVisitors.length; i++) {
-        astAndTokenVisitors[i].visitToken(lastVisitedToken);
+      for (AstAndTokenVisitor astAndTokenVisitor : astAndTokenVisitors) {
+        astAndTokenVisitor.visitToken(lastVisitedToken);
       }
     }
   }
 
   private void visitNode(AstNode ast, AstVisitor[] nodeVisitors) {
-    for (int i = 0; i < nodeVisitors.length; i++) {
-      nodeVisitors[i].visitNode(ast);
+    for (AstVisitor nodeVisitor : nodeVisitors) {
+      nodeVisitor.visitNode(ast);
     }
   }
 

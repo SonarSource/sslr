@@ -5,6 +5,9 @@
  */
 package com.sonar.sslr.api;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
 import java.util.Iterator;
 
 import org.junit.Before;
@@ -12,13 +15,6 @@ import org.junit.Test;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 
 public class CommentsTest {
 
@@ -110,13 +106,15 @@ public class CommentsTest {
     assertThat(comments.isThereCommentBeforeLine(16), is(false));
     assertThat(comments.isThereCommentBeforeLine(17), is(true));
   }
-  
+
   private class DefaultCommentAnalyser extends CommentAnalyser {
 
+    @Override
     public boolean isBlank(String commentLine) {
       for (int i = 0; i < commentLine.length(); i++) {
-        if (Character.isLetterOrDigit(commentLine.charAt(i)))
+        if (Character.isLetterOrDigit(commentLine.charAt(i))) {
           return false;
+        }
       }
 
       return true;

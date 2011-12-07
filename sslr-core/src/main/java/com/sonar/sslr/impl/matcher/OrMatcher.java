@@ -7,8 +7,8 @@
 package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingEvent;
+import com.sonar.sslr.impl.ParsingState;
 
 public class OrMatcher extends StatelessMatcher {
 
@@ -16,6 +16,7 @@ public class OrMatcher extends StatelessMatcher {
     super(matchers);
   }
 
+  @Override
   public AstNode matchWorker(ParsingState parsingState) {
     for (Matcher matcher : super.children) {
       if (matcher.isMatching(parsingState)) {
@@ -24,10 +25,10 @@ public class OrMatcher extends StatelessMatcher {
     }
     throw BacktrackingEvent.create();
   }
-  
+
   @Override
   public String toString() {
-  	return "or";
+    return "or";
   }
 
 }

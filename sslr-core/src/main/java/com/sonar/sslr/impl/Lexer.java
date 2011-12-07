@@ -5,22 +5,13 @@
  */
 package com.sonar.sslr.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.sonar.channel.Channel;
-import org.sonar.channel.ChannelDispatcher;
-import org.sonar.channel.CodeReader;
-import org.sonar.channel.CodeReaderConfiguration;
-import org.sonar.channel.CodeReaderFilter;
+import org.sonar.channel.*;
 
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.LexerOutput;
@@ -155,9 +146,9 @@ public class Lexer {
   public static final class LexerBuilder {
 
     private Charset charset = Charset.defaultCharset();
-    private List<Preprocessor> preprocessors = new ArrayList<Preprocessor>();
+    private final List<Preprocessor> preprocessors = new ArrayList<Preprocessor>();
     private CodeReaderConfiguration configuration = new CodeReaderConfiguration();
-    private List<Channel> channels = new ArrayList<Channel>();
+    private final List<Channel> channels = new ArrayList<Channel>();
     private boolean failIfNoChannelToConsumeOneCharacter = false;
 
     private LexerBuilder() {
@@ -202,7 +193,7 @@ public class Lexer {
     private ChannelDispatcher<LexerOutput> getChannelDispatcher() {
       return new ChannelDispatcher<LexerOutput>(channels, failIfNoChannelToConsumeOneCharacter);
     }
- 
+
   }
-  
+
 }

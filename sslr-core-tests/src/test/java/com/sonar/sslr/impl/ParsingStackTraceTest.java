@@ -6,9 +6,9 @@
 
 package com.sonar.sslr.impl;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.till;
-import static com.sonar.sslr.test.lexer.TokenUtils.lex;
-import static org.junit.Assert.assertEquals;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
+import static com.sonar.sslr.test.lexer.TokenUtils.*;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class ParsingStackTraceTest {
   private List<Token> tokens = lex("package com.test;\n" + "import java.util.*;\n" + "public abstract clas MyClass {\n"
       + "   public abstract void run();\n" + "}\n");
   private ParsingState state = new ParsingState(tokens);
-  private RuleMatcher compilationUnit = ((RuleDefinition) new JavaGrammar().getRootRule()).getRule();
+  private final RuleMatcher compilationUnit = ((RuleDefinition) new JavaGrammar().getRootRule()).getRule();
 
   @Before
   public void init() {
@@ -102,6 +102,7 @@ public class ParsingStackTraceTest {
       classDeclaration.is("public", "abstract", "class");
     }
 
+    @Override
     public Rule getRootRule() {
       return compilationUnit;
     }

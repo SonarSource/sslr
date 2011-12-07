@@ -6,16 +6,14 @@
 
 package com.sonar.sslr.api;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 public class GrammarTest {
 
-  private MyGrammar grammar = new MyGrammar();
+  private final MyGrammar grammar = new MyGrammar();
 
   @Test
   public void shouldIndexRules() {

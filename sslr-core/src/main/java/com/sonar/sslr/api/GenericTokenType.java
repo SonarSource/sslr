@@ -5,7 +5,6 @@
  */
 package com.sonar.sslr.api;
 
-import com.sonar.sslr.api.TokenType;
 
 public enum GenericTokenType implements TokenType {
   COMMENT, IDENTIFIER, LITERAL, CONSTANT, EOF, EOL, UNKNOWN_CHAR;

@@ -13,7 +13,7 @@ public class Token {
   private static final int DEFAULT_LINE = 1;
   private static final int DEFAULT_COLUMN = 0;
   private static final File DEFAULT_FILE = null;
-  
+
   private Token previousToken;
   private Token followingToken;
   private final TokenType type;
@@ -31,7 +31,7 @@ public class Token {
   public Token(TokenType type, String value) {
     this(type, value, DEFAULT_LINE, DEFAULT_COLUMN);
   }
-  
+
   public Token(TokenType type, String value, String originalValue) {
     this(type, value, originalValue, DEFAULT_LINE, DEFAULT_COLUMN);
   }
@@ -39,7 +39,7 @@ public class Token {
   public Token(TokenType type, String value, int line, int column) {
     this(type, value, line, column, DEFAULT_FILE);
   }
-  
+
   public Token(TokenType type, String value, String originalValue, int line, int column) {
     this(type, value, originalValue, line, column, DEFAULT_FILE);
   }
@@ -47,7 +47,7 @@ public class Token {
   public Token(TokenType type, String value, int line, int column, File file) {
     this(type, value, value, line, column, file);
   }
-  
+
   public Token(TokenType type, String value, String originalValue, int line, int column, File file) {
     this.type = type;
     this.value = value;
@@ -64,7 +64,7 @@ public class Token {
   public String getValue() {
     return value;
   }
-  
+
   public String getOriginalValue() {
     return originalValue;
   }
@@ -101,29 +101,34 @@ public class Token {
   }
 
   @Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + column;
-		result = prime * result + line;
-		return result;
-	}
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + column;
+    result = prime * result + line;
+    return result;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Token other = (Token) obj;
-		if (column != other.column)
-			return false;
-		if (line != other.line)
-			return false;
-		return true;
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    Token other = (Token) obj;
+    if (column != other.column) {
+      return false;
+    }
+    if (line != other.line) {
+      return false;
+    }
+    return true;
+  }
 
   @Override
   public String toString() {

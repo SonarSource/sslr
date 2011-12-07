@@ -5,9 +5,8 @@
  */
 package com.sonar.sslr.squid;
 
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 
@@ -20,8 +19,8 @@ import com.sonar.sslr.api.Grammar;
 
 public class FilesVisitorTest {
 
-  private SourceProject project = new SourceProject("myProject");
-  private SquidAstVisitorContextImpl<Grammar> context = new SquidAstVisitorContextImpl<Grammar>(project);
+  private final SourceProject project = new SourceProject("myProject");
+  private final SquidAstVisitorContextImpl<Grammar> context = new SquidAstVisitorContextImpl<Grammar>(project);
 
   @Test
   public void shouldPushSourceFileToTheStack() {
@@ -29,7 +28,7 @@ public class FilesVisitorTest {
 
     FilesVisitor<Grammar> visitor = new FilesVisitor<Grammar>(MyMetrics.FILES);
     visitor.setContext(context);
-    
+
     context.setFile(new File("SourceFile.c"));
 
     visitor.visitFile(null);

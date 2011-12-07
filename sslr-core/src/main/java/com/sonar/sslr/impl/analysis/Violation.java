@@ -17,31 +17,31 @@ public class Violation {
   private final ViolationConfidence confidence;
   private final Matcher[] relatedMatchers;
   private final HashMap<String, Object> propertyBag = new HashMap<String, Object>();
-  
+
   public Violation(Matcher affectedMatcher) {
     this(affectedMatcher, null);
   }
-  
+
   public Violation(Matcher affectedMatcher, RuleMatcher parentRule) {
-    this(affectedMatcher, parentRule, ViolationConfidence.LOW, new Matcher[]{});
+    this(affectedMatcher, parentRule, ViolationConfidence.LOW, new Matcher[] {});
   }
-  
+
   public Violation(Matcher affectedMatcher, RuleMatcher parentRule, ViolationConfidence confidence) {
-    this(affectedMatcher, parentRule, confidence, new Matcher[]{});
+    this(affectedMatcher, parentRule, confidence, new Matcher[] {});
   }
-  
+
   public Violation(Matcher affectedMatcher, RuleMatcher parentRule, ViolationConfidence confidence, Matcher... relatedMatchers) {
     this.affectedMatcher = affectedMatcher;
     this.parentRule = parentRule;
     this.confidence = confidence;
     this.relatedMatchers = relatedMatchers;
   }
-  
+
   public Violation addOrReplaceProperty(String propertyName, Object value) {
     propertyBag.put(propertyName, value);
     return this;
   }
-  
+
   public Object getProperty(String propertyName) {
     return propertyBag.get(propertyName);
   }
@@ -52,28 +52,28 @@ public class Violation {
   public Matcher getAffectedMatcher() {
     return affectedMatcher;
   }
-  
+
   /**
    * @return the parentRule
    */
   public RuleMatcher getParentRule() {
     return parentRule;
   }
-  
+
   /**
    * @return the confidence
    */
   public ViolationConfidence getConfidence() {
     return confidence;
   }
-  
+
   /**
    * @return the relatedMatchers
    */
   public Matcher[] getRelatedMatchers() {
     return relatedMatchers;
   }
-  
+
   /**
    * @return the related matcher at index n (or null if no such matcher exists)
    */
@@ -84,5 +84,5 @@ public class Violation {
       return null;
     }
   }
-  
+
 }

@@ -20,11 +20,11 @@ public class InclusiveTillMatcher extends StatelessMatcher {
   protected final AstNode matchWorker(ParsingState parsingState) {
     AstNode astNode = new AstNode(null, "till", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
 
-    while (!super.children[0].isMatching(parsingState)) {
-    	Token token = parsingState.popToken(this);
+    while ( !super.children[0].isMatching(parsingState)) {
+      Token token = parsingState.popToken(this);
       astNode.addChild(new AstNode(token));
     }
-    
+
     astNode.addChild(super.children[0].match(parsingState));
     return astNode;
   }

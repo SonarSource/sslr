@@ -10,12 +10,12 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 
 public class AndMatcher extends StatelessMatcher {
-	
-	protected AndMatcher(Matcher... matchers) {
-  	super(matchers);
+
+  protected AndMatcher(Matcher... matchers) {
+    super(matchers);
   }
 
-	@Override
+  @Override
   protected final AstNode matchWorker(ParsingState parsingState) {
     AstNode[] childNodes = new AstNode[super.children.length];
     int startIndex = parsingState.lexerIndex;
@@ -25,15 +25,15 @@ public class AndMatcher extends StatelessMatcher {
     }
 
     AstNode astNode = new AstNode(null, "AllMatcher", parsingState.peekTokenIfExists(startIndex, this));
-    for (int i = 0; i < childNodes.length; i++) {
-      astNode.addChild(childNodes[i]);
+    for (AstNode childNode : childNodes) {
+      astNode.addChild(childNode);
     }
     return astNode;
   }
-  
+
   @Override
   public String toString() {
-  	return "and";
+    return "and";
   }
-  
+
 }

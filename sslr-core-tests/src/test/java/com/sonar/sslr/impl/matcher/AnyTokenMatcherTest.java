@@ -7,10 +7,9 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.test.lexer.TokenUtils.lex;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static com.sonar.sslr.test.lexer.TokenUtils.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -29,16 +28,16 @@ public class AnyTokenMatcherTest {
     node = matcher.match(new ParsingState(lex(".")));
     assertEquals(".", node.getTokenValue());
   }
-  
+
   @Test
   public void testToString() {
-  	assertEquals(anyToken().toString(), "anyToken()");
+    assertEquals(anyToken().toString(), "anyToken()");
   }
-  
+
   @Test
   public void testEqualsAndHashCode() {
-  	assertThat(anyToken() == anyToken(), is(true));
-  	assertThat(anyToken() == tillNewLine(), is(false));
+    assertThat(anyToken() == anyToken(), is(true));
+    assertThat(anyToken() == tillNewLine(), is(false));
   }
-  
+
 }

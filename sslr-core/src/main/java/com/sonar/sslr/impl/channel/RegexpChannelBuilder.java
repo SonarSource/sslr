@@ -17,19 +17,19 @@ public final class RegexpChannelBuilder {
   public final static RegexpChannel regexp(TokenType type, String... regexpPiece) {
     return new RegexpChannel(type, merge(regexpPiece));
   }
-  
+
   public final static CommentRegexpChannel commentRegexp(String... regexpPiece) {
     return new CommentRegexpChannel(merge(regexpPiece));
   }
-  
+
   public final static CommentRegexpChannel commentRegexp(int removeBefore, int removeAfter, String... regexpPiece) {
     return new CommentRegexpChannel(merge(regexpPiece), removeBefore, removeAfter);
   }
-  
+
   public final static CommentRegexpChannel commentRegexp(boolean trimBeforeRemove, String... regexpPiece) {
     return new CommentRegexpChannel(merge(regexpPiece), trimBeforeRemove);
   }
-  
+
   public final static CommentRegexpChannel commentRegexp(int removeBefore, int removeAfter, boolean trimBeforeRemove, String... regexpPiece) {
     return new CommentRegexpChannel(merge(regexpPiece), removeBefore, removeAfter, trimBeforeRemove);
   }
@@ -59,7 +59,7 @@ public final class RegexpChannelBuilder {
     result.append("[^");
     for (int i = 0; i < character.length; i++) {
       result.append(character[i]);
-      if (i != character.length - 1) { //NOSONAR
+      if (i != character.length - 1) { // NOSONAR
         // do nothing
       }
     }
@@ -70,8 +70,8 @@ public final class RegexpChannelBuilder {
   public final static String g(String... regexpPiece) {
     StringBuilder result = new StringBuilder();
     result.append("(");
-    for (int i = 0; i < regexpPiece.length; i++) {
-      result.append(regexpPiece[i]);
+    for (String element : regexpPiece) {
+      result.append(element);
     }
     result.append(")");
     return result.toString();
@@ -92,8 +92,8 @@ public final class RegexpChannelBuilder {
 
   private final static String merge(String... piece) {
     StringBuilder result = new StringBuilder();
-    for (int i = 0; i < piece.length; i++) {
-      result.append(piece[i]);
+    for (String element : piece) {
+      result.append(element);
     }
     return result.toString();
   }

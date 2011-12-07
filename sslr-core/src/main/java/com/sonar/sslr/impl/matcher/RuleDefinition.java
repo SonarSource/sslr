@@ -6,12 +6,7 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.AstListener;
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.AstNodeSkippingPolicy;
-import com.sonar.sslr.api.AstNodeType;
-import com.sonar.sslr.api.LeftRecursiveRule;
-import com.sonar.sslr.api.Rule;
+import com.sonar.sslr.api.*;
 import com.sonar.sslr.impl.ast.AlwaysSkipFromAst;
 import com.sonar.sslr.impl.ast.NeverSkipFromAst;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
@@ -159,6 +154,7 @@ public class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSkippingP
     ruleMatcher.recoveryRule();
   }
 
+  @Override
   public String toString() {
     return ruleMatcher.getName();
   }

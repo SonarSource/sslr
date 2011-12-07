@@ -5,6 +5,11 @@
  */
 package com.sonar.sslr.impl.events;
 
+import static com.sonar.sslr.api.GenericTokenType.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
+import static org.junit.Assert.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
@@ -19,17 +24,11 @@ import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
-import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
-
-import static org.junit.Assert.assertEquals;
-
 public class ParsingEventListenerTest {
 
   private PrintStream stream;
 
-  private ParsingEventListener parsingEventListener = new ParsingEventListener() {
+  private final ParsingEventListener parsingEventListener = new ParsingEventListener() {
 
     @Override
     public void enterRule(RuleMatcher rule, ParsingState parsingState) {
@@ -69,6 +68,7 @@ public class ParsingEventListenerTest {
     public Rule rule1;
     public Rule rule2;
 
+    @Override
     public Rule getRootRule() {
       return root;
     }

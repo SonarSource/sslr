@@ -30,7 +30,7 @@ public class RecognitionException extends RuntimeException {
       line = parsingState.getOutpostMatcherToken().getLine();
     }
   }
-  
+
   public RecognitionException(ExtendedStackTrace extendedStackTrace) {
     super(extendedStackTrace.toString());
     line = extendedStackTrace.longestParsingState.readToken(extendedStackTrace.longestIndex).getLine();

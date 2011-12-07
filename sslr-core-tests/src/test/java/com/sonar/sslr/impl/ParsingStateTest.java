@@ -6,11 +6,7 @@
 
 package com.sonar.sslr.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,8 +110,8 @@ public class ParsingStateTest {
 
     assertEquals(0, state.lexerIndex);
   }
-  
-  private static RuleMatcher getRuleMatcher(String ruleName){
-  	return RuleDefinition.newRuleBuilder(ruleName).getRule();
+
+  private static RuleMatcher getRuleMatcher(String ruleName) {
+    return RuleDefinition.newRuleBuilder(ruleName).getRule();
   }
 }

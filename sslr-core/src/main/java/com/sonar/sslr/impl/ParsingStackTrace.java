@@ -123,6 +123,7 @@ public class ParsingStackTrace {
     return stackTrace.toString();
   }
 
+  @Override
   public String toString() {
     return stackTrace.toString();
   }

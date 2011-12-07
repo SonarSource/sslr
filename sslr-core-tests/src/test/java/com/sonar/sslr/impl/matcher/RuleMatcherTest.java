@@ -6,25 +6,19 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import static com.sonar.sslr.impl.MockTokenType.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
+import static com.sonar.sslr.test.lexer.TokenUtils.*;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import com.sonar.sslr.api.RecognictionExceptionListener;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.ParsingState;
-
-import static com.sonar.sslr.impl.MockTokenType.WORD;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
-import static com.sonar.sslr.test.lexer.TokenUtils.lex;
-
-import static org.junit.Assert.assertEquals;
-
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 public class RuleMatcherTest {
 

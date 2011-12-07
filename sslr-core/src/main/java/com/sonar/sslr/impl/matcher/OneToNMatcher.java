@@ -7,8 +7,8 @@
 package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.BacktrackingEvent;
+import com.sonar.sslr.impl.ParsingState;
 
 public class OneToNMatcher extends StatelessMatcher {
 
@@ -16,6 +16,7 @@ public class OneToNMatcher extends StatelessMatcher {
     super(matcher);
   }
 
+  @Override
   public AstNode matchWorker(ParsingState parsingState) {
     int startIndex = parsingState.lexerIndex;
     AstNode astNode = null;
@@ -36,10 +37,10 @@ public class OneToNMatcher extends StatelessMatcher {
     }
     return astNode;
   }
-  
+
   @Override
   public String toString() {
-  	return "one2n";
+    return "one2n";
   }
 
 }

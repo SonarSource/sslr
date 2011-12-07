@@ -17,8 +17,8 @@ public class LexerOutput {
 
   private File file = null;
   private List<Token> tokens = new ArrayList<Token>(1000);
-  private List<Token> preprocessingTokens = new ArrayList<Token>();
-  private ListMultimap<Integer, Token> comments = LinkedListMultimap.<Integer, Token> create();
+  private final List<Token> preprocessingTokens = new ArrayList<Token>();
+  private final ListMultimap<Integer, Token> comments = LinkedListMultimap.<Integer, Token> create();
   private final Preprocessor[] preprocessors;
 
   public LexerOutput(Preprocessor... preprocessors) {
@@ -69,7 +69,7 @@ public class LexerOutput {
   public void addTokenAndProcess(TokenType tokenType, String value, int linePosition, int columnPosition) {
     addTokenAndProcess(tokenType, value, value, linePosition, columnPosition);
   }
-  
+
   /**
    * Add a new token and notify the preprocessors
    * 

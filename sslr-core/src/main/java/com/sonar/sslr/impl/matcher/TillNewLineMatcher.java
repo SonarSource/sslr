@@ -6,11 +6,11 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import static com.sonar.sslr.api.GenericTokenType.*;
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
-
-import static com.sonar.sslr.api.GenericTokenType.EOF;
 
 public class TillNewLineMatcher extends StatelessMatcher {
 
@@ -20,11 +20,12 @@ public class TillNewLineMatcher extends StatelessMatcher {
 
   @Override
   protected final AstNode matchWorker(ParsingState parsingState) {
-    int currentLine = (parsingState.lexerIndex - 1 >= 0) ? parsingState.readToken(parsingState.lexerIndex - 1).getLine() : 1;
+    int currentLine = parsingState.lexerIndex - 1 >= 0 ? parsingState.readToken(parsingState.lexerIndex - 1).getLine() : 1;
 
     AstNode astNode = new AstNode(null, "tillNewLine", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
-    for (int i = parsingState.lexerIndex; i < parsingState.lexerSize && parsingState.peekToken(this).getLine() == currentLine && parsingState.peekToken(this).getType() != EOF; i++) {
-    	Token token = parsingState.popToken(this);
+    for (int i = parsingState.lexerIndex; i < parsingState.lexerSize && parsingState.peekToken(this).getLine() == currentLine
+        && parsingState.peekToken(this).getType() != EOF; i++) {
+      Token token = parsingState.popToken(this);
       astNode.addChild(new AstNode(token));
     }
 

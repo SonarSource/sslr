@@ -5,15 +5,10 @@
  */
 package com.sonar.sslr.api;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 
@@ -24,7 +19,7 @@ import com.google.common.collect.Lists;
 public class LexerOutputTest {
 
   LexerOutput output;
-  
+
   @Test
   public void shouldAddToken() {
     output = new LexerOutput();
@@ -157,7 +152,7 @@ public class LexerOutputTest {
     assertThat(output.get(2).getPreviousToken().getValue(), is("second"));
     assertThat(output.get(2).getFollowingToken(), is(nullValue()));
   }
-  
+
   @Test
   public void testTokenChainingWithConstructor() {
     List<Token> tokens = Lists.newArrayList();

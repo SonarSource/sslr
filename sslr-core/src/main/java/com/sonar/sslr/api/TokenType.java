@@ -6,7 +6,6 @@
 
 package com.sonar.sslr.api;
 
-
 public interface TokenType extends AstNodeType {
 
   public String getName();

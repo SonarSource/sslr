@@ -8,11 +8,7 @@ package com.sonar.sslr.squid;
 import java.io.File;
 import java.util.Stack;
 
-import org.sonar.squid.api.CheckMessage;
-import org.sonar.squid.api.CodeCheck;
-import org.sonar.squid.api.SourceCode;
-import org.sonar.squid.api.SourceFile;
-import org.sonar.squid.api.SourceProject;
+import org.sonar.squid.api.*;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Comments;
@@ -21,11 +17,11 @@ import com.sonar.sslr.api.Token;
 
 public final class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends SquidAstVisitorContext<GRAMMAR> {
 
-  private Stack<SourceCode> sourceCodeStack = new Stack<SourceCode>();
+  private final Stack<SourceCode> sourceCodeStack = new Stack<SourceCode>();
   private GRAMMAR grammar;
   private Comments comments;
   private File file;
-  private SourceProject project;
+  private final SourceProject project;
 
   public SquidAstVisitorContextImpl(SourceProject project) {
     this.project = project;
@@ -84,7 +80,7 @@ public final class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends S
   public GRAMMAR getGrammar() {
     return grammar;
   }
-  
+
   /** {@inheritDoc} */
   @Override
   public void log(CodeCheck codeCheck, String messageText, AstNode node, Object... messageParameters) {
@@ -108,14 +104,15 @@ public final class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends S
     }
     log(message);
   }
-  
+
   private void log(CheckMessage message) {
     if (peekSourceCode() instanceof SourceFile) {
       peekSourceCode().log(message);
     } else if (peekSourceCode().getParent(SourceFile.class) != null) {
       peekSourceCode().getParent(SourceFile.class).log(message);
     } else {
-      throw new IllegalStateException("Unable to log a check message on source code '" + ((peekSourceCode() == null) ? "[NULL]" : peekSourceCode().getKey()) + "'");
+      throw new IllegalStateException("Unable to log a check message on source code '"
+          + (peekSourceCode() == null ? "[NULL]" : peekSourceCode().getKey()) + "'");
     }
   }
 
@@ -123,5 +120,5 @@ public final class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends S
   public final String getKey() {
     return getClass().getSimpleName();
   }
-  
+
 }

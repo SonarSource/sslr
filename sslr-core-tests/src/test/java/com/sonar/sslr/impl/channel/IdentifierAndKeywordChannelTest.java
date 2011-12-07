@@ -6,24 +6,19 @@
 package com.sonar.sslr.impl.channel;
 
 import static com.sonar.sslr.test.lexer.LexerMatchers.*;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
-import static org.sonar.test.channel.ChannelMatchers.consume;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.sonar.test.channel.ChannelMatchers.*;
 
 import org.junit.Test;
 import org.sonar.channel.CodeReader;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.GenericTokenType;
-import com.sonar.sslr.api.LexerOutput;
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.TokenType;
+import com.sonar.sslr.api.*;
 
 public class IdentifierAndKeywordChannelTest {
 
   private IdentifierAndKeywordChannel channel;
-  private LexerOutput output = new LexerOutput();
+  private final LexerOutput output = new LexerOutput();
 
   @Test
   public void testConsumeWord() {
@@ -56,7 +51,7 @@ public class IdentifierAndKeywordChannelTest {
     assertThat(channel, consume("keyword2", output));
     assertThat(output, hasToken("KEYWORD2", MyKeywords.KeyWord2));
   }
-  
+
   @Test
   public void testColumnAndLineNumbers() {
     channel = new IdentifierAndKeywordChannel("[a-zA-Z_][a-zA-Z_0-9]*", false, MyKeywords.values());

@@ -7,13 +7,11 @@
 package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
-import org.junit.Ignore;
 import org.junit.Test;
-
 
 public class LeftRecursiveRuleMatcherTest {
 
@@ -194,5 +192,5 @@ public class LeftRecursiveRuleMatcherTest {
 
     assertThat(exp.getRule(), match("SN MA INVE"));
   }
-  
+
 }

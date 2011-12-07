@@ -5,7 +5,7 @@
  */
 package com.sonar.sslr.squid;
 
-import static com.sonar.sslr.api.GenericTokenType.EOF;
+import static com.sonar.sslr.api.GenericTokenType.*;
 
 import org.sonar.squid.measures.MetricDef;
 
@@ -39,13 +39,13 @@ public class LinesOfCodeVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor
    */
   public void visitToken(Token token) {
     if (token.getType() != EOF) {
-    	/* Handle all the lines of the token */
-    	String[] tokenLines = token.getValue().split("\n", -1);
+      /* Handle all the lines of the token */
+      String[] tokenLines = token.getValue().split("\n", -1);
 
-    	int firstLineAlreadyCounted = (lastTokenLine == token.getLine()) ? 1 : 0;
-    	getContext().peekSourceCode().add(metric, tokenLines.length - firstLineAlreadyCounted);
-    	
-    	lastTokenLine = token.getLine() + tokenLines.length - 1;
+      int firstLineAlreadyCounted = lastTokenLine == token.getLine() ? 1 : 0;
+      getContext().peekSourceCode().add(metric, tokenLines.length - firstLineAlreadyCounted);
+
+      lastTokenLine = token.getLine() + tokenLines.length - 1;
     }
   }
 

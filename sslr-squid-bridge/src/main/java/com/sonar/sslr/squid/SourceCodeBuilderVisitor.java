@@ -14,21 +14,21 @@ import com.sonar.sslr.api.Grammar;
  */
 public class SourceCodeBuilderVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> {
 
-	private final SourceCodeBuilderCallback callback;
-	private final AstNodeType[] astNodeTypes;
-	
+  private final SourceCodeBuilderCallback callback;
+  private final AstNodeType[] astNodeTypes;
+
   public SourceCodeBuilderVisitor(SourceCodeBuilderCallback callback, AstNodeType... astNodeTypes) {
     this.callback = callback;
     this.astNodeTypes = astNodeTypes;
   }
-  
+
   @Override
   public void init() {
-  	for (AstNodeType astNodeType: astNodeTypes) {
-  		subscribeTo(astNodeType);
-		}
+    for (AstNodeType astNodeType : astNodeTypes) {
+      subscribeTo(astNodeType);
+    }
   }
-	
+
   /**
    * {@inheritDoc}
    */

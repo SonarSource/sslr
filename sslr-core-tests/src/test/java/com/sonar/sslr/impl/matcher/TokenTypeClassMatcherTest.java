@@ -8,9 +8,8 @@ package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
@@ -38,12 +37,12 @@ public class TokenTypeClassMatcherTest {
   public void testToString() {
     assertEquals(and(GenericTokenType.class).toString(), GenericTokenType.class.getCanonicalName() + ".class");
   }
-  
+
   @Test
   public void testEqualsAndHashCode() {
-  	assertThat(and(GenericTokenType.class) == and(GenericTokenType.class), is(true));
-  	assertThat(and(GenericTokenType.class) == and(MockTokenType.class), is(false));
-  	assertThat(and(GenericTokenType.class) == adjacent("("), is(false));
+    assertThat(and(GenericTokenType.class) == and(GenericTokenType.class), is(true));
+    assertThat(and(GenericTokenType.class) == and(MockTokenType.class), is(false));
+    assertThat(and(GenericTokenType.class) == adjacent("("), is(false));
   }
 
 }

@@ -24,22 +24,24 @@ public class SquidAstVisitor<GRAMMAR extends Grammar> implements CodeVisitor, As
 
   private final List<AstNodeType> astNodeTypesToVisit = new ArrayList<AstNodeType>();
   private SquidAstVisitorContext<GRAMMAR> context = null;
-  
+
   /**
    * This method can't be overridden. Used by AstScanners to inject contexts into the actual visitors.
    */
   public final void setContext(SquidAstVisitorContext<GRAMMAR> context) {
-    if (this.context != null) throw new IllegalStateException("setContext() must only be called once.");
+    if (this.context != null) {
+      throw new IllegalStateException("setContext() must only be called once.");
+    }
     this.context = context;
   }
-  
+
   /**
    * This method can't be overridden. Returns the injected context, which the visitors can use.
    */
   public final SquidAstVisitorContext<GRAMMAR> getContext() {
     return context;
   }
-  
+
   /**
    * This method can't be overridden. The method subscribeTo(AstNodeType... astNodeTypes) must be used to while overriding the public void
    * init() method.
@@ -93,5 +95,5 @@ public class SquidAstVisitor<GRAMMAR extends Grammar> implements CodeVisitor, As
    */
   public void destroy() {
   }
-  
+
 }

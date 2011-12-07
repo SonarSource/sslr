@@ -18,7 +18,7 @@ import com.google.common.collect.ListMultimap;
  */
 public class Comments implements Iterable<Token> {
 
-  private ListMultimap<Integer, Token> comments;
+  private final ListMultimap<Integer, Token> comments;
   private CommentAnalyser analyser;
 
   public Comments(ListMultimap<Integer, Token> comments) {
@@ -131,8 +131,9 @@ public class Comments implements Iterable<Token> {
     int commentLine = line - 1;
     while (hasCommentTokensAtLine(commentLine)) {
       for (Token comment : getCommentTokensAtLine(commentLine)) {
-        if ( !isBlank(comment.getValue()))
+        if ( !isBlank(comment.getValue())) {
           return true;
+        }
       }
       commentLine--;
     }

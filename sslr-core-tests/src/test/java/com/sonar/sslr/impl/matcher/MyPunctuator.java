@@ -9,7 +9,7 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.TokenType;
 
 public enum MyPunctuator implements TokenType {
-	
+
   LEFT, RIGHT, CAT, DOG, SOMETHING;
 
   public String getName() {
@@ -23,5 +23,5 @@ public enum MyPunctuator implements TokenType {
   public boolean hasToBeSkippedFromAst(AstNode node) {
     return false;
   }
-  
+
 }

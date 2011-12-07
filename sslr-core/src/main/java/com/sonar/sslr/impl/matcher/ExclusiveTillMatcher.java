@@ -16,9 +16,10 @@ public class ExclusiveTillMatcher extends StatelessMatcher {
     super(matchers);
   }
 
+  @Override
   protected final AstNode matchWorker(ParsingState parsingState) {
     Token nextToken = parsingState.peekTokenIfExists(parsingState.lexerIndex, this);
-    
+
     AstNode astNode = new AstNode(null, "exclusiveTillMatcher", nextToken);
     while (nothingMatch(parsingState)) {
       Token token = parsingState.popToken(this);

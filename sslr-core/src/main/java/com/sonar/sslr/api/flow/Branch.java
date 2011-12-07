@@ -54,6 +54,7 @@ public class Branch {
     return 1;
   }
 
+  @Override
   public String toString() {
     return "[BRANCH at level " + getDepth() + " : " + getDepthDetail() + "]";
   }

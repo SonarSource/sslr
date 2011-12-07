@@ -14,18 +14,21 @@ import org.sonar.squid.recognizer.Detector;
 import org.sonar.squid.recognizer.LanguageFootprint;
 
 public class DummyCodeRecognizer extends CodeRecognizer {
-	
+
   public DummyCodeRecognizer() {
-  	
+
     super(0.9, new LanguageFootprint() {
-			
-			public Set<Detector> getDetectors() {
-				return new HashSet<Detector>() {{
-					add(new ContainsDetector(1.0, "CODE"));
-				}};
-			}
-		});
-    
+
+      public Set<Detector> getDetectors() {
+        return new HashSet<Detector>() {
+
+          {
+            add(new ContainsDetector(1.0, "CODE"));
+          }
+        };
+      }
+    });
+
   }
 
 }

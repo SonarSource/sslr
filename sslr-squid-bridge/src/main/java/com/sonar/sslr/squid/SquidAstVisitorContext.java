@@ -28,7 +28,7 @@ public abstract class SquidAstVisitorContext<GRAMMAR extends Grammar> {
   public abstract void popSourceCode();
 
   public abstract SourceCode peekSourceCode();
-  
+
   /**
    * @param codeCheck
    *          codeCheck check from which this log generates
@@ -40,7 +40,7 @@ public abstract class SquidAstVisitorContext<GRAMMAR extends Grammar> {
    *          option message's parameters (see the java.text.MessageFormat class of the java API)
    */
   public abstract void log(CodeCheck codeCheck, String messageText, AstNode node, Object... messageParameters);
-  
+
   /**
    * @param codeCheck
    *          codeCheck check from which this log generates
@@ -52,7 +52,7 @@ public abstract class SquidAstVisitorContext<GRAMMAR extends Grammar> {
    *          option message's parameters (see the java.text.MessageFormat class of the java API)
    */
   public abstract void log(CodeCheck codeCheck, String messageText, Token token, Object... messageParameters);
-  
+
   /**
    * @param codeCheck
    *          codeCheck check from which this log generates
@@ -64,5 +64,5 @@ public abstract class SquidAstVisitorContext<GRAMMAR extends Grammar> {
    *          option message's parameters (see the java.text.MessageFormat class of the java API)
    */
   public abstract void log(CodeCheck codeCheck, String messageText, int line, Object... messageParameters);
-  
+
 }

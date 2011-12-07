@@ -5,8 +5,8 @@
  */
 package com.sonar.sslr.impl.events;
 
-import static com.sonar.sslr.api.GenericTokenType.COMMENT;
-import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.regexp;
+import static com.sonar.sslr.api.GenericTokenType.*;
+import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.*;
 
 import com.sonar.sslr.impl.Lexer;
 import com.sonar.sslr.impl.channel.BlackHoleChannel;

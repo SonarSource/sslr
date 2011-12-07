@@ -33,30 +33,35 @@ public class TokenTypesMatcher extends TokenMatcher {
     return "isOneOfThem";
   }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + getClass().hashCode();
-		result = prime * result	+ ((tokenTypes == null) ? 0 : tokenTypes.hashCode());
-		return result;
-	}
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + getClass().hashCode();
+    result = prime * result + (tokenTypes == null ? 0 : tokenTypes.hashCode());
+    return result;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		TokenTypesMatcher other = (TokenTypesMatcher) obj;
-		if (tokenTypes == null) {
-			if (other.tokenTypes != null)
-				return false;
-		} else if (!tokenTypes.equals(other.tokenTypes))
-			return false;
-		return true;
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    TokenTypesMatcher other = (TokenTypesMatcher) obj;
+    if (tokenTypes == null) {
+      if (other.tokenTypes != null) {
+        return false;
+      }
+    } else if ( !tokenTypes.equals(other.tokenTypes)) {
+      return false;
+    }
+    return true;
+  }
 
 }

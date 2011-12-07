@@ -17,11 +17,11 @@ import com.sonar.sslr.impl.matcher.RuleDefinition;
  * public Rule field must exist. All those public Rule fields are automatically instantiated when creating a Grammar object.
  * 
  * @see Rule
- * @see <a href="http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">BackusÐNaur Form</a>
+ * @see <a href="http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">Backusï¿½Naur Form</a>
  */
 public abstract class Grammar {
 
-  private Map<String, Rule> ruleIndex = new HashMap<String, Rule>();
+  private final Map<String, Rule> ruleIndex = new HashMap<String, Rule>();
 
   public Grammar() {
     instanciateRuleFields();

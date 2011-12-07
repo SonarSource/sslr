@@ -148,7 +148,7 @@ public final class CheckMatchers {
    */
   public final class Violation {
 
-    private CheckMessage checkMessage;
+    private final CheckMessage checkMessage;
 
     private Violation(CheckMessage checkMessage) {
       this.checkMessage = checkMessage;

@@ -8,11 +8,9 @@ package com.sonar.sslr.impl.matcher;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -24,18 +22,18 @@ public class AndMatcherTest {
     assertThat(and(isTrue(), isFalse()), not(match("one two")));
     assertThat(and(isFalse(), isFalse()), not(match("one two")));
   }
-  
+
   @Test
   public void testToString() {
-  	assertEquals(and("(").toString(), "\"(\"");
-  	assertEquals(and("(", ")").toString(), "and");
+    assertEquals(and("(").toString(), "\"(\"");
+    assertEquals(and("(", ")").toString(), "and");
   }
-  
+
   @Test
   public void testEqualsAndHashCode() {
-  	assertThat(and("a", "a") == and("a", "a"), is(true));
-  	assertThat(and("a", "a") == and("a", "b"), is(false));
-  	assertThat(and("a", "a") == longestOne("a", "a"), is(false));
+    assertThat(and("a", "a") == and("a", "a"), is(true));
+    assertThat(and("a", "a") == and("a", "b"), is(false));
+    assertThat(and("a", "a") == longestOne("a", "a"), is(false));
   }
 
 }

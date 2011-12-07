@@ -14,7 +14,6 @@ import org.sonar.channel.CodeReader;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.LexerException;
 
 public class CommentRegexpChannel extends Channel<LexerOutput> {
@@ -27,17 +26,17 @@ public class CommentRegexpChannel extends Channel<LexerOutput> {
   private final boolean trimBeforeRemove;
 
   public CommentRegexpChannel(String regexp) {
-  	this(regexp, 0, 0, false);
+    this(regexp, 0, 0, false);
   }
-  
+
   public CommentRegexpChannel(String regexp, boolean trimBeforeRemove) {
-  	this(regexp, 0, 0, trimBeforeRemove);
+    this(regexp, 0, 0, trimBeforeRemove);
   }
-  
+
   public CommentRegexpChannel(String regexp, int removeBefore, int removeAfter) {
-  	this(regexp, removeBefore, removeAfter, false);
+    this(regexp, removeBefore, removeAfter, false);
   }
-  
+
   public CommentRegexpChannel(String regexp, int removeBefore, int removeAfter, boolean trimBeforeRemove) {
     matcher = Pattern.compile(regexp).matcher("");
     this.regexp = regexp;
@@ -52,17 +51,18 @@ public class CommentRegexpChannel extends Channel<LexerOutput> {
       if (code.popTo(matcher, tmpBuilder) > 0) {
         String value = tmpBuilder.toString();
         String originalValue = tmpBuilder.toString();
-        
+
         if (trimBeforeRemove) {
-        	value = value.trim();
-        }
-        
-        if (removeBefore > 0 || removeAfter > 0) {
-        	value = value.substring(removeBefore, value.length() - removeAfter);
+          value = value.trim();
         }
 
-        output.addCommentToken(new Token(GenericTokenType.COMMENT, value, originalValue, code.getPreviousCursor().getLine(), code.getPreviousCursor().getColumn()));
-        
+        if (removeBefore > 0 || removeAfter > 0) {
+          value = value.substring(removeBefore, value.length() - removeAfter);
+        }
+
+        output.addCommentToken(new Token(GenericTokenType.COMMENT, value, originalValue, code.getPreviousCursor().getLine(), code
+            .getPreviousCursor().getColumn()));
+
         tmpBuilder.delete(0, tmpBuilder.length());
         return true;
       }

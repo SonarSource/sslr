@@ -28,7 +28,7 @@ public class IdentifierAndKeywordChannel extends Channel<LexerOutput> {
     keywordsMap = new HashMap<String, TokenType>();
     for (TokenType[] keywords : keywordSets) {
       for (TokenType keyword : keywords) {
-        String keywordValue = (caseSensitive ? keyword.getValue() : keyword.getValue().toUpperCase());
+        String keywordValue = caseSensitive ? keyword.getValue() : keyword.getValue().toUpperCase();
         keywordsMap.put(keywordValue, keyword);
       }
     }
@@ -45,9 +45,11 @@ public class IdentifierAndKeywordChannel extends Channel<LexerOutput> {
         word = word.toUpperCase();
       }
       if (isKeyword(word)) {
-        output.addTokenAndProcess(keywordsMap.get(word), word, wordOriginal, code.getPreviousCursor().getLine(), code.getPreviousCursor().getColumn());
+        output.addTokenAndProcess(keywordsMap.get(word), word, wordOriginal, code.getPreviousCursor().getLine(), code.getPreviousCursor()
+            .getColumn());
       } else {
-        output.addTokenAndProcess(GenericTokenType.IDENTIFIER, word, wordOriginal, code.getPreviousCursor().getLine(), code.getPreviousCursor()
+        output.addTokenAndProcess(GenericTokenType.IDENTIFIER, word, wordOriginal, code.getPreviousCursor().getLine(), code
+            .getPreviousCursor()
             .getColumn());
       }
       tmpBuilder.delete(0, tmpBuilder.length());

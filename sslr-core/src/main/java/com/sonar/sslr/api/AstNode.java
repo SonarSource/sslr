@@ -19,8 +19,8 @@ import java.util.List;
 public class AstNode {
 
   protected final AstNodeType type;
-  private String name;
-  private Token token;
+  private final String name;
+  private final Token token;
   private List<AstNode> children;
   private int childIndex = -1;
   private AstNode parent;
@@ -178,7 +178,7 @@ public class AstNode {
     }
     return token.getValue();
   }
-  
+
   /**
    * Get the Token's original value associated to this AstNode
    * 
@@ -465,6 +465,7 @@ public class AstNode {
     }
   }
 
+  @Override
   public String toString() {
     StringBuilder result = new StringBuilder();
     result.append(name);

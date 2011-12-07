@@ -6,10 +6,8 @@
 
 package com.sonar.sslr.impl.channel;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.io.StringReader;
 import java.util.List;
@@ -25,8 +23,8 @@ import com.sonar.sslr.api.Token;
 
 public class UnknownCharacterChannelTest {
 
-  private LexerOutput lexerOutput = new LexerOutput();
-  private UnknownCharacterChannel channel = new UnknownCharacterChannel();
+  private final LexerOutput lexerOutput = new LexerOutput();
+  private final UnknownCharacterChannel channel = new UnknownCharacterChannel();
 
   @Test
   public void shouldConsumeAnyCharacter() {

@@ -5,14 +5,9 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.anyButNot;
-import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.g;
-import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.o2n;
-import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.one2n;
-import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.opt;
-import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.or;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -43,7 +38,7 @@ public class RegexpChannelBuilderTest {
   public void testOr() {
     assertThat(or("L", "l", "U", "u"), equalTo("(L|l|U|u)"));
   }
-  
+
   @Test
   public void testAnyButNot() {
     assertThat(anyButNot("L", "l"), equalTo("[^Ll]"));

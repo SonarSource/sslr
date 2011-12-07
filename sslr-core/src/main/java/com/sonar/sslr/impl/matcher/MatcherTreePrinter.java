@@ -7,47 +7,50 @@ package com.sonar.sslr.impl.matcher;
 
 public class MatcherTreePrinter {
 
-	public static String print(Matcher matcher) {
-		return print(matcher, true);
-	}
-	
-	private static String print(Matcher matcher, boolean expandRule) {
-		Matcher[] children = matcher.children;
+  public static String print(Matcher matcher) {
+    return print(matcher, true);
+  }
 
-		StringBuilder result = new StringBuilder(matcher.toString());
-		if (isRuleImpl(matcher) && expandRule) result.append(".is");
+  private static String print(Matcher matcher, boolean expandRule) {
+    Matcher[] children = matcher.children;
 
-		if (hasChildren(children) && isNotRuleImplToCollapse(matcher, expandRule)) {
-			if (result.length() >= 1 && result.charAt(result.length() - 1) == ')') {
-				result.deleteCharAt(result.length() - 1);
-				result.append(", ");
-			}
-			else result.append("(");
+    StringBuilder result = new StringBuilder(matcher.toString());
+    if (isRuleImpl(matcher) && expandRule) {
+      result.append(".is");
+    }
 
-			/* Display the children */
-			for (int i = 0; i < children.length; i++) {
-				result.append(print(children[i], false));
-				if (i < children.length - 1) {
-					result.append(", ");
-				}
-			}
+    if (hasChildren(children) && isNotRuleImplToCollapse(matcher, expandRule)) {
+      if (result.length() >= 1 && result.charAt(result.length() - 1) == ')') {
+        result.deleteCharAt(result.length() - 1);
+        result.append(", ");
+      } else {
+        result.append("(");
+      }
 
-			result.append(")");
-		}
+      /* Display the children */
+      for (int i = 0; i < children.length; i++) {
+        result.append(print(children[i], false));
+        if (i < children.length - 1) {
+          result.append(", ");
+        }
+      }
 
-		return result.toString();
-	}
+      result.append(")");
+    }
 
-	private static boolean isNotRuleImplToCollapse(Matcher matcher, boolean expandRule) {
-		return !(isRuleImpl(matcher) && !expandRule);
-	}
+    return result.toString();
+  }
 
-	private static boolean hasChildren(Matcher[] children) {
-		return children.length > 0;
-	}
+  private static boolean isNotRuleImplToCollapse(Matcher matcher, boolean expandRule) {
+    return !(isRuleImpl(matcher) && !expandRule);
+  }
 
-	private static boolean isRuleImpl(Matcher matcher) {
-		return matcher instanceof RuleMatcher;
-	}
-	
+  private static boolean hasChildren(Matcher[] children) {
+    return children.length > 0;
+  }
+
+  private static boolean isRuleImpl(Matcher matcher) {
+    return matcher instanceof RuleMatcher;
+  }
+
 }

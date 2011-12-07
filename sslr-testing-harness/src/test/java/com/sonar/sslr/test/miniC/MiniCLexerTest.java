@@ -15,7 +15,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.sonar.sslr.impl.Lexer;
-import com.sonar.sslr.test.miniC.MiniCLexer;
 
 public class MiniCLexerTest {
 

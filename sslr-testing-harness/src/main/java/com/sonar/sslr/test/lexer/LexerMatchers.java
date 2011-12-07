@@ -19,7 +19,7 @@ public class LexerMatchers {
   public final static Matcher<LexerOutput> hasToken(String tokenValue) {
     return new HasTokenValueMatcher(tokenValue);
   }
-  
+
   public final static Matcher<LexerOutput> hasOriginalToken(String tokenValue) {
     return new HasTokenValueMatcher(tokenValue, true);
   }
@@ -43,7 +43,7 @@ public class LexerMatchers {
   public final static Matcher<LexerOutput> hasComment(String commentValue, int commentLine) {
     return new HasCommentMatcher(commentValue, commentLine);
   }
-  
+
   public final static Matcher<LexerOutput> hasOriginalComment(String commentValue) {
     return new HasCommentMatcher(commentValue, true);
   }
@@ -51,5 +51,5 @@ public class LexerMatchers {
   public final static Matcher<LexerOutput> hasOriginalComment(String commentValue, int commentLine) {
     return new HasCommentMatcher(commentValue, commentLine, true);
   }
-  
+
 }

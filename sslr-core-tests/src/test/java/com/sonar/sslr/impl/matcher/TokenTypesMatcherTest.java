@@ -9,16 +9,12 @@ package com.sonar.sslr.impl.matcher;
 import static com.sonar.sslr.api.GenericTokenType.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.MockTokenType;
@@ -47,19 +43,19 @@ public class TokenTypesMatcherTest {
 
     assertFalse(matcher.isExpectedToken(new Token(dummyTokenType, "word2")));
   }
-  
+
   @Test
   public void testToString() {
-  	assertEquals(new TokenTypesMatcher(MockTokenType.values()).toString(), "isOneOfThem");
+    assertEquals(new TokenTypesMatcher(MockTokenType.values()).toString(), "isOneOfThem");
   }
-  
+
   @Test
   public void testEqualsAndHashCode() {
-  	assertThat(isOneOfThem(IDENTIFIER, EOF) == isOneOfThem(IDENTIFIER, EOF), is(true));
-  	assertThat(isOneOfThem(IDENTIFIER, EOF) == isOneOfThem(EOF, IDENTIFIER), is(true));
-  	assertThat(isOneOfThem(IDENTIFIER, EOF, COMMENT) == isOneOfThem(EOF, COMMENT, IDENTIFIER), is(true));
-  	assertThat(isOneOfThem(IDENTIFIER, EOF) == isOneOfThem(IDENTIFIER, LITERAL), is(false));
-  	assertThat(isOneOfThem(IDENTIFIER, EOF) == and(IDENTIFIER, EOF), is(false));
+    assertThat(isOneOfThem(IDENTIFIER, EOF) == isOneOfThem(IDENTIFIER, EOF), is(true));
+    assertThat(isOneOfThem(IDENTIFIER, EOF) == isOneOfThem(EOF, IDENTIFIER), is(true));
+    assertThat(isOneOfThem(IDENTIFIER, EOF, COMMENT) == isOneOfThem(EOF, COMMENT, IDENTIFIER), is(true));
+    assertThat(isOneOfThem(IDENTIFIER, EOF) == isOneOfThem(IDENTIFIER, LITERAL), is(false));
+    assertThat(isOneOfThem(IDENTIFIER, EOF) == and(IDENTIFIER, EOF), is(false));
   }
 
 }

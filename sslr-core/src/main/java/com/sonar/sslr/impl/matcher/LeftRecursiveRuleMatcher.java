@@ -40,7 +40,7 @@ public class LeftRecursiveRuleMatcher extends RuleMatcher {
     }
 
     // Stop recursion When this rule is already in the parsing stack
-    if ( !matchStartIndexes.isEmpty() && (matchStartIndexes.peek() == mostLeftLexerIndex)) {
+    if ( !matchStartIndexes.isEmpty() && matchStartIndexes.peek() == mostLeftLexerIndex) {
       throw BacktrackingEvent.create();
     }
 

@@ -1,4 +1,5 @@
 package com.sonar.sslr.impl.matcher;
+
 /*
  * Copyright (C) 2010 SonarSource SA
  * All rights reserved
@@ -18,6 +19,7 @@ public abstract class MemoizedMatcher extends Matcher {
     super(children);
   }
 
+  @Override
   public final AstNode match(ParsingState parsingState) {
     enterEvent(parsingState);
 

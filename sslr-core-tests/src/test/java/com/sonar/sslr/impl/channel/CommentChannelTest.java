@@ -6,9 +6,9 @@
 package com.sonar.sslr.impl.channel;
 
 import static com.sonar.sslr.test.lexer.LexerMatchers.*;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
-import static org.sonar.test.channel.ChannelMatchers.consume;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.sonar.test.channel.ChannelMatchers.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class CommentChannelTest {
     assertThat(output, hasComment("//My Comment"));
     assertThat(output, hasOriginalComment("//My Comment"));
   }
-  
+
   @Test
   public void testCommentSubstring() {
     channel = new CommentRegexpChannel("//.*", 2, 1);
@@ -42,7 +42,7 @@ public class CommentChannelTest {
     assertThat(output, hasComment("My Commen"));
     assertThat(output, hasOriginalComment("//My Comment"));
   }
-  
+
   @Test
   public void testCommentTrimBeforeRemove() {
     channel = new CommentRegexpChannel("//.*", 2, 1, true);
@@ -51,5 +51,5 @@ public class CommentChannelTest {
     assertThat(output, hasComment("My Commen"));
     assertThat(output, hasOriginalComment("//My Comment    "));
   }
-  
+
 }

@@ -6,8 +6,7 @@ package com.sonar.sslr.impl.matcher;
  * mailto:contact AT sonarsource DOT com
  */
 
-import static com.sonar.sslr.test.lexer.TokenUtils.lex;
-import static com.sonar.sslr.test.lexer.TokenUtils.merge;
+import static com.sonar.sslr.test.lexer.TokenUtils.*;
 
 import java.util.List;
 
@@ -15,11 +14,12 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
 import com.sonar.sslr.api.Token;
+import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingStackTrace;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.BacktrackingEvent;
 
 public class HamcrestMatchMatcher extends BaseMatcher<Matcher> {
+
   private final List<Token> tokens;
   private String parsingStackTrace;
   private Matcher matcher;
