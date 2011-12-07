@@ -5,7 +5,8 @@
  */
 package com.sonar.sslr.xpath;
 
-import static junit.framework.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class AstNodeXpathQueryTest {
     branch.addChild(leaf);
 
     AstNode result = expr.getValue(tree);
-    assertEquals(leaf, result);
+    assertThat(leaf, is(result));
   }
 
   @Test
@@ -41,6 +42,8 @@ public class AstNodeXpathQueryTest {
     branch.addChild(leaf2);
 
     List<AstNode> result = expr.getValues(tree);
+
+    assertThat(result.size(), is(2));
   }
 
   static class NodeType implements AstNodeType {

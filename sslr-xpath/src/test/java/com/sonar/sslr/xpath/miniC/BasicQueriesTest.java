@@ -3,22 +3,22 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.xpath.miniC.checks;
+package com.sonar.sslr.xpath.miniC;
 
 import static com.sonar.sslr.api.GenericTokenType.*;
+import static com.sonar.sslr.xpath.miniC.CheckUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.xpath.AstNodeXpathQuery;
 
-public class BasicQueriesCheckTest extends AbstractCheck {
+public class BasicQueriesTest {
 
   private AstNode fileNode;
 
@@ -88,28 +88,29 @@ public class BasicQueriesCheckTest extends AbstractCheck {
   }
 
   @Test
-  @Ignore
-  public void testForBug() {
-    AstNodeXpathQuery<AstNode> xpath = AstNodeXpathQuery.create("/compilationUnit/declaration[@tokenLine=4]");
+  public void getSecondDeclarationTest() {
+    AstNodeXpathQuery<AstNode> xpath1 = AstNodeXpathQuery.create("/compilationUnit/declaration[@tokenLine=4]");
+    AstNodeXpathQuery<AstNode> xpath2 = AstNodeXpathQuery.create("/compilationUnit/declaration[2]");
     AstNode declarationAtLineFour = fileNode.getChild(1);
-    assertThat(declarationAtLineFour.is(g.declaration), is(true));
+    assertThat(declarationAtLineFour.is(getGrammar().declaration), is(true));
     assertThat(declarationAtLineFour.getTokenLine(), is(4));
-    assertThat(xpath.getValue(fileNode), is(declarationAtLineFour));
+    assertThat(xpath1.getValue(fileNode), is(declarationAtLineFour));
+    assertThat(xpath1.getValue(fileNode), is(xpath2.getValue(fileNode)));
   }
 
   @Test
-  @Ignore
   public void identifiersCountTest() {
     AstNodeXpathQuery<AstNode> xpath = AstNodeXpathQuery.create("/compilationUnit[count(//IDENTIFIER) = 2]");
     assertThat(xpath.getValue(fileNode), is(fileNode));
   }
 
   @Test
-  @Ignore
   public void getIdentifiersTest() {
     AstNodeXpathQuery<AstNode> xpath = AstNodeXpathQuery.create("//IDENTIFIER");
     List<AstNode> nodes = xpath.getValues(fileNode);
     assertThat(nodes.size(), is(2));
+    assertThat(nodes.get(0).getTokenValue(), is("a"));
+    assertThat(nodes.get(1).getTokenValue(), is("b"));
   }
 
 }

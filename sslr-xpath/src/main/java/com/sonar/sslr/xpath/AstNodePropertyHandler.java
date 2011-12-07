@@ -5,6 +5,7 @@
  */
 package com.sonar.sslr.xpath;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.jxpath.DynamicPropertyHandler;
@@ -21,6 +22,8 @@ public class AstNodePropertyHandler implements DynamicPropertyHandler {
   public static Object getPropertyImpl(Object node, String propertyName) {
     AstNode astNode = (AstNode) node;
 
+    List<AstNode> result = new ArrayList<AstNode>();
+
     if ("tokenValue".equals(propertyName)) {
       return hasTokenValue(astNode) ? astNode.getTokenValue() : null;
     } else if ("tokenLine".equals(propertyName)) {
@@ -31,11 +34,15 @@ public class AstNodePropertyHandler implements DynamicPropertyHandler {
 
     for (AstNode child : astNode.getChildren()) {
       if (child.getName().equals(propertyName)) {
-        return child;
+        result.add(child);
       }
     }
 
-    return null;
+    if (result.isEmpty()) {
+      return null;
+    }
+
+    return result.size() == 1 ? result.get(0) : result;
   }
 
   public String[] getPropertyNames(Object node) {

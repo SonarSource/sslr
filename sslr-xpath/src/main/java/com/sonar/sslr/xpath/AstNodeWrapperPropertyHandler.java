@@ -28,9 +28,10 @@ public class AstNodeWrapperPropertyHandler implements DynamicPropertyHandler {
 
     String[] wrappedPropertyNames = AstNodePropertyHandler.getPropertyNamesImpl(wrappedAstNode);
     String[] propertyNames = new String[wrappedPropertyNames.length + 1];
-    propertyNames[0] = wrappedAstNode.getName();
-    for (int i = 0; i < wrappedPropertyNames.length; i++) {
-      propertyNames[i + 1] = wrappedPropertyNames[i];
+    int i = 0;
+    propertyNames[i++] = wrappedAstNode.getName();
+    for (int j = 0; i < propertyNames.length && j < wrappedPropertyNames.length; j++) {
+      propertyNames[i++] = wrappedPropertyNames[j];
     }
 
     return propertyNames;

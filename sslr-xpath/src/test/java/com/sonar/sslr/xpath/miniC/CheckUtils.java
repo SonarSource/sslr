@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.xpath.miniC.checks;
+package com.sonar.sslr.xpath.miniC;
 
 import java.io.File;
 
@@ -14,18 +14,22 @@ import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
 import com.sonar.sslr.test.miniC.MiniCParser;
 
-public class AbstractCheck {
+public final class CheckUtils {
 
-  public final Parser<MiniCGrammar> p = MiniCParser.create();
-  public final MiniCGrammar g = p.getGrammar();
+  private static final Parser<MiniCGrammar> p = MiniCParser.create();
+  private static final MiniCGrammar g = p.getGrammar();
 
-  public final AstNode parse(String filePath) {
-    File file = FileUtils.toFile(AbstractCheck.class.getResource(filePath));
+  public static AstNode parse(String filePath) {
+    File file = FileUtils.toFile(CheckUtils.class.getResource(filePath));
     if (file == null || !file.exists()) {
       throw new AssertionError("The file \"" + filePath + "\" does not exist.");
     }
 
     return p.parse(file);
+  }
+
+  public static MiniCGrammar getGrammar() {
+    return g;
   }
 
 }
