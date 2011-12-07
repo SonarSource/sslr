@@ -7,11 +7,11 @@ package com.sonar.sslr.xpath;
 
 import com.sonar.sslr.api.AstNode;
 
-public class AstNodeWrapper {
+class AstNodeDocument {
 
   private final AstNode wrappedAstNode;
 
-  public AstNodeWrapper(AstNode wrappedAstNode) {
+  public AstNodeDocument(AstNode wrappedAstNode) {
     this.wrappedAstNode = wrappedAstNode;
   }
 

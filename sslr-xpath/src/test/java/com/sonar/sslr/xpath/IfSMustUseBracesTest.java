@@ -3,9 +3,9 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.xpath.miniC;
+package com.sonar.sslr.xpath;
 
-import static com.sonar.sslr.xpath.miniC.CheckUtils.*;
+import static com.sonar.sslr.test.miniC.MiniCParser.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.xpath.AstNodeXpathQuery;
 
 public class IfSMustUseBracesTest {
 

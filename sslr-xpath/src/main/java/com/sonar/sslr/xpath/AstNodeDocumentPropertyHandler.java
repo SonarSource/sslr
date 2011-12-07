@@ -10,12 +10,12 @@ import org.apache.commons.lang.NotImplementedException;
 
 import com.sonar.sslr.api.AstNode;
 
-public class AstNodeWrapperPropertyHandler implements DynamicPropertyHandler {
+public class AstNodeDocumentPropertyHandler implements DynamicPropertyHandler {
 
   // Because of the predicates, we also need to support all the properties of the wrapped object
 
   public Object getProperty(Object node, String propertyName) {
-    AstNodeWrapper astNodeRootWrapper = (AstNodeWrapper) node;
+    AstNodeDocument astNodeRootWrapper = (AstNodeDocument) node;
     AstNode wrappedAstNode = astNodeRootWrapper.getWrappedAstNode();
 
     return wrappedAstNode.getName().equals(propertyName) ? wrappedAstNode : AstNodePropertyHandler.getPropertyImpl(wrappedAstNode,
@@ -23,7 +23,7 @@ public class AstNodeWrapperPropertyHandler implements DynamicPropertyHandler {
   }
 
   public String[] getPropertyNames(Object node) {
-    AstNodeWrapper astNodeRootWrapper = (AstNodeWrapper) node;
+    AstNodeDocument astNodeRootWrapper = (AstNodeDocument) node;
     AstNode wrappedAstNode = astNodeRootWrapper.getWrappedAstNode();
 
     String[] wrappedPropertyNames = AstNodePropertyHandler.getPropertyNamesImpl(wrappedAstNode);

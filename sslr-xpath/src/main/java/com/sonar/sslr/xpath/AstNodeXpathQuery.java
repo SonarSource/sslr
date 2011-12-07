@@ -22,7 +22,7 @@ public final class AstNodeXpathQuery<TYPE> {
 
   static {
     JXPathIntrospector.registerDynamicClass(AstNode.class, AstNodePropertyHandler.class);
-    JXPathIntrospector.registerDynamicClass(AstNodeWrapper.class, AstNodeWrapperPropertyHandler.class);
+    JXPathIntrospector.registerDynamicClass(AstNodeDocument.class, AstNodeDocumentPropertyHandler.class);
   }
 
   private AstNodeXpathQuery(String xpath) {
@@ -31,7 +31,7 @@ public final class AstNodeXpathQuery<TYPE> {
 
   public TYPE getValue(AstNode astNode) {
     try {
-      JXPathContext context = JXPathContext.newContext(new AstNodeWrapper(astNode));
+      JXPathContext context = JXPathContext.newContext(new AstNodeDocument(astNode));
       return (TYPE) expression.getValue(context);
     } catch (JXPathNotFoundException e) {
       return null;
@@ -41,7 +41,7 @@ public final class AstNodeXpathQuery<TYPE> {
   public List<TYPE> getValues(AstNode astNode) {
     List<TYPE> result = new ArrayList<TYPE>();
 
-    JXPathContext context = JXPathContext.newContext(new AstNodeWrapper(astNode));
+    JXPathContext context = JXPathContext.newContext(new AstNodeDocument(astNode));
     Iterator<TYPE> it = expression.iterate(context);
 
     while (it.hasNext()) {
