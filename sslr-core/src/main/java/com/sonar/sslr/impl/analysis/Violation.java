@@ -6,6 +6,7 @@
 package com.sonar.sslr.impl.analysis;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
@@ -16,7 +17,7 @@ public class Violation {
   private final RuleMatcher parentRule;
   private final ViolationConfidence confidence;
   private final Matcher[] relatedMatchers;
-  private final HashMap<String, Object> propertyBag = new HashMap<String, Object>();
+  private final Map<String, Object> propertyBag = new HashMap<String, Object>();
 
   public Violation(Matcher affectedMatcher) {
     this(affectedMatcher, null);

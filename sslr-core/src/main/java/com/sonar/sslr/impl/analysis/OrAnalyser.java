@@ -27,9 +27,9 @@ public class OrAnalyser {
 
   private RuleMatcher currentRule;
 
-  private LinkedList<Violation> emptyAlternativeViolations;
-  private LinkedList<Violation> prefixAlternativeViolations;
-  private LinkedList<Violation> potentialPrefixAlternativeViolations;
+  private List<Violation> emptyAlternativeViolations;
+  private List<Violation> prefixAlternativeViolations;
+  private List<Violation> potentialPrefixAlternativeViolations;
 
   public OrAnalyser() {
     this(DEFAULT_MAX_TOKENS);
@@ -262,21 +262,21 @@ public class OrAnalyser {
   /**
    * @return the emptyAlternativeViolations
    */
-  public LinkedList<Violation> getEmptyAlternativeViolations() {
+  public List<Violation> getEmptyAlternativeViolations() {
     return emptyAlternativeViolations;
   }
 
   /**
    * @return the prefixAlternativeViolations
    */
-  public LinkedList<Violation> getPrefixAlternativeViolations() {
+  public List<Violation> getPrefixAlternativeViolations() {
     return prefixAlternativeViolations;
   }
 
   /**
    * @return the potentialPrefixAlternativeViolations
    */
-  public LinkedList<Violation> getPotentialPrefixAlternativeViolations() {
+  public List<Violation> getPotentialPrefixAlternativeViolations() {
     return potentialPrefixAlternativeViolations;
   }
 

@@ -7,6 +7,7 @@ package com.sonar.sslr.squid;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.sonar.squid.measures.MetricDef;
 
@@ -17,7 +18,7 @@ import com.sonar.sslr.api.Grammar;
 public class CounterVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> {
 
   private final MetricDef metric;
-  private LinkedList<AstNodeType> astNodeTypes = new LinkedList<AstNodeType>();
+  private List<AstNodeType> astNodeTypes = new LinkedList<AstNodeType>();
 
   public static <GRAMMAR extends Grammar> Builder<GRAMMAR> builder() {
     return new Builder<GRAMMAR>();
@@ -26,7 +27,7 @@ public class CounterVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRA
   public static class Builder<GRAMMAR extends Grammar> {
 
     private MetricDef metric;
-    private LinkedList<AstNodeType> astNodeTypes = new LinkedList<AstNodeType>();
+    private List<AstNodeType> astNodeTypes = new LinkedList<AstNodeType>();
 
     private Builder() {
     }

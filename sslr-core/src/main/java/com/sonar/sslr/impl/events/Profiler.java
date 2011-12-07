@@ -158,7 +158,7 @@ public class Profiler extends ParsingEventListener {
 
   }
 
-  public HashMap<RuleMatcher, RuleCounter> ruleStats;
+  public Map<RuleMatcher, RuleCounter> ruleStats;
   private Stack<Timer> timers;
   private Stack<Match> matches;
   private Timer lexerTimer;

@@ -6,6 +6,7 @@
 package com.sonar.sslr.squid;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import org.sonar.squid.api.SourceFile;
 import org.sonar.squid.measures.MetricDef;
@@ -20,10 +21,10 @@ import com.sonar.sslr.api.Token;
  */
 public class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> {
 
-  private HashSet<Integer> noSonar;
-  private HashSet<Integer> commentedLinesOfCode;
-  private HashSet<Integer> comments;
-  private HashSet<Integer> blankComments;
+  private Set<Integer> noSonar;
+  private Set<Integer> commentedLinesOfCode;
+  private Set<Integer> comments;
+  private Set<Integer> blankComments;
 
   private final boolean enableNoSonar;
   private final MetricDef commentMetric;
