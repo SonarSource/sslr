@@ -22,27 +22,38 @@ public class AstNodePropertyHandler implements DynamicPropertyHandler {
   public static Object getPropertyImpl(Object node, String propertyName) {
     AstNode astNode = (AstNode) node;
 
-    List<AstNode> result = new ArrayList<AstNode>();
-
     if ("tokenValue".equals(propertyName)) {
-      return hasTokenValue(astNode) ? astNode.getTokenValue() : null;
+      return astNode.getTokenValue();
     } else if ("tokenLine".equals(propertyName)) {
-      return hasTokenLineAndTokenColumn(astNode) ? astNode.getToken().getLine() : null;
+      return getTokenLine(astNode);
     } else if ("tokenColumn".equals(propertyName)) {
-      return hasTokenLineAndTokenColumn(astNode) ? astNode.getToken().getColumn() : null;
+      return getTokenColumn(astNode);
     }
 
+    List<AstNode> matchingChildren = new ArrayList<AstNode>();
     for (AstNode child : astNode.getChildren()) {
       if (child.getName().equals(propertyName)) {
-        result.add(child);
+        matchingChildren.add(child);
       }
     }
 
-    if (result.isEmpty()) {
-      return null;
+    Object result = null;
+    if (matchingChildren.size() == 1) {
+      result = matchingChildren.get(0);
+
+    } else if (matchingChildren.size() > 1) {
+      result = matchingChildren;
     }
 
-    return result.size() == 1 ? result.get(0) : result;
+    return result;
+  }
+
+  private static Integer getTokenColumn(AstNode astNode) {
+    return hasTokenLineAndTokenColumn(astNode) ? astNode.getToken().getColumn() : null;
+  }
+
+  private static Integer getTokenLine(AstNode astNode) {
+    return hasTokenLineAndTokenColumn(astNode) ? astNode.getToken().getLine() : null;
   }
 
   public String[] getPropertyNames(Object node) {

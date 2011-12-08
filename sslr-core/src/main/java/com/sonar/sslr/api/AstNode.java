@@ -342,7 +342,7 @@ public class AstNode {
    * @return the first child or null if there is no child
    */
   public AstNode getFirstChild() {
-    if (children != null && children.isEmpty()) {
+    if (children != null && !children.isEmpty()) {
       return children.get(0);
     }
     return null;
@@ -421,7 +421,7 @@ public class AstNode {
    * @return the last child or null if there is no child
    */
   public AstNode getLastChild() {
-    if (children != null && children.isEmpty()) {
+    if (children != null && !children.isEmpty()) {
       return children.get(children.size() - 1);
     }
     return null;
