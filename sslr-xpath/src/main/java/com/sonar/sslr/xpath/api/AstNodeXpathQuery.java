@@ -59,7 +59,7 @@ public final class AstNodeXpathQuery<TYPE> {
   }
 
   /**
-   * Evaluate the XPath query on the given AstNode and returns the first result.
+   * Evaluate the XPath query on the given AstNode and returns all matching elements.
    * 
    * <pre>
    * In the following case, AstNodeXpathQuery.create('/a/b').getValues(node) would return the AstNode of B2 and B3, in that order.
