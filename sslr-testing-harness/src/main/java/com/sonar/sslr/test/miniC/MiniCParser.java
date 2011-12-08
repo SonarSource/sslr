@@ -22,7 +22,7 @@ public final class MiniCParser {
   }
 
   public static Parser<MiniCGrammar> create(ParsingEventListener... parsingEventListeners) {
-    return Parser.builder(new MiniCGrammar()).withLexer(MiniCLexer.getLexer())
+    return Parser.builder(new MiniCGrammar()).withLexer(MiniCLexer.create())
         .withParsingEventListeners(parsingEventListeners).build();
   }
 

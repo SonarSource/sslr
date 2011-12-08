@@ -14,7 +14,10 @@ import com.sonar.sslr.impl.channel.BlackHoleChannel;
 import com.sonar.sslr.impl.channel.IdentifierAndKeywordChannel;
 import com.sonar.sslr.impl.channel.PunctuatorChannel;
 
-public class MiniCLexer {
+public final class MiniCLexer {
+
+  private MiniCLexer() {
+  }
 
   public static enum Literals implements TokenType {
 
@@ -89,7 +92,7 @@ public class MiniCLexer {
 
   }
 
-  public static Lexer getLexer() {
+  public static Lexer create() {
     return Lexer.builder()
         .withFailIfNoChannelToConsumeOneCharacter(true)
         .withChannel(new IdentifierAndKeywordChannel("[a-zA-Z]([a-zA-Z0-9_]*[a-zA-Z0-9])?+", true, Keywords.values()))

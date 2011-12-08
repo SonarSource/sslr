@@ -18,7 +18,7 @@ import com.sonar.sslr.impl.Lexer;
 
 public class MiniCLexerTest {
 
-  Lexer lexer = MiniCLexer.getLexer();
+  Lexer lexer = MiniCLexer.create();
 
   @Test
   public void lexIdentifiers() {
