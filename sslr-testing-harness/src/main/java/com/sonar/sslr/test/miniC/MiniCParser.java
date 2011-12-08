@@ -15,8 +15,8 @@ import com.sonar.sslr.impl.events.ParsingEventListener;
 
 public final class MiniCParser {
 
-  private static final Parser<MiniCGrammar> p = MiniCParser.create();
-  private static final MiniCGrammar g = p.getGrammar();
+  private static final Parser<MiniCGrammar> P = MiniCParser.create();
+  private static final MiniCGrammar G = P.getGrammar();
 
   private MiniCParser() {
   }
@@ -32,15 +32,15 @@ public final class MiniCParser {
       throw new AssertionError("The file \"" + filePath + "\" does not exist.");
     }
 
-    return p.parse(file);
+    return P.parse(file);
   }
 
   public static AstNode parseString(String source) {
-    return p.parse(source);
+    return P.parse(source);
   }
 
   public static MiniCGrammar getGrammar() {
-    return g;
+    return G;
   }
 
 }
