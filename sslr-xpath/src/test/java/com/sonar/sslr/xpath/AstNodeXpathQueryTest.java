@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
+import com.sonar.sslr.xpath.api.AstNodeXpathQuery;
 
 public class AstNodeXpathQueryTest {
 

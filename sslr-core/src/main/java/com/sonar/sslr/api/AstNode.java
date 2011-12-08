@@ -359,7 +359,7 @@ public class AstNode {
    *    |    |__ B1 
    *    |__ B2
    *    |__ B3
-   * </pre> 
+   * </pre>
    * 
    * @param AstNodeType
    *          list of desired the node types
@@ -390,7 +390,7 @@ public class AstNode {
    *    |__ B2
    *    |__ D1
    *    |__ B3
-   * </pre>  
+   * </pre>
    * 
    * @param AstNodeType
    *          the node type
@@ -473,28 +473,6 @@ public class AstNode {
 
   public AstNodeType getType() {
     return type;
-  }
-
-  /**
-   * Dump the partial source code covered by this node.
-   */
-  public String dumpSourceCode() {
-    StringBuilder result = new StringBuilder();
-    List<Token> tokens = getTokens();
-    int line = tokens.get(0).getLine();
-    int column = 0;
-    for (Token token : getTokens()) {
-      if (line != token.getLine()) {
-        result.append("\n");
-      }
-      for (int i = column; i < token.getColumn(); i++) {
-        result.append(' ');
-      }
-      result.append(token.getValue());
-      line = token.getLine();
-      column = token.getColumn() + token.getValue().toString().length();
-    }
-    return result.toString();
   }
 
   /**

@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.xpath.api.AstNodeXpathQuery;
 
 public class BasicQueriesTest {
 
@@ -23,7 +24,7 @@ public class BasicQueriesTest {
 
   @Before
   public void init() {
-    fileNode = parseFile("/checks/basicQueries.mc");
+    fileNode = parseFile("/miniC/basicQueries.mc");
   }
 
   @Test

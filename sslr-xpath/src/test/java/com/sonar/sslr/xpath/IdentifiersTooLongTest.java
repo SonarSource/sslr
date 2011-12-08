@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.xpath.api.AstNodeXpathQuery;
 
 public class IdentifiersTooLongTest {
 
@@ -22,7 +23,7 @@ public class IdentifiersTooLongTest {
 
   @Before
   public void init() {
-    fileNode = parseFile("/checks/identifiersTooLong.mc");
+    fileNode = parseFile("/miniC/identifiersTooLong.mc");
   }
 
   @Test

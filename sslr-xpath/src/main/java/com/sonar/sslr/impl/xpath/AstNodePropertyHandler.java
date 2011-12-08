@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.xpath;
+package com.sonar.sslr.impl.xpath;
 
 import java.util.ArrayList;
 import java.util.List;

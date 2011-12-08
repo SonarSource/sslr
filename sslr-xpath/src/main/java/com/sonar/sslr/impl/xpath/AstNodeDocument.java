@@ -3,11 +3,11 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.xpath;
+package com.sonar.sslr.impl.xpath;
 
 import com.sonar.sslr.api.AstNode;
 
-class AstNodeDocument {
+public class AstNodeDocument {
 
   private final AstNode wrappedAstNode;
 

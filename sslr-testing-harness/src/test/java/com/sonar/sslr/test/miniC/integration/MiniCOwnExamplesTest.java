@@ -35,7 +35,7 @@ public class MiniCOwnExamplesTest {
 
   @Parameterized.Parameters
   public static Collection<Object[]> getFiles() throws URISyntaxException {
-    return getParameters("OwnExamples");
+    return getParameters("MiniCIntegration");
   }
 
   public MiniCOwnExamplesTest(File f) {
@@ -43,7 +43,7 @@ public class MiniCOwnExamplesTest {
   }
 
   @Test
-  public void parseSqlPlusSource() throws IOException, URISyntaxException {
+  public void parseSources() throws IOException, URISyntaxException {
     try {
       parser.parse(file);
     } catch (RecognitionException ex) {
