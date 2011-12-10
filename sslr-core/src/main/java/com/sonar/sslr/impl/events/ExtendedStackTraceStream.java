@@ -79,7 +79,7 @@ public final class ExtendedStackTraceStream {
       previousLine = displayToken(lineBuilder, token, failedToken.getLine());
     }
 
-    if (tokens.size() > 0) {
+    if (!tokens.isEmpty()) {
       stream.println(lineBuilder.toString());
     }
   }

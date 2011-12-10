@@ -47,6 +47,7 @@ public class BeforeMatcher extends StructuralUnitMatcher {
   public AstNode matchPrevious(AstNode node) {
     if (previousBeforeMatcher != null) {
       return previousBeforeMatcher.match(node);
-    } else return node;
+    }
+    return node;
   }
 }

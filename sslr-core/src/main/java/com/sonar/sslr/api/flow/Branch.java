@@ -68,12 +68,12 @@ public class Branch {
   }
 
   public boolean isParentOf(Branch branch) {
-    Branch parent = branch.parent;
-    while (parent != null) {
-      if (parent == this) {
+    Branch branchParent = branch.parent;
+    while (branchParent != null) {
+      if (branchParent == this) {
         return true;
       }
-      parent = parent.parent;
+      branchParent = branchParent.parent;
     }
     return false;
   }

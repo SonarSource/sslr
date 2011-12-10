@@ -23,13 +23,10 @@ public class LongestOneMatcher extends StatelessMatcher {
 
     for (Matcher matcher : super.children) {
       int matcherIndex = matcher.matchToIndex(parsingState);
-      if (matcherIndex >= 0) {
+      if (matcherIndex >= 0 && matcherIndex > longestMatchIndex) {
         /* This matcher could parse the input [as well], but for longer than the current longest matcher? */
-        if (matcherIndex > longestMatchIndex) {
-          /* Yes! */
-          longestMatcher = matcher;
-          longestMatchIndex = matcherIndex;
-        }
+        longestMatcher = matcher;
+        longestMatchIndex = matcherIndex;
       }
     }
 
