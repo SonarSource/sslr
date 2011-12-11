@@ -177,7 +177,7 @@ public class ParsingState {
     listeners.add(listener);
   }
 
-  public final void notifyListerners(RecognitionException recognitionException) {
+  public final void notifyListeners(RecognitionException recognitionException) {
     for (RecognictionExceptionListener listener : listeners) {
       listener.processRecognitionException(recognitionException);
     }

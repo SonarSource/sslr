@@ -6,6 +6,7 @@
 
 package com.sonar.sslr.api;
 
+import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.matcher.GrammarFunctions;
 
 /**
@@ -113,7 +114,13 @@ public interface Rule extends AstNodeType {
   Rule plug(Object adapter);
 
   /**
-   * A recovery rule notify RecognitionExceptionListener(s) of a parsing error before consuming bad tokens.
+   * A rule should be flagged as being a "Recovery" rule if it's responsibility is to consume
+   * some bad tokens in order to recover from a parsing error.
+   * 
+   * In such case, all {@link RecognictionExceptionListener} injected into the {@link Parser} are automatically
+   * notified.
+   * 
+   * @see RecognictionExceptionListener
    */
   void recoveryRule();
 }
