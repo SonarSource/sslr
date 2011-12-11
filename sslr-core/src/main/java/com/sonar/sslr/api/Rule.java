@@ -26,7 +26,7 @@ public interface Rule extends AstNodeType {
    *          the matchers that define the rule
    * @return this rule
    */
-  public Rule is(Object... matchers);
+  Rule is(Object... matchers);
 
   /**
    * This method has the same effect as {@link RuleImpl#is(Object...)}, except that it can be called more than once to redefine a rule from
@@ -36,7 +36,7 @@ public interface Rule extends AstNodeType {
    *          the matchers that define the rule
    * @return this rule
    */
-  public Rule override(Object... matchers);
+  Rule override(Object... matchers);
 
   /**
    * The method {@link #is(Object...)} must be first called to be able to add a new alternative to this rule
@@ -44,7 +44,7 @@ public interface Rule extends AstNodeType {
    * @see {@link GrammarFunctions.Standard#or(Object...)}
    * @return this rule
    */
-  public Rule or(Object... matchers);
+  Rule or(Object... matchers);
 
   /**
    * The method {@link #is(Object...)} must be first called to be able to extend this rule definition
@@ -52,7 +52,7 @@ public interface Rule extends AstNodeType {
    * @see {@link GrammarFunctions.Standard#and(Object...)}
    * @return this rule
    */
-  public Rule and(Object... matchers);
+  Rule and(Object... matchers);
 
   /**
    * The method {@link #is(Object...)} must be first called to be able to add a new alternative to this rule. This alternative will be the
@@ -61,7 +61,7 @@ public interface Rule extends AstNodeType {
    * @see {@link GrammarFunctions.Standard#or(Object...)}
    * @return this rule
    */
-  public Rule orBefore(Object... matchers);
+  Rule orBefore(Object... matchers);
 
   /**
    * The method {@link #is(Object...)} is just a utility method which prevents writing is(or());
@@ -70,51 +70,50 @@ public interface Rule extends AstNodeType {
    * @see {@link GrammarFunctions.Standard#or(Object...)}
    * @return this rule
    */
-  public Rule isOr(Object... matchers);
+  Rule isOr(Object... matchers);
 
   /**
    * @deprecated see {@link #plug(Class)}
    * @return this rule
    */
   @Deprecated
-  public Rule setListener(AstListener listener);
+  Rule setListener(AstListener listener);
 
   /**
    * Remove this node from the AST and attached its children directly to its parent
    * 
    * @return this rule
    */
-  public Rule skip();
+  Rule skip();
 
   /**
    * Remove this node from the AST according to a provided policy
    * 
    * @return this rule
    */
-  public Rule skipIf(AstNodeSkippingPolicy policy);
+  Rule skipIf(AstNodeSkippingPolicy policy);
 
   /**
    * 
    * @return this rule
    */
-  public Rule skipIfOneChild();
+  Rule skipIfOneChild();
 
   /**
    * Utility method used for unit testing in order to dynamically replace the definition of the rule to match as soon as a token whose value
    * equals the name of the rule is encountered
    */
-  public void mock();
+  void mock();
 
   /**
    * Experimental
    * 
    * @return this rule
    */
-  public Rule plug(Object adapter);
+  Rule plug(Object adapter);
 
   /**
    * A recovery rule notify RecognitionExceptionListener(s) of a parsing error before consuming bad tokens.
    */
-  public void recoveryRule();
-
+  void recoveryRule();
 }
