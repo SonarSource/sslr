@@ -6,13 +6,18 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.*;
+import com.sonar.sslr.api.AstListener;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.AstNodeSkippingPolicy;
+import com.sonar.sslr.api.AstNodeType;
+import com.sonar.sslr.api.LeftRecursiveRule;
+import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.ast.AlwaysSkipFromAst;
 import com.sonar.sslr.impl.ast.NeverSkipFromAst;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 import com.sonar.sslr.impl.matcher.GrammarFunctions.Standard;
 
-public class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSkippingPolicy {
+public final class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSkippingPolicy {
 
   private RuleMatcher ruleMatcher;
   private Object adapter;
