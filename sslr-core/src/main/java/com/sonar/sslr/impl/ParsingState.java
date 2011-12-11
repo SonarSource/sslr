@@ -12,7 +12,7 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.RecognictionExceptionListener;
+import com.sonar.sslr.api.RecognitionExceptionListener;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.events.ParsingEventListener;
@@ -22,7 +22,7 @@ import com.sonar.sslr.impl.matcher.MemoizedMatcher;
 public class ParsingState {
 
   private final List<MemoizedMatcher> notifiedMatchers = Lists.newArrayList();
-  private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
+  private Set<RecognitionExceptionListener> listeners = new HashSet<RecognitionExceptionListener>();
   private final Token[] tokens;
   public int lexerIndex = 0;
   public int lastRecursionLexerIndex = 0;
@@ -169,16 +169,16 @@ public class ParsingState {
     this.pendingLeftRecursion = leftRecursionState;
   }
 
-  protected final void setListeners(Set<RecognictionExceptionListener> listeners) {
+  protected final void setListeners(Set<RecognitionExceptionListener> listeners) {
     this.listeners = listeners;
   }
 
-  public final void addListener(RecognictionExceptionListener listener) {
+  public final void addListener(RecognitionExceptionListener listener) {
     listeners.add(listener);
   }
 
   public final void notifyListeners(RecognitionException recognitionException) {
-    for (RecognictionExceptionListener listener : listeners) {
+    for (RecognitionExceptionListener listener : listeners) {
       listener.processRecognitionException(recognitionException);
     }
   }

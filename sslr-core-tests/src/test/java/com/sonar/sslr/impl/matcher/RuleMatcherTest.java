@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sonar.sslr.api.RecognictionExceptionListener;
+import com.sonar.sslr.api.RecognitionExceptionListener;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.ParsingState;
 
@@ -50,7 +50,7 @@ public class RuleMatcherTest {
     RuleMatcher rule = ruleBuilder.getRule();
 
     ParsingState parsingState = new ParsingState(lex("one"));
-    RecognictionExceptionListener listener = mock(RecognictionExceptionListener.class);
+    RecognitionExceptionListener listener = mock(RecognitionExceptionListener.class);
     parsingState.addListener(listener);
     rule.match(parsingState);
 
@@ -58,7 +58,7 @@ public class RuleMatcherTest {
 
     rule.recoveryRule();
     parsingState = new ParsingState(lex("one"));
-    listener = mock(RecognictionExceptionListener.class);
+    listener = mock(RecognitionExceptionListener.class);
     parsingState.addListener(listener);
     rule.reinitializeMatcherTree();
     rule.match(parsingState);

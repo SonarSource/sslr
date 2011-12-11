@@ -27,7 +27,7 @@ public class Parser<GRAMMAR extends Grammar> {
   private LexerOutput lexerOutput;
   private Lexer lexer;
   private GRAMMAR grammar;
-  private Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
+  private Set<RecognitionExceptionListener> listeners = new HashSet<RecognitionExceptionListener>();
   private ParsingEventListener[] parsingEventListeners;
 
   private Parser(ParserBuilder<GRAMMAR> builder) {
@@ -77,7 +77,7 @@ public class Parser<GRAMMAR extends Grammar> {
     stream.append(ParsingStackTrace.generateFullStackTrace(getParsingState()));
   }
 
-  public void addListener(RecognictionExceptionListener listerner) {
+  public void addListener(RecognitionExceptionListener listerner) {
     listeners.add(listerner);
   }
 
@@ -191,7 +191,7 @@ public class Parser<GRAMMAR extends Grammar> {
     private final GRAMMAR grammar;
     private final List<GrammarDecorator<GRAMMAR>> decorators = new ArrayList<GrammarDecorator<GRAMMAR>>();
     private ParsingEventListener[] parsingEventListeners;
-    private final Set<RecognictionExceptionListener> listeners = new HashSet<RecognictionExceptionListener>();
+    private final Set<RecognitionExceptionListener> listeners = new HashSet<RecognitionExceptionListener>();
 
     private ParserBuilder(GRAMMAR grammar) {
       this.grammar = grammar;
@@ -241,7 +241,7 @@ public class Parser<GRAMMAR extends Grammar> {
       return this;
     }
 
-    public ParserBuilder<GRAMMAR> withRecognictionExceptionListener(RecognictionExceptionListener listener) {
+    public ParserBuilder<GRAMMAR> withRecognictionExceptionListener(RecognitionExceptionListener listener) {
       listeners.add(listener);
       return this;
     }

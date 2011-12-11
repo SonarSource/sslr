@@ -6,9 +6,9 @@
 package com.sonar.sslr.api;
 
 /**
- * A RecognictionExceptionListener must be used to be notified of parsing error
+ * A RecognitionExceptionListener must be used to be notified of parsing error
  */
-public interface RecognictionExceptionListener {
+public interface RecognitionExceptionListener {
 
   /**
    * This method is called when a recognition exception occurs
