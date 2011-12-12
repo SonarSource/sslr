@@ -94,6 +94,8 @@ public class RuleMatcherTest {
     parsingState.addListener(listener);
     rule.reinitializeMatcherTree();
     rule.match(parsingState);
+
+    assertThat(parsingState.lexerIndex, is(1));
   }
 
 }
