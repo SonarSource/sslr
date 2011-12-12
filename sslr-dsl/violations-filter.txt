@@ -1,0 +1,5 @@
+
+# Deactivate the Findbugs rule detecting use of uninitialized fields
+# This rule is useless on SSLR grammars
+*Dsl;findbugs:UR_UNINIT_READ;*
+
