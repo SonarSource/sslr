@@ -9,12 +9,24 @@ package com.sonar.sslr.impl;
 import java.io.File;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReaderConfiguration;
 
-import com.sonar.sslr.api.*;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.api.GrammarDecorator;
+import com.sonar.sslr.api.LexerOutput;
+import com.sonar.sslr.api.Preprocessor;
+import com.sonar.sslr.api.RecognitionException;
+import com.sonar.sslr.api.RecognitionExceptionListener;
+import com.sonar.sslr.api.Rule;
+import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.Lexer.LexerBuilder;
 import com.sonar.sslr.impl.events.ParsingEventListener;
 import com.sonar.sslr.impl.matcher.GrammarFunctions;
@@ -128,7 +140,7 @@ public class Parser<GRAMMAR extends Grammar> {
     }
   }
 
-  private final void fireBeginLexEvent() {
+  private void fireBeginLexEvent() {
     if (parsingEventListeners != null) {
       for (ParsingEventListener listener : this.parsingEventListeners) {
         listener.beginLex();
@@ -136,7 +148,7 @@ public class Parser<GRAMMAR extends Grammar> {
     }
   }
 
-  private final void fireEndLexEvent() {
+  private void fireEndLexEvent() {
     if (parsingEventListeners != null) {
       for (ParsingEventListener listener : this.parsingEventListeners) {
         listener.endLex();
@@ -144,7 +156,7 @@ public class Parser<GRAMMAR extends Grammar> {
     }
   }
 
-  private final void fireEndParseEvent() {
+  private void fireEndParseEvent() {
     if (parsingEventListeners != null) {
       for (ParsingEventListener listener : this.parsingEventListeners) {
         listener.endParse();
@@ -152,7 +164,7 @@ public class Parser<GRAMMAR extends Grammar> {
     }
   }
 
-  private final void fireBeginParseEvent() {
+  private void fireBeginParseEvent() {
     if (parsingEventListeners != null) {
       for (ParsingEventListener listener : this.parsingEventListeners) {
         listener.beginParse();

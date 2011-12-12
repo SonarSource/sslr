@@ -14,31 +14,34 @@ public final class RegexpChannelBuilder {
   public final static String OCTAL_DIGIT = "[0-7]";
   public static final String HEXA_DIGIT = "[a-fA-F0-9]";
 
-  public final static RegexpChannel regexp(TokenType type, String... regexpPiece) {
+  private RegexpChannelBuilder() {
+  }
+
+  public static RegexpChannel regexp(TokenType type, String... regexpPiece) {
     return new RegexpChannel(type, merge(regexpPiece));
   }
 
-  public final static CommentRegexpChannel commentRegexp(String... regexpPiece) {
+  public static CommentRegexpChannel commentRegexp(String... regexpPiece) {
     return new CommentRegexpChannel(merge(regexpPiece));
   }
 
-  public final static CommentRegexpChannel commentRegexp(int removeBefore, int removeAfter, String... regexpPiece) {
+  public static CommentRegexpChannel commentRegexp(int removeBefore, int removeAfter, String... regexpPiece) {
     return new CommentRegexpChannel(merge(regexpPiece), removeBefore, removeAfter);
   }
 
-  public final static CommentRegexpChannel commentRegexp(boolean trimBeforeRemove, String... regexpPiece) {
+  public static CommentRegexpChannel commentRegexp(boolean trimBeforeRemove, String... regexpPiece) {
     return new CommentRegexpChannel(merge(regexpPiece), trimBeforeRemove);
   }
 
-  public final static CommentRegexpChannel commentRegexp(int removeBefore, int removeAfter, boolean trimBeforeRemove, String... regexpPiece) {
+  public static CommentRegexpChannel commentRegexp(int removeBefore, int removeAfter, boolean trimBeforeRemove, String... regexpPiece) {
     return new CommentRegexpChannel(merge(regexpPiece), removeBefore, removeAfter, trimBeforeRemove);
   }
 
-  public final static String opt(String regexpPiece) {
+  public static String opt(String regexpPiece) {
     return regexpPiece + "?+";
   }
 
-  public final static String and(String... regexpPieces) {
+  public static String and(String... regexpPieces) {
     StringBuilder result = new StringBuilder();
     for (String rexpPiece : regexpPieces) {
       result.append(rexpPiece);
@@ -46,15 +49,15 @@ public final class RegexpChannelBuilder {
     return result.toString();
   }
 
-  public final static String one2n(String regexpPiece) {
+  public static String one2n(String regexpPiece) {
     return regexpPiece + "++";
   }
 
-  public final static String o2n(String regexpPiece) {
+  public static String o2n(String regexpPiece) {
     return regexpPiece + "*+";
   }
 
-  public final static String anyButNot(String... character) {
+  public static String anyButNot(String... character) {
     StringBuilder result = new StringBuilder();
     result.append("[^");
     for (int i = 0; i < character.length; i++) {
@@ -67,7 +70,7 @@ public final class RegexpChannelBuilder {
     return result.toString();
   }
 
-  public final static String g(String... regexpPiece) {
+  public static String g(String... regexpPiece) {
     StringBuilder result = new StringBuilder();
     result.append("(");
     for (String element : regexpPiece) {
@@ -77,7 +80,7 @@ public final class RegexpChannelBuilder {
     return result.toString();
   }
 
-  public final static String or(String... regexpPiece) {
+  public static String or(String... regexpPiece) {
     StringBuilder result = new StringBuilder();
     result.append("(");
     for (int i = 0; i < regexpPiece.length; i++) {
@@ -90,7 +93,7 @@ public final class RegexpChannelBuilder {
     return result.toString();
   }
 
-  private final static String merge(String... piece) {
+  private static String merge(String... piece) {
     StringBuilder result = new StringBuilder();
     for (String element : piece) {
       result.append(element);

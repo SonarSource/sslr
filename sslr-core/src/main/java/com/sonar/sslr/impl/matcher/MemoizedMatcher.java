@@ -51,17 +51,17 @@ public abstract class MemoizedMatcher extends Matcher {
     }
   }
 
-  private final void memoizeAst(ParsingState parsingState, AstNode astNode) {
+  private void memoizeAst(ParsingState parsingState, AstNode astNode) {
     parsingState.memoizeAst(this, astNode);
   }
 
-  private final AstNode getMemoizedAst(ParsingState parsingState) {
+  private AstNode getMemoizedAst(ParsingState parsingState) {
     return parsingState.getMemoizedAst(this);
   }
 
   protected abstract AstNode matchWorker(ParsingState parsingState);
 
-  private final void memoizerHitEvent(ParsingState parsingState) {
+  private void memoizerHitEvent(ParsingState parsingState) {
     if (parsingState.parsingEventListeners != null) {
       for (ParsingEventListener parsingEventListener : parsingState.parsingEventListeners) {
         parsingEventListener.memoizerHit(this, parsingState);
@@ -69,7 +69,7 @@ public abstract class MemoizedMatcher extends Matcher {
     }
   }
 
-  private final void memoizerMissEvent(ParsingState parsingState) {
+  private void memoizerMissEvent(ParsingState parsingState) {
     if (parsingState.parsingEventListeners != null) {
       for (ParsingEventListener parsingEventListener : parsingState.parsingEventListeners) {
         parsingEventListener.memoizerMiss(this, parsingState);
@@ -77,7 +77,7 @@ public abstract class MemoizedMatcher extends Matcher {
     }
   }
 
-  private final void exitWithMatchEvent(ParsingState parsingState, AstNode astNode) {
+  private void exitWithMatchEvent(ParsingState parsingState, AstNode astNode) {
     if (parsingState.parsingEventListeners != null) {
       if (this instanceof RuleMatcher) {
         /* Fire the exitWithMatchRule event */
@@ -93,7 +93,7 @@ public abstract class MemoizedMatcher extends Matcher {
     }
   }
 
-  private final void exitWithoutMatchEvent(ParsingState parsingState) {
+  private void exitWithoutMatchEvent(ParsingState parsingState) {
     if (parsingState.parsingEventListeners != null) {
       if (this instanceof RuleMatcher) {
         /* Fire the exitWithoutMatchRule event */
