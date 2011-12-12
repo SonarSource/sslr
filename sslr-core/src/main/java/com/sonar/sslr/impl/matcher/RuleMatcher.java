@@ -29,17 +29,17 @@ public class RuleMatcher extends MemoizedMatcher {
     if (super.children.length == 0) {
       throw new IllegalStateException("The rule '" + name + "' hasn't beed defined.");
     }
+
     if (recoveryRule) {
       RecognitionException recognitionException = new RecognitionException(parsingState);
       if (super.children[0].isMatching(parsingState)) {
-        //If this rule is a "Recovery" rule and if it matches, all 
-        //RecognitionExceptionListener(s) must be notified.
         parsingState.notifyListeners(recognitionException);
       }
     }
+
     AstNode childNode = super.children[0].match(parsingState);
 
-    AstNode astNode = new AstNode(astNodeType, name, parsingState.peekTokenIfExists(startIndex, (Matcher) super.children[0]));
+    AstNode astNode = new AstNode(astNodeType, name, parsingState.peekTokenIfExists(startIndex, super.children[0]));
     astNode.setAstNodeListener(listener);
     astNode.addChild(childNode);
     return astNode;

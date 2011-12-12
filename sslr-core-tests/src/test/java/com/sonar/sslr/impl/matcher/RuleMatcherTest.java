@@ -9,15 +9,15 @@ package com.sonar.sslr.impl.matcher;
 import static com.sonar.sslr.impl.MockTokenType.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.test.lexer.TokenUtils.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sonar.sslr.api.RecognitionExceptionListener;
 import com.sonar.sslr.api.RecognitionException;
+import com.sonar.sslr.api.RecognitionExceptionListener;
 import com.sonar.sslr.impl.ParsingState;
 
 public class RuleMatcherTest {
@@ -43,7 +43,7 @@ public class RuleMatcherTest {
   }
 
   @Test
-  public void testRecoveryMode() {
+  public void testNoRecoveryMode() {
     RuleDefinition ruleBuilder = RuleDefinition.newRuleBuilder("MyRule");
     ruleBuilder.is("one");
 
@@ -54,15 +54,46 @@ public class RuleMatcherTest {
     parsingState.addListener(listener);
     rule.match(parsingState);
 
-    verify(listener, times(0)).processRecognitionException((RecognitionException) anyObject());
+    verify(listener, times(0)).processRecognitionException(org.mockito.Mockito.any(RecognitionException.class));
+  }
 
+  @Test
+  public void testRecoveryModeListenerInvoked() {
+    RuleDefinition ruleBuilder = RuleDefinition.newRuleBuilder("MyRule");
+    ruleBuilder.is("one");
+
+    RuleMatcher rule = ruleBuilder.getRule();
     rule.recoveryRule();
-    parsingState = new ParsingState(lex("one"));
-    listener = mock(RecognitionExceptionListener.class);
+
+    ParsingState parsingState = new ParsingState(lex("one"));
+    RecognitionExceptionListener listener = mock(RecognitionExceptionListener.class);
     parsingState.addListener(listener);
     rule.reinitializeMatcherTree();
     rule.match(parsingState);
 
-    verify(listener, times(1)).processRecognitionException((RecognitionException) anyObject());
+    verify(listener, times(1)).processRecognitionException(org.mockito.Mockito.any(RecognitionException.class));
   }
+
+  @Test
+  public void testRecoveryModeAtErrorLexerIndex() {
+    RuleDefinition ruleBuilder = RuleDefinition.newRuleBuilder("MyRule");
+    ruleBuilder.is("one");
+
+    RuleMatcher rule = ruleBuilder.getRule();
+    rule.recoveryRule();
+
+    final ParsingState parsingState = new ParsingState(lex("one"));
+
+    RecognitionExceptionListener listener = new RecognitionExceptionListener() {
+
+      public void processRecognitionException(RecognitionException e) {
+        assertThat(parsingState.lexerIndex, is(0));
+      }
+
+    };
+    parsingState.addListener(listener);
+    rule.reinitializeMatcherTree();
+    rule.match(parsingState);
+  }
+
 }
