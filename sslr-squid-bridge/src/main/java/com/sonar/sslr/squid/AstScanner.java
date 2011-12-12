@@ -29,27 +29,37 @@ public final class AstScanner<GRAMMAR extends Grammar> {
 
   private static final Logger LOG = LoggerFactory.getLogger(AstScanner.class);
   private final SquidAstVisitorContextImpl<GRAMMAR> context;
-  private final Parser<GRAMMAR> parser;
+  private final ParserRecoveryListener parserRecoveryListener;
+  private final Parser<GRAMMAR> parserProduction;
+  private final Parser<GRAMMAR> parserDebug;
+  private final ExtendedStackTrace extendedStackTrace;
   private final List<SquidAstVisitor<GRAMMAR>> visitors;
-  private final List<AuditListener> auditListeners;
+  private final AuditListener[] auditListeners;
   private final SquidIndex indexer = new SquidIndex();
   private final CommentAnalyser commentAnalyser;
-  private final Parser<GRAMMAR> debugParser;
-  private final ExtendedStackTrace extendedStackTrace;
   private final MetricDef[] metrics;
+  private final MetricDef filesMetric;
 
   private AstScanner(Builder<GRAMMAR> builder) {
-    this.parser = builder.parser;
     this.visitors = new ArrayList<SquidAstVisitor<GRAMMAR>>(builder.visitors);
-    this.auditListeners = new ArrayList<AuditListener>(builder.auditListeners);
+    this.auditListeners = builder.auditListeners.toArray(new AuditListener[builder.auditListeners.size()]);
+
+    this.parserRecoveryListener = new ParserRecoveryListener();
+    this.parserProduction = Parser.builder(builder.baseParser).setRecognictionExceptionListener(parserRecoveryListener).build();
+
     this.context = builder.context;
-    this.context.setGrammar(parser.getGrammar());
+    this.context.setGrammar(parserProduction.getGrammar());
     this.context.getProject().setSourceCodeIndexer(indexer);
     this.commentAnalyser = builder.commentAnalyser;
-    this.debugParser = builder.debugParser;
-    this.extendedStackTrace = builder.extendedStackTrace;
     this.metrics = builder.metrics;
+    this.filesMetric = builder.filesMetric;
     indexer.index(context.getProject());
+
+    this.extendedStackTrace = new ExtendedStackTrace();
+    ParserRecoveryLogger parserRecoveryLogger = new ParserRecoveryLogger();
+    parserRecoveryLogger.setContext(this.context);
+    this.parserDebug = Parser.builder(builder.baseParser).setParsingEventListeners().setExtendedStackTrace(this.extendedStackTrace)
+        .setRecognictionExceptionListener(this.auditListeners).addRecognictionExceptionListeners(parserRecoveryLogger).build();
   }
 
   public SourceCodeSearchEngine getIndex() {
@@ -64,43 +74,55 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     for (SquidAstVisitor<? extends Grammar> visitor : visitors) {
       visitor.init();
     }
+
     for (File file : files) {
       try {
-        context.setFile(file);
-        AstNode ast = parser.parse(file);
-        context.setComments(parser.getLexerOutput().getComments(commentAnalyser));
+        context.setFile(file, filesMetric);
+        parserRecoveryListener.reset();
+
+        AstNode ast = parserProduction.parse(file);
+
+        // Process the parsing recoveries
+        if (parserRecoveryListener.didRecover()) {
+          try {
+            parserDebug.parse(file);
+          } catch (Exception e) {
+            LOG.error("Unable to get an extended stack trace on file : " + file.getAbsolutePath(), e);
+            LOG.error("Parsing error recoveries not shown.");
+          }
+        }
+
+        context.setComments(parserProduction.getLexerOutput().getComments(commentAnalyser));
         AstWalker astWalker = new AstWalker(visitors);
         astWalker.walkAndVisit(ast);
+
         context.setComments(null);
-        context.setFile(null);
+        context.setFile(null, null);
         astWalker = null;
       } catch (RecognitionException e) {
         LOG.error("Unable to parse source file : " + file.getAbsolutePath());
 
         try {
-          /* Should we retry with the extended stack trace? */
-          boolean extendedStackTracePopulated = false;
-          if (e.isToRetryWithExtendStackTrace() && this.debugParser != null && this.extendedStackTrace != null) {
+          if (e.isToRetryWithExtendStackTrace()) {
             try {
-              debugParser.parse(file);
+              parserDebug.parse(file);
             } catch (RecognitionException re) {
-              extendedStackTracePopulated = true;
+              e = re;
             } catch (Exception e2) {
               LOG.error("Unable to get an extended stack trace on file : " + file.getAbsolutePath(), e2);
             }
           }
 
-          /* Log the recognition exception */
-          RecognitionException re = extendedStackTracePopulated ? new RecognitionException(extendedStackTrace) : e;
-          LOG.error(re.getMessage());
+          // Log the recognition exception
+          LOG.error(e.getMessage());
 
-          /* Process the exception */
+          // Process the exception
           for (SquidAstVisitor<? extends Grammar> visitor : visitors) {
             visitor.visitFile(null);
           }
 
           for (AuditListener auditListener : auditListeners) {
-            auditListener.processRecognitionException(re);
+            auditListener.processRecognitionException(e);
           }
 
           for (SquidAstVisitor<? extends Grammar> visitor : visitors) {
@@ -115,6 +137,7 @@ public final class AstScanner<GRAMMAR extends Grammar> {
         throw new AnalysisException(errorMessage, e);
       }
     }
+
     for (SquidAstVisitor<? extends Grammar> visitor : visitors) {
       visitor.destroy();
     }
@@ -136,21 +159,20 @@ public final class AstScanner<GRAMMAR extends Grammar> {
 
   public static class Builder<GRAMMAR extends Grammar> {
 
-    private Parser<GRAMMAR> parser;
+    private Parser<GRAMMAR> baseParser;
     private final List<SquidAstVisitor<GRAMMAR>> visitors = new ArrayList<SquidAstVisitor<GRAMMAR>>();
     private final List<AuditListener> auditListeners = new ArrayList<AuditListener>();
     private final SquidAstVisitorContextImpl<GRAMMAR> context;
     private CommentAnalyser commentAnalyser;
-    private Parser<GRAMMAR> debugParser;
-    private ExtendedStackTrace extendedStackTrace;
     private MetricDef[] metrics;
+    private MetricDef filesMetric;
 
     public Builder(SquidAstVisitorContextImpl<GRAMMAR> context) {
       this.context = context;
     }
 
-    public Builder<GRAMMAR> setParser(Parser<GRAMMAR> parser) {
-      this.parser = parser;
+    public Builder<GRAMMAR> setBaseParser(Parser<GRAMMAR> baseParser) {
+      this.baseParser = baseParser;
       return this;
     }
 
@@ -170,19 +192,76 @@ public final class AstScanner<GRAMMAR extends Grammar> {
       return this;
     }
 
-    public Builder<GRAMMAR> withExtendedStackTrace(Parser<GRAMMAR> debugParser, ExtendedStackTrace extendedStackTrace) {
-      this.debugParser = debugParser;
-      this.extendedStackTrace = extendedStackTrace;
-      return this;
-    }
-
     public Builder<GRAMMAR> withMetrics(MetricDef... metrics) {
       this.metrics = metrics;
       return this;
     }
 
+    public Builder<GRAMMAR> setFilesMetric(MetricDef filesMetric) {
+      this.filesMetric = filesMetric;
+      return this;
+    }
+
     public AstScanner<GRAMMAR> build() {
+      if (baseParser == null) {
+        throw new IllegalArgumentException("baseParser cannot be null.");
+      }
+
+      if (commentAnalyser == null) {
+        throw new IllegalArgumentException("commentAnalyser cannot be null.");
+      }
+
+      if (filesMetric == null) {
+        throw new IllegalArgumentException("filesMetric cannot be null.");
+      }
+
       return new AstScanner<GRAMMAR>(this);
     }
   }
+
+  private class ParserRecoveryListener implements AuditListener {
+
+    private int recovers = 0;
+
+    public void processRecognitionException(RecognitionException re) {
+      if (re.isFatal()) {
+        throw new IllegalStateException(
+            "ParserRecoveryListener.processRecognitionException() is not supposed to be called with fatal recognition exceptions.", re);
+      }
+
+      recovers++;
+    }
+
+    public void processException(Exception e) {
+      throw new IllegalStateException("ParserRecoveryListener.processException() is not supposed to be called in recovery mode.", e);
+    }
+
+    public boolean didRecover() {
+      return recovers > 0;
+    }
+
+    public void reset() {
+      recovers = 0;
+    }
+
+  }
+
+  private class ParserRecoveryLogger extends SquidAstVisitor<GRAMMAR> implements AuditListener {
+
+    public void processRecognitionException(RecognitionException re) {
+      if (re.isFatal()) {
+        throw new IllegalStateException(
+            "ParserRecoveryLogger.processRecognitionException() is not supposed to be called with fatal recognition exceptions.", re);
+      }
+
+      LOG.warn("Unable to completely parse the file " + getContext().getFile().getAbsolutePath());
+      LOG.warn(re.getMessage());
+    }
+
+    public void processException(Exception e) {
+      throw new IllegalStateException("ParserRecoveryLogger.processException() is not supposed to be called in recovery mode.", e);
+    }
+
+  }
+
 }

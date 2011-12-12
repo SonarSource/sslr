@@ -12,9 +12,10 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.RecognitionExceptionListener;
 import com.sonar.sslr.api.RecognitionException;
+import com.sonar.sslr.api.RecognitionExceptionListener;
 import com.sonar.sslr.api.Token;
+import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import com.sonar.sslr.impl.events.ParsingEventListener;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MemoizedMatcher;
@@ -33,6 +34,7 @@ public class ParsingState {
   private final MemoizedMatcher[] astMatcherMemoization;
   private boolean pendingLeftRecursion = false;
   public ParsingEventListener[] parsingEventListeners;
+  public ExtendedStackTrace extendedStackTrace;
 
   public ParsingState(List<Token> tokens) {
     this.tokens = tokens.toArray(new Token[tokens.size()]);

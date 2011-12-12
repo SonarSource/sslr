@@ -31,7 +31,9 @@ public class RuleMatcher extends MemoizedMatcher {
     }
 
     if (recoveryRule) {
-      RecognitionException recognitionException = new RecognitionException(parsingState);
+      RecognitionException recognitionException = parsingState.extendedStackTrace == null ?
+          new RecognitionException(parsingState, false) : new RecognitionException(parsingState.extendedStackTrace, false);
+
       if (super.children[0].isMatching(parsingState)) {
         parsingState.notifyListeners(recognitionException);
       }

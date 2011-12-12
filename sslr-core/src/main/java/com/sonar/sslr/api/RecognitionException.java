@@ -18,29 +18,34 @@ public class RecognitionException extends RuntimeException {
 
   private final int line;
   private final boolean isToRetryWithExtendStackTrace;
+  private final boolean isFatal;
 
-  public RecognitionException(ParsingState parsingState) {
+  public RecognitionException(ParsingState parsingState, boolean isFatal) {
     super(ParsingStackTrace.generateFullStackTrace(parsingState));
     line = parsingState.getOutpostMatcherToken() == null ? 0 : parsingState.getOutpostMatcherToken().getLine();
     isToRetryWithExtendStackTrace = true;
+    this.isFatal = isFatal;
   }
 
-  public RecognitionException(String message, ParsingState parsingState, Throwable e) {
+  public RecognitionException(String message, ParsingState parsingState, boolean isFatal, Throwable e) {
     super(message + "\n" + ParsingStackTrace.generateFullStackTrace(parsingState), e);
     line = parsingState.getOutpostMatcherToken() == null ? 0 : parsingState.getOutpostMatcherToken().getLine();
     isToRetryWithExtendStackTrace = false;
+    this.isFatal = isFatal;
   }
 
-  public RecognitionException(ExtendedStackTrace extendedStackTrace) {
+  public RecognitionException(ExtendedStackTrace extendedStackTrace, boolean isFatal) {
     super(extendedStackTrace.toString());
     line = extendedStackTrace.longestParsingState.readToken(extendedStackTrace.longestIndex).getLine();
     isToRetryWithExtendStackTrace = false;
+    this.isFatal = isFatal;
   }
 
   public RecognitionException(LexerException e) {
     super("Lexer error.", e);
     line = 0;
     isToRetryWithExtendStackTrace = false;
+    this.isFatal = true;
   }
 
   /**
@@ -53,10 +58,17 @@ public class RecognitionException extends RuntimeException {
   }
 
   /**
-   * @return Whether or not it is worth to retry the parsing with the extended stack trace enabled
+   * @return Whether or not it is worth to retry the parsing with the extended stack trace enabled.
    */
   public boolean isToRetryWithExtendStackTrace() {
     return isToRetryWithExtendStackTrace;
+  }
+
+  /**
+   * @return True if this recognition exception is a fatal one (i.e. not in recovery mode).
+   */
+  public boolean isFatal() {
+    return isFatal;
   }
 
 }

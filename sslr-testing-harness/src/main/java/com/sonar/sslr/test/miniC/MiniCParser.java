@@ -22,8 +22,7 @@ public final class MiniCParser {
   }
 
   public static Parser<MiniCGrammar> create(ParsingEventListener... parsingEventListeners) {
-    return Parser.builder(new MiniCGrammar()).withLexer(MiniCLexer.create())
-        .withParsingEventListeners(parsingEventListeners).build();
+    return Parser.builder(new MiniCGrammar()).withLexer(MiniCLexer.create()).setParsingEventListeners(parsingEventListeners).build();
   }
 
   public static AstNode parseFile(String filePath) {

@@ -8,26 +8,13 @@ package com.sonar.sslr.impl;
 
 import java.io.File;
 import java.io.PrintStream;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.sonar.channel.Channel;
-import org.sonar.channel.CodeReaderConfiguration;
-
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.api.GrammarDecorator;
-import com.sonar.sslr.api.LexerOutput;
-import com.sonar.sslr.api.Preprocessor;
-import com.sonar.sslr.api.RecognitionException;
-import com.sonar.sslr.api.RecognitionExceptionListener;
-import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.Lexer.LexerBuilder;
+import com.sonar.sslr.api.*;
+import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import com.sonar.sslr.impl.events.ParsingEventListener;
 import com.sonar.sslr.impl.matcher.GrammarFunctions;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
@@ -41,18 +28,24 @@ public class Parser<GRAMMAR extends Grammar> {
   private GRAMMAR grammar;
   private Set<RecognitionExceptionListener> listeners = new HashSet<RecognitionExceptionListener>();
   private ParsingEventListener[] parsingEventListeners;
+  private ExtendedStackTrace extendedStackTrace;
 
   private Parser(ParserBuilder<GRAMMAR> builder) {
-    if (builder.lexer != null) {
-      this.lexer = builder.lexer;
-    } else {
-      this.lexer = builder.lexerBuilder.build();
-    }
+    this.lexer = builder.lexer;
     this.grammar = builder.grammar;
-    this.parsingEventListeners = builder.parsingEventListeners;
     this.listeners = builder.listeners;
-    setDecorators(builder.decorators);
+
+    this.extendedStackTrace = builder.extendedStackTrace;
+    if (this.extendedStackTrace != null) {
+      this.parsingEventListeners = builder.parsingEventListeners
+          .toArray(new ParsingEventListener[builder.parsingEventListeners.size() + 1]);
+      this.parsingEventListeners[this.parsingEventListeners.length - 1] = this.extendedStackTrace;
+    } else {
+      this.parsingEventListeners = builder.parsingEventListeners.toArray(new ParsingEventListener[builder.parsingEventListeners.size()]);
+    }
+
     GrammarFunctions.resetCache();
+    this.rootRule = (RuleDefinition) this.grammar.getRootRule();
   }
 
   /**
@@ -124,17 +117,14 @@ public class Parser<GRAMMAR extends Grammar> {
       parsingState = new ParsingState(tokens);
       parsingState.setListeners(listeners);
       parsingState.parsingEventListeners = parsingEventListeners;
+      parsingState.extendedStackTrace = extendedStackTrace;
       rootRule.getRule().reinitializeMatcherTree();
       return rootRule.getRule().match(parsingState);
     } catch (BacktrackingEvent e) {
-      if (parsingState != null) {
-        throw new RecognitionException(parsingState);
-      } else {
-        throw e;
-      }
+      throw extendedStackTrace == null ? new RecognitionException(parsingState, true) : new RecognitionException(extendedStackTrace, true);
     } catch (StackOverflowError e) {
       throw new RecognitionException("The grammar seems to contain a left recursion which is not compatible with LL(*) parser.",
-          parsingState, e);
+          parsingState, true, e);
     } finally {
       fireEndParseEvent();
     }
@@ -196,26 +186,32 @@ public class Parser<GRAMMAR extends Grammar> {
     return new ParserBuilder<GRAMMAR>(grammar);
   }
 
+  public static <GRAMMAR extends Grammar> ParserBuilder<GRAMMAR> builder(Parser<GRAMMAR> parser) {
+    return new ParserBuilder<GRAMMAR>(parser);
+  }
+
   public final static class ParserBuilder<GRAMMAR extends Grammar> {
 
-    private final LexerBuilder lexerBuilder = Lexer.builder();
     private Lexer lexer;
     private final GRAMMAR grammar;
-    private final List<GrammarDecorator<GRAMMAR>> decorators = new ArrayList<GrammarDecorator<GRAMMAR>>();
-    private ParsingEventListener[] parsingEventListeners;
+    private final Set<ParsingEventListener> parsingEventListeners = new HashSet<ParsingEventListener>();
     private final Set<RecognitionExceptionListener> listeners = new HashSet<RecognitionExceptionListener>();
+    private ExtendedStackTrace extendedStackTrace;
 
     private ParserBuilder(GRAMMAR grammar) {
       this.grammar = grammar;
     }
 
-    public Parser<GRAMMAR> build() {
-      return new Parser<GRAMMAR>(this);
+    private ParserBuilder(Parser<GRAMMAR> parser) {
+      this.lexer = parser.lexer;
+      this.grammar = parser.grammar;
+      setParsingEventListeners(parser.parsingEventListeners);
+      setRecognictionExceptionListener(parser.listeners.toArray(new RecognitionExceptionListener[parser.listeners.size()]));
+      this.extendedStackTrace = parser.extendedStackTrace;
     }
 
-    public ParserBuilder<GRAMMAR> withCharset(Charset charset) {
-      lexerBuilder.withCharset(charset);
-      return this;
+    public Parser<GRAMMAR> build() {
+      return new Parser<GRAMMAR>(this);
     }
 
     public ParserBuilder<GRAMMAR> withLexer(Lexer lexer) {
@@ -223,38 +219,34 @@ public class Parser<GRAMMAR extends Grammar> {
       return this;
     }
 
-    public ParserBuilder<GRAMMAR> withPreprocessor(Preprocessor preprocessor) {
-      lexerBuilder.withPreprocessor(preprocessor);
+    public ParserBuilder<GRAMMAR> setParsingEventListeners(ParsingEventListener... parsingEventListeners) {
+      this.parsingEventListeners.clear();
+      addParsingEventListeners(parsingEventListeners);
       return this;
     }
 
-    public ParserBuilder<GRAMMAR> withCodeReaderConfiguration(CodeReaderConfiguration conf) {
-      lexerBuilder.withCodeReaderConfiguration(conf);
+    public ParserBuilder<GRAMMAR> addParsingEventListeners(ParsingEventListener... parsingEventListeners) {
+      for (ParsingEventListener parsingEventListener : parsingEventListeners) {
+        this.parsingEventListeners.add(parsingEventListener);
+      }
       return this;
     }
 
-    public ParserBuilder<GRAMMAR> withChannel(Channel<LexerOutput> channel) {
-      lexerBuilder.withChannel(channel);
+    public ParserBuilder<GRAMMAR> setRecognictionExceptionListener(RecognitionExceptionListener... listeners) {
+      this.listeners.clear();
+      addRecognictionExceptionListeners(listeners);
       return this;
     }
 
-    public ParserBuilder<GRAMMAR> withFailIfNoChannelToConsumeOneCharacter(boolean failIfNoChannelToConsumeOneCharacter) {
-      lexerBuilder.withFailIfNoChannelToConsumeOneCharacter(failIfNoChannelToConsumeOneCharacter);
+    public ParserBuilder<GRAMMAR> addRecognictionExceptionListeners(RecognitionExceptionListener... listeners) {
+      for (RecognitionExceptionListener listener : listeners) {
+        this.listeners.add(listener);
+      }
       return this;
     }
 
-    public ParserBuilder<GRAMMAR> withGrammarDecorator(GrammarDecorator<GRAMMAR> decorator) {
-      decorators.add(decorator);
-      return this;
-    }
-
-    public ParserBuilder<GRAMMAR> withParsingEventListeners(ParsingEventListener... parsingEventListeners) {
-      this.parsingEventListeners = parsingEventListeners;
-      return this;
-    }
-
-    public ParserBuilder<GRAMMAR> withRecognictionExceptionListener(RecognitionExceptionListener listener) {
-      listeners.add(listener);
+    public ParserBuilder<GRAMMAR> setExtendedStackTrace(ExtendedStackTrace extendedStackTrace) {
+      this.extendedStackTrace = extendedStackTrace;
       return this;
     }
 

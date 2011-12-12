@@ -77,7 +77,7 @@ public class ParsingEventListenerTest {
 
   public Parser<MyTestGrammar> createParser() {
     return Parser.builder((MyTestGrammar) new MyTestGrammarDecorator()).withLexer(IdentifierLexer.create())
-        .withParsingEventListeners(parsingEventListener).build();
+        .setParsingEventListeners(parsingEventListener).build();
   }
 
   private class MyTestGrammarDecorator extends MyTestGrammar {

@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.Stack;
 
 import org.sonar.squid.api.*;
+import org.sonar.squid.measures.MetricDef;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Comments;
@@ -24,6 +25,10 @@ public final class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends S
   private final SourceProject project;
 
   public SquidAstVisitorContextImpl(SourceProject project) {
+    if (project == null) {
+      throw new IllegalArgumentException("project cannot be null.");
+    }
+
     this.project = project;
     sourceCodeStack.add(project);
   }
@@ -61,8 +66,20 @@ public final class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends S
     return sourceCodeStack.peek();
   }
 
-  public void setFile(File file) {
+  public void setFile(File file, MetricDef filesMetric) {
+    peekTillSourceProject();
     this.file = file;
+    if (file != null) {
+      SourceFile sourceFile = new SourceFile(file.getAbsolutePath(), file.getName());
+      addSourceCode(sourceFile);
+      peekSourceCode().setMeasure(filesMetric, 1);
+    }
+  }
+
+  private void peekTillSourceProject() {
+    while ( !(peekSourceCode() instanceof SourceProject)) {
+      popSourceCode();
+    }
   }
 
   /** {@inheritDoc} */

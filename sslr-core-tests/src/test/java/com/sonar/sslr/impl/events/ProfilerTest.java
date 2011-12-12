@@ -38,7 +38,7 @@ public class ProfilerTest {
   }
 
   public Parser<MyTestGrammar> createParser(MyTestGrammar myTestGrammarImpl) {
-    return Parser.builder(myTestGrammarImpl).withLexer(IdentifierLexer.create()).withParsingEventListeners(profiler).build();
+    return Parser.builder(myTestGrammarImpl).withLexer(IdentifierLexer.create()).setParsingEventListeners(profiler).build();
   }
 
   private class MyTestGrammarDelay extends MyTestGrammar {

@@ -17,7 +17,6 @@ import java.io.PrintStream;
 import org.junit.Test;
 
 import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.api.GrammarDecorator;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.Parser;
@@ -37,35 +36,35 @@ public class ExtendedStackTraceTest {
 
   }
 
-  private class MyTestGrammarDecoratorV1 implements GrammarDecorator<MyTestGrammar> {
+  private class MyTestGrammarDecoratorV1 extends MyTestGrammar {
 
-    public void decorate(MyTestGrammar t) {
-      t.root.is("bonjour", longestOne(t.rule1, t.rule2), and("olaa", "uhu"), EOF);
-      t.rule1.is("hehe");
-      t.rule2.is("hehe", "huhu");
+    public MyTestGrammarDecoratorV1() {
+      root.is("bonjour", longestOne(rule1, rule2), and("olaa", "uhu"), EOF);
+      rule1.is("hehe");
+      rule2.is("hehe", "huhu");
     }
   }
 
-  private class MyTestGrammarDecoratorV2 implements GrammarDecorator<MyTestGrammar> {
+  private class MyTestGrammarDecoratorV2 extends MyTestGrammar {
 
-    public void decorate(MyTestGrammar t) {
-      t.root.is("bonjour", longestOne(t.rule1, t.rule2), and("olaa", "uhu"), EOF);
-      t.rule1.is("hehe");
-      t.rule2.is("hehe", "huhu", "wtf");
+    public MyTestGrammarDecoratorV2() {
+      root.is("bonjour", longestOne(rule1, rule2), and("olaa", "uhu"), EOF);
+      rule1.is("hehe");
+      rule2.is("hehe", "huhu", "wtf");
     }
   }
 
-  private class MyTestGrammarDecoratorV3 implements GrammarDecorator<MyTestGrammar> {
+  private class MyTestGrammarDecoratorV3 extends MyTestGrammar {
 
-    public void decorate(MyTestGrammar t) {
-      t.root.is("bonjour", "hehe", EOF, "next");
+    public MyTestGrammarDecoratorV3() {
+      root.is("bonjour", "hehe", EOF, "next");
     }
   }
 
-  private class MyTestGrammarDecoratorTill implements GrammarDecorator<MyTestGrammar> {
+  private class MyTestGrammarDecoratorTill extends MyTestGrammar {
 
-    public void decorate(MyTestGrammar t) {
-      t.root.is(till("till"), EOF);
+    public MyTestGrammarDecoratorTill() {
+      root.is(till("till"), EOF);
     }
   }
 
@@ -73,8 +72,8 @@ public class ExtendedStackTraceTest {
   public void ok() {
     ExtendedStackTrace extendedStackTrace = new ExtendedStackTrace();
 
-    Parser<MyTestGrammar> p = Parser.builder(new MyTestGrammar()).withLexer(IdentifierLexer.create())
-        .withGrammarDecorator(new MyTestGrammarDecoratorV1()).withParsingEventListeners(extendedStackTrace).build();
+    Parser<MyTestGrammar> p = Parser.builder((MyTestGrammar) new MyTestGrammarDecoratorV1()).withLexer(IdentifierLexer.create())
+        .setParsingEventListeners(extendedStackTrace).build();
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -104,8 +103,8 @@ public class ExtendedStackTraceTest {
 
     assertEquals(baos.toString(), expected.toString());
 
-    p = Parser.builder(new MyTestGrammar()).withLexer(IdentifierLexer.create()).withGrammarDecorator(new MyTestGrammarDecoratorV2())
-        .withParsingEventListeners(extendedStackTrace).build();
+    p = Parser.builder((MyTestGrammar) new MyTestGrammarDecoratorV2()).withLexer(IdentifierLexer.create())
+        .setParsingEventListeners(extendedStackTrace).build();
 
     baos = new ByteArrayOutputStream();
 
@@ -142,8 +141,8 @@ public class ExtendedStackTraceTest {
   public void okTillEof() {
     ExtendedStackTrace extendedStackTrace = new ExtendedStackTrace();
 
-    Parser<MyTestGrammar> p = Parser.builder(new MyTestGrammar()).withLexer(IdentifierLexer.create())
-        .withGrammarDecorator(new MyTestGrammarDecoratorV3()).withParsingEventListeners(extendedStackTrace).build();
+    Parser<MyTestGrammar> p = Parser.builder((MyTestGrammar) new MyTestGrammarDecoratorV3()).withLexer(IdentifierLexer.create())
+        .setParsingEventListeners(extendedStackTrace).build();
 
     try {
       p.parse("bonjour hehe");
@@ -179,8 +178,8 @@ public class ExtendedStackTraceTest {
   public void testMultilineToken() {
     ExtendedStackTrace extendedStackTrace = new ExtendedStackTrace();
 
-    Parser<MyTestGrammar> p = Parser.builder(new MyTestGrammar()).withLexer(IdentifierLexer.create())
-        .withGrammarDecorator(new MyTestGrammarDecoratorTill()).withParsingEventListeners(extendedStackTrace).build();
+    Parser<MyTestGrammar> p = Parser.builder((MyTestGrammar) new MyTestGrammarDecoratorTill()).withLexer(IdentifierLexer.create())
+        .setParsingEventListeners(extendedStackTrace).build();
 
     try {
       p.parse("hehe\nhaha!\n\n!\nhuhu till BANG");
