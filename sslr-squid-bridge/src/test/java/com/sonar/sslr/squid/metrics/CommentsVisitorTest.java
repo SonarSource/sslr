@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.squid;
+package com.sonar.sslr.squid.metrics;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -17,6 +17,7 @@ import org.sonar.squid.recognizer.CodeRecognizer;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.sonar.sslr.api.*;
+import com.sonar.sslr.squid.SquidAstVisitorContextImpl;
 import com.sonar.sslr.squid.metrics.CommentsVisitor;
 
 public class CommentsVisitorTest {

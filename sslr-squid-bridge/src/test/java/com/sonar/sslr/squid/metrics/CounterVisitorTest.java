@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.squid;
+package com.sonar.sslr.squid.metrics;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -14,6 +14,7 @@ import org.sonar.squid.api.SourceProject;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
+import com.sonar.sslr.squid.SquidAstVisitorContextImpl;
 import com.sonar.sslr.squid.metrics.CounterVisitor;
 
 public class CounterVisitorTest {

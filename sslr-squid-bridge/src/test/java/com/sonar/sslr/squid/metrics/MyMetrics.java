@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.squid;
+package com.sonar.sslr.squid.metrics;
 
 import org.sonar.squid.measures.AggregationFormula;
 import org.sonar.squid.measures.CalculatedMetricFormula;
