@@ -14,6 +14,7 @@ import org.sonar.squid.api.SourceProject;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Token;
+import com.sonar.sslr.squid.metrics.LinesOfCodeVisitor;
 
 public class LinesOfCodeVisitorTest {
 

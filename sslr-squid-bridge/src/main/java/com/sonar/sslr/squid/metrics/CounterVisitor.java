@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.squid;
+package com.sonar.sslr.squid.metrics;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -14,6 +14,7 @@ import org.sonar.squid.measures.MetricDef;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.squid.SquidAstVisitor;
 
 public class CounterVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> {
 
@@ -34,11 +35,6 @@ public class CounterVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRA
 
     public Builder<GRAMMAR> setMetricDef(MetricDef metric) {
       this.metric = metric;
-      return this;
-    }
-
-    public Builder<GRAMMAR> subscribeTo(AstNodeType astNodeType) {
-      this.astNodeTypes.add(astNodeType);
       return this;
     }
 

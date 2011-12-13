@@ -17,6 +17,7 @@ import org.sonar.squid.recognizer.CodeRecognizer;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.sonar.sslr.api.*;
+import com.sonar.sslr.squid.metrics.CommentsVisitor;
 
 public class CommentsVisitorTest {
 

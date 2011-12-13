@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.squid;
+package com.sonar.sslr.squid.metrics;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +15,7 @@ import org.sonar.squid.recognizer.CodeRecognizer;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Token;
+import com.sonar.sslr.squid.SquidAstVisitor;
 
 /**
  * Visitor that computes the number of lines of comments and the number of empty lines of comments.

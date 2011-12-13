@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.squid;
+package com.sonar.sslr.squid.metrics;
 
 import static com.sonar.sslr.api.GenericTokenType.*;
 
@@ -13,6 +13,7 @@ import com.sonar.sslr.api.AstAndTokenVisitor;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Token;
+import com.sonar.sslr.squid.SquidAstVisitor;
 
 /**
  * Visitor that computes the number of lines of code of a file.

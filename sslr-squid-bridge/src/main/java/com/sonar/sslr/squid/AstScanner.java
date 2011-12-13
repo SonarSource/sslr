@@ -32,7 +32,6 @@ public final class AstScanner<GRAMMAR extends Grammar> {
   private final ParserRecoveryListener parserRecoveryListener;
   private final Parser<GRAMMAR> parserProduction;
   private final Parser<GRAMMAR> parserDebug;
-  private final ExtendedStackTrace extendedStackTrace;
   private final List<SquidAstVisitor<GRAMMAR>> visitors;
   private final AuditListener[] auditListeners;
   private final SquidIndex indexer = new SquidIndex();
@@ -55,10 +54,9 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     this.filesMetric = builder.filesMetric;
     indexer.index(context.getProject());
 
-    this.extendedStackTrace = new ExtendedStackTrace();
     ParserRecoveryLogger parserRecoveryLogger = new ParserRecoveryLogger();
     parserRecoveryLogger.setContext(this.context);
-    this.parserDebug = Parser.builder(builder.baseParser).setParsingEventListeners().setExtendedStackTrace(this.extendedStackTrace)
+    this.parserDebug = Parser.builder(builder.baseParser).setParsingEventListeners().setExtendedStackTrace(new ExtendedStackTrace())
         .setRecognictionExceptionListener(this.auditListeners).addRecognictionExceptionListeners(parserRecoveryLogger).build();
   }
 
