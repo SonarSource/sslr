@@ -57,6 +57,12 @@ public class Lexer {
     configuration.setBufferCapacity(DEFAULT_CODE_BUFFER_CAPACITY);
   }
 
+  /**
+   * @deprecated
+   * 
+   * @see #builder();
+   */
+  @Deprecated
   public void setPreprocessors(Preprocessor... preprocessors) {
     this.preprocessors = preprocessors;
   }
@@ -69,6 +75,12 @@ public class Lexer {
     return configuration;
   }
 
+  /**
+   * @deprecated
+   * 
+   * @see #builder();
+   */
+  @Deprecated
   protected void setConfiguration(CodeReaderConfiguration configuration) {
     this.configuration = configuration;
   }
@@ -127,12 +139,20 @@ public class Lexer {
     return channelDispatcher;
   }
 
+  /**
+   * @deprecated use the parser event listeners instead
+   */
+  @Deprecated
   public void startLexing() {
     for (Preprocessor preprocessor : preprocessors) {
       preprocessor.startLexing();
     }
   }
 
+  /**
+   * @deprecated use the parser event listeners instead
+   */
+  @Deprecated
   public void endLexing(LexerOutput output) {
     for (Preprocessor preprocessor : preprocessors) {
       preprocessor.endLexing(output);
@@ -152,7 +172,7 @@ public class Lexer {
     private boolean failIfNoChannelToConsumeOneCharacter = false;
 
     private LexerBuilder() {
-
+      configuration.setBufferCapacity(DEFAULT_CODE_BUFFER_CAPACITY);
     }
 
     public Lexer build() {
