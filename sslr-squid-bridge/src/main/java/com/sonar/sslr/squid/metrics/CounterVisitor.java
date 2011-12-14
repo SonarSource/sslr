@@ -16,7 +16,7 @@ import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.squid.SquidAstVisitor;
 
-public class CounterVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> {
+public final class CounterVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> {
 
   private final MetricDef metric;
   private List<AstNodeType> astNodeTypes = new LinkedList<AstNodeType>();
@@ -25,7 +25,7 @@ public class CounterVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRA
     return new Builder<GRAMMAR>();
   }
 
-  public static class Builder<GRAMMAR extends Grammar> {
+  public static final class Builder<GRAMMAR extends Grammar> {
 
     private MetricDef metric;
     private List<AstNodeType> astNodeTypes = new LinkedList<AstNodeType>();

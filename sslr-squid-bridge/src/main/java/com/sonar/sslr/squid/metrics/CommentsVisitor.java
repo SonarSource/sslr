@@ -20,7 +20,7 @@ import com.sonar.sslr.squid.SquidAstVisitor;
 /**
  * Visitor that computes the number of lines of comments and the number of empty lines of comments.
  */
-public class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> {
+public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> {
 
   private Set<Integer> noSonar;
   private Set<Integer> commentedLinesOfCode;
