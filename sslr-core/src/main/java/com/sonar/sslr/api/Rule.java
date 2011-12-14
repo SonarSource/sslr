@@ -6,9 +6,6 @@
 
 package com.sonar.sslr.api;
 
-import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.impl.matcher.GrammarFunctions;
-
 /**
  * A Rule describes a context free grammar syntactic rule.
  * 
@@ -42,7 +39,7 @@ public interface Rule extends AstNodeType {
   /**
    * The method {@link #is(Object...)} must be first called to be able to add a new alternative to this rule
    * 
-   * @see {@link GrammarFunctions.Standard#or(Object...)}
+   * @see {@link com.sonar.sslr.impl.matcher.GrammarFunctions.Standard#or(Object...)}
    * @return this rule
    */
   Rule or(Object... matchers);
@@ -50,7 +47,7 @@ public interface Rule extends AstNodeType {
   /**
    * The method {@link #is(Object...)} must be first called to be able to extend this rule definition
    * 
-   * @see {@link GrammarFunctions.Standard#and(Object...)}
+   * @see {@link com.sonar.sslr.impl.matcher.GrammarFunctions.Standard#and(Object...)}
    * @return this rule
    */
   Rule and(Object... matchers);
@@ -59,7 +56,7 @@ public interface Rule extends AstNodeType {
    * The method {@link #is(Object...)} must be first called to be able to add a new alternative to this rule. This alternative will be the
    * first one to be tested before testing previous ones.
    * 
-   * @see {@link GrammarFunctions.Standard#or(Object...)}
+   * @see {@link com.sonar.sslr.impl.matcher.GrammarFunctions.Standard#or(Object...)}
    * @return this rule
    */
   Rule orBefore(Object... matchers);
@@ -68,7 +65,7 @@ public interface Rule extends AstNodeType {
    * The method {@link #is(Object...)} is just a utility method which prevents writing is(or());
    * 
    * @see {@link #is(Object...)}
-   * @see {@link GrammarFunctions.Standard#or(Object...)}
+   * @see {@link com.sonar.sslr.impl.matcher.GrammarFunctions.Standard#or(Object...)}
    * @return this rule
    */
   Rule isOr(Object... matchers);
@@ -117,7 +114,7 @@ public interface Rule extends AstNodeType {
    * A rule should be flagged as being a "Recovery" rule if it's responsibility is to consume
    * some bad tokens in order to recover from a parsing error.
    * 
-   * In such case, all {@link RecognitionExceptionListener} injected into the {@link Parser} are automatically
+   * In such case, all {@link RecognitionExceptionListener} injected into the {@link com.sonar.sslr.impl.Parser} are automatically
    * notified.
    * 
    * @see RecognitionExceptionListener
