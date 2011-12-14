@@ -15,7 +15,7 @@ import com.sonar.sslr.api.TokenType;
  * This class provides all the functions to define a context-free grammar
  */
 public final class GrammarFunctions {
-  
+
   private static final String AT_LEAST_ONE_MATCHER_MESSAGE = "You must define at least one matcher.";
 
   private static final ThreadLocal<Map<Matcher, Matcher>> MATCHER_CACHE = new ThreadLocal<Map<Matcher, Matcher>>() {
@@ -35,7 +35,7 @@ public final class GrammarFunctions {
     return matcher;
   }
 
-  public static final void resetCache() {
+  public static void resetCache() {
     MATCHER_CACHE.set(new HashMap<Matcher, Matcher>());
   }
 
@@ -43,8 +43,9 @@ public final class GrammarFunctions {
   }
 
   public static final class Standard {
-    
-    private Standard(){}
+
+    private Standard() {
+    }
 
     /**
      * Match elements sequence zero or more times
@@ -140,8 +141,9 @@ public final class GrammarFunctions {
   }
 
   public static final class Predicate {
-    
-    private Predicate(){}
+
+    private Predicate() {
+    }
 
     /**
      * Syntactic predicate to check that the next tokens don't match an element.
@@ -160,8 +162,9 @@ public final class GrammarFunctions {
   }
 
   public static final class Advanced {
-    
-    private Advanced(){}
+
+    private Advanced() {
+    }
 
     /**
      * Match only if the sub-matcher consumes either exactly, less than or more than the given number of tokens n.
@@ -314,7 +317,7 @@ public final class GrammarFunctions {
     }
   }
 
-  protected static final Matcher[] convertToMatchers(Object[] objects) {
+  protected static Matcher[] convertToMatchers(Object[] objects) {
     if (objects == null || objects.length == 0) {
       throw new IllegalStateException(AT_LEAST_ONE_MATCHER_MESSAGE);
     }
@@ -327,7 +330,7 @@ public final class GrammarFunctions {
   }
 
   @SuppressWarnings("rawtypes")
-  protected static final Matcher convertToMatcher(Object object) {
+  protected static Matcher convertToMatcher(Object object) {
     if (object == null) {
       throw new IllegalStateException("Null is not a valid matcher.");
     }
