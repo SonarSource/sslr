@@ -15,15 +15,18 @@ import com.sonar.sslr.api.Grammar;
 
 public abstract class AbstractFileComplexityCheck<GRAMMAR extends Grammar> extends SquidCheck<GRAMMAR> {
 
-  public abstract MetricDef getComplexityMetric();
+  private final static int DEFAULT_MAXIMUM_FILE_COMPLEXITY = 100;
 
-  @RuleProperty(key = "complexity")
-  public int complexity;
+  @RuleProperty(key = "maximumFileComplexity", description = "The maximum file complexity allowed.", defaultValue = ""
+      + DEFAULT_MAXIMUM_FILE_COMPLEXITY)
+  public int maximumFileComplexity = DEFAULT_MAXIMUM_FILE_COMPLEXITY;
+
+  public abstract MetricDef getComplexityMetric();
 
   @Override
   public void init() {
-    if (complexity <= 0) {
-      throw new SonarException("[FileComplexityCheck] The complexity threshold must be set to a value greater than 0 (" + complexity
+    if (maximumFileComplexity <= 0) {
+      throw new SonarException("[FileComplexityCheck] The complexity threshold must be set to a value greater than 0 (" + maximumFileComplexity
           + " given).");
     }
   }
@@ -33,8 +36,8 @@ public abstract class AbstractFileComplexityCheck<GRAMMAR extends Grammar> exten
     SourceFile sourceFile = (SourceFile) getContext().peekSourceCode();
     int fileComplexity = ChecksHelper.getRecursiveMeasureInt(sourceFile, getComplexityMetric());
 
-    if (fileComplexity > complexity) {
-      getContext().log(this, "The file is too complex ({0} while maximum allowed is set to {1}).", -1, fileComplexity, complexity);
+    if (fileComplexity > maximumFileComplexity) {
+      getContext().log(this, "The file is too complex ({0} while maximum allowed is set to {1}).", -1, fileComplexity, maximumFileComplexity);
     }
   }
 
