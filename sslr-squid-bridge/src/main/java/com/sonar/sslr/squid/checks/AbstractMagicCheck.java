@@ -50,7 +50,7 @@ public abstract class AbstractMagicCheck<GRAMMAR extends Grammar> extends SquidC
   @Override
   public void leaveNode(AstNode astNode) {
     if (astNode.is(getInclusions())) {
-      inclusionLevel++;
+      inclusionLevel--;
     } else if (astNode.is(getExclusions())) {
       exclusionLevel--;
     }
