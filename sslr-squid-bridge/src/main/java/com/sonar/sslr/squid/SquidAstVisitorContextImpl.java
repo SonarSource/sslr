@@ -43,7 +43,7 @@ public final class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends S
 
   /** {@inheritDoc} */
   @Override
-  public final Comments getComments() {
+  public Comments getComments() {
     return comments;
   }
 
@@ -62,7 +62,7 @@ public final class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends S
 
   /** {@inheritDoc} */
   @Override
-  public final SourceCode peekSourceCode() {
+  public SourceCode peekSourceCode() {
     return sourceCodeStack.peek();
   }
 
@@ -84,11 +84,11 @@ public final class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends S
 
   /** {@inheritDoc} */
   @Override
-  public final File getFile() {
+  public File getFile() {
     return file;
   }
 
-  public final SourceProject getProject() {
+  public SourceProject getProject() {
     return project;
   }
 
@@ -134,7 +134,7 @@ public final class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends S
   }
 
   /** {@inheritDoc} */
-  public final String getKey() {
+  public String getKey() {
     return getClass().getSimpleName();
   }
 

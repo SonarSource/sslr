@@ -11,7 +11,7 @@ import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 
-public class BridgeMatcher extends MemoizedMatcher {
+public final class BridgeMatcher extends MemoizedMatcher {
 
   private final TokenType from;
   private final TokenType to;
@@ -24,7 +24,7 @@ public class BridgeMatcher extends MemoizedMatcher {
   }
 
   @Override
-  protected final AstNode matchWorker(ParsingState parsingState) {
+  protected AstNode matchWorker(ParsingState parsingState) {
     Token token = parsingState.peekToken(parsingState.lexerIndex, this);
     if (from == token.getType()) {
       AstNode astNode = new AstNode(null, "bridgeMatcher", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));

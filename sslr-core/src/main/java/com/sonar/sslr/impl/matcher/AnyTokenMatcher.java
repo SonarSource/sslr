@@ -8,14 +8,14 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.Token;
 
-public class AnyTokenMatcher extends TokenMatcher {
+public final class AnyTokenMatcher extends TokenMatcher {
 
   protected AnyTokenMatcher() {
     super(false);
   }
 
   @Override
-  protected final boolean isExpectedToken(Token token) {
+  protected boolean isExpectedToken(Token token) {
     return true;
   }
 

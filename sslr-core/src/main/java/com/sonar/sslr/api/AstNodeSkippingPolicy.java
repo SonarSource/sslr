@@ -24,5 +24,6 @@ public interface AstNodeSkippingPolicy extends AstNodeType {
    *          the node that should or not be removed from the AST
    * @return true if AstNode with this type must be skipped from the AST.
    */
-  public boolean hasToBeSkippedFromAst(AstNode node);
+  boolean hasToBeSkippedFromAst(AstNode node);
+
 }

@@ -17,7 +17,7 @@ import com.sonar.sslr.impl.ParsingState;
 /**
  * Implementation of a Rule that support left recursion.
  */
-public class LeftRecursiveRuleMatcher extends RuleMatcher {
+public final class LeftRecursiveRuleMatcher extends RuleMatcher {
 
   private Stack<Integer> matchStartIndexes = new Stack<Integer>();
   private Map<Integer, AstNode> partialAstNodes = new HashMap<Integer, AstNode>();
@@ -27,7 +27,7 @@ public class LeftRecursiveRuleMatcher extends RuleMatcher {
   }
 
   @Override
-  protected final AstNode matchWorker(ParsingState parsingState) {
+  protected AstNode matchWorker(ParsingState parsingState) {
 
     int mostLeftLexerIndex = parsingState.lexerIndex;
 

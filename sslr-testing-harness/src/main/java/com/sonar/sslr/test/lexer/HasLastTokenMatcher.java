@@ -28,12 +28,7 @@ class HasLastTokenMatcher extends BaseMatcher<LexerOutput> {
     }
     LexerOutput output = (LexerOutput) obj;
     Token lastToken = output.getLastToken();
-    if (lastToken.getValue().equals(tokenValue) && lastToken.getType() == tokenType) {
-      return true;
-    } else {
-      return false;
-    }
-
+    return lastToken.getValue().equals(tokenValue) && lastToken.getType() == tokenType;
   }
 
   public void describeTo(Description desc) {

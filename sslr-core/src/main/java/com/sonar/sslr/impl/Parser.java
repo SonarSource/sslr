@@ -71,18 +71,18 @@ public class Parser<GRAMMAR extends Grammar> {
     GrammarFunctions.resetCache();
   }
 
-  protected void setDecorators(List<GrammarDecorator<GRAMMAR>> decorators) {
+  protected final void setDecorators(List<GrammarDecorator<GRAMMAR>> decorators) {
     for (GrammarDecorator<GRAMMAR> decorator : decorators) {
       decorator.decorate(grammar);
     }
     this.rootRule = (RuleDefinition) grammar.getRootRule();
   }
 
-  public void printStackTrace(PrintStream stream) {
+  public final void printStackTrace(PrintStream stream) {
     stream.append(ParsingStackTrace.generateFullStackTrace(getParsingState()));
   }
 
-  public void addListener(RecognitionExceptionListener listerner) {
+  public final void addListener(RecognitionExceptionListener listerner) {
     listeners.add(listerner);
   }
 

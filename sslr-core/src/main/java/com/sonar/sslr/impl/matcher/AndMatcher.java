@@ -9,14 +9,14 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 
-public class AndMatcher extends StatelessMatcher {
+public final class AndMatcher extends StatelessMatcher {
 
   protected AndMatcher(Matcher... matchers) {
     super(matchers);
   }
 
   @Override
-  protected final AstNode matchWorker(ParsingState parsingState) {
+  protected AstNode matchWorker(ParsingState parsingState) {
     AstNode[] childNodes = new AstNode[super.children.length];
     int startIndex = parsingState.lexerIndex;
 

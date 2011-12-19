@@ -31,9 +31,9 @@ public class TokenUtils {
   }
 
   private static void removeLastTokenIfEof(List<Token> tokens) {
-    if (!tokens.isEmpty()) {
+    if ( !tokens.isEmpty()) {
       Token lastToken = tokens.get(tokens.size() - 1);
-      if (lastToken.getValue().equals("EOF")) {
+      if ("EOF".equals(lastToken.getValue())) {
         tokens.remove(tokens.size() - 1);
       }
     }
@@ -50,7 +50,7 @@ public class TokenUtils {
       int linePosition = reader.getLinePosition();
       int columnPosition = reader.getColumnPosition();
       if (reader.popTo(matcher, nextStringToken) != -1) {
-        if (nextStringToken.toString().equals("EOF")) {
+        if ("EOF".equals(nextStringToken.toString())) {
           token = new Token(GenericTokenType.EOF, nextStringToken.toString(), linePosition, columnPosition);
         } else {
           token = new Token(GenericTokenType.IDENTIFIER, nextStringToken.toString(), linePosition, columnPosition);

@@ -13,5 +13,6 @@ public interface AuditListener extends RecognitionExceptionListener {
   /**
    * This method is called when an exception different from a parsing error occurs
    */
-  public void processException(Exception e);
+  void processException(Exception e);
+
 }

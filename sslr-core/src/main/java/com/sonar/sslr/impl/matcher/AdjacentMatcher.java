@@ -11,14 +11,14 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 
-public class AdjacentMatcher extends StatelessMatcher {
+public final class AdjacentMatcher extends StatelessMatcher {
 
   protected AdjacentMatcher(Matcher matcher) {
     super(matcher);
   }
 
   @Override
-  protected final AstNode matchWorker(ParsingState parsingState) {
+  protected AstNode matchWorker(ParsingState parsingState) {
     int index = parsingState.lexerIndex;
     Token nextToken = parsingState.peekToken(index, this);
     Token previousToken = parsingState.readToken(index - 1);

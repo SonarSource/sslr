@@ -23,14 +23,14 @@ import com.sonar.sslr.dsl.bytecode.ProcedureDefinition;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 
-public class Compiler {
+public final class Compiler {
 
   private Parser<Grammar> parser;
   private String source;
   private File sourceFile;
 
-  private MutablePicoContainer pico = new DefaultPicoContainer();
-  private Map<AstNode, Object> adapterByAstNode = new HashMap<AstNode, Object>();
+  private final MutablePicoContainer pico = new DefaultPicoContainer();
+  private final Map<AstNode, Object> adapterByAstNode = new HashMap<AstNode, Object>();
 
   private Compiler() {
   }

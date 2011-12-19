@@ -7,5 +7,6 @@ package com.sonar.sslr.dsl.condition;
 
 public interface AbstractCondition {
 
-  public boolean value();
+  boolean value();
+
 }

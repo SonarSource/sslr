@@ -12,7 +12,7 @@ import java.io.Writer;
 
 import com.sonar.sslr.api.AstNode;
 
-public class AstXmlPrinter {
+public final class AstXmlPrinter {
 
   private final AstNode rootNode;
   private final Writer writer;

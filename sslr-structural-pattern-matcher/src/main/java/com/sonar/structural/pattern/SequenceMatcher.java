@@ -7,7 +7,7 @@ package com.sonar.structural.pattern;
 
 import com.sonar.sslr.api.AstNode;
 
-public class SequenceMatcher extends CompositeMatcher {
+public final class SequenceMatcher extends CompositeMatcher {
 
   private BeforeMatcher beforeMatcher;
   private AfterMatcher afterMatcher;

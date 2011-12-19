@@ -19,17 +19,20 @@ public class PunctuatorChannel extends Channel<LexerOutput> {
   public final TokenType[] sortedPunctuators;
   public final char[][] sortedPunctuatorsChars;
 
+  private static class PunctuatorComparator implements Comparator<TokenType> {
+
+    public int compare(TokenType a, TokenType b) {
+      if (a.getValue().length() == b.getValue().length()) {
+        return 0;
+      }
+      return a.getValue().length() > b.getValue().length() ? -1 : 1;
+    }
+
+  }
+
   public PunctuatorChannel(TokenType... punctuators) {
     sortedPunctuators = punctuators;
-    Arrays.<TokenType> sort(sortedPunctuators, new Comparator<TokenType>() {
-
-      public int compare(TokenType a, TokenType b) {
-        if (a.getValue().length() == b.getValue().length()) {
-          return 0;
-        }
-        return a.getValue().length() > b.getValue().length() ? -1 : 1;
-      }
-    });
+    Arrays.<TokenType> sort(sortedPunctuators, new PunctuatorComparator());
 
     sortedPunctuatorsChars = new char[sortedPunctuators.length][];
 

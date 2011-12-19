@@ -12,14 +12,14 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 
-public class AtLeastOneMatcher extends StatelessMatcher {
+public final class AtLeastOneMatcher extends StatelessMatcher {
 
   protected AtLeastOneMatcher(Matcher... matchers) {
     super(matchers);
   }
 
   @Override
-  protected final AstNode matchWorker(ParsingState parsingState) {
+  protected AstNode matchWorker(ParsingState parsingState) {
     ArrayList<AstNode> childNodes = new ArrayList<AstNode>();
     int startIndex = parsingState.lexerIndex;
 

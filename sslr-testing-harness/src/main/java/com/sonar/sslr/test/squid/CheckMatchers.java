@@ -86,7 +86,7 @@ public final class CheckMatchers {
    */
   public static Violation assertOnlyOneViolation() {
     assertThat(currentMessagesUnderTest.get().size(), is(1));
-    return getInstance().new Violation(currentMessagesIterator.get().next());
+    return new Violation(currentMessagesIterator.get().next());
   }
 
   /**
@@ -140,13 +140,13 @@ public final class CheckMatchers {
    */
   public static Violation assertViolation() {
     assertTrue("There's no more violation.", currentMessagesIterator.get().hasNext());
-    return getInstance().new Violation(currentMessagesIterator.get().next());
+    return new Violation(currentMessagesIterator.get().next());
   }
 
   /**
    * Utility class used to ease the unit test development of checks
    */
-  public final class Violation {
+  public static final class Violation {
 
     private final CheckMessage checkMessage;
 

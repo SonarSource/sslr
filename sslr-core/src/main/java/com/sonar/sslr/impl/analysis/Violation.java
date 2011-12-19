@@ -11,7 +11,7 @@ import java.util.Map;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
-public class Violation {
+public final class Violation {
 
   private final Matcher affectedMatcher;
   private final RuleMatcher parentRule;

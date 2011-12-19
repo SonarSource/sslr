@@ -14,7 +14,7 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
-public class ExtendedStackTrace extends ParsingEventListener {
+public final class ExtendedStackTrace extends ParsingEventListener {
 
   public final FastStackMatcherAndPosition currentStack = new FastStackMatcherAndPosition();
   public final FastStackMatcherAndPosition longestStack = new FastStackMatcherAndPosition();

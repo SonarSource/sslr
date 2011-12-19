@@ -19,7 +19,7 @@ import com.sonar.sslr.impl.matcher.*;
 
 public final class AutoCompleter extends ParsingEventListener {
 
-  private static final int maxTokens = 5;
+  private static final int MAX_TOKENS = 5;
 
   private List<List<Token>> partialMatches;
   private List<List<Token>> fullMatches;
@@ -77,7 +77,7 @@ public final class AutoCompleter extends ParsingEventListener {
   }
 
   public void autoComplete(Matcher matcher, List<Token> tokens) {
-    autoComplete(matcher, tokens, maxTokens);
+    autoComplete(matcher, tokens, MAX_TOKENS);
   }
 
   public void autoComplete(Matcher matcher, List<Token> tokens, int maxTokens) {

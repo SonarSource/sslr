@@ -10,8 +10,8 @@ import com.sonar.sslr.dsl.Literal;
 
 public final class ChildMatcher extends StructuralUnitMatcher {
 
-  protected String rule;
-  protected String tokenValue;
+  private String rule;
+  private String tokenValue;
   private ChildSequenceMatcher childSequenceMatcher;
 
   public void setRule(String name) {
@@ -27,7 +27,7 @@ public final class ChildMatcher extends StructuralUnitMatcher {
   }
 
   @Override
-  public final AstNode match(AstNode node) {
+  public AstNode match(AstNode node) {
     if (node.getTokenValue().equals(tokenValue)) {
       return getLeafNode(node);
     }

@@ -5,7 +5,10 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-public class MatcherTreePrinter {
+public final class MatcherTreePrinter {
+
+  private MatcherTreePrinter() {
+  }
 
   public static String print(Matcher matcher) {
     return print(matcher, true);

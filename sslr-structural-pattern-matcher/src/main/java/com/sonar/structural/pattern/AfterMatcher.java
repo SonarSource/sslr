@@ -8,7 +8,7 @@ package com.sonar.structural.pattern;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.dsl.Literal;
 
-public class AfterMatcher extends StructuralUnitMatcher {
+public final class AfterMatcher extends StructuralUnitMatcher {
 
   private String tokenValue;
   private OnLeftRuleMatcher ruleMatcher;
@@ -32,7 +32,7 @@ public class AfterMatcher extends StructuralUnitMatcher {
     if (nextNode == null) {
       return null;
     }
-    if (tokenValue != null && nextNode.getTokenValue().equals(tokenValue)) {
+    if (nextNode.getTokenValue().equals(tokenValue)) {
       return matchNext(getLeafNode(nextNode));
     }
     if (ruleMatcher != null) {
@@ -44,7 +44,9 @@ public class AfterMatcher extends StructuralUnitMatcher {
   public AstNode matchNext(AstNode node) {
     if (nextAfterMatcher != null && node != null) {
       return nextAfterMatcher.match(node);
-    } else return node;
+    } else {
+      return node;
+    }
   }
 
   private AstNode getLeafNode(AstNode nextNode) {

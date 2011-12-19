@@ -61,7 +61,7 @@ public abstract class Matcher {
     reinitializeMatcherTree(new HashSet<Matcher>());
   }
 
-  private final void reinitializeMatcherTree(Set<Matcher> alreadyVisitedMatchers) {
+  private void reinitializeMatcherTree(Set<Matcher> alreadyVisitedMatchers) {
     reinitialize();
     alreadyVisitedMatchers.add(this);
     for (Matcher child : children) {

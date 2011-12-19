@@ -9,7 +9,7 @@ import com.sonar.sslr.api.AstNode;
 
 public final class ParentMatcher extends CompositeMatcher {
 
-  protected String rule;
+  private String rule;
   private ChildSequenceMatcher childSequenceMather;
 
   public void setRule(String rule) {
@@ -21,7 +21,7 @@ public final class ParentMatcher extends CompositeMatcher {
   }
 
   @Override
-  public final AstNode match(AstNode node) {
+  public AstNode match(AstNode node) {
     node = matcher.match(node);
     if (node == null) {
       return null;

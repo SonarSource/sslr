@@ -7,6 +7,6 @@ package com.sonar.sslr.dsl.bytecode;
 
 public interface ExecutableInstruction extends Instruction {
 
-  public void execute();
+  void execute();
 
 }

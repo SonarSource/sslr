@@ -10,14 +10,14 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 
-public class NextMatcher extends StatelessMatcher {
+public final class NextMatcher extends StatelessMatcher {
 
   protected NextMatcher(Matcher matcher) {
     super(matcher);
   }
 
   @Override
-  public AstNode matchWorker(ParsingState parsingState) {
+  protected AstNode matchWorker(ParsingState parsingState) {
     if (super.children[0].isMatching(parsingState)) {
       return null;
     }

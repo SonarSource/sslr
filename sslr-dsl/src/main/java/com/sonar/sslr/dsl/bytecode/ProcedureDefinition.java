@@ -7,6 +7,6 @@ package com.sonar.sslr.dsl.bytecode;
 
 public interface ProcedureDefinition extends Instruction {
 
-  public String getProcedureName();
+  String getProcedureName();
 
 }

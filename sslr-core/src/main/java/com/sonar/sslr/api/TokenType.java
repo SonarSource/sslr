@@ -8,10 +8,10 @@ package com.sonar.sslr.api;
 
 public interface TokenType extends AstNodeType {
 
-  public String getName();
+  String getName();
 
-  public String getValue();
+  String getValue();
 
-  public boolean hasToBeSkippedFromAst(AstNode node);
+  boolean hasToBeSkippedFromAst(AstNode node);
 
 }

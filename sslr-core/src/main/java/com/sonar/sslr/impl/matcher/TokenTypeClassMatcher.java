@@ -8,7 +8,7 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.Token;
 
-public class TokenTypeClassMatcher extends TokenMatcher {
+public final class TokenTypeClassMatcher extends TokenMatcher {
 
   private final Class typeClass;
 
@@ -18,7 +18,7 @@ public class TokenTypeClassMatcher extends TokenMatcher {
   }
 
   @Override
-  protected final boolean isExpectedToken(Token token) {
+  protected boolean isExpectedToken(Token token) {
     return typeClass == token.getType().getClass();
   }
 

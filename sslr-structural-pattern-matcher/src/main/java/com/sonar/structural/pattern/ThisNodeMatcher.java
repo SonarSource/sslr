@@ -13,10 +13,10 @@ import org.apache.commons.lang.StringUtils;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.dsl.Literal;
 
-public class ThisNodeMatcher extends CompositeMatcher {
+public final class ThisNodeMatcher extends CompositeMatcher {
 
-  private Set<String> tokenValues = new HashSet<String>();
-  private Set<String> rules = new HashSet<String>();
+  private final Set<String> tokenValues = new HashSet<String>();
+  private final Set<String> rules = new HashSet<String>();
 
   public void addTokenValue(Literal tokenValue) {
     tokenValues.add(StringUtils.remove(tokenValue.toString(), '\\'));

@@ -5,10 +5,7 @@
  */
 package com.sonar.sslr.impl.analysis;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -18,7 +15,7 @@ import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.OrMatcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
-public class OrAnalyser {
+public final class OrAnalyser {
 
   public static final String PREFIX_EXAMPLE = "OrAnalyser.PREFIX_EXAMPLE";
   public static final int DEFAULT_MAX_TOKENS = 5;
@@ -237,7 +234,7 @@ public class OrAnalyser {
     analyseMatcherTree(rootMatcher, new HashSet<Matcher>());
   }
 
-  private void analyseMatcherTree(Matcher rootMatcher, HashSet<Matcher> alreadyVisitedMatchers) {
+  private void analyseMatcherTree(Matcher rootMatcher, Set<Matcher> alreadyVisitedMatchers) {
     RuleMatcher previousRule = null;
     if (rootMatcher instanceof RuleMatcher) {
       previousRule = currentRule;

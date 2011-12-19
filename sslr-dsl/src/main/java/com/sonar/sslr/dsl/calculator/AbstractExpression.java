@@ -7,5 +7,6 @@ package com.sonar.sslr.dsl.calculator;
 
 public interface AbstractExpression {
 
-  public double value();
+  double value();
+
 }

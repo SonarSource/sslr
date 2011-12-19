@@ -10,7 +10,8 @@ import com.sonar.sslr.api.AstNode;
 
 public interface ExecutionFlow<STATEMENT extends Statement> {
 
-  public void visitFlow(AstNode stmtToStartVisitFrom, ExecutionFlowVisitor<STATEMENT>... visitors);
+  void visitFlow(AstNode stmtToStartVisitFrom, ExecutionFlowVisitor<STATEMENT>... visitors);
 
-  public void visitFlow(ExecutionFlowVisitor<STATEMENT>... visitors);
+  void visitFlow(ExecutionFlowVisitor<STATEMENT>... visitors);
+
 }

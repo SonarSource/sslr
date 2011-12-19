@@ -5,24 +5,19 @@
  */
 package com.sonar.sslr.dsl.bytecode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 import com.sonar.sslr.dsl.DslException;
 
 public class Bytecode {
 
-  private InstructionBlock mainBlock = new InstructionBlock();
+  private final InstructionBlock mainBlock = new InstructionBlock();
 
-  private Stack<ControlFlowInstruction> pendingControlFlowInstructions = new Stack<ControlFlowInstruction>();
-  private Map<ControlFlowInstruction, InstructionBlock> controlFlowBlocks = new HashMap<ControlFlowInstruction, Bytecode.InstructionBlock>();
+  private final Stack<ControlFlowInstruction> pendingControlFlowInstructions = new Stack<ControlFlowInstruction>();
+  private final Map<ControlFlowInstruction, InstructionBlock> controlFlowBlocks = new HashMap<ControlFlowInstruction, Bytecode.InstructionBlock>();
 
-  private Stack<String> pendingProdecureDefinitions = new Stack<String>();
-  private Map<String, InstructionBlock> procedureBlocks = new HashMap<String, Bytecode.InstructionBlock>();
+  private final Stack<String> pendingProdecureDefinitions = new Stack<String>();
+  private final Map<String, InstructionBlock> procedureBlocks = new HashMap<String, Bytecode.InstructionBlock>();
 
   public void execute() {
     try {
@@ -91,9 +86,9 @@ public class Bytecode {
     }
   }
 
-  private class InstructionBlock implements Iterable<Instruction> {
+  private static class InstructionBlock implements Iterable<Instruction> {
 
-    private List<Instruction> instructions = new ArrayList<Instruction>();
+    private final List<Instruction> instructions = new ArrayList<Instruction>();
 
     public Iterator<Instruction> iterator() {
       return instructions.iterator();
@@ -104,6 +99,6 @@ public class Bytecode {
     }
   }
 
-  private class ExitFlow extends RuntimeException {
+  private static class ExitFlow extends RuntimeException {
   }
 }

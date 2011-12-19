@@ -10,14 +10,14 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 
-public class OneToNMatcher extends StatelessMatcher {
+public final class OneToNMatcher extends StatelessMatcher {
 
   protected OneToNMatcher(Matcher matcher) {
     super(matcher);
   }
 
   @Override
-  public AstNode matchWorker(ParsingState parsingState) {
+  protected AstNode matchWorker(ParsingState parsingState) {
     int startIndex = parsingState.lexerIndex;
     AstNode astNode = null;
     boolean match = true;

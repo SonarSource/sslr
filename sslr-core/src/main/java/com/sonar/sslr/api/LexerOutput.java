@@ -13,7 +13,7 @@ import java.util.List;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
-public class LexerOutput {
+public final class LexerOutput {
 
   private File file = null;
   private List<Token> tokens = new ArrayList<Token>(1000);

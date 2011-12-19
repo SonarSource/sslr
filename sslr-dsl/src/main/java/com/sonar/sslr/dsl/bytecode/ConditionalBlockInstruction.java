@@ -7,6 +7,6 @@ package com.sonar.sslr.dsl.bytecode;
 
 public interface ConditionalBlockInstruction extends ControlFlowInstruction {
 
-  public boolean shouldExecuteConditionalBlock();
+  boolean shouldExecuteConditionalBlock();
 
 }

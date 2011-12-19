@@ -12,7 +12,7 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 
-public class TokenCountMatcher extends MemoizedMatcher {
+public final class TokenCountMatcher extends MemoizedMatcher {
 
   private final Operator operator;
   private final int n;
@@ -29,7 +29,7 @@ public class TokenCountMatcher extends MemoizedMatcher {
   }
 
   @Override
-  protected final AstNode matchWorker(ParsingState parsingState) {
+  protected AstNode matchWorker(ParsingState parsingState) {
     int startIndex = parsingState.lexerIndex;
     AstNode astNode = super.children[0].match(parsingState);
     int stopIndex = parsingState.lexerIndex;

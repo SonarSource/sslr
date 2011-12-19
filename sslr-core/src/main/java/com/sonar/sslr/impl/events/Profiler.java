@@ -18,9 +18,9 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.matcher.MemoizedMatcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
-public class Profiler extends ParsingEventListener {
+public final class Profiler extends ParsingEventListener {
 
-  public class RuleCounter {
+  public static class RuleCounter {
 
     private int hits = 0;
     private int matches = 0;
@@ -120,7 +120,7 @@ public class Profiler extends ParsingEventListener {
 
   }
 
-  private class Timer {
+  private static class Timer {
 
     private boolean isTiming = false;
     private boolean isAborted = false;
@@ -150,7 +150,7 @@ public class Profiler extends ParsingEventListener {
 
   }
 
-  private class Match {
+  private static class Match {
 
     private int startIndex = -1;
     private boolean wasMemoized = false;
@@ -199,7 +199,7 @@ public class Profiler extends ParsingEventListener {
   @Override
   public void enterRule(RuleMatcher rule, ParsingState parsingState) {
     getRuleCounter(rule).hit();
-    startMatch(rule, parsingState);
+    startMatch(parsingState);
     startRecordingTime(rule);
   }
 
@@ -368,7 +368,7 @@ public class Profiler extends ParsingEventListener {
     return counter;
   }
 
-  private void startMatch(RuleMatcher rule, ParsingState parsingState) {
+  private void startMatch(ParsingState parsingState) {
     Match match = new Match();
     match.startIndex = parsingState.lexerIndex;
     match.wasMemoized = false;

@@ -8,7 +8,7 @@ package com.sonar.structural.pattern;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.dsl.Literal;
 
-public class BeforeMatcher extends StructuralUnitMatcher {
+public final class BeforeMatcher extends StructuralUnitMatcher {
 
   private String tokenValue;
   private OnRightRuleMatcher onRightRuleMatcher;

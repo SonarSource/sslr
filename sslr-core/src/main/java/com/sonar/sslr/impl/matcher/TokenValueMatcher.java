@@ -8,7 +8,7 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.Token;
 
-public class TokenValueMatcher extends TokenMatcher {
+public final class TokenValueMatcher extends TokenMatcher {
 
   private final String tokenValue;
 
@@ -26,7 +26,7 @@ public class TokenValueMatcher extends TokenMatcher {
   }
 
   @Override
-  protected final boolean isExpectedToken(Token token) {
+  protected boolean isExpectedToken(Token token) {
     return tokenValue.hashCode() == token.getValue().hashCode() && tokenValue.equals(token.getValue());
   }
 

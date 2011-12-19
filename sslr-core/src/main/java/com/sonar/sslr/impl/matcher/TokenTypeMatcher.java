@@ -9,7 +9,7 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 
-public class TokenTypeMatcher extends TokenMatcher {
+public final class TokenTypeMatcher extends TokenMatcher {
 
   private final TokenType type;
 
@@ -27,7 +27,7 @@ public class TokenTypeMatcher extends TokenMatcher {
   }
 
   @Override
-  protected final boolean isExpectedToken(Token token) {
+  protected boolean isExpectedToken(Token token) {
     return type == token.getType();
   }
 

@@ -7,6 +7,6 @@ package com.sonar.sslr.dsl.bytecode;
 
 public interface ProcedureCallInstruction extends ControlFlowInstruction {
 
-  public String getProcedureNameToCall();
+  String getProcedureNameToCall();
 
 }

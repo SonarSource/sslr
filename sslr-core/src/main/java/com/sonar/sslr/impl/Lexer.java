@@ -95,7 +95,7 @@ public class Lexer {
     return lexerOutput;
   }
 
-  public LexerOutput lex(File file) {
+  public final LexerOutput lex(File file) {
     InputStreamReader reader = null;
     try {
       reader = new InputStreamReader(new FileInputStream(file), getCharset());
@@ -110,7 +110,7 @@ public class Lexer {
     }
   }
 
-  public void lex(Reader reader, LexerOutput lexerOutput) {
+  public final void lex(Reader reader, LexerOutput lexerOutput) {
     initCodeReaderFilters(lexerOutput);
     startLexing();
     CodeReader code = new CodeReader(reader, configuration);
@@ -131,8 +131,7 @@ public class Lexer {
   }
 
   protected LexerOutput createLexerOutput() {
-    LexerOutput lexerOutput = new LexerOutput(getPreprocessors());
-    return lexerOutput;
+    return new LexerOutput(getPreprocessors());
   }
 
   protected ChannelDispatcher<LexerOutput> getChannelDispatcher() {

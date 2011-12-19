@@ -7,8 +7,8 @@ package com.sonar.sslr.dsl.bytecode;
 
 public interface LoopBlockInstruction extends ControlFlowInstruction {
 
-  public boolean shouldExecuteLoopBlockIteration();
+  boolean shouldExecuteLoopBlockIteration();
 
-  public void initLoopState();
+  void initLoopState();
 
 }

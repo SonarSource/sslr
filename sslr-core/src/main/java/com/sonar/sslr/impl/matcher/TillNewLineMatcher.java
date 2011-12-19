@@ -12,14 +12,14 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
 
-public class TillNewLineMatcher extends StatelessMatcher {
+public final class TillNewLineMatcher extends StatelessMatcher {
 
   protected TillNewLineMatcher() {
     super();
   }
 
   @Override
-  protected final AstNode matchWorker(ParsingState parsingState) {
+  protected AstNode matchWorker(ParsingState parsingState) {
     int currentLine = parsingState.lexerIndex - 1 >= 0 ? parsingState.readToken(parsingState.lexerIndex - 1).getLine() : 1;
 
     AstNode astNode = new AstNode(null, "tillNewLine", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));

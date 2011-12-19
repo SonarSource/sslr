@@ -13,7 +13,7 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.TokenTypeMatcher;
 
-public class ParsingStackTrace {
+public final class ParsingStackTrace {
 
   private final StringBuilder stackTrace = new StringBuilder();
   private final ParsingState parsingState;

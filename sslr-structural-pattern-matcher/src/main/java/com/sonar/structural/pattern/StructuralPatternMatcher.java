@@ -9,13 +9,13 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.dsl.Dsl;
 
-public class StructuralPatternMatcher extends StructuralUnitMatcher {
+public final class StructuralPatternMatcher extends StructuralUnitMatcher {
 
   private SequenceMatcher sequenceMatcher;
   private ParentMatcher parentMatcher;
 
   private StructuralPatternMatcher() {
-  };
+  }
 
   public static final StructuralPatternMatcher compile(String structuralPattern) {
     StructuralPatternMatcher pattern = new StructuralPatternMatcher();
@@ -36,6 +36,7 @@ public class StructuralPatternMatcher extends StructuralUnitMatcher {
     this.parentMatcher = parentMatcher;
   }
 
+  @Override
   public AstNode match(AstNode astNode) {
     if (sequenceMatcher != null) {
       return sequenceMatcher.match(astNode);

@@ -8,7 +8,7 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.Token;
 
-public class BooleanMatcher extends TokenMatcher {
+public final class BooleanMatcher extends TokenMatcher {
 
   private final boolean internalState;
 

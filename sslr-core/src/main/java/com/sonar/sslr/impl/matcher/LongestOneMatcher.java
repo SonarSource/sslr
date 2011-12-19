@@ -10,14 +10,14 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 
-public class LongestOneMatcher extends StatelessMatcher {
+public final class LongestOneMatcher extends StatelessMatcher {
 
   protected LongestOneMatcher(Matcher... matchers) {
     super(matchers);
   }
 
   @Override
-  public AstNode matchWorker(ParsingState parsingState) {
+  protected AstNode matchWorker(ParsingState parsingState) {
     Matcher longestMatcher = null;
     int longestMatchIndex = -1;
 

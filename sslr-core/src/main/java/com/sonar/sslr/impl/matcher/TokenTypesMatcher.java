@@ -12,7 +12,7 @@ import java.util.Set;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 
-public class TokenTypesMatcher extends TokenMatcher {
+public final class TokenTypesMatcher extends TokenMatcher {
 
   private final Set<TokenType> tokenTypes = new HashSet<TokenType>();
 
@@ -24,7 +24,7 @@ public class TokenTypesMatcher extends TokenMatcher {
   }
 
   @Override
-  protected final boolean isExpectedToken(Token token) {
+  protected boolean isExpectedToken(Token token) {
     return tokenTypes.contains(token.getType());
   }
 

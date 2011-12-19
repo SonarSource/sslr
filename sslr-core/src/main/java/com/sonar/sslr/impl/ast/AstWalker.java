@@ -9,7 +9,7 @@ import java.util.*;
 
 import com.sonar.sslr.api.*;
 
-public class AstWalker {
+public final class AstWalker {
 
   private final Map<AstNodeType, AstVisitor[]> visitorsByNodeType = new IdentityHashMap<AstNodeType, AstVisitor[]>();
   private final List<AstVisitor> visitors = new ArrayList<AstVisitor>();
@@ -107,10 +107,7 @@ public class AstWalker {
   }
 
   private List<AstVisitor> getAstVisitors(AstNodeType type) {
-    AstVisitor[] visitors = visitorsByNodeType.get(type);
-    if (visitors == null) {
-      return new ArrayList<AstVisitor>();
-    }
-    return new ArrayList<AstVisitor>(Arrays.asList(visitors));
+    AstVisitor[] visitorsByType = visitorsByNodeType.get(type);
+    return visitorsByType == null ? new ArrayList<AstVisitor>() : Arrays.asList(visitorsByType);
   }
 }

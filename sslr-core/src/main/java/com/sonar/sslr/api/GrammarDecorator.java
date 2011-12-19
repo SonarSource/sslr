@@ -7,5 +7,6 @@ package com.sonar.sslr.api;
 
 public interface GrammarDecorator<GRAMMAR extends Grammar> {
 
-  public void decorate(GRAMMAR grammar);
+  void decorate(GRAMMAR grammar);
+
 }

@@ -190,7 +190,7 @@ public class ExecutionFlowEngine implements ExecutionFlow {
     throw new UnsupportedOperationException();
   }
 
-  public class FunctionCallStack {
+  public class FunctionCallStack implements Cloneable {
 
     private Stack<FlowHandler> branches = new Stack<FlowHandler>();
 
