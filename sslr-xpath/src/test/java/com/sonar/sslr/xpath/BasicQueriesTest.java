@@ -89,10 +89,10 @@ public class BasicQueriesTest {
 
   @Test
   public void getSecondDeclarationTest() {
-    AstNodeXpathQuery<AstNode> xpath1 = AstNodeXpathQuery.create("/compilationUnit/declaration[@tokenLine=4]");
-    AstNodeXpathQuery<AstNode> xpath2 = AstNodeXpathQuery.create("/compilationUnit/declaration[2]");
+    AstNodeXpathQuery<AstNode> xpath1 = AstNodeXpathQuery.create("/compilationUnit/definition[@tokenLine=4]");
+    AstNodeXpathQuery<AstNode> xpath2 = AstNodeXpathQuery.create("/compilationUnit/definition[2]");
     AstNode declarationAtLineFour = fileNode.getChild(1);
-    assertThat(declarationAtLineFour.is(getGrammar().declaration), is(true));
+    assertThat(declarationAtLineFour.is(getGrammar().definition), is(true));
     assertThat(declarationAtLineFour.getTokenLine(), is(4));
     assertThat(xpath1.getValue(fileNode), is(declarationAtLineFour));
     assertThat(xpath1.getValue(fileNode), is(xpath2.getValue(fileNode)));

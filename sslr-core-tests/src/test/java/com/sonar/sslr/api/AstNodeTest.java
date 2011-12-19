@@ -193,9 +193,9 @@ public class AstNodeTest {
   public void testIs() {
     AstNode declarationNode = parseString("int a = 0;").getChild(0);
 
-    assertThat(declarationNode.is(getGrammar().declaration), is(true));
-    assertThat(declarationNode.is(getGrammar().compilationUnit, getGrammar().declaration), is(true));
-    assertThat(declarationNode.is(getGrammar().declaration, getGrammar().compilationUnit), is(true));
+    assertThat(declarationNode.is(getGrammar().definition), is(true));
+    assertThat(declarationNode.is(getGrammar().compilationUnit, getGrammar().definition), is(true));
+    assertThat(declarationNode.is(getGrammar().definition, getGrammar().compilationUnit), is(true));
     assertThat(declarationNode.is(getGrammar().compilationUnit), is(false));
   }
 
@@ -203,9 +203,9 @@ public class AstNodeTest {
   public void testIsNot() {
     AstNode declarationNode = parseString("int a = 0;").getChild(0);
 
-    assertThat(declarationNode.isNot(getGrammar().declaration), is(false));
-    assertThat(declarationNode.isNot(getGrammar().compilationUnit, getGrammar().declaration), is(false));
-    assertThat(declarationNode.isNot(getGrammar().declaration, getGrammar().compilationUnit), is(false));
+    assertThat(declarationNode.isNot(getGrammar().definition), is(false));
+    assertThat(declarationNode.isNot(getGrammar().compilationUnit, getGrammar().definition), is(false));
+    assertThat(declarationNode.isNot(getGrammar().definition, getGrammar().compilationUnit), is(false));
     assertThat(declarationNode.isNot(getGrammar().compilationUnit), is(true));
   }
 
@@ -213,13 +213,13 @@ public class AstNodeTest {
   public void testFindChildren() {
     AstNode fileNode = parseString("int a = 0; int myFunction() { int b = 0; { int c = 0; } }");
 
-    List<AstNode> binVariableDeclarationNodes = fileNode.findChildren(getGrammar().binVariableDeclaration);
+    List<AstNode> binVariableDeclarationNodes = fileNode.findChildren(getGrammar().binVariableDefinition);
     assertThat(binVariableDeclarationNodes.size(), is(3));
     assertThat(binVariableDeclarationNodes.get(0).getTokenValue(), is("a"));
     assertThat(binVariableDeclarationNodes.get(1).getTokenValue(), is("b"));
     assertThat(binVariableDeclarationNodes.get(2).getTokenValue(), is("c"));
 
-    List<AstNode> binVDeclarationNodes = fileNode.findChildren(getGrammar().binVariableDeclaration, getGrammar().binFunctionDeclaration);
+    List<AstNode> binVDeclarationNodes = fileNode.findChildren(getGrammar().binVariableDefinition, getGrammar().binFunctionDefinition);
     assertThat(binVDeclarationNodes.size(), is(4));
     assertThat(binVDeclarationNodes.get(0).getTokenValue(), is("a"));
     assertThat(binVDeclarationNodes.get(1).getTokenValue(), is("myFunction"));
@@ -233,13 +233,13 @@ public class AstNodeTest {
   public void testFindDirectChildren() {
     AstNode fileNode = parseString("int a = 0; void myFunction() { int b = 0*3; { int c = 0; } }");
 
-    List<AstNode> declarationNodes = fileNode.findDirectChildren(getGrammar().declaration);
+    List<AstNode> declarationNodes = fileNode.findDirectChildren(getGrammar().definition);
     assertThat(declarationNodes.size(), is(2));
     assertThat(declarationNodes.get(0).getTokenValue(), is("int"));
     assertThat(declarationNodes.get(1).getTokenValue(), is("void"));
 
-    List<AstNode> binVDeclarationNodes = fileNode.findDirectChildren(getGrammar().binVariableDeclaration,
-        getGrammar().binFunctionDeclaration);
+    List<AstNode> binVDeclarationNodes = fileNode.findDirectChildren(getGrammar().binVariableDefinition,
+        getGrammar().binFunctionDefinition);
     assertThat(binVDeclarationNodes.size(), is(0));
   }
 

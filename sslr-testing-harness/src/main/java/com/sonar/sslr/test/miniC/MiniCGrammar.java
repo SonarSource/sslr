@@ -17,16 +17,16 @@ import com.sonar.sslr.api.Rule;
 public class MiniCGrammar extends Grammar {
 
   public Rule binType;
-  public Rule binFunctionDeclaration;
+  public Rule binFunctionDefinition;
   public Rule binParameter;
-  public Rule binVariableDeclaration;
+  public Rule binVariableDefinition;
   public Rule binFunctionReference;
   public Rule binVariableReference;
 
   public Rule compilationUnit;
-  public Rule declaration;
-  public Rule functionDeclaration;
-  public Rule variableDeclaration;
+  public Rule definition;
+  public Rule functionDefinition;
+  public Rule variableDefinition;
   public Rule parametersList;
   public Rule parameterDeclaration;
   public Rule compoundStatement;
@@ -67,9 +67,9 @@ public class MiniCGrammar extends Grammar {
 
     binParameter.is(IDENTIFIER);
 
-    binFunctionDeclaration.is(IDENTIFIER);
+    binFunctionDefinition.is(IDENTIFIER);
 
-    binVariableDeclaration.is(IDENTIFIER);
+    binVariableDefinition.is(IDENTIFIER);
 
     binFunctionReference.is(IDENTIFIER);
 
@@ -77,22 +77,22 @@ public class MiniCGrammar extends Grammar {
 
     // Miscellaneous
 
-    compilationUnit.is(o2n(declaration), EOF);
+    compilationUnit.is(o2n(definition), EOF);
 
-    declaration.is(or(
-        functionDeclaration,
-        variableDeclaration
+    definition.is(or(
+        functionDefinition,
+        variableDefinition
         ));
 
-    functionDeclaration.is(binType, binFunctionDeclaration, PAREN_L, opt(parametersList), PAREN_R, compoundStatement);
+    functionDefinition.is(binType, binFunctionDefinition, PAREN_L, opt(parametersList), PAREN_R, compoundStatement);
 
-    variableDeclaration.is(binType, binVariableDeclaration, opt(variableInitializer), SEMICOLON);
+    variableDefinition.is(binType, binVariableDefinition, opt(variableInitializer), SEMICOLON);
 
     parametersList.is(parameterDeclaration, o2n(COMMA, parameterDeclaration));
 
     parameterDeclaration.is(binType, binParameter);
 
-    compoundStatement.is(BRACE_L, o2n(variableDeclaration), o2n(statement), BRACE_R);
+    compoundStatement.is(BRACE_L, o2n(variableDefinition), o2n(statement), BRACE_R);
 
     variableInitializer.is(EQ, expression);
 
