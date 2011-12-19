@@ -5,31 +5,22 @@
  */
 package com.sonar.sslr.squid.metrics;
 
+import static com.sonar.sslr.squid.metrics.ResourceParser.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.sonar.squid.api.SourceProject;
+import org.sonar.squid.api.SourceFile;
 
-import com.sonar.sslr.api.GenericTokenType;
-import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.squid.SquidAstVisitorContextImpl;
-import com.sonar.sslr.squid.metrics.LinesVisitor;
+import com.sonar.sslr.test.miniC.MiniCAstScanner.MiniCMetrics;
 
 public class LinesVisitorTest {
 
-  private final SourceProject project = new SourceProject("myProject");
-  private final SquidAstVisitorContextImpl<Grammar> context = new SquidAstVisitorContextImpl<Grammar>(project);
-
   @Test
-  public void shouldCompyteTheNumberOfLines() {
-    assertThat(project.getInt(MyMetrics.LINES), is(0));
+  public void linesOfCode() {
+    SourceFile sourceFile = scanFile("/metrics/lines.mc");
 
-    LinesVisitor<Grammar> visitor = new LinesVisitor<Grammar>(MyMetrics.LINES);
-    visitor.setContext(context);
-
-    visitor.visitToken(new Token(GenericTokenType.EOF, "", 11, 0));
-    assertThat(project.getInt(MyMetrics.LINES), is(11));
+    assertThat(sourceFile.getInt(MiniCMetrics.LINES), is(19));
   }
+
 }

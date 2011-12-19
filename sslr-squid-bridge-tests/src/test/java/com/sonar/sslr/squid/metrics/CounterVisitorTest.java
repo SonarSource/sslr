@@ -5,35 +5,24 @@
  */
 package com.sonar.sslr.squid.metrics;
 
+import static com.sonar.sslr.squid.metrics.ResourceParser.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.sonar.squid.api.SourceProject;
+import org.sonar.squid.api.SourceFile;
 
-import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.impl.matcher.RuleDefinition;
-import com.sonar.sslr.squid.SquidAstVisitorContextImpl;
-import com.sonar.sslr.squid.metrics.CounterVisitor;
+import com.sonar.sslr.test.miniC.MiniCAstScanner.MiniCMetrics;
 
 public class CounterVisitorTest {
 
-  private final Rule ifStmt = RuleDefinition.newRuleBuilder("ifStmt");
-  private final SourceProject project = new SourceProject("myProject");
-  private final SquidAstVisitorContextImpl<Grammar> context = new SquidAstVisitorContextImpl<Grammar>(project);
-
   @Test
-  public void shouldIncrementTheComplexityWhenVisitingANode() {
-    assertThat(project.getInt(MyMetrics.COMPLEXITY), is(0));
+  public void counter() {
+    SourceFile sourceFile = scanFile("/metrics/counter.mc");
 
-    CounterVisitor<Grammar> visitor = CounterVisitor.<Grammar> builder().setMetricDef(MyMetrics.COMPLEXITY).subscribeTo(ifStmt).build();
-    visitor.setContext(context);
-
-    visitor.visitNode(null);
-    assertThat(project.getInt(MyMetrics.COMPLEXITY), is(1));
-
-    visitor.visitNode(null);
-    assertThat(project.getInt(MyMetrics.COMPLEXITY), is(2));
+    assertThat(sourceFile.getInt(MiniCMetrics.COMPLEXITY), is(4));
+    assertThat(sourceFile.getInt(MiniCMetrics.STATEMENTS), is(6));
+    assertThat(sourceFile.getInt(MiniCMetrics.FUNCTIONS), is(2));
   }
+
 }

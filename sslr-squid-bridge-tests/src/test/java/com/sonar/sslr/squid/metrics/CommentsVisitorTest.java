@@ -5,90 +5,36 @@
  */
 package com.sonar.sslr.squid.metrics;
 
+import static com.sonar.sslr.squid.metrics.ResourceParser.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.sonar.squid.api.SourceFile;
-import org.sonar.squid.api.SourceProject;
 
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.ListMultimap;
-import com.sonar.sslr.api.*;
-import com.sonar.sslr.squid.SquidAstVisitorContextImpl;
+import com.sonar.sslr.test.miniC.MiniCAstScanner.MiniCMetrics;
 
 public class CommentsVisitorTest {
 
-  private final SourceProject project = new SourceProject("");
-  private final SourceFile file = new SourceFile("");
-  private final SquidAstVisitorContextImpl<Grammar> context = new SquidAstVisitorContextImpl<Grammar>(project);
+  @Test
+  public void empty() {
+    SourceFile sourceFile = scanFile("/metrics/comments_none.mc");
 
-  @Before
-  public void init() {
-    context.addSourceCode(file);
+    assertThat(sourceFile.getInt(MiniCMetrics.BLANK_COMMENT_LINES), is(0));
+    assertThat(sourceFile.getInt(MiniCMetrics.COMMENT_LINES), is(0));
+
+    assertThat(sourceFile.getNoSonarTagLines().size(), is(0));
   }
 
   @Test
-  public void shouldComputeCommentMeasures() {
-    assertThat(file.getNoSonarTagLines().size(), is(0));
-    assertThat(file.getInt(MyMetrics.COMMENT_LINES), is(0));
-    assertThat(file.getInt(MyMetrics.BLANK_COMMENT_LINES), is(0));
+  public void comments() {
+    SourceFile sourceFile = scanFile("/metrics/comments.mc");
 
-    CommentsVisitor<Grammar> visitor = CommentsVisitor.<Grammar> builder().withBlankCommentMetric(MyMetrics.BLANK_COMMENT_LINES)
-        .withCommentMetric(MyMetrics.COMMENT_LINES)
-        .withNoSonar(true)
-        .build();
-    visitor.setContext(context);
+    assertThat(sourceFile.getInt(MiniCMetrics.BLANK_COMMENT_LINES), is(3));
+    assertThat(sourceFile.getInt(MiniCMetrics.COMMENT_LINES), is(4));
 
-    ListMultimap<Integer, Token> comments = LinkedListMultimap.<Integer, Token> create();
-
-    comments.put(1, new Token(GenericTokenType.COMMENT, "     ", 1, 0));
-    comments.put(3, new Token(GenericTokenType.COMMENT, "  \r\n   ", 3, 0));
-    comments.put(5, new Token(GenericTokenType.COMMENT, "  my comment  ", 5, 0));
-
-    comments.put(8, new Token(GenericTokenType.COMMENT, "  hehe  ", 8, 0));
-    comments.put(8, new Token(GenericTokenType.COMMENT, "  ", 8, 0));
-
-    comments.put(10, new Token(GenericTokenType.COMMENT, "   ", 10, 0));
-    comments.put(10, new Token(GenericTokenType.COMMENT, " test ", 10, 0));
-
-    comments.put(15, new Token(GenericTokenType.COMMENT, " ", 15, 0));
-    comments.put(15, new Token(GenericTokenType.COMMENT, "CODE", 15, 0));
-    comments.put(15, new Token(GenericTokenType.COMMENT, "NOSONAR", 15, 0));
-    comments.put(15, new Token(GenericTokenType.COMMENT, "hehe uhu", 15, 0));
-
-    comments.put(18, new Token(GenericTokenType.COMMENT, "   ", 18, 0));
-    comments.put(18, new Token(GenericTokenType.COMMENT, "test", 18, 0));
-    comments.put(18, new Token(GenericTokenType.COMMENT, "CODE", 18, 0));
-
-    comments.put(25, new Token(GenericTokenType.COMMENT, "test\n\n\nNOSONAR", 25, 0));
-
-    context.setComments(new Comments(comments, new MyCommentAnayser()));
-
-    visitor.visitFile(null);
-    visitor.leaveFile(null);
-
-    assertThat(file.getNoSonarTagLines().size(), is(2));
-    assertThat(15, isIn(file.getNoSonarTagLines()));
-    assertThat(28, isIn(file.getNoSonarTagLines()));
-
-    assertThat(file.getInt(MyMetrics.COMMENT_LINES), is(5));
-    assertThat(file.getInt(MyMetrics.BLANK_COMMENT_LINES), is(5));
-  }
-
-  private class MyCommentAnayser extends CommentAnalyser {
-
-    @Override
-    public boolean isBlank(String commentLine) {
-      for (int i = 0; i < commentLine.length(); i++) {
-        if (Character.isLetterOrDigit(commentLine.charAt(i))) {
-          return false;
-        }
-      }
-
-      return true;
-    }
+    assertThat(sourceFile.getNoSonarTagLines().size(), is(1));
+    assertThat(5, isIn(sourceFile.getNoSonarTagLines()));
   }
 
 }
