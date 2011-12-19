@@ -5,9 +5,7 @@
  */
 package com.sonar.sslr.dsl.condition;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
@@ -28,13 +26,16 @@ public class ConditionDsl extends Grammar {
     equal.is(expression, or("=", "equals"), expression).plug(Equal.class);
     notEqual.is(expression, or(and("!", "="), and("not", "equals")), expression).plug(NotEqual.class);
     primaryCondition.is(booleanValue).plug(PrimaryCondition.class);
-    logicalAnd.is(or(primaryCondition, equal, notEqual), opt(or("and", and("&", "&")), logicalAnd)).skipIfOneChild().plug(LogicalAnd.class);
-    logicalOr.is(logicalAnd, opt(or("or", and("|", "|")), logicalOr)).skipIfOneChild().plug(LogicalOr.class);
+    logicalAnd.is(or(primaryCondition, equal, notEqual), opt(or("and", and("&", "&")), logicalAnd)).skipIfOneChild();
+    logicalAnd.plug(LogicalAnd.class);
+    logicalOr.is(logicalAnd, opt(or("or", and("|", "|")), logicalOr)).skipIfOneChild();
+    logicalOr.plug(LogicalOr.class);
     condition.is(logicalOr).plug(Condition.class);
 
     booleanValue.isOr("true", "false").plug(Boolean.class);
   }
 
+  @Override
   public Rule getRootRule() {
     return condition;
   }

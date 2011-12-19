@@ -6,12 +6,7 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.AstListener;
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.AstNodeSkippingPolicy;
-import com.sonar.sslr.api.AstNodeType;
-import com.sonar.sslr.api.LeftRecursiveRule;
-import com.sonar.sslr.api.Rule;
+import com.sonar.sslr.api.*;
 import com.sonar.sslr.impl.ast.AlwaysSkipFromAst;
 import com.sonar.sslr.impl.ast.NeverSkipFromAst;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
@@ -104,9 +99,8 @@ public final class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSki
     return this;
   }
 
-  public RuleDefinition skip() {
+  public void skip() {
     astNodeSkippingPolicy = new AlwaysSkipFromAst();
-    return this;
   }
 
   protected void setMatcher(Matcher matcher) {
@@ -118,19 +112,16 @@ public final class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSki
     return this;
   }
 
-  public RuleDefinition skipIf(AstNodeSkippingPolicy astNodeSkipPolicy) {
+  public void skipIf(AstNodeSkippingPolicy astNodeSkipPolicy) {
     astNodeSkippingPolicy = astNodeSkipPolicy;
-    return this;
   }
 
-  public RuleDefinition skipIfOneChild() {
+  public void skipIfOneChild() {
     astNodeSkippingPolicy = new SkipFromAstIfOnlyOneChild();
-    return this;
   }
 
-  public RuleDefinition plug(Object adapter) {
+  public void plug(Object adapter) {
     this.adapter = adapter;
-    return this;
   }
 
   private void throwExceptionIfRuleAlreadyDefined(String exceptionMessage) {

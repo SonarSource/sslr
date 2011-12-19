@@ -5,11 +5,8 @@
  */
 package com.sonar.sslr.dsl.calculator;
 
-import static com.sonar.sslr.dsl.DslTokenType.DOUBLE;
-import static com.sonar.sslr.dsl.DslTokenType.INTEGER;
-import static com.sonar.sslr.dsl.DslTokenType.WORD;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
+import static com.sonar.sslr.dsl.DslTokenType.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
@@ -32,11 +29,14 @@ public class CalculatorDsl extends Grammar {
     variable.is(identifier).plug(VariableExpression.class);
     primaryExpression.isOr(intValue, doubleValue).plug(PrimaryExpression.class);
     parenthesisExpression.is("(", expression, ")").plug(Calculator.class);
-    multiplyExpression.is(or(primaryExpression, parenthesisExpression, variable), opt("*", multiplyExpression)).skipIfOneChild()
-        .plug(MultiplyExpression.class);
-    divideExpression.is(multiplyExpression, opt("/", divideExpression)).skipIfOneChild().plug(DivideExpression.class);
-    substractExpression.is(divideExpression, opt("-", substractExpression)).skipIfOneChild().plug(SubstractExpression.class);
-    addExpression.is(substractExpression, opt("+", addExpression)).skipIfOneChild().plug(AddExpression.class);
+    multiplyExpression.is(or(primaryExpression, parenthesisExpression, variable), opt("*", multiplyExpression)).skipIfOneChild();
+    multiplyExpression.plug(MultiplyExpression.class);
+    divideExpression.is(multiplyExpression, opt("/", divideExpression)).skipIfOneChild();
+    divideExpression.plug(DivideExpression.class);
+    substractExpression.is(divideExpression, opt("-", substractExpression)).skipIfOneChild();
+    substractExpression.plug(SubstractExpression.class);
+    addExpression.is(substractExpression, opt("+", addExpression)).skipIfOneChild();
+    addExpression.plug(AddExpression.class);
     expression.is(addExpression).plug(Calculator.class);
 
     intValue.is(INTEGER).plug(Integer.class);
@@ -45,6 +45,7 @@ public class CalculatorDsl extends Grammar {
 
   }
 
+  @Override
   public Rule getRootRule() {
     return expression;
   }

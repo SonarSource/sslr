@@ -109,7 +109,8 @@ public class RuleDefinitionTest {
 
   @Test
   public void testSkipFromAstIf() {
-    RuleDefinition ruleBuilder = RuleDefinition.newRuleBuilder("MyRule").skipIfOneChild();
+    RuleDefinition ruleBuilder = RuleDefinition.newRuleBuilder("MyRule");
+    ruleBuilder.skipIfOneChild();
 
     AstNode parent = new AstNode(new Token(GenericTokenType.IDENTIFIER, "parent"));
     AstNode child1 = new AstNode(new Token(GenericTokenType.IDENTIFIER, "child1"));

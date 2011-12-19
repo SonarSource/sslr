@@ -79,23 +79,18 @@ public interface Rule extends AstNodeType {
 
   /**
    * Remove this node from the AST and attached its children directly to its parent
-   * 
-   * @return this rule
    */
-  Rule skip();
+  void skip();
 
   /**
    * Remove this node from the AST according to a provided policy
-   * 
-   * @return this rule
    */
-  Rule skipIf(AstNodeSkippingPolicy policy);
+  void skipIf(AstNodeSkippingPolicy policy);
 
   /**
-   * 
-   * @return this rule
+   * Remove this node from the AST if it has exactly 1 child
    */
-  Rule skipIfOneChild();
+  void skipIfOneChild();
 
   /**
    * Utility method used for unit testing in order to dynamically replace the definition of the rule to match as soon as a token whose value
@@ -105,10 +100,8 @@ public interface Rule extends AstNodeType {
 
   /**
    * Experimental
-   * 
-   * @return this rule
    */
-  Rule plug(Object adapter);
+  void plug(Object adapter);
 
   /**
    * A rule should be flagged as being a "Recovery" rule if it's responsibility is to consume
