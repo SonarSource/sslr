@@ -33,7 +33,7 @@ public final class AdjacentMatcher extends StatelessMatcher {
   }
 
   @Override
-  public final String toString() {
+  public String toString() {
     return "adjacent";
   }
 

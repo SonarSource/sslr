@@ -13,6 +13,9 @@ import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 
 public final class OrAnalyserStream {
 
+  private OrAnalyserStream() {
+  }
+
   public static void print(OrAnalyser orAnalyser, PrintStream stream) {
     printEmptyViolations(orAnalyser, stream);
     printPrefixViolations(orAnalyser, stream);

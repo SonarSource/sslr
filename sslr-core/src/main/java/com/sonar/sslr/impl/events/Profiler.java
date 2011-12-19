@@ -200,7 +200,7 @@ public final class Profiler extends ParsingEventListener {
   public void enterRule(RuleMatcher rule, ParsingState parsingState) {
     getRuleCounter(rule).hit();
     startMatch(parsingState);
-    startRecordingTime(rule);
+    startRecordingTime();
   }
 
   @Override
@@ -222,7 +222,7 @@ public final class Profiler extends ParsingEventListener {
       matches.peek().wasMemoized = true;
 
       /* CPU time */
-      abortRecordingTime((RuleMatcher) matcher);
+      abortRecordingTime();
       getRuleCounter((RuleMatcher) matcher).memoizedHit();
     }
   }
@@ -400,7 +400,7 @@ public final class Profiler extends ParsingEventListener {
     }
   }
 
-  private void startRecordingTime(RuleMatcher rule) {
+  private void startRecordingTime() {
     /* Add the delta to the previous rule's timer */
     if (timers.size() > 0) {
       Timer oldTimer = timers.pop();
@@ -434,7 +434,7 @@ public final class Profiler extends ParsingEventListener {
     }
   }
 
-  private void abortRecordingTime(RuleMatcher rule) {
+  private void abortRecordingTime() {
     timers.peek().abort();
   }
 

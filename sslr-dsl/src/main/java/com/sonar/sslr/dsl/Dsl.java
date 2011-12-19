@@ -6,6 +6,8 @@
 
 package com.sonar.sslr.dsl;
 
+import static com.sonar.sslr.api.GenericTokenType.*;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +19,11 @@ import com.sonar.sslr.dsl.internal.DefaultDslLexer;
 import com.sonar.sslr.impl.Lexer;
 import com.sonar.sslr.impl.Parser;
 
-import static com.sonar.sslr.api.GenericTokenType.EOF;
+public final class Dsl {
 
-public class Dsl {
-
-  private Bytecode bytecode;
+  private final Bytecode bytecode;
   private Compiler compiler;
-  private DslContext context;
+  private final DslContext context;
 
   private Dsl(Builder builder) {
     if (builder.source != null) {
@@ -64,8 +64,8 @@ public class Dsl {
     private Grammar grammar;
     private String source;
     private File sourceFile;
-    private List<Object> componentsToInject = new ArrayList<Object>();
-    private DslContext context = new DslContext();
+    private final List<Object> componentsToInject = new ArrayList<Object>();
+    private final DslContext context = new DslContext();
     private Lexer lexer;
 
     private Builder() {

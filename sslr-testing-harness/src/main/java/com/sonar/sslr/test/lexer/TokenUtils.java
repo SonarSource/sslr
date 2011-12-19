@@ -15,7 +15,10 @@ import org.sonar.channel.CodeReader;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 
-public class TokenUtils {
+public final class TokenUtils {
+
+  private TokenUtils() {
+  }
 
   public static String merge(List<Token> tokens) {
     removeLastTokenIfEof(tokens);
@@ -65,4 +68,5 @@ public class TokenUtils {
     }
     return tokens;
   }
+
 }

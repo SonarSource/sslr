@@ -49,10 +49,6 @@ public final class CheckMatchers {
   private CheckMatchers() {
   }
 
-  private static CheckMatchers getInstance() {
-    return singleInstance;
-  }
-
   /**
    * Sets the current source file. <br/>
    * <br/>

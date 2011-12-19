@@ -190,19 +190,19 @@ public class ExecutionFlowEngine implements ExecutionFlow {
     throw new UnsupportedOperationException();
   }
 
-  public class FunctionCallStack implements Cloneable {
+  public final class FunctionCallStack implements Cloneable {
 
     private Stack<FlowHandler> branches = new Stack<FlowHandler>();
 
-    public final boolean isEmpty() {
+    public boolean isEmpty() {
       return branches.isEmpty();
     }
 
-    public final void add(FlowHandler flowHandler) {
+    public void add(FlowHandler flowHandler) {
       branches.push(flowHandler);
     }
 
-    public final FlowHandler peek() {
+    public FlowHandler peek() {
       return branches.peek();
     }
 
@@ -221,4 +221,5 @@ public class ExecutionFlowEngine implements ExecutionFlow {
       return clone;
     }
   }
+
 }

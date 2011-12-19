@@ -17,7 +17,7 @@ public final class StructuralPatternMatcher extends StructuralUnitMatcher {
   private StructuralPatternMatcher() {
   }
 
-  public static final StructuralPatternMatcher compile(String structuralPattern) {
+  public static StructuralPatternMatcher compile(String structuralPattern) {
     StructuralPatternMatcher pattern = new StructuralPatternMatcher();
     try {
       Dsl.builder().setGrammar(new StructuralPatternMatcherGrammar(pattern)).withSource(structuralPattern).compile();
