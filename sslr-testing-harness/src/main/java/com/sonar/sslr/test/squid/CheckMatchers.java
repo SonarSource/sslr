@@ -23,8 +23,6 @@ import com.google.common.collect.Lists;
  */
 public final class CheckMatchers {
 
-  private static CheckMatchers singleInstance = new CheckMatchers();
-
   private static ThreadLocal<List<CheckMessage>> currentMessagesUnderTest = new ThreadLocal<List<CheckMessage>>();
 
   private static ThreadLocal<Iterator<CheckMessage>> currentMessagesIterator = new ThreadLocal<Iterator<CheckMessage>>();
