@@ -9,6 +9,26 @@
   <artifactId>sslr-squid-bridge-tests</artifactId>
   <name>SonarSource :: Language Recognizer :: Squid Bridge :: Tests</name>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.5.3.201107060350</version>
+        <configuration>
+          <destFile>target/jacoco.exec</destFile>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>

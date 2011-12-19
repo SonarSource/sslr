@@ -9,6 +9,11 @@
   <artifactId>sslr-squid-bridge</artifactId>
   <name>SonarSource :: Language Recognizer :: Squid Bridge</name>
 
+  <properties>
+    <sonar.jacoco.reportPath>../sslr-squid-bridge-tests/target/jacoco.exec</sonar.jacoco.reportPath>
+    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+  </properties>
+  
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
