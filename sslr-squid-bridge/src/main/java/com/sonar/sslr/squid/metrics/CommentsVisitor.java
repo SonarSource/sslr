@@ -10,7 +10,6 @@ import java.util.Set;
 
 import org.sonar.squid.api.SourceFile;
 import org.sonar.squid.measures.MetricDef;
-import org.sonar.squid.recognizer.CodeRecognizer;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
@@ -23,47 +22,30 @@ import com.sonar.sslr.squid.SquidAstVisitor;
 public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> {
 
   private Set<Integer> noSonar;
-  private Set<Integer> commentedLinesOfCode;
   private Set<Integer> comments;
   private Set<Integer> blankComments;
 
   private final boolean enableNoSonar;
   private final MetricDef commentMetric;
   private final MetricDef blankCommentMetric;
-  private final CodeRecognizer codeRecognizer;
-  private final MetricDef commentedLinesOfCodeMetric;
 
   private CommentsVisitor(CommentsVisitorBuilder<GRAMMAR> builder) {
     this.enableNoSonar = builder.enableNoSonar;
     this.commentMetric = builder.commentMetric;
     this.blankCommentMetric = builder.blankCommentMetric;
-    this.codeRecognizer = builder.codeRecognizer;
-    this.commentedLinesOfCodeMetric = builder.commentedLinesOfCodeMetric;
   }
 
   private void addNoSonar(int line) {
     /* Remove from lower priorities categories first */
-    commentedLinesOfCode.remove(line);
     comments.remove(line);
     blankComments.remove(line);
 
     noSonar.add(line);
   }
 
-  private void addCommentedLineOfCode(int line) {
-    /* Mark the line only if it does not already have 1) no sonar */
-    if ( !noSonar.contains(line)) {
-      /* Remove from lower priorities categories first */
-      comments.remove(line);
-      blankComments.remove(line);
-
-      commentedLinesOfCode.add(line);
-    }
-  }
-
   private void addCommentLine(int line) {
     /* Mark the line only if it does not already have 1) no sonar, 2) commented code */
-    if ( !noSonar.contains(line) && !commentedLinesOfCode.contains(line)) {
+    if ( !noSonar.contains(line)) {
       /* Remove from lower priorities categories first */
       blankComments.remove(line);
 
@@ -73,7 +55,7 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
 
   private void addBlankCommentLine(int line) {
     /* Mark the line only if it does not already have 1) no sonar, 2) commented code, or 3) a non-empty comment */
-    if ( !noSonar.contains(line) && !commentedLinesOfCode.contains(line) && !comments.contains(line)) {
+    if ( !noSonar.contains(line) && !comments.contains(line)) {
       blankComments.add(line);
     }
   }
@@ -84,7 +66,6 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
   @Override
   public void visitFile(AstNode astNode) {
     noSonar = new HashSet<Integer>();
-    commentedLinesOfCode = new HashSet<Integer>();
     comments = new HashSet<Integer>();
     blankComments = new HashSet<Integer>();
   }
@@ -106,9 +87,6 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
         if (enableNoSonar && commentLine.trim().startsWith("NOSONAR")) {
           /* NOSONAR */
           addNoSonar(line);
-        } else if (codeRecognizer != null && codeRecognizer.isLineOfCode(commentLine)) {
-          /* Commented line of code */
-          addCommentedLineOfCode(line);
         } else if (blankCommentMetric != null && getContext().getComments().isBlank(commentLine)) {
           /* Blank lines */
           addBlankCommentLine(line);
@@ -123,9 +101,6 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
 
     if (enableNoSonar) {
       ((SourceFile) getContext().peekSourceCode()).addNoSonarTagLines(noSonar);
-    }
-    if (commentedLinesOfCodeMetric != null) {
-      getContext().peekSourceCode().add(commentedLinesOfCodeMetric, commentedLinesOfCode.size());
     }
     if (commentMetric != null) {
       getContext().peekSourceCode().add(commentMetric, comments.size());
@@ -144,8 +119,6 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
     private boolean enableNoSonar;
     private MetricDef commentMetric;
     private MetricDef blankCommentMetric;
-    private CodeRecognizer codeRecognizer;
-    private MetricDef commentedLinesOfCodeMetric;
 
     private CommentsVisitorBuilder() {
     }
@@ -166,13 +139,6 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
 
     public CommentsVisitorBuilder<GRAMMAR> withBlankCommentMetric(MetricDef blankCommentMetric) {
       this.blankCommentMetric = blankCommentMetric;
-      return this;
-    }
-
-    public CommentsVisitorBuilder<GRAMMAR> withCommentedLinesOfCodeMetric(CodeRecognizer codeRecognizer,
-        MetricDef commentedLinesOfCodeMetric) {
-      this.codeRecognizer = codeRecognizer;
-      this.commentedLinesOfCodeMetric = commentedLinesOfCodeMetric;
       return this;
     }
 

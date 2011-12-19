@@ -12,20 +12,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.sonar.squid.api.SourceFile;
 import org.sonar.squid.api.SourceProject;
-import org.sonar.squid.recognizer.CodeRecognizer;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.sonar.sslr.api.*;
 import com.sonar.sslr.squid.SquidAstVisitorContextImpl;
-import com.sonar.sslr.squid.metrics.CommentsVisitor;
 
 public class CommentsVisitorTest {
 
   private final SourceProject project = new SourceProject("");
   private final SourceFile file = new SourceFile("");
   private final SquidAstVisitorContextImpl<Grammar> context = new SquidAstVisitorContextImpl<Grammar>(project);
-  private final CodeRecognizer codeRecognizer = new DummyCodeRecognizer();
 
   @Before
   public void init() {
@@ -35,13 +32,11 @@ public class CommentsVisitorTest {
   @Test
   public void shouldComputeCommentMeasures() {
     assertThat(file.getNoSonarTagLines().size(), is(0));
-    assertThat(file.getInt(MyMetrics.COMMENTED_LINES_OF_CODE), is(0));
     assertThat(file.getInt(MyMetrics.COMMENT_LINES), is(0));
     assertThat(file.getInt(MyMetrics.BLANK_COMMENT_LINES), is(0));
 
     CommentsVisitor<Grammar> visitor = CommentsVisitor.<Grammar> builder().withBlankCommentMetric(MyMetrics.BLANK_COMMENT_LINES)
         .withCommentMetric(MyMetrics.COMMENT_LINES)
-        .withCommentedLinesOfCodeMetric(codeRecognizer, MyMetrics.COMMENTED_LINES_OF_CODE)
         .withNoSonar(true)
         .build();
     visitor.setContext(context);
@@ -78,9 +73,7 @@ public class CommentsVisitorTest {
     assertThat(15, isIn(file.getNoSonarTagLines()));
     assertThat(28, isIn(file.getNoSonarTagLines()));
 
-    assertThat(file.getInt(MyMetrics.COMMENTED_LINES_OF_CODE), is(1));
-
-    assertThat(file.getInt(MyMetrics.COMMENT_LINES), is(4));
+    assertThat(file.getInt(MyMetrics.COMMENT_LINES), is(5));
     assertThat(file.getInt(MyMetrics.BLANK_COMMENT_LINES), is(5));
   }
 
