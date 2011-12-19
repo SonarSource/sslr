@@ -27,30 +27,35 @@ public class AstWalkerTest {
   private AstNode ast122;
   private AstNode ast13;
   private AstNode astNodeWithToken;
+
   private final AstNodeType animal = new AstNodeType() {
 
     public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
   };
+
   private final AstNodeType dog = new AstNodeType() {
 
     public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
   };
+
   private final AstNodeType cat = new AstNodeType() {
 
     public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
   };
+
   private final AstNodeType tiger = new AstNodeType() {
 
     public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
   };
+
   private final AstVisitor astVisitor = mock(AstVisitor.class);
   private final AstAndTokenVisitor astAndTokenVisitor = mock(AstAndTokenVisitor.class);
 
@@ -101,4 +106,21 @@ public class AstWalkerTest {
     inOrder.verify(astVisitor).leaveNode(ast122);
     verify(astVisitor, never()).visitNode(ast11);
   }
+
+  @Test
+  public void testAddVisitor() {
+    AstWalker walker = new AstWalker();
+
+    AstNodeType astNodeType = mock(AstNodeType.class);
+
+    AstVisitor visitor1 = mock(AstVisitor.class);
+    when(visitor1.getAstNodeTypesToVisit()).thenReturn(Arrays.asList(astNodeType));
+
+    AstVisitor visitor2 = mock(AstVisitor.class);
+    when(visitor2.getAstNodeTypesToVisit()).thenReturn(Arrays.asList(astNodeType));
+
+    walker.addVisitor(visitor1);
+    walker.addVisitor(visitor2);
+  }
+
 }

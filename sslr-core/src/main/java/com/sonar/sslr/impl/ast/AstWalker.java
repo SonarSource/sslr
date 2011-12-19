@@ -108,6 +108,6 @@ public final class AstWalker {
 
   private List<AstVisitor> getAstVisitors(AstNodeType type) {
     AstVisitor[] visitorsByType = visitorsByNodeType.get(type);
-    return visitorsByType == null ? new ArrayList<AstVisitor>() : Arrays.asList(visitorsByType);
+    return visitorsByType == null ? new ArrayList<AstVisitor>() : new ArrayList<AstVisitor>(Arrays.asList(visitorsByType));
   }
 }
