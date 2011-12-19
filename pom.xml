@@ -28,11 +28,12 @@
   <modules>
     <module>sslr-core</module>
     <module>sslr-testing-harness</module>
-    <module>sslr-core-tests</module>
     <module>sslr-dsl</module>
     <module>sslr-xpath</module>    
     <module>sslr-squid-bridge</module>
     <module>sslr-structural-pattern-matcher</module>
+    <module>sslr-core-tests</module>
+    <module>sslr-squid-bridge-tests</module>
   </modules>
 
   <dependencyManagement>
@@ -40,6 +41,11 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>sslr-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>sslr-squid-bridge</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
