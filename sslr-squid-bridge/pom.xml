@@ -38,23 +38,5 @@
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
     </dependency>  
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jcl-over-slf4j</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.sonar</groupId>
-      <artifactId>sonar-testing-harness</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.sonarsource.sslr</groupId>
-      <artifactId>sslr-testing-harness</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 </project>
