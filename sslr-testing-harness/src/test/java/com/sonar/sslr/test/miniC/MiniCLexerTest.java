@@ -48,6 +48,14 @@ public class MiniCLexerTest {
   }
 
   @Test
+  public void lexComments() {
+    assertThat(lexer.lex("/*test*/"), hasComment("test"));
+    assertThat(lexer.lex("/*test*/*/"), hasComment("test"));
+    assertThat(lexer.lex("/*test/* /**/"), hasComment("test/* /*"));
+    assertThat(lexer.lex("/*test1\ntest2\ntest3*/"), hasComment("test1\ntest2\ntest3"));
+  }
+
+  @Test
   public void lexPunctuators() {
     assertThat(lexer.lex("("), hasToken(PAREN_L));
     assertThat(lexer.lex(")"), hasToken(PAREN_R));

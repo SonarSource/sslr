@@ -96,8 +96,9 @@ public final class MiniCLexer {
     return Lexer.builder()
         .withFailIfNoChannelToConsumeOneCharacter(true)
         .withChannel(new IdentifierAndKeywordChannel("[a-zA-Z]([a-zA-Z0-9_]*[a-zA-Z0-9])?+", true, Keywords.values()))
-        .withChannel(new PunctuatorChannel(Punctuators.values()))
         .withChannel(regexp(Literals.INTEGER, "[0-9]+"))
+        .withChannel(commentRegexp(2, 2, false, "(?s)/\\*.*?\\*/"))
+        .withChannel(new PunctuatorChannel(Punctuators.values()))
         .withChannel(new BlackHoleChannel("[ \t\r\n]+"))
         .build();
   }
