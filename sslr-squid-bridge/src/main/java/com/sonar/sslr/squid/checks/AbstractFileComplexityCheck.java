@@ -17,7 +17,7 @@ public abstract class AbstractFileComplexityCheck<GRAMMAR extends Grammar> exten
 
   private final static int DEFAULT_MAXIMUM_FILE_COMPLEXITY = 100;
 
-  @RuleProperty(key = "maximumFileComplexity", description = "The maximum file complexity allowed.", defaultValue = ""
+  @RuleProperty(key = "complexity", description = "The maximum file complexity allowed.", defaultValue = ""
       + DEFAULT_MAXIMUM_FILE_COMPLEXITY)
   public int maximumFileComplexity = DEFAULT_MAXIMUM_FILE_COMPLEXITY;
 
@@ -26,7 +26,8 @@ public abstract class AbstractFileComplexityCheck<GRAMMAR extends Grammar> exten
   @Override
   public void init() {
     if (maximumFileComplexity <= 0) {
-      throw new SonarException("[FileComplexityCheck] The complexity threshold must be set to a value greater than 0 (" + maximumFileComplexity
+      throw new SonarException("[FileComplexityCheck] The complexity threshold must be set to a value greater than 0 ("
+          + maximumFileComplexity
           + " given).");
     }
   }
@@ -37,7 +38,8 @@ public abstract class AbstractFileComplexityCheck<GRAMMAR extends Grammar> exten
     int fileComplexity = ChecksHelper.getRecursiveMeasureInt(sourceFile, getComplexityMetric());
 
     if (fileComplexity > maximumFileComplexity) {
-      getContext().log(this, "The file is too complex ({0} while maximum allowed is set to {1}).", -1, fileComplexity, maximumFileComplexity);
+      getContext().log(this, "The file is too complex ({0} while maximum allowed is set to {1}).", -1, fileComplexity,
+          maximumFileComplexity);
     }
   }
 
