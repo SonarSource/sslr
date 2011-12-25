@@ -27,6 +27,7 @@
 
   <modules>
     <module>sslr-core</module>
+    <module>sslr-devkit</module>
     <module>sslr-testing-harness</module>
     <module>sslr-dsl</module>
     <module>sslr-xpath</module>    
