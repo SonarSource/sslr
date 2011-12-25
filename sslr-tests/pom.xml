@@ -29,10 +29,6 @@
     </plugins>
   </build>
   
-  <properties>
-    <sonar.dynamicAnalysis>true</sonar.dynamicAnalysis>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>com.sonarsource.sslr</groupId>
