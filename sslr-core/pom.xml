@@ -9,11 +9,6 @@
   <artifactId>sslr-core</artifactId>
   <name>SonarSource :: Language Recognizer :: Core</name>
 
-  <properties>
-    <sonar.jacoco.reportPath>../sslr-core-tests/target/jacoco.exec</sonar.jacoco.reportPath>
-    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.codehaus.sonar</groupId>

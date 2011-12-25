@@ -10,11 +10,6 @@
   <artifactId>sslr-testing-harness</artifactId>
   <name>SonarSource :: Language Recognizer :: Testing Harness</name>
 
-  <properties>
-    <sonar.jacoco.reportPath>../sslr-core-tests/target/jacoco.exec</sonar.jacoco.reportPath>
-    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>com.sonarsource.sslr</groupId>
@@ -27,22 +22,6 @@
     <dependency>
       <groupId>org.codehaus.sonar</groupId>
       <artifactId>sonar-squid</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jcl-over-slf4j</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
     </dependency>
   </dependencies>
 </project>

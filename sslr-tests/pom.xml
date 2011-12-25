@@ -6,8 +6,8 @@
     <artifactId>sslr</artifactId>
     <version>1.7-SNAPSHOT</version>
   </parent>
-  <artifactId>sslr-core-tests</artifactId>
-  <name>SonarSource :: Language Recognizer :: Core :: Tests</name>
+  <artifactId>sslr-tests</artifactId>
+  <name>SonarSource :: Language Recognizer :: Tests</name>
 
   <build>
     <plugins>
@@ -28,6 +28,10 @@
       </plugin>
     </plugins>
   </build>
+  
+  <properties>
+    <sonar.dynamicAnalysis>true</sonar.dynamicAnalysis>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -35,6 +39,21 @@
       <artifactId>sslr-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.sonarsource.sslr</groupId>
+      <artifactId>sslr-xpath</artifactId>
+      <scope>test</scope>
+    </dependency>   
+    <dependency>
+      <groupId>com.sonarsource.sslr</groupId>
+      <artifactId>sslr-structural-pattern-matcher</artifactId>
+      <scope>test</scope>
+    </dependency>      
+    <dependency>
+      <groupId>com.sonarsource.sslr</groupId>
+      <artifactId>sslr-dsl</artifactId>
+      <scope>test</scope>
+    </dependency>      
     <dependency>
       <groupId>com.sonarsource.sslr</groupId>
       <artifactId>sslr-testing-harness</artifactId>

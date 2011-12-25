@@ -23,6 +23,8 @@
 
   <properties>
     <sonar.version>2.4</sonar.version>
+    <sonar.jacoco.reportPath>../sslr-tests/target/jacoco.exec</sonar.jacoco.reportPath>
+    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
   </properties>
 
   <modules>
@@ -33,8 +35,7 @@
     <module>sslr-xpath</module>    
     <module>sslr-squid-bridge</module>
     <module>sslr-structural-pattern-matcher</module>
-    <module>sslr-core-tests</module>
-    <module>sslr-squid-bridge-tests</module>
+    <module>sslr-tests</module>
   </modules>
 
   <dependencyManagement>
@@ -44,6 +45,16 @@
         <artifactId>sslr-core</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>sslr-xpath</artifactId>
+        <version>${project.version}</version>
+      </dependency> 
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>sslr-structural-pattern-matcher</artifactId>
+        <version>${project.version}</version>
+      </dependency>       
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>sslr-squid-bridge</artifactId>

@@ -15,10 +15,5 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>sslr-dsl</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.codehaus.sonar</groupId>
-			<artifactId>sonar-testing-harness</artifactId>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 </project>
