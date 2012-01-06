@@ -8,7 +8,6 @@ package com.sonar.sslr.impl;
 
 import java.io.File;
 import java.io.PrintStream;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,16 +18,16 @@ import com.sonar.sslr.impl.events.ParsingEventListener;
 import com.sonar.sslr.impl.matcher.GrammarFunctions;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 
-public class Parser<GRAMMAR extends Grammar> {
+public final class Parser<GRAMMAR extends Grammar> {
 
   private RuleDefinition rootRule;
   private ParsingState parsingState;
   private LexerOutput lexerOutput;
-  private Lexer lexer;
-  private GRAMMAR grammar;
+  private final Lexer lexer;
+  private final GRAMMAR grammar;
   private Set<RecognitionExceptionListener> listeners = new HashSet<RecognitionExceptionListener>();
   private ParsingEventListener[] parsingEventListeners;
-  private ExtendedStackTrace extendedStackTrace;
+  private final ExtendedStackTrace extendedStackTrace;
 
   private Parser(ParserBuilder<GRAMMAR> builder) {
     this.lexer = builder.lexer;
@@ -46,36 +45,6 @@ public class Parser<GRAMMAR extends Grammar> {
 
     GrammarFunctions.resetCache();
     this.rootRule = (RuleDefinition) this.grammar.getRootRule();
-  }
-
-  /**
-   * @deprecated
-   * 
-   * @see #builder();
-   */
-  @Deprecated
-  public Parser(GRAMMAR grammar, Lexer lexer, GrammarDecorator<GRAMMAR>... decorators) {
-    this(grammar, lexer, Arrays.asList(decorators));
-  }
-
-  /**
-   * @deprecated
-   * 
-   * @see #builder();
-   */
-  @Deprecated
-  public Parser(GRAMMAR grammar, Lexer lexer, List<GrammarDecorator<GRAMMAR>> decorators) {
-    this.grammar = grammar;
-    this.lexer = lexer;
-    setDecorators(decorators);
-    GrammarFunctions.resetCache();
-  }
-
-  protected final void setDecorators(List<GrammarDecorator<GRAMMAR>> decorators) {
-    for (GrammarDecorator<GRAMMAR> decorator : decorators) {
-      decorator.decorate(grammar);
-    }
-    this.rootRule = (RuleDefinition) grammar.getRootRule();
   }
 
   public final void printStackTrace(PrintStream stream) {
