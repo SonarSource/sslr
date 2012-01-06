@@ -15,7 +15,7 @@ public final class ParserMatchers {
   private ParserMatchers() {
   }
 
-  public static Matcher<com.sonar.sslr.impl.matcher.MemoizedMatcher> match(String sourceCode, Lexer lexer) {
+  public static Matcher<com.sonar.sslr.impl.matcher.Matcher> match(String sourceCode, Lexer lexer) {
     return new MatchMatcher(sourceCode, lexer);
   }
 
