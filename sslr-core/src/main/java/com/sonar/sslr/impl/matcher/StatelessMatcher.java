@@ -14,7 +14,7 @@ public abstract class StatelessMatcher extends MemoizedMatcher {
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     final int prime = 31;
     int result = 1;
     result = prime * result + getClass().hashCode();
@@ -23,7 +23,7 @@ public abstract class StatelessMatcher extends MemoizedMatcher {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public final boolean equals(Object obj) {
     if (this == obj) {
       return true;
     }
