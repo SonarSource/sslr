@@ -7,6 +7,9 @@
 package com.sonar.sslr.api;
 
 import java.io.File;
+import java.util.List;
+
+import com.google.common.collect.Lists;
 
 public class Token {
 
@@ -23,6 +26,7 @@ public class Token {
   private final int column;
   private final File file;
   private boolean generatedCode = false;
+  private final List<Token> trivia = Lists.newLinkedList();
 
   private boolean copyBook = false;
   private int copyBookOriginalLine = -1;
@@ -98,6 +102,14 @@ public class Token {
 
   public void setGeneratedCode(boolean generatedCode) {
     this.generatedCode = generatedCode;
+  }
+
+  public List<Token> getTrivia() {
+    return trivia;
+  }
+
+  public void addAllTrivia(List<Token> trivia) {
+    this.trivia.addAll(trivia);
   }
 
   @Override

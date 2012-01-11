@@ -12,6 +12,7 @@ import java.util.List;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Lists;
 
 public final class LexerOutput {
 
@@ -20,6 +21,7 @@ public final class LexerOutput {
   private final List<Token> preprocessingTokens = new ArrayList<Token>();
   private final ListMultimap<Integer, Token> comments = LinkedListMultimap.<Integer, Token> create();
   private final Preprocessor[] preprocessors;
+  private final List<Token> currentTokenTrivia = Lists.newLinkedList();
 
   public LexerOutput(Preprocessor... preprocessors) {
     this.preprocessors = preprocessors;
@@ -53,9 +55,14 @@ public final class LexerOutput {
   }
 
   public void removeLastTokens(int numberOfTokensToRemove) {
-    for (int i = 0; i < numberOfTokensToRemove; i++) {
-      tokens.remove(tokens.size() - 1);
+    int desiredTokenListLength = tokens.size() - numberOfTokensToRemove;
+    List<Token> oldCurrentTokenTrivia = Lists.newLinkedList(currentTokenTrivia);
+    currentTokenTrivia.clear();
+    while (tokens.size() > desiredTokenListLength) {
+      Token removedToken = tokens.remove(desiredTokenListLength);
+      currentTokenTrivia.addAll(removedToken.getTrivia());
     }
+    currentTokenTrivia.addAll(oldCurrentTokenTrivia);
   }
 
   /**
@@ -91,7 +98,7 @@ public final class LexerOutput {
 
   /**
    * This method must be called by a preprocessor when a token has been temporary consumed by this preprocessor but finally must be pushed
-   * back to the LexerOutput. With this method all other preprocessors will be notified to optionnally consumed this token.
+   * back to the LexerOutput. With this method all other preprocessors will be notified to optionally consumed this token.
    */
   public void pushBackTokenAndProcess(Token token, Preprocessor preprocessorToExclude) {
     for (Preprocessor preprocessor : preprocessors) {
@@ -114,6 +121,7 @@ public final class LexerOutput {
 
   public void addPreprocessingToken(Token token) {
     preprocessingTokens.add(token);
+    currentTokenTrivia.add(token);
   }
 
   /**
@@ -127,6 +135,8 @@ public final class LexerOutput {
       token.setPreviousToken(previousToken);
       previousToken.setFollowingToken(token);
     }
+    token.addAllTrivia(currentTokenTrivia);
+    currentTokenTrivia.clear();
     tokens.add(token);
   }
 
@@ -177,13 +187,7 @@ public final class LexerOutput {
 
   public void addCommentToken(Token token) {
     comments.put(token.getLine(), token);
-  }
-
-  public void addCommentTokenAndErasePreviousCommentOnSameLineIfExist(Token token) {
-    if (comments.containsKey(token.getLine())) {
-      comments.removeAll(token.getLine());
-    }
-    addCommentToken(token);
+    currentTokenTrivia.add(token);
   }
 
   public Collection<Token> getCommentTokens() {
