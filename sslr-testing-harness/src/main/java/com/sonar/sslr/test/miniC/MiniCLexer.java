@@ -44,7 +44,8 @@ public final class MiniCLexer {
     EQ("="), COMMA(","), SEMICOLON(";"),
     ADD("+"), SUB("-"), MUL("*"), DIV("/"),
     EQEQ("=="), NE("!="), LT("<"), LTE("<="), GT(">"), GTE(">="),
-    INC("++"), DEC("--");
+    INC("++"), DEC("--"),
+    HASH("#");
 
     private final String value;
 
@@ -100,6 +101,7 @@ public final class MiniCLexer {
         .withChannel(commentRegexp(2, 2, false, "(?s)/\\*.*?\\*/"))
         .withChannel(new PunctuatorChannel(Punctuators.values()))
         .withChannel(new BlackHoleChannel("[ \t\r\n]+"))
+        .withPreprocessor(new MiniCPreprocessor())
         .build();
   }
 }
