@@ -6,18 +6,17 @@
 
 package com.sonar.sslr.squid.checks;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.*;
+import java.io.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONValue;
 import org.sonar.squid.api.CheckMessage;
 
+import com.google.common.collect.TreeMultiset;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.squid.SquidAstVisitor;
@@ -29,57 +28,58 @@ public class ViolationCounterCheck<GRAMMAR extends Grammar> extends SquidAstVisi
 
   public static class ViolationCounter {
 
-    private final Map<String, Map<String, TreeSet<Integer>>> violationsByFileAndRule = new HashMap<String, Map<String, TreeSet<Integer>>>();
+    private final Map<String, Map<String, TreeMultiset<Integer>>> violationsByFileAndRule;
+
+    public ViolationCounter() {
+      this.violationsByFileAndRule = new HashMap<String, Map<String, TreeMultiset<Integer>>>();
+    }
+
+    private ViolationCounter(Map<String, Map<String, TreeMultiset<Integer>>> violationsByFileAndRule) {
+      this.violationsByFileAndRule = violationsByFileAndRule;
+    }
 
     public void increment(String fileRelativePath, String rule, int line) {
       if ( !violationsByFileAndRule.containsKey(fileRelativePath)) {
-        violationsByFileAndRule.put(fileRelativePath, new HashMap<String, TreeSet<Integer>>());
+        violationsByFileAndRule.put(fileRelativePath, new HashMap<String, TreeMultiset<Integer>>());
       }
-      Map<String, TreeSet<Integer>> violationsByRule = violationsByFileAndRule.get(fileRelativePath);
+      Map<String, TreeMultiset<Integer>> violationsByRule = violationsByFileAndRule.get(fileRelativePath);
 
       if ( !violationsByRule.containsKey(rule)) {
-        violationsByRule.put(rule, new TreeSet<Integer>());
+        violationsByRule.put(rule, TreeMultiset.<Integer> create());
       }
-      TreeSet<Integer> violations = violationsByRule.get(rule);
+      TreeMultiset<Integer> violations = violationsByRule.get(rule);
 
       violations.add(line);
     }
 
     public void saveToFile(String destinationFilePath) {
-      FileWriter writer = null;
+      FileOutputStream fos = null;
+      ObjectOutputStream oos = null;
       try {
-        writer = new FileWriter(destinationFilePath);
-        JSONValue.writeJSONString(violationsByFileAndRule, writer);
-      } catch (IOException e) {
+        fos = new FileOutputStream(destinationFilePath);
+        oos = new ObjectOutputStream(fos);
+        oos.writeObject(this.violationsByFileAndRule);
+      } catch (Exception e) {
         throw new RuntimeException(e);
       } finally {
-        IOUtils.closeQuietly(writer);
+        IOUtils.closeQuietly(fos);
+        IOUtils.closeQuietly(oos);
       }
     }
 
-    public static ViolationCounter loadFromFile(String sourceFilePath) {
-      ViolationCounter instance = new ViolationCounter();
-
-      FileReader reader = null;
+    public static ViolationCounter loadFromFile(File sourceFile) {
+      FileInputStream fis = null;
+      ObjectInputStream ois = null;
       try {
-        reader = new FileReader(sourceFilePath);
-        Map<String, Map<String, JSONArray>> violationsByFileAndRule = (Map<String, Map<String, JSONArray>>) JSONValue.parse(reader);
-        for (String fileRelativePath : violationsByFileAndRule.keySet()) {
-          for (String rule : violationsByFileAndRule.get(fileRelativePath).keySet()) {
-            for (Object lineObject : violationsByFileAndRule.get(fileRelativePath).get(rule)) {
-              int line = ((Long) lineObject).intValue();
-
-              instance.increment(fileRelativePath, rule, line);
-            }
-          }
-        }
-      } catch (IOException e) {
+        fis = new FileInputStream(sourceFile);
+        ois = new ObjectInputStream(fis);
+        return new ViolationCounter((Map<String, Map<String, TreeMultiset<Integer>>>) ois.readObject());
+      } catch (Exception e) {
         throw new RuntimeException(e);
       } finally {
-        IOUtils.closeQuietly(reader);
+        IOUtils.closeQuietly(fis);
+        IOUtils.closeQuietly(ois);
       }
-
-      return instance;
     }
 
   }
@@ -88,6 +88,7 @@ public class ViolationCounterCheck<GRAMMAR extends Grammar> extends SquidAstVisi
 
     private final ViolationCounter expected;
     private final ViolationCounter actual;
+    private boolean hasDifferences = false;
 
     public ViolationDifferenceAnalyzer(ViolationCounter expected, ViolationCounter actual) {
       this.expected = expected;
@@ -95,10 +96,24 @@ public class ViolationCounterCheck<GRAMMAR extends Grammar> extends SquidAstVisi
     }
 
     public void printReport() {
+      System.out.println();
+      System.out.println();
+      System.out.println("********************************");
+      System.out.println("* Violation differences report *");
+      System.out.println("********************************");
+      System.out.println();
+      System.out.println();
       printDifferencesByFile();
       System.out.println();
       System.out.println();
       printDifferencesByRule();
+      System.out.println();
+      System.out.println();
+      System.out.println("*****************");
+      System.out.println("* End of report *");
+      System.out.println("*****************");
+      System.out.println();
+      System.out.println();
     }
 
     private void printDifferencesByFile() {
@@ -136,10 +151,12 @@ public class ViolationCounterCheck<GRAMMAR extends Grammar> extends SquidAstVisi
 
     private boolean printDifferencesByFileAndRule(boolean shouldPrintHeader, String file, String rule) {
 
-      TreeSet<Integer> linesExpected = getLines(expected, file, rule);
-      TreeSet<Integer> linesActual = getLines(actual, file, rule);
+      TreeMultiset<Integer> linesExpected = getLines(expected, file, rule);
+      TreeMultiset<Integer> linesActual = getLines(actual, file, rule);
 
       if ( !linesExpected.equals(linesActual)) {
+        hasDifferences = true;
+
         if (shouldPrintHeader) {
           printDifferencesByFileHeader(file);
         }
@@ -155,17 +172,17 @@ public class ViolationCounterCheck<GRAMMAR extends Grammar> extends SquidAstVisi
 
     }
 
-    private static TreeSet<Integer> getLines(ViolationCounter counter, String file, String rule) {
+    private static TreeMultiset<Integer> getLines(ViolationCounter counter, String file, String rule) {
       if ( !counter.violationsByFileAndRule.containsKey(file)
           || !counter.violationsByFileAndRule.get(file).containsKey(rule)) {
-        return new TreeSet<Integer>();
+        return TreeMultiset.create();
       } else {
         return counter.violationsByFileAndRule.get(file).get(rule);
       }
     }
 
-    private static TreeSet<Integer> setDifference(TreeSet<Integer> a, TreeSet<Integer> b) {
-      TreeSet<Integer> aMinusB = new TreeSet<Integer>(a);
+    private static TreeMultiset<Integer> setDifference(TreeMultiset<Integer> a, TreeMultiset<Integer> b) {
+      TreeMultiset<Integer> aMinusB = TreeMultiset.create(a);
       aMinusB.removeAll(b);
       return aMinusB;
     }
@@ -214,6 +231,10 @@ public class ViolationCounterCheck<GRAMMAR extends Grammar> extends SquidAstVisi
       return violations;
     }
 
+    public boolean hasDifferences() {
+      return hasDifferences;
+    }
+
   }
 
   public ViolationCounterCheck(String projectsDir, ViolationCounter violationCounter) {
@@ -230,8 +251,9 @@ public class ViolationCounterCheck<GRAMMAR extends Grammar> extends SquidAstVisi
   public void leaveFile(AstNode node) {
     Set<CheckMessage> violationsOnCurrentFile = new HashSet<CheckMessage>(getContext().peekSourceCode().getCheckMessages());
     for (CheckMessage violation : violationsOnCurrentFile) {
-      violationCounter.increment(getRelativePath(getContext().getFile()), violation.getChecker().getKey(), violation.getLine() == null ? -1
-          : violation.getLine());
+      violationCounter.increment(getRelativePath(getContext().getFile()), violation.getChecker().getClass().getSimpleName(),
+          violation.getLine() == null ? -1
+              : violation.getLine());
     }
   }
 
@@ -252,7 +274,7 @@ public class ViolationCounterCheck<GRAMMAR extends Grammar> extends SquidAstVisi
           + projectsDirCanonicalPath + "\").");
     }
 
-    return canonicalPath.substring(projectsDirCanonicalPath.length());
+    return canonicalPath.substring(projectsDirCanonicalPath.length()).replace('\\', '/');
   }
 
 }
