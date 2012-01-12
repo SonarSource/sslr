@@ -11,13 +11,28 @@ import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.*;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.sonar.sslr.api.LexerOutput;
-import com.sonar.sslr.api.Preprocessor;
-import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.*;
+import com.sonar.sslr.impl.Parser;
 
 public class MiniCPreprocessor extends Preprocessor {
 
   private final List<Token> buffer = Lists.newLinkedList();
+
+  public class MiniCPreprocessorGrammar extends Grammar {
+
+    public Rule defineDirective;
+    public Rule binDefinition;
+
+    public MiniCPreprocessorGrammar() {
+      defineDirective.is(HASH, "define", binDefinition);
+      binDefinition.is(IDENTIFIER);
+    }
+
+    @Override
+    public Rule getRootRule() {
+      return defineDirective;
+    }
+  }
 
   @Override
   public void startLexing() {
@@ -26,15 +41,19 @@ public class MiniCPreprocessor extends Preprocessor {
 
   private boolean isBufferValid() {
     /* Launch the preprocessor parser on buffer, and set the resulting AstNode on the first token */
-
-    return buffer.size() == 3
-        && buffer.get(0).getType() == HASH
-        && buffer.get(1).getType() == IDENTIFIER
-        && "define".equals(buffer.get(1).getOriginalValue())
-        && buffer.get(2).getType() == IDENTIFIER;
+    Parser<MiniCPreprocessorGrammar> parser = Parser.builder(new MiniCPreprocessorGrammar()).build();
+    try {
+      AstNode node = parser.parse(buffer);
+      buffer.get(0).setStructure(node, parser.getGrammar());
+      return true;
+    } catch (RecognitionException re) {
+      return false;
+    }
   }
 
   private void preprocessBuffer(LexerOutput output) {
+    /* Here is where we should interpret the tokens, but there is no need in this case */
+
     /* Push the preprocessed token */
     for (Token preprocessedToken : buffer) {
       output.addPreprocessingToken(preprocessedToken);

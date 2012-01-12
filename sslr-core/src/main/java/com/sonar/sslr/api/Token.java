@@ -29,6 +29,8 @@ public class Token {
   private final List<Token> trivia = Lists.newLinkedList();
   private boolean isCommentTrivia = false;
   private boolean isPreprocessorTrivia = false;
+  private AstNode structure = null;
+  private Grammar structureGrammar = null;
 
   private boolean copyBook = false;
   private int copyBookOriginalLine = -1;
@@ -128,6 +130,23 @@ public class Token {
 
   public boolean isPreprocessorTrivia() {
     return isPreprocessorTrivia;
+  }
+
+  public void setStructure(AstNode structure, Grammar grammar) {
+    this.structure = structure;
+    this.structureGrammar = grammar;
+  }
+
+  public boolean hasStructure() {
+    return structure != null;
+  }
+
+  public AstNode getStructure() {
+    return structure;
+  }
+
+  public Grammar getStructureGrammar() {
+    return structureGrammar;
   }
 
   @Override
