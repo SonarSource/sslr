@@ -17,6 +17,13 @@ public class AbstractNestedIfCheckTest {
 
   private static class NestedIfCheck extends AbstractNestedIfCheck<MiniCGrammar> {
 
+    public int maximumNestingLevel = 3;
+
+    @Override
+    public int getMaximumNestingLevel() {
+      return maximumNestingLevel;
+    }
+
     @Override
     public Rule getIfRule() {
       return getContext().getGrammar().ifStatement;

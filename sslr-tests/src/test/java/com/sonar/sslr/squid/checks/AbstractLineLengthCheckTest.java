@@ -15,6 +15,14 @@ import com.sonar.sslr.test.miniC.MiniCGrammar;
 public class AbstractLineLengthCheckTest {
 
   private static class LineLengthCheck extends AbstractLineLengthCheck<MiniCGrammar> {
+
+    public int maximumLineLength = 80;
+
+    @Override
+    public int getMaximumLineLength() {
+      return maximumLineLength;
+    }
+
   }
 
   @Test

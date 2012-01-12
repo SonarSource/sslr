@@ -18,6 +18,13 @@ public class AbstractFileComplexityCheckTest {
 
   private static class FileComplexityCheck extends AbstractFileComplexityCheck<MiniCGrammar> {
 
+    public int maximumFileComplexity = 100;
+
+    @Override
+    public int getMaximumFileComplexity() {
+      return maximumFileComplexity;
+    }
+
     @Override
     public MetricDef getComplexityMetric() {
       return MiniCMetrics.COMPLEXITY;
