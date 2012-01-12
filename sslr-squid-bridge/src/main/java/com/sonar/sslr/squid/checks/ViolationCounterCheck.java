@@ -6,11 +6,16 @@
 
 package com.sonar.sslr.squid.checks;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONValue;
 import org.sonar.squid.api.CheckMessage;
 
 import com.sonar.sslr.api.AstNode;
@@ -19,58 +24,220 @@ import com.sonar.sslr.squid.SquidAstVisitor;
 
 public class ViolationCounterCheck<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> {
 
-  private final Map<String, Map<String, TreeSet<Integer>>> expectedViolationsByFileAndRule;
-  private final PrintStream out;
-  private final PrintStream dump;
+  private final ViolationCounter violationCounter;
   private final String projectsDirCanonicalPath;
-  private final Map<String, TreeSet<Integer>> violationsOnCurrentFile = new HashMap<String, TreeSet<Integer>>();
-  private final Map<String, Integer> violationByRule = new HashMap<String, Integer>();
-  private boolean hasFailed = false;
 
-  public ViolationCounterCheck(File expectedViolationsFile, String projectsDir, PrintStream out, PrintStream dump) {
+  public static class ViolationCounter {
+
+    private final Map<String, Map<String, TreeSet<Integer>>> violationsByFileAndRule = new HashMap<String, Map<String, TreeSet<Integer>>>();
+
+    public void increment(String fileRelativePath, String rule, int line) {
+      if ( !violationsByFileAndRule.containsKey(fileRelativePath)) {
+        violationsByFileAndRule.put(fileRelativePath, new HashMap<String, TreeSet<Integer>>());
+      }
+      Map<String, TreeSet<Integer>> violationsByRule = violationsByFileAndRule.get(fileRelativePath);
+
+      if ( !violationsByRule.containsKey(rule)) {
+        violationsByRule.put(rule, new TreeSet<Integer>());
+      }
+      TreeSet<Integer> violations = violationsByRule.get(rule);
+
+      violations.add(line);
+    }
+
+    public void saveToFile(String destinationFilePath) {
+      FileWriter writer = null;
+      try {
+        writer = new FileWriter(destinationFilePath);
+        JSONValue.writeJSONString(violationsByFileAndRule, writer);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      } finally {
+        IOUtils.closeQuietly(writer);
+      }
+    }
+
+    public static ViolationCounter loadFromFile(String sourceFilePath) {
+      ViolationCounter instance = new ViolationCounter();
+
+      FileReader reader = null;
+      try {
+        reader = new FileReader(sourceFilePath);
+        Map<String, Map<String, JSONArray>> violationsByFileAndRule = (Map<String, Map<String, JSONArray>>) JSONValue.parse(reader);
+        for (String fileRelativePath : violationsByFileAndRule.keySet()) {
+          for (String rule : violationsByFileAndRule.get(fileRelativePath).keySet()) {
+            for (Object lineObject : violationsByFileAndRule.get(fileRelativePath).get(rule)) {
+              int line = ((Long) lineObject).intValue();
+
+              instance.increment(fileRelativePath, rule, line);
+            }
+          }
+        }
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      } finally {
+        IOUtils.closeQuietly(reader);
+      }
+
+      return instance;
+    }
+
+  }
+
+  public static class ViolationDifferenceAnalyzer {
+
+    private final ViolationCounter expected;
+    private final ViolationCounter actual;
+
+    public ViolationDifferenceAnalyzer(ViolationCounter expected, ViolationCounter actual) {
+      this.expected = expected;
+      this.actual = actual;
+    }
+
+    public void printReport() {
+      printDifferencesByFile();
+      System.out.println();
+      System.out.println();
+      printDifferencesByRule();
+    }
+
+    private void printDifferencesByFile() {
+      System.out.println("Differences by file:");
+
+      Set<String> handledFiles = new HashSet<String>();
+
+      for (String file : expected.violationsByFileAndRule.keySet()) {
+        handledFiles.add(file);
+
+        boolean shouldPrintHeader = true;
+        Set<String> handledRules = new HashSet<String>();
+        for (String rule : expected.violationsByFileAndRule.get(file).keySet()) {
+          handledRules.add(rule);
+
+          shouldPrintHeader = printDifferencesByFileAndRule(shouldPrintHeader, file, rule);
+        }
+      }
+
+      for (String file : actual.violationsByFileAndRule.keySet()) {
+        if ( !handledFiles.contains(file)) {
+          boolean shouldPrintHeader = true;
+          for (String rule : actual.violationsByFileAndRule.get(file).keySet()) {
+            shouldPrintHeader = printDifferencesByFileAndRule(shouldPrintHeader, file, rule);
+          }
+        }
+      }
+
+      System.out.println("End of differences by file.");
+    }
+
+    private static void printDifferencesByFileHeader(String file) {
+      System.out.println("  File " + file + ":");
+    }
+
+    private boolean printDifferencesByFileAndRule(boolean shouldPrintHeader, String file, String rule) {
+
+      TreeSet<Integer> linesExpected = getLines(expected, file, rule);
+      TreeSet<Integer> linesActual = getLines(actual, file, rule);
+
+      if ( !linesExpected.equals(linesActual)) {
+        if (shouldPrintHeader) {
+          printDifferencesByFileHeader(file);
+        }
+
+        System.out.println("    " + rule + ", (difference only) expected ("
+            + StringUtils.join(setDifference(linesExpected, linesActual), ",") + "), actual ("
+            + StringUtils.join(setDifference(linesActual, linesExpected), ",") + ").");
+
+        return false;
+      } else {
+        return shouldPrintHeader;
+      }
+
+    }
+
+    private static TreeSet<Integer> getLines(ViolationCounter counter, String file, String rule) {
+      if ( !counter.violationsByFileAndRule.containsKey(file)
+          || !counter.violationsByFileAndRule.get(file).containsKey(rule)) {
+        return new TreeSet<Integer>();
+      } else {
+        return counter.violationsByFileAndRule.get(file).get(rule);
+      }
+    }
+
+    private static TreeSet<Integer> setDifference(TreeSet<Integer> a, TreeSet<Integer> b) {
+      TreeSet<Integer> aMinusB = new TreeSet<Integer>(a);
+      aMinusB.removeAll(b);
+      return aMinusB;
+    }
+
+    private void printDifferencesByRule() {
+      System.out.println("Differences by rule:");
+
+      for (String rule : getRules()) {
+        int expectedViolations = getViolationsByRule(expected, rule);
+        int actualViolations = getViolationsByRule(actual, rule);
+
+        System.out.print("  " + rule + " expected: " + expectedViolations + ", actual: " + actualViolations + ": ");
+        if (expectedViolations == actualViolations) {
+          System.out.println("OK");
+        } else {
+          System.out.println("*** FAILURE ***");
+        }
+      }
+
+      System.out.println("End of differences by rule.");
+    }
+
+    private Set<String> getRules() {
+      Set<String> rules = new HashSet<String>();
+
+      for (String file : expected.violationsByFileAndRule.keySet()) {
+        rules.addAll(expected.violationsByFileAndRule.get(file).keySet());
+      }
+
+      for (String file : actual.violationsByFileAndRule.keySet()) {
+        rules.addAll(actual.violationsByFileAndRule.get(file).keySet());
+      }
+
+      return rules;
+    }
+
+    private static int getViolationsByRule(ViolationCounter counter, String rule) {
+      int violations = 0;
+
+      for (String file : counter.violationsByFileAndRule.keySet()) {
+        if (counter.violationsByFileAndRule.get(file).containsKey(rule)) {
+          violations += counter.violationsByFileAndRule.get(file).get(rule).size();
+        }
+      }
+
+      return violations;
+    }
+
+  }
+
+  public ViolationCounterCheck(String projectsDir, ViolationCounter violationCounter) {
     try {
       this.projectsDirCanonicalPath = new File(projectsDir).getCanonicalPath();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
 
-    if (out == null) {
-      throw new NullPointerException("out cannot be null.");
-    }
-    this.out = out;
-
-    if (dump == null) {
-      throw new NullPointerException("dump cannot be null.");
-    }
-    this.dump = dump;
-
-    if (expectedViolationsFile == null) {
-      throw new NullPointerException("expectedViolationsFile cannot be null.");
-    }
-    this.expectedViolationsByFileAndRule = new HashMap<String, Map<String, TreeSet<Integer>>>();
-    loadExpectedViolations(expectedViolationsFile);
-  }
-
-  public boolean hasFailed() {
-    return hasFailed;
+    this.violationCounter = violationCounter;
   }
 
   @Override
   public void leaveFile(AstNode node) {
-    violationsOnCurrentFile.clear();
-    Set<CheckMessage> violations = new HashSet<CheckMessage>(getContext().peekSourceCode().getCheckMessages());
-    for (CheckMessage violation : violations) {
-      countOnCurrentFile(violation);
-      countByRule(violation);
+    Set<CheckMessage> violationsOnCurrentFile = new HashSet<CheckMessage>(getContext().peekSourceCode().getCheckMessages());
+    for (CheckMessage violation : violationsOnCurrentFile) {
+      violationCounter.increment(getRelativePath(getContext().getFile()), violation.getChecker().getKey(), violation.getLine() == null ? -1
+          : violation.getLine());
     }
-    getContext().peekSourceCode().getCheckMessages().removeAll(violations);
-    processViolationsOnFile(getRelativePath(getContext().peekSourceCode().getKey()));
   }
 
-  private String getRelativePath(String absolutePath) {
-    File file = new File(absolutePath);
+  private String getRelativePath(File file) {
     if ( !file.exists()) {
-      throw new IllegalArgumentException("The file located at \"" + absolutePath + "\" does not exist.");
+      throw new IllegalArgumentException("The file located at \"" + file.getAbsolutePath() + "\" does not exist.");
     }
 
     String canonicalPath;
@@ -86,146 +253,6 @@ public class ViolationCounterCheck<GRAMMAR extends Grammar> extends SquidAstVisi
     }
 
     return canonicalPath.substring(projectsDirCanonicalPath.length());
-  }
-
-  private void countByRule(CheckMessage violation) {
-    String rule = violation.getChecker().getClass().getSimpleName();
-    if (violationByRule.containsKey(rule)) {
-      violationByRule.put(rule, violationByRule.get(rule) + 1);
-    } else {
-      violationByRule.put(rule, 1);
-    }
-  }
-
-  private void countOnCurrentFile(CheckMessage violation) {
-    String rule = violation.getChecker().getClass().getSimpleName();
-    if ( !violationsOnCurrentFile.containsKey(rule)) {
-      violationsOnCurrentFile.put(rule, new TreeSet<Integer>());
-    }
-    violationsOnCurrentFile.get(rule).add(violation.getLine() == null ? -1 : violation.getLine());
-  }
-
-  private void processViolationsOnFile(String relativePath) {
-    dumpViolationsOnFile(relativePath);
-    compareViolationsOnFile(relativePath);
-  }
-
-  private void dumpViolationsOnFile(String relativePath) {
-    for (String rule : violationsOnCurrentFile.keySet()) {
-      dump.print(rule + " ");
-
-      TreeSet<Integer> linesTreeSet = violationsOnCurrentFile.get(rule);
-      dump.print(StringUtils.join(linesTreeSet, ","));
-      dump.print(' ');
-
-      dump.println(relativePath);
-    }
-  }
-
-  private void loadExpectedViolations(File expectedViolationsFile) {
-    if ( !expectedViolationsFile.exists()) {
-      throw new IllegalArgumentException("The exptected violations file located under \"" + expectedViolationsFile.getAbsolutePath()
-          + "\" does not exist.");
-    }
-
-    BufferedReader br = null;
-    try {
-      br = new BufferedReader(new InputStreamReader(new DataInputStream(new FileInputStream(expectedViolationsFile))));
-
-      String line;
-      while ((line = br.readLine()) != null) {
-        String[] parts = line.split(" ", 3);
-        if (parts.length != 3) {
-          throw new IllegalArgumentException("The line \"" + line + "\" does not have 3 parts.");
-        }
-        String rule = parts[0];
-        String relativePath = parts[2];
-
-        String[] lineNumbers = parts[1].split(",", -1);
-        TreeSet<Integer> lineNumbersTreeSet = new TreeSet<Integer>();
-        for (String lineNumber : lineNumbers) {
-          if (lineNumber.length() == 0) {
-            lineNumbersTreeSet.add( -1);
-          } else {
-            lineNumbersTreeSet.add(Integer.parseInt(lineNumber));
-          }
-        }
-
-        if ( !expectedViolationsByFileAndRule.containsKey(relativePath)) {
-          expectedViolationsByFileAndRule.put(relativePath, new HashMap<String, TreeSet<Integer>>());
-        }
-
-        if (expectedViolationsByFileAndRule.get(relativePath).containsKey(rule)) {
-          throw new IllegalArgumentException("There are (at least) two records for the file \"" + relativePath + "\" for rule \"" + rule
-              + "\".");
-        }
-
-        expectedViolationsByFileAndRule.get(relativePath).put(rule, lineNumbersTreeSet);
-      }
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    } finally {
-      if (br != null) {
-        IOUtils.closeQuietly(br);
-      }
-    }
-  }
-
-  private void compareViolationsOnFile(String relativePath) {
-    boolean flagPrintedFileName = false;
-
-    if (expectedViolationsByFileAndRule.containsKey(relativePath)) {
-      for (String rule : expectedViolationsByFileAndRule.get(relativePath).keySet()) {
-        TreeSet<Integer> expectedViolations = getExpectedViolationLines(relativePath, rule);
-        TreeSet<Integer> actualViolations = getActualViolationLines(rule);
-        flagPrintedFileName = printDifferences(flagPrintedFileName, relativePath, rule, expectedViolations, actualViolations);
-
-        violationsOnCurrentFile.remove(rule);
-      }
-    }
-
-    for (String rule : violationsOnCurrentFile.keySet()) {
-      TreeSet<Integer> expectedViolations = getExpectedViolationLines(relativePath, rule);
-      TreeSet<Integer> actualViolations = getActualViolationLines(rule);
-      flagPrintedFileName = printDifferences(flagPrintedFileName, relativePath, rule, expectedViolations, actualViolations);
-
-      violationsOnCurrentFile.remove(rule);
-    }
-  }
-
-  private boolean printDifferences(boolean flagPrintedFileName, String relativePath, String rule, TreeSet<Integer> expectedViolations,
-      TreeSet<Integer> actualViolations) {
-    if ( !expectedViolations.equals(actualViolations)) {
-      this.hasFailed = true;
-
-      if ( !flagPrintedFileName) {
-        out.println("Differences for the file \"" + relativePath + "\":");
-        flagPrintedFileName = true;
-      }
-
-      out.println(" - Rule " + rule + ", expected (" + expectedViolations.size() + ") \""
-          + StringUtils.join(expectedViolations, ", ") + "\" got (" + actualViolations.size() + ") \""
-          + StringUtils.join(actualViolations, ", ") + "\"");
-    }
-
-    return flagPrintedFileName;
-  }
-
-  private TreeSet<Integer> getExpectedViolationLines(String relativePath, String rule) {
-    if ( !expectedViolationsByFileAndRule.containsKey(relativePath)
-        || !expectedViolationsByFileAndRule.get(relativePath).containsKey(rule)) {
-      return new TreeSet<Integer>();
-    } else {
-      return expectedViolationsByFileAndRule.get(relativePath).get(rule);
-    }
-  }
-
-  private TreeSet<Integer> getActualViolationLines(String rule) {
-    if ( !violationsOnCurrentFile.containsKey(rule)) {
-      return new TreeSet<Integer>();
-    } else {
-      return violationsOnCurrentFile.get(rule);
-    }
   }
 
 }
