@@ -121,6 +121,7 @@ public final class LexerOutput {
 
   public void addPreprocessingToken(Token token) {
     preprocessingTokens.add(token);
+    token.setIsPreprocessorTrivia();
     currentTokenTrivia.add(token);
   }
 
@@ -187,6 +188,7 @@ public final class LexerOutput {
 
   public void addCommentToken(Token token) {
     comments.put(token.getLine(), token);
+    token.setIsCommentTrivia();
     currentTokenTrivia.add(token);
   }
 

@@ -23,7 +23,7 @@ public class IfSMustUseBracesTest {
 
   @Before
   public void init() {
-    fileNode = parseFile("/miniC/ifSMustUseBraces.mc");
+    fileNode = parseFile("/xpath/ifSMustUseBraces.mc");
   }
 
   @Test

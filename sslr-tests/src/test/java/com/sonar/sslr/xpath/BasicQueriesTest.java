@@ -24,7 +24,7 @@ public class BasicQueriesTest {
 
   @Before
   public void init() {
-    fileNode = parseFile("/miniC/basicQueries.mc");
+    fileNode = parseFile("/xpath/basicQueries.mc");
   }
 
   @Test

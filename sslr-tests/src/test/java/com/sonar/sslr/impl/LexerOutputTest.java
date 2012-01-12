@@ -64,6 +64,8 @@ public class LexerOutputTest {
     assertThat(output.size(), is(1));
     assertThat(output.get(0).getTrivia().size(), is(1));
     assertThat(output.get(0).getTrivia().get(0), is(fakeCommentToken));
+    assertThat(output.get(0).getTrivia().get(0).isCommentTrivia(), is(true));
+    assertThat(output.get(0).getTrivia().get(0).isPreprocessorTrivia(), is(false));
   }
 
   @Test
@@ -78,6 +80,8 @@ public class LexerOutputTest {
     assertThat(output.size(), is(1));
     assertThat(output.get(0).getTrivia().size(), is(1));
     assertThat(output.get(0).getTrivia().get(0), is(fakePreprocessorToken));
+    assertThat(output.get(0).getTrivia().get(0).isCommentTrivia(), is(false));
+    assertThat(output.get(0).getTrivia().get(0).isPreprocessorTrivia(), is(true));
   }
 
   @Test

@@ -27,6 +27,8 @@ public class Token {
   private final File file;
   private boolean generatedCode = false;
   private final List<Token> trivia = Lists.newLinkedList();
+  private boolean isCommentTrivia = false;
+  private boolean isPreprocessorTrivia = false;
 
   private boolean copyBook = false;
   private int copyBookOriginalLine = -1;
@@ -110,6 +112,22 @@ public class Token {
 
   public void addAllTrivia(List<Token> trivia) {
     this.trivia.addAll(trivia);
+  }
+
+  public void setIsCommentTrivia() {
+    isCommentTrivia = true;
+  }
+
+  public void setIsPreprocessorTrivia() {
+    isPreprocessorTrivia = true;
+  }
+
+  public boolean isCommentTrivia() {
+    return isCommentTrivia;
+  }
+
+  public boolean isPreprocessorTrivia() {
+    return isPreprocessorTrivia;
   }
 
   @Override

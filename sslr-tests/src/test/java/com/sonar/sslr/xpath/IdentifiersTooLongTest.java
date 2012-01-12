@@ -23,7 +23,7 @@ public class IdentifiersTooLongTest {
 
   @Before
   public void init() {
-    fileNode = parseFile("/miniC/identifiersTooLong.mc");
+    fileNode = parseFile("/xpath/identifiersTooLong.mc");
   }
 
   @Test
