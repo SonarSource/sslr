@@ -10,6 +10,7 @@ import static com.sonar.sslr.test.squid.CheckMatchers.*;
 
 import org.junit.Test;
 
+import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
 import com.sonar.sslr.test.miniC.MiniCLexer;
@@ -31,6 +32,11 @@ public class AbstractMagicCheckTest {
     @Override
     public AstNodeType[] getExclusions() {
       return new AstNodeType[] { getContext().getGrammar().variableInitializer };
+    }
+
+    @Override
+    public boolean isExcepted(AstNode candidate) {
+      return "1337".equals(candidate.getTokenOriginalValue());
     }
 
     @Override
