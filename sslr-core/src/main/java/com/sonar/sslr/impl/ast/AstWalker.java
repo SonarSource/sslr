@@ -49,8 +49,8 @@ public final class AstWalker {
       visitor.visitFile(ast);
     }
     visit(ast, output);
-    for (AstVisitor visitor : visitors) {
-      visitor.leaveFile(ast);
+    for (int i = visitors.size() - 1; i >= 0; i--) {
+      visitors.get(i).leaveFile(ast);
     }
   }
 
