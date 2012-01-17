@@ -18,10 +18,9 @@ public final class LexerOutput {
 
   private File file = null;
   private List<Token> tokens = new ArrayList<Token>(1000);
-  private final List<Token> preprocessingTokens = new ArrayList<Token>();
   private final ListMultimap<Integer, Token> comments = LinkedListMultimap.<Integer, Token> create();
   private final Preprocessor[] preprocessors;
-  private final List<Token> currentTokenTrivia = Lists.newLinkedList();
+  private final List<Trivia> currentTrivia = Lists.newLinkedList();
 
   public LexerOutput(Preprocessor... preprocessors) {
     this.preprocessors = preprocessors;
@@ -34,10 +33,6 @@ public final class LexerOutput {
 
   public List<Token> getTokens() {
     return tokens;
-  }
-
-  public List<Token> getPreprocessingTokens() {
-    return preprocessingTokens;
   }
 
   public Token getLastToken() {
@@ -56,13 +51,13 @@ public final class LexerOutput {
 
   public void removeLastTokens(int numberOfTokensToRemove) {
     int desiredTokenListLength = tokens.size() - numberOfTokensToRemove;
-    List<Token> oldCurrentTokenTrivia = Lists.newLinkedList(currentTokenTrivia);
-    currentTokenTrivia.clear();
+    List<Trivia> savedCurrentTrivia = Lists.newLinkedList(currentTrivia);
+    currentTrivia.clear();
     while (tokens.size() > desiredTokenListLength) {
       Token removedToken = tokens.remove(desiredTokenListLength);
-      currentTokenTrivia.addAll(removedToken.getTrivia());
+      currentTrivia.addAll(removedToken.getTrivia());
     }
-    currentTokenTrivia.addAll(oldCurrentTokenTrivia);
+    currentTrivia.addAll(savedCurrentTrivia);
   }
 
   /**
@@ -119,10 +114,8 @@ public final class LexerOutput {
     }
   }
 
-  public void addPreprocessingToken(Token token) {
-    preprocessingTokens.add(token);
-    token.setIsPreprocessorTrivia();
-    currentTokenTrivia.add(token);
+  public void addTrivia(Trivia trivia) {
+    currentTrivia.add(trivia);
   }
 
   /**
@@ -136,8 +129,8 @@ public final class LexerOutput {
       token.setPreviousToken(previousToken);
       previousToken.setFollowingToken(token);
     }
-    token.addAllTrivia(currentTokenTrivia);
-    currentTokenTrivia.clear();
+    token.addAllTrivia(currentTrivia);
+    currentTrivia.clear();
     tokens.add(token);
   }
 
@@ -188,8 +181,6 @@ public final class LexerOutput {
 
   public void addCommentToken(Token token) {
     comments.put(token.getLine(), token);
-    token.setIsCommentTrivia();
-    currentTokenTrivia.add(token);
   }
 
   public Collection<Token> getCommentTokens() {

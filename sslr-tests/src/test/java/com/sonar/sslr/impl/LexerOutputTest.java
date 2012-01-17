@@ -10,9 +10,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.sonar.sslr.api.GenericTokenType;
-import com.sonar.sslr.api.LexerOutput;
-import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.*;
+import com.sonar.sslr.api.Trivia.TriviaKind;
 
 public class LexerOutputTest {
 
@@ -32,19 +31,6 @@ public class LexerOutputTest {
   }
 
   @Test
-  public void testAddPreprocessingToken() {
-    LexerOutput output = new LexerOutput();
-    output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "Word", 2, 4);
-    output.addPreprocessingToken(new Token(GenericTokenType.IDENTIFIER, "preprocessingWord"));
-
-    assertThat(output.size(), is(1));
-    assertThat(output.getLastToken().getValue(), is("Word"));
-
-    assertThat(output.getPreprocessingTokens().size(), is(1));
-    assertThat(output.getPreprocessingTokens().get(0).getValue(), is("preprocessingWord"));
-  }
-
-  @Test
   public void testNoTrivia() {
     LexerOutput output = new LexerOutput();
     output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "Word", 2, 4);
@@ -53,35 +39,18 @@ public class LexerOutputTest {
   }
 
   @Test
-  public void testCommentTrivia() {
+  public void testAddCommentTrivia() {
     LexerOutput output = new LexerOutput();
 
-    Token fakeCommentToken = new Token(GenericTokenType.IDENTIFIER, "Word", 10, 4);
-    output.addCommentToken(fakeCommentToken);
+    output.addTrivia(new Trivia(TriviaKind.COMMENT, 0, 0, 0, "comment"));
 
     output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "Word", 2, 4);
 
     assertThat(output.size(), is(1));
     assertThat(output.get(0).getTrivia().size(), is(1));
-    assertThat(output.get(0).getTrivia().get(0), is(fakeCommentToken));
-    assertThat(output.get(0).getTrivia().get(0).isCommentTrivia(), is(true));
-    assertThat(output.get(0).getTrivia().get(0).isPreprocessorTrivia(), is(false));
-  }
-
-  @Test
-  public void testPreprocessorTrivia() {
-    LexerOutput output = new LexerOutput();
-
-    Token fakePreprocessorToken = new Token(GenericTokenType.IDENTIFIER, "Word", 10, 4);
-    output.addPreprocessingToken(fakePreprocessorToken);
-
-    output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "Word", 2, 4);
-
-    assertThat(output.size(), is(1));
-    assertThat(output.get(0).getTrivia().size(), is(1));
-    assertThat(output.get(0).getTrivia().get(0), is(fakePreprocessorToken));
-    assertThat(output.get(0).getTrivia().get(0).isCommentTrivia(), is(false));
-    assertThat(output.get(0).getTrivia().get(0).isPreprocessorTrivia(), is(true));
+    assertThat(output.get(0).getTrivia().get(0).getValue(), is("comment"));
+    assertThat(output.get(0).getTrivia().get(0).isComment(), is(true));
+    assertThat(output.get(0).getTrivia().get(0).isPreprocessor(), is(false));
   }
 
   @Test
@@ -89,8 +58,7 @@ public class LexerOutputTest {
     LexerOutput output = new LexerOutput();
     output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "Word", 2, 4);
 
-    Token fakeCommentToken = new Token(GenericTokenType.IDENTIFIER, "Word", 10, 4);
-    output.addCommentToken(fakeCommentToken);
+    output.addTrivia(new Trivia(TriviaKind.COMMENT, 0, 0, 0, "comment"));
 
     assertThat(output.size(), is(1));
     assertThat(output.get(0).getTrivia().size(), is(0));
@@ -102,19 +70,20 @@ public class LexerOutputTest {
 
     output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "Word", 2, 4);
 
-    Token fakeCommentToken = new Token(GenericTokenType.IDENTIFIER, "Word", 10, 4);
-    output.addPreprocessingToken(fakeCommentToken);
-
-    Token fakePreprocessorToken = new Token(GenericTokenType.IDENTIFIER, "Word", 10, 4);
-    output.addPreprocessingToken(fakePreprocessorToken);
+    output.addTrivia(new Trivia(TriviaKind.COMMENT, 0, 0, 0, "comment Word"));
+    output.addTrivia(new Trivia(TriviaKind.PREPROCESSOR, 0, 0, 0, "preprocessor Word"));
 
     output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "Word", 2, 4);
 
     assertThat(output.size(), is(2));
     assertThat(output.get(0).getTrivia().size(), is(0));
     assertThat(output.get(1).getTrivia().size(), is(2));
-    assertThat(output.get(1).getTrivia().get(0), is(fakeCommentToken));
-    assertThat(output.get(1).getTrivia().get(1), is(fakePreprocessorToken));
+    assertThat(output.get(1).getTrivia().get(0).getValue(), is("comment Word"));
+    assertThat(output.get(1).getTrivia().get(0).isComment(), is(true));
+    assertThat(output.get(1).getTrivia().get(0).isPreprocessor(), is(false));
+    assertThat(output.get(1).getTrivia().get(1).getValue(), is("preprocessor Word"));
+    assertThat(output.get(1).getTrivia().get(1).isComment(), is(false));
+    assertThat(output.get(1).getTrivia().get(1).isPreprocessor(), is(true));
   }
 
   @Test
@@ -123,18 +92,14 @@ public class LexerOutputTest {
 
     output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "Word", 2, 4);
 
-    Token commentToken1 = new Token(GenericTokenType.IDENTIFIER, "Word", 10, 4);
-    output.addPreprocessingToken(commentToken1);
-    Token commentToken2 = new Token(GenericTokenType.IDENTIFIER, "Word", 10, 4);
-    output.addPreprocessingToken(commentToken2);
+    output.addTrivia(new Trivia(TriviaKind.COMMENT, 0, 0, 0, "comment1"));
+    output.addTrivia(new Trivia(TriviaKind.COMMENT, 0, 0, 0, "comment2"));
     output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "Word", 2, 4);
 
-    Token commentToken3 = new Token(GenericTokenType.IDENTIFIER, "Word", 10, 4);
-    output.addPreprocessingToken(commentToken3);
+    output.addTrivia(new Trivia(TriviaKind.COMMENT, 0, 0, 0, "comment3"));
     output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "Word", 2, 4);
 
-    Token commentToken4 = new Token(GenericTokenType.IDENTIFIER, "Word", 10, 4);
-    output.addPreprocessingToken(commentToken4);
+    output.addTrivia(new Trivia(TriviaKind.COMMENT, 0, 0, 0, "comment4"));
 
     output.removeLastTokens(2);
 
@@ -143,10 +108,10 @@ public class LexerOutputTest {
     assertThat(output.size(), is(2));
     assertThat(output.get(0).getTrivia().size(), is(0));
     assertThat(output.get(1).getTrivia().size(), is(4));
-    assertThat(output.get(1).getTrivia().get(0), is(commentToken1));
-    assertThat(output.get(1).getTrivia().get(1), is(commentToken2));
-    assertThat(output.get(1).getTrivia().get(2), is(commentToken3));
-    assertThat(output.get(1).getTrivia().get(3), is(commentToken4));
+    assertThat(output.get(1).getTrivia().get(0).getValue(), is("comment1"));
+    assertThat(output.get(1).getTrivia().get(1).getValue(), is("comment2"));
+    assertThat(output.get(1).getTrivia().get(2).getValue(), is("comment3"));
+    assertThat(output.get(1).getTrivia().get(3).getValue(), is("comment4"));
   }
 
 }

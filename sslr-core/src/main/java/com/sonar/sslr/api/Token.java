@@ -26,11 +26,7 @@ public class Token {
   private final int column;
   private final File file;
   private boolean generatedCode = false;
-  private final List<Token> trivia = Lists.newLinkedList();
-  private boolean isCommentTrivia = false;
-  private boolean isPreprocessorTrivia = false;
-  private AstNode structure = null;
-  private Grammar structureGrammar = null;
+  private final List<Trivia> trivia = Lists.newLinkedList();
 
   private boolean copyBook = false;
   private int copyBookOriginalLine = -1;
@@ -108,45 +104,16 @@ public class Token {
     this.generatedCode = generatedCode;
   }
 
-  public List<Token> getTrivia() {
+  public boolean hasTrivia() {
+    return !trivia.isEmpty();
+  }
+
+  public List<Trivia> getTrivia() {
     return trivia;
   }
 
-  public void addAllTrivia(List<Token> trivia) {
+  public void addAllTrivia(List<Trivia> trivia) {
     this.trivia.addAll(trivia);
-  }
-
-  public void setIsCommentTrivia() {
-    isCommentTrivia = true;
-  }
-
-  public void setIsPreprocessorTrivia() {
-    isPreprocessorTrivia = true;
-  }
-
-  public boolean isCommentTrivia() {
-    return isCommentTrivia;
-  }
-
-  public boolean isPreprocessorTrivia() {
-    return isPreprocessorTrivia;
-  }
-
-  public void setStructure(AstNode structure, Grammar grammar) {
-    this.structure = structure;
-    this.structureGrammar = grammar;
-  }
-
-  public boolean hasStructure() {
-    return structure != null;
-  }
-
-  public AstNode getStructure() {
-    return structure;
-  }
-
-  public Grammar getStructureGrammar() {
-    return structureGrammar;
   }
 
   @Override

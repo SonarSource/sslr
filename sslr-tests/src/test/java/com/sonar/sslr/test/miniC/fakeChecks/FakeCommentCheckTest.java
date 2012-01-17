@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import com.sonar.sslr.api.AstAndTokenVisitor;
 import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.squid.checks.SquidCheck;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
 
@@ -20,9 +21,9 @@ public class FakeCommentCheckTest {
   private class FakeCommentCheck extends SquidCheck<MiniCGrammar> implements AstAndTokenVisitor {
 
     public void visitToken(Token token) {
-      for (Token trivia : token.getTrivia()) {
-        if (trivia.isCommentTrivia() && trivia.getOriginalValue().contains("stupid")) {
-          getContext().log(this, "Be gentle in your comments.", trivia);
+      for (Trivia trivia : token.getTrivia()) {
+        if (trivia.isComment() && trivia.getValue().contains("stupid")) {
+          getContext().log(this, "Be gentle in your comments.", trivia.getLine());
         }
       }
     }

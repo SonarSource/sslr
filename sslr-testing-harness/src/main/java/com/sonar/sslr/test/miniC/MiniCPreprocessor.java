@@ -12,11 +12,14 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.*;
+import com.sonar.sslr.api.Trivia.TriviaKind;
 import com.sonar.sslr.impl.Parser;
 
 public class MiniCPreprocessor extends Preprocessor {
 
   private final List<Token> buffer = Lists.newLinkedList();
+  private AstNode structure;
+  private Grammar structureGrammar;
 
   public class MiniCPreprocessorGrammar extends Grammar {
 
@@ -44,7 +47,8 @@ public class MiniCPreprocessor extends Preprocessor {
     Parser<MiniCPreprocessorGrammar> parser = Parser.builder(new MiniCPreprocessorGrammar()).build();
     try {
       AstNode node = parser.parse(buffer);
-      buffer.get(0).setStructure(node, parser.getGrammar());
+      this.structure = node;
+      this.structureGrammar = parser.getGrammar();
       return true;
     } catch (RecognitionException re) {
       return false;
@@ -54,10 +58,9 @@ public class MiniCPreprocessor extends Preprocessor {
   private void preprocessBuffer(LexerOutput output) {
     /* Here is where we should interpret the tokens, but there is no need in this case */
 
-    /* Push the preprocessed token */
-    for (Token preprocessedToken : buffer) {
-      output.addPreprocessingToken(preprocessedToken);
-    }
+    /* Push the preprocessed trivia */
+    output.addTrivia(new Trivia(TriviaKind.PREPROCESSOR, buffer.get(0).getLine(), buffer.get(0).getColumn(), -1, null, structure,
+        structureGrammar));
   }
 
   @Override
