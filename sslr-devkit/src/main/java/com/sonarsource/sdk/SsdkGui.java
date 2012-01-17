@@ -26,9 +26,9 @@ import com.sonar.sslr.impl.Parser;
 public class SsdkGui extends javax.swing.JFrame {
 
   private final SourceCodeViewer sourceCodePane;
-  private JButton loadSourceButton = new JButton();
-  private final AstViewer astViewPane;
-  private JFileChooser sourceFileChooser = new JFileChooser();
+  private final JButton loadSourceButton = new JButton();
+  private transient final AstViewer astViewPane;
+  private final JFileChooser sourceFileChooser = new JFileChooser();
 
   public SsdkGui(Parser parser, List<Tokenizer> colorizerChannels) {
     sourceCodePane = new SourceCodeViewer(colorizerChannels);

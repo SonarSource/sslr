@@ -12,6 +12,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.impl.Parser;
 
 public class AstViewer {
@@ -46,6 +47,17 @@ public class AstViewer {
         DefaultMutableTreeNode treeNodeChild = new DefaultMutableTreeNode(astNodeChild);
         treeNode.add(treeNodeChild);
         updateTreeNode(treeNodeChild, astNodeChild);
+      }
+    } else if (astNode.hasToken() && astNode.getToken().hasTrivia()) {
+      for (Trivia trivia : astNode.getToken().getTrivia()) {
+        DefaultMutableTreeNode treeNodeChild = new DefaultMutableTreeNode(trivia);
+        treeNode.add(treeNodeChild);
+
+        if (trivia.hasStructure()) {
+          DefaultMutableTreeNode treeNodeInnerChild = new DefaultMutableTreeNode(trivia.getStructure());
+          treeNodeChild.add(treeNodeInnerChild);
+          updateTreeNode(treeNodeInnerChild, trivia.getStructure());
+        }
       }
     }
   }
