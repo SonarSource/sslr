@@ -12,7 +12,6 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.*;
-import com.sonar.sslr.api.Trivia.TriviaKind;
 import com.sonar.sslr.impl.Parser;
 
 public class MiniCPreprocessor extends Preprocessor {
@@ -59,8 +58,7 @@ public class MiniCPreprocessor extends Preprocessor {
     /* Here is where we should interpret the tokens, but there is no need in this case */
 
     /* Push the preprocessed trivia */
-    output.addTrivia(new Trivia(TriviaKind.PREPROCESSOR, buffer.get(0).getLine(), buffer.get(0).getColumn(), -1, null, structure,
-        structureGrammar));
+    output.addTrivia(Trivia.createPreprocessorTrivia(structure, structureGrammar));
   }
 
   @Override

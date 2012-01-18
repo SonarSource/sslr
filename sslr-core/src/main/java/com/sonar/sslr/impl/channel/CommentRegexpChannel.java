@@ -11,8 +11,10 @@ import java.util.regex.Pattern;
 import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
 
-import com.sonar.sslr.api.*;
-import com.sonar.sslr.api.Trivia.TriviaKind;
+import com.sonar.sslr.api.GenericTokenType;
+import com.sonar.sslr.api.LexerOutput;
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.impl.LexerException;
 
 public class CommentRegexpChannel extends Channel<LexerOutput> {
@@ -62,8 +64,7 @@ public class CommentRegexpChannel extends Channel<LexerOutput> {
         Token commentToken = new Token(GenericTokenType.COMMENT, value, originalValue, code.getPreviousCursor().getLine(), code
             .getPreviousCursor().getColumn());
         output.addCommentToken(commentToken);
-        output.addTrivia(new Trivia(TriviaKind.COMMENT, commentToken.getLine(), commentToken.getColumn(), commentToken.getOriginalValue()
-            .length(), commentToken.getOriginalValue()));
+        output.addTrivia(Trivia.createCommentTrivia(commentToken));
 
         tmpBuilder.delete(0, tmpBuilder.length());
         return true;
