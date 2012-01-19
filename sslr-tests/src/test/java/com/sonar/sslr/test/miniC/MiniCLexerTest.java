@@ -49,10 +49,10 @@ public class MiniCLexerTest {
 
   @Test
   public void lexComments() {
-    assertThat(lexer.lex("/*test*/"), hasComment("test"));
-    assertThat(lexer.lex("/*test*/*/"), hasComment("test"));
-    assertThat(lexer.lex("/*test/* /**/"), hasComment("test/* /*"));
-    assertThat(lexer.lex("/*test1\ntest2\ntest3*/"), hasComment("test1\ntest2\ntest3"));
+    assertThat(lexer.lex("/*test*/"), hasComment("/*test*/"));
+    assertThat(lexer.lex("/*test*/*/"), hasComment("/*test*/"));
+    assertThat(lexer.lex("/*test/* /**/"), hasComment("/*test/* /**/"));
+    assertThat(lexer.lex("/*test1\ntest2\ntest3*/"), hasComment("/*test1\ntest2\ntest3*/"));
   }
 
   @Test

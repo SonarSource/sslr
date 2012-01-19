@@ -25,18 +25,6 @@ public final class RegexpChannelBuilder {
     return new CommentRegexpChannel(merge(regexpPiece));
   }
 
-  public static CommentRegexpChannel commentRegexp(int removeBefore, int removeAfter, String... regexpPiece) {
-    return new CommentRegexpChannel(merge(regexpPiece), removeBefore, removeAfter);
-  }
-
-  public static CommentRegexpChannel commentRegexp(boolean trimBeforeRemove, String... regexpPiece) {
-    return new CommentRegexpChannel(merge(regexpPiece), trimBeforeRemove);
-  }
-
-  public static CommentRegexpChannel commentRegexp(int removeBefore, int removeAfter, boolean trimBeforeRemove, String... regexpPiece) {
-    return new CommentRegexpChannel(merge(regexpPiece), removeBefore, removeAfter, trimBeforeRemove);
-  }
-
   public static String opt(String regexpPiece) {
     return regexpPiece + "?+";
   }

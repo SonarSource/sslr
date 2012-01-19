@@ -11,10 +11,7 @@ import java.util.Stack;
 import org.sonar.squid.api.*;
 import org.sonar.squid.measures.MetricDef;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Comments;
-import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.*;
 
 public final class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends SquidAstVisitorContext<GRAMMAR> {
 
@@ -23,6 +20,7 @@ public final class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends S
   private Comments comments;
   private File file;
   private final SourceProject project;
+  private CommentAnalyser commentAnalyser;
 
   public SquidAstVisitorContextImpl(SourceProject project) {
     if (project == null) {
@@ -39,6 +37,16 @@ public final class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends S
 
   public void setComments(Comments comments) {
     this.comments = comments;
+  }
+
+  public void setCommentAnalyser(CommentAnalyser commentAnalyser) {
+    this.commentAnalyser = commentAnalyser;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public CommentAnalyser getCommentAnalyser() {
+    return commentAnalyser;
   }
 
   /** {@inheritDoc} */

@@ -10,10 +10,7 @@ import java.io.File;
 import org.sonar.squid.api.CodeCheck;
 import org.sonar.squid.api.SourceCode;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Comments;
-import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.*;
 
 public abstract class SquidAstVisitorContext<GRAMMAR extends Grammar> {
 
@@ -28,6 +25,8 @@ public abstract class SquidAstVisitorContext<GRAMMAR extends Grammar> {
   public abstract void popSourceCode();
 
   public abstract SourceCode peekSourceCode();
+
+  public abstract CommentAnalyser getCommentAnalyser();
 
   /**
    * @param codeCheck

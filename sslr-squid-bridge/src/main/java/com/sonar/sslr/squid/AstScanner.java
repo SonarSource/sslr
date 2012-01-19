@@ -46,10 +46,11 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     this.parserRecoveryListener = new ParserRecoveryListener();
     this.parserProduction = Parser.builder(builder.baseParser).setRecognictionExceptionListener(parserRecoveryListener).build();
 
+    this.commentAnalyser = builder.commentAnalyser;
     this.context = builder.context;
     this.context.setGrammar(parserProduction.getGrammar());
     this.context.getProject().setSourceCodeIndexer(indexer);
-    this.commentAnalyser = builder.commentAnalyser;
+    this.context.setCommentAnalyser(commentAnalyser);
     this.metrics = builder.metrics;
     this.filesMetric = builder.filesMetric;
     indexer.index(context.getProject());

@@ -80,7 +80,7 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
     }
 
     for (Token comment : getContext().getComments()) {
-      String[] commentLines = comment.getValue().split("\n", -1);
+      String[] commentLines = getContext().getCommentAnalyser().getContents(comment.getOriginalValue()).split("\n", -1);
       int line = comment.getLine();
 
       for (String commentLine : commentLines) {

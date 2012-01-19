@@ -26,30 +26,12 @@ public class CommentChannelTest {
   }
 
   @Test
-  public void testCommentRegexpNoRegression() {
+  public void testCommentRegexp() {
     channel = new CommentRegexpChannel("//.*");
     assertThat(channel, not(consume("This is not a comment", output)));
     assertThat(channel, consume("//My Comment\n second line", output));
     assertThat(output, hasComment("//My Comment"));
     assertThat(output, hasOriginalComment("//My Comment"));
-  }
-
-  @Test
-  public void testCommentSubstring() {
-    channel = new CommentRegexpChannel("//.*", 2, 1);
-    assertThat(channel, not(consume("This is not a comment", output)));
-    assertThat(channel, consume("//My Comment\n second line", output));
-    assertThat(output, hasComment("My Commen"));
-    assertThat(output, hasOriginalComment("//My Comment"));
-  }
-
-  @Test
-  public void testCommentTrimBeforeRemove() {
-    channel = new CommentRegexpChannel("//.*", 2, 1, true);
-    assertThat(channel, not(consume("This is not a comment", output)));
-    assertThat(channel, consume("//My Comment    \n second line", output));
-    assertThat(output, hasComment("My Commen"));
-    assertThat(output, hasOriginalComment("//My Comment    "));
   }
 
 }

@@ -119,6 +119,12 @@ public class CommentsTest {
 
       return true;
     }
+
+    @Override
+    public String getContents(String comment) {
+      return comment;
+    }
+
   }
 
 }

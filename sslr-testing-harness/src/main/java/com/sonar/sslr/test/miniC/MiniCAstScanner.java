@@ -86,6 +86,12 @@ public final class MiniCAstScanner {
 
             return true;
           }
+
+          @Override
+          public String getContents(String comment) {
+            return comment.startsWith("//") ? comment.substring(2) : comment.substring(2, comment.length() - 2);
+          }
+
         }
         );
 
