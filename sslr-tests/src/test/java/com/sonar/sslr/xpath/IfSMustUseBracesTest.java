@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.xpath.api.AstNodeXpathQuery;
+import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
 
 public class IfSMustUseBracesTest {
 
@@ -28,7 +28,7 @@ public class IfSMustUseBracesTest {
 
   @Test
   public void firstValueEqualsOnlyValueTest() {
-    AstNodeXpathQuery<AstNode> xpath = AstNodeXpathQuery.create(
+    AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create(
         "//ifStatement/statement[not(compoundStatement)]/..|//elseClause/statement[not(compoundStatement)]/..");
 
     List<AstNode> nodes = xpath.getValues(fileNode);
@@ -39,7 +39,7 @@ public class IfSMustUseBracesTest {
 
   @Test
   public void valuesTest() {
-    AstNodeXpathQuery<AstNode> xpath = AstNodeXpathQuery.create(
+    AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create(
         "//ifStatement/statement[not(compoundStatement)]/..|//elseClause/statement[not(compoundStatement)]/..");
 
     List<AstNode> nodes = xpath.getValues(fileNode);

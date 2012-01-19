@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.xpath.api.AstNodeXpathQuery;
+import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
 
 public class IdentifiersTooLongTest {
 
@@ -28,7 +28,7 @@ public class IdentifiersTooLongTest {
 
   @Test
   public void valuesTest() {
-    AstNodeXpathQuery<AstNode> xpath = AstNodeXpathQuery.create("//IDENTIFIER[string-length(@tokenValue) > 10]");
+    AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("//IDENTIFIER[string-length(@tokenValue) > 10]");
 
     List<AstNode> nodes = xpath.getValues(fileNode);
 
@@ -43,7 +43,7 @@ public class IdentifiersTooLongTest {
 
   @Test
   public void noResultValuesTest() {
-    AstNodeXpathQuery<AstNode> xpath = AstNodeXpathQuery.create("//IDENTIFIER[string-length(@tokenValue) > 50]");
+    AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("//IDENTIFIER[string-length(@tokenValue) > 50]");
 
     List<AstNode> nodes = xpath.getValues(fileNode);
 
