@@ -37,7 +37,7 @@ public class CommentRegexpChannel extends Channel<LexerOutput> {
         Token commentToken = new Token(GenericTokenType.COMMENT, value, code.getPreviousCursor().getLine(), code
             .getPreviousCursor().getColumn());
         output.addCommentToken(commentToken);
-        output.addTrivia(Trivia.createCommentTrivia(commentToken));
+        output.addTrivia(Trivia.createCommentToken(commentToken));
 
         tmpBuilder.delete(0, tmpBuilder.length());
         return true;

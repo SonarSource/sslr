@@ -44,7 +44,7 @@ public class LexerOutputTest {
   public void testAddCommentTrivia() {
     LexerOutput output = new LexerOutput();
 
-    output.addTrivia(Trivia.createCommentTrivia(new Token(GenericTokenType.COMMENT, "comment")));
+    output.addTrivia(Trivia.createCommentToken(new Token(GenericTokenType.COMMENT, "comment")));
 
     output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "Word", 2, 4);
 
@@ -60,7 +60,7 @@ public class LexerOutputTest {
     LexerOutput output = new LexerOutput();
     output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "Word", 2, 4);
 
-    output.addTrivia(Trivia.createCommentTrivia(new Token(GenericTokenType.COMMENT, "comment")));
+    output.addTrivia(Trivia.createCommentToken(new Token(GenericTokenType.COMMENT, "comment")));
 
     assertThat(output.size(), is(1));
     assertThat(output.get(0).getTrivia().size(), is(0));
@@ -72,8 +72,8 @@ public class LexerOutputTest {
 
     output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "Word", 2, 4);
 
-    output.addTrivia(Trivia.createCommentTrivia(new Token(GenericTokenType.COMMENT, "comment")));
-    output.addTrivia(Trivia.createPreprocessorTrivia(new Token(GenericTokenType.IDENTIFIER, "preprocessor")));
+    output.addTrivia(Trivia.createCommentToken(new Token(GenericTokenType.COMMENT, "comment")));
+    output.addTrivia(Trivia.createPreprocessingToken(new Token(GenericTokenType.IDENTIFIER, "preprocessor")));
 
     output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "Word", 2, 4);
 
@@ -94,14 +94,14 @@ public class LexerOutputTest {
 
     output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "Word", 2, 4);
 
-    output.addTrivia(Trivia.createCommentTrivia(new Token(GenericTokenType.COMMENT, "comment1")));
-    output.addTrivia(Trivia.createCommentTrivia(new Token(GenericTokenType.COMMENT, "comment2")));
+    output.addTrivia(Trivia.createCommentToken(new Token(GenericTokenType.COMMENT, "comment1")));
+    output.addTrivia(Trivia.createCommentToken(new Token(GenericTokenType.COMMENT, "comment2")));
     output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "Word", 2, 4);
 
-    output.addTrivia(Trivia.createCommentTrivia(new Token(GenericTokenType.COMMENT, "comment3")));
+    output.addTrivia(Trivia.createCommentToken(new Token(GenericTokenType.COMMENT, "comment3")));
     output.addTokenAndProcess(GenericTokenType.IDENTIFIER, "Word", 2, 4);
 
-    output.addTrivia(Trivia.createCommentTrivia(new Token(GenericTokenType.COMMENT, "comment4")));
+    output.addTrivia(Trivia.createCommentToken(new Token(GenericTokenType.COMMENT, "comment4")));
 
     output.removeLastTokens(2);
 

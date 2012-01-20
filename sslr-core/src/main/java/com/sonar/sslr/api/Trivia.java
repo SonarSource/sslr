@@ -7,37 +7,30 @@ package com.sonar.sslr.api;
 
 import org.apache.commons.lang.StringUtils;
 
-public class Trivia {
+public final class Trivia {
 
   public enum TriviaKind {
     COMMENT,
     PREPROCESSOR
   }
 
-  private final TriviaKind kind;
-  private final int line;
-  private final int column;
-  private final int length;
-  private final String value;
-  private final AstNode structure;
-  private final Grammar structureGrammar;
+  private TriviaKind kind;
+  private int line;
+  private int column;
+  private String value;
 
-  private Trivia(TriviaKind kind, int line, int column, int length, String value) {
-    this(kind, line, column, length, value, null, null);
-  }
+  private Token token;
+  private PreprocessingDirective preprocessingDirective;
 
-  private Trivia(TriviaKind kind, int line, int column, int length, String value, AstNode structure, Grammar structureGrammar) {
-    this.kind = kind;
-    this.line = line;
-    this.column = column;
-    this.length = length;
-    this.value = value;
-    this.structure = structure;
-    this.structureGrammar = structureGrammar;
+  private Trivia() {
   }
 
   public String getValue() {
     return value;
+  }
+
+  public Token getToken() {
+    return token;
   }
 
   public boolean isComment() {
@@ -56,20 +49,12 @@ public class Trivia {
     return column;
   }
 
-  public int getLength() {
-    return length;
+  public boolean hasDirective() {
+    return preprocessingDirective != null;
   }
 
-  public boolean hasStructure() {
-    return structure != null;
-  }
-
-  public AstNode getStructure() {
-    return structure;
-  }
-
-  public Grammar getStructureGrammar() {
-    return structureGrammar;
+  public PreprocessingDirective getPreprocessingDirective() {
+    return preprocessingDirective;
   }
 
   @Override
@@ -77,20 +62,36 @@ public class Trivia {
     return "TRIVIA kind=" + kind + " line=" + line + " value=" + value;
   }
 
-  public static Trivia createCommentTrivia(Token commentToken) {
-    return new Trivia(TriviaKind.COMMENT, commentToken.getLine(), commentToken.getColumn(), commentToken.getOriginalValue().length(),
-        commentToken.getOriginalValue());
+  private static Trivia createTrivia(TriviaKind kind, Token token) {
+    Trivia trivia = new Trivia();
+    trivia.kind = kind;
+    trivia.line = token.getLine();
+    trivia.column = token.getColumn();
+    trivia.value = token.getOriginalValue();
+    trivia.token = token;
+    return trivia;
   }
 
-  public static Trivia createPreprocessorTrivia(Token preprocessorToken) {
-    return new Trivia(TriviaKind.PREPROCESSOR, preprocessorToken.getLine(), preprocessorToken.getColumn(), preprocessorToken
-        .getOriginalValue().length(), preprocessorToken.getOriginalValue());
+  public static Trivia createCommentToken(Token commentToken) {
+    return createTrivia(TriviaKind.COMMENT, commentToken);
   }
 
-  public static Trivia createPreprocessorTrivia(AstNode structure, Grammar structureGrammar) {
-    String value = StringUtils.join(structure.getTokens(), ',');
-    return new Trivia(TriviaKind.PREPROCESSOR, structure.getToken().getLine(), structure.getToken().getColumn(), value.length(), value,
-        structure, structureGrammar);
+  public static Trivia createPreprocessingToken(Token preprocessingDirective) {
+    return createTrivia(TriviaKind.PREPROCESSOR, preprocessingDirective);
+  }
+
+  public static Trivia createPreprocessingDirective(PreprocessingDirective preprocessingDirective) {
+    Trivia trivia = new Trivia();
+    trivia.kind = TriviaKind.PREPROCESSOR;
+    trivia.line = preprocessingDirective.getAst().getTokenLine();
+    trivia.column = preprocessingDirective.getAst().getToken().getColumn();
+    trivia.value = StringUtils.join(preprocessingDirective.getAst().getTokens(), ',');
+    trivia.preprocessingDirective = preprocessingDirective;
+    return trivia;
+  }
+
+  public static Trivia createPreprocessingDirective(AstNode ast, Grammar grammar) {
+    return createPreprocessingDirective(PreprocessingDirective.create(ast, grammar));
   }
 
 }

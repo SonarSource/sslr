@@ -5,14 +5,22 @@
  */
 package com.sonar.sslr.test.miniC;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.*;
-
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.sonar.sslr.api.*;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.api.LexerOutput;
+import com.sonar.sslr.api.Preprocessor;
+import com.sonar.sslr.api.RecognitionException;
+import com.sonar.sslr.api.Rule;
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.impl.Parser;
+
+import static com.sonar.sslr.api.GenericTokenType.EOF;
+import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.HASH;
 
 public class MiniCPreprocessor extends Preprocessor {
 
@@ -58,7 +66,7 @@ public class MiniCPreprocessor extends Preprocessor {
     /* Here is where we should interpret the tokens, but there is no need in this case */
 
     /* Push the preprocessed trivia */
-    output.addTrivia(Trivia.createPreprocessorTrivia(structure, structureGrammar));
+    output.addTrivia(Trivia.createPreprocessingDirective(structure, structureGrammar));
   }
 
   @Override
