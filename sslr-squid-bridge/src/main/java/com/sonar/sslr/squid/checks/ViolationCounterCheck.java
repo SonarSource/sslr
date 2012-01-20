@@ -119,26 +119,23 @@ public class ViolationCounterCheck<GRAMMAR extends Grammar> extends SquidAstVisi
     private void printDifferencesByFile() {
       System.out.println("Differences by file:");
 
-      Set<String> handledFiles = new HashSet<String>();
+      Set<String[]> handledFilesRules = new HashSet<String[]>();
 
       for (String file : expected.violationsByFileAndRule.keySet()) {
-        handledFiles.add(file);
-
         boolean shouldPrintHeader = true;
-        Set<String> handledRules = new HashSet<String>();
         for (String rule : expected.violationsByFileAndRule.get(file).keySet()) {
-          handledRules.add(rule);
-
+          handledFilesRules.add(new String[] { file, rule });
           shouldPrintHeader = printDifferencesByFileAndRule(shouldPrintHeader, file, rule);
         }
       }
 
       for (String file : actual.violationsByFileAndRule.keySet()) {
-        if ( !handledFiles.contains(file)) {
-          boolean shouldPrintHeader = true;
-          for (String rule : actual.violationsByFileAndRule.get(file).keySet()) {
-            shouldPrintHeader = printDifferencesByFileAndRule(shouldPrintHeader, file, rule);
+        boolean shouldPrintHeader = true;
+        for (String rule : actual.violationsByFileAndRule.get(file).keySet()) {
+          if (handledFilesRules.contains(new String[] { file, rule })) {
+            continue;
           }
+          shouldPrintHeader = printDifferencesByFileAndRule(shouldPrintHeader, file, rule);
         }
       }
 
