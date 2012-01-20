@@ -11,7 +11,10 @@ import java.util.Set;
 import org.sonar.squid.api.SourceFile;
 import org.sonar.squid.measures.MetricDef;
 
-import com.sonar.sslr.api.*;
+import com.sonar.sslr.api.AstAndTokenVisitor;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.api.Token;
 import com.sonar.sslr.squid.SquidAstVisitor;
 
 /**
@@ -22,7 +25,7 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
   private Set<Integer> noSonar;
   private Set<Integer> comments;
   private Set<Integer> blankComments;
-  private boolean seenFirstToken;
+  private Token firstToken;
 
   private final boolean enableNoSonar;
   private final MetricDef commentMetric;
@@ -69,34 +72,12 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
     noSonar = new HashSet<Integer>();
     comments = new HashSet<Integer>();
     blankComments = new HashSet<Integer>();
-    seenFirstToken = false;
+    firstToken = null;
   }
 
   public void visitToken(Token token) {
-    if (ignoreHeaderComments && !seenFirstToken) {
-      seenFirstToken = true;
-    } else {
-      for (Trivia trivia : token.getTrivia()) {
-        if (trivia.isComment()) {
-          String[] commentLines = getContext().getCommentAnalyser().getContents(trivia.getValue()).split("(\r)?\n|\r", -1);
-          int line = trivia.getLine();
-
-          for (String commentLine : commentLines) {
-            if (enableNoSonar && commentLine.trim().contains("NOSONAR")) {
-              /* NOSONAR */
-              addNoSonar(line);
-            } else if (blankCommentMetric != null && getContext().getCommentAnalyser().isBlank(commentLine)) {
-              /* Blank lines */
-              addBlankCommentLine(line);
-            } else if (commentMetric != null) {
-              /* Comment lines */
-              addCommentLine(line);
-            }
-
-            line++;
-          }
-        }
-      }
+    if (ignoreHeaderComments && firstToken == null) {
+      firstToken = token;
     }
   }
 
@@ -105,6 +86,32 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
    */
   @Override
   public void leaveFile(AstNode astNode) {
+    if (getContext().getComments() != null) {
+      for (Token commentToken : getContext().getComments()) {
+        if (ignoreHeaderComments && firstToken != null && isTokenBefore(commentToken, firstToken)) {
+          continue;
+        }
+
+        String[] commentLines = getContext().getCommentAnalyser().getContents(commentToken.getOriginalValue()).split("(\r)?\n|\r", -1);
+        int line = commentToken.getLine();
+
+        for (String commentLine : commentLines) {
+          if (enableNoSonar && commentLine.contains("NOSONAR")) {
+            /* NOSONAR */
+            addNoSonar(line);
+          } else if (blankCommentMetric != null && getContext().getCommentAnalyser().isBlank(commentLine)) {
+            /* Blank lines */
+            addBlankCommentLine(line);
+          } else if (commentMetric != null) {
+            /* Comment lines */
+            addCommentLine(line);
+          }
+
+          line++;
+        }
+      }
+    }
+
     if (enableNoSonar) {
       ((SourceFile) getContext().peekSourceCode()).addNoSonarTagLines(noSonar);
     }
@@ -114,6 +121,10 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
     if (blankCommentMetric != null) {
       getContext().peekSourceCode().add(blankCommentMetric, blankComments.size());
     }
+  }
+
+  private boolean isTokenBefore(Token a, Token b) {
+    return a.getLine() < b.getLine() || a.getLine() == b.getLine() && a.getColumn() < b.getColumn();
   }
 
   public static <GRAMMAR extends Grammar> CommentsVisitorBuilder<GRAMMAR> builder() {
