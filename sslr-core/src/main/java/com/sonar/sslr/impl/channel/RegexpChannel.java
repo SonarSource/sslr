@@ -15,6 +15,7 @@ import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
+import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.impl.LexerException;
 
 public class RegexpChannel extends Channel<LexerOutput> {
@@ -36,8 +37,9 @@ public class RegexpChannel extends Channel<LexerOutput> {
       if (code.popTo(matcher, tmpBuilder) > 0) {
         String value = tmpBuilder.toString();
         if (type == GenericTokenType.COMMENT) {
-          output.addCommentToken(new Token(GenericTokenType.COMMENT, value, code.getPreviousCursor().getLine(), code.getPreviousCursor()
-              .getColumn()));
+          output.addTrivia(Trivia.createCommentToken(new Token(GenericTokenType.COMMENT, value, code.getPreviousCursor().getLine(), code
+              .getPreviousCursor()
+              .getColumn())));
         } else {
           output.addTokenAndProcess(type, value, code.getPreviousCursor().getLine(), code.getPreviousCursor().getColumn());
         }

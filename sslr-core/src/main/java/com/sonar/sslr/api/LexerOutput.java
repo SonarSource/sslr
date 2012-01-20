@@ -116,6 +116,9 @@ public final class LexerOutput {
 
   public void addTrivia(Trivia trivia) {
     currentTrivia.add(trivia);
+    if (trivia.isComment()) {
+      comments.put(trivia.getToken().getLine(), trivia.getToken());
+    }
   }
 
   /**
@@ -172,10 +175,6 @@ public final class LexerOutput {
 
   public Comments getComments(CommentAnalyser commentAnalyser) {
     return new Comments(comments, commentAnalyser);
-  }
-
-  public void addCommentToken(Token token) {
-    comments.put(token.getLine(), token);
   }
 
   public Collection<Token> getCommentTokens() {
