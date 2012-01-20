@@ -14,6 +14,27 @@ import com.sonar.sslr.test.miniC.MiniCGrammar;
 
 public class AbstractXPathCheckTest {
 
+  private static class EmptyXPathCheck extends AbstractXPathCheck<MiniCGrammar> {
+
+    @Override
+    public String getXPathQuery() {
+      return "";
+    }
+
+    @Override
+    public String getMessage() {
+      return "Empty XPath check.";
+    }
+
+  }
+
+  @Test
+  public void emptyXPathCheck() {
+    setCurrentSourceFile(scanFile("/checks/xpath.mc", new EmptyXPathCheck()));
+
+    assertNoViolation();
+  }
+
   private static class BooleanXPathCheckWithResults extends AbstractXPathCheck<MiniCGrammar> {
 
     @Override

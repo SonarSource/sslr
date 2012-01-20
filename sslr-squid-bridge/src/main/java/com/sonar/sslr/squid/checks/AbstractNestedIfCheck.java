@@ -5,6 +5,8 @@
  */
 package com.sonar.sslr.squid.checks;
 
+import org.sonar.api.utils.SonarException;
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
@@ -25,6 +27,12 @@ public abstract class AbstractNestedIfCheck<GRAMMAR extends Grammar> extends Squ
 
   @Override
   public void init() {
+    if (getMaximumNestingLevel() <= 0) {
+      throw new SonarException("[AbstractNestedIfCheck] The maximal if nesting level must be set to a value greater than 0 ("
+          + getMaximumNestingLevel()
+          + " given).");
+    }
+
     subscribeTo(getIfRule());
   }
 

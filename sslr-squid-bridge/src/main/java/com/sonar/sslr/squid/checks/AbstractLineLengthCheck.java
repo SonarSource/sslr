@@ -5,6 +5,8 @@
  */
 package com.sonar.sslr.squid.checks;
 
+import org.sonar.api.utils.SonarException;
+
 import com.sonar.sslr.api.AstAndTokenVisitor;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
@@ -16,6 +18,15 @@ public abstract class AbstractLineLengthCheck<GRAMMAR extends Grammar> extends S
 
   // See SONAR-3164
   public abstract int getMaximumLineLength();
+
+  @Override
+  public void init() {
+    if (getMaximumLineLength() <= 0) {
+      throw new SonarException("[AbstractLineLengthCheck] The maximal line length must be set to a value greater than 0 ("
+          + getMaximumLineLength()
+          + " given).");
+    }
+  }
 
   @Override
   public void visitFile(AstNode astNode) {

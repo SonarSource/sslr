@@ -7,6 +7,8 @@ package com.sonar.sslr.squid.checks;
 
 import java.util.List;
 
+import org.sonar.api.utils.SonarException;
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
@@ -19,18 +21,36 @@ public abstract class AbstractXPathCheck<GRAMMAR extends Grammar> extends SquidC
   // See SONAR-3164
   public abstract String getMessage();
 
+  private AstNodeXPathQuery<Object> query = null;
+
+  @Override
+  public void init() {
+    String xpath = getXPathQuery();
+
+    if ( !"".equals(xpath)) {
+      try {
+        query = AstNodeXPathQuery.create(getXPathQuery());
+      } catch (RuntimeException e) {
+        throw new SonarException("[AbstractXPathCheck] Unable to initialize the XPath engine, perhaps because of an invalid query ("
+            + xpath
+            + " given).", e);
+      }
+    }
+  }
+
   @Override
   public void visitFile(AstNode fileNode) {
-    AstNodeXPathQuery<Object> query = AstNodeXPathQuery.create(getXPathQuery());
-    List<Object> objects = query.getValues(fileNode);
+    if (query != null) {
+      List<Object> objects = query.getValues(fileNode);
 
-    for (Object object : objects) {
-      if (object instanceof AstNode) {
-        AstNode astNode = (AstNode) object;
-        getContext().log(this, getMessage(), astNode.getTokenLine());
-      } else if (object instanceof Boolean) {
-        if ((Boolean) object) {
-          getContext().log(this, getMessage(), -1);
+      for (Object object : objects) {
+        if (object instanceof AstNode) {
+          AstNode astNode = (AstNode) object;
+          getContext().log(this, getMessage(), astNode.getTokenLine());
+        } else if (object instanceof Boolean) {
+          if ((Boolean) object) {
+            getContext().log(this, getMessage(), -1);
+          }
         }
       }
     }

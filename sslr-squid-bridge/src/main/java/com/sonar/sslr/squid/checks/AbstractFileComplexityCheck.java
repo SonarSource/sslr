@@ -22,7 +22,7 @@ public abstract class AbstractFileComplexityCheck<GRAMMAR extends Grammar> exten
   @Override
   public void init() {
     if (getMaximumFileComplexity() <= 0) {
-      throw new SonarException("[FileComplexityCheck] The complexity threshold must be set to a value greater than 0 ("
+      throw new SonarException("[AbstractFileComplexityCheck] The complexity threshold must be set to a value greater than 0 ("
           + getMaximumFileComplexity()
           + " given).");
     }
