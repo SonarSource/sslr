@@ -17,8 +17,6 @@ public class Token {
   private static final int DEFAULT_COLUMN = 0;
   private static final File DEFAULT_FILE = null;
 
-  private Token previousToken;
-  private Token followingToken;
   private final TokenType type;
   private final String value;
   private final String originalValue;
@@ -165,21 +163,5 @@ public class Token {
 
   public String getCopyBookOriginalFileName() {
     return copyBookOriginalFileName;
-  }
-
-  public Token getPreviousToken() {
-    return previousToken;
-  }
-
-  public void setPreviousToken(Token previousToken) {
-    this.previousToken = previousToken;
-  }
-
-  public Token getFollowingToken() {
-    return followingToken;
-  }
-
-  public void setFollowingToken(Token followingToken) {
-    this.followingToken = followingToken;
   }
 }

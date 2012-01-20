@@ -124,11 +124,6 @@ public final class LexerOutput {
    * @param token
    */
   public void addToken(Token token) {
-    if ( !tokens.isEmpty()) {
-      Token previousToken = tokens.get(tokens.size() - 1);
-      token.setPreviousToken(previousToken);
-      previousToken.setFollowingToken(token);
-    }
     token.addAllTrivia(currentTrivia);
     currentTrivia.clear();
     tokens.add(token);
