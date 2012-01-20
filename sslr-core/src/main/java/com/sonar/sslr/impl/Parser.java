@@ -47,15 +47,15 @@ public final class Parser<GRAMMAR extends Grammar> {
     this.rootRule = (RuleDefinition) this.grammar.getRootRule();
   }
 
-  public final void printStackTrace(PrintStream stream) {
+  public void printStackTrace(PrintStream stream) {
     stream.append(ParsingStackTrace.generateFullStackTrace(getParsingState()));
   }
 
-  public final void addListener(RecognitionExceptionListener listerner) {
+  public void addListener(RecognitionExceptionListener listerner) {
     listeners.add(listerner);
   }
 
-  public final AstNode parse(File file) {
+  public AstNode parse(File file) {
     fireBeginLexEvent();
     try {
       lexerOutput = lexer.lex(file);
@@ -67,7 +67,7 @@ public final class Parser<GRAMMAR extends Grammar> {
     return parse(lexerOutput.getTokens());
   }
 
-  public final AstNode parse(String source) {
+  public AstNode parse(String source) {
     fireBeginLexEvent();
     try {
       lexerOutput = lexer.lex(source);
@@ -79,7 +79,7 @@ public final class Parser<GRAMMAR extends Grammar> {
     return parse(lexerOutput.getTokens());
   }
 
-  public final AstNode parse(List<Token> tokens) {
+  public AstNode parse(List<Token> tokens) {
     fireBeginParseEvent();
 
     try {
@@ -131,23 +131,23 @@ public final class Parser<GRAMMAR extends Grammar> {
     }
   }
 
-  public final ParsingState getParsingState() {
+  public ParsingState getParsingState() {
     return parsingState;
   }
 
-  public final GRAMMAR getGrammar() {
+  public GRAMMAR getGrammar() {
     return grammar;
   }
 
-  public final LexerOutput getLexerOutput() {
+  public LexerOutput getLexerOutput() {
     return lexerOutput;
   }
 
-  public final RuleDefinition getRootRule() {
+  public RuleDefinition getRootRule() {
     return rootRule;
   }
 
-  public final void setRootRule(Rule rootRule) {
+  public void setRootRule(Rule rootRule) {
     this.rootRule = (RuleDefinition) rootRule;
   }
 
