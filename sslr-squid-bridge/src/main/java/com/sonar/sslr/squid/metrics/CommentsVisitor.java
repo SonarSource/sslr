@@ -11,28 +11,29 @@ import java.util.Set;
 import org.sonar.squid.api.SourceFile;
 import org.sonar.squid.measures.MetricDef;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.*;
 import com.sonar.sslr.squid.SquidAstVisitor;
 
 /**
  * Visitor that computes the number of lines of comments and the number of empty lines of comments.
  */
-public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> {
+public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisitor<GRAMMAR> implements AstAndTokenVisitor {
 
   private Set<Integer> noSonar;
   private Set<Integer> comments;
   private Set<Integer> blankComments;
+  private boolean seenFirstToken;
 
   private final boolean enableNoSonar;
   private final MetricDef commentMetric;
   private final MetricDef blankCommentMetric;
+  private final boolean ignoreHeaderComments;
 
   private CommentsVisitor(CommentsVisitorBuilder<GRAMMAR> builder) {
     this.enableNoSonar = builder.enableNoSonar;
     this.commentMetric = builder.commentMetric;
     this.blankCommentMetric = builder.blankCommentMetric;
+    this.ignoreHeaderComments = builder.ignoreHeaderComments;
   }
 
   private void addNoSonar(int line) {
@@ -44,7 +45,7 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
   }
 
   private void addCommentLine(int line) {
-    /* Mark the line only if it does not already have 1) no sonar, 2) commented code */
+    /* Mark the line only if it does not already have 1) no sonar */
     if ( !noSonar.contains(line)) {
       /* Remove from lower priorities categories first */
       blankComments.remove(line);
@@ -54,7 +55,7 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
   }
 
   private void addBlankCommentLine(int line) {
-    /* Mark the line only if it does not already have 1) no sonar, 2) commented code, or 3) a non-empty comment */
+    /* Mark the line only if it does not already have 1) no sonar, or 2) a non-empty comment */
     if ( !noSonar.contains(line) && !comments.contains(line)) {
       blankComments.add(line);
     }
@@ -68,6 +69,35 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
     noSonar = new HashSet<Integer>();
     comments = new HashSet<Integer>();
     blankComments = new HashSet<Integer>();
+    seenFirstToken = false;
+  }
+
+  public void visitToken(Token token) {
+    if (ignoreHeaderComments && !seenFirstToken) {
+      seenFirstToken = true;
+    } else {
+      for (Trivia trivia : token.getTrivia()) {
+        if (trivia.isComment()) {
+          String[] commentLines = getContext().getCommentAnalyser().getContents(trivia.getValue()).split("(\r)?\n|\r", -1);
+          int line = trivia.getLine();
+
+          for (String commentLine : commentLines) {
+            if (enableNoSonar && commentLine.trim().contains("NOSONAR")) {
+              /* NOSONAR */
+              addNoSonar(line);
+            } else if (blankCommentMetric != null && getContext().getCommentAnalyser().isBlank(commentLine)) {
+              /* Blank lines */
+              addBlankCommentLine(line);
+            } else if (commentMetric != null) {
+              /* Comment lines */
+              addCommentLine(line);
+            }
+
+            line++;
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -75,30 +105,6 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
    */
   @Override
   public void leaveFile(AstNode astNode) {
-    if (getContext().getComments() == null) {
-      return;
-    }
-
-    for (Token comment : getContext().getComments()) {
-      String[] commentLines = getContext().getCommentAnalyser().getContents(comment.getOriginalValue()).split("\n", -1);
-      int line = comment.getLine();
-
-      for (String commentLine : commentLines) {
-        if (enableNoSonar && commentLine.trim().startsWith("NOSONAR")) {
-          /* NOSONAR */
-          addNoSonar(line);
-        } else if (blankCommentMetric != null && getContext().getComments().isBlank(commentLine)) {
-          /* Blank lines */
-          addBlankCommentLine(line);
-        } else if (commentMetric != null) {
-          /* Comment lines */
-          addCommentLine(line);
-        }
-
-        line++;
-      }
-    }
-
     if (enableNoSonar) {
       ((SourceFile) getContext().peekSourceCode()).addNoSonarTagLines(noSonar);
     }
@@ -116,9 +122,10 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
 
   public final static class CommentsVisitorBuilder<GRAMMAR extends Grammar> {
 
-    private boolean enableNoSonar;
+    private boolean enableNoSonar = false;
     private MetricDef commentMetric;
     private MetricDef blankCommentMetric;
+    private boolean ignoreHeaderComments = false;
 
     private CommentsVisitorBuilder() {
     }
@@ -139,6 +146,11 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
 
     public CommentsVisitorBuilder<GRAMMAR> withBlankCommentMetric(MetricDef blankCommentMetric) {
       this.blankCommentMetric = blankCommentMetric;
+      return this;
+    }
+
+    public CommentsVisitorBuilder<GRAMMAR> withIgnoreHeaderComment(boolean ignoreHeaderComments) {
+      this.ignoreHeaderComments = ignoreHeaderComments;
       return this;
     }
 

@@ -22,7 +22,16 @@ import com.sonar.sslr.test.miniC.MiniCGrammar;
 public class ResourceParser {
 
   public static SourceFile scanFile(String filePath, SquidAstVisitor<MiniCGrammar>... visitors) {
-    AstScanner<MiniCGrammar> scanner = MiniCAstScanner.create(visitors);
+    return scanFile(filePath, false, visitors);
+  }
+
+  public static SourceFile scanFileIgnoreHeaderComments(String filePath, SquidAstVisitor<MiniCGrammar>... visitors) {
+    return scanFile(filePath, true, visitors);
+  }
+
+  private static SourceFile scanFile(String filePath, boolean ignoreHeaderComments, SquidAstVisitor<MiniCGrammar>... visitors) {
+    AstScanner<MiniCGrammar> scanner = ignoreHeaderComments ? MiniCAstScanner.createIgnoreHeaderComments(visitors) : MiniCAstScanner
+        .create(visitors);
     File file = FileUtils.toFile(ResourceParser.class.getResource(filePath));
     if (file == null || !file.exists()) {
       throw new IllegalArgumentException("The file located under \"" + filePath + "\" was not found.");

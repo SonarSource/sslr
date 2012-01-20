@@ -62,6 +62,14 @@ public final class MiniCAstScanner {
   }
 
   public static AstScanner<MiniCGrammar> create(SquidAstVisitor<MiniCGrammar>... visitors) {
+    return create(false, visitors);
+  }
+
+  public static AstScanner<MiniCGrammar> createIgnoreHeaderComments(SquidAstVisitor<MiniCGrammar>... visitors) {
+    return create(true, visitors);
+  }
+
+  private static AstScanner<MiniCGrammar> create(boolean ignoreHeaderComments, SquidAstVisitor<MiniCGrammar>... visitors) {
 
     final SquidAstVisitorContextImpl<MiniCGrammar> context = new SquidAstVisitorContextImpl<MiniCGrammar>(
         new SourceProject("MiniC Project"));
@@ -89,7 +97,7 @@ public final class MiniCAstScanner {
 
           @Override
           public String getContents(String comment) {
-            return comment.startsWith("//") ? comment.substring(2) : comment.substring(2, comment.length() - 2);
+            return comment.substring(2, comment.length() - 2);
           }
 
         }
@@ -120,6 +128,7 @@ public final class MiniCAstScanner {
     builder.withSquidAstVisitor(CommentsVisitor.<MiniCGrammar> builder().withCommentMetric(MiniCMetrics.COMMENT_LINES)
         .withBlankCommentMetric(MiniCMetrics.BLANK_COMMENT_LINES)
         .withNoSonar(true)
+        .withIgnoreHeaderComment(ignoreHeaderComments)
         .build());
     builder.withSquidAstVisitor(CounterVisitor.<MiniCGrammar> builder().setMetricDef(MiniCMetrics.STATEMENTS)
         .subscribeTo(parser.getGrammar().statement).build());
