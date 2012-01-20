@@ -5,9 +5,6 @@
  */
 package com.sonar.sslr.test.miniC.fakeChecks;
 
-import static com.sonar.sslr.squid.metrics.ResourceParser.*;
-import static com.sonar.sslr.test.squid.CheckMatchers.*;
-
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstAndTokenVisitor;
@@ -16,14 +13,18 @@ import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.squid.checks.SquidCheck;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
 
+import static com.sonar.sslr.squid.metrics.ResourceParser.scanFile;
+import static com.sonar.sslr.test.squid.CheckMatchers.assertOnlyOneViolation;
+import static com.sonar.sslr.test.squid.CheckMatchers.setCurrentSourceFile;
+
 public class FakeCommentCheckTest {
 
   private class FakeCommentCheck extends SquidCheck<MiniCGrammar> implements AstAndTokenVisitor {
 
     public void visitToken(Token token) {
       for (Trivia trivia : token.getTrivia()) {
-        if (trivia.isComment() && trivia.getValue().contains("stupid")) {
-          getContext().log(this, "Be gentle in your comments.", trivia.getLine());
+        if (trivia.isComment() && trivia.getToken().getValue().contains("stupid")) {
+          getContext().log(this, "Be gentle in your comments.", trivia.getToken().getLine());
         }
       }
     }

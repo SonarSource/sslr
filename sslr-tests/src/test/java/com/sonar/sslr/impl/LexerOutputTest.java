@@ -5,15 +5,16 @@
  */
 package com.sonar.sslr.impl;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
+
+import static org.junit.Assert.assertThat;
+
+import static org.hamcrest.Matchers.is;
 
 public class LexerOutputTest {
 
@@ -50,7 +51,7 @@ public class LexerOutputTest {
 
     assertThat(output.size(), is(1));
     assertThat(output.get(0).getTrivia().size(), is(1));
-    assertThat(output.get(0).getTrivia().get(0).getValue(), is("comment"));
+    assertThat(output.get(0).getTrivia().get(0).getToken().getValue(), is("comment"));
     assertThat(output.get(0).getTrivia().get(0).isComment(), is(true));
     assertThat(output.get(0).getTrivia().get(0).isPreprocessor(), is(false));
   }
@@ -80,10 +81,10 @@ public class LexerOutputTest {
     assertThat(output.size(), is(2));
     assertThat(output.get(0).getTrivia().size(), is(0));
     assertThat(output.get(1).getTrivia().size(), is(2));
-    assertThat(output.get(1).getTrivia().get(0).getValue(), is("comment"));
+    assertThat(output.get(1).getTrivia().get(0).getToken().getValue(), is("comment"));
     assertThat(output.get(1).getTrivia().get(0).isComment(), is(true));
     assertThat(output.get(1).getTrivia().get(0).isPreprocessor(), is(false));
-    assertThat(output.get(1).getTrivia().get(1).getValue(), is("preprocessor"));
+    assertThat(output.get(1).getTrivia().get(1).getToken().getValue(), is("preprocessor"));
     assertThat(output.get(1).getTrivia().get(1).isComment(), is(false));
     assertThat(output.get(1).getTrivia().get(1).isPreprocessor(), is(true));
   }
@@ -110,10 +111,10 @@ public class LexerOutputTest {
     assertThat(output.size(), is(2));
     assertThat(output.get(0).getTrivia().size(), is(0));
     assertThat(output.get(1).getTrivia().size(), is(4));
-    assertThat(output.get(1).getTrivia().get(0).getValue(), is("comment1"));
-    assertThat(output.get(1).getTrivia().get(1).getValue(), is("comment2"));
-    assertThat(output.get(1).getTrivia().get(2).getValue(), is("comment3"));
-    assertThat(output.get(1).getTrivia().get(3).getValue(), is("comment4"));
+    assertThat(output.get(1).getTrivia().get(0).getToken().getValue(), is("comment1"));
+    assertThat(output.get(1).getTrivia().get(1).getToken().getValue(), is("comment2"));
+    assertThat(output.get(1).getTrivia().get(2).getToken().getValue(), is("comment3"));
+    assertThat(output.get(1).getTrivia().get(3).getToken().getValue(), is("comment4"));
   }
 
 }

@@ -16,6 +16,7 @@ public class Token {
   private static final int DEFAULT_LINE = 1;
   private static final int DEFAULT_COLUMN = 0;
   private static final File DEFAULT_FILE = null;
+  private static final List<Trivia> DEFAULT_EMPTY_TRIVIA = Lists.newArrayList();
 
   private final TokenType type;
   private final String value;
@@ -24,7 +25,7 @@ public class Token {
   private final int column;
   private final File file;
   private boolean generatedCode = false;
-  private final List<Trivia> trivia = Lists.newLinkedList();
+  private List<Trivia> trivia = DEFAULT_EMPTY_TRIVIA;
 
   private boolean copyBook = false;
   private int copyBookOriginalLine = -1;
@@ -110,8 +111,12 @@ public class Token {
     return trivia;
   }
 
-  public void addAllTrivia(List<Trivia> trivia) {
-    this.trivia.addAll(trivia);
+  void addAllTrivia(List<Trivia> trivia) {
+    if (this.trivia.isEmpty()) {
+      this.trivia = Lists.newArrayList(trivia);
+    } else {
+      this.trivia.addAll(trivia);
+    }
   }
 
   @Override
