@@ -11,6 +11,11 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+/**
+ * Tokens are string of character like an identifier, a literal, an integer, ... which are produced by the lexer to feed the parser.
+ * By definition, comments and preprocessing directives should not be seen by the parser that's why such Trivia, when they exist, are
+ * attached to the next token.
+ */
 public class Token {
 
   private static final int DEFAULT_LINE = 1;
@@ -68,18 +73,31 @@ public class Token {
     return value;
   }
 
+  /**
+   * @return the original value of the token. This method is useful when a language is case-insensitive as in that case all token values are
+   *         capitalized.
+   */
   public String getOriginalValue() {
     return originalValue;
   }
 
+  /**
+   * @return the line of the token in the source code
+   */
   public int getLine() {
     return line;
   }
 
+  /**
+   * @return the column of the token in the source code
+   */
   public int getColumn() {
     return column;
   }
 
+  /**
+   * @return the file this token belongs to
+   */
   public File getFile() {
     if (file == null) {
       return new File("Dummy for unit tests");
@@ -103,10 +121,16 @@ public class Token {
     this.generatedCode = generatedCode;
   }
 
+  /**
+   * @return true if there is some trivia like some comments or preprocessing directive between this token and the previous one.
+   */
   public boolean hasTrivia() {
     return !trivia.isEmpty();
   }
 
+  /**
+   * @return the list of trivia located between this token and the previous one
+   */
   public List<Trivia> getTrivia() {
     return trivia;
   }
