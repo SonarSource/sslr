@@ -135,11 +135,19 @@ public class Token {
     return trivia;
   }
 
-  void addAllTrivia(List<Trivia> trivia) {
+  public void addAllTrivia(List<Trivia> trivia) {
     if (this.trivia.isEmpty()) {
       this.trivia = Lists.newArrayList(trivia);
     } else {
       this.trivia.addAll(trivia);
+    }
+  }
+  
+  public void addFirstAllTrivia(List<Trivia> trivia) {
+    if (this.trivia.isEmpty()) {
+      this.trivia = Lists.newArrayList(trivia);
+    } else {
+      this.trivia.addAll(0, trivia);
     }
   }
 
