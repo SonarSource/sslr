@@ -7,8 +7,10 @@
 package com.sonar.sslr.api;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.ArrayUtils;
 
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 
@@ -21,29 +23,69 @@ import com.sonar.sslr.impl.matcher.RuleDefinition;
  */
 public abstract class Grammar {
 
-  private final Map<String, Rule> ruleIndex = new HashMap<String, Rule>();
-
   public Grammar() {
     instanciateRuleFields();
   }
 
-  private void instanciateRuleFields() {
-    Field[] fields = this.getClass().getFields();
+  /**
+   * Find all the direct rule fields declared in the given Grammar class.
+   * Inherited rule fields are not returned.
+   * 
+   * @param grammarClass
+   *          the class of the Grammar for which rule fields must be found
+   * @return the rule fields declared in this class, excluding the inherited ones
+   * @see getAllRuleFields
+   */
+  public static Field[] getRuleFields(Class grammarClass) {
+    Field[] fields = grammarClass.getDeclaredFields();
+
+    List<Field> ruleFields = new ArrayList<Field>();
     for (Field field : fields) {
-      String fieldName = field.getName();
+      if (Rule.class.isAssignableFrom(field.getType())) {
+        ruleFields.add(field);
+      }
+    }
+
+    return ruleFields.toArray(new Field[ruleFields.size()]);
+  }
+
+  /**
+   * Find all direct and indirect rule fields declared in the given Grammar class.
+   * Inherited rule fields are also returned.
+   * 
+   * @param grammarClass
+   *          the class of the Grammar for which rule fields must be found
+   * @return the rule fields declared in this class, as well as the inherited ones
+   * @see getRuleFields
+   */
+  public static Field[] getAllRuleFields(Class grammarClass) {
+    Field[] ruleFields = getRuleFields(grammarClass);
+
+    Class superClass = grammarClass.getSuperclass();
+    while (superClass != null) {
+      ruleFields = (Field[]) ArrayUtils.addAll(ruleFields, getRuleFields(superClass));
+      superClass = superClass.getSuperclass();
+    }
+
+    return ruleFields;
+  }
+
+  private void instanciateRuleFields() {
+    for (Field ruleField : getAllRuleFields(this.getClass())) {
+      String ruleName = ruleField.getName();
       try {
         Rule rule;
-        if (field.getType() == LeftRecursiveRule.class) {
-          rule = RuleDefinition.newLeftRecursiveRuleBuilder(fieldName);
-        } else if (field.getType() == Rule.class) {
-          rule = RuleDefinition.newRuleBuilder(fieldName);
+        if (ruleField.getType() == LeftRecursiveRule.class) {
+          rule = RuleDefinition.newLeftRecursiveRuleBuilder(ruleName);
+        } else if (ruleField.getType() == Rule.class) {
+          rule = RuleDefinition.newRuleBuilder(ruleName);
         } else {
-          continue;
+          throw new IllegalArgumentException("A rule must be either a Rule or a LeftRecursiveRule.");
         }
-        field.set(this, rule);
-        ruleIndex.put(fieldName, rule);
+        ruleField.setAccessible(true);
+        ruleField.set(this, rule);
       } catch (Exception e) {
-        throw new RuntimeException("Unable to instanciate the rule '" + this.getClass().getName() + "." + fieldName + "'", e);
+        throw new RuntimeException("Unable to instanciate the rule '" + ruleName + "'", e);
       }
     }
   }
@@ -54,4 +96,5 @@ public abstract class Grammar {
    * @return the entry point of this Grammar
    */
   public abstract Rule getRootRule();
+
 }
