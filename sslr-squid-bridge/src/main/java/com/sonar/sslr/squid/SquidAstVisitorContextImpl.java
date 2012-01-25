@@ -108,26 +108,30 @@ public final class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends S
 
   /** {@inheritDoc} */
   @Override
-  public void log(CodeCheck codeCheck, String messageText, AstNode node, Object... messageParameters) {
-    log(codeCheck, messageText, node.getToken(), messageParameters);
+  public void createFileViolation(CodeCheck check, String message, Object... messageParameters) {
+    createLineViolation(check, message, -1, messageParameters);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void log(CodeCheck codeCheck, String messageText, Token token, Object... messageParameters) {
-    CheckMessage message = new CheckMessage(codeCheck, messageText, messageParameters);
-    message.setLine(token.getLine());
-    log(message);
+  public void createLineViolation(CodeCheck check, String message, AstNode node, Object... messageParameters) {
+    createLineViolation(check, message, node.getToken(), messageParameters);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void log(CodeCheck codeCheck, String messageText, int line, Object... messageParameters) {
-    CheckMessage message = new CheckMessage(codeCheck, messageText, messageParameters);
+  public void createLineViolation(CodeCheck check, String message, Token token, Object... messageParameters) {
+    createLineViolation(check, message, token.getLine(), messageParameters);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void createLineViolation(CodeCheck check, String message, int line, Object... messageParameters) {
+    CheckMessage checkMessage = new CheckMessage(check, message, messageParameters);
     if (line > 0) {
-      message.setLine(line);
+      checkMessage.setLine(line);
     }
-    log(message);
+    log(checkMessage);
   }
 
   private void log(CheckMessage message) {
@@ -139,11 +143,6 @@ public final class SquidAstVisitorContextImpl<GRAMMAR extends Grammar> extends S
       throw new IllegalStateException("Unable to log a check message on source code '"
           + (peekSourceCode() == null ? "[NULL]" : peekSourceCode().getKey()) + "'");
     }
-  }
-
-  /** {@inheritDoc} */
-  public String getKey() {
-    return getClass().getSimpleName();
   }
 
 }

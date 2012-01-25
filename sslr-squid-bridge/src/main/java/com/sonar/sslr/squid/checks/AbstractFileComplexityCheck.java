@@ -34,7 +34,7 @@ public abstract class AbstractFileComplexityCheck<GRAMMAR extends Grammar> exten
     int fileComplexity = ChecksHelper.getRecursiveMeasureInt(sourceFile, getComplexityMetric());
 
     if (fileComplexity > getMaximumFileComplexity()) {
-      getContext().log(this, "The file is too complex ({0} while maximum allowed is set to {1}).", -1, fileComplexity,
+      getContext().createFileViolation(this, "The file is too complex ({0} while maximum allowed is set to {1}).", fileComplexity,
           getMaximumFileComplexity());
     }
   }

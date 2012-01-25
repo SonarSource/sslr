@@ -40,7 +40,7 @@ public abstract class AbstractNestedIfCheck<GRAMMAR extends Grammar> extends Squ
   public void visitNode(AstNode astNode) {
     nestingLevel++;
     if (nestingLevel > getMaximumNestingLevel()) {
-      getContext().log(this, "This if has a nesting level of {0}, which is higher than the maximum allowed {1}.", astNode,
+      getContext().createLineViolation(this, "This if has a nesting level of {0}, which is higher than the maximum allowed {1}.", astNode,
           nestingLevel,
           getMaximumNestingLevel());
     }

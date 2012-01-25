@@ -24,7 +24,7 @@ public class FakeCommentCheckTest {
     public void visitToken(Token token) {
       for (Trivia trivia : token.getTrivia()) {
         if (trivia.isComment() && trivia.getToken().getValue().contains("stupid")) {
-          getContext().log(this, "Be gentle in your comments.", trivia.getToken().getLine());
+          getContext().createLineViolation(this, "Be gentle in your comments.", trivia.getToken().getLine());
         }
       }
     }

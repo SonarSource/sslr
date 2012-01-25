@@ -36,7 +36,7 @@ public abstract class AbstractLineLengthCheck<GRAMMAR extends Grammar> extends S
   public void visitToken(Token token) {
     if (lastIncorrectLine != token.getLine() && token.getColumn() + token.getValue().length() > getMaximumLineLength()) {
       lastIncorrectLine = token.getLine();
-      getContext().log(this, "The line length is greater than {0,number,integer} authorized.", token.getLine(), getMaximumLineLength());
+      getContext().createLineViolation(this, "The line length is greater than {0,number,integer} authorized.", token.getLine(), getMaximumLineLength());
     }
   }
 

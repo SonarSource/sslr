@@ -46,7 +46,7 @@ public abstract class AbstractMagicCheck<GRAMMAR extends Grammar> extends SquidC
       exclusionLevel++;
     } else if ((getInclusions().length == 0 || inclusionLevel > 0) && exclusionLevel == 0) {
       if ( !isExcepted(astNode)) {
-        getContext().log(this, getMessage(), astNode);
+        getContext().createLineViolation(this, getMessage(), astNode);
       }
     }
   }

@@ -15,13 +15,13 @@ import com.sonar.sslr.api.RecognitionException;
 public abstract class AbstractParseErrorCheck<GRAMMAR extends Grammar> extends SquidCheck<GRAMMAR> implements AuditListener {
 
   public void processRecognitionException(RecognitionException e) {
-    getContext().log(this, e.getMessage(), e.getLine());
+    getContext().createLineViolation(this, e.getMessage(), e.getLine());
   }
 
   public void processException(Exception e) {
     StringWriter exception = new StringWriter();
     e.printStackTrace(new PrintWriter(exception));
-    getContext().log(this, exception.toString(), 1);
+    getContext().createLineViolation(this, exception.toString(), 1);
   }
 
 }

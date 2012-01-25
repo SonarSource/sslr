@@ -29,39 +29,58 @@ public abstract class SquidAstVisitorContext<GRAMMAR extends Grammar> {
   public abstract CommentAnalyser getCommentAnalyser();
 
   /**
-   * @param codeCheck
-   *          codeCheck check from which this log generates
-   * @param messageText
-   *          message to log
+   * Create a new file violation
+   * 
+   * @param check
+   *          the check which is creating this new violation (i.e. this function's caller)
+   * @param message
+   *          message describing the violation, can be formatted (see java.text.MessageFormat)
+   * @param messageParameters
+   *          optional message parameters (see java.text.MessageFormat)
+   */
+  public abstract void createFileViolation(CodeCheck check, String message, Object... messageParameters);
+
+  /**
+   * Create a new line violation caused by a given AST node
+   * 
+   * @param check
+   *          the check which is creating this new violation (i.e. this function's caller)
+   * @param message
+   *          message describing the violation, can be formatted (see java.text.MessageFormat)
    * @param node
-   *          AST node associated to this message. Used to associate the message to a line number.
+   *          AST node which causing the violation
    * @param messageParameters
-   *          option message's parameters (see the java.text.MessageFormat class of the java API)
+   *          optional message parameters (see java.text.MessageFormat)
    */
-  public abstract void log(CodeCheck codeCheck, String messageText, AstNode node, Object... messageParameters);
+  public abstract void createLineViolation(CodeCheck check, String message, AstNode node, Object... messageParameters);
 
   /**
-   * @param codeCheck
-   *          codeCheck check from which this log generates
-   * @param messageText
-   *          message to log
+   * Create a new line violation caused by a given token
+   * 
+   * @param check
+   *          the check which is creating this new violation (i.e. this function's caller)
+   * @param message
+   *          message describing the violation, can be formatted (see java.text.MessageFormat)
    * @param token
-   *          token associated to this message. Used to associate the message to a line number.
+   *          Token which causing the violation
    * @param messageParameters
-   *          option message's parameters (see the java.text.MessageFormat class of the java API)
+   *          optional message parameters (see java.text.MessageFormat)
    */
-  public abstract void log(CodeCheck codeCheck, String messageText, Token token, Object... messageParameters);
+  public abstract void createLineViolation(CodeCheck check, String message, Token token, Object... messageParameters);
 
   /**
-   * @param codeCheck
-   *          codeCheck check from which this log generates
-   * @param messageText
-   *          message to log
+   * Create a new line violation, not directly caused by an AST node nor a Token
+   * 
+   * @param check
+   *          the check which is creating this new violation (i.e. this function's caller)
+   * @param message
+   *          message describing the violation, can be formatted (see java.text.MessageFormat)
    * @param line
-   *          line number to associate this to.
+   *          line on which the violation must be created.
+   *          If zero or a negative number is passed, a file violation will be created instead of a line one
    * @param messageParameters
-   *          option message's parameters (see the java.text.MessageFormat class of the java API)
+   *          optional message parameters (see java.text.MessageFormat)
    */
-  public abstract void log(CodeCheck codeCheck, String messageText, int line, Object... messageParameters);
+  public abstract void createLineViolation(CodeCheck check, String message, int line, Object... messageParameters);
 
 }

@@ -32,7 +32,7 @@ public class FakePreprocessorCheckTest {
           MiniCPreprocessor.MiniCPreprocessorGrammar grammar = (MiniCPreprocessor.MiniCPreprocessorGrammar) directive.getGrammar();
           AstNode definition = preprocessorStructure.findFirstDirectChild(grammar.binDefinition);
           if (definition != null && "WTF".equals(definition.getTokenOriginalValue())) {
-            getContext().log(this, "Be gentle in your preprocessor definitions.",
+            getContext().createLineViolation(this, "Be gentle in your preprocessor definitions.",
                 trivia.getPreprocessingDirective().getAst().getTokenLine());
           }
         }

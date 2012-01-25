@@ -20,7 +20,7 @@ public abstract class AbstractGotoCheck<GRAMMAR extends Grammar> extends SquidCh
 
   @Override
   public void visitNode(AstNode astNode) {
-    getContext().log(this, "Goto should be avoided.", astNode);
+    getContext().createLineViolation(this, "Goto should be avoided.", astNode);
   }
 
 }
