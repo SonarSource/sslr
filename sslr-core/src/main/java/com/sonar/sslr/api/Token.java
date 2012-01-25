@@ -36,26 +36,42 @@ public class Token {
   private int copyBookOriginalLine = -1;
   private String copyBookOriginalFileName = null;
 
+  /**
+   * @deprecated please use the TokenBuilder to create a Token
+   */
+  @Deprecated
   public Token(TokenType type, String value) {
     this(type, value, DEFAULT_LINE, DEFAULT_COLUMN);
   }
 
+  /**
+   * @deprecated please use the TokenBuilder to create a Token
+   */
+  @Deprecated
   public Token(TokenType type, String value, String originalValue) {
-    this(type, value, originalValue, DEFAULT_LINE, DEFAULT_COLUMN);
+    this(type, value, originalValue, DEFAULT_LINE, DEFAULT_COLUMN, DEFAULT_FILE);
   }
 
+  /**
+   * @deprecated please use the TokenBuilder to create a Token
+   */
+  @Deprecated
   public Token(TokenType type, String value, int line, int column) {
     this(type, value, line, column, DEFAULT_FILE);
   }
 
-  public Token(TokenType type, String value, String originalValue, int line, int column) {
-    this(type, value, originalValue, line, column, DEFAULT_FILE);
-  }
-
+  /**
+   * @deprecated please use the TokenBuilder to create a Token
+   */
+  @Deprecated
   public Token(TokenType type, String value, int line, int column, File file) {
     this(type, value, value, line, column, file);
   }
 
+  /**
+   * @deprecated please use the TokenBuilder to create a Token
+   */
+  @Deprecated
   public Token(TokenType type, String value, String originalValue, int line, int column, File file) {
     this.type = type;
     this.value = value;
@@ -135,19 +151,11 @@ public class Token {
     return trivia;
   }
 
-  public void addAllTrivia(List<Trivia> trivia) {
+  void addAllTrivia(List<Trivia> trivia) {
     if (this.trivia.isEmpty()) {
       this.trivia = Lists.newArrayList(trivia);
     } else {
       this.trivia.addAll(trivia);
-    }
-  }
-  
-  public void addFirstAllTrivia(List<Trivia> trivia) {
-    if (this.trivia.isEmpty()) {
-      this.trivia = Lists.newArrayList(trivia);
-    } else {
-      this.trivia.addAll(0, trivia);
     }
   }
 
@@ -200,5 +208,90 @@ public class Token {
 
   public String getCopyBookOriginalFileName() {
     return copyBookOriginalFileName;
+  }
+
+  public static TokenBuiler create(TokenType type, String value) {
+    return new TokenBuiler(type, value);
+  }
+
+  public static TokenBuiler createFrom(Token token) {
+    return new TokenBuiler(token);
+  }
+
+  public static final class TokenBuiler {
+
+    private TokenType type;
+    private String value;
+    private String originalValue;
+    private File file = DEFAULT_FILE;
+    private int line = DEFAULT_LINE;
+    private int column = DEFAULT_COLUMN;
+    private List<Trivia> trivia = DEFAULT_EMPTY_TRIVIA;
+    private boolean generatedCode = false;
+    private boolean copyBook = false;
+    private int copyBookOriginalLine = -1;
+    private String copyBookOriginalFileName = null;
+
+    private TokenBuiler(TokenType type, String value) {
+      this.type = type;
+      this.value = value;
+    }
+
+    public TokenBuiler(Token token) {
+      type = token.type;
+      value = token.value;
+      originalValue = token.originalValue;
+      file = token.file;
+      line = token.line;
+      column = token.column;
+      trivia = token.trivia;
+      generatedCode = token.generatedCode;
+      copyBook = token.copyBook;
+      copyBookOriginalLine = token.copyBookOriginalLine;
+      copyBookOriginalFileName = token.copyBookOriginalFileName;
+    }
+
+    public TokenBuiler withLine(int line) {
+      this.line = line;
+      return this;
+    }
+
+    public TokenBuiler withColumn(int column) {
+      this.column = column;
+      return this;
+    }
+
+    public TokenBuiler withFile(File file) {
+      this.file = file;
+      return this;
+    }
+
+    public TokenBuiler withOriginalValue(String originalValue) {
+      this.originalValue = originalValue;
+      return this;
+    }
+
+    public TokenBuiler withTrivia(List<Trivia> trivia) {
+      this.trivia = Lists.newArrayList(trivia);
+      return this;
+    }
+
+    public TokenBuiler addTrivia(Trivia trivia) {
+      if (this.trivia.isEmpty()) {
+        this.trivia = Lists.newArrayList();
+      }
+      this.trivia.add(trivia);
+      return this;
+    }
+
+    public Token build() {
+      Token token = new Token(type, value, originalValue, line, column, file);
+      token.copyBook = copyBook;
+      token.copyBookOriginalFileName = copyBookOriginalFileName;
+      token.copyBookOriginalLine = copyBookOriginalLine;
+      token.generatedCode = generatedCode;
+      token.trivia = trivia;
+      return token;
+    }
   }
 }
