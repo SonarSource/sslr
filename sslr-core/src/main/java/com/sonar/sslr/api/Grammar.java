@@ -54,15 +54,4 @@ public abstract class Grammar {
    * @return the entry point of this Grammar
    */
   public abstract Rule getRootRule();
-
-  /**
-   * Utility method to retrieve the instance of a Rule according to its name.
-   * 
-   * @param ruleName
-   *          the rule name
-   * @return the Rule object if exists, otherwise a null value is returned
-   */
-  public Rule findRuleByName(String ruleName) {
-    return ruleIndex.get(ruleName);
-  }
 }

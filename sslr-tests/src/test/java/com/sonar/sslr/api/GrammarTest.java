@@ -16,19 +16,21 @@ public class GrammarTest {
   private final MyGrammar grammar = new MyGrammar();
 
   @Test
-  public void shouldIndexRules() {
-    assertThat(grammar.findRuleByName("rootRule"), is(grammar.getRootRule()));
-    assertThat(grammar.findRuleByName("leftRecursiveRule"), is(notNullValue()));
-    assertThat(grammar.findRuleByName("unknownRule"), is(nullValue()));
-  }
-
-  @Test
   public void shouldAutomaticallyInstanciateRules() {
     assertThat(grammar.leftRecursiveRule, is(notNullValue()));
     assertThat(grammar.rootRule, is(notNullValue()));
   }
 
-  public class MyGrammar extends Grammar {
+  public abstract class MyBaseGrammar extends Grammar {
+
+    Rule basePackageRule;
+    public Rule basePublicRule;
+    private Rule basePrivateRule;
+    protected Rule baseProtectedRule;
+
+  }
+
+  public class MyGrammar extends MyBaseGrammar {
 
     public Rule rootRule;
     public LeftRecursiveRule leftRecursiveRule;
