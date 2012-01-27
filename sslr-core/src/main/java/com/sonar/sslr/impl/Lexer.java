@@ -28,7 +28,7 @@ public class Lexer {
   private ChannelDispatcher<LexerOutput> channelDispatcher;
   private Preprocessor[] preprocessors = new Preprocessor[0];
 
-  private Lexer(LexerBuilder builder) {
+  private Lexer(Builder builder) {
     this.charset = builder.charset;
     this.preprocessors = builder.preprocessors.toArray(new Preprocessor[builder.preprocessors.size()]);
     this.configuration = builder.configuration;
@@ -158,11 +158,11 @@ public class Lexer {
     }
   }
 
-  public static LexerBuilder builder() {
-    return new LexerBuilder();
+  public static Builder builder() {
+    return new Builder();
   }
 
-  public static final class LexerBuilder {
+  public static final class Builder {
 
     private Charset charset = Charset.defaultCharset();
     private final List<Preprocessor> preprocessors = new ArrayList<Preprocessor>();
@@ -170,7 +170,7 @@ public class Lexer {
     private final List<Channel> channels = new ArrayList<Channel>();
     private boolean failIfNoChannelToConsumeOneCharacter = false;
 
-    private LexerBuilder() {
+    private Builder() {
       configuration.setBufferCapacity(DEFAULT_CODE_BUFFER_CAPACITY);
     }
 
@@ -184,27 +184,27 @@ public class Lexer {
      * @param charset
      * @return this LexerBuilder
      */
-    public LexerBuilder withCharset(Charset charset) {
+    public Builder withCharset(Charset charset) {
       this.charset = charset;
       return this;
     }
 
-    public LexerBuilder withPreprocessor(Preprocessor preprocessor) {
+    public Builder withPreprocessor(Preprocessor preprocessor) {
       preprocessors.add(preprocessor);
       return this;
     }
 
-    public LexerBuilder withCodeReaderConfiguration(CodeReaderConfiguration conf) {
+    public Builder withCodeReaderConfiguration(CodeReaderConfiguration conf) {
       this.configuration = conf;
       return this;
     }
 
-    public LexerBuilder withChannel(Channel<LexerOutput> channel) {
+    public Builder withChannel(Channel<LexerOutput> channel) {
       channels.add(channel);
       return this;
     }
 
-    public LexerBuilder withFailIfNoChannelToConsumeOneCharacter(boolean failIfNoChannelToConsumeOneCharacter) {
+    public Builder withFailIfNoChannelToConsumeOneCharacter(boolean failIfNoChannelToConsumeOneCharacter) {
       this.failIfNoChannelToConsumeOneCharacter = failIfNoChannelToConsumeOneCharacter;
       return this;
     }
