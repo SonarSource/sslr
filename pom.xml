@@ -10,15 +10,15 @@
 
   <groupId>com.sonarsource.sslr</groupId>
   <artifactId>sslr</artifactId>
-  <version>1.8-SNAPSHOT</version>
+  <version>1.8</version>
   <packaging>pom</packaging>
 
   <name>SonarSource :: Language Recognizer</name>
 
   <scm>
-    <connection>scm:svn:https://subversion.assembla.com/svn/sonarsourcecode/trunk/sslr</connection>
-    <developerConnection>scm:svn:https://subversion.assembla.com/svn/sonarsourcecode/trunk/sslr</developerConnection>
-    <url>https://subversion.assembla.com/svn/sonarsourcecode/trunk/sslr</url>
+    <connection>scm:svn:https://subversion.assembla.com/svn/sonarsourcecode/tags/sslr-1.8</connection>
+    <developerConnection>scm:svn:https://subversion.assembla.com/svn/sonarsourcecode/tags/sslr-1.8</developerConnection>
+    <url>https://subversion.assembla.com/svn/sonarsourcecode/tags/sslr-1.8</url>
   </scm>
 
   <properties>
