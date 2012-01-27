@@ -18,12 +18,6 @@ import com.sonar.sslr.api.Preprocessor;
 public class LexerTest {
 
   @Test
-  public void defaultCapacityTest() {
-    Lexer lexer = Lexer.builder().build();
-    assertThat(lexer.getConfiguration().getBufferCapacity(), is(80000));
-  }
-
-  @Test
   public void defaultCharsetTest() {
     Lexer lexer = Lexer.builder().build();
     assertThat(lexer.getCharset(), is(Charset.defaultCharset()));

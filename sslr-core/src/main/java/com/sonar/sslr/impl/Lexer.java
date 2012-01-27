@@ -17,7 +17,7 @@ import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Preprocessor;
 
-public class Lexer {
+public final class Lexer {
 
   private Charset charset = Charset.defaultCharset();
 
@@ -25,7 +25,7 @@ public class Lexer {
                                                                  // consume big comment
 
   private CodeReaderConfiguration configuration = new CodeReaderConfiguration();
-  private ChannelDispatcher<LexerOutput> channelDispatcher;
+  private final ChannelDispatcher<LexerOutput> channelDispatcher;
   private Preprocessor[] preprocessors = new Preprocessor[0];
 
   private Lexer(Builder builder) {
@@ -35,58 +35,12 @@ public class Lexer {
     this.channelDispatcher = builder.getChannelDispatcher();
   }
 
-  /**
-   * @deprecated
-   * 
-   * @see #builder();
-   */
-  @Deprecated
-  public Lexer() {
-    this(Charset.defaultCharset());
-  }
-
-  /**
-   * @deprecated
-   * 
-   * @see #builder();
-   */
-  @Deprecated
-  public Lexer(Charset defaultCharset) {
-    this.charset = defaultCharset;
-    configuration = new CodeReaderConfiguration();
-    configuration.setBufferCapacity(DEFAULT_CODE_BUFFER_CAPACITY);
-  }
-
-  /**
-   * @deprecated
-   * 
-   * @see #builder();
-   */
-  @Deprecated
-  public void setPreprocessors(Preprocessor... preprocessors) {
-    this.preprocessors = preprocessors;
-  }
-
-  protected final Preprocessor[] getPreprocessors() {
-    return preprocessors;
-  }
-
-  protected CodeReaderConfiguration getConfiguration() {
-    return configuration;
-  }
-
-  /**
-   * @deprecated
-   * 
-   * @see #builder();
-   */
-  @Deprecated
-  protected void setConfiguration(CodeReaderConfiguration configuration) {
-    this.configuration = configuration;
-  }
-
   public Charset getCharset() {
     return charset;
+  }
+
+  public Preprocessor[] getPreprocessors() {
+    return preprocessors;
   }
 
   public LexerOutput lex(String sourceCode) {
@@ -98,7 +52,7 @@ public class Lexer {
   public final LexerOutput lex(File file) {
     InputStreamReader reader = null;
     try {
-      reader = new InputStreamReader(new FileInputStream(file), getCharset());
+      reader = new InputStreamReader(new FileInputStream(file), charset);
       LexerOutput lexerOutput = createLexerOutput();
       lexerOutput.setFile(file);
       lex(reader, lexerOutput);
@@ -131,7 +85,7 @@ public class Lexer {
   }
 
   protected LexerOutput createLexerOutput() {
-    return new LexerOutput(getPreprocessors());
+    return new LexerOutput(preprocessors);
   }
 
   protected ChannelDispatcher<LexerOutput> getChannelDispatcher() {
