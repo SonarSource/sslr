@@ -11,6 +11,8 @@ import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 
+import com.sonar.sslr.impl.ast.LeftAssociative;
+
 public class LeftAssociativeTest {
 
   @Test

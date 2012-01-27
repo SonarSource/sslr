@@ -3,9 +3,12 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.api;
+package com.sonar.sslr.impl.ast;
 
 import org.apache.commons.lang.NotImplementedException;
+
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.AstNodeType;
 
 /**
  * Utility class which helps to deal with left associative rules, which typically have the form:
