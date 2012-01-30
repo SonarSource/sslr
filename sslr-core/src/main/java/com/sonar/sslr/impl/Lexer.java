@@ -120,7 +120,7 @@ public final class Lexer {
 
     private Charset charset = Charset.defaultCharset();
     private final List<Preprocessor> preprocessors = new ArrayList<Preprocessor>();
-    private CodeReaderConfiguration configuration = new CodeReaderConfiguration();
+    private final CodeReaderConfiguration configuration = new CodeReaderConfiguration();
     private final List<Channel> channels = new ArrayList<Channel>();
     private boolean failIfNoChannelToConsumeOneCharacter = false;
 
@@ -145,11 +145,6 @@ public final class Lexer {
 
     public Builder withPreprocessor(Preprocessor preprocessor) {
       preprocessors.add(preprocessor);
-      return this;
-    }
-
-    public Builder withCodeReaderConfiguration(CodeReaderConfiguration conf) {
-      this.configuration = conf;
       return this;
     }
 
