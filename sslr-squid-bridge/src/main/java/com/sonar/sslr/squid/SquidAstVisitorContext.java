@@ -10,11 +10,12 @@ import java.io.File;
 import org.sonar.squid.api.CodeCheck;
 import org.sonar.squid.api.SourceCode;
 
-import com.sonar.sslr.api.*;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.CommentAnalyser;
+import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.api.Token;
 
 public abstract class SquidAstVisitorContext<GRAMMAR extends Grammar> {
-
-  public abstract Comments getComments();
 
   public abstract File getFile();
 

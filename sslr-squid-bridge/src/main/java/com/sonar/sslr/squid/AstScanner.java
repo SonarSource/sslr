@@ -91,11 +91,9 @@ public final class AstScanner<GRAMMAR extends Grammar> {
           }
         }
 
-        context.setComments(parserProduction.getLexerOutput().getComments(commentAnalyser));
         AstWalker astWalker = new AstWalker(visitors);
         astWalker.walkAndVisit(ast);
 
-        context.setComments(null);
         context.setFile(null, null);
         astWalker = null;
       } catch (RecognitionException e) {
