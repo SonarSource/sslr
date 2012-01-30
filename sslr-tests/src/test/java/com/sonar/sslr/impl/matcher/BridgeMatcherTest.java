@@ -61,7 +61,7 @@ public class BridgeMatcherTest {
 
   @Test
   public void testAstNodeTokens() {
-    ParsingState state = new ParsingState(IdentifierLexer.create().lex("one ").getTokens());
+    ParsingState state = new ParsingState(IdentifierLexer.create().lex("one "));
     AstNode astNode = bridge(GenericTokenType.IDENTIFIER, GenericTokenType.EOF).match(state);
     assertEquals(2, state.lexerIndex);
     assertEquals(2, astNode.getChildren().size());

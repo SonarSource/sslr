@@ -10,28 +10,25 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.sonar.test.channel.ChannelMatchers.*;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import com.sonar.sslr.api.LexerOutput;
+import com.sonar.sslr.api.GenericTokenType;
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.impl.Lexer;
 
 public class CommentChannelTest {
 
   private CommentRegexpChannel channel;
-  private LexerOutput output;
-
-  @Before
-  public void init() {
-    output = new LexerOutput();
-  }
+  private final Lexer lexer = Lexer.builder().build();
 
   @Test
   public void testCommentRegexp() {
     channel = new CommentRegexpChannel("//.*");
-    assertThat(channel, not(consume("This is not a comment", output)));
-    assertThat(channel, consume("//My Comment\n second line", output));
-    assertThat(output, hasComment("//My Comment"));
-    assertThat(output, hasOriginalComment("//My Comment"));
+    assertThat(channel, not(consume("This is not a comment", lexer)));
+    assertThat(channel, consume("//My Comment\n second line", lexer));
+    lexer.addToken(Token.create(GenericTokenType.EOF, "EOF").build());
+    assertThat(lexer.getTokens(), hasComment("//My Comment"));
+    assertThat(lexer.getTokens(), hasOriginalComment("//My Comment"));
   }
 
 }

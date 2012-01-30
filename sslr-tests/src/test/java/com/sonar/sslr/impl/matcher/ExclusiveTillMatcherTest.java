@@ -34,7 +34,7 @@ public class ExclusiveTillMatcherTest {
 
   @Test
   public void testAstNodeTokens() {
-    ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three four").getTokens());
+    ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three four"));
     exclusiveTill("three").reinitializeMatcherTree();
     AstNode astNode = exclusiveTill("three").match(state);
     assertEquals(2, state.lexerIndex);

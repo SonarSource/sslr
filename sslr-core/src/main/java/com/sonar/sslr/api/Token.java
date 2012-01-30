@@ -151,7 +151,7 @@ public class Token {
     return trivia;
   }
 
-  void addAllTrivia(List<Trivia> trivia) {
+  public void addAllTrivia(List<Trivia> trivia) {
     if (this.trivia.isEmpty()) {
       this.trivia = Lists.newArrayList(trivia);
     } else {
@@ -210,18 +210,18 @@ public class Token {
     return copyBookOriginalFileName;
   }
 
-  public static TokenBuiler create(TokenType type, String value) {
-    return new TokenBuiler(type, value);
+  public static Builer create(TokenType type, String value) {
+    return new Builer(type, value);
   }
 
-  public static TokenBuiler createFrom(Token token) {
-    return new TokenBuiler(token);
+  public static Builer createFrom(Token token) {
+    return new Builer(token);
   }
 
-  public static final class TokenBuiler {
+  public static final class Builer {
 
-    private TokenType type;
-    private String value;
+    private final TokenType type;
+    private final String value;
     private String originalValue;
     private File file = DEFAULT_FILE;
     private int line = DEFAULT_LINE;
@@ -232,12 +232,13 @@ public class Token {
     private int copyBookOriginalLine = -1;
     private String copyBookOriginalFileName = null;
 
-    private TokenBuiler(TokenType type, String value) {
+    private Builer(TokenType type, String value) {
       this.type = type;
       this.value = value;
+      this.originalValue = value;
     }
 
-    public TokenBuiler(Token token) {
+    public Builer(Token token) {
       type = token.type;
       value = token.value;
       originalValue = token.originalValue;
@@ -251,32 +252,32 @@ public class Token {
       copyBookOriginalFileName = token.copyBookOriginalFileName;
     }
 
-    public TokenBuiler withLine(int line) {
+    public Builer withLine(int line) {
       this.line = line;
       return this;
     }
 
-    public TokenBuiler withColumn(int column) {
+    public Builer withColumn(int column) {
       this.column = column;
       return this;
     }
 
-    public TokenBuiler withFile(File file) {
+    public Builer withFile(File file) {
       this.file = file;
       return this;
     }
 
-    public TokenBuiler withOriginalValue(String originalValue) {
+    public Builer withOriginalValue(String originalValue) {
       this.originalValue = originalValue;
       return this;
     }
 
-    public TokenBuiler withTrivia(List<Trivia> trivia) {
+    public Builer withTrivia(List<Trivia> trivia) {
       this.trivia = Lists.newArrayList(trivia);
       return this;
     }
 
-    public TokenBuiler addTrivia(Trivia trivia) {
+    public Builer addTrivia(Trivia trivia) {
       if (this.trivia.isEmpty()) {
         this.trivia = Lists.newArrayList();
       }
@@ -294,4 +295,5 @@ public class Token {
       return token;
     }
   }
+
 }

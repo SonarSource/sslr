@@ -5,6 +5,10 @@
  */
 package com.sonar.sslr.api;
 
+import java.util.List;
+
+import com.sonar.sslr.impl.Lexer;
+
 /**
  * A Preprocessor can be used to modify the content of the LexerOuput before launching the parser.
  * 
@@ -23,13 +27,13 @@ public abstract class Preprocessor {
    * @return false if that token hasn't been pre-processed and true otherwise. If the method returns true, no other preprocessing operations
    *         will be done on this token and this token won't be added to the LexerOutput
    */
-  public abstract boolean process(Token token, LexerOutput output);
+  public abstract PreprocessorAction process(List<Token> tokens);
 
   /**
    * Method calls after having lexed a source code. Some additional operations can be done by the Preprocessor on the LexerOuput if
    * required.
    */
-  public void endLexing(LexerOutput output) {
+  public void endLexing(Lexer lexer) {
   }
 
   /**
@@ -37,4 +41,5 @@ public abstract class Preprocessor {
    */
   public void startLexing() {
   }
+
 }

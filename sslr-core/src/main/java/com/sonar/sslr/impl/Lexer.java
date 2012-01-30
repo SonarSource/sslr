@@ -7,26 +7,29 @@ package com.sonar.sslr.impl;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.io.IOUtils;
-import org.sonar.channel.*;
+import org.sonar.channel.Channel;
+import org.sonar.channel.ChannelDispatcher;
+import org.sonar.channel.CodeReader;
+import org.sonar.channel.CodeReaderConfiguration;
 
-import com.sonar.sslr.api.GenericTokenType;
-import com.sonar.sslr.api.LexerOutput;
-import com.sonar.sslr.api.Preprocessor;
+import com.sonar.sslr.api.*;
 
 public final class Lexer {
-
-  private Charset charset = Charset.defaultCharset();
 
   private static final int DEFAULT_CODE_BUFFER_CAPACITY = 80000; // The default 8'000 buffer capacity is extended to 80'000 to be able to
                                                                  // consume big comment
 
-  private CodeReaderConfiguration configuration = new CodeReaderConfiguration();
-  private final ChannelDispatcher<LexerOutput> channelDispatcher;
-  private Preprocessor[] preprocessors = new Preprocessor[0];
+  private final Charset charset;
+  private final CodeReaderConfiguration configuration;
+  private final ChannelDispatcher<Lexer> channelDispatcher;
+  private final Preprocessor[] preprocessors;
+
+  private String filename;
+  private final List<Trivia> trivia = new LinkedList<Trivia>();
+  private final List<Token> tokens = new ArrayList<Token>();
 
   private Lexer(Builder builder) {
     this.charset = builder.charset;
@@ -35,28 +38,17 @@ public final class Lexer {
     this.channelDispatcher = builder.getChannelDispatcher();
   }
 
-  public Charset getCharset() {
-    return charset;
+  public List<Token> lex(String sourceCode) {
+    filename = null;
+    return lex(new StringReader(sourceCode));
   }
 
-  public Preprocessor[] getPreprocessors() {
-    return preprocessors;
-  }
-
-  public LexerOutput lex(String sourceCode) {
-    LexerOutput lexerOutput = createLexerOutput();
-    lex(new StringReader(sourceCode), lexerOutput);
-    return lexerOutput;
-  }
-
-  public final LexerOutput lex(File file) {
+  public List<Token> lex(File file) {
+    filename = file.getAbsolutePath();
     InputStreamReader reader = null;
     try {
       reader = new InputStreamReader(new FileInputStream(file), charset);
-      LexerOutput lexerOutput = createLexerOutput();
-      lexerOutput.setFile(file);
-      lex(reader, lexerOutput);
-      return lexerOutput;
+      return lex(reader);
     } catch (FileNotFoundException e) {
       throw new LexerException("Unable to open file : " + file.getAbsolutePath(), e);
     } finally {
@@ -64,32 +56,56 @@ public final class Lexer {
     }
   }
 
-  public final void lex(Reader reader, LexerOutput lexerOutput) {
-    initCodeReaderFilters(lexerOutput);
+  private List<Token> lex(Reader reader) {
+    tokens.clear();
+
     startLexing();
     CodeReader code = new CodeReader(reader, configuration);
     try {
-      getChannelDispatcher().consume(code, lexerOutput);
-      lexerOutput.addTokenAndProcess(GenericTokenType.EOF, "EOF", code.getLinePosition(), code.getColumnPosition());
-      endLexing(lexerOutput);
+      channelDispatcher.consume(code, this);
+      addToken(Token.create(GenericTokenType.EOF, "EOF").withLine(code.getLinePosition()).withColumn(code.getColumnPosition()).build());
+
+      preprocess();
+
+      endLexing();
+
+      return getTokens();
     } catch (Exception e) {
       throw new LexerException("Unable to lex source code at line : " + code.getLinePosition() + " and column : "
-          + code.getColumnPosition() + " in file : " + lexerOutput.getFileAbsolutePath(), e);
+          + code.getColumnPosition() + " in file : " + filename, e);
     }
   }
 
-  private void initCodeReaderFilters(LexerOutput lexerOutput) {
-    for (CodeReaderFilter<LexerOutput> filter : configuration.getCodeReaderFilters()) {
-      filter.setOutput(lexerOutput);
+  private void preprocess() {
+    for (Preprocessor preprocessor : preprocessors) {
+      preprocess(preprocessor);
     }
   }
 
-  protected LexerOutput createLexerOutput() {
-    return new LexerOutput(preprocessors);
-  }
+  private void preprocess(Preprocessor preprocessor) {
+    List<Token> remainingTokens = new LinkedList<Token>();
+    remainingTokens.addAll(tokens);
+    tokens.clear();
 
-  protected ChannelDispatcher<LexerOutput> getChannelDispatcher() {
-    return channelDispatcher;
+    while ( !remainingTokens.isEmpty()) {
+      PreprocessorAction action = preprocessor.process(Collections.unmodifiableList(remainingTokens));
+
+      addTrivia(action.getTriviaToInject().toArray(new Trivia[action.getTriviaToInject().size()]));
+
+      for (int i = 0; i < action.getNumberOfConsumedTokens(); i++) {
+        Token removedToken = remainingTokens.remove(0);
+        addTrivia(removedToken.getTrivia().toArray(new Trivia[removedToken.getTrivia().size()]));
+      }
+
+      for (Token tokenToInject : action.getTokensToInject()) {
+        addToken(tokenToInject);
+      }
+
+      if (action.getNumberOfConsumedTokens() == 0) {
+        Token removedToken = remainingTokens.remove(0);
+        addToken(removedToken);
+      }
+    }
   }
 
   /**
@@ -106,10 +122,32 @@ public final class Lexer {
    * @deprecated use the parser event listeners instead
    */
   @Deprecated
-  public void endLexing(LexerOutput output) {
+  public void endLexing() {
     for (Preprocessor preprocessor : preprocessors) {
-      preprocessor.endLexing(output);
+      preprocessor.endLexing(this);
     }
+  }
+
+  public void addTrivia(Trivia... trivia) {
+    if (trivia.length > 0) {
+      this.trivia.addAll(Arrays.asList(trivia));
+    }
+  }
+
+  public void addToken(Token... tokens) {
+    if (tokens.length > 0) {
+      tokens[0].addAllTrivia(trivia);
+      trivia.clear();
+      this.tokens.addAll(Arrays.asList(tokens));
+    }
+  }
+
+  public List<Token> getTokens() {
+    return Collections.unmodifiableList(tokens);
+  }
+
+  public String getFilename() {
+    return filename;
   }
 
   public static Builder builder() {
@@ -121,7 +159,7 @@ public final class Lexer {
     private Charset charset = Charset.defaultCharset();
     private final List<Preprocessor> preprocessors = new ArrayList<Preprocessor>();
     private final CodeReaderConfiguration configuration = new CodeReaderConfiguration();
-    private final List<Channel> channels = new ArrayList<Channel>();
+    private final List<Channel<Lexer>> channels = new ArrayList<Channel<Lexer>>();
     private boolean failIfNoChannelToConsumeOneCharacter = false;
 
     private Builder() {
@@ -132,12 +170,6 @@ public final class Lexer {
       return new Lexer(this);
     }
 
-    /**
-     * Define the charset to be used in order to read the source code.
-     * 
-     * @param charset
-     * @return this LexerBuilder
-     */
     public Builder withCharset(Charset charset) {
       this.charset = charset;
       return this;
@@ -148,7 +180,7 @@ public final class Lexer {
       return this;
     }
 
-    public Builder withChannel(Channel<LexerOutput> channel) {
+    public Builder withChannel(Channel<Lexer> channel) {
       channels.add(channel);
       return this;
     }
@@ -158,8 +190,8 @@ public final class Lexer {
       return this;
     }
 
-    private ChannelDispatcher<LexerOutput> getChannelDispatcher() {
-      return new ChannelDispatcher<LexerOutput>(channels, failIfNoChannelToConsumeOneCharacter);
+    private ChannelDispatcher<Lexer> getChannelDispatcher() {
+      return new ChannelDispatcher<Lexer>((List) channels, failIfNoChannelToConsumeOneCharacter);
     }
 
   }

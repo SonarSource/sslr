@@ -14,10 +14,11 @@ import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
 
 import com.sonar.sslr.api.GenericTokenType;
-import com.sonar.sslr.api.LexerOutput;
+import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
+import com.sonar.sslr.impl.Lexer;
 
-public class IdentifierAndKeywordChannel extends Channel<LexerOutput> {
+public class IdentifierAndKeywordChannel extends Channel<Lexer> {
 
   private final Map<String, TokenType> keywordsMap;
   private final StringBuilder tmpBuilder = new StringBuilder();
@@ -37,21 +38,29 @@ public class IdentifierAndKeywordChannel extends Channel<LexerOutput> {
   }
 
   @Override
-  public boolean consume(CodeReader code, LexerOutput output) {
+  public boolean consume(CodeReader code, Lexer lexer) {
     if (code.popTo(matcher, tmpBuilder) > 0) {
       String word = tmpBuilder.toString();
       String wordOriginal = tmpBuilder.toString();
       if ( !caseSensitive) {
         word = word.toUpperCase();
       }
+
+      Token.Builer tokenBuilder;
+
       if (isKeyword(word)) {
-        output.addTokenAndProcess(keywordsMap.get(word), word, wordOriginal, code.getPreviousCursor().getLine(), code.getPreviousCursor()
-            .getColumn());
+        tokenBuilder = Token.create(keywordsMap.get(word), word);
       } else {
-        output.addTokenAndProcess(GenericTokenType.IDENTIFIER, word, wordOriginal, code.getPreviousCursor().getLine(), code
-            .getPreviousCursor()
-            .getColumn());
+        tokenBuilder = Token.create(GenericTokenType.IDENTIFIER, word);
       }
+
+      tokenBuilder
+          .withOriginalValue(wordOriginal)
+          .withLine(code.getPreviousCursor().getLine())
+          .withColumn(code.getPreviousCursor().getColumn());
+
+      lexer.addToken(tokenBuilder.build());
+
       tmpBuilder.delete(0, tmpBuilder.length());
       return true;
     }

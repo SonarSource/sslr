@@ -12,9 +12,9 @@ import java.util.regex.Pattern;
 import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
 
-import com.sonar.sslr.api.LexerOutput;
+import com.sonar.sslr.impl.Lexer;
 
-public class BlackHoleChannel extends Channel<LexerOutput> {
+public class BlackHoleChannel extends Channel<Lexer> {
 
   private final Matcher matcher;
 
@@ -23,7 +23,7 @@ public class BlackHoleChannel extends Channel<LexerOutput> {
   }
 
   @Override
-  public boolean consume(CodeReader code, LexerOutput output) {
+  public boolean consume(CodeReader code, Lexer lexer) {
     return code.popTo(matcher, new EmptyAppendable()) != -1;
   }
 

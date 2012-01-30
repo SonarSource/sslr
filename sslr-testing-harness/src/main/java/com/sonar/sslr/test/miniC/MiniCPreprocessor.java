@@ -5,22 +5,15 @@
  */
 package com.sonar.sslr.test.miniC;
 
+import static com.sonar.sslr.api.GenericTokenType.*;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.*;
+
+import java.util.LinkedList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.api.LexerOutput;
-import com.sonar.sslr.api.Preprocessor;
-import com.sonar.sslr.api.RecognitionException;
-import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.Trivia;
+import com.sonar.sslr.api.*;
 import com.sonar.sslr.impl.Parser;
-
-import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.HASH;
 
 public class MiniCPreprocessor extends Preprocessor {
 
@@ -62,34 +55,36 @@ public class MiniCPreprocessor extends Preprocessor {
     }
   }
 
-  private void preprocessBuffer(LexerOutput output) {
+  private Trivia preprocessBuffer() {
     /* Here is where we should interpret the tokens, but there is no need in this case */
 
     /* Push the preprocessed trivia */
-    output.addTrivia(Trivia.createPreprocessingDirective(structure, structureGrammar));
+    return Trivia.createPreprocessingDirective(structure, structureGrammar);
   }
 
   @Override
-  public boolean process(Token token, LexerOutput output) {
-    if ( !buffer.isEmpty() && (token.getType() == EOF || token.getLine() != buffer.get(0).getLine())) {
+  public PreprocessorAction process(List<Token> tokens) {
+    List<Trivia> triviaToInject = new LinkedList<Trivia>();
+
+    if ( !buffer.isEmpty() && (tokens.get(0).getType() == EOF || tokens.get(0).getLine() != buffer.get(0).getLine())) {
       if (isBufferValid()) {
-        preprocessBuffer(output);
+        triviaToInject.add(preprocessBuffer());
       } else {
-        output.pushBackTokensAndProcess(buffer, this);
+        throw new IllegalStateException("FIXME Pushback would be required!"); /* FIXME */
       }
       buffer.clear();
     }
 
     if (buffer.isEmpty()) {
-      if (token.getType() == HASH) {
-        buffer.add(token);
-        return true;
+      if (tokens.get(0).getType() == HASH) {
+        buffer.add(tokens.get(0));
+        return new PreprocessorAction(1, triviaToInject, new LinkedList<Token>());
       }
 
-      return false;
+      return new PreprocessorAction(0, triviaToInject, new LinkedList<Token>());
     } else {
-      buffer.add(token);
-      return true;
+      buffer.add(tokens.get(0));
+      return new PreprocessorAction(1, triviaToInject, new LinkedList<Token>());
     }
   }
 

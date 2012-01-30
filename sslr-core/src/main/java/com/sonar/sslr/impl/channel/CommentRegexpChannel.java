@@ -12,12 +12,12 @@ import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
 
 import com.sonar.sslr.api.GenericTokenType;
-import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
+import com.sonar.sslr.impl.Lexer;
 import com.sonar.sslr.impl.LexerException;
 
-public class CommentRegexpChannel extends Channel<LexerOutput> {
+public class CommentRegexpChannel extends Channel<Lexer> {
 
   private final StringBuilder tmpBuilder = new StringBuilder();
   private final Matcher matcher;
@@ -29,14 +29,14 @@ public class CommentRegexpChannel extends Channel<LexerOutput> {
   }
 
   @Override
-  public boolean consume(CodeReader code, LexerOutput output) {
+  public boolean consume(CodeReader code, Lexer lexer) {
     try {
       if (code.popTo(matcher, tmpBuilder) > 0) {
         String value = tmpBuilder.toString();
 
-        Token commentToken = new Token(GenericTokenType.COMMENT, value, code.getPreviousCursor().getLine(), code
-            .getPreviousCursor().getColumn());
-        output.addTrivia(Trivia.createCommentToken(commentToken));
+        Token commentToken = Token.create(GenericTokenType.COMMENT, value).withLine(code.getPreviousCursor().getLine())
+            .withColumn(code.getPreviousCursor().getColumn()).build();
+        lexer.addTrivia(Trivia.createCommentToken(commentToken));
 
         tmpBuilder.delete(0, tmpBuilder.length());
         return true;

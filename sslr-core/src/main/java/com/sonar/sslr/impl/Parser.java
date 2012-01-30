@@ -22,7 +22,6 @@ public final class Parser<GRAMMAR extends Grammar> {
 
   private RuleDefinition rootRule;
   private ParsingState parsingState;
-  private LexerOutput lexerOutput;
   private final Lexer lexer;
   private final GRAMMAR grammar;
   private Set<RecognitionExceptionListener> listeners = new HashSet<RecognitionExceptionListener>();
@@ -58,25 +57,27 @@ public final class Parser<GRAMMAR extends Grammar> {
   public AstNode parse(File file) {
     fireBeginLexEvent();
     try {
-      lexerOutput = lexer.lex(file);
+      lexer.lex(file);
     } catch (LexerException e) {
       throw new RecognitionException(e);
     } finally {
       fireEndLexEvent();
     }
-    return parse(lexerOutput.getTokens());
+
+    return parse(lexer.getTokens());
   }
 
   public AstNode parse(String source) {
     fireBeginLexEvent();
     try {
-      lexerOutput = lexer.lex(source);
+      lexer.lex(source);
     } catch (LexerException e) {
       throw new RecognitionException(e);
     } finally {
       fireEndLexEvent();
     }
-    return parse(lexerOutput.getTokens());
+
+    return parse(lexer.getTokens());
   }
 
   public AstNode parse(List<Token> tokens) {
@@ -137,10 +138,6 @@ public final class Parser<GRAMMAR extends Grammar> {
 
   public GRAMMAR getGrammar() {
     return grammar;
-  }
-
-  public LexerOutput getLexerOutput() {
-    return lexerOutput;
   }
 
   public RuleDefinition getRootRule() {

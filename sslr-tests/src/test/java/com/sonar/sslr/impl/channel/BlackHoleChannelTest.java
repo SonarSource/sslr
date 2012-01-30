@@ -12,26 +12,26 @@ import static org.sonar.test.channel.ChannelMatchers.*;
 import org.junit.Test;
 import org.sonar.channel.CodeReader;
 
-import com.sonar.sslr.api.LexerOutput;
+import com.sonar.sslr.impl.Lexer;
 
 public class BlackHoleChannelTest {
 
-  private final LexerOutput output = new LexerOutput();
+  private final Lexer lexer = Lexer.builder().build();
   private final BlackHoleChannel channel = new BlackHoleChannel("[ \\t]+");
 
   @Test
   public void testConsumeOneCharacter() {
-    assertThat(channel, consume(" ", output));
-    assertThat(channel, consume("\t", output));
-    assertThat(channel, not(consume("g", output)));
-    assertThat(channel, not(consume("-", output)));
-    assertThat(channel, not(consume("1", output)));
+    assertThat(channel, consume(" ", lexer));
+    assertThat(channel, consume("\t", lexer));
+    assertThat(channel, not(consume("g", lexer)));
+    assertThat(channel, not(consume("-", lexer)));
+    assertThat(channel, not(consume("1", lexer)));
   }
 
   @Test
   public void consumeSeveralCharacters() {
     CodeReader reader = new CodeReader("   \t123");
-    assertThat(channel, consume(reader, output));
+    assertThat(channel, consume(reader, lexer));
     assertThat(reader, hasNextChar('1'));
   }
 }

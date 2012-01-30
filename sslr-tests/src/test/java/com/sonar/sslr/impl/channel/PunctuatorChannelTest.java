@@ -13,37 +13,37 @@ import org.junit.Test;
 import org.sonar.channel.CodeReader;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.TokenType;
+import com.sonar.sslr.impl.Lexer;
 
 public class PunctuatorChannelTest {
 
   private final PunctuatorChannel channel = new PunctuatorChannel(MyPunctuatorAndOperator.values());
-  private final LexerOutput output = new LexerOutput();
+  private final Lexer lexer = Lexer.builder().build();
 
   @Test
   public void testConsumeSpecialCharacters() {
-    assertThat(channel, consume("**=", output));
-    assertThat(output, hasToken("*", MyPunctuatorAndOperator.STAR));
+    assertThat(channel, consume("**=", lexer));
+    assertThat(lexer.getTokens(), hasToken("*", MyPunctuatorAndOperator.STAR));
 
-    assertThat(channel, consume(",=", output));
-    assertThat(output, hasToken(",", MyPunctuatorAndOperator.COLON));
+    assertThat(channel, consume(",=", lexer));
+    assertThat(lexer.getTokens(), hasToken(",", MyPunctuatorAndOperator.COLON));
 
-    assertThat(channel, consume("=*", output));
-    assertThat(output, hasToken("=", MyPunctuatorAndOperator.EQUAL));
+    assertThat(channel, consume("=*", lexer));
+    assertThat(lexer.getTokens(), hasToken("=", MyPunctuatorAndOperator.EQUAL));
 
-    assertThat(channel, consume("==,", output));
-    assertThat(output, hasToken("==", MyPunctuatorAndOperator.EQUAL_OP));
+    assertThat(channel, consume("==,", lexer));
+    assertThat(lexer.getTokens(), hasToken("==", MyPunctuatorAndOperator.EQUAL_OP));
 
-    assertThat(channel, consume("*=,", output));
-    assertThat(output, hasToken("*=", MyPunctuatorAndOperator.MUL_ASSIGN));
+    assertThat(channel, consume("*=,", lexer));
+    assertThat(lexer.getTokens(), hasToken("*=", MyPunctuatorAndOperator.MUL_ASSIGN));
 
-    assertFalse(channel.consume(new CodeReader("!"), output));
+    assertFalse(channel.consume(new CodeReader("!"), lexer));
   }
 
   @Test
   public void testNotConsumeWord() {
-    assertFalse(channel.consume(new CodeReader("word"), output));
+    assertFalse(channel.consume(new CodeReader("word"), lexer));
   }
 
   private enum MyPunctuatorAndOperator implements TokenType {

@@ -5,13 +5,15 @@
  */
 package com.sonar.sslr.test.lexer;
 
+import java.util.List;
+
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
-import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.Trivia;
 
-class HasCommentMatcher extends BaseMatcher<LexerOutput> {
+class HasCommentMatcher extends BaseMatcher<List<Token>> {
 
   private final String commentValue;
   private final int commentLine;
@@ -36,17 +38,21 @@ class HasCommentMatcher extends BaseMatcher<LexerOutput> {
   }
 
   public boolean matches(Object obj) {
-    if ( !(obj instanceof LexerOutput)) {
+    if ( !(obj instanceof List)) {
       return false;
     }
-    LexerOutput output = (LexerOutput) obj;
-    for (Token comment : output.getCommentTokens()) {
-      String value = originalValue ? comment.getOriginalValue() : comment.getValue();
-      if (value.equals(commentValue)) {
-        if (commentLine > -1 && comment.getLine() != commentLine) {
-          continue;
+    List<Token> tokens = (List<Token>) obj;
+    for (Token token : tokens) {
+      for (Trivia trivia : token.getTrivia()) {
+        if (trivia.isComment()) {
+          String value = originalValue ? trivia.getToken().getOriginalValue() : trivia.getToken().getValue();
+          if (value.equals(commentValue)) {
+            if (commentLine > -1 && trivia.getToken().getLine() != commentLine) {
+              continue;
+            }
+            return true;
+          }
         }
-        return true;
       }
     }
     return false;

@@ -45,7 +45,7 @@ public class TillNewLineMatcherTest {
 
   @Test
   public void testAstNodeTokens() {
-    ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three\nfour").getTokens());
+    ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three\nfour"));
     AstNode astNode = tillNewLine().match(state);
     assertEquals(3, state.lexerIndex);
     assertEquals(3, astNode.getChildren().size());

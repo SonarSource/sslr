@@ -11,10 +11,11 @@ import java.util.Comparator;
 import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
 
-import com.sonar.sslr.api.LexerOutput;
+import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
+import com.sonar.sslr.impl.Lexer;
 
-public class PunctuatorChannel extends Channel<LexerOutput> {
+public class PunctuatorChannel extends Channel<Lexer> {
 
   public final TokenType[] sortedPunctuators;
   public final char[][] sortedPunctuatorsChars;
@@ -42,12 +43,14 @@ public class PunctuatorChannel extends Channel<LexerOutput> {
   }
 
   @Override
-  public boolean consume(CodeReader code, LexerOutput output) {
+  public boolean consume(CodeReader code, Lexer lexer) {
     for (int i = 0; i < sortedPunctuators.length; i++) {
       if (code.peek() == sortedPunctuatorsChars[i][0]
           && Arrays.equals(code.peek(sortedPunctuatorsChars[i].length), sortedPunctuatorsChars[i])) {
-        /* The punctuator matched, add the token to the lexer output */
-        output.addTokenAndProcess(sortedPunctuators[i], sortedPunctuators[i].getValue(), code.getLinePosition(), code.getColumnPosition());
+
+        Token token = Token.create(sortedPunctuators[i], sortedPunctuators[i].getValue()).withLine(code.getLinePosition())
+            .withColumn(code.getColumnPosition()).build();
+        lexer.addToken(token);
 
         /* Advance the CodeReader stream by the length of the punctuator */
         for (int j = 0; j < sortedPunctuatorsChars[i].length; j++) {

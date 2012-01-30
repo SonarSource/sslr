@@ -12,9 +12,10 @@ import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
 
 import com.sonar.sslr.api.GenericTokenType;
-import com.sonar.sslr.api.LexerOutput;
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.impl.Lexer;
 
-public class UnknownCharacterChannel extends Channel<LexerOutput> {
+public class UnknownCharacterChannel extends Channel<Lexer> {
 
   private static final Logger LOG = LoggerFactory.getLogger(UnknownCharacterChannel.class);
 
@@ -31,18 +32,21 @@ public class UnknownCharacterChannel extends Channel<LexerOutput> {
   }
 
   @Override
-  public boolean consume(CodeReader code, LexerOutput lexerOutput) {
+  public boolean consume(CodeReader code, Lexer lexer) {
     if (code.peek() != -1) {
       char unknownChar = (char) code.pop();
       if (unknownChar == BOM_CHAR) {
         return true;
       }
       if (shouldLogWarning) {
-        LOG.warn("Unknown char: \"" + unknownChar + "\" (" + lexerOutput.getFileName() + ":" + code.getLinePosition() + ":"
+        LOG.warn("Unknown char: \"" + unknownChar + "\" (" + lexer.getFilename() + ":" + code.getLinePosition() + ":"
             + code.getColumnPosition() + ")");
       }
-      lexerOutput.addTokenAndProcess(GenericTokenType.UNKNOWN_CHAR, String.valueOf(unknownChar), code.getLinePosition(),
-          code.getColumnPosition() - 1);
+
+      Token token = Token.create(GenericTokenType.UNKNOWN_CHAR, String.valueOf(unknownChar)).withLine(code.getLinePosition())
+          .withColumn(code.getColumnPosition() - 1).build();
+      lexer.addToken(token);
+
       return true;
     }
     return false;

@@ -18,18 +18,18 @@ import org.sonar.channel.CodeReader;
 
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.GenericTokenType;
-import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
+import com.sonar.sslr.impl.Lexer;
 
 public class UnknownCharacterChannelTest {
 
-  private final LexerOutput lexerOutput = new LexerOutput();
+  private final Lexer lexer = Lexer.builder().build();
   private final UnknownCharacterChannel channel = new UnknownCharacterChannel();
 
   @Test
   public void shouldConsumeAnyCharacter() {
-    check("'", channel, new Token(GenericTokenType.UNKNOWN_CHAR, "'"), lexerOutput, true);
-    check("a", channel, new Token(GenericTokenType.UNKNOWN_CHAR, "a"), lexerOutput, true);
+    check("'", channel, new Token(GenericTokenType.UNKNOWN_CHAR, "'"), lexer.builder().build(), true);
+    check("a", channel, new Token(GenericTokenType.UNKNOWN_CHAR, "a"), lexer.builder().build(), true);
   }
 
   @Test
@@ -39,19 +39,18 @@ public class UnknownCharacterChannelTest {
 
   @Test
   public void shouldConsumeBomCharacter() {
-    assertTrue(channel.consume(new CodeReader("\uFEFF"), lexerOutput));
-    assertThat(lexerOutput.getTokens().size(), is(0));
+    assertTrue(channel.consume(new CodeReader("\uFEFF"), lexer));
+    assertThat(lexer.getTokens().size(), is(0));
   }
 
-  public void check(String input, Channel<LexerOutput> channel, Token expectedOutput, LexerOutput lexerOutput, boolean assertion) {
-    lexerOutput.getTokens().clear();
+  public void check(String input, Channel<Lexer> channel, Token expectedOutput, Lexer lexer, boolean assertion) {
     List<Token> expected = Lists.newArrayList(expectedOutput);
     CodeReader code = new CodeReader(new StringReader(input));
     if (assertion) {
-      assertTrue(channel.consume(code, lexerOutput));
-      assertThat(lexerOutput.getTokens(), is(expected));
+      assertTrue(channel.consume(code, lexer));
+      assertThat(lexer.getTokens(), is(expected));
     } else {
-      assertFalse(channel.consume(code, lexerOutput));
+      assertFalse(channel.consume(code, lexer));
     }
   }
 }

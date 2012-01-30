@@ -32,7 +32,7 @@ class MatchMatcher extends BaseMatcher<Matcher> {
       return false;
     }
     matcher = (Matcher) obj;
-    ParsingState parsingState = new ParsingState(lexer.lex(sourceCode).getTokens());
+    ParsingState parsingState = new ParsingState(lexer.lex(sourceCode));
     try {
       matcher.match(parsingState);
       return true;

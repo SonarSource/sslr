@@ -5,20 +5,15 @@
  */
 package com.sonar.sslr.test.miniC.fakeChecks;
 
+import static com.sonar.sslr.squid.metrics.ResourceParser.*;
+import static com.sonar.sslr.test.squid.CheckMatchers.*;
+
 import org.junit.Test;
 
-import com.sonar.sslr.api.AstAndTokenVisitor;
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.PreprocessingDirective;
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.Trivia;
+import com.sonar.sslr.api.*;
 import com.sonar.sslr.squid.checks.SquidCheck;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
 import com.sonar.sslr.test.miniC.MiniCPreprocessor;
-
-import static com.sonar.sslr.squid.metrics.ResourceParser.scanFile;
-import static com.sonar.sslr.test.squid.CheckMatchers.assertOnlyOneViolation;
-import static com.sonar.sslr.test.squid.CheckMatchers.setCurrentSourceFile;
 
 public class FakePreprocessorCheckTest {
 

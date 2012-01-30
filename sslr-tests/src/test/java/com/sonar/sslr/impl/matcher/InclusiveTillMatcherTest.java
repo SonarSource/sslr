@@ -35,7 +35,7 @@ public class InclusiveTillMatcherTest {
 
   @Test
   public void testAstNodeTokens() {
-    ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three four").getTokens());
+    ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three four"));
     AstNode astNode = till("three").match(state);
     assertEquals(3, state.lexerIndex);
     assertEquals(3, astNode.getChildren().size());

@@ -5,14 +5,15 @@
  */
 package com.sonar.sslr.test.lexer;
 
+import java.util.List;
+
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
-import com.sonar.sslr.api.LexerOutput;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 
-class HasTokenTypeMatcher extends BaseMatcher<LexerOutput> {
+class HasTokenTypeMatcher extends BaseMatcher<List<Token>> {
 
   private final TokenType type;
 
@@ -21,11 +22,11 @@ class HasTokenTypeMatcher extends BaseMatcher<LexerOutput> {
   }
 
   public boolean matches(Object obj) {
-    if ( !(obj instanceof LexerOutput)) {
+    if ( !(obj instanceof List)) {
       return false;
     }
-    LexerOutput output = (LexerOutput) obj;
-    for (Token token : output.getTokens()) {
+    List<Token> tokens = (List<Token>) obj;
+    for (Token token : tokens) {
       if (token.getType() == type) {
         return true;
       }
