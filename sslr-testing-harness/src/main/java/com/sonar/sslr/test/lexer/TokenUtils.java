@@ -21,7 +21,7 @@ public final class TokenUtils {
   }
 
   public static String merge(List<Token> tokens) {
-    removeLastTokenIfEof(tokens);
+    tokens = removeLastTokenIfEof(tokens);
     StringBuilder result = new StringBuilder();
     for (int i = 0; i < tokens.size(); i++) {
       Token token = tokens.get(i);
@@ -33,13 +33,15 @@ public final class TokenUtils {
     return result.toString();
   }
 
-  private static void removeLastTokenIfEof(List<Token> tokens) {
+  private static List<Token> removeLastTokenIfEof(List<Token> tokens) {
     if ( !tokens.isEmpty()) {
       Token lastToken = tokens.get(tokens.size() - 1);
       if ("EOF".equals(lastToken.getValue())) {
-        tokens.remove(tokens.size() - 1);
+        return tokens.subList(0, tokens.size() - 1);
       }
     }
+
+    return tokens;
   }
 
   public static List<Token> lex(String sourceCode) {

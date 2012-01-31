@@ -29,7 +29,7 @@ public final class Lexer {
 
   private String filename;
   private final List<Trivia> trivia = new LinkedList<Trivia>();
-  private final List<Token> tokens = new ArrayList<Token>();
+  private List<Token> tokens = new ArrayList<Token>();
 
   private Lexer(Builder builder) {
     this.charset = builder.charset;
@@ -57,7 +57,7 @@ public final class Lexer {
   }
 
   private List<Token> lex(Reader reader) {
-    tokens.clear();
+    tokens = new ArrayList<Token>();
 
     startLexing();
     CodeReader code = new CodeReader(reader, configuration);
@@ -152,6 +152,15 @@ public final class Lexer {
 
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * @deprecated no one should need this method, it will be deleted.
+   * @param tokens
+   */
+  @Deprecated
+  public void setTokens(List<Token> tokens) {
+    this.tokens = tokens;
   }
 
   public static final class Builder {
