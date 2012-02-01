@@ -15,14 +15,18 @@ public final class Trivia {
 
   private TriviaKind kind;
 
-  private Token token;
+  private Token[] tokens = new Token[0];
   private PreprocessingDirective preprocessingDirective;
 
   private Trivia() {
   }
 
   public Token getToken() {
-    return token;
+    return tokens.length == 0 ? null : tokens[0];
+  }
+
+  public Token[] getTokens() {
+    return tokens;
   }
 
   public boolean isComment() {
@@ -33,6 +37,10 @@ public final class Trivia {
     return kind == TriviaKind.PREPROCESSOR;
   }
 
+  public boolean isSkippedText() {
+    return kind == TriviaKind.SKIPPED_TEXT;
+  }
+
   public boolean hasPreprocessingDirective() {
     return preprocessingDirective != null;
   }
@@ -41,15 +49,35 @@ public final class Trivia {
     return preprocessingDirective;
   }
 
-  private static Trivia createTrivia(TriviaKind kind, Token token) {
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    for (Token token : tokens) {
+      sb.append(token.getOriginalValue());
+      sb.append(' ');
+    }
+
+    String value = sb.toString();
+    if ("".equals(value)) {
+      value = " ";
+    }
+
+    return "TRIVIA kind=" + kind + " value =" + value;
+  }
+
+  private static Trivia createTrivia(TriviaKind kind, Token... tokens) {
     Trivia trivia = new Trivia();
     trivia.kind = kind;
-    trivia.token = token;
+    trivia.tokens = tokens;
     return trivia;
   }
 
   public static Trivia createComment(Token commentToken) {
     return createTrivia(TriviaKind.COMMENT, commentToken);
+  }
+
+  public static Trivia createSkippedText(Token... tokens) {
+    return createTrivia(TriviaKind.SKIPPED_TEXT, tokens);
   }
 
   public static Trivia createPreprocessingToken(Token preprocessingToken) {
