@@ -51,18 +51,20 @@ public final class Trivia {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    for (Token token : tokens) {
-      sb.append(token.getOriginalValue());
-      sb.append(' ');
-    }
+    if (tokens.length == 0) {
+      return "TRIVIA kind=" + kind;
+    } else if (tokens.length == 1) {
+      Token token = tokens[0];
+      return "TRIVIA kind=" + kind + " line=" + token.getLine() + " type=" + token.getType() + " value=" + token.getOriginalValue();
+    } else {
+      StringBuilder sb = new StringBuilder();
+      for (Token token : tokens) {
+        sb.append(token.getOriginalValue());
+        sb.append(' ');
+      }
 
-    String value = sb.toString();
-    if ("".equals(value)) {
-      value = " ";
+      return "TRIVIA kind=" + kind + " value = " + sb.toString();
     }
-
-    return "TRIVIA kind=" + kind + " value =" + value;
   }
 
   private static Trivia createTrivia(TriviaKind kind, Token... tokens) {
@@ -77,6 +79,10 @@ public final class Trivia {
   }
 
   public static Trivia createSkippedText(Token... tokens) {
+    if (tokens.length == 0) {
+      throw new IllegalArgumentException("At least one token has to be skipped!");
+    }
+
     return createTrivia(TriviaKind.SKIPPED_TEXT, tokens);
   }
 
