@@ -21,7 +21,7 @@ public class FakePreprocessorCheckTest {
 
     public void visitToken(Token token) {
       for (Trivia trivia : token.getTrivia()) {
-        if (trivia.isPreprocessor() && trivia.hasDirective()) {
+        if (trivia.isPreprocessor() && trivia.hasPreprocessingDirective()) {
           PreprocessingDirective directive = trivia.getPreprocessingDirective();
           AstNode preprocessorStructure = directive.getAst();
           MiniCPreprocessor.MiniCPreprocessorGrammar grammar = (MiniCPreprocessor.MiniCPreprocessorGrammar) directive.getGrammar();

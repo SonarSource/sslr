@@ -9,7 +9,8 @@ public final class Trivia {
 
   public enum TriviaKind {
     COMMENT,
-    PREPROCESSOR
+    PREPROCESSOR,
+    SKIPPED_TEXT
   }
 
   private TriviaKind kind;
@@ -32,7 +33,7 @@ public final class Trivia {
     return kind == TriviaKind.PREPROCESSOR;
   }
 
-  public boolean hasDirective() {
+  public boolean hasPreprocessingDirective() {
     return preprocessingDirective != null;
   }
 
@@ -47,12 +48,12 @@ public final class Trivia {
     return trivia;
   }
 
-  public static Trivia createCommentToken(Token commentToken) {
+  public static Trivia createComment(Token commentToken) {
     return createTrivia(TriviaKind.COMMENT, commentToken);
   }
 
-  public static Trivia createPreprocessingToken(Token preprocessingDirective) {
-    return createTrivia(TriviaKind.PREPROCESSOR, preprocessingDirective);
+  public static Trivia createPreprocessingToken(Token preprocessingToken) {
+    return createTrivia(TriviaKind.PREPROCESSOR, preprocessingToken);
   }
 
   public static Trivia createPreprocessingDirective(PreprocessingDirective preprocessingDirective) {

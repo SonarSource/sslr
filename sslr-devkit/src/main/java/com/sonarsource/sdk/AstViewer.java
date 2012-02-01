@@ -54,7 +54,7 @@ public class AstViewer {
         DefaultMutableTreeNode treeNodeChild = new DefaultMutableTreeNode(trivia);
         treeNode.add(treeNodeChild);
 
-        if (trivia.hasDirective()) {
+        if (trivia.hasPreprocessingDirective()) {
           PreprocessingDirective directive = trivia.getPreprocessingDirective();
           DefaultMutableTreeNode treeNodeInnerChild = new DefaultMutableTreeNode(directive.getAst());
           treeNodeChild.add(treeNodeInnerChild);
