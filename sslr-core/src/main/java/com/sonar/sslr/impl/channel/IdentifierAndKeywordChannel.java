@@ -46,12 +46,12 @@ public class IdentifierAndKeywordChannel extends Channel<Lexer> {
         word = word.toUpperCase();
       }
 
-      Token.Builer tokenBuilder;
+      Token.Builder tokenBuilder;
 
       if (isKeyword(word)) {
-        tokenBuilder = Token.create(keywordsMap.get(word), word);
+        tokenBuilder = Token.builder(keywordsMap.get(word), word);
       } else {
-        tokenBuilder = Token.create(GenericTokenType.IDENTIFIER, word);
+        tokenBuilder = Token.builder(GenericTokenType.IDENTIFIER, word);
       }
 
       tokenBuilder

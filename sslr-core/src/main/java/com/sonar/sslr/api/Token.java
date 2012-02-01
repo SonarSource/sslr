@@ -210,15 +210,15 @@ public class Token {
     return copyBookOriginalFileName;
   }
 
-  public static Builer create(TokenType type, String value) {
-    return new Builer(type, value);
+  public static Builder builder(TokenType type, String value) {
+    return new Builder(type, value);
   }
 
-  public static Builer createFrom(Token token) {
-    return new Builer(token);
+  public static Builder builder(Token token) {
+    return new Builder(token);
   }
 
-  public static final class Builer {
+  public static final class Builder {
 
     private final TokenType type;
     private final String value;
@@ -232,13 +232,13 @@ public class Token {
     private int copyBookOriginalLine = -1;
     private String copyBookOriginalFileName = null;
 
-    private Builer(TokenType type, String value) {
+    private Builder(TokenType type, String value) {
       this.type = type;
       this.value = value;
       this.originalValue = value;
     }
 
-    public Builer(Token token) {
+    public Builder(Token token) {
       type = token.type;
       value = token.value;
       originalValue = token.originalValue;
@@ -252,32 +252,32 @@ public class Token {
       copyBookOriginalFileName = token.copyBookOriginalFileName;
     }
 
-    public Builer withLine(int line) {
+    public Builder withLine(int line) {
       this.line = line;
       return this;
     }
 
-    public Builer withColumn(int column) {
+    public Builder withColumn(int column) {
       this.column = column;
       return this;
     }
 
-    public Builer withFile(File file) {
+    public Builder withFile(File file) {
       this.file = file;
       return this;
     }
 
-    public Builer withOriginalValue(String originalValue) {
+    public Builder withOriginalValue(String originalValue) {
       this.originalValue = originalValue;
       return this;
     }
 
-    public Builer withTrivia(List<Trivia> trivia) {
+    public Builder withTrivia(List<Trivia> trivia) {
       this.trivia = Lists.newArrayList(trivia);
       return this;
     }
 
-    public Builer addTrivia(Trivia trivia) {
+    public Builder addTrivia(Trivia trivia) {
       if (this.trivia.isEmpty()) {
         this.trivia = Lists.newArrayList();
       }

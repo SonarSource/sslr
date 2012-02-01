@@ -48,7 +48,7 @@ public class PunctuatorChannel extends Channel<Lexer> {
       if (code.peek() == sortedPunctuatorsChars[i][0]
           && Arrays.equals(code.peek(sortedPunctuatorsChars[i].length), sortedPunctuatorsChars[i])) {
 
-        Token token = Token.create(sortedPunctuators[i], sortedPunctuators[i].getValue()).withLine(code.getLinePosition())
+        Token token = Token.builder(sortedPunctuators[i], sortedPunctuators[i].getValue()).withLine(code.getLinePosition())
             .withColumn(code.getColumnPosition()).build();
         lexer.addToken(token);
 

@@ -63,7 +63,7 @@ public final class Lexer {
     CodeReader code = new CodeReader(reader, configuration);
     try {
       channelDispatcher.consume(code, this);
-      addToken(Token.create(GenericTokenType.EOF, "EOF").withLine(code.getLinePosition()).withColumn(code.getColumnPosition()).build());
+      addToken(Token.builder(GenericTokenType.EOF, "EOF").withLine(code.getLinePosition()).withColumn(code.getColumnPosition()).build());
 
       preprocess();
 

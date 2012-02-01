@@ -43,7 +43,7 @@ public class UnknownCharacterChannel extends Channel<Lexer> {
             + code.getColumnPosition() + ")");
       }
 
-      Token token = Token.create(GenericTokenType.UNKNOWN_CHAR, String.valueOf(unknownChar)).withLine(code.getLinePosition())
+      Token token = Token.builder(GenericTokenType.UNKNOWN_CHAR, String.valueOf(unknownChar)).withLine(code.getLinePosition())
           .withColumn(code.getColumnPosition() - 1).build();
       lexer.addToken(token);
 

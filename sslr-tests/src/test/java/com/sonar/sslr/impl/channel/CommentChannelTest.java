@@ -26,7 +26,7 @@ public class CommentChannelTest {
     channel = new CommentRegexpChannel("//.*");
     assertThat(channel, not(consume("This is not a comment", lexer)));
     assertThat(channel, consume("//My Comment\n second line", lexer));
-    lexer.addToken(Token.create(GenericTokenType.EOF, "EOF").build());
+    lexer.addToken(Token.builder(GenericTokenType.EOF, "EOF").build());
     assertThat(lexer.getTokens(), hasComment("//My Comment"));
     assertThat(lexer.getTokens(), hasOriginalComment("//My Comment"));
   }
