@@ -89,6 +89,9 @@ public final class Lexer {
 
     while ( !remainingTokens.isEmpty()) {
       PreprocessorAction action = preprocessor.process(Collections.unmodifiableList(remainingTokens));
+      if (action == null) {
+        throw new IllegalStateException("A preprocessor should not return null as a preprocessor action!");
+      }
 
       addTrivia(action.getTriviaToInject().toArray(new Trivia[action.getTriviaToInject().size()]));
 
