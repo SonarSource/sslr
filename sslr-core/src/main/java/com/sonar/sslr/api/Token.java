@@ -159,7 +159,7 @@ public class Token {
     }
   }
 
-  public boolean onSameLineThan(Token other) {
+  public boolean isOnSameLineThan(Token other) {
     return other == null ? false : getLine() == other.getLine();
   }
 
