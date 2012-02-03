@@ -83,20 +83,20 @@ public final class Lexer {
   }
 
   private void preprocess(Preprocessor preprocessor) {
-    List<Token> remainingTokens = new LinkedList<Token>();
-    remainingTokens.addAll(tokens);
+    List<Token> remainingTokens = Collections.unmodifiableList(new ArrayList<Token>(tokens));
     tokens.clear();
 
-    while ( !remainingTokens.isEmpty()) {
-      PreprocessorAction action = preprocessor.process(Collections.unmodifiableList(remainingTokens));
+    int i = 0;
+    while (i < remainingTokens.size()) {
+      PreprocessorAction action = preprocessor.process(remainingTokens.subList(i, remainingTokens.size()));
       if (action == null) {
         throw new IllegalStateException("A preprocessor should not return null as a preprocessor action!");
       }
 
       addTrivia(action.getTriviaToInject().toArray(new Trivia[action.getTriviaToInject().size()]));
 
-      for (int i = 0; i < action.getNumberOfConsumedTokens(); i++) {
-        Token removedToken = remainingTokens.remove(0);
+      for (int j = 0; j < action.getNumberOfConsumedTokens(); j++) {
+        Token removedToken = remainingTokens.get(i++);
         addTrivia(removedToken.getTrivia().toArray(new Trivia[removedToken.getTrivia().size()]));
       }
 
@@ -105,7 +105,7 @@ public final class Lexer {
       }
 
       if (action.getNumberOfConsumedTokens() == 0) {
-        Token removedToken = remainingTokens.remove(0);
+        Token removedToken = remainingTokens.get(i++);
         addToken(removedToken);
       }
     }
