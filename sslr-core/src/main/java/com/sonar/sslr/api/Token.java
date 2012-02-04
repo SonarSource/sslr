@@ -276,6 +276,11 @@ public class Token {
       return this;
     }
 
+    public Builder withGeneratedCode(boolean generatedCode) {
+      this.generatedCode = generatedCode;
+      return this;
+    }
+
     public Builder withTrivia(List<Trivia> trivia) {
       this.trivia = Lists.newArrayList(trivia);
       return this;
