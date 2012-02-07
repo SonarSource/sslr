@@ -5,14 +5,19 @@
  */
 package com.sonar.sslr.impl.events;
 
+import static com.sonar.sslr.api.GenericTokenType.*;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.base.Throwables;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.matcher.*;
@@ -34,11 +39,25 @@ public final class AutoCompleter extends ParsingEventListener {
 
   private Token tokenMatcherToToken(TokenMatcher tokenMatcher) {
     if (tokenMatcher instanceof TokenValueMatcher) {
-      return new Token(GenericTokenType.LITERAL, ((TokenValueMatcher) tokenMatcher).getTokenValue());
+      return createToken(LITERAL, ((TokenValueMatcher) tokenMatcher).getTokenValue());
     } else if (tokenMatcher instanceof TokenTypeMatcher) {
-      return new Token(((TokenTypeMatcher) tokenMatcher).getType(), ((TokenTypeMatcher) tokenMatcher).getType().getValue());
+      return createToken(((TokenTypeMatcher) tokenMatcher).getType(), ((TokenTypeMatcher) tokenMatcher).getType().getValue());
     } else {
       throw new UnsupportedOperationException("tokenMatcherToToken() does not handle class " + tokenMatcher.getClass());
+    }
+  }
+
+  private Token createToken(TokenType type, String value) {
+    try {
+      return Token.builder()
+          .setType(type)
+          .setValueAndOriginalValue(value)
+          .setURI(new URI("autocompleter://autocompleter"))
+          .setLine(1)
+          .setColumn(1)
+          .build();
+    } catch (URISyntaxException e) {
+      throw Throwables.propagate(e);
     }
   }
 

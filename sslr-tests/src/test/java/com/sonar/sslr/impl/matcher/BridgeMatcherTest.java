@@ -9,6 +9,7 @@ package com.sonar.sslr.impl.matcher;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
 import static com.sonar.sslr.impl.matcher.MyPunctuator.*;
+import static com.sonar.sslr.test.lexer.MockHelper.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -49,7 +50,7 @@ public class BridgeMatcherTest {
   private static List<Token> createTokens(TokenType... types) {
     List<Token> tokens = Lists.newArrayList();
     for (TokenType type : types) {
-      tokens.add(new Token(type, type.getValue()));
+      tokens.add(mockToken(type, type.getValue()));
     }
     return tokens;
   }

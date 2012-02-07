@@ -15,6 +15,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
@@ -23,17 +24,26 @@ import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public class ParsingStackTraceTest {
 
-  private List<Token> tokens = lex("package com.test;\n" + "import java.util.*;\n" + "public abstract clas MyClass {\n"
-      + "   public abstract void run();\n" + "}\n");
-  private ParsingState state = new ParsingState(tokens);
+  private List<Token> tokens;
+  private ParsingState state;
   private final RuleMatcher compilationUnit = ((RuleDefinition) new JavaGrammar().getRootRule()).getRule();
 
   @Before
   public void init() {
-    Token copyBookToken = tokens.get(tokens.size() - 1);
-    copyBookToken.setCopyBook(true);
-    copyBookToken.setCopyBookOriginalFileName("file1");
-    copyBookToken.setCopyBookOriginalLine(10);
+    tokens = lex("package com.test;\n" +
+        "import java.util.*;\n" +
+        "public abstract clas MyClass {\n" +
+        "   public abstract void run();\n" +
+        "}\n");
+
+    Token lastToken = tokens.remove(tokens.size() - 1);
+    lastToken = Token.builder(lastToken)
+        .setCopyBook("file1", 10)
+        .build();
+
+    tokens.add(lastToken);
+
+    state = new ParsingState(tokens);
   }
 
   @Test
@@ -48,7 +58,7 @@ public class ParsingStackTraceTest {
     expected.append("    4    public abstract void run();\n");
     expected.append("    5 }\n");
     expected.append("------\n");
-    expected.append("Expected : <\"class\"> but was : <clas [IDENTIFIER]> ('Dummy for unit tests': Line 3 / Column 16)\n");
+    expected.append("Expected : <\"class\"> but was : <clas [IDENTIFIER]> ('tests://unittest': Line 3 / Column 16)\n");
 
     assertEquals(expected.toString(), ParsingStackTrace.generateFullStackTrace(state));
   }
@@ -56,16 +66,25 @@ public class ParsingStackTraceTest {
   @Test
   public void testGenerateErrorOnCopyBook() {
     compilationUnit.isMatching(state);
-    Token outpostMatcherToken = state.getOutpostMatcherToken();
-    outpostMatcherToken.setCopyBook(true);
-    outpostMatcherToken.setCopyBookOriginalFileName("file1");
-    outpostMatcherToken.setCopyBookOriginalLine(20);
+
+    int outpostTokenIndex = state.getOutpostMatcherTokenIndex();
+
+    List<Token> modifiedTokens = Lists.newArrayList(tokens);
+    Token outpostToken = modifiedTokens.remove(outpostTokenIndex);
+    Token modifiedOutpostToken = Token.builder(outpostToken)
+        .setCopyBook("file1", 20)
+        .build();
+    modifiedTokens.add(outpostTokenIndex, modifiedOutpostToken);
+
+    ParsingState modifiedState = new ParsingState(modifiedTokens);
+
+    compilationUnit.isMatching(modifiedState);
 
     StringBuilder expected = new StringBuilder();
     expected
-        .append("Expected : <\"class\"> but was : <clas [IDENTIFIER]> (copy book 'Dummy for unit tests': Line 3 / Column 16 called from file 'file1': Line 20)\n");
+        .append("Expected : <\"class\"> but was : <clas [IDENTIFIER]> (copy book 'tests://unittest': Line 3 / Column 16 called from file 'file1': Line 20)\n");
 
-    assertEquals(expected.toString(), ParsingStackTrace.generate(state));
+    assertEquals(expected.toString(), ParsingStackTrace.generate(modifiedState));
   }
 
   @Test
@@ -80,7 +99,7 @@ public class ParsingStackTraceTest {
     expected.append("    2 import java.util.*;\n");
     expected.append("-->   public abstract\n");
     expected.append("------\n");
-    expected.append("Expected : <\"class\"> but was : <EOF> ('Dummy for unit tests')\n");
+    expected.append("Expected : <\"class\"> but was : <EOF> ('tests://unittest')\n");
 
     assertEquals(expected.toString(), ParsingStackTrace.generateFullStackTrace(state));
   }

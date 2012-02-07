@@ -9,13 +9,13 @@ package com.sonar.sslr.impl.matcher;
 import static com.sonar.sslr.api.GenericTokenType.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
+import static com.sonar.sslr.test.lexer.MockHelper.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.MockTokenType;
 
@@ -24,7 +24,7 @@ public class TokenTypesMatcherTest {
   @Test
   public void ok() {
     TokenTypesMatcher matcher = new TokenTypesMatcher(MockTokenType.values());
-    assertTrue(matcher.isExpectedToken(new Token(MockTokenType.WORD2, "word2")));
+    assertTrue(matcher.isExpectedToken(mockToken(MockTokenType.WORD2, "word2")));
 
     TokenType dummyTokenType = new TokenType() {
 
@@ -41,7 +41,7 @@ public class TokenTypesMatcherTest {
       }
     };
 
-    assertFalse(matcher.isExpectedToken(new Token(dummyTokenType, "word2")));
+    assertFalse(matcher.isExpectedToken(mockToken(dummyTokenType, "word2")));
   }
 
   @Test

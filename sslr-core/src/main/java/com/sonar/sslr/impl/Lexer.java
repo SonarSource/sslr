@@ -5,17 +5,28 @@
  */
 package com.sonar.sslr.impl;
 
+import static com.google.common.base.Preconditions.*;
+import static com.sonar.sslr.api.GenericTokenType.*;
+
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.*;
 
-import org.apache.commons.io.IOUtils;
 import org.sonar.channel.Channel;
 import org.sonar.channel.ChannelDispatcher;
 import org.sonar.channel.CodeReader;
 import org.sonar.channel.CodeReaderConfiguration;
 
-import com.sonar.sslr.api.*;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
+import com.google.common.io.Closeables;
+import com.sonar.sslr.api.Preprocessor;
+import com.sonar.sslr.api.PreprocessorAction;
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.Trivia;
 
 public final class Lexer {
 
@@ -27,7 +38,7 @@ public final class Lexer {
   private final ChannelDispatcher<Lexer> channelDispatcher;
   private final Preprocessor[] preprocessors;
 
-  private String filename;
+  private URI uri;
   private final List<Trivia> trivia = new LinkedList<Trivia>();
   private List<Token> tokens = new ArrayList<Token>();
 
@@ -36,43 +47,74 @@ public final class Lexer {
     this.preprocessors = builder.preprocessors.toArray(new Preprocessor[builder.preprocessors.size()]);
     this.configuration = builder.configuration;
     this.channelDispatcher = builder.getChannelDispatcher();
-  }
 
-  public List<Token> lex(String sourceCode) {
-    filename = null;
-    return lex(new StringReader(sourceCode));
+    try {
+      this.uri = new URI("tests://dummyForUnitTests");
+    } catch (URISyntaxException e) {
+      Throwables.propagate(e);
+    }
   }
 
   public List<Token> lex(File file) {
-    filename = file.getAbsolutePath();
+    checkNotNull(file, "file cannot be null");
+    checkArgument(file.isFile(), "file \"%s\" must be a file", file.getAbsolutePath());
+
     InputStreamReader reader = null;
     try {
+      this.uri = file.toURI();
+
       reader = new InputStreamReader(new FileInputStream(file), charset);
       return lex(reader);
     } catch (FileNotFoundException e) {
-      throw new LexerException("Unable to open file : " + file.getAbsolutePath(), e);
+      throw new LexerException("Unable to open file: " + file.getAbsolutePath(), e);
+    } catch (Exception e) {
+      throw new LexerException("Unable to lex file: " + file.getAbsolutePath(), e);
     } finally {
-      IOUtils.closeQuietly(reader);
+      Closeables.closeQuietly(reader);
+    }
+  }
+
+  /**
+   * Do not use this method, it is intended for internal unit testing only
+   * 
+   * @param sourceCode
+   * @return
+   */
+  @VisibleForTesting
+  public List<Token> lex(String sourceCode) {
+    checkNotNull(sourceCode, "sourceCode cannot be null");
+
+    try {
+      return lex(new StringReader(sourceCode));
+    } catch (Exception e) {
+      throw new LexerException("Unable to lex string source code \"" + sourceCode + "\"", e);
     }
   }
 
   private List<Token> lex(Reader reader) {
-    tokens = new ArrayList<Token>();
+    tokens = Lists.newArrayList();
 
     startLexing();
     CodeReader code = new CodeReader(reader, configuration);
     try {
       channelDispatcher.consume(code, this);
-      addToken(Token.builder(GenericTokenType.EOF, "EOF").withLine(code.getLinePosition()).withColumn(code.getColumnPosition()).build());
+
+      addToken(Token.builder()
+          .setType(EOF)
+          .setValueAndOriginalValue("EOF")
+          .setURI(uri)
+          .setLine(code.getLinePosition())
+          .setColumn(code.getColumnPosition())
+          .build());
 
       preprocess();
-
-      endLexing();
 
       return getTokens();
     } catch (Exception e) {
       throw new LexerException("Unable to lex source code at line : " + code.getLinePosition() + " and column : "
-          + code.getColumnPosition() + " in file : " + filename, e);
+          + code.getColumnPosition() + " in file : " + uri, e);
+    } finally {
+      endLexing();
     }
   }
 
@@ -89,15 +131,13 @@ public final class Lexer {
     int i = 0;
     while (i < remainingTokens.size()) {
       PreprocessorAction action = preprocessor.process(remainingTokens.subList(i, remainingTokens.size()));
-      if (action == null) {
-        throw new IllegalStateException("A preprocessor should not return null as a preprocessor action!");
-      }
+      checkNotNull(action, "A preprocessor cannot return a null PreprocessorAction");
 
-      addTrivia(action.getTriviaToInject().toArray(new Trivia[action.getTriviaToInject().size()]));
+      addTrivia(action.getTriviaToInject());
 
       for (int j = 0; j < action.getNumberOfConsumedTokens(); j++) {
         Token removedToken = remainingTokens.get(i++);
-        addTrivia(removedToken.getTrivia().toArray(new Trivia[removedToken.getTrivia().size()]));
+        addTrivia(removedToken.getTrivia());
       }
 
       for (Token tokenToInject : action.getTokensToInject()) {
@@ -106,6 +146,7 @@ public final class Lexer {
 
       if (action.getNumberOfConsumedTokens() == 0) {
         Token removedToken = remainingTokens.get(i++);
+        addTrivia(removedToken.getTrivia());
         addToken(removedToken);
       }
     }
@@ -132,38 +173,35 @@ public final class Lexer {
   }
 
   public void addTrivia(Trivia... trivia) {
-    if (trivia.length > 0) {
-      this.trivia.addAll(Arrays.asList(trivia));
-    }
+    addTrivia(Arrays.asList(trivia));
+  }
+
+  public void addTrivia(List<Trivia> trivia) {
+    checkNotNull(trivia, "trivia cannot be null");
+
+    this.trivia.addAll(trivia);
   }
 
   public void addToken(Token... tokens) {
-    if (tokens.length > 0) {
-      tokens[0].addAllTrivia(trivia);
-      trivia.clear();
-      this.tokens.addAll(Arrays.asList(tokens));
-    }
+    checkArgument(tokens.length > 0, "at least one token must be given");
+
+    Token firstToken = tokens[0];
+    Token firstTokenWithTrivia = Token.builder(firstToken).setTrivia(trivia).build();
+    this.tokens.add(firstTokenWithTrivia);
+    trivia.clear();
+    this.tokens.addAll(Arrays.asList(tokens).subList(1, tokens.length));
   }
 
   public List<Token> getTokens() {
     return Collections.unmodifiableList(tokens);
   }
 
-  public String getFilename() {
-    return filename;
+  public URI getURI() {
+    return uri;
   }
 
   public static Builder builder() {
     return new Builder();
-  }
-
-  /**
-   * @deprecated no one should need this method, it will be deleted.
-   * @param tokens
-   */
-  @Deprecated
-  public void setTokens(List<Token> tokens) {
-    this.tokens = tokens;
   }
 
   public static final class Builder {

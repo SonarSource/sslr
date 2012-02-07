@@ -35,8 +35,14 @@ public class RegexpChannel extends Channel<Lexer> {
       if (code.popTo(matcher, tmpBuilder) > 0) {
         String value = tmpBuilder.toString();
 
-        Token token = Token.builder(type, value).withLine(code.getPreviousCursor().getLine())
-            .withColumn(code.getPreviousCursor().getColumn()).build();
+        Token token = Token.builder()
+            .setType(type)
+            .setValueAndOriginalValue(value)
+            .setURI(lexer.getURI())
+            .setLine(code.getPreviousCursor().getLine())
+            .setColumn(code.getPreviousCursor().getColumn())
+            .build();
+
         lexer.addToken(token);
 
         tmpBuilder.delete(0, tmpBuilder.length());

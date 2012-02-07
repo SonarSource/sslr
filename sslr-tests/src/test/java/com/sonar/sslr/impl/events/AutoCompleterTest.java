@@ -6,6 +6,7 @@
 package com.sonar.sslr.impl.events;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
+import static com.sonar.sslr.test.lexer.MockHelper.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
@@ -211,9 +212,9 @@ public class AutoCompleterTest {
     AutoCompleter auto = new AutoCompleter();
 
     ArrayList<Token> tokens = new ArrayList<Token>();
-    tokens.add(new Token(GenericTokenType.LITERAL, "token1"));
-    tokens.add(new Token(GenericTokenType.LITERAL, "token2"));
-    tokens.add(new Token(GenericTokenType.LITERAL, "token4"));
+    tokens.add(mockToken(GenericTokenType.LITERAL, "token1"));
+    tokens.add(mockToken(GenericTokenType.LITERAL, "token2"));
+    tokens.add(mockToken(GenericTokenType.LITERAL, "token4"));
 
     auto.autoComplete(
         and(
@@ -236,8 +237,8 @@ public class AutoCompleterTest {
     AutoCompleter auto = new AutoCompleter();
 
     ArrayList<Token> tokens = new ArrayList<Token>();
-    tokens.add(new Token(GenericTokenType.LITERAL, "token1"));
-    tokens.add(new Token(GenericTokenType.LITERAL, "token2"));
+    tokens.add(mockToken(GenericTokenType.LITERAL, "token1"));
+    tokens.add(mockToken(GenericTokenType.LITERAL, "token2"));
 
     auto.autoComplete(
         and(
@@ -260,8 +261,8 @@ public class AutoCompleterTest {
     AutoCompleter auto = new AutoCompleter();
 
     ArrayList<Token> tokens = new ArrayList<Token>();
-    tokens.add(new Token(GenericTokenType.LITERAL, "token1"));
-    tokens.add(new Token(GenericTokenType.LITERAL, "token2"));
+    tokens.add(mockToken(GenericTokenType.LITERAL, "token1"));
+    tokens.add(mockToken(GenericTokenType.LITERAL, "token2"));
 
     auto.autoComplete(
         and(

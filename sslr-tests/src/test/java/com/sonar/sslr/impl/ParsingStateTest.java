@@ -6,6 +6,7 @@
 
 package com.sonar.sslr.impl;
 
+import static com.sonar.sslr.test.lexer.MockHelper.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -26,9 +27,9 @@ public class ParsingStateTest {
   @Before
   public void init() {
     List<Token> tokens = new ArrayList<Token>();
-    tokens.add(new Token(MockTokenType.WORD, "java"));
-    tokens.add(new Token(MockTokenType.WORD, "public"));
-    tokens.add(new Token(MockTokenType.WORD, "class"));
+    tokens.add(mockToken(MockTokenType.WORD, "java"));
+    tokens.add(mockToken(MockTokenType.WORD, "public"));
+    tokens.add(mockToken(MockTokenType.WORD, "class"));
 
     state = new ParsingState(tokens);
   }

@@ -5,7 +5,7 @@
  */
 package com.sonar.sslr.api.flow;
 
-import static com.sonar.sslr.api.AstNodeUtils.*;
+import static com.sonar.sslr.test.lexer.MockHelper.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
@@ -22,7 +22,7 @@ public class ExecutionFlowTest {
 
   @Test
   public void shouldHandleLinkBetweenStatementAndAstNode() {
-    AstNode stmtAstNode = createAstNode("myStatement");
+    AstNode stmtAstNode = mockAstNode("myStatement");
     Statement stmt = new Statement(stmtAstNode);
 
     flow.add(stmt);
@@ -43,10 +43,10 @@ public class ExecutionFlowTest {
 
   @Test
   public void shouldCallVisitStatementOnVisitors() {
-    Statement stmt1 = new Statement(createAstNode("myStmt1"));
-    Statement stmt2 = new Statement(createAstNode("myStmt2"));
+    Statement stmt1 = new Statement(mockAstNode("myStmt1"));
+    Statement stmt2 = new Statement(mockAstNode("myStmt2"));
     stmt1.setNext(stmt2);
-    Statement stmt3 = new Statement(createAstNode("myStmt3"));
+    Statement stmt3 = new Statement(mockAstNode("myStmt3"));
     stmt2.setNext(stmt3);
 
     ExecutionFlowVisitor visitor = mock(ExecutionFlowVisitor.class);
@@ -61,7 +61,7 @@ public class ExecutionFlowTest {
 
   @Test
   public void shouldCallProcessFlowOnFlowHandler() {
-    Statement stmt = new Statement(createAstNode("myStmt"));
+    Statement stmt = new Statement(mockAstNode("myStmt"));
     FlowHandler flowHandler = mock(FlowHandler.class);
     stmt.setFlowHandler(flowHandler);
 
@@ -73,7 +73,7 @@ public class ExecutionFlowTest {
 
   @Test
   public void shouldStopFlowExploration() {
-    Statement stmt1 = new Statement(createAstNode("myStmt1"));
+    Statement stmt1 = new Statement(mockAstNode("myStmt1"));
     FlowHandler flowHandler = new FlowHandler() {
 
       @Override
@@ -84,7 +84,7 @@ public class ExecutionFlowTest {
     };
 
     stmt1.setFlowHandler(flowHandler);
-    Statement stmt2 = new Statement(createAstNode("myStmt2"));
+    Statement stmt2 = new Statement(mockAstNode("myStmt2"));
     stmt1.setNext(stmt2);
 
     ExecutionFlowVisitor visitor = mock(ExecutionFlowVisitor.class);
@@ -97,7 +97,7 @@ public class ExecutionFlowTest {
 
   @Test
   public void shouldEndPathExploration() {
-    Statement stmt1 = new Statement(createAstNode("myStmt1"));
+    Statement stmt1 = new Statement(mockAstNode("myStmt1"));
     FlowHandler flowHandler = new FlowHandler() {
 
       @Override
@@ -108,7 +108,7 @@ public class ExecutionFlowTest {
     };
 
     stmt1.setFlowHandler(flowHandler);
-    Statement stmt2 = new Statement(createAstNode("myStmt2"));
+    Statement stmt2 = new Statement(mockAstNode("myStmt2"));
     stmt1.setNext(stmt2);
 
     ExecutionFlowVisitor visitor = mock(ExecutionFlowVisitor.class);

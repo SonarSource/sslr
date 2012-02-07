@@ -5,6 +5,9 @@
  */
 package com.sonar.sslr.test.lexer;
 
+import static com.sonar.sslr.api.GenericTokenType.*;
+import static com.sonar.sslr.test.lexer.MockHelper.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -12,7 +15,6 @@ import java.util.regex.Pattern;
 
 import org.sonar.channel.CodeReader;
 
-import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 
 public final class TokenUtils {
@@ -56,15 +58,15 @@ public final class TokenUtils {
       int columnPosition = reader.getColumnPosition();
       if (reader.popTo(matcher, nextStringToken) != -1) {
         if ("EOF".equals(nextStringToken.toString())) {
-          token = new Token(GenericTokenType.EOF, nextStringToken.toString(), linePosition, columnPosition);
+          token = mockTokenBuilder(EOF, nextStringToken.toString()).setLine(linePosition).setColumn(columnPosition).build();
         } else {
-          token = new Token(GenericTokenType.IDENTIFIER, nextStringToken.toString(), linePosition, columnPosition);
+          token = mockTokenBuilder(IDENTIFIER, nextStringToken.toString()).setLine(linePosition).setColumn(columnPosition).build();
         }
       } else if (Character.isWhitespace(reader.peek())) {
         reader.pop();
         continue;
       } else {
-        token = new Token(GenericTokenType.IDENTIFIER, "" + (char) reader.pop(), linePosition, columnPosition);
+        token = mockTokenBuilder(IDENTIFIER, "" + (char) reader.pop()).setLine(linePosition).setColumn(columnPosition).build();
       }
       tokens.add(token);
     }

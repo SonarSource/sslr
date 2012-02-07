@@ -6,7 +6,10 @@
 
 package com.sonar.sslr.api;
 
-import java.io.File;
+import static com.google.common.base.Preconditions.*;
+
+import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -18,67 +21,30 @@ import com.google.common.collect.Lists;
  */
 public class Token {
 
-  private static final int DEFAULT_LINE = 1;
-  private static final int DEFAULT_COLUMN = 0;
-  private static final File DEFAULT_FILE = null;
-  private static final List<Trivia> DEFAULT_EMPTY_TRIVIA = Lists.newArrayList();
-
   private final TokenType type;
   private final String value;
   private final String originalValue;
   private final int line;
   private final int column;
-  private final File file;
-  private boolean generatedCode = false;
-  private List<Trivia> trivia = DEFAULT_EMPTY_TRIVIA;
+  private final URI uri;
+  private final boolean generatedCode;
+  private final List<Trivia> trivia;
+  private final boolean copyBook;
+  private final int copyBookOriginalLine;
+  private final String copyBookOriginalFileName;
 
-  private boolean copyBook = false;
-  private int copyBookOriginalLine = -1;
-  private String copyBookOriginalFileName = null;
-
-  /**
-   * @deprecated please use the TokenBuilder to create a Token
-   */
-  @Deprecated
-  public Token(TokenType type, String value) {
-    this(type, value, DEFAULT_LINE, DEFAULT_COLUMN);
-  }
-
-  /**
-   * @deprecated please use the TokenBuilder to create a Token
-   */
-  @Deprecated
-  public Token(TokenType type, String value, String originalValue) {
-    this(type, value, originalValue, DEFAULT_LINE, DEFAULT_COLUMN, DEFAULT_FILE);
-  }
-
-  /**
-   * @deprecated please use the TokenBuilder to create a Token
-   */
-  @Deprecated
-  public Token(TokenType type, String value, int line, int column) {
-    this(type, value, line, column, DEFAULT_FILE);
-  }
-
-  /**
-   * @deprecated please use the TokenBuilder to create a Token
-   */
-  @Deprecated
-  public Token(TokenType type, String value, int line, int column, File file) {
-    this(type, value, value, line, column, file);
-  }
-
-  /**
-   * @deprecated please use the TokenBuilder to create a Token
-   */
-  @Deprecated
-  public Token(TokenType type, String value, String originalValue, int line, int column, File file) {
-    this.type = type;
-    this.value = value;
-    this.originalValue = originalValue;
-    this.line = line;
-    this.column = column;
-    this.file = file;
+  private Token(Builder builder) {
+    this.type = builder.type;
+    this.value = builder.value;
+    this.originalValue = builder.originalValue;
+    this.line = builder.line;
+    this.column = builder.column;
+    this.uri = builder.uri;
+    this.generatedCode = builder.generatedCode;
+    this.trivia = Collections.unmodifiableList(builder.trivia);
+    this.copyBook = builder.copyBook;
+    this.copyBookOriginalLine = builder.copyBookOriginalLine;
+    this.copyBookOriginalFileName = builder.copyBookOriginalFileName;
   }
 
   public TokenType getType() {
@@ -112,29 +78,18 @@ public class Token {
   }
 
   /**
-   * @return the file this token belongs to
+   * @return the URI this token belongs to
    */
-  public File getFile() {
-    if (file == null) {
-      return new File("Dummy for unit tests");
-    }
-    return file;
+  public URI getURI() {
+    return uri;
   }
 
   public boolean isCopyBook() {
     return copyBook;
   }
 
-  public void setCopyBook(boolean copyBook) {
-    this.copyBook = copyBook;
-  }
-
   public boolean isGeneratedCode() {
     return generatedCode;
-  }
-
-  public void setGeneratedCode(boolean generatedCode) {
-    this.generatedCode = generatedCode;
   }
 
   /**
@@ -151,12 +106,12 @@ public class Token {
     return trivia;
   }
 
-  public void addAllTrivia(List<Trivia> trivia) {
-    if (this.trivia.isEmpty()) {
-      this.trivia = Lists.newArrayList(trivia);
-    } else {
-      this.trivia.addAll(trivia);
-    }
+  public int getCopyBookOriginalLine() {
+    return copyBookOriginalLine;
+  }
+
+  public String getCopyBookOriginalFileName() {
+    return copyBookOriginalFileName;
   }
 
   public boolean isOnSameLineThan(Token other) {
@@ -164,58 +119,12 @@ public class Token {
   }
 
   @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + column;
-    result = prime * result + line;
-    return result;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    Token other = (Token) obj;
-    if (column != other.column) {
-      return false;
-    }
-    if (line != other.line) {
-      return false;
-    }
-    return true;
-  }
-
-  @Override
   public String toString() {
     return getType() + ": " + getValue();
   }
 
-  public void setCopyBookOriginalLine(int copyBookOriginalLine) {
-    this.copyBookOriginalLine = copyBookOriginalLine;
-  }
-
-  public int getCopyBookOriginalLine() {
-    return copyBookOriginalLine;
-  }
-
-  public void setCopyBookOriginalFileName(String copyBookOriginalFileName) {
-    this.copyBookOriginalFileName = copyBookOriginalFileName;
-  }
-
-  public String getCopyBookOriginalFileName() {
-    return copyBookOriginalFileName;
-  }
-
-  public static Builder builder(TokenType type, String value) {
-    return new Builder(type, value);
+  public static Builder builder() {
+    return new Builder();
   }
 
   public static Builder builder(Token token) {
@@ -224,29 +133,26 @@ public class Token {
 
   public static final class Builder {
 
-    private final TokenType type;
-    private final String value;
+    private TokenType type;
+    private String value;
     private String originalValue;
-    private File file = DEFAULT_FILE;
-    private int line = DEFAULT_LINE;
-    private int column = DEFAULT_COLUMN;
-    private List<Trivia> trivia = DEFAULT_EMPTY_TRIVIA;
+    private URI uri;
+    private int line = 0;
+    private int column = -1;
+    private List<Trivia> trivia = Collections.EMPTY_LIST;
     private boolean generatedCode = false;
     private boolean copyBook = false;
     private int copyBookOriginalLine = -1;
-    private String copyBookOriginalFileName = null;
+    private String copyBookOriginalFileName = "";
 
-    private Builder(TokenType type, String value) {
-      this.type = type;
-      this.value = value;
-      this.originalValue = value;
+    private Builder() {
     }
 
-    public Builder(Token token) {
+    private Builder(Token token) {
       type = token.type;
       value = token.value;
       originalValue = token.originalValue;
-      file = token.file;
+      uri = token.uri;
       line = token.line;
       column = token.column;
       trivia = token.trivia;
@@ -256,52 +162,88 @@ public class Token {
       copyBookOriginalFileName = token.copyBookOriginalFileName;
     }
 
-    public Builder withLine(int line) {
-      this.line = line;
+    public Builder setType(TokenType type) {
+      checkNotNull(type, "type cannot be null");
+
+      this.type = type;
       return this;
     }
 
-    public Builder withColumn(int column) {
-      this.column = column;
+    public Builder setValueAndOriginalValue(String valueAndOriginalValue) {
+      checkNotNull(valueAndOriginalValue, "valueAndOriginalValue cannot be null");
+
+      this.value = valueAndOriginalValue;
+      this.originalValue = valueAndOriginalValue;
       return this;
     }
 
-    public Builder withFile(File file) {
-      this.file = file;
-      return this;
-    }
+    public Builder setValueAndOriginalValue(String value, String originalValue) {
+      checkNotNull(value, "value cannot be null");
+      checkNotNull(originalValue, "originalValue cannot be null");
 
-    public Builder withOriginalValue(String originalValue) {
+      this.value = value;
       this.originalValue = originalValue;
       return this;
     }
 
-    public Builder withGeneratedCode(boolean generatedCode) {
+    public Builder setLine(int line) {
+      this.line = line;
+      return this;
+    }
+
+    public Builder setColumn(int column) {
+      this.column = column;
+      return this;
+    }
+
+    public Builder setURI(URI uri) {
+      checkNotNull(uri, "uri cannot be null");
+
+      this.uri = uri;
+      return this;
+    }
+
+    public Builder setGeneratedCode(boolean generatedCode) {
       this.generatedCode = generatedCode;
       return this;
     }
 
-    public Builder withTrivia(List<Trivia> trivia) {
+    public Builder setTrivia(List<Trivia> trivia) {
+      checkNotNull(trivia, "trivia can't be null");
+
       this.trivia = Lists.newArrayList(trivia);
       return this;
     }
 
     public Builder addTrivia(Trivia trivia) {
+      checkNotNull(trivia, "trivia can't be null");
+
       if (this.trivia.isEmpty()) {
         this.trivia = Lists.newArrayList();
       }
+
       this.trivia.add(trivia);
       return this;
     }
 
+    public Builder setCopyBook(String copyBookOriginalFileName, int copyBookOriginalLine) {
+      checkNotNull(copyBookOriginalFileName, "copyBookOriginalFileName cannot be null");
+
+      this.copyBook = true;
+      this.copyBookOriginalFileName = copyBookOriginalFileName;
+      this.copyBookOriginalLine = copyBookOriginalLine;
+      return this;
+    }
+
     public Token build() {
-      Token token = new Token(type, value, originalValue, line, column, file);
-      token.copyBook = copyBook;
-      token.copyBookOriginalFileName = copyBookOriginalFileName;
-      token.copyBookOriginalLine = copyBookOriginalLine;
-      token.generatedCode = generatedCode;
-      token.trivia = trivia;
-      return token;
+      checkNotNull(type, "type must be set");
+      checkNotNull(value, "value must be set");
+      checkNotNull(originalValue, "originalValue must be set");
+      checkNotNull(uri, "file must be set");
+      checkArgument(line >= 1, "line must be greater or equal than 1");
+      checkArgument(column >= 0, "column must be greater or equal than 0");
+
+      return new Token(this);
     }
   }
 

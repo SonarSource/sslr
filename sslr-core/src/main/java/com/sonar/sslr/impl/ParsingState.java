@@ -94,7 +94,7 @@ public class ParsingState {
     return outpostMatcher;
   }
 
-  public final Token getOutpostMatcherToken() {
+  public Token getOutpostMatcherToken() {
     if (outpostMatcherTokenIndex >= lexerSize || outpostMatcherTokenIndex == -1) {
       return null;
     }

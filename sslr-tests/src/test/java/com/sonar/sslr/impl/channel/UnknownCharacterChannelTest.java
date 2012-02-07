@@ -6,30 +6,29 @@
 
 package com.sonar.sslr.impl.channel;
 
+import static com.sonar.sslr.api.GenericTokenType.*;
+import static com.sonar.sslr.test.lexer.MockHelper.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.io.StringReader;
-import java.util.List;
 
 import org.junit.Test;
 import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
 
-import com.google.common.collect.Lists;
-import com.sonar.sslr.api.GenericTokenType;
-import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.Lexer;
 
 public class UnknownCharacterChannelTest {
 
-  private final Lexer lexer = Lexer.builder().build();
+  private final Lexer lexer = mockLexer();
   private final UnknownCharacterChannel channel = new UnknownCharacterChannel();
 
   @Test
   public void shouldConsumeAnyCharacter() {
-    check("'", channel, new Token(GenericTokenType.UNKNOWN_CHAR, "'"), lexer.builder().build(), true);
-    check("a", channel, new Token(GenericTokenType.UNKNOWN_CHAR, "a"), lexer.builder().build(), true);
+    check("'", channel, UNKNOWN_CHAR, "'", mockLexer());
+    check("a", channel, UNKNOWN_CHAR, "a", mockLexer());
   }
 
   @Test
@@ -43,14 +42,13 @@ public class UnknownCharacterChannelTest {
     assertThat(lexer.getTokens().size(), is(0));
   }
 
-  public void check(String input, Channel<Lexer> channel, Token expectedOutput, Lexer lexer, boolean assertion) {
-    List<Token> expected = Lists.newArrayList(expectedOutput);
+  private void check(String input, Channel<Lexer> channel, TokenType expectedTokenType, String expectedTokenValue, Lexer lexer) {
     CodeReader code = new CodeReader(new StringReader(input));
-    if (assertion) {
-      assertTrue(channel.consume(code, lexer));
-      assertThat(lexer.getTokens(), is(expected));
-    } else {
-      assertFalse(channel.consume(code, lexer));
-    }
+
+    assertTrue(channel.consume(code, lexer));
+    assertThat(lexer.getTokens().size(), is(1));
+    assertThat(lexer.getTokens().get(0).getType(), is(expectedTokenType));
+    assertThat(lexer.getTokens().get(0).getValue(), is(expectedTokenValue));
   }
+
 }

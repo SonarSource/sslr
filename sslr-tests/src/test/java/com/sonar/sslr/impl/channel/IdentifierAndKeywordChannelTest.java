@@ -6,6 +6,7 @@
 package com.sonar.sslr.impl.channel;
 
 import static com.sonar.sslr.test.lexer.LexerMatchers.*;
+import static com.sonar.sslr.test.lexer.MockHelper.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.sonar.test.channel.ChannelMatchers.*;
@@ -22,7 +23,7 @@ import com.sonar.sslr.impl.Lexer;
 public class IdentifierAndKeywordChannelTest {
 
   private IdentifierAndKeywordChannel channel;
-  private final Lexer lexer = Lexer.builder().build();
+  private final Lexer lexer = mockLexer();
 
   @Test
   public void testConsumeWord() {

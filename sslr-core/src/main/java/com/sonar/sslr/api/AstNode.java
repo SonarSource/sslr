@@ -502,7 +502,7 @@ public class AstNode {
       result.append(" token='").append(token.getValue()).append("'");
       result.append(" line=").append(token.getLine());
       result.append(" column=").append(token.getColumn());
-      result.append(" file='").append(token.getFile().getName() + "'");
+      result.append(" uri='").append(token.getURI() + "'");
     }
     return result.toString();
   }

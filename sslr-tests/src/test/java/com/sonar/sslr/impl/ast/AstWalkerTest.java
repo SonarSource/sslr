@@ -5,6 +5,7 @@
  */
 package com.sonar.sslr.impl.ast;
 
+import static com.sonar.sslr.test.lexer.MockHelper.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class AstWalkerTest {
   private AstNode ast122;
   private AstNode ast13;
   private AstNode astNodeWithToken;
+  private final Token token = mockToken(MockTokenType.WORD, "word");
 
   private final AstNodeType animal = new AstNodeType() {
 
@@ -67,7 +69,7 @@ public class AstWalkerTest {
     ast121 = new AstNode(animal, "121", null);
     ast122 = new AstNode(tiger, "122", null);
     ast13 = new AstNode(cat, "13", null);
-    astNodeWithToken = new AstNode(new Token(MockTokenType.WORD, "word"));
+    astNodeWithToken = new AstNode(token);
 
     ast1.addChild(ast11);
     ast1.addChild(ast12);
@@ -93,7 +95,7 @@ public class AstWalkerTest {
     walker.walkAndVisit(astNodeWithToken);
     verify(astAndTokenVisitor).visitFile(astNodeWithToken);
     verify(astAndTokenVisitor).leaveFile(astNodeWithToken);
-    verify(astAndTokenVisitor).visitToken(new Token(MockTokenType.WORD, "word"));
+    verify(astAndTokenVisitor).visitToken(token);
   }
 
   @Test

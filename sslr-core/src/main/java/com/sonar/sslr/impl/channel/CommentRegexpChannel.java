@@ -5,13 +5,14 @@
  */
 package com.sonar.sslr.impl.channel;
 
+import static com.sonar.sslr.api.GenericTokenType.*;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
 
-import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.impl.Lexer;
@@ -34,9 +35,15 @@ public class CommentRegexpChannel extends Channel<Lexer> {
       if (code.popTo(matcher, tmpBuilder) > 0) {
         String value = tmpBuilder.toString();
 
-        Token commentToken = Token.builder(GenericTokenType.COMMENT, value).withLine(code.getPreviousCursor().getLine())
-            .withColumn(code.getPreviousCursor().getColumn()).build();
-        lexer.addTrivia(Trivia.createComment(commentToken));
+        Token token = Token.builder()
+            .setType(COMMENT)
+            .setValueAndOriginalValue(value)
+            .setURI(lexer.getURI())
+            .setLine(code.getPreviousCursor().getLine())
+            .setColumn(code.getPreviousCursor().getColumn())
+            .build();
+
+        lexer.addTrivia(Trivia.createComment(token));
 
         tmpBuilder.delete(0, tmpBuilder.length());
         return true;

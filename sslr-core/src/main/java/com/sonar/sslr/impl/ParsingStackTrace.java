@@ -99,7 +99,7 @@ public final class ParsingStackTrace {
       if (token.isCopyBook()) {
         stackTrace.append("copy book ");
       }
-      stackTrace.append("'" + token.getFile().getName() + "':");
+      stackTrace.append("'" + token.getURI() + "':");
       stackTrace.append(" Line " + token.getLine() + " /");
       stackTrace.append(" Column " + token.getColumn());
       if (token.isCopyBook()) {
@@ -112,7 +112,7 @@ public final class ParsingStackTrace {
       stackTrace.append("EOF>");
       if (parsingState.lexerSize > 0) {
         Token lastToken = parsingState.peekToken(parsingState.lexerSize - 1, null);
-        stackTrace.append(" ('" + lastToken.getFile().getName() + "')");
+        stackTrace.append(" ('" + lastToken.getURI() + "')");
       }
     }
     stackTrace.append("\n");

@@ -6,12 +6,13 @@
 
 package com.sonar.sslr.impl.channel;
 
+import static com.sonar.sslr.api.GenericTokenType.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
 
-import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.Lexer;
 
@@ -39,12 +40,18 @@ public class UnknownCharacterChannel extends Channel<Lexer> {
         return true;
       }
       if (shouldLogWarning) {
-        LOG.warn("Unknown char: \"" + unknownChar + "\" (" + lexer.getFilename() + ":" + code.getLinePosition() + ":"
+        LOG.warn("Unknown char: \"" + unknownChar + "\" (" + lexer.getURI() + ":" + code.getLinePosition() + ":"
             + code.getColumnPosition() + ")");
       }
 
-      Token token = Token.builder(GenericTokenType.UNKNOWN_CHAR, String.valueOf(unknownChar)).withLine(code.getLinePosition())
-          .withColumn(code.getColumnPosition() - 1).build();
+      Token token = Token.builder()
+          .setType(UNKNOWN_CHAR)
+          .setValueAndOriginalValue(String.valueOf(unknownChar))
+          .setURI(lexer.getURI())
+          .setLine(code.getLinePosition())
+          .setColumn(code.getColumnPosition() - 1)
+          .build();
+
       lexer.addToken(token);
 
       return true;

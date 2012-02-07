@@ -6,6 +6,7 @@
 
 package com.sonar.sslr.api;
 
+import static com.sonar.sslr.test.lexer.MockHelper.*;
 import static com.sonar.sslr.test.miniC.MiniCParser.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -81,7 +82,7 @@ public class AstNodeTest {
 
   @Test
   public void testGetLastToken() {
-    Token lastToken = new Token(GenericTokenType.IDENTIFIER, "LAST_TOKEN");
+    Token lastToken = mockToken(GenericTokenType.IDENTIFIER, "LAST_TOKEN");
     AstNode parent = new AstNode(new NodeType(), "parent", null);
     AstNode child1 = new AstNode(new NodeType(), "child1", null);
     AstNode child2 = new AstNode(new NodeType(), "child2", lastToken);
@@ -94,8 +95,8 @@ public class AstNodeTest {
 
   @Test
   public void testGetTokens() {
-    Token child1Token = new Token(GenericTokenType.IDENTIFIER, "CHILD 1");
-    Token child2Token = new Token(GenericTokenType.IDENTIFIER, "CHILD 2");
+    Token child1Token = mockToken(GenericTokenType.IDENTIFIER, "CHILD 1");
+    Token child2Token = mockToken(GenericTokenType.IDENTIFIER, "CHILD 2");
     AstNode parent = new AstNode(new NodeType(), "parent", null);
     AstNode child1 = new AstNode(new NodeType(), "child1", child1Token);
     AstNode child2 = new AstNode(new NodeType(), "child2", child2Token);
@@ -109,7 +110,7 @@ public class AstNodeTest {
 
   @Test(expected = IllegalStateException.class)
   public void testGetChildWithBadIndex() {
-    AstNode parent = new AstNode(new NodeType(), "parent", new Token(GenericTokenType.IDENTIFIER, "PI"));
+    AstNode parent = new AstNode(new NodeType(), "parent", mockToken(GenericTokenType.IDENTIFIER, "PI"));
     AstNode child1 = new AstNode(new NodeType(), "child1", null);
     parent.addChild(child1);
     parent.getChild(1);
@@ -300,4 +301,5 @@ public class AstNodeTest {
     }
 
   }
+
 }

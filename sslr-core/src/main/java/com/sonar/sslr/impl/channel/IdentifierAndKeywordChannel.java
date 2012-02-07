@@ -5,6 +5,8 @@
  */
 package com.sonar.sslr.impl.channel;
 
+import static com.sonar.sslr.api.GenericTokenType.*;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -13,7 +15,6 @@ import java.util.regex.Pattern;
 import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
 
-import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.Lexer;
@@ -46,20 +47,15 @@ public class IdentifierAndKeywordChannel extends Channel<Lexer> {
         word = word.toUpperCase();
       }
 
-      Token.Builder tokenBuilder;
+      Token token = Token.builder()
+          .setType(isKeyword(word) ? keywordsMap.get(word) : IDENTIFIER)
+          .setValueAndOriginalValue(word, wordOriginal)
+          .setURI(lexer.getURI())
+          .setLine(code.getPreviousCursor().getLine())
+          .setColumn(code.getPreviousCursor().getColumn())
+          .build();
 
-      if (isKeyword(word)) {
-        tokenBuilder = Token.builder(keywordsMap.get(word), word);
-      } else {
-        tokenBuilder = Token.builder(GenericTokenType.IDENTIFIER, word);
-      }
-
-      tokenBuilder
-          .withOriginalValue(wordOriginal)
-          .withLine(code.getPreviousCursor().getLine())
-          .withColumn(code.getPreviousCursor().getColumn());
-
-      lexer.addToken(tokenBuilder.build());
+      lexer.addToken(token);
 
       tmpBuilder.delete(0, tmpBuilder.length());
       return true;
