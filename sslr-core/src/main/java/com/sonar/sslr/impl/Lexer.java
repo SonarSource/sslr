@@ -14,15 +14,14 @@ import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.*;
 
+import org.apache.commons.io.IOUtils;
 import org.sonar.channel.Channel;
 import org.sonar.channel.ChannelDispatcher;
 import org.sonar.channel.CodeReader;
 import org.sonar.channel.CodeReaderConfiguration;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
-import com.google.common.io.Closeables;
 import com.sonar.sslr.api.Preprocessor;
 import com.sonar.sslr.api.PreprocessorAction;
 import com.sonar.sslr.api.Token;
@@ -49,9 +48,9 @@ public final class Lexer {
     this.channelDispatcher = builder.getChannelDispatcher();
 
     try {
-      this.uri = new URI("tests://dummyForUnitTests");
+      this.uri = new URI("tests://unittest");
     } catch (URISyntaxException e) {
-      Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -70,7 +69,7 @@ public final class Lexer {
     } catch (Exception e) {
       throw new LexerException("Unable to lex file: " + file.getAbsolutePath(), e);
     } finally {
-      Closeables.closeQuietly(reader);
+      IOUtils.closeQuietly(reader);
     }
   }
 

@@ -10,7 +10,6 @@ import static com.sonar.sslr.api.GenericTokenType.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import com.google.common.base.Throwables;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
@@ -31,12 +30,12 @@ public final class MockHelper {
       return Token.builder()
           .setType(type)
           .setValueAndOriginalValue(value)
-          .setURI(new URI("tests://dummyForUnitTests"))
+          .setURI(new URI("tests://unittest"))
           .setLine(1)
           .setColumn(1)
           .build();
     } catch (URISyntaxException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -49,7 +48,7 @@ public final class MockHelper {
           .setLine(1)
           .setColumn(1);
     } catch (URISyntaxException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 
