@@ -108,10 +108,12 @@ public final class AstScanner<GRAMMAR extends Grammar> {
             } catch (Exception e2) {
               LOG.error("Unable to get an extended stack trace on file : " + file.getAbsolutePath(), e2);
             }
-          }
 
-          // Log the recognition exception
-          LOG.error(e.getMessage());
+            // Log the recognition exception
+            LOG.error(e.getMessage());
+          } else {
+            LOG.error(e.getMessage(), e);
+          }
 
           // Process the exception
           for (SquidAstVisitor<? extends Grammar> visitor : visitors) {

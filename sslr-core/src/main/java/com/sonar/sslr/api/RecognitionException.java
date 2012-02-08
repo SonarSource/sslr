@@ -42,7 +42,7 @@ public class RecognitionException extends RuntimeException {
   }
 
   public RecognitionException(LexerException e) {
-    super("Lexer error.", e);
+    super("Lexer error: " + e.getMessage(), e);
     line = 0;
     isToRetryWithExtendStackTrace = false;
     this.isFatal = true;
