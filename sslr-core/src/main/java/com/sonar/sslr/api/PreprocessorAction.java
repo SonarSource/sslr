@@ -47,13 +47,21 @@ public class PreprocessorAction {
    * </ol>
    * </p>
    * 
+   * A few examples:
+   * <ul>
+   * <li>No operation action: <tt>new PreprocessorAction(0, new ArrayList&lt;Trivia&gt;(), new ArrayList&lt;Token&gt;());</tt></li>
+   * <li>Delete current token action: <tt>new PreprocessorAction(1, new ArrayList&lt;Trivia&gt;(), new ArrayList&lt;Token&gt;());</tt></li>
+   * <li>Modify current token action: <tt>new PreprocessorAction(1, new ArrayList&lt;Trivia&gt;(), Arrays.asList(modifiedToken));</tt></li>
+   * <li>Inject trivia to current token action: <tt>new PreprocessorAction(0, Arrays.asList(newTrivia), new ArrayList&lt;Token&gt;());</tt></li>
+   * </ul>
+   * 
    * @param numberOfConsumedTokens
    *          Number of tokens consumed by the preprocessor, which can be 0. Consumed tokens are deleted and will not lead to successive
    *          calls to the preprocessor.
    * @param triviaToInject
    *          Trivia to inject.
    * @param tokensToInject
-   *          Tokens to inject.
+   *          Tokens to inject. Injected tokens will not lead to successive calls to the preprocessor.
    */
   public PreprocessorAction(int numberOfConsumedTokens, List<Trivia> triviaToInject, List<Token> tokensToInject) {
     checkArgument(numberOfConsumedTokens >= 0, "numberOfConsumedTokens(%s) must be greater or equal to 0", numberOfConsumedTokens);

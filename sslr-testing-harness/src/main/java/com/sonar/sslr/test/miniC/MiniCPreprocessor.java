@@ -38,7 +38,7 @@ public class MiniCPreprocessor extends Preprocessor {
   }
 
   @Override
-  public void startLexing() {
+  public void init() {
     buffer.clear();
   }
 
