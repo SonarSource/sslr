@@ -8,9 +8,14 @@ package com.sonar.sslr.impl;
 import static com.google.common.base.Preconditions.*;
 import static com.sonar.sslr.api.GenericTokenType.*;
 
-import java.io.*;
+import java.io.File;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -58,16 +63,24 @@ public final class Lexer {
     checkNotNull(file, "file cannot be null");
     checkArgument(file.isFile(), "file \"%s\" must be a file", file.getAbsolutePath());
 
+    try {
+      return lex(file.toURI().toURL());
+    } catch (MalformedURLException e) {
+      throw new LexerException("Unable to lex file: " + file.getAbsolutePath(), e);
+    }
+  }
+
+  public List<Token> lex(URL url) {
+    checkNotNull(url, "url cannot be null");
+
     InputStreamReader reader = null;
     try {
-      this.uri = file.toURI();
+      this.uri = url.toURI();
 
-      reader = new InputStreamReader(new FileInputStream(file), charset);
+      reader = new InputStreamReader(url.openStream(), charset);
       return lex(reader);
-    } catch (FileNotFoundException e) {
-      throw new LexerException("Unable to open file: " + file.getAbsolutePath(), e);
     } catch (Exception e) {
-      throw new LexerException("Unable to lex file: " + file.getAbsolutePath(), e);
+      throw new LexerException("Unable to lex url: " + getURI(), e);
     } finally {
       IOUtils.closeQuietly(reader);
     }
