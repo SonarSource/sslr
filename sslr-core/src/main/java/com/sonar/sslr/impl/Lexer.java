@@ -93,7 +93,7 @@ public final class Lexer {
   private List<Token> lex(Reader reader) {
     tokens = Lists.newArrayList();
 
-    startLexing();
+    initPreprocessors();
     CodeReader code = new CodeReader(reader, configuration);
     try {
       channelDispatcher.consume(code, this);
@@ -112,8 +112,6 @@ public final class Lexer {
     } catch (Exception e) {
       throw new LexerException("Unable to lex source code at line : " + code.getLinePosition() + " and column : "
           + code.getColumnPosition() + " in file : " + uri, e);
-    } finally {
-      endLexing();
     }
   }
 
@@ -151,23 +149,9 @@ public final class Lexer {
     }
   }
 
-  /**
-   * @deprecated use the parser event listeners instead
-   */
-  @Deprecated
-  public void startLexing() {
+  private void initPreprocessors() {
     for (Preprocessor preprocessor : preprocessors) {
-      preprocessor.startLexing();
-    }
-  }
-
-  /**
-   * @deprecated use the parser event listeners instead
-   */
-  @Deprecated
-  public void endLexing() {
-    for (Preprocessor preprocessor : preprocessors) {
-      preprocessor.endLexing(this);
+      preprocessor.init();
     }
   }
 
