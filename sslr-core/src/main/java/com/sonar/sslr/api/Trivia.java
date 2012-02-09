@@ -5,6 +5,10 @@
  */
 package com.sonar.sslr.api;
 
+import static com.google.common.base.Preconditions.*;
+
+import java.util.List;
+
 public final class Trivia {
 
   public enum TriviaKind {
@@ -78,10 +82,15 @@ public final class Trivia {
     return createTrivia(TriviaKind.COMMENT, commentToken);
   }
 
+  public static Trivia createSkippedText(List<Token> tokens) {
+    checkNotNull(tokens, "tokens cannot be null");
+
+    return createSkippedText(tokens.toArray(new Token[tokens.size()]));
+  }
+
   public static Trivia createSkippedText(Token... tokens) {
-    if (tokens.length == 0) {
-      throw new IllegalArgumentException("At least one token has to be skipped!");
-    }
+    checkNotNull(tokens, "tokens cannot be null");
+    checkArgument(tokens.length > 0, "tokens must contain at least on token");
 
     return createTrivia(TriviaKind.SKIPPED_TEXT, tokens);
   }
