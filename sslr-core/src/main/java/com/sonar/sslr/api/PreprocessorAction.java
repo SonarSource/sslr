@@ -7,6 +7,7 @@ package com.sonar.sslr.api;
 
 import static com.google.common.base.Preconditions.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,6 +17,17 @@ import com.google.common.collect.Lists;
  * This class encapsulates the actions to be performed by a preprocessor.
  */
 public class PreprocessorAction {
+
+  /**
+   * <p>
+   * Use this no operation preprocessor action for improved readability and performances.
+   * </p>
+   * 
+   * <p>
+   * Equivalent to: <tt>new PreprocessorAction(0, new ArrayList&lt;Trivia&gt;(), new ArrayList&lt;Token&gt;());</tt>
+   * </p>
+   */
+  public static final PreprocessorAction NO_OPERATION = new PreprocessorAction(0, new ArrayList<Trivia>(), new ArrayList<Token>());
 
   private final int numberOfConsumedTokens;
   private final List<Trivia> triviaToInject;
