@@ -5,9 +5,9 @@
  */
 package com.sonar.sslr.impl.ast;
 
-import java.util.*;
-
 import com.sonar.sslr.api.*;
+
+import java.util.*;
 
 public final class AstWalker {
 
@@ -55,13 +55,11 @@ public final class AstWalker {
   }
 
   private void visit(AstNode ast, Object output) {
-    ast.startListening(output);
     AstVisitor[] nodeVisitors = getNodeVisitors(ast);
     visitNode(ast, nodeVisitors);
     visitToken(ast);
     visitChildren(ast, output);
     leaveNode(ast, nodeVisitors);
-    ast.stopListening(output);
   }
 
   private void leaveNode(AstNode ast, AstVisitor[] nodeVisitors) {

@@ -6,15 +6,14 @@
 
 package com.sonar.sslr.api;
 
+import org.junit.Test;
+
+import java.util.List;
+
 import static com.sonar.sslr.test.lexer.MockHelper.*;
 import static com.sonar.sslr.test.miniC.MiniCParser.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.util.List;
-
-import org.junit.Test;
 
 public class AstNodeTest {
 
@@ -114,40 +113,6 @@ public class AstNodeTest {
     AstNode child1 = new AstNode(new NodeType(), "child1", null);
     parent.addChild(child1);
     parent.getChild(1);
-  }
-
-  @Test
-  public void testStartListening() {
-    AstNode node = new AstNode(new NodeType(), "child1", null);
-    AstListener listener = mock(AstListener.class);
-    Object listenersOutput = mock(Object.class);
-    node.setAstNodeListener(listener);
-    node.startListening(listenersOutput);
-    verify(listener).startListening(node, listenersOutput);
-  }
-
-  @Test
-  public void testStartListeningWithoutListener() {
-    AstNode node = new AstNode(new NodeType(), "child1", null);
-    Object listenersOutput = mock(Object.class);
-    node.startListening(listenersOutput);
-  }
-
-  @Test
-  public void testStopListening() {
-    AstNode node = new AstNode(new NodeType(), "child1", null);
-    AstListener listener = mock(AstListener.class);
-    Object listenersOutput = mock(Object.class);
-    node.setAstNodeListener(listener);
-    node.stopListening(listenersOutput);
-    verify(listener).stopListening(node, listenersOutput);
-  }
-
-  @Test
-  public void testStopListeningWithoutListener() {
-    AstNode node = new AstNode(new NodeType(), "child1", null);
-    Object listenersOutput = mock(Object.class);
-    node.stopListening(listenersOutput);
   }
 
   @Test

@@ -6,7 +6,6 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.AstListener;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.RecognitionException;
@@ -15,7 +14,6 @@ import com.sonar.sslr.impl.ParsingState;
 public class RuleMatcher extends MemoizedMatcher {
 
   protected String name;
-  private AstListener listener;
   private boolean recoveryRule = false;
   private AstNodeType astNodeType;
 
@@ -42,17 +40,12 @@ public class RuleMatcher extends MemoizedMatcher {
     AstNode childNode = super.children[0].match(parsingState);
 
     AstNode astNode = new AstNode(astNodeType, name, parsingState.peekTokenIfExists(startIndex, super.children[0]));
-    astNode.setAstNodeListener(listener);
     astNode.addChild(childNode);
     return astNode;
   }
 
   protected void setMatcher(Matcher matcher) {
-    super.children = new Matcher[] { matcher };
-  }
-
-  public void setListener(AstListener listener) {
-    this.listener = listener;
+    super.children = new Matcher[] {matcher};
   }
 
   public void setNodeType(AstNodeType astNodeType) {

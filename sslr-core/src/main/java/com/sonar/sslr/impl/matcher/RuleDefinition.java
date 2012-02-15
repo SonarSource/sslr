@@ -104,12 +104,7 @@ public final class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSki
   }
 
   protected void setMatcher(Matcher matcher) {
-    ruleMatcher.children = new Matcher[] { matcher };
-  }
-
-  public RuleDefinition setListener(AstListener listener) {
-    ruleMatcher.setListener(listener);
-    return this;
+    ruleMatcher.children = new Matcher[] {matcher};
   }
 
   public void skipIf(AstNodeSkippingPolicy astNodeSkipPolicy) {

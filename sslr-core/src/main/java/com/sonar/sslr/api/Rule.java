@@ -8,7 +8,7 @@ package com.sonar.sslr.api;
 
 /**
  * A Rule describes a context free grammar syntactic rule.
- * 
+ *
  * @see Grammar
  * @see <a href="http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">Backus�Naur Form</a>
  */
@@ -19,7 +19,7 @@ public interface Rule extends AstNodeType {
    * <br>
    * <b>Note:</b> this method can be called only once for a rule. If it is called more than once, an IllegalStateException will be thrown.
    * If the rule definition really needs to be redefine, then the {@link Rule#override(Object...)} method must be used.
-   * 
+   *
    * @param matchers
    *          the matchers that define the rule
    * @return this rule
@@ -29,7 +29,7 @@ public interface Rule extends AstNodeType {
   /**
    * This method has the same effect as {@link RuleImpl#is(Object...)}, except that it can be called more than once to redefine a rule from
    * scratch. It can be used if the rule has to be redefined later (for instance in a grammar extension).
-   * 
+   *
    * @param matchers
    *          the matchers that define the rule
    * @return this rule
@@ -38,7 +38,7 @@ public interface Rule extends AstNodeType {
 
   /**
    * The method {@link #is(Object...)} must be first called to be able to add a new alternative to this rule
-   * 
+   *
    * @see {@link com.sonar.sslr.impl.matcher.GrammarFunctions.Standard#or(Object...)}
    * @return this rule
    */
@@ -46,7 +46,7 @@ public interface Rule extends AstNodeType {
 
   /**
    * The method {@link #is(Object...)} must be first called to be able to extend this rule definition
-   * 
+   *
    * @see {@link com.sonar.sslr.impl.matcher.GrammarFunctions.Standard#and(Object...)}
    * @return this rule
    */
@@ -55,7 +55,7 @@ public interface Rule extends AstNodeType {
   /**
    * The method {@link #is(Object...)} must be first called to be able to add a new alternative to this rule. This alternative will be the
    * first one to be tested before testing previous ones.
-   * 
+   *
    * @see {@link com.sonar.sslr.impl.matcher.GrammarFunctions.Standard#or(Object...)}
    * @return this rule
    */
@@ -63,19 +63,12 @@ public interface Rule extends AstNodeType {
 
   /**
    * The method {@link #is(Object...)} is just a utility method which prevents writing is(or());
-   * 
+   *
    * @see {@link #is(Object...)}
    * @see {@link com.sonar.sslr.impl.matcher.GrammarFunctions.Standard#or(Object...)}
    * @return this rule
    */
   Rule isOr(Object... matchers);
-
-  /**
-   * @deprecated see {@link #plug(Class)}
-   * @return this rule
-   */
-  @Deprecated
-  Rule setListener(AstListener listener);
 
   /**
    * Remove this node from the AST and attached its children directly to its parent
@@ -106,10 +99,10 @@ public interface Rule extends AstNodeType {
   /**
    * A rule should be flagged as being a "Recovery" rule if it's responsibility is to consume
    * some bad tokens in order to recover from a parsing error.
-   * 
+   *
    * In such case, all {@link RecognitionExceptionListener} injected into the {@link com.sonar.sslr.impl.Parser} are automatically
    * notified.
-   * 
+   *
    * @see RecognitionExceptionListener
    */
   void recoveryRule();

@@ -13,7 +13,7 @@ import java.util.List;
  * the parser is in charge to construct an abstract syntax tree (AST) which is a tree representation of the abstract syntactic structure of
  * source code. Each node of the tree is an AstNode and each node denotes a construct occurring in the source code which starts at a given
  * Token.
- * 
+ *
  * @see Token
  */
 public class AstNode {
@@ -26,8 +26,6 @@ public class AstNode {
   private AstNode parent;
   private int fromIndex;
   private int toIndex;
-  @Deprecated
-  private AstListener action = null;
 
   public AstNode(Token token) {
     this(token.getType(), token.getType().getName(), token);
@@ -41,7 +39,7 @@ public class AstNode {
 
   /**
    * Get the parent of this node in the tree.
-   * 
+   *
    * @param parent
    */
   public AstNode getParent() {
@@ -80,7 +78,7 @@ public class AstNode {
 
   /**
    * Get the list of children.
-   * 
+   *
    * @return list of children
    */
   public List<AstNode> getChildren() {
@@ -96,7 +94,7 @@ public class AstNode {
 
   /**
    * Get the desired child
-   * 
+   *
    * @param index
    *          the index of the child (start at 0)
    * @return the AstNode child
@@ -104,7 +102,7 @@ public class AstNode {
   public AstNode getChild(int index) {
     if (index >= getNumberOfChildren()) {
       throw new IllegalStateException("The AstNode '" + this + "' has only " + getNumberOfChildren()
-          + " children. Requested child index is wrong : " + index);
+        + " children. Requested child index is wrong : " + index);
     }
     return children.get(index);
   }
@@ -139,7 +137,7 @@ public class AstNode {
 
   /**
    * Get the next sibling AstNode if exists in the tree.
-   * 
+   *
    * @return next sibling AstNode
    */
   public AstNode nextSibling() {
@@ -154,7 +152,7 @@ public class AstNode {
 
   /**
    * Get the previous sibling AstNode if exists in the tree.
-   * 
+   *
    * @return previous sibling AstNode
    */
   public AstNode previousSibling() {
@@ -169,7 +167,7 @@ public class AstNode {
 
   /**
    * Get the Token's value associated to this AstNode
-   * 
+   *
    * @return token's value
    */
   public String getTokenValue() {
@@ -181,7 +179,7 @@ public class AstNode {
 
   /**
    * Get the Token's original value associated to this AstNode
-   * 
+   *
    * @return token's original value
    */
   public String getTokenOriginalValue() {
@@ -200,7 +198,7 @@ public class AstNode {
 
   /**
    * Get the Token's line associated to this AstNode
-   * 
+   *
    * @return token's line
    */
   public int getTokenLine() {
@@ -255,38 +253,19 @@ public class AstNode {
     return !is(types);
   }
 
-  @Deprecated
-  public void setAstNodeListener(AstListener action) {
-    this.action = action;
-  }
-
-  @Deprecated
-  public void startListening(Object output) {
-    if (action != null) {
-      action.startListening(this, output);
-    }
-  }
-
-  @Deprecated
-  public void stopListening(Object output) {
-    if (action != null) {
-      action.stopListening(this, output);
-    }
-  }
-
   /**
    * Find the first child among all direct children having one of the requested types.
-   * 
+   *
    * <pre>
    * In the following case, findFirstDirectChild('B') would return 'B2' :
-   * 
+   *
    *   A1
    *    |__ C1
-   *    |    |__ B1 
+   *    |    |__ B1
    *    |__ B2
    *    |__ B3
    * </pre>
-   * 
+   *
    * @param list
    *          of desired node types
    * @return the first child or null
@@ -304,17 +283,17 @@ public class AstNode {
 
   /**
    * Find the first child among all children and grand-children having one of the requested types.
-   * 
+   *
    * <pre>
    * In the following case, findFirstChild('B') would return 'B1' :
-   * 
+   *
    *   A1
    *    |__ C1
-   *    |    |__ B1 
+   *    |    |__ B1
    *    |__ B2
    *    |__ B3
    * </pre>
-   * 
+   *
    * @param AstNodeType
    *          list of desired node types
    * @return the first child or null
@@ -338,7 +317,7 @@ public class AstNode {
 
   /**
    * Get the first child of this node
-   * 
+   *
    * @return the first child or null if there is no child
    */
   public AstNode getFirstChild() {
@@ -350,17 +329,17 @@ public class AstNode {
 
   /**
    * Find the all children among direct children having the requested type(s).
-   * 
+   *
    * <pre>
    * In the following case, findDirectChildren('B') would return 'B2' and 'B3' :
-   * 
+   *
    *   A1
    *    |__ C1
-   *    |    |__ B1 
+   *    |    |__ B1
    *    |__ B2
    *    |__ B3
    * </pre>
-   * 
+   *
    * @param AstNodeType
    *          list of desired the node types
    * @return the list of matching children
@@ -380,18 +359,18 @@ public class AstNode {
   /**
    * Find the all children having the requested type(s). Be careful, this method searches among all children whatever is their depth, so
    * favor findDirectChildren(AstNodeType... nodeType) when possible.
-   * 
+   *
    * <pre>
    * In the following case, findChildren('B', 'C') would return 'C1', 'B1', 'B2' and 'B3' :
-   * 
+   *
    *   A1
    *    |__ C1
-   *    |    |__ B1 
+   *    |    |__ B1
    *    |__ B2
    *    |__ D1
    *    |__ B3
    * </pre>
-   * 
+   *
    * @param AstNodeType
    *          the node type
    * @return the list of matching children
@@ -417,7 +396,7 @@ public class AstNode {
 
   /**
    * Get the last child of this node
-   * 
+   *
    * @return the last child or null if there is no child
    */
   public AstNode getLastChild() {
@@ -453,7 +432,7 @@ public class AstNode {
 
   /**
    * Find the first parent with the desired node type
-   * 
+   *
    * @param AstNodeType
    *          the desired Ast node type
    * @return the parent/grand-parent or null
@@ -485,7 +464,7 @@ public class AstNode {
   }
 
   private void getTokens(List<Token> tokens) {
-    if ( !hasChildren()) {
+    if (!hasChildren()) {
       tokens.add(token);
     } else {
       for (int i = 0; i < children.size(); i++) {
