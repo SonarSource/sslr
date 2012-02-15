@@ -6,20 +6,20 @@
 
 package com.sonar.sslr.api;
 
-import static com.google.common.base.Preconditions.*;
+import com.google.common.collect.Lists;
 
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.common.collect.Lists;
+import static com.google.common.base.Preconditions.*;
 
 /**
  * Tokens are string of character like an identifier, a literal, an integer, ... which are produced by the lexer to feed the parser.
  * By definition, comments and preprocessing directives should not be seen by the parser that's why such Trivia, when they exist, are
  * attached to the next token.
  */
-public class Token {
+public final class Token {
 
   private final TokenType type;
   private final String value;

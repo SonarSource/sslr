@@ -5,9 +5,11 @@
  */
 package com.sonar.sslr.api;
 
-import static com.google.common.base.Preconditions.*;
-
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+
+import static com.google.common.base.Preconditions.*;
 
 public final class Trivia {
 
@@ -17,19 +19,26 @@ public final class Trivia {
     SKIPPED_TEXT
   }
 
-  private TriviaKind kind;
+  private final TriviaKind kind;
+  private final List<Token> tokens;
+  private final PreprocessingDirective preprocessingDirective;
 
-  private Token[] tokens = new Token[0];
-  private PreprocessingDirective preprocessingDirective;
+  private Trivia(TriviaKind kind, Token... tokens) {
+    this(kind, null, tokens);
+  }
 
-  private Trivia() {
+  private Trivia(TriviaKind kind, PreprocessingDirective preprocessingDirective, Token... tokens) {
+    this.kind = kind;
+    this.preprocessingDirective = preprocessingDirective;
+    this.tokens = Collections.unmodifiableList(Arrays.asList(tokens));
   }
 
   public Token getToken() {
-    return tokens.length == 0 ? null : tokens[0];
+    checkState(!tokens.isEmpty(), "the trivia must have at least one associated token to be able to call getToken()");
+    return tokens.get(0);
   }
 
-  public Token[] getTokens() {
+  public List<Token> getTokens() {
     return tokens;
   }
 
@@ -55,10 +64,10 @@ public final class Trivia {
 
   @Override
   public String toString() {
-    if (tokens.length == 0) {
+    if (tokens.isEmpty()) {
       return "TRIVIA kind=" + kind;
-    } else if (tokens.length == 1) {
-      Token token = tokens[0];
+    } else if (tokens.size() == 1) {
+      Token token = tokens.get(0);
       return "TRIVIA kind=" + kind + " line=" + token.getLine() + " type=" + token.getType() + " value=" + token.getOriginalValue();
     } else {
       StringBuilder sb = new StringBuilder();
@@ -71,15 +80,8 @@ public final class Trivia {
     }
   }
 
-  private static Trivia createTrivia(TriviaKind kind, Token... tokens) {
-    Trivia trivia = new Trivia();
-    trivia.kind = kind;
-    trivia.tokens = tokens;
-    return trivia;
-  }
-
   public static Trivia createComment(Token commentToken) {
-    return createTrivia(TriviaKind.COMMENT, commentToken);
+    return new Trivia(TriviaKind.COMMENT, commentToken);
   }
 
   public static Trivia createSkippedText(List<Token> tokens) {
@@ -89,21 +91,15 @@ public final class Trivia {
   }
 
   public static Trivia createSkippedText(Token... tokens) {
-    checkNotNull(tokens, "tokens cannot be null");
-    checkArgument(tokens.length > 0, "tokens must contain at least on token");
-
-    return createTrivia(TriviaKind.SKIPPED_TEXT, tokens);
+    return new Trivia(TriviaKind.SKIPPED_TEXT, tokens);
   }
 
   public static Trivia createPreprocessingToken(Token preprocessingToken) {
-    return createTrivia(TriviaKind.PREPROCESSOR, preprocessingToken);
+    return new Trivia(TriviaKind.PREPROCESSOR, preprocessingToken);
   }
 
   public static Trivia createPreprocessingDirective(PreprocessingDirective preprocessingDirective) {
-    Trivia trivia = new Trivia();
-    trivia.kind = TriviaKind.PREPROCESSOR;
-    trivia.preprocessingDirective = preprocessingDirective;
-    return trivia;
+    return new Trivia(TriviaKind.PREPROCESSOR, preprocessingDirective);
   }
 
   public static Trivia createPreprocessingDirective(AstNode ast, Grammar grammar) {
