@@ -5,14 +5,6 @@
  */
 package com.sonar.sslr.test.miniC;
 
-import org.sonar.squid.api.SourceCode;
-import org.sonar.squid.api.SourceFunction;
-import org.sonar.squid.api.SourceProject;
-import org.sonar.squid.measures.AggregationFormula;
-import org.sonar.squid.measures.CalculatedMetricFormula;
-import org.sonar.squid.measures.MetricDef;
-import org.sonar.squid.measures.SumAggregationFormula;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.CommentAnalyser;
@@ -22,6 +14,13 @@ import com.sonar.sslr.squid.metrics.CommentsVisitor;
 import com.sonar.sslr.squid.metrics.CounterVisitor;
 import com.sonar.sslr.squid.metrics.LinesOfCodeVisitor;
 import com.sonar.sslr.squid.metrics.LinesVisitor;
+import org.sonar.squid.api.SourceCode;
+import org.sonar.squid.api.SourceFunction;
+import org.sonar.squid.api.SourceProject;
+import org.sonar.squid.measures.AggregationFormula;
+import org.sonar.squid.measures.CalculatedMetricFormula;
+import org.sonar.squid.measures.MetricDef;
+import org.sonar.squid.measures.SumAggregationFormula;
 
 public final class MiniCAstScanner {
 
@@ -134,12 +133,12 @@ public final class MiniCAstScanner {
         .subscribeTo(parser.getGrammar().statement).build());
 
     AstNodeType[] complexityAstNodeType = new AstNodeType[] {
-        parser.getGrammar().functionDefinition,
-        parser.getGrammar().returnStatement,
-        parser.getGrammar().ifStatement,
-        parser.getGrammar().whileStatement,
-        parser.getGrammar().continueStatement,
-        parser.getGrammar().breakStatement
+      parser.getGrammar().functionDefinition,
+      parser.getGrammar().returnStatement,
+      parser.getGrammar().ifStatement,
+      parser.getGrammar().whileStatement,
+      parser.getGrammar().continueStatement,
+      parser.getGrammar().breakStatement
     };
     builder.withSquidAstVisitor(CounterVisitor.<MiniCGrammar> builder().setMetricDef(MiniCMetrics.COMPLEXITY)
         .subscribeTo(complexityAstNodeType).build());

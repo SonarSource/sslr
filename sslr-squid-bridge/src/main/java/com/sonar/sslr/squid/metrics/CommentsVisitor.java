@@ -5,14 +5,13 @@
  */
 package com.sonar.sslr.squid.metrics;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.sonar.sslr.api.*;
+import com.sonar.sslr.squid.SquidAstVisitor;
 import org.sonar.squid.api.SourceFile;
 import org.sonar.squid.measures.MetricDef;
 
-import com.sonar.sslr.api.*;
-import com.sonar.sslr.squid.SquidAstVisitor;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Visitor that computes the number of lines of comments and the number of empty lines of comments.
@@ -46,7 +45,7 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
 
   private void addCommentLine(int line) {
     /* Mark the line only if it does not already have 1) no sonar */
-    if ( !noSonar.contains(line)) {
+    if (!noSonar.contains(line)) {
       /* Remove from lower priorities categories first */
       blankComments.remove(line);
 
@@ -56,7 +55,7 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
 
   private void addBlankCommentLine(int line) {
     /* Mark the line only if it does not already have 1) no sonar, or 2) a non-empty comment */
-    if ( !noSonar.contains(line) && !comments.contains(line)) {
+    if (!noSonar.contains(line) && !comments.contains(line)) {
       blankComments.add(line);
     }
   }
@@ -73,7 +72,7 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
   }
 
   public void visitToken(Token token) {
-    if ( !ignoreHeaderComments || ignoreHeaderComments && seenFirstToken) {
+    if (!ignoreHeaderComments || seenFirstToken) {
       for (Trivia trivia : token.getTrivia()) {
         if (trivia.isComment()) {
           String[] commentLines = getContext().getCommentAnalyser().getContents(trivia.getToken().getOriginalValue())

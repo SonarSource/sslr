@@ -5,6 +5,11 @@
  */
 package com.sonar.sslr.impl.events;
 
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.impl.matcher.MemoizedMatcher;
+import com.sonar.sslr.impl.matcher.RuleMatcher;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.management.ManagementFactory;
@@ -12,11 +17,6 @@ import java.lang.management.ThreadMXBean;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
-
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.matcher.MemoizedMatcher;
-import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public final class Profiler extends ParsingEventListener {
 
@@ -136,7 +136,7 @@ public final class Profiler extends ParsingEventListener {
     }
 
     private void stop() {
-      if ( !this.isTiming) {
+      if (!this.isTiming) {
         throw new IllegalStateException();
       }
       this.cpuTime += getCpuTime() - start;
@@ -379,10 +379,10 @@ public final class Profiler extends ParsingEventListener {
   private void stopMatch(RuleMatcher rule, ParsingState parsingState, boolean backtrack) {
     Match match = matches.pop();
 
-    if ( !match.wasMemoized) {
+    if (!match.wasMemoized) {
       RuleCounter counter = getRuleCounter(rule);
 
-      if ( !backtrack) {
+      if (!backtrack) {
         /* Match */
         counter.match();
       } else {
@@ -404,7 +404,7 @@ public final class Profiler extends ParsingEventListener {
     /* Add the delta to the previous rule's timer */
     if (timers.size() > 0) {
       Timer oldTimer = timers.pop();
-      if ( !oldTimer.isAborted) {
+      if (!oldTimer.isAborted) {
         oldTimer.stop();
       }
       timers.push(oldTimer);
@@ -419,7 +419,7 @@ public final class Profiler extends ParsingEventListener {
   private void stopRecordingTime(RuleMatcher rule) {
     /* Handle the current timer */
     Timer currentTimer = timers.pop();
-    if ( !currentTimer.isAborted) {
+    if (!currentTimer.isAborted) {
       currentTimer.stop();
       getRuleCounter(rule).addNonMemoizedHitCpuTime(currentTimer.cpuTime);
     }
@@ -427,7 +427,7 @@ public final class Profiler extends ParsingEventListener {
     /* Restart the previous rule's timer */
     if (timers.size() > 0) {
       Timer previousTimer = timers.pop();
-      if ( !previousTimer.isAborted) {
+      if (!previousTimer.isAborted) {
         previousTimer.start();
       }
       timers.push(previousTimer);
