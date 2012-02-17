@@ -67,20 +67,23 @@ public class ViolationCounterCheck<GRAMMAR extends Grammar> extends SquidAstVisi
     }
 
     public static ViolationCounter loadFromFile(File sourceFile) {
-      FileInputStream fis = null;
-      ObjectInputStream ois = null;
-      try {
-        fis = new FileInputStream(sourceFile);
-        ois = new ObjectInputStream(fis);
-        return new ViolationCounter((Map<String, Map<String, TreeMultiset<Integer>>>) ois.readObject());
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      } finally {
-        IOUtils.closeQuietly(fis);
-        IOUtils.closeQuietly(ois);
+      if (!sourceFile.exists() || sourceFile.length() == 0) {
+        return new ViolationCounter(new HashMap<String, Map<String, TreeMultiset<Integer>>>());
+      } else {
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+        try {
+          fis = new FileInputStream(sourceFile);
+          ois = new ObjectInputStream(fis);
+          return new ViolationCounter((Map<String, Map<String, TreeMultiset<Integer>>>) ois.readObject());
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        } finally {
+          IOUtils.closeQuietly(fis);
+          IOUtils.closeQuietly(ois);
+        }
       }
     }
-
   }
 
   public static class ViolationDifferenceAnalyzer {
