@@ -5,12 +5,10 @@
  */
 package com.sonar.sslr.squid;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
+import com.sonar.sslr.api.*;
+import com.sonar.sslr.impl.Parser;
+import com.sonar.sslr.impl.ast.AstWalker;
+import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.squid.api.AnalysisException;
@@ -20,10 +18,13 @@ import org.sonar.squid.api.SourceProject;
 import org.sonar.squid.indexer.SquidIndex;
 import org.sonar.squid.measures.MetricDef;
 
-import com.sonar.sslr.api.*;
-import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.impl.ast.AstWalker;
-import com.sonar.sslr.impl.events.ExtendedStackTrace;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import static com.google.common.base.Preconditions.*;
 
 public final class AstScanner<GRAMMAR extends Grammar> {
 
@@ -167,20 +168,25 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     private MetricDef filesMetric;
 
     public Builder(SquidAstVisitorContextImpl<GRAMMAR> context) {
+      checkNotNull(context, "context cannot be null");
       this.context = context;
     }
 
     public Builder<GRAMMAR> setBaseParser(Parser<GRAMMAR> baseParser) {
+      checkNotNull(baseParser, "baseParser cannot be null");
       this.baseParser = baseParser;
       return this;
     }
 
     public Builder<GRAMMAR> setCommentAnalyser(CommentAnalyser commentAnalyser) {
+      checkNotNull(commentAnalyser, "commentAnalyser cannot be null");
       this.commentAnalyser = commentAnalyser;
       return this;
     }
 
     public Builder<GRAMMAR> withSquidAstVisitor(SquidAstVisitor<GRAMMAR> visitor) {
+      checkNotNull(visitor, "visitor cannot be null");
+
       visitor.setContext(context);
 
       if (visitor instanceof AuditListener) {
@@ -192,27 +198,23 @@ public final class AstScanner<GRAMMAR extends Grammar> {
     }
 
     public Builder<GRAMMAR> withMetrics(MetricDef... metrics) {
+      for (MetricDef metric : metrics) {
+        checkNotNull(metric, "metrics cannot be null");
+      }
       this.metrics = metrics;
       return this;
     }
 
     public Builder<GRAMMAR> setFilesMetric(MetricDef filesMetric) {
+      checkNotNull(filesMetric, "filesMetric cannot be null");
       this.filesMetric = filesMetric;
       return this;
     }
 
     public AstScanner<GRAMMAR> build() {
-      if (baseParser == null) {
-        throw new IllegalArgumentException("baseParser cannot be null.");
-      }
-
-      if (commentAnalyser == null) {
-        throw new IllegalArgumentException("commentAnalyser cannot be null.");
-      }
-
-      if (filesMetric == null) {
-        throw new IllegalArgumentException("filesMetric cannot be null.");
-      }
+      checkState(baseParser != null, "baseParser must be set");
+      checkState(commentAnalyser != null, "commentAnalyser must be set");
+      checkState(filesMetric != null, "filesMetric must be set");
 
       return new AstScanner<GRAMMAR>(this);
     }
