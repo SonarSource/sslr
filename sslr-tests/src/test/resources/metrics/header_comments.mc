@@ -1,16 +1,16 @@
-/* 
+/*
  * NOSONAR Copyright 2012 SonarSource SA
  * http://www.SonarSource.com
  */
- 
-/* This is also part of the header */
+
+/* This is *not* part of the header */
 
 int a = 0;
 
 void myfunction()
 {
   int b = a + 42;
-  
-/* But this is not! */
+
+/* This also is not a header comment not! */
 /* */
 }

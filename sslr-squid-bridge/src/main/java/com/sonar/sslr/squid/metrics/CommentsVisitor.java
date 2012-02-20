@@ -21,7 +21,7 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
   private Set<Integer> noSonar;
   private Set<Integer> comments;
   private Set<Integer> blankComments;
-  private boolean seenFirstToken;
+  private boolean seenFirstTrivia;
 
   private final boolean enableNoSonar;
   private final MetricDef commentMetric;
@@ -68,12 +68,12 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
     noSonar = new HashSet<Integer>();
     comments = new HashSet<Integer>();
     blankComments = new HashSet<Integer>();
-    seenFirstToken = false;
+    seenFirstTrivia = false;
   }
 
   public void visitToken(Token token) {
-    if (!ignoreHeaderComments || seenFirstToken) {
-      for (Trivia trivia : token.getTrivia()) {
+    for (Trivia trivia : token.getTrivia()) {
+      if (!ignoreHeaderComments || seenFirstTrivia) {
         if (trivia.isComment()) {
           String[] commentLines = getContext().getCommentAnalyser().getContents(trivia.getToken().getOriginalValue())
               .split("(\r)?\n|\r", -1);
@@ -95,9 +95,9 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
           }
         }
       }
-    }
 
-    seenFirstToken = true;
+      seenFirstTrivia = true;
+    }
   }
 
   /**
