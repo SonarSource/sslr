@@ -5,13 +5,14 @@
  */
 package com.sonar.sslr.squid.metrics;
 
-import com.sonar.sslr.test.miniC.MiniCAstScanner.MiniCMetrics;
-import org.junit.Test;
-import org.sonar.squid.api.SourceFile;
-
 import static com.sonar.sslr.squid.metrics.ResourceParser.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+
+import org.junit.Test;
+import org.sonar.squid.api.SourceFile;
+
+import com.sonar.sslr.test.miniC.MiniCAstScanner.MiniCMetrics;
 
 public class CommentsVisitorTest {
 
@@ -42,7 +43,7 @@ public class CommentsVisitorTest {
     SourceFile sourceFile = scanFileIgnoreHeaderComments("/metrics/header_comments.mc");
 
     assertThat(sourceFile.getInt(MiniCMetrics.BLANK_COMMENT_LINES), is(1));
-    assertThat(sourceFile.getInt(MiniCMetrics.COMMENT_LINES), is(2));
+    assertThat(sourceFile.getInt(MiniCMetrics.COMMENT_LINES), is(1));
     assertThat(sourceFile.getNoSonarTagLines().size(), is(0));
   }
 
