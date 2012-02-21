@@ -88,7 +88,7 @@ public final class Lexer {
 
   /**
    * Do not use this method, it is intended for internal unit testing only
-   * 
+   *
    * @param sourceCode
    * @return
    */
@@ -124,7 +124,7 @@ public final class Lexer {
       return getTokens();
     } catch (Exception e) {
       throw new LexerException("Unable to lex source code at line : " + code.getLinePosition() + " and column : "
-          + code.getColumnPosition() + " in file : " + uri, e);
+        + code.getColumnPosition() + " in file : " + uri, e);
     }
   }
 
@@ -237,7 +237,14 @@ public final class Lexer {
     }
 
     private ChannelDispatcher<Lexer> getChannelDispatcher() {
-      return new ChannelDispatcher<Lexer>((List) channels, failIfNoChannelToConsumeOneCharacter);
+      ChannelDispatcher.Builder builder = ChannelDispatcher.builder()
+          .addChannels(channels.toArray(new Channel[channels.size()]));
+
+      if (failIfNoChannelToConsumeOneCharacter) {
+        builder.failIfNoChannelToConsumeOneCharacter();
+      }
+
+      return builder.build();
     }
 
   }
