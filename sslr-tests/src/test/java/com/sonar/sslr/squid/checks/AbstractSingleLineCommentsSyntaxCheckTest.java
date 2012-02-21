@@ -24,7 +24,7 @@ public class AbstractSingleLineCommentsSyntaxCheckTest {
 
   @Test
   public void singleLineCommentsSyntax() {
-    setCurrentSourceFile(scanFile("/checks/single_line_comment_syntax.mc", new SingleLineCommentsSyntaxCheck()));
+    setCurrentSourceFile(scanFile("/checks/single_line_comments_syntax.mc", new SingleLineCommentsSyntaxCheck()));
 
     assertNumberOfViolations(2);
 
