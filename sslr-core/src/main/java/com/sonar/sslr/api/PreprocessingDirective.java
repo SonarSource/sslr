@@ -15,7 +15,7 @@ public abstract class PreprocessingDirective {
     return new DefaultPreprocessingDirective(ast, grammar);
   }
 
-  private final static class DefaultPreprocessingDirective extends PreprocessingDirective {
+  private static final class DefaultPreprocessingDirective extends PreprocessingDirective {
 
     private final AstNode astNode;
     private final Grammar grammar;

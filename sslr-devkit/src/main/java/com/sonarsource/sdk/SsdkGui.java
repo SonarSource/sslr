@@ -5,6 +5,14 @@
  */
 package com.sonarsource.sdk;
 
+import com.sonar.sslr.impl.Parser;
+import org.sonar.colorizer.Tokenizer;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,21 +21,12 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-
-import org.sonar.colorizer.Tokenizer;
-
-import com.sonar.sslr.impl.Parser;
-
 @SuppressWarnings("serial")
 public class SsdkGui extends javax.swing.JFrame {
 
   private final SourceCodeViewer sourceCodePane;
   private final JButton loadSourceButton = new JButton();
-  private transient final AstViewer astViewPane;
+  private final transient AstViewer astViewPane;
   private final JFileChooser sourceFileChooser = new JFileChooser();
 
   public SsdkGui(Parser parser, List<Tokenizer> colorizerChannels) {

@@ -6,17 +6,17 @@
 
 package com.sonar.sslr.impl;
 
-import java.io.File;
-import java.io.PrintStream;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.sonar.sslr.api.*;
 import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import com.sonar.sslr.impl.events.ParsingEventListener;
 import com.sonar.sslr.impl.matcher.GrammarFunctions;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
+
+import java.io.File;
+import java.io.PrintStream;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public final class Parser<GRAMMAR extends Grammar> {
 
@@ -156,7 +156,7 @@ public final class Parser<GRAMMAR extends Grammar> {
     return new Builder<GRAMMAR>(parser);
   }
 
-  public final static class Builder<GRAMMAR extends Grammar> {
+  public static final class Builder<GRAMMAR extends Grammar> {
 
     private Lexer lexer;
     private final GRAMMAR grammar;

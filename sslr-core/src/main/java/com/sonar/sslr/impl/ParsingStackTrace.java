@@ -6,19 +6,19 @@
 
 package com.sonar.sslr.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.TokenTypeMatcher;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class ParsingStackTrace {
 
   private final StringBuilder stackTrace = new StringBuilder();
   private final ParsingState parsingState;
-  private final static int SOURCE_CODE_TOKENS_WINDOW = 30;
-  private final static int SOURCE_CODE_LINE_HEADER_WIDTH = 6;
+  private static final int SOURCE_CODE_TOKENS_WINDOW = 30;
+  private static final int SOURCE_CODE_LINE_HEADER_WIDTH = 6;
 
   private ParsingStackTrace(ParsingState parsingState, boolean displaySourceCode) {
     this.parsingState = parsingState;

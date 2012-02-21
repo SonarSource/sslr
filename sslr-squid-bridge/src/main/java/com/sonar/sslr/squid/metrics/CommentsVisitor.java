@@ -120,7 +120,7 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
     return new CommentsVisitorBuilder<GRAMMAR>();
   }
 
-  public final static class CommentsVisitorBuilder<GRAMMAR extends Grammar> {
+  public static final class CommentsVisitorBuilder<GRAMMAR extends Grammar> {
 
     private boolean enableNoSonar = false;
     private MetricDef commentMetric;
