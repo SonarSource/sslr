@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.sonarsource.sslr</groupId>
 		<artifactId>sslr</artifactId>
-		<version>1.9-SNAPSHOT</version>
+		<version>1.9</version>
 	</parent>
 
 	<artifactId>sslr-structural-pattern-matcher</artifactId>
