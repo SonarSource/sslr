@@ -22,7 +22,7 @@
   </scm>
 
   <properties>
-    <sonar.version>2.10</sonar.version>
+    <sonar.version>2.11</sonar.version>
     <sonar.jacoco.reportPath>../sslr-tests/target/jacoco.exec</sonar.jacoco.reportPath>
     <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
   </properties>
