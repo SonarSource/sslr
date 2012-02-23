@@ -5,8 +5,12 @@
  */
 package com.sonar.sslr.squid.checks;
 
+import com.google.common.collect.Sets;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
 import org.junit.Test;
+
+import java.util.Collections;
+import java.util.Set;
 
 import static com.sonar.sslr.squid.metrics.ResourceParser.*;
 import static com.sonar.sslr.test.squid.CheckMatchers.*;
@@ -15,10 +19,10 @@ public class AbstractNestedCommentsCheckTest {
 
   private static class NestedCommentsCheck extends AbstractNestedCommentsCheck<MiniCGrammar> {
 
-    private static final String[] COMMENT_START_TAGS = new String[] {"/*", "//"};
+    private static final Set<String> COMMENT_START_TAGS = Collections.unmodifiableSet(Sets.newHashSet("/*", "//"));
 
     @Override
-    public String[] getCommentStartTags() {
+    public Set<String> getCommentStartTags() {
       return COMMENT_START_TAGS;
     }
 

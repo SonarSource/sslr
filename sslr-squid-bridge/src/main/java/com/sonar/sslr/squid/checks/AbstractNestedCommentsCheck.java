@@ -10,9 +10,11 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
 
+import java.util.Set;
+
 public abstract class AbstractNestedCommentsCheck<GRAMMAR extends Grammar> extends SquidCheck<GRAMMAR> implements AstAndTokenVisitor {
 
-  public abstract String[] getCommentStartTags();
+  public abstract Set<String> getCommentStartTags();
 
   public void visitToken(Token token) {
     for (Trivia trivia : token.getTrivia()) {
