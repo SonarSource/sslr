@@ -17,7 +17,7 @@ public abstract class AbstractSingleLineCommentsSyntaxCheck<GRAMMAR extends Gram
 
   public void visitToken(Token token) {
     for (Trivia trivia : token.getTrivia()) {
-      if (trivia.isComment()) {
+      if (trivia.isComment() && trivia.getToken().getLine() < token.getLine()) {
         String comment = trivia.getToken().getOriginalValue();
 
         if (!comment.startsWith(getSingleLineCommentSyntaxPrefix()) && !StringUtils.containsAny(comment, "\r\n")) {

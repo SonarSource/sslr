@@ -13,3 +13,5 @@
 */
 
 /* single line again */
+
+/* this one is acceptable */ int a;
