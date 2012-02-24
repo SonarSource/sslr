@@ -23,7 +23,6 @@ public abstract class AbstractMagicCheck<GRAMMAR extends Grammar> extends SquidC
 
   public abstract boolean isExcepted(AstNode candidate);
 
-  private AstNodeType[] patterns;
   private AstNodeType[] inclusions;
   private AstNodeType[] exclusions;
 
@@ -39,7 +38,7 @@ public abstract class AbstractMagicCheck<GRAMMAR extends Grammar> extends SquidC
   @Override
   public void init() {
     Set<AstNodeType> patternsSet = getPatterns();
-    patterns = patternsSet.toArray(new AstNodeType[patternsSet.size()]);
+    AstNodeType[] patterns = patternsSet.toArray(new AstNodeType[patternsSet.size()]);
 
     Set<AstNodeType> inclusionsSet = getInclusions();
     inclusions = inclusionsSet.toArray(new AstNodeType[inclusionsSet.size()]);
