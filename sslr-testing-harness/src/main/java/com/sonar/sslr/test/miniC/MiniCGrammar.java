@@ -5,14 +5,14 @@
  */
 package com.sonar.sslr.test.miniC;
 
+import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.api.Rule;
+
 import static com.sonar.sslr.api.GenericTokenType.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.*;
 import static com.sonar.sslr.test.miniC.MiniCLexer.Literals.*;
 import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.*;
-
-import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.api.Rule;
 
 public class MiniCGrammar extends Grammar {
 
@@ -42,6 +42,7 @@ public class MiniCGrammar extends Grammar {
   public Rule whileStatement;
   public Rule conditionClause;
   public Rule elseClause;
+  public Rule noComplexityStatement;
 
   public Rule expression;
   public Rule assignmentExpression;
@@ -107,7 +108,8 @@ public class MiniCGrammar extends Grammar {
         continueStatement,
         breakStatement,
         ifStatement,
-        whileStatement
+        whileStatement,
+        noComplexityStatement
         ));
 
     expressionStatement.is(expression, SEMICOLON);
@@ -125,6 +127,8 @@ public class MiniCGrammar extends Grammar {
     conditionClause.is(PAREN_L, expression, PAREN_R);
 
     elseClause.is(ELSE, statement);
+
+    noComplexityStatement.is("nocomplexity", statement);
 
     // Expressions
 

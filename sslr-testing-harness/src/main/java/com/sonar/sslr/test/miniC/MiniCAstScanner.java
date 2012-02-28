@@ -10,10 +10,7 @@ import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.CommentAnalyser;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.squid.*;
-import com.sonar.sslr.squid.metrics.CommentsVisitor;
-import com.sonar.sslr.squid.metrics.CounterVisitor;
-import com.sonar.sslr.squid.metrics.LinesOfCodeVisitor;
-import com.sonar.sslr.squid.metrics.LinesVisitor;
+import com.sonar.sslr.squid.metrics.*;
 import org.sonar.squid.api.SourceCode;
 import org.sonar.squid.api.SourceFunction;
 import org.sonar.squid.api.SourceProject;
@@ -140,8 +137,8 @@ public final class MiniCAstScanner {
       parser.getGrammar().continueStatement,
       parser.getGrammar().breakStatement
     };
-    builder.withSquidAstVisitor(CounterVisitor.<MiniCGrammar> builder().setMetricDef(MiniCMetrics.COMPLEXITY)
-        .subscribeTo(complexityAstNodeType).build());
+    builder.withSquidAstVisitor(ComplexityVisitor.<MiniCGrammar> builder().setMetricDef(MiniCMetrics.COMPLEXITY)
+        .subscribeTo(complexityAstNodeType).addExclusions(parser.getGrammar().noComplexityStatement).build());
 
     /* External visitors (typically Check ones) */
     for (SquidAstVisitor<MiniCGrammar> visitor : visitors) {
