@@ -17,7 +17,7 @@ import static com.sonar.sslr.test.squid.CheckMatchers.*;
 
 public class AbstractNestedCommentsCheckTest {
 
-  private static class NestedCommentsCheck extends AbstractNestedCommentsCheck<MiniCGrammar> {
+  private static class Check extends AbstractNestedCommentsCheck<MiniCGrammar> {
 
     private static final Set<String> COMMENT_START_TAGS = Collections.unmodifiableSet(Sets.newHashSet("/*", "//"));
 
@@ -30,7 +30,7 @@ public class AbstractNestedCommentsCheckTest {
 
   @Test
   public void singleLineCommentsSyntax() {
-    setCurrentSourceFile(scanFile("/checks/nested_comments.mc", new NestedCommentsCheck()));
+    setCurrentSourceFile(scanFile("/checks/nested_comments.mc", new Check()));
 
     assertNumberOfViolations(2);
 

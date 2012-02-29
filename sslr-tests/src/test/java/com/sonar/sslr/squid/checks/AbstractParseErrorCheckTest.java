@@ -5,21 +5,20 @@
  */
 package com.sonar.sslr.squid.checks;
 
+import com.sonar.sslr.test.miniC.MiniCGrammar;
+import org.junit.Test;
+
 import static com.sonar.sslr.squid.metrics.ResourceParser.*;
 import static com.sonar.sslr.test.squid.CheckMatchers.*;
 
-import org.junit.Test;
-
-import com.sonar.sslr.test.miniC.MiniCGrammar;
-
 public class AbstractParseErrorCheckTest {
 
-  private static class ParseErrorCheck extends AbstractParseErrorCheck<MiniCGrammar> {
+  private static class Check extends AbstractParseErrorCheck<MiniCGrammar> {
   }
 
   @Test
   public void parseError() {
-    setCurrentSourceFile(scanFile("/checks/parse_error.mc", new ParseErrorCheck()));
+    setCurrentSourceFile(scanFile("/checks/parse_error.mc", new Check()));
 
     assertOnlyOneViolation().atLine(3);
   }

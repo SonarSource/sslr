@@ -13,7 +13,7 @@ import static com.sonar.sslr.test.squid.CheckMatchers.*;
 
 public class AbstractSingleLineCommentsSyntaxCheckTest {
 
-  private static class SingleLineCommentsSyntaxCheck extends AbstractSingleLineCommentsSyntaxCheck<MiniCGrammar> {
+  private static class Check extends AbstractSingleLineCommentsSyntaxCheck<MiniCGrammar> {
 
     @Override
     public String getSingleLineCommentSyntaxPrefix() {
@@ -24,7 +24,7 @@ public class AbstractSingleLineCommentsSyntaxCheckTest {
 
   @Test
   public void singleLineCommentsSyntax() {
-    setCurrentSourceFile(scanFile("/checks/single_line_comments_syntax.mc", new SingleLineCommentsSyntaxCheck()));
+    setCurrentSourceFile(scanFile("/checks/single_line_comments_syntax.mc", new Check()));
 
     assertNumberOfViolations(2);
 

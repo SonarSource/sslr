@@ -5,12 +5,11 @@
  */
 package com.sonar.sslr.squid.checks;
 
-import static com.sonar.sslr.squid.metrics.ResourceParser.*;
-import static com.sonar.sslr.test.squid.CheckMatchers.*;
-
+import com.sonar.sslr.test.miniC.MiniCGrammar;
 import org.junit.Test;
 
-import com.sonar.sslr.test.miniC.MiniCGrammar;
+import static com.sonar.sslr.squid.metrics.ResourceParser.*;
+import static com.sonar.sslr.test.squid.CheckMatchers.*;
 
 public class AbstractXPathCheckTest {
 

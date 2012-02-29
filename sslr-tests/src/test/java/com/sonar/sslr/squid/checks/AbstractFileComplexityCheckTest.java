@@ -5,18 +5,17 @@
  */
 package com.sonar.sslr.squid.checks;
 
-import static com.sonar.sslr.squid.metrics.ResourceParser.*;
-import static com.sonar.sslr.test.squid.CheckMatchers.*;
-
+import com.sonar.sslr.test.miniC.MiniCAstScanner.MiniCMetrics;
+import com.sonar.sslr.test.miniC.MiniCGrammar;
 import org.junit.Test;
 import org.sonar.squid.measures.MetricDef;
 
-import com.sonar.sslr.test.miniC.MiniCAstScanner.MiniCMetrics;
-import com.sonar.sslr.test.miniC.MiniCGrammar;
+import static com.sonar.sslr.squid.metrics.ResourceParser.*;
+import static com.sonar.sslr.test.squid.CheckMatchers.*;
 
 public class AbstractFileComplexityCheckTest {
 
-  private static class FileComplexityCheck extends AbstractFileComplexityCheck<MiniCGrammar> {
+  private static class Check extends AbstractFileComplexityCheck<MiniCGrammar> {
 
     public int maximumFileComplexity = 100;
 
@@ -34,7 +33,7 @@ public class AbstractFileComplexityCheckTest {
 
   @Test
   public void fileComplexityEqualsMaximum() {
-    FileComplexityCheck check = new FileComplexityCheck();
+    Check check = new Check();
     check.maximumFileComplexity = 5;
 
     setCurrentSourceFile(scanFile("/checks/complexity5.mc", check));
@@ -44,7 +43,7 @@ public class AbstractFileComplexityCheckTest {
 
   @Test
   public void fileComplexityGreaterMaximum() {
-    FileComplexityCheck check = new FileComplexityCheck();
+    Check check = new Check();
     check.maximumFileComplexity = 4;
 
     setCurrentSourceFile(scanFile("/checks/complexity5.mc", check));

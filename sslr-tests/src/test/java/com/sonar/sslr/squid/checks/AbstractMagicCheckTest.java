@@ -20,7 +20,7 @@ import static com.sonar.sslr.test.squid.CheckMatchers.*;
 
 public class AbstractMagicCheckTest {
 
-  private static class MagicCheck extends AbstractMagicCheck<MiniCGrammar> {
+  private static class Check extends AbstractMagicCheck<MiniCGrammar> {
 
     @Override
     public Set<AstNodeType> getPatterns() {
@@ -50,8 +50,8 @@ public class AbstractMagicCheckTest {
   }
 
   @Test
-  public void magic() {
-    setCurrentSourceFile(scanFile("/checks/magic.mc", new MagicCheck()));
+  public void detected() {
+    setCurrentSourceFile(scanFile("/checks/magic.mc", new Check()));
 
     assertNumberOfViolations(2);
 

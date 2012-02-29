@@ -5,17 +5,16 @@
  */
 package com.sonar.sslr.squid.checks;
 
+import com.sonar.sslr.api.Rule;
+import com.sonar.sslr.test.miniC.MiniCGrammar;
+import org.junit.Test;
+
 import static com.sonar.sslr.squid.metrics.ResourceParser.*;
 import static com.sonar.sslr.test.squid.CheckMatchers.*;
 
-import org.junit.Test;
-
-import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.test.miniC.MiniCGrammar;
-
 public class AbstractGotoCheckTest {
 
-  private static class GotoComplexityCheck extends AbstractGotoCheck<MiniCGrammar> {
+  private static class Check extends AbstractGotoCheck<MiniCGrammar> {
 
     @Override
     public Rule getGotoRule() {
@@ -25,8 +24,8 @@ public class AbstractGotoCheckTest {
   }
 
   @Test
-  public void gotoDetected() {
-    setCurrentSourceFile(scanFile("/checks/goto.mc", new GotoComplexityCheck()));
+  public void detected() {
+    setCurrentSourceFile(scanFile("/checks/goto.mc", new Check()));
 
     assertOnlyOneViolation().atLine(9).withMessage("Goto should be avoided.");
   }

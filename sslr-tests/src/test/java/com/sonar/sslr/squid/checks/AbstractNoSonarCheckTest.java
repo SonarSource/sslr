@@ -13,12 +13,12 @@ import static com.sonar.sslr.test.squid.CheckMatchers.*;
 
 public class AbstractNoSonarCheckTest {
 
-  private static class NestedCommentsCheck extends AbstractNoSonarCheck<MiniCGrammar> {
+  private static class Check extends AbstractNoSonarCheck<MiniCGrammar> {
   }
 
   @Test
   public void singleLineCommentsSyntax() {
-    setCurrentSourceFile(scanFile("/checks/no_sonar.mc", new NestedCommentsCheck()));
+    setCurrentSourceFile(scanFile("/checks/no_sonar.mc", new Check()));
 
     assertNumberOfViolations(3);
 

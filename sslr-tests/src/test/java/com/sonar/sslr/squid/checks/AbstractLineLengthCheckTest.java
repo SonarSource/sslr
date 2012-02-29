@@ -5,16 +5,15 @@
  */
 package com.sonar.sslr.squid.checks;
 
+import com.sonar.sslr.test.miniC.MiniCGrammar;
+import org.junit.Test;
+
 import static com.sonar.sslr.squid.metrics.ResourceParser.*;
 import static com.sonar.sslr.test.squid.CheckMatchers.*;
 
-import org.junit.Test;
-
-import com.sonar.sslr.test.miniC.MiniCGrammar;
-
 public class AbstractLineLengthCheckTest {
 
-  private static class LineLengthCheck extends AbstractLineLengthCheck<MiniCGrammar> {
+  private static class Check extends AbstractLineLengthCheck<MiniCGrammar> {
 
     public int maximumLineLength = 80;
 
@@ -27,14 +26,14 @@ public class AbstractLineLengthCheckTest {
 
   @Test
   public void lineLengthWithDefaultLength() {
-    setCurrentSourceFile(scanFile("/checks/line_length.mc", new LineLengthCheck()));
+    setCurrentSourceFile(scanFile("/checks/line_length.mc", new Check()));
 
     assertOnlyOneViolation().atLine(3).withMessage("The line length is greater than 80 authorized.");
   }
 
   @Test
   public void lineLengthWithSpecificLength() {
-    LineLengthCheck check = new LineLengthCheck();
+    Check check = new Check();
     check.maximumLineLength = 7;
 
     setCurrentSourceFile(scanFile("/checks/line_length.mc", check));
