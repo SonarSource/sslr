@@ -81,13 +81,10 @@ public final class CommentsVisitor<GRAMMAR extends Grammar> extends SquidAstVisi
 
           for (String commentLine : commentLines) {
             if (enableNoSonar && commentLine.contains("NOSONAR")) {
-              /* NOSONAR */
               addNoSonar(line);
             } else if (blankCommentMetric != null && getContext().getCommentAnalyser().isBlank(commentLine)) {
-              /* Blank lines */
               addBlankCommentLine(line);
             } else if (commentMetric != null) {
-              /* Comment lines */
               addCommentLine(line);
             }
 
