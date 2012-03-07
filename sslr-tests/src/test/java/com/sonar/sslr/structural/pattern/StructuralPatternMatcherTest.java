@@ -3,10 +3,13 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.structural.pattern;
+package com.sonar.sslr.structural.pattern;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+
+import com.sonar.sslr.structural.pattern.StructuralPatternMatcher;
+import com.sonar.sslr.structural.pattern.StructuralPatternMatcherException;
 
 import org.junit.Test;
 

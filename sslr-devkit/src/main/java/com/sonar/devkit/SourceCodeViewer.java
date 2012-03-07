@@ -3,7 +3,14 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.sdk;
+package com.sonar.devkit;
+
+import org.apache.commons.io.IOUtils;
+import org.sonar.colorizer.HtmlOptions;
+import org.sonar.colorizer.HtmlRenderer;
+import org.sonar.colorizer.Tokenizer;
+
+import javax.swing.JEditorPane;
 
 import java.io.File;
 import java.io.FileReader;
@@ -12,19 +19,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.JEditorPane;
-
-import org.apache.commons.io.IOUtils;
-import org.sonar.colorizer.HtmlOptions;
-import org.sonar.colorizer.HtmlRenderer;
-import org.sonar.colorizer.Tokenizer;
-
 @SuppressWarnings("serial")
 public class SourceCodeViewer extends JEditorPane {
 
-  private static Logger log = Logger.getLogger("DevSuiteLogger");
+  private static Logger log = Logger.getLogger("DevKit");
   private final List<Tokenizer> colorizerChannels;
-  private static final String CSS_PATH = "/sourceCodeViewer.css";
+  private static final String CSS_PATH = "/com/sonar/sslr/devkit/sourceCodeViewer.css";
 
   public SourceCodeViewer(List<Tokenizer> colorizerChannels) {
     setEditable(false);

@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.structural.pattern;
+package com.sonar.sslr.structural.pattern;
 
 public abstract class CompositeMatcher extends StructuralUnitMatcher {
 

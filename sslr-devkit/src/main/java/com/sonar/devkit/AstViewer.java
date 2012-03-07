@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonarsource.sdk;
+package com.sonar.devkit;
 
 import java.io.File;
 
