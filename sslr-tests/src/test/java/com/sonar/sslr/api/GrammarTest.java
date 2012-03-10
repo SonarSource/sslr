@@ -6,12 +6,12 @@
 
 package com.sonar.sslr.api;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.lang.reflect.Field;
 
-import org.junit.Test;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 public class GrammarTest {
 
@@ -20,18 +20,17 @@ public class GrammarTest {
   @Test
   public void testGetRuleFields() {
     Field[] ruleFields = Grammar.getRuleFields(MyGrammar.class);
-    assertThat(ruleFields.length, is(2));
+    assertThat(ruleFields.length, is(1));
   }
 
   @Test
   public void testGetAllRuleFields() {
     Field[] ruleFields = Grammar.getAllRuleFields(MyGrammar.class);
-    assertThat(ruleFields.length, is(6));
+    assertThat(ruleFields.length, is(5));
   }
 
   @Test
   public void shouldAutomaticallyInstanciateDirectRules() {
-    assertThat(grammar.leftRecursiveRule, is(notNullValue()));
     assertThat(grammar.rootRule, is(notNullValue()));
   }
 
@@ -59,7 +58,6 @@ public class GrammarTest {
     private int junkIntField;
     public Object junkObjectField;
     public Rule rootRule;
-    public LeftRecursiveRule leftRecursiveRule;
 
     @Override
     public Rule getRootRule() {

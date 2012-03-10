@@ -39,17 +39,7 @@
       <groupId>com.sonarsource.sslr</groupId>
       <artifactId>sslr-xpath</artifactId>
       <scope>test</scope>
-    </dependency>   
-    <dependency>
-      <groupId>com.sonarsource.sslr</groupId>
-      <artifactId>sslr-structural-pattern-matcher</artifactId>
-      <scope>test</scope>
-    </dependency>      
-    <dependency>
-      <groupId>com.sonarsource.sslr</groupId>
-      <artifactId>sslr-dsl</artifactId>
-      <scope>test</scope>
-    </dependency>      
+    </dependency>
     <dependency>
       <groupId>com.sonarsource.sslr</groupId>
       <artifactId>sslr-testing-harness</artifactId>

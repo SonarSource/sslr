@@ -6,25 +6,22 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.*;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.AstNodeSkippingPolicy;
+import com.sonar.sslr.api.AstNodeType;
+import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.ast.AlwaysSkipFromAst;
 import com.sonar.sslr.impl.ast.NeverSkipFromAst;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 import com.sonar.sslr.impl.matcher.GrammarFunctions.Standard;
 
-public final class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSkippingPolicy {
+public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
 
   private RuleMatcher ruleMatcher;
   private Object adapter;
   private AstNodeType astNodeSkippingPolicy = new NeverSkipFromAst();
 
   private RuleDefinition() {
-  }
-
-  public static RuleDefinition newLeftRecursiveRuleBuilder(String ruleName) {
-    RuleDefinition ruleBuilder = new RuleDefinition();
-    ruleBuilder.setRuleMatcher(new LeftRecursiveRuleMatcher(ruleName));
-    return ruleBuilder;
   }
 
   public static RuleDefinition newRuleBuilder(String ruleName) {
@@ -51,6 +48,7 @@ public final class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSki
   /**
    * ${@inheritDoc}
    */
+  @Override
   public RuleDefinition is(Object... matchers) {
     throwExceptionIfRuleAlreadyDefined("The rule '" + ruleMatcher + "' has already been defined somewhere in the grammar.");
     throwExceptionIfEmptyListOfMatchers(matchers);
@@ -61,16 +59,19 @@ public final class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSki
   /**
    * ${@inheritDoc}
    */
+  @Override
   public RuleDefinition override(Object... matchers) {
     throwExceptionIfEmptyListOfMatchers(matchers);
     setMatcher(GrammarFunctions.Standard.and(matchers));
     return this;
   }
 
+  @Override
   public void mock() {
     setMatcher(Standard.or(ruleMatcher.getName(), ruleMatcher.getName().toUpperCase()));
   }
 
+  @Override
   public RuleDefinition isOr(Object... matchers) {
     throwExceptionIfRuleAlreadyDefined("The rule '" + ruleMatcher + "' has already been defined somewhere in the grammar.");
     throwExceptionIfEmptyListOfMatchers(matchers);
@@ -78,6 +79,7 @@ public final class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSki
     return this;
   }
 
+  @Override
   public RuleDefinition or(Object... matchers) {
     throwExceptionIfEmptyListOfMatchers(matchers);
     throwExceptionIfRuleNotAlreadyDefined("The Rule.or(...) can't be called if the method Rule.is(...) hasn't been called first.");
@@ -85,6 +87,7 @@ public final class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSki
     return this;
   }
 
+  @Override
   public RuleDefinition and(Object... matchers) {
     throwExceptionIfEmptyListOfMatchers(matchers);
     throwExceptionIfRuleNotAlreadyDefined("The Rule.and(...) can't be called if the method Rule.is(...) hasn't been called first.");
@@ -92,6 +95,7 @@ public final class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSki
     return this;
   }
 
+  @Override
   public RuleDefinition orBefore(Object... matchers) {
     throwExceptionIfEmptyListOfMatchers(matchers);
     throwExceptionIfRuleNotAlreadyDefined("The Rule.or(...) can't be called if the method Rule.is(...) hasn't been called first.");
@@ -99,6 +103,7 @@ public final class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSki
     return this;
   }
 
+  @Override
   public void skip() {
     astNodeSkippingPolicy = new AlwaysSkipFromAst();
   }
@@ -107,14 +112,17 @@ public final class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSki
     ruleMatcher.children = new Matcher[] {matcher};
   }
 
+  @Override
   public void skipIf(AstNodeSkippingPolicy astNodeSkipPolicy) {
     astNodeSkippingPolicy = astNodeSkipPolicy;
   }
 
+  @Override
   public void skipIfOneChild() {
     astNodeSkippingPolicy = new SkipFromAstIfOnlyOneChild();
   }
 
+  @Override
   public void plug(Object adapter) {
     this.adapter = adapter;
   }
@@ -141,6 +149,7 @@ public final class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSki
     return adapter;
   }
 
+  @Override
   public void recoveryRule() {
     ruleMatcher.recoveryRule();
   }
@@ -150,6 +159,7 @@ public final class RuleDefinition implements Rule, LeftRecursiveRule, AstNodeSki
     return ruleMatcher.getName();
   }
 
+  @Override
   public boolean hasToBeSkippedFromAst(AstNode node) {
     if (AstNodeSkippingPolicy.class.isAssignableFrom(astNodeSkippingPolicy.getClass())) {
       return ((AstNodeSkippingPolicy) astNodeSkippingPolicy).hasToBeSkippedFromAst(node);

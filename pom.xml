@@ -31,10 +31,8 @@
     <module>sslr-core</module>
     <module>sslr-devkit</module>
     <module>sslr-testing-harness</module>
-    <module>sslr-dsl</module>
     <module>sslr-xpath</module>    
     <module>sslr-squid-bridge</module>
-    <module>sslr-structural-pattern-matcher</module>
     <module>sslr-tests</module>
   </modules>
 
@@ -49,20 +47,10 @@
         <groupId>${project.groupId}</groupId>
         <artifactId>sslr-xpath</artifactId>
         <version>${project.version}</version>
-      </dependency> 
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>sslr-structural-pattern-matcher</artifactId>
-        <version>${project.version}</version>
       </dependency>       
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>sslr-squid-bridge</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>sslr-dsl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

@@ -6,17 +6,16 @@ package com.sonar.sslr.impl.matcher;
  * mailto:contact AT sonarsource DOT com
  */
 
-import static com.sonar.sslr.test.lexer.TokenUtils.*;
-
-import java.util.List;
-
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingStackTrace;
 import com.sonar.sslr.impl.ParsingState;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+
+import java.util.List;
+
+import static com.sonar.sslr.test.lexer.TokenUtils.*;
 
 public class HamcrestMatchMatcher extends BaseMatcher<Matcher> {
 
@@ -37,7 +36,7 @@ public class HamcrestMatchMatcher extends BaseMatcher<Matcher> {
   }
 
   public boolean matches(Object obj) {
-    if ( !(obj instanceof Matcher)) {
+    if (!(obj instanceof Matcher)) {
       return false;
     }
     matcher = (Matcher) obj;
@@ -52,10 +51,6 @@ public class HamcrestMatchMatcher extends BaseMatcher<Matcher> {
     } catch (BacktrackingEvent e) {
       parsingStackTrace = ParsingStackTrace.generate(parsingState);
       return false;
-    } finally {
-      if (obj instanceof LeftRecursiveRuleMatcher) {
-        ((LeftRecursiveRuleMatcher) obj).reinitializeMatcherTree();
-      }
     }
   }
 

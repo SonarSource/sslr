@@ -11,13 +11,13 @@ import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.ParsingState;
 
-public class RuleMatcher extends MemoizedMatcher {
+public final class RuleMatcher extends MemoizedMatcher {
 
-  protected String name;
+  private final String name;
   private boolean recoveryRule = false;
   private AstNodeType astNodeType;
 
-  protected RuleMatcher(String name) {
+  public RuleMatcher(String name) {
     this.name = name;
   }
 
@@ -42,10 +42,6 @@ public class RuleMatcher extends MemoizedMatcher {
     AstNode astNode = new AstNode(astNodeType, name, parsingState.peekTokenIfExists(startIndex, super.children[0]));
     astNode.addChild(childNode);
     return astNode;
-  }
-
-  protected void setMatcher(Matcher matcher) {
-    super.children = new Matcher[] {matcher};
   }
 
   public void setNodeType(AstNodeType astNodeType) {
