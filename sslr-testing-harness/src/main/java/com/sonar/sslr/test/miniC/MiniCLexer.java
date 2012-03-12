@@ -5,14 +5,14 @@
  */
 package com.sonar.sslr.test.miniC;
 
-import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.*;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.Lexer;
 import com.sonar.sslr.impl.channel.BlackHoleChannel;
 import com.sonar.sslr.impl.channel.IdentifierAndKeywordChannel;
 import com.sonar.sslr.impl.channel.PunctuatorChannel;
+
+import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.*;
 
 public final class MiniCLexer {
 
@@ -23,14 +23,17 @@ public final class MiniCLexer {
 
     INTEGER;
 
+    @Override
     public String getName() {
       return name();
     }
 
+    @Override
     public String getValue() {
       return name();
     }
 
+    @Override
     public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
@@ -53,14 +56,17 @@ public final class MiniCLexer {
       this.value = value;
     }
 
+    @Override
     public String getName() {
       return name();
     }
 
+    @Override
     public String getValue() {
       return value;
     }
 
+    @Override
     public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
@@ -79,16 +85,28 @@ public final class MiniCLexer {
       this.value = value;
     }
 
+    @Override
     public String getName() {
       return name();
     }
 
+    @Override
     public String getValue() {
       return value;
     }
 
+    @Override
     public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
+    }
+
+    public static String[] keywordValues() {
+      Keywords[] keywordsEnum = Keywords.values();
+      String[] keywords = new String[keywordsEnum.length];
+      for (int i = 0; i < keywords.length; i++) {
+        keywords[i] = keywordsEnum[i].getValue();
+      }
+      return keywords;
     }
 
   }

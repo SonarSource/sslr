@@ -55,6 +55,11 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>sslr-devkit</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>sslr-testing-harness</artifactId>
         <version>${project.version}</version>
       </dependency>
