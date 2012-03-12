@@ -93,7 +93,7 @@ public class SsdkGui extends javax.swing.JFrame {
                 Token firstToken = astNode.getToken();
                 Token lastToken = astNode.getLastToken();
 
-                codeEditor.getHighlighter().addHighlight(getStartOffset(firstToken) - 1, getEndOffset(lastToken) - 1,
+                codeEditor.getHighlighter().addHighlight(getStartOffset(firstToken), getEndOffset(lastToken),
                     new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY));
               } catch (BadLocationException e) {
                 LOG.error("Error with the highlighter", e);
@@ -143,29 +143,12 @@ public class SsdkGui extends javax.swing.JFrame {
   private void computeLineOffsets(String code) {
     lineOffsets.clear();
 
-    int currentLine = 1;
-    lineOffsets.put(currentLine++, 0);
+    int currentOffset = 1;
 
-    boolean lastWasCariageReturn = false;
-
-    for (int currentOffset = 0; currentOffset < code.length(); currentOffset++) {
-      switch (code.charAt(currentOffset)) {
-        case '\r':
-          lastWasCariageReturn = true;
-          break;
-        case '\n':
-          lastWasCariageReturn = false;
-          System.out.println(currentLine + " points to " + (currentOffset + 1));
-          lineOffsets.put(currentLine++, currentOffset + 1);
-          break;
-        default:
-          if (lastWasCariageReturn) {
-            System.out.println(currentLine + " points to " + currentOffset);
-            lineOffsets.put(currentLine++, currentOffset);
-          }
-          lastWasCariageReturn = false;
-          break;
-      }
+    String[] lines = code.split("(\r)?\n", -1);
+    for (int line = 1; line <= lines.length; line++) {
+      lineOffsets.put(line, currentOffset);
+      currentOffset += lines[line - 1].length() + 1;
     }
   }
 
