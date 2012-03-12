@@ -5,6 +5,7 @@
  */
 package com.sonar.devkit;
 
+import com.google.common.collect.Maps;
 import com.sonar.sslr.api.*;
 import com.sonar.sslr.impl.Parser;
 import org.apache.commons.io.FileUtils;
@@ -18,18 +19,22 @@ import org.sonar.colorizer.Tokenizer;
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class SsdkGui extends javax.swing.JFrame {
@@ -44,6 +49,7 @@ public class SsdkGui extends javax.swing.JFrame {
   private final JScrollPane scrollPane = new JScrollPane(codeEditor);
   private final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, astTree);
 
+  private final Map<Integer, Integer> lineOffsets = Maps.newHashMap();
   private final Parser<? extends Grammar> parser;
   private final List<Tokenizer> colorizerTokenizers;
   private final HtmlRenderer htmlRenderer = new HtmlRenderer(new HtmlOptions(false, null, false));
@@ -72,11 +78,27 @@ public class SsdkGui extends javax.swing.JFrame {
     astTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
     astTree.addTreeSelectionListener(new TreeSelectionListener() {
       @Override
-      public void valueChanged(TreeSelectionEvent e) {
+      public void valueChanged(TreeSelectionEvent event) {
+        codeEditor.getHighlighter().removeAllHighlights();
+
         TreePath[] selectedPaths = astTree.getSelectionPaths();
         if (selectedPaths != null) {
           for (TreePath selectedPath : selectedPaths) {
             DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
+
+            Object userObject = treeNode.getUserObject();
+            if (isNonTriviaAstNode(userObject)) {
+              AstNode astNode = (AstNode) userObject;
+              try {
+                Token firstToken = astNode.getToken();
+                Token lastToken = astNode.getLastToken();
+
+                codeEditor.getHighlighter().addHighlight(getStartOffset(firstToken) - 1, getEndOffset(lastToken) - 1,
+                    new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY));
+              } catch (BadLocationException e) {
+                LOG.error("Error with the highlighter", e);
+              }
+            }
           }
         }
       }
@@ -91,6 +113,18 @@ public class SsdkGui extends javax.swing.JFrame {
     loadFromString("");
   }
 
+  private boolean isNonTriviaAstNode(Object object) {
+    if (object == null) {
+      return false;
+    }
+
+    if (!(object instanceof AstNode)) {
+      return false;
+    }
+
+    return true;
+  }
+
   private void loadFromFile(File file) {
     try {
       loadFromString(FileUtils.readFileToString(file));
@@ -100,8 +134,62 @@ public class SsdkGui extends javax.swing.JFrame {
   }
 
   private void loadFromString(String code) {
+    computeLineOffsets(code);
+
     showCode(code);
     showAst(code);
+  }
+
+  private void computeLineOffsets(String code) {
+    lineOffsets.clear();
+
+    int currentLine = 1;
+    lineOffsets.put(currentLine++, 0);
+
+    boolean lastWasCariageReturn = false;
+
+    for (int currentOffset = 0; currentOffset < code.length(); currentOffset++) {
+      switch (code.charAt(currentOffset)) {
+        case '\r':
+          lastWasCariageReturn = true;
+          break;
+        case '\n':
+          lastWasCariageReturn = false;
+          System.out.println(currentLine + " points to " + (currentOffset + 1));
+          lineOffsets.put(currentLine++, currentOffset + 1);
+          break;
+        default:
+          if (lastWasCariageReturn) {
+            System.out.println(currentLine + " points to " + currentOffset);
+            lineOffsets.put(currentLine++, currentOffset);
+          }
+          lastWasCariageReturn = false;
+          break;
+      }
+    }
+  }
+
+  private int getStartOffset(Token token) {
+    return getOffset(token.getLine(), token.getColumn());
+  }
+
+  private int getEndOffset(Token token) {
+    String[] tokenLines = token.getOriginalValue().split("(\r)?\n", -1);
+
+    for (String tokenLine : tokenLines) {
+      System.out.println("tokenLine = " + tokenLine);
+    }
+
+    int tokenLastLine = token.getLine() + tokenLines.length - 1;
+    int tokenLastLineColumn = (tokenLines.length > 1 ? 0 : token.getColumn()) + tokenLines[tokenLines.length - 1].length();
+
+    return getOffset(tokenLastLine, tokenLastLineColumn);
+  }
+
+  private int getOffset(int line, int column) {
+    System.out.println("offset for " + line + ":" + column + " is " + (lineOffsets.get(line) + column));
+
+    return lineOffsets.get(line) + column;
   }
 
   private void showCode(String code) {
