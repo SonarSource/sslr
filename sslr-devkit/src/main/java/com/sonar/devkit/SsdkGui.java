@@ -21,6 +21,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Document;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -30,6 +31,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -43,9 +46,12 @@ public class SsdkGui extends javax.swing.JFrame {
 
   private static final String CSS_PATH = "/com/sonar/sslr/devkit/codeEditor.css";
   private static final Logger LOG = LoggerFactory.getLogger("DevKit");
+  private static final DefaultTreeModel EMPTY_TREE_MODEL = new DefaultTreeModel(null);
 
   private final JFileChooser fileChooser = new JFileChooser();
   private final JButton openButton = new JButton();
+  private final JButton parseButton = new JButton();
+  private final JPanel buttonPanel = new JPanel();
   private final JTree astTree = new JTree();
   private final JEditorPane codeEditor = new JEditorPane();
   private final JScrollPane scrollPane = new JScrollPane(codeEditor);
@@ -63,10 +69,10 @@ public class SsdkGui extends javax.swing.JFrame {
     setLayout(new BorderLayout(2, 2));
     setDefaultCloseOperation(SsdkGui.EXIT_ON_CLOSE);
 
-    openButton.setText("Open source file");
+    openButton.setText("Open file");
     openButton.addActionListener(new ActionListener() {
       @Override
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent event) {
         int returnVal = fileChooser.showOpenDialog(SsdkGui.this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
 
@@ -75,7 +81,27 @@ public class SsdkGui extends javax.swing.JFrame {
         }
       }
     });
-    add(openButton, BorderLayout.PAGE_END);
+
+    parseButton.setText("Parse text");
+    parseButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent event) {
+        String code = "";
+        Document document = codeEditor.getDocument();
+        if (document.getLength() > 0) {
+          try {
+            code = document.getText(1, document.getEndPosition().getOffset() - 1);
+          } catch (BadLocationException e) {
+            LOG.error("Error while reading code buffer", e);
+          }
+        }
+        loadFromString(code);
+      }
+    });
+
+    buttonPanel.add(openButton);
+    buttonPanel.add(parseButton);
+    add(buttonPanel, BorderLayout.PAGE_END);
 
     astTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
     astTree.addTreeSelectionListener(new TreeSelectionListener() {
@@ -87,7 +113,13 @@ public class SsdkGui extends javax.swing.JFrame {
     });
 
     codeEditor.setContentType("text/html");
-    codeEditor.setEditable(false);
+    codeEditor.setEditable(true);
+    codeEditor.addKeyListener(new KeyAdapter() {
+      @Override
+      public void keyTyped(KeyEvent event) {
+        showAst("");
+      }
+    });
 
     splitPane.setDividerLocation(500);
     add(splitPane, BorderLayout.CENTER);
@@ -202,7 +234,9 @@ public class SsdkGui extends javax.swing.JFrame {
   }
 
   private void showAst(String code) {
-    astTree.setModel(new DefaultTreeModel(null));
+    if (!EMPTY_TREE_MODEL.equals(astTree.getModel())) {
+      astTree.setModel(EMPTY_TREE_MODEL);
+    }
 
     if (!code.isEmpty()) {
       try {
