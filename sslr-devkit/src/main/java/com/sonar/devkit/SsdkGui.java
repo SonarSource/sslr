@@ -56,10 +56,11 @@ public class SsdkGui extends javax.swing.JFrame {
   private final JButton parseButton = new JButton();
   private final JPanel buttonPanel = new JPanel();
   private final JTree astTree = new JTree();
+  private final JScrollPane astTreeScrollPane = new JScrollPane(astTree);
   private final Map<Object, DefaultMutableTreeNode> userObjectToTreeNodeCache = Maps.newHashMap();
   private final JEditorPane codeEditor = new JEditorPane();
-  private final JScrollPane scrollPane = new JScrollPane(codeEditor);
-  private final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, astTree);
+  private final JScrollPane codeEditorScrollPane = new JScrollPane(codeEditor);
+  private final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, codeEditorScrollPane, astTreeScrollPane);
 
   private final Map<Integer, Integer> lineOffsets = Maps.newHashMap();
   private final Parser<? extends Grammar> parser;
