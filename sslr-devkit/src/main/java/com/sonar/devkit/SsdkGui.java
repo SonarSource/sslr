@@ -28,6 +28,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -35,6 +36,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
+
+import static com.google.common.base.Preconditions.*;
 
 @SuppressWarnings("serial")
 public class SsdkGui extends javax.swing.JFrame {
@@ -79,28 +82,8 @@ public class SsdkGui extends javax.swing.JFrame {
     astTree.addTreeSelectionListener(new TreeSelectionListener() {
       @Override
       public void valueChanged(TreeSelectionEvent event) {
-        codeEditor.getHighlighter().removeAllHighlights();
-
-        TreePath[] selectedPaths = astTree.getSelectionPaths();
-        if (selectedPaths != null) {
-          for (TreePath selectedPath : selectedPaths) {
-            DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
-
-            Object userObject = treeNode.getUserObject();
-            if (isNonTriviaAstNode(userObject)) {
-              AstNode astNode = (AstNode) userObject;
-              try {
-                Token firstToken = astNode.getToken();
-                Token lastToken = astNode.getLastToken();
-
-                codeEditor.getHighlighter().addHighlight(getStartOffset(firstToken), getEndOffset(lastToken),
-                    new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY));
-              } catch (BadLocationException e) {
-                LOG.error("Error with the highlighter", e);
-              }
-            }
-          }
-        }
+        highlightSelectedPaths();
+        scrollToFirstSelectedPath();
       }
     });
 
@@ -113,16 +96,47 @@ public class SsdkGui extends javax.swing.JFrame {
     loadFromString("");
   }
 
-  private boolean isNonTriviaAstNode(Object object) {
-    if (object == null) {
-      return false;
-    }
+  private void highlightSelectedPaths() {
+    codeEditor.getHighlighter().removeAllHighlights();
 
-    if (!(object instanceof AstNode)) {
-      return false;
-    }
+    TreePath[] selectedPaths = astTree.getSelectionPaths();
+    if (selectedPaths != null) {
+      for (TreePath selectedPath : selectedPaths) {
+        DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
 
-    return true;
+        AstNode astNode = getAstNodeFromUserObject(treeNode.getUserObject());
+
+        try {
+          Token firstToken = astNode.getToken();
+          Token lastToken = astNode.getLastToken();
+
+          codeEditor.getHighlighter().addHighlight(getStartOffset(firstToken), getEndOffset(lastToken),
+              new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY));
+        } catch (BadLocationException e) {
+          LOG.error("Error with the highlighter", e);
+        }
+      }
+    }
+  }
+
+  private void scrollToFirstSelectedPath() {
+    TreePath selectedPath = astTree.getSelectionPath();
+    DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
+    AstNode astNode = getAstNodeFromUserObject(treeNode.getUserObject());
+
+    int lineHeight = astTree.getFontMetrics(astTree.getFont()).getHeight();
+
+    int from = astNode.getTokenLine() * lineHeight;
+    int to = (astNode.getTokenLine() + 10) * lineHeight;
+    Rectangle rectangle = new Rectangle(0, from, 0, to);
+
+    codeEditor.scrollRectToVisible(rectangle);
+  }
+
+  private AstNode getAstNodeFromUserObject(Object userObject) {
+    checkNotNull(userObject, "userObject cannot be null");
+
+    return (AstNode) userObject;
   }
 
   private void loadFromFile(File file) {
@@ -159,10 +173,6 @@ public class SsdkGui extends javax.swing.JFrame {
   private int getEndOffset(Token token) {
     String[] tokenLines = token.getOriginalValue().split("(\r)?\n", -1);
 
-    for (String tokenLine : tokenLines) {
-      System.out.println("tokenLine = " + tokenLine);
-    }
-
     int tokenLastLine = token.getLine() + tokenLines.length - 1;
     int tokenLastLineColumn = (tokenLines.length > 1 ? 0 : token.getColumn()) + tokenLines[tokenLines.length - 1].length();
 
@@ -170,8 +180,6 @@ public class SsdkGui extends javax.swing.JFrame {
   }
 
   private int getOffset(int line, int column) {
-    System.out.println("offset for " + line + ":" + column + " is " + (lineOffsets.get(line) + column));
-
     return lineOffsets.get(line) + column;
   }
 
@@ -184,6 +192,7 @@ public class SsdkGui extends javax.swing.JFrame {
     sb.append("</pre></body></html>");
 
     codeEditor.setText(sb.toString());
+    codeEditor.setCaretPosition(0);
   }
 
   private void showAst(String code) {
