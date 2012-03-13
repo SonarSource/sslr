@@ -129,6 +129,7 @@ public class SsdkGui extends javax.swing.JFrame {
       @Override
       public void caretUpdate(CaretEvent event) {
         selectPath();
+        scrollToSelectedPath();
       }
     });
 
@@ -229,6 +230,13 @@ public class SsdkGui extends javax.swing.JFrame {
       astTree.addSelectionPath(new TreePath(treeNode.getPath()));
 
       highlightSelectedPaths();
+    }
+  }
+
+  private void scrollToSelectedPath() {
+    TreePath selectionPath = astTree.getSelectionPath();
+    if (selectionPath != null) {
+      astTree.scrollPathToVisible(selectionPath);
     }
   }
 
