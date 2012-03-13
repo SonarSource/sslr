@@ -28,7 +28,6 @@ import javax.swing.tree.TreeSelectionModel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -121,16 +120,21 @@ public class SsdkGui extends javax.swing.JFrame {
 
   private void scrollToFirstSelectedPath() {
     TreePath selectedPath = astTree.getSelectionPath();
-    DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
-    AstNode astNode = getAstNodeFromUserObject(treeNode.getUserObject());
 
-    int lineHeight = astTree.getFontMetrics(astTree.getFont()).getHeight();
+    if (selectedPath != null) {
+      DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
+      AstNode astNode = getAstNodeFromUserObject(treeNode.getUserObject());
 
-    int from = astNode.getTokenLine() * lineHeight;
-    int to = (astNode.getTokenLine() + 10) * lineHeight;
-    Rectangle rectangle = new Rectangle(0, from, 0, to);
+      int visibleLines = codeEditor.getVisibleRect().height / codeEditor.getFontMetrics(codeEditor.getFont()).getHeight();
+      int line = astNode.getToken().getLine() + visibleLines / 2;
 
-    codeEditor.scrollRectToVisible(rectangle);
+      try {
+        codeEditor.scrollRectToVisible(codeEditor.modelToView(0));
+        codeEditor.scrollRectToVisible(codeEditor.modelToView(getOffset(line, 0)));
+      } catch (BadLocationException e) {
+        LOG.error("Error with the scrolling", e);
+      }
+    }
   }
 
   private AstNode getAstNodeFromUserObject(Object userObject) {
@@ -180,7 +184,9 @@ public class SsdkGui extends javax.swing.JFrame {
   }
 
   private int getOffset(int line, int column) {
-    return lineOffsets.get(line) + column;
+    return lineOffsets.containsKey(line) ?
+        Math.min(lineOffsets.get(line) + column, codeEditor.getDocument().getEndPosition().getOffset() - 1) :
+        codeEditor.getDocument().getEndPosition().getOffset() - 1;
   }
 
   private void showCode(String code) {
