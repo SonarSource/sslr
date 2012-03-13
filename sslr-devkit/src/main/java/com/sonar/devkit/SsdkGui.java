@@ -17,6 +17,8 @@ import org.sonar.colorizer.HtmlRenderer;
 import org.sonar.colorizer.Tokenizer;
 
 import javax.swing.*;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.BadLocationException;
@@ -36,6 +38,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +56,7 @@ public class SsdkGui extends javax.swing.JFrame {
   private final JButton parseButton = new JButton();
   private final JPanel buttonPanel = new JPanel();
   private final JTree astTree = new JTree();
+  private final Map<Object, DefaultMutableTreeNode> userObjectToTreeNodeCache = Maps.newHashMap();
   private final JEditorPane codeEditor = new JEditorPane();
   private final JScrollPane scrollPane = new JScrollPane(codeEditor);
   private final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, astTree);
@@ -120,6 +124,12 @@ public class SsdkGui extends javax.swing.JFrame {
         showAst("");
       }
     });
+    codeEditor.addCaretListener(new CaretListener() {
+      @Override
+      public void caretUpdate(CaretEvent event) {
+        selectPath();
+      }
+    });
 
     splitPane.setDividerLocation(500);
     add(splitPane, BorderLayout.CENTER);
@@ -169,10 +179,56 @@ public class SsdkGui extends javax.swing.JFrame {
     }
   }
 
+  private DefaultMutableTreeNode getParentFromUserObject(Object userObject) {
+    DefaultMutableTreeNode treeNode = userObjectToTreeNodeCache.get(userObject);
+    checkState(treeNode != null, "No tree node with the given user object was found");
+
+    boolean isUnderTrivia = false;
+    DefaultMutableTreeNode parentTreeNode = treeNode;
+    while (!isUnderTrivia && parentTreeNode != null) {
+      isUnderTrivia = parentTreeNode.getUserObject() instanceof Trivia;
+      parentTreeNode = (DefaultMutableTreeNode) parentTreeNode.getParent();
+    }
+
+    return parentTreeNode;
+  }
+
   private AstNode getAstNodeFromUserObject(Object userObject) {
     checkNotNull(userObject, "userObject cannot be null");
 
-    return (AstNode) userObject;
+    DefaultMutableTreeNode parent = getParentFromUserObject(userObject);
+
+    return (AstNode) (parent == null ? userObject : parent.getUserObject());
+  }
+
+  private void selectPath() {
+    if (!EMPTY_TREE_MODEL.equals(astTree.getModel())) {
+      int offset = codeEditor.getCaretPosition();
+      int line = getLineFromOffset(offset);
+      int column = getColumnFromOffsetAndLine(offset, line);
+
+      int minimumOffset = Integer.MAX_VALUE;
+      DefaultMutableTreeNode treeNode = null;
+      Enumeration<DefaultMutableTreeNode> enumeration = ((DefaultMutableTreeNode) astTree.getModel().getRoot()).breadthFirstEnumeration();
+      while (enumeration.hasMoreElements()) {
+        DefaultMutableTreeNode treeNodeChild = enumeration.nextElement();
+        if (getParentFromUserObject(treeNodeChild.getUserObject()) == null) {
+          AstNode astNode = (AstNode) treeNodeChild.getUserObject();
+          Token token = astNode.getToken();
+
+          if ((token.getLine() > line || token.getLine() == line && token.getColumn() >= column) && getStartOffset(token) < minimumOffset) {
+            minimumOffset = getStartOffset(token);
+            treeNode = treeNodeChild;
+          }
+        }
+      }
+      checkState(treeNode != null, "unable to find the AstNode following the caret position " + line + ":" + column);
+
+      astTree.clearSelection();
+      astTree.addSelectionPath(new TreePath(treeNode.getPath()));
+
+      highlightSelectedPaths();
+    }
   }
 
   private void loadFromFile(File file) {
@@ -200,6 +256,19 @@ public class SsdkGui extends javax.swing.JFrame {
       lineOffsets.put(line, currentOffset);
       currentOffset += lines[line - 1].length() + 1;
     }
+  }
+
+  private int getLineFromOffset(int offset) {
+    int line;
+
+    for (line = 1; lineOffsets.containsKey(line + 1) && offset >= lineOffsets.get(line + 1); line++) {
+    }
+
+    return line;
+  }
+
+  private int getColumnFromOffsetAndLine(int offset, int line) {
+    return offset - lineOffsets.get(line);
   }
 
   private int getStartOffset(Token token) {
@@ -236,12 +305,14 @@ public class SsdkGui extends javax.swing.JFrame {
   private void showAst(String code) {
     if (!EMPTY_TREE_MODEL.equals(astTree.getModel())) {
       astTree.setModel(EMPTY_TREE_MODEL);
+      userObjectToTreeNodeCache.clear();
     }
 
     if (!code.isEmpty()) {
       try {
         AstNode astNode = parser.parse(code);
         DefaultMutableTreeNode treeNode = new DefaultMutableTreeNode(astNode);
+        userObjectToTreeNodeCache.put(astNode, treeNode);
 
         addChildNodes(treeNode, astNode);
 
@@ -256,17 +327,20 @@ public class SsdkGui extends javax.swing.JFrame {
     if (astNode.hasChildren()) {
       for (AstNode astNodeChild : astNode.getChildren()) {
         DefaultMutableTreeNode treeNodeChild = new DefaultMutableTreeNode(astNodeChild);
+        userObjectToTreeNodeCache.put(astNodeChild, treeNodeChild);
         treeNode.add(treeNodeChild);
         addChildNodes(treeNodeChild, astNodeChild);
       }
     } else if (astNode.hasToken() && astNode.getToken().hasTrivia()) {
       for (Trivia trivia : astNode.getToken().getTrivia()) {
         DefaultMutableTreeNode treeNodeChild = new DefaultMutableTreeNode(trivia);
+        userObjectToTreeNodeCache.put(trivia, treeNodeChild);
         treeNode.add(treeNodeChild);
 
         if (trivia.hasPreprocessingDirective()) {
           PreprocessingDirective directive = trivia.getPreprocessingDirective();
           DefaultMutableTreeNode treeNodeInnerChild = new DefaultMutableTreeNode(directive.getAst());
+          userObjectToTreeNodeCache.put(directive.getAst(), treeNodeInnerChild);
           treeNodeChild.add(treeNodeInnerChild);
           addChildNodes(treeNodeInnerChild, directive.getAst());
         }
