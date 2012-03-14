@@ -61,9 +61,9 @@ public class SsdkGui extends javax.swing.JFrame {
   private final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, codeEditorScrollPane, astTreeScrollPane);
 
   private final Map<Integer, Integer> lineOffsets = Maps.newHashMap();
-  private final Parser<? extends Grammar> parser;
-  private final List<Tokenizer> colorizerTokenizers;
-  private final HtmlRenderer htmlRenderer = new HtmlRenderer(new HtmlOptions(false, null, false));
+  private final transient Parser<? extends Grammar> parser;
+  private final transient List<Tokenizer> colorizerTokenizers;
+  private final transient HtmlRenderer htmlRenderer = new HtmlRenderer(new HtmlOptions(false, null, false));
 
   public SsdkGui(Parser<? extends Grammar> parser, List<Tokenizer> colorizerTokenizers) {
     this.parser = parser;
