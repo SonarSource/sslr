@@ -62,7 +62,7 @@ public class SsdkGui extends javax.swing.JFrame {
 
   private final Map<Integer, Integer> lineOffsets = Maps.newHashMap();
   private final transient Parser<? extends Grammar> parser;
-  private final transient List<Tokenizer> colorizerTokenizers;
+  private final List<Tokenizer> colorizerTokenizers;
   private final transient HtmlRenderer htmlRenderer = new HtmlRenderer(new HtmlOptions(false, null, false));
 
   public SsdkGui(Parser<? extends Grammar> parser, List<Tokenizer> colorizerTokenizers) {
@@ -98,7 +98,10 @@ public class SsdkGui extends javax.swing.JFrame {
             LOG.error("Error while reading code buffer", e);
           }
         }
+
+        int caretOffset = codeEditor.getCaretPosition();
         loadFromString(code);
+        codeEditor.setCaretPosition(caretOffset);
       }
     });
 
@@ -241,6 +244,7 @@ public class SsdkGui extends javax.swing.JFrame {
   private void loadFromFile(File file) {
     try {
       loadFromString(FileUtils.readFileToString(file));
+      codeEditor.setCaretPosition(0);
     } catch (IOException e) {
       LOG.error("Unable to load the code file '" + file.getAbsolutePath() + "'", e);
     }
@@ -306,7 +310,6 @@ public class SsdkGui extends javax.swing.JFrame {
     sb.append("</pre></body></html>");
 
     codeEditor.setText(sb.toString());
-    codeEditor.setCaretPosition(0);
   }
 
   private void showAst(String code) {
