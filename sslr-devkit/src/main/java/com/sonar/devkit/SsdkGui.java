@@ -35,9 +35,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -359,10 +357,14 @@ public class SsdkGui extends javax.swing.JFrame {
 
   private Object getCss() {
     try {
-      return IOUtils.toString(SsdkGui.class.getResourceAsStream(CSS_PATH));
+      InputStream inputStream = SsdkGui.class.getResourceAsStream(CSS_PATH);
+      if (inputStream == null) {
+        throw new FileNotFoundException("Unable to find the resource " + CSS_PATH);
+      }
+      return IOUtils.toString(inputStream);
     } catch (IOException e) {
-      LOG.error("Unable to load the CSS file '" + CSS_PATH + "'", e);
-      throw new RuntimeException(e);
+      LOG.error("Unable to read the CSS file '" + CSS_PATH + "'", e);
+      return "";
     }
   }
 
