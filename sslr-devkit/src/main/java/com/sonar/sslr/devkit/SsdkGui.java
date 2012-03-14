@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.devkit;
+package com.sonar.sslr.devkit;
 
 import com.google.common.collect.Maps;
 import com.sonar.sslr.api.*;
