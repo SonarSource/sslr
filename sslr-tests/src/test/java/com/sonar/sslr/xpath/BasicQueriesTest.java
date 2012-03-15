@@ -5,18 +5,17 @@
  */
 package com.sonar.sslr.xpath;
 
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.List;
+
 import static com.sonar.sslr.api.GenericTokenType.*;
 import static com.sonar.sslr.test.miniC.MiniCParser.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
 
 public class BasicQueriesTest {
 
@@ -71,20 +70,20 @@ public class BasicQueriesTest {
 
   @Test
   public void getTokenValueAttributeTest() {
-    AstNodeXPathQuery<String> xpath = AstNodeXPathQuery.create("/compilationUnit/@tokenValue");
+    AstNodeXPathQuery<String> xpath = AstNodeXPathQuery.create("string(/compilationUnit/@tokenValue)");
     assertThat(xpath.getValue(fileNode), is("int"));
   }
 
   @Test
   public void getTokenLineAttributeTest() {
-    AstNodeXPathQuery<Integer> xpath = AstNodeXPathQuery.create("/compilationUnit/@tokenLine");
-    assertThat(xpath.getValue(fileNode), is(2));
+    AstNodeXPathQuery<String> xpath = AstNodeXPathQuery.create("string(/compilationUnit/@tokenLine)");
+    assertThat(xpath.getValue(fileNode), is("2"));
   }
 
   @Test
   public void getTokenColumnAttributeTest() {
-    AstNodeXPathQuery<Integer> xpath = AstNodeXPathQuery.create("/compilationUnit/@tokenColumn");
-    assertThat(xpath.getValue(fileNode), is(0));
+    AstNodeXPathQuery<String> xpath = AstNodeXPathQuery.create("string(/compilationUnit/@tokenColumn)");
+    assertThat(xpath.getValue(fileNode), is("0"));
   }
 
   @Test
