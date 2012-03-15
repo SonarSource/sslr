@@ -7,6 +7,7 @@
 package com.sonar.sslr.api;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ public class AstNode {
   protected final AstNodeType type;
   private final String name;
   private final Token token;
-  private List<AstNode> children;
+  private List<AstNode> children = Collections.EMPTY_LIST;
   private int childIndex = -1;
   private AstNode parent;
   private int fromIndex;
@@ -48,7 +49,7 @@ public class AstNode {
 
   public void addChild(AstNode child) {
     if (child != null) {
-      if (children == null) {
+      if (children.isEmpty()) {
         children = new ArrayList<AstNode>();
       }
       if (child.hasToBeSkippedFromAst()) {
@@ -73,7 +74,7 @@ public class AstNode {
    * @return true if this AstNode has some children.
    */
   public boolean hasChildren() {
-    return children != null && !children.isEmpty();
+    return !children.isEmpty();
   }
 
   /**
@@ -86,9 +87,6 @@ public class AstNode {
   }
 
   public int getNumberOfChildren() {
-    if (children == null) {
-      return 0;
-    }
     return children.size();
   }
 
@@ -299,16 +297,14 @@ public class AstNode {
    * @return the first child or null
    */
   public AstNode findFirstChild(AstNodeType... nodeTypes) {
-    if (children != null) {
-      for (AstNode child : children) {
-        for (AstNodeType nodeType : nodeTypes) {
-          if (child.type == nodeType) {
-            return child;
-          }
-          AstNode node = child.findFirstChild(nodeTypes);
-          if (node != null) {
-            return node;
-          }
+    for (AstNode child : children) {
+      for (AstNodeType nodeType : nodeTypes) {
+        if (child.type == nodeType) {
+          return child;
+        }
+        AstNode node = child.findFirstChild(nodeTypes);
+        if (node != null) {
+          return node;
         }
       }
     }
@@ -321,10 +317,7 @@ public class AstNode {
    * @return the first child or null if there is no child
    */
   public AstNode getFirstChild() {
-    if (children != null && !children.isEmpty()) {
-      return children.get(0);
-    }
-    return null;
+    return children.isEmpty() ? null : children.get(0);
   }
 
   /**
@@ -400,10 +393,7 @@ public class AstNode {
    * @return the last child or null if there is no child
    */
   public AstNode getLastChild() {
-    if (children != null && !children.isEmpty()) {
-      return children.get(children.size() - 1);
-    }
-    return null;
+    return children.isEmpty() ? null : children.get(children.size() - 1);
   }
 
   /**
@@ -424,10 +414,7 @@ public class AstNode {
    * @return true if this node has a parent or a grand-parent with the requested node type.
    */
   public boolean hasParents(AstNodeType nodeType) {
-    if (findFirstParent(nodeType) != null) {
-      return true;
-    }
-    return false;
+    return findFirstParent(nodeType) != null;
   }
 
   /**
