@@ -6,6 +6,7 @@
 
 package com.sonar.sslr.impl;
 
+import com.google.common.collect.Sets;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.RecognitionExceptionListener;
@@ -15,7 +16,6 @@ import com.sonar.sslr.impl.events.ParsingEventListener;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MemoizedMatcher;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -29,7 +29,7 @@ public class ParsingState {
   private int outpostMatcherTokenIndex = -1;
   private Matcher outpostMatcher;
 
-  private final Set<RecognitionExceptionListener> listeners = new HashSet<RecognitionExceptionListener>();
+  private final Set<RecognitionExceptionListener> listeners = Sets.newHashSet();
   private final AstNode[] astNodeMemoization;
   private final MemoizedMatcher[] astMatcherMemoization;
   public ParsingEventListener[] parsingEventListeners;
@@ -147,4 +147,5 @@ public class ParsingState {
       listener.processRecognitionException(recognitionException);
     }
   }
+
 }
