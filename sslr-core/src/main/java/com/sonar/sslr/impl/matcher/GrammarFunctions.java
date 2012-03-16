@@ -6,10 +6,10 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import com.sonar.sslr.api.TokenType;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.sonar.sslr.api.TokenType;
 
 /**
  * This class provides all the functions to define a context-free grammar
@@ -49,14 +49,14 @@ public final class GrammarFunctions {
 
     /**
      * Match elements sequence zero or more times
-     * 
+     *
      * <pre>
-     * {@code 
+     * {@code
      *     --------<----------------<------------------<--------
-     *    |                                                     |  
+     *    |                                                     |
      * >------element 1----element 2---- ... ----element n---------->
-     *    |                                                     |  
-     *     ------------------------->--------------------------- 
+     *    |                                                     |
+     *     ------------------------->---------------------------
      * }
      * </pre>
      */
@@ -66,11 +66,11 @@ public final class GrammarFunctions {
 
     /**
      * Match elements sequence one or more times
-     * 
+     *
      * <pre>
-     * {@code 
-     *     ------<----------------<------------------<------ 
-     *    |                                                 |  
+     * {@code
+     *     ------<----------------<------------------<------
+     *    |                                                 |
      * >------element 1----element 2---- ... ----element n------>
      * }
      * </pre>
@@ -81,9 +81,9 @@ public final class GrammarFunctions {
 
     /**
      * Optionally match the element(s).
-     * 
+     *
      * <pre>
-     * {@code 
+     * {@code
      * >------element 1----element 2----element n---->
      *    |                                       |
      *     ---------------------------------------
@@ -96,15 +96,15 @@ public final class GrammarFunctions {
 
     /**
      * Match any alternative within the elements exactly once
-     * 
+     *
      * <pre>
-     * {@code 
+     * {@code
      * >------element 1----->
-     *    |               | 
+     *    |               |
      *    ----element 2---
-     *    |               | 
+     *    |               |
      *    ----   ...   ---
-     *    |               | 
+     *    |               |
      *    ----element n---
      * }
      * </pre>
@@ -121,9 +121,9 @@ public final class GrammarFunctions {
 
     /**
      * Match all elements in a sequential order.
-     * 
+     *
      * <pre>
-     * {@code 
+     * {@code
      * >------element 1----element 2---- ... ----element n---->
      * }
      * </pre>
@@ -167,21 +167,14 @@ public final class GrammarFunctions {
     }
 
     /**
-     * Match only if the sub-matcher consumes either exactly, less than or more than the given number of tokens n.
-     */
-    public static Matcher tokenCount(TokenCountMatcher.Operator operator, int n, Object... elements) {
-      return getCachedMatcher(new TokenCountMatcher(operator, n, Standard.and(elements)));
-    }
-
-    /**
      * Match the element if and only if the first token of this element is adjacent to the previous consumed token.
-     * 
+     *
      * <pre>
-     * {@code 
+     * {@code
      * >------previous_element---- element ---->
      * }
      * </pre>
-     * 
+     *
      * Without any space between previous_element and element
      */
     public static Matcher adjacent(Object element) {
@@ -208,9 +201,9 @@ public final class GrammarFunctions {
 
     /**
      * Consume all tokens between token from and token to.
-     * 
+     *
      * <pre>
-     * {@code 
+     * {@code
      * >------ from ---- ... ---- to ---->
      * }
      * </pre>
@@ -249,9 +242,9 @@ public final class GrammarFunctions {
 
     /**
      * Consume all tokens as long as the element is not encountered. The element is also consumed.
-     * 
+     *
      * <pre>
-     * {@code 
+     * {@code
      * >------ ... ---- element ---->
      * }
      * </pre>
@@ -262,9 +255,9 @@ public final class GrammarFunctions {
 
     /**
      * Consume all tokens as long one of the provided elements is not encountered.
-     * 
+     *
      * <pre>
-     * {@code 
+     * {@code
      * >------ ... ---- element 1 ---->
      *              |-- element 2 --|
      *              |--    ...    --|
@@ -277,37 +270,16 @@ public final class GrammarFunctions {
     }
 
     /**
-     * Optionally match each element in sequential order but at least one must match.
-     * 
-     * <pre>
-     * {@code 
-     * >------element 1-------element 2--------element n------>
-     *    |             |   |            |   |            |
-     *     -------------     ------------     ------------
-     * }
-     * </pre>
-     */
-    public static Matcher atLeastOne(Object... elements) {
-      if (elements == null || elements.length == 0) {
-        throw new IllegalStateException(AT_LEAST_ONE_MATCHER_MESSAGE);
-      } else if (elements.length == 1) {
-        return convertToMatcher(elements[0]);
-      } else {
-        return getCachedMatcher(new AtLeastOneMatcher(convertToMatchers(elements)));
-      }
-    }
-
-    /**
      * Match the longest alternative within the elements exactly once
-     * 
+     *
      * <pre>
-     * {@code 
+     * {@code
      * >------element 1----->
-     *    |               | 
+     *    |               |
      *    ----element 2---
-     *    |               | 
+     *    |               |
      *    ----   ...   ---
-     *    |               | 
+     *    |               |
      *    ----element n---
      * }
      * </pre>

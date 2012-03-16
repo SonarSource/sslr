@@ -6,11 +6,10 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
+import org.junit.Test;
+
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static org.junit.Assert.*;
-
-import org.junit.Test;
 
 public class MatcherTreePrinterTest {
 
@@ -20,8 +19,6 @@ public class MatcherTreePrinterTest {
     assertEquals(MatcherTreePrinter.print(and("a", "b")), "and(\"a\", \"b\")");
     assertEquals(MatcherTreePrinter.print(o2n("a")), "opt(one2n(\"a\"))");
     assertEquals(MatcherTreePrinter.print(o2n("a", "b")), "opt(one2n(and(\"a\", \"b\")))");
-    assertEquals(MatcherTreePrinter.print(tokenCount(TokenCountMatcher.Operator.EQUAL, 1, "hehe")),
-        "tokenCount(TokenCountMatcher.Operator.EQUAL, 1, \"hehe\")");
 
     RuleDefinition heheBuilder = RuleDefinition.newRuleBuilder("hehe");
     RuleMatcher hehe = heheBuilder.is("bonjour", heheBuilder).getRule();

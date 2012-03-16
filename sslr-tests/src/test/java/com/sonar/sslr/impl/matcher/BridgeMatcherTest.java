@@ -6,17 +6,6 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
-import static com.sonar.sslr.impl.matcher.MyPunctuator.*;
-import static com.sonar.sslr.test.lexer.MockHelper.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-import java.util.List;
-
-import org.junit.Test;
-
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
@@ -24,6 +13,17 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.events.IdentifierLexer;
+import org.junit.Test;
+
+import java.util.List;
+
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
+import static com.sonar.sslr.impl.matcher.MyPunctuator.*;
+import static com.sonar.sslr.test.lexer.MockHelper.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 public class BridgeMatcherTest {
 
@@ -72,7 +72,7 @@ public class BridgeMatcherTest {
   public void testEqualsAndHashCode() {
     assertThat(bridge(LEFT, RIGHT) == bridge(LEFT, RIGHT), is(true));
     assertThat(bridge(LEFT, LEFT) == bridge(LEFT, RIGHT), is(false));
-    assertThat(bridge(LEFT, LEFT) == isOneOfThem(LEFT, RIGHT), is(false));
+    assertThat(bridge(LEFT, LEFT) == and(LEFT, RIGHT), is(false));
   }
 
 }

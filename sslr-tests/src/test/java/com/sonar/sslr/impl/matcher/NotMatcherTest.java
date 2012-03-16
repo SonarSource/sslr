@@ -6,13 +6,13 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
+import org.junit.Test;
+
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-
-import org.junit.Test;
 
 public class NotMatcherTest {
 
@@ -41,7 +41,7 @@ public class NotMatcherTest {
     assertThat(
         com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not("a") == com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not("b"),
         is(false));
-    assertThat(com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not("a") == anyTokenButNot("a"), is(false));
+    assertThat(com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not("a") == next("a"), is(false));
   }
 
 }
