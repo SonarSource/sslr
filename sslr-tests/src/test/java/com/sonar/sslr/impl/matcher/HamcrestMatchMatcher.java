@@ -35,12 +35,12 @@ public class HamcrestMatchMatcher extends BaseMatcher<Matcher> {
     this.tokens = tokens;
   }
 
+  @Override
   public boolean matches(Object obj) {
     if (!(obj instanceof Matcher)) {
       return false;
     }
     matcher = (Matcher) obj;
-    matcher.reinitializeMatcherTree();
     ParsingState parsingState = new ParsingState(tokens);
     try {
       matcher.match(parsingState);
@@ -54,6 +54,7 @@ public class HamcrestMatchMatcher extends BaseMatcher<Matcher> {
     }
   }
 
+  @Override
   public void describeTo(Description desc) {
     if (parsingStackTrace != null) {
       desc.appendText("The matcher '" + matcher + "' doesn't match the beginning of '" + merge(tokens) + "'.\n");

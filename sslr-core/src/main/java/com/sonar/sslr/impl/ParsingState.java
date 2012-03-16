@@ -6,10 +6,6 @@
 
 package com.sonar.sslr.impl;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.RecognitionException;
@@ -20,19 +16,21 @@ import com.sonar.sslr.impl.events.ParsingEventListener;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MemoizedMatcher;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class ParsingState {
 
   private final List<MemoizedMatcher> notifiedMatchers = Lists.newArrayList();
   private Set<RecognitionExceptionListener> listeners = new HashSet<RecognitionExceptionListener>();
   private final Token[] tokens;
   public int lexerIndex = 0;
-  public int lastRecursionLexerIndex = 0;
   public final int lexerSize;
   private int outpostMatcherTokenIndex = -1;
   private Matcher outpostMatcher;
   private final AstNode[] astNodeMemoization;
   private final MemoizedMatcher[] astMatcherMemoization;
-  private boolean pendingLeftRecursion = false;
   public ParsingEventListener[] parsingEventListeners;
   public ExtendedStackTrace extendedStackTrace;
 
@@ -44,9 +42,6 @@ public class ParsingState {
   }
 
   public final Token popToken(Matcher matcher) {
-    if (pendingLeftRecursion) {
-      throw BacktrackingEvent.create();
-    }
     if (lexerIndex >= outpostMatcherTokenIndex) {
       outpostMatcherTokenIndex = lexerIndex;
       outpostMatcher = matcher;
@@ -62,9 +57,6 @@ public class ParsingState {
   }
 
   public final Token peekToken(int index, Matcher matcher) {
-    if (pendingLeftRecursion) {
-      throw BacktrackingEvent.create();
-    }
     if (index > outpostMatcherTokenIndex) {
       outpostMatcherTokenIndex = index;
       outpostMatcher = matcher;
@@ -73,10 +65,6 @@ public class ParsingState {
       throw BacktrackingEvent.create();
     }
     return tokens[index];
-  }
-
-  public final boolean hasPendingLeftRecursion() {
-    return pendingLeftRecursion;
   }
 
   public final Token peekToken(Matcher matcher) {
@@ -126,7 +114,7 @@ public class ParsingState {
   }
 
   public final boolean hasMemoizedAst(MemoizedMatcher matcher) {
-    if ( !pendingLeftRecursion && astMatcherMemoization[lexerIndex] == matcher) {
+    if (astMatcherMemoization[lexerIndex] == matcher) {
       return true;
     }
     return false;
@@ -147,14 +135,6 @@ public class ParsingState {
     }
   }
 
-  public final void startLeftRecursion() {
-    pendingLeftRecursion = true;
-  }
-
-  public final void stopLeftRecursion() {
-    pendingLeftRecursion = false;
-  }
-
   public final void reinitNotifiedMatchersList() {
     notifiedMatchers.clear();
   }
@@ -165,10 +145,6 @@ public class ParsingState {
 
   public final boolean hasMatcherBeenNotified(MemoizedMatcher matcher) {
     return notifiedMatchers.contains(matcher);
-  }
-
-  public final void setLeftRecursionState(boolean leftRecursionState) {
-    this.pendingLeftRecursion = leftRecursionState;
   }
 
   protected final void setListeners(Set<RecognitionExceptionListener> listeners) {

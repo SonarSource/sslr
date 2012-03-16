@@ -6,15 +6,14 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.impl.ParsingState;
+import org.junit.Test;
+
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
 import static com.sonar.sslr.test.lexer.TokenUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-
-import org.junit.Test;
-
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.ParsingState;
 
 public class AnyTokenMatcherTest {
 
@@ -24,7 +23,6 @@ public class AnyTokenMatcherTest {
     AstNode node = matcher.match(new ParsingState(lex("print screen")));
     assertEquals("print", node.getTokenValue());
 
-    matcher.reinitializeMatcherTree();
     node = matcher.match(new ParsingState(lex(".")));
     assertEquals(".", node.getTokenValue());
   }

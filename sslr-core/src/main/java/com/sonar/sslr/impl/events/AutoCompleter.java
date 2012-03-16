@@ -5,7 +5,12 @@
  */
 package com.sonar.sslr.impl.events;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.TokenType;
+import com.sonar.sslr.impl.BacktrackingEvent;
+import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.impl.matcher.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -14,12 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.TokenType;
-import com.sonar.sslr.impl.BacktrackingEvent;
-import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.matcher.*;
+import static com.sonar.sslr.api.GenericTokenType.*;
 
 public final class AutoCompleter extends ParsingEventListener {
 
@@ -106,16 +106,15 @@ public final class AutoCompleter extends ParsingEventListener {
     this.prefixes.add(tokens);
     predicateLevel = 0;
 
-    while ( !prefixes.isEmpty()) {
+    while (!prefixes.isEmpty()) {
       List<List<Token>> newPrefixes = new LinkedList<List<Token>>();
       for (List<Token> prefix : prefixes) {
 
         ParsingState parsingState = new ParsingState(prefix);
-        parsingState.parsingEventListeners = new ParsingEventListener[] { this };
+        parsingState.parsingEventListeners = new ParsingEventListener[] {this};
 
         try {
           followingTokenMatchers.clear();
-          matcher.reinitializeMatcherTree();
           matcher.match(parsingState);
 
           /* The parse was actually successful, there is nothing to complete! */

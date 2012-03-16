@@ -6,17 +6,16 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.impl.events.IdentifierLexer;
+import org.junit.Test;
+
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-
-import org.junit.Test;
-
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.events.IdentifierLexer;
 
 public class ExclusiveTillMatcherTest {
 
@@ -35,7 +34,6 @@ public class ExclusiveTillMatcherTest {
   @Test
   public void testAstNodeTokens() {
     ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three four"));
-    exclusiveTill("three").reinitializeMatcherTree();
     AstNode astNode = exclusiveTill("three").match(state);
     assertEquals(2, state.lexerIndex);
     assertEquals(2, astNode.getChildren().size());

@@ -6,19 +6,18 @@
 
 package com.sonar.sslr.impl.matcher;
 
+import com.sonar.sslr.api.RecognitionException;
+import com.sonar.sslr.api.RecognitionExceptionListener;
+import com.sonar.sslr.impl.ParsingState;
+import org.junit.Before;
+import org.junit.Test;
+
 import static com.sonar.sslr.impl.MockTokenType.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.test.lexer.TokenUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import com.sonar.sslr.api.RecognitionException;
-import com.sonar.sslr.api.RecognitionExceptionListener;
-import com.sonar.sslr.impl.ParsingState;
 
 public class RuleMatcherTest {
 
@@ -68,7 +67,6 @@ public class RuleMatcherTest {
     ParsingState parsingState = new ParsingState(lex("one"));
     RecognitionExceptionListener listener = mock(RecognitionExceptionListener.class);
     parsingState.addListener(listener);
-    rule.reinitializeMatcherTree();
     rule.match(parsingState);
 
     verify(listener, times(1)).processRecognitionException(org.mockito.Mockito.any(RecognitionException.class));
@@ -86,13 +84,13 @@ public class RuleMatcherTest {
 
     RecognitionExceptionListener listener = new RecognitionExceptionListener() {
 
+      @Override
       public void processRecognitionException(RecognitionException e) {
         assertThat(parsingState.lexerIndex, is(0));
       }
 
     };
     parsingState.addListener(listener);
-    rule.reinitializeMatcherTree();
     rule.match(parsingState);
 
     assertThat(parsingState.lexerIndex, is(1));

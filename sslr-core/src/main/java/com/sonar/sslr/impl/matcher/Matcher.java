@@ -5,9 +5,6 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
@@ -27,7 +24,7 @@ public abstract class Matcher {
 
   public final int matchToIndex(ParsingState parsingState) {
     int indexBeforeStarting = parsingState.lexerIndex;
-    boolean leftRecursionState = parsingState.hasPendingLeftRecursion();
+
     try {
       match(parsingState);
       return parsingState.lexerIndex;
@@ -35,7 +32,6 @@ public abstract class Matcher {
       return -1;
     } finally {
       parsingState.lexerIndex = indexBeforeStarting;
-      parsingState.setLeftRecursionState(leftRecursionState);
     }
   }
 
@@ -57,23 +53,4 @@ public abstract class Matcher {
     }
   }
 
-  public final void reinitializeMatcherTree() {
-    reinitializeMatcherTree(new HashSet<Matcher>());
-  }
-
-  private void reinitializeMatcherTree(Set<Matcher> alreadyVisitedMatchers) {
-    reinitialize();
-    alreadyVisitedMatchers.add(this);
-    for (Matcher child : children) {
-      if ( !alreadyVisitedMatchers.contains(child)) {
-        child.reinitializeMatcherTree(alreadyVisitedMatchers);
-      }
-    }
-  }
-
-  /**
-   * This method can be overridden by any matcher to reinitialize a state between each file parsing
-   */
-  protected void reinitialize() {
-  }
 }

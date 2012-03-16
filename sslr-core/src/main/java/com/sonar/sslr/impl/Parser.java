@@ -88,7 +88,6 @@ public final class Parser<GRAMMAR extends Grammar> {
       parsingState.setListeners(listeners);
       parsingState.parsingEventListeners = parsingEventListeners;
       parsingState.extendedStackTrace = extendedStackTrace;
-      rootRule.getRule().reinitializeMatcherTree();
       return rootRule.getRule().match(parsingState);
     } catch (BacktrackingEvent e) {
       throw extendedStackTrace == null ? new RecognitionException(parsingState, true) : new RecognitionException(extendedStackTrace, true);
