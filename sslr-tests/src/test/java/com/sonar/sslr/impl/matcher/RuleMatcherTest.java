@@ -50,7 +50,7 @@ public class RuleMatcherTest {
 
     ParsingState parsingState = new ParsingState(lex("one"));
     RecognitionExceptionListener listener = mock(RecognitionExceptionListener.class);
-    parsingState.addListener(listener);
+    parsingState.addListeners(listener);
     rule.match(parsingState);
 
     verify(listener, times(0)).processRecognitionException(org.mockito.Mockito.any(RecognitionException.class));
@@ -66,7 +66,7 @@ public class RuleMatcherTest {
 
     ParsingState parsingState = new ParsingState(lex("one"));
     RecognitionExceptionListener listener = mock(RecognitionExceptionListener.class);
-    parsingState.addListener(listener);
+    parsingState.addListeners(listener);
     rule.match(parsingState);
 
     verify(listener, times(1)).processRecognitionException(org.mockito.Mockito.any(RecognitionException.class));
@@ -90,7 +90,7 @@ public class RuleMatcherTest {
       }
 
     };
-    parsingState.addListener(listener);
+    parsingState.addListeners(listener);
     rule.match(parsingState);
 
     assertThat(parsingState.lexerIndex, is(1));

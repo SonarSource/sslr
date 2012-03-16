@@ -85,7 +85,7 @@ public final class Parser<GRAMMAR extends Grammar> {
 
     try {
       parsingState = new ParsingState(tokens);
-      parsingState.setListeners(listeners);
+      parsingState.addListeners(listeners.toArray(new RecognitionExceptionListener[listeners.size()]));
       parsingState.parsingEventListeners = parsingEventListeners;
       parsingState.extendedStackTrace = extendedStackTrace;
       return rootRule.getRule().match(parsingState);

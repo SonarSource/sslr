@@ -6,7 +6,6 @@
 
 package com.sonar.sslr.impl;
 
-import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.RecognitionExceptionListener;
@@ -22,13 +21,15 @@ import java.util.Set;
 
 public class ParsingState {
 
-  private final List<MemoizedMatcher> notifiedMatchers = Lists.newArrayList();
-  private Set<RecognitionExceptionListener> listeners = new HashSet<RecognitionExceptionListener>();
   private final Token[] tokens;
+
   public int lexerIndex = 0;
   public final int lexerSize;
+
   private int outpostMatcherTokenIndex = -1;
   private Matcher outpostMatcher;
+
+  private final Set<RecognitionExceptionListener> listeners = new HashSet<RecognitionExceptionListener>();
   private final AstNode[] astNodeMemoization;
   private final MemoizedMatcher[] astMatcherMemoization;
   public ParsingEventListener[] parsingEventListeners;
@@ -135,24 +136,10 @@ public class ParsingState {
     }
   }
 
-  public final void reinitNotifiedMatchersList() {
-    notifiedMatchers.clear();
-  }
-
-  public final void matcherNotified(MemoizedMatcher matcher) {
-    notifiedMatchers.add(matcher);
-  }
-
-  public final boolean hasMatcherBeenNotified(MemoizedMatcher matcher) {
-    return notifiedMatchers.contains(matcher);
-  }
-
-  protected final void setListeners(Set<RecognitionExceptionListener> listeners) {
-    this.listeners = listeners;
-  }
-
-  public final void addListener(RecognitionExceptionListener listener) {
-    listeners.add(listener);
+  public final void addListeners(RecognitionExceptionListener... listeners) {
+    for (RecognitionExceptionListener listener : listeners) {
+      this.listeners.add(listener);
+    }
   }
 
   public final void notifyListeners(RecognitionException recognitionException) {
