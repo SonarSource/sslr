@@ -21,7 +21,7 @@ public class AstNodeNavigator extends DefaultNavigator {
 
   private static final Iterator EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
 
-  private AstNode wrappedDocumentAstNode;
+  private transient AstNode wrappedDocumentAstNode;
 
   public static AstNode getWrappedDocumentAstNode(AstNode documentAstNode) {
     AstNode wrappedDocumentAstNode = new AstNode(null, "[root]", null);
