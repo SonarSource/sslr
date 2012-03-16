@@ -19,7 +19,7 @@ import static com.google.common.base.Preconditions.*;
 @SuppressWarnings("serial")
 public class AstNodeNavigator extends DefaultNavigator {
 
-  private final static Iterator EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
+  private static final Iterator EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
 
   private AstNode wrappedDocumentAstNode;
 
@@ -219,7 +219,7 @@ public class AstNodeNavigator extends DefaultNavigator {
     return null;
   }
 
-  private class Attribute {
+  private static class Attribute {
 
     private final String name;
     private final AstNode astNode;
