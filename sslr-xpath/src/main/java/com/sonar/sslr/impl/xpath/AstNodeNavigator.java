@@ -167,7 +167,7 @@ public class AstNodeNavigator extends DefaultNavigator {
       AstNode astNode = (AstNode) object;
       return astNode.getChildren().iterator();
     } else {
-      throw new UnsupportedOperationException("Unsupported parent object type \"" + object.getClass().getSimpleName() + "\"");
+      throw new UnsupportedOperationException("Unsupported parent for child axis object type \"" + object.getClass().getSimpleName() + "\"");
     }
   }
 
@@ -198,17 +198,23 @@ public class AstNodeNavigator extends DefaultNavigator {
   }
 
   @Override
-  public Iterator getAttributeAxisIterator(Object astNodeObject) {
-    AstNode astNode = (AstNode) astNodeObject;
-
-    if (!astNode.hasToken()) {
+  public Iterator getAttributeAxisIterator(Object object) {
+    if (isAttribute(object)) {
       return EMPTY_ITERATOR;
+    } else if (isElement(object)) {
+      AstNode astNode = (AstNode) object;
+
+      if (!astNode.hasToken()) {
+        return EMPTY_ITERATOR;
+      } else {
+        return Lists.newArrayList(
+            new Attribute("tokenLine", astNode),
+            new Attribute("tokenColumn", astNode),
+            new Attribute("tokenValue", astNode)
+            ).iterator();
+      }
     } else {
-      return Lists.newArrayList(
-          new Attribute("tokenLine", astNode),
-          new Attribute("tokenColumn", astNode),
-          new Attribute("tokenValue", astNode)
-          ).iterator();
+      throw new UnsupportedOperationException("Unsupported parent for attribute axis object type \"" + object.getClass().getSimpleName() + "\"");
     }
   }
 
