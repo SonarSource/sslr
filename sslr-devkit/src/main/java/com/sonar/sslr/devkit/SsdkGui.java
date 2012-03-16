@@ -225,12 +225,13 @@ public class SsdkGui extends javax.swing.JFrame {
           }
         }
       }
-      checkState(treeNode != null, "unable to find the AstNode following the caret position " + line + ":" + column);
 
       astTree.clearSelection();
-      astTree.addSelectionPath(new TreePath(treeNode.getPath()));
 
-      highlightSelectedPaths();
+      if (treeNode != null) {
+        astTree.addSelectionPath(new TreePath(treeNode.getPath()));
+        highlightSelectedPaths();
+      }
     }
   }
 
