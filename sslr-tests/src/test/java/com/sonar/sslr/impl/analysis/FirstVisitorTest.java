@@ -5,59 +5,55 @@
  */
 package com.sonar.sslr.impl.analysis;
 
+import com.google.common.collect.Sets;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import com.sonar.sslr.impl.matcher.TokenMatcher;
 import org.junit.Test;
 
-import static com.sonar.sslr.impl.analysis.EmptyVisitor.*;
+import java.util.Set;
+
+import static com.sonar.sslr.impl.analysis.FirstVisitor.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-public class EmptyVisitorTest {
+public class FirstVisitorTest {
 
   @Test
   public void tokenTest() {
     Matcher matcher = and("value");
     assertThat(matcher instanceof TokenMatcher, is(true));
-    assertThat(empty(matcher), is(false));
+    assertThat(first(matcher), is(getSet("value")));
   }
 
   @Test
   public void orTest() {
-    assertThat(empty(or("value1", "value2")), is(false));
-    assertThat(empty(or(opt("value1"), "value2")), is(true));
-    assertThat(empty(or("value1", opt("value2"))), is(true));
-    assertThat(empty(or(opt("value1"), opt("value2"))), is(true));
+    assertThat(first(or("value")), is(getSet("value")));
+    assertThat(first(or("value1", "value2")), is(getSet("value1", "value2")));
   }
 
   @Test
   public void andTest() {
-    assertThat(empty(and("value1", "value2")), is(false));
-    assertThat(empty(and(opt("value1"), "value2")), is(false));
-    assertThat(empty(and("value1", opt("value2"))), is(false));
-    assertThat(empty(and(opt("value1"), opt("value2"))), is(true));
+    assertThat(first(and("value")), is(getSet("value")));
+    assertThat(first(and("value1", "value2")), is(getSet("value1")));
+    assertThat(first(and(opt("value1"), "value2")), is(getSet("value1", "value2")));
   }
 
   @Test
   public void optTest() {
-    assertThat(empty(opt("value")), is(true));
+    assertThat(first(opt("value")), is(getSet("value")));
   }
 
   @Test
   public void one2nTest() {
-    assertThat(empty(one2n("value")), is(false));
-    assertThat(empty(one2n(opt("value"))), is(true));
+    assertThat(first(one2n("value")), is(getSet("value")));
   }
 
   @Test
   public void ruleMatcherTest() {
     RuleDefinition rule = RuleDefinition.newRuleBuilder("rule").is("value");
-    assertThat(empty(rule.getRule()), is(false));
-
-    rule = RuleDefinition.newRuleBuilder("rule").is(opt("value"));
-    assertThat(empty(rule.getRule()), is(true));
+    assertThat(first(rule.getRule()), is(getSet("value")));
   }
 
   @Test
@@ -72,11 +68,11 @@ public class EmptyVisitorTest {
                 "huhu",
                 one2n(rule)
             ),
-            opt("hehe"),
-            opt("haha")
+            "hehe",
+            "haha"
         )));
 
-    assertThat(empty(rule.getRule()), is(true));
+    assertThat(first(rule.getRule()), is(getSet("foo", "bar", "huhu", "hehe")));
   }
 
   @Test(expected = LeftRecursionException.class)
@@ -84,7 +80,7 @@ public class EmptyVisitorTest {
     RuleDefinition rule = RuleDefinition.newRuleBuilder("rule");
     rule.is(rule);
 
-    empty(rule.getRule());
+    first(rule.getRule());
   }
 
   @Test(expected = LeftRecursionException.class)
@@ -95,7 +91,7 @@ public class EmptyVisitorTest {
     rule1.is(rule2);
     rule2.is(rule1);
 
-    empty(rule1.getRule());
+    first(rule1.getRule());
   }
 
   @Test
@@ -106,11 +102,11 @@ public class EmptyVisitorTest {
     rule1.is(or(rule2, rule2));
     rule2.is("value");
 
-    assertThat(empty(rule1.getRule()), is(false));
+    assertThat(first(rule1.getRule()), is(getSet("value")));
   }
 
-  @Test
-  public void deeplyNestedRecursionShortcutByOpt() {
+  @Test(expected = LeftRecursionException.class)
+  public void deeplyNestedRecursion() {
     RuleDefinition rule = RuleDefinition.newRuleBuilder("rule");
 
     rule.is(or(
@@ -125,7 +121,17 @@ public class EmptyVisitorTest {
             "haha"
         )));
 
-    assertThat(empty(rule.getRule()), is(false));
+    first(rule.getRule());
+  }
+
+  private Set<Matcher> getSet(String... tokenValues) {
+    Set<Matcher> set = Sets.newHashSet();
+
+    for (String tokenValue : tokenValues) {
+      set.add(and(tokenValue));
+    }
+
+    return set;
   }
 
 }

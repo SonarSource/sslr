@@ -39,7 +39,7 @@ public class EmptyVisitor {
 
   public static boolean empty(OrMatcher matcher, Stack<RuleMatcher> stack) {
     for (Matcher childMatcher : matcher.children) {
-      if (empty(childMatcher)) {
+      if (empty(childMatcher, stack)) {
         return true;
       }
     }
@@ -49,7 +49,7 @@ public class EmptyVisitor {
 
   public static boolean empty(AndMatcher matcher, Stack<RuleMatcher> stack) {
     for (Matcher childMatcher : matcher.children) {
-      if (!empty(childMatcher)) {
+      if (!empty(childMatcher, stack)) {
         return false;
       }
     }
@@ -62,7 +62,7 @@ public class EmptyVisitor {
   }
 
   public static boolean empty(OneToNMatcher matcher, Stack<RuleMatcher> stack) {
-    return empty(matcher.children[0]);
+    return empty(matcher.children[0], stack);
   }
 
   public static boolean empty(RuleMatcher matcher, Stack<RuleMatcher> stack) {
