@@ -9,6 +9,7 @@ import com.google.common.collect.Sets;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.matcher.Matcher;
+import com.sonar.sslr.impl.matcher.OrMatcher;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 import org.junit.Test;
@@ -52,6 +53,7 @@ public class GrammarAnalyserTest {
     assertThat(analyser.isLeftRecursive(rule), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(rule), is(false));
     assertThat(analyser.hasEmptyRepetitions(rule), is(false));
+    assertThat(analyser.hasEmptyAlternatives(rule), is(false));
   }
 
   private static class SingleRuleNoIssuesGrammar extends Grammar {
@@ -80,8 +82,9 @@ public class GrammarAnalyserTest {
     RuleMatcher rule = getRuleMatcher(grammar.rule);
     assertThat(analyser.isLeftRecursive(rule), is(true));
     assertThat(analyser.isDependingOnLeftRecursiveRule(rule), is(false));
-    assertThat(analyser.getLeftRecursionxception(rule).getLeftRecursiveRule(), is(rule));
+    assertThat(analyser.getLeftRecursionException(rule).getLeftRecursiveRule(), is(rule));
     assertThat(analyser.hasEmptyRepetitions(rule), is(false));
+    assertThat(analyser.hasEmptyAlternatives(rule), is(false));
   }
 
   private static class DirectLeftRecursiveGrammar extends Grammar {
@@ -110,14 +113,16 @@ public class GrammarAnalyserTest {
     RuleMatcher ruleA = getRuleMatcher(grammar.ruleA);
     assertThat(analyser.isLeftRecursive(ruleA), is(true));
     assertThat(analyser.isDependingOnLeftRecursiveRule(ruleA), is(false));
-    assertThat(analyser.getLeftRecursionxception(ruleA).getLeftRecursiveRule(), is(ruleA));
+    assertThat(analyser.getLeftRecursionException(ruleA).getLeftRecursiveRule(), is(ruleA));
     assertThat(analyser.hasEmptyRepetitions(ruleA), is(false));
+    assertThat(analyser.hasEmptyAlternatives(ruleA), is(false));
 
     RuleMatcher ruleB = getRuleMatcher(grammar.ruleB);
     assertThat(analyser.isLeftRecursive(ruleB), is(true));
     assertThat(analyser.isDependingOnLeftRecursiveRule(ruleB), is(false));
-    assertThat(analyser.getLeftRecursionxception(ruleB).getLeftRecursiveRule(), is(ruleB));
+    assertThat(analyser.getLeftRecursionException(ruleB).getLeftRecursiveRule(), is(ruleB));
     assertThat(analyser.hasEmptyRepetitions(ruleB), is(false));
+    assertThat(analyser.hasEmptyAlternatives(ruleB), is(false));
   }
 
   private static class IndirectLeftRecursiveGrammar extends Grammar {
@@ -150,13 +155,15 @@ public class GrammarAnalyserTest {
 
     assertThat(analyser.isLeftRecursive(rule), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(rule), is(true));
-    assertThat(analyser.getLeftRecursionxception(rule).getLeftRecursiveRule(), is(leftRecursiveRule));
+    assertThat(analyser.getLeftRecursionException(rule).getLeftRecursiveRule(), is(leftRecursiveRule));
     assertThat(analyser.hasEmptyRepetitions(rule), is(false));
+    assertThat(analyser.hasEmptyAlternatives(rule), is(false));
 
     assertThat(analyser.isLeftRecursive(leftRecursiveRule), is(true));
     assertThat(analyser.isDependingOnLeftRecursiveRule(leftRecursiveRule), is(false));
-    assertThat(analyser.getLeftRecursionxception(leftRecursiveRule).getLeftRecursiveRule(), is(leftRecursiveRule));
+    assertThat(analyser.getLeftRecursionException(leftRecursiveRule).getLeftRecursiveRule(), is(leftRecursiveRule));
     assertThat(analyser.hasEmptyRepetitions(leftRecursiveRule), is(false));
+    assertThat(analyser.hasEmptyAlternatives(leftRecursiveRule), is(false));
   }
 
   private static class DependOnLeftRecursiveRuleGrammar extends Grammar {
@@ -189,6 +196,7 @@ public class GrammarAnalyserTest {
     assertThat(analyser.isDependingOnLeftRecursiveRule(rule), is(false));
     assertThat(analyser.hasEmptyRepetitions(rule), is(true));
     assertThat(analyser.getEmptyRepetitions(rule), is((Set) Sets.newHashSet(grammar.emptyRepetition)));
+    assertThat(analyser.hasEmptyAlternatives(rule), is(false));
   }
 
   private static class SingleEmptyRepetitionGrammar extends Grammar {
@@ -208,8 +216,8 @@ public class GrammarAnalyserTest {
   }
 
   @Test
-  public void multipleEmptyRepetitionTest() {
-    MultipleEmptyRepetitionGrammar grammar = new MultipleEmptyRepetitionGrammar();
+  public void multipleEmptyRepetitionsTest() {
+    MultipleEmptyRepetitionsGrammar grammar = new MultipleEmptyRepetitionsGrammar();
 
     GrammarAnalyser analyser = new GrammarAnalyser(grammar);
     assertThat(analyser.getRules(), is(getSet(grammar.ruleA, grammar.ruleB, grammar.ruleC)));
@@ -220,20 +228,23 @@ public class GrammarAnalyserTest {
     assertThat(analyser.isDependingOnLeftRecursiveRule(ruleA), is(false));
     assertThat(analyser.hasEmptyRepetitions(ruleA), is(true));
     assertThat(analyser.getEmptyRepetitions(ruleA), is((Set) Sets.newHashSet(grammar.emptyRepetitionRuleA1, grammar.emptyRepetitionRuleA2)));
+    assertThat(analyser.hasEmptyAlternatives(ruleA), is(false));
 
     RuleMatcher ruleB = getRuleMatcher(grammar.ruleB);
     assertThat(analyser.isLeftRecursive(ruleB), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(ruleB), is(false));
     assertThat(analyser.hasEmptyRepetitions(ruleB), is(true));
     assertThat(analyser.getEmptyRepetitions(ruleB), is((Set) Sets.newHashSet(grammar.emptyRepetitionRuleB)));
+    assertThat(analyser.hasEmptyAlternatives(ruleB), is(false));
 
     RuleMatcher ruleC = getRuleMatcher(grammar.ruleC);
     assertThat(analyser.isLeftRecursive(ruleC), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(ruleC), is(false));
     assertThat(analyser.hasEmptyRepetitions(ruleC), is(false));
+    assertThat(analyser.hasEmptyAlternatives(ruleC), is(false));
   }
 
-  private static class MultipleEmptyRepetitionGrammar extends Grammar {
+  private static class MultipleEmptyRepetitionsGrammar extends Grammar {
 
     public Rule ruleA;
     public Rule ruleB;
@@ -243,15 +254,116 @@ public class GrammarAnalyserTest {
     public Matcher emptyRepetitionRuleA2 = one2n(opt("world"));
     public Matcher emptyRepetitionRuleB = one2n(ruleC);
 
-    public MultipleEmptyRepetitionGrammar() {
-      ruleA.is(or(
+    public MultipleEmptyRepetitionsGrammar() {
+      ruleA.is(
           "foo",
           one2n("bar"),
           emptyRepetitionRuleA1,
           emptyRepetitionRuleA2
-          ));
+          );
 
       ruleB.is(emptyRepetitionRuleB);
+
+      ruleC.is(opt("foobar"));
+    }
+
+    @Override
+    public Rule getRootRule() {
+      return null;
+    }
+
+  }
+
+  @Test
+  public void singleEmptyAlternativeTest() {
+    SingleEmptyAlternativeGrammar grammar = new SingleEmptyAlternativeGrammar();
+
+    GrammarAnalyser analyser = new GrammarAnalyser(grammar);
+    assertThat(analyser.getRules(), is(getSet(grammar.rule)));
+    assertThat(analyser.hasIssues(), is(true));
+
+    RuleMatcher rule = getRuleMatcher(grammar.rule);
+    assertThat(analyser.isLeftRecursive(rule), is(false));
+    assertThat(analyser.isDependingOnLeftRecursiveRule(rule), is(false));
+    assertThat(analyser.hasEmptyRepetitions(rule), is(false));
+    assertThat(analyser.hasEmptyAlternatives(rule), is(true));
+    assertThat(analyser.getEmptyAlternatives(rule), is((Set) Sets.newHashSet(new EmptyAlternative(grammar.orMatcher, grammar.emptyAlternative))));
+  }
+
+  private static class SingleEmptyAlternativeGrammar extends Grammar {
+
+    public Rule rule;
+    public Matcher emptyAlternative = opt("foo");
+    public OrMatcher orMatcher = (OrMatcher) or(emptyAlternative, "bar");
+
+    public SingleEmptyAlternativeGrammar() {
+      rule.is(orMatcher);
+    }
+
+    @Override
+    public Rule getRootRule() {
+      return null;
+    }
+
+  }
+
+  @Test
+  public void multipleEmptyAlternativesTest() {
+    MultipleEmptyAlternativesGrammar grammar = new MultipleEmptyAlternativesGrammar();
+
+    GrammarAnalyser analyser = new GrammarAnalyser(grammar);
+    assertThat(analyser.getRules(), is(getSet(grammar.ruleA, grammar.ruleB, grammar.ruleC)));
+    assertThat(analyser.hasIssues(), is(true));
+
+    RuleMatcher ruleA = getRuleMatcher(grammar.ruleA);
+    assertThat(analyser.isLeftRecursive(ruleA), is(false));
+    assertThat(analyser.isDependingOnLeftRecursiveRule(ruleA), is(false));
+    assertThat(analyser.hasEmptyRepetitions(ruleA), is(false));
+    assertThat(analyser.hasEmptyAlternatives(ruleA), is(true));
+    assertThat(analyser.getEmptyAlternatives(ruleA),
+        is(
+        (Set) Sets.newHashSet(
+            new EmptyAlternative(grammar.orMatcherRuleA1, grammar.emptyAlternativeRuleA1),
+            new EmptyAlternative(grammar.orMatcherRuleA2, grammar.emptyAlternativeRuleA2)
+            )
+        ));
+
+    RuleMatcher ruleB = getRuleMatcher(grammar.ruleB);
+    assertThat(analyser.isLeftRecursive(ruleB), is(false));
+    assertThat(analyser.isDependingOnLeftRecursiveRule(ruleB), is(false));
+    assertThat(analyser.hasEmptyRepetitions(ruleB), is(false));
+    assertThat(analyser.hasEmptyAlternatives(ruleB), is(true));
+    assertThat(analyser.getEmptyAlternatives(ruleB), is((Set) Sets.newHashSet(new EmptyAlternative(grammar.orMatcherRuleB, getRuleMatcher(grammar.ruleC)))));
+
+    RuleMatcher ruleC = getRuleMatcher(grammar.ruleC);
+    assertThat(analyser.isLeftRecursive(ruleC), is(false));
+    assertThat(analyser.isDependingOnLeftRecursiveRule(ruleC), is(false));
+    assertThat(analyser.hasEmptyRepetitions(ruleC), is(false));
+    assertThat(analyser.hasEmptyAlternatives(ruleC), is(false));
+  }
+
+  private static class MultipleEmptyAlternativesGrammar extends Grammar {
+
+    public Rule ruleA;
+    public Rule ruleB;
+    public Rule ruleC;
+
+    public Matcher emptyAlternativeRuleA1 = opt("hello");
+    public OrMatcher orMatcherRuleA1 = (OrMatcher) or("foo", emptyAlternativeRuleA1);
+    public Matcher emptyAlternativeRuleA2 = opt("world");
+    public OrMatcher orMatcherRuleA2 = (OrMatcher) or("foo", emptyAlternativeRuleA2);
+
+    public OrMatcher orMatcherRuleB = (OrMatcher) or("foo", ruleC);
+
+    public MultipleEmptyAlternativesGrammar() {
+      ruleA.is(
+          "foo",
+          one2n("bar"),
+          orMatcherRuleA1,
+          orMatcherRuleA2
+          );
+
+      ruleB.is(orMatcherRuleB);
 
       ruleC.is(opt("foobar"));
     }

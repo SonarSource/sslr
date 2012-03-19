@@ -26,6 +26,7 @@ public class GrammarAnalyser {
   private final Map<RuleMatcher, LeftRecursionException> dependOnLeftRecursiveRules = Maps.newHashMap();
   private final Map<RuleMatcher, LeftRecursionException> leftRecursiveRules = Maps.newHashMap();
   private final Map<RuleMatcher, Set<OneToNMatcher>> emptyRepetitions = Maps.newHashMap();
+  private final Map<RuleMatcher, Set<EmptyAlternative>> emptyAlternatives = Maps.newHashMap();
 
   public GrammarAnalyser(Grammar grammar) {
     rules = getRuleMatchers(grammar);
@@ -47,7 +48,7 @@ public class GrammarAnalyser {
     return dependOnLeftRecursiveRules.containsKey(rule);
   }
 
-  public LeftRecursionException getLeftRecursionxception(RuleMatcher rule) {
+  public LeftRecursionException getLeftRecursionException(RuleMatcher rule) {
     LeftRecursionException e = dependOnLeftRecursiveRules.get(rule);
     if (e == null) {
       e = leftRecursiveRules.get(rule);
@@ -66,8 +67,17 @@ public class GrammarAnalyser {
     return emptyRepetitions.get(rule);
   }
 
+  public boolean hasEmptyAlternatives(RuleMatcher rule) {
+    return emptyAlternatives.containsKey(rule);
+  }
+
+  public Set<EmptyAlternative> getEmptyAlternatives(RuleMatcher rule) {
+    checkArgument(hasEmptyAlternatives(rule), "The given rule \"" + rule.getName() + "\" has no empty alternatives");
+    return emptyAlternatives.get(rule);
+  }
+
   public boolean hasIssues() {
-    return !dependOnLeftRecursiveRules.isEmpty() || !leftRecursiveRules.isEmpty() || !emptyRepetitions.isEmpty();
+    return !dependOnLeftRecursiveRules.isEmpty() || !leftRecursiveRules.isEmpty() || !emptyRepetitions.isEmpty() || !emptyAlternatives.isEmpty();
   }
 
   private Set<RuleMatcher> getRuleMatchers(Grammar grammar) {
@@ -87,12 +97,18 @@ public class GrammarAnalyser {
 
   private void detectIssues(RuleMatcher rule) {
     try {
-      first(rule);
+      first(rule); // Cause the LeftRecursionExceptions
 
       EmptyRepetitionVisitor emptyRepetitionVisitor = new EmptyRepetitionVisitor();
       emptyRepetitionVisitor.visit(rule);
       if (!emptyRepetitionVisitor.getEmptyRepetitions().isEmpty()) {
         emptyRepetitions.put(rule, emptyRepetitionVisitor.getEmptyRepetitions());
+      }
+
+      EmptyAlternativeVisitor emptyAlternativeVisitor = new EmptyAlternativeVisitor();
+      emptyAlternativeVisitor.visit(rule);
+      if (!emptyAlternativeVisitor.getEmptyAlternatives().isEmpty()) {
+        emptyAlternatives.put(rule, emptyAlternativeVisitor.getEmptyAlternatives());
       }
     } catch (LeftRecursionException e) {
       if (rule.equals(e.getLeftRecursiveRule())) {

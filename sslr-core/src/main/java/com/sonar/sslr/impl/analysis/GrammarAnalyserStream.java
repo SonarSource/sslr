@@ -21,12 +21,12 @@ public class GrammarAnalyserStream {
 
     for (RuleMatcher rule : analyser.getRules()) {
       if (analyser.isLeftRecursive(rule)) {
-        LeftRecursionException e = analyser.getLeftRecursionxception(rule);
+        LeftRecursionException e = analyser.getLeftRecursionException(rule);
 
         System.out.println(rule.getName() + ": *** NOK, contains a left recursion ***");
         System.out.println(e.getRulesStackTrace());
       } else if (analyser.isDependingOnLeftRecursiveRule(rule)) {
-        LeftRecursionException e = analyser.getLeftRecursionxception(rule);
+        LeftRecursionException e = analyser.getLeftRecursionException(rule);
 
         System.out.println(rule.getName() + ": *** NOK, dependency on left recursive rule " + e.getLeftRecursiveRule().getName() + " ***");
       }
