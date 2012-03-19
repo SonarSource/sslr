@@ -12,6 +12,10 @@ public abstract class MatcherVisitor<R, U> {
   public MatcherVisitor() {
   }
 
+  public final R visit(Matcher matcher) {
+    return visit(matcher, null);
+  }
+
   public final R visit(Matcher matcher, U userObject) {
     if (matcher instanceof TokenMatcher) {
       return visit((TokenMatcher) matcher, userObject);

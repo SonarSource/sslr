@@ -8,6 +8,7 @@ package com.sonar.sslr.impl.analysis;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.impl.matcher.OneToNMatcher;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
@@ -24,6 +25,7 @@ public class GrammarAnalyser {
   private final Set<RuleMatcher> rules;
   private final Map<RuleMatcher, LeftRecursionException> dependOnLeftRecursiveRules = Maps.newHashMap();
   private final Map<RuleMatcher, LeftRecursionException> leftRecursiveRules = Maps.newHashMap();
+  private final Map<RuleMatcher, Set<OneToNMatcher>> emptyRepetitions = Maps.newHashMap();
 
   public GrammarAnalyser(Grammar grammar) {
     rules = getRuleMatchers(grammar);
@@ -55,8 +57,17 @@ public class GrammarAnalyser {
     return e;
   }
 
+  public boolean hasEmptyRepetitions(RuleMatcher rule) {
+    return emptyRepetitions.containsKey(rule);
+  }
+
+  public Set<OneToNMatcher> getEmptyRepetitions(RuleMatcher rule) {
+    checkArgument(hasEmptyRepetitions(rule), "The given rule \"" + rule.getName() + "\" has no empty repetitions");
+    return emptyRepetitions.get(rule);
+  }
+
   public boolean hasIssues() {
-    return !dependOnLeftRecursiveRules.isEmpty() || !leftRecursiveRules.isEmpty();
+    return !dependOnLeftRecursiveRules.isEmpty() || !leftRecursiveRules.isEmpty() || !emptyRepetitions.isEmpty();
   }
 
   private Set<RuleMatcher> getRuleMatchers(Grammar grammar) {
@@ -77,6 +88,12 @@ public class GrammarAnalyser {
   private void detectIssues(RuleMatcher rule) {
     try {
       first(rule);
+
+      EmptyRepetitionVisitor emptyRepetitionVisitor = new EmptyRepetitionVisitor();
+      emptyRepetitionVisitor.visit(rule);
+      if (!emptyRepetitionVisitor.getEmptyRepetitions().isEmpty()) {
+        emptyRepetitions.put(rule, emptyRepetitionVisitor.getEmptyRepetitions());
+      }
     } catch (LeftRecursionException e) {
       if (rule.equals(e.getLeftRecursiveRule())) {
         leftRecursiveRules.put(rule, e);

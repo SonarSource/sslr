@@ -8,12 +8,14 @@ package com.sonar.sslr.impl.analysis;
 import com.google.common.collect.Sets;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
+import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 import org.junit.Test;
 
 import java.util.Set;
 
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -49,6 +51,7 @@ public class GrammarAnalyserTest {
     RuleMatcher rule = getRuleMatcher(grammar.rule);
     assertThat(analyser.isLeftRecursive(rule), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(rule), is(false));
+    assertThat(analyser.hasEmptyRepetitions(rule), is(false));
   }
 
   private static class SingleRuleNoIssuesGrammar extends Grammar {
@@ -78,6 +81,7 @@ public class GrammarAnalyserTest {
     assertThat(analyser.isLeftRecursive(rule), is(true));
     assertThat(analyser.isDependingOnLeftRecursiveRule(rule), is(false));
     assertThat(analyser.getLeftRecursionxception(rule).getLeftRecursiveRule(), is(rule));
+    assertThat(analyser.hasEmptyRepetitions(rule), is(false));
   }
 
   private static class DirectLeftRecursiveGrammar extends Grammar {
@@ -107,11 +111,13 @@ public class GrammarAnalyserTest {
     assertThat(analyser.isLeftRecursive(ruleA), is(true));
     assertThat(analyser.isDependingOnLeftRecursiveRule(ruleA), is(false));
     assertThat(analyser.getLeftRecursionxception(ruleA).getLeftRecursiveRule(), is(ruleA));
+    assertThat(analyser.hasEmptyRepetitions(ruleA), is(false));
 
     RuleMatcher ruleB = getRuleMatcher(grammar.ruleB);
     assertThat(analyser.isLeftRecursive(ruleB), is(true));
     assertThat(analyser.isDependingOnLeftRecursiveRule(ruleB), is(false));
     assertThat(analyser.getLeftRecursionxception(ruleB).getLeftRecursiveRule(), is(ruleB));
+    assertThat(analyser.hasEmptyRepetitions(ruleB), is(false));
   }
 
   private static class IndirectLeftRecursiveGrammar extends Grammar {
@@ -145,10 +151,12 @@ public class GrammarAnalyserTest {
     assertThat(analyser.isLeftRecursive(rule), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(rule), is(true));
     assertThat(analyser.getLeftRecursionxception(rule).getLeftRecursiveRule(), is(leftRecursiveRule));
+    assertThat(analyser.hasEmptyRepetitions(rule), is(false));
 
     assertThat(analyser.isLeftRecursive(leftRecursiveRule), is(true));
     assertThat(analyser.isDependingOnLeftRecursiveRule(leftRecursiveRule), is(false));
     assertThat(analyser.getLeftRecursionxception(leftRecursiveRule).getLeftRecursiveRule(), is(leftRecursiveRule));
+    assertThat(analyser.hasEmptyRepetitions(leftRecursiveRule), is(false));
   }
 
   private static class DependOnLeftRecursiveRuleGrammar extends Grammar {
@@ -159,6 +167,93 @@ public class GrammarAnalyserTest {
     public DependOnLeftRecursiveRuleGrammar() {
       rule.is(leftRecursiveRule);
       leftRecursiveRule.is(leftRecursiveRule);
+    }
+
+    @Override
+    public Rule getRootRule() {
+      return null;
+    }
+
+  }
+
+  @Test
+  public void singleEmptyRepetitionTest() {
+    SingleEmptyRepetitionGrammar grammar = new SingleEmptyRepetitionGrammar();
+
+    GrammarAnalyser analyser = new GrammarAnalyser(grammar);
+    assertThat(analyser.getRules(), is(getSet(grammar.rule)));
+    assertThat(analyser.hasIssues(), is(true));
+
+    RuleMatcher rule = getRuleMatcher(grammar.rule);
+    assertThat(analyser.isLeftRecursive(rule), is(false));
+    assertThat(analyser.isDependingOnLeftRecursiveRule(rule), is(false));
+    assertThat(analyser.hasEmptyRepetitions(rule), is(true));
+    assertThat(analyser.getEmptyRepetitions(rule), is((Set) Sets.newHashSet(grammar.emptyRepetition)));
+  }
+
+  private static class SingleEmptyRepetitionGrammar extends Grammar {
+
+    public Rule rule;
+    public Matcher emptyRepetition = one2n(opt("hello"));
+
+    public SingleEmptyRepetitionGrammar() {
+      rule.is(emptyRepetition);
+    }
+
+    @Override
+    public Rule getRootRule() {
+      return null;
+    }
+
+  }
+
+  @Test
+  public void multipleEmptyRepetitionTest() {
+    MultipleEmptyRepetitionGrammar grammar = new MultipleEmptyRepetitionGrammar();
+
+    GrammarAnalyser analyser = new GrammarAnalyser(grammar);
+    assertThat(analyser.getRules(), is(getSet(grammar.ruleA, grammar.ruleB, grammar.ruleC)));
+    assertThat(analyser.hasIssues(), is(true));
+
+    RuleMatcher ruleA = getRuleMatcher(grammar.ruleA);
+    assertThat(analyser.isLeftRecursive(ruleA), is(false));
+    assertThat(analyser.isDependingOnLeftRecursiveRule(ruleA), is(false));
+    assertThat(analyser.hasEmptyRepetitions(ruleA), is(true));
+    assertThat(analyser.getEmptyRepetitions(ruleA), is((Set) Sets.newHashSet(grammar.emptyRepetitionRuleA1, grammar.emptyRepetitionRuleA2)));
+
+    RuleMatcher ruleB = getRuleMatcher(grammar.ruleB);
+    assertThat(analyser.isLeftRecursive(ruleB), is(false));
+    assertThat(analyser.isDependingOnLeftRecursiveRule(ruleB), is(false));
+    assertThat(analyser.hasEmptyRepetitions(ruleB), is(true));
+    assertThat(analyser.getEmptyRepetitions(ruleB), is((Set) Sets.newHashSet(grammar.emptyRepetitionRuleB)));
+
+    RuleMatcher ruleC = getRuleMatcher(grammar.ruleC);
+    assertThat(analyser.isLeftRecursive(ruleC), is(false));
+    assertThat(analyser.isDependingOnLeftRecursiveRule(ruleC), is(false));
+    assertThat(analyser.hasEmptyRepetitions(ruleC), is(false));
+  }
+
+  private static class MultipleEmptyRepetitionGrammar extends Grammar {
+
+    public Rule ruleA;
+    public Rule ruleB;
+    public Rule ruleC;
+
+    public Matcher emptyRepetitionRuleA1 = one2n(opt("hello"));
+    public Matcher emptyRepetitionRuleA2 = one2n(opt("world"));
+    public Matcher emptyRepetitionRuleB = one2n(ruleC);
+
+    public MultipleEmptyRepetitionGrammar() {
+      ruleA.is(or(
+          "foo",
+          one2n("bar"),
+          emptyRepetitionRuleA1,
+          emptyRepetitionRuleA2
+          ));
+
+      ruleB.is(emptyRepetitionRuleB);
+
+      ruleC.is(opt("foobar"));
     }
 
     @Override
