@@ -65,9 +65,7 @@ public class EmptyRepetitionVisitorTest {
     RuleDefinition ruleB = RuleDefinition.newRuleBuilder("ruleB");
 
     ruleA.is(ruleB);
-
-    Matcher matcher = one2n(opt("foo"));
-    ruleB.is(matcher);
+    ruleB.is(one2n(opt("foo")));
 
     visitor.visit(ruleA.getRule());
 
