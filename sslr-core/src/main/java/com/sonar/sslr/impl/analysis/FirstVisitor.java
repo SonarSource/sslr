@@ -19,73 +19,65 @@ public class FirstVisitor {
   }
 
   public static Set<Matcher> first(Matcher matcher) {
-    return first(matcher, new Stack<RuleMatcher>());
-  }
+    MatcherVisitor<Set<Matcher>, Stack<RuleMatcher>> visitor = new MatcherVisitor<Set<Matcher>, Stack<RuleMatcher>>() {
 
-  private static Set<Matcher> first(Matcher matcher, Stack<RuleMatcher> stack) {
-    if (matcher instanceof TokenMatcher) {
-      return first((TokenMatcher) matcher, stack);
-    } else if (matcher instanceof OrMatcher) {
-      return first((OrMatcher) matcher, stack);
-    } else if (matcher instanceof AndMatcher) {
-      return first((AndMatcher) matcher, stack);
-    } else if (matcher instanceof OptMatcher) {
-      return first((OptMatcher) matcher, stack);
-    } else if (matcher instanceof OneToNMatcher) {
-      return first((OneToNMatcher) matcher, stack);
-    } else if (matcher instanceof RuleMatcher) {
-      return first((RuleMatcher) matcher, stack);
-    } else {
-      throw new IllegalArgumentException("The matcher type \"" + matcher.getClass().getSimpleName() + "\" is not supported");
-    }
-  }
-
-  public static Set<Matcher> first(TokenMatcher matcher, Stack<RuleMatcher> stack) {
-    return Sets.newHashSet((Matcher) matcher);
-  }
-
-  public static Set<Matcher> first(OrMatcher matcher, Stack<RuleMatcher> stack) {
-    Set<Matcher> set = Sets.newHashSet();
-
-    for (Matcher child : matcher.children) {
-      set.addAll(first(child, stack));
-    }
-
-    return set;
-  }
-
-  public static Set<Matcher> first(AndMatcher matcher, Stack<RuleMatcher> stack) {
-    Set<Matcher> set = Sets.newHashSet();
-
-    for (Matcher child : matcher.children) {
-      set.addAll(first(child, stack));
-      if (!empty(child)) {
-        break;
+      @Override
+      public Set<Matcher> visit(TokenMatcher matcher, Stack<RuleMatcher> stack) {
+        return Sets.newHashSet((Matcher) matcher);
       }
-    }
 
-    return set;
-  }
+      @Override
+      public Set<Matcher> visit(OrMatcher matcher, Stack<RuleMatcher> stack) {
+        Set<Matcher> set = Sets.newHashSet();
 
-  public static Set<Matcher> first(OptMatcher matcher, Stack<RuleMatcher> stack) {
-    return first(matcher.children[0], stack);
-  }
+        for (Matcher child : matcher.children) {
+          set.addAll(visit(child, stack));
+        }
 
-  public static Set<Matcher> first(OneToNMatcher matcher, Stack<RuleMatcher> stack) {
-    return first(matcher.children[0], stack);
-  }
+        return set;
+      }
 
-  public static Set<Matcher> first(RuleMatcher matcher, Stack<RuleMatcher> stack) {
-    if (stack.contains(matcher)) {
-      stack.push(matcher);
-      throw new LeftRecursionException(stack);
-    }
+      @Override
+      public Set<Matcher> visit(AndMatcher matcher, Stack<RuleMatcher> stack) {
+        Set<Matcher> set = Sets.newHashSet();
 
-    stack.push(matcher);
-    Set<Matcher> set = first(matcher.children[0], stack);
-    stack.pop();
+        for (Matcher child : matcher.children) {
+          set.addAll(visit(child, stack));
+          if (!empty(child)) {
+            break;
+          }
+        }
 
-    return set;
+        return set;
+      }
+
+      @Override
+      public Set<Matcher> visit(OptMatcher matcher, Stack<RuleMatcher> stack) {
+        return visit(matcher.children[0], stack);
+      }
+
+      @Override
+      public Set<Matcher> visit(OneToNMatcher matcher, Stack<RuleMatcher> stack) {
+        return visit(matcher.children[0], stack);
+      }
+
+      @Override
+      public Set<Matcher> visit(RuleMatcher matcher, Stack<RuleMatcher> stack) {
+        if (stack.contains(matcher)) {
+          stack.push(matcher);
+          throw new LeftRecursionException(stack);
+        }
+
+        stack.push(matcher);
+        Set<Matcher> set = visit(matcher.children[0], stack);
+        stack.pop();
+
+        return set;
+      }
+
+    };
+
+    return visitor.visit(matcher, new Stack<RuleMatcher>());
   }
 
 }
