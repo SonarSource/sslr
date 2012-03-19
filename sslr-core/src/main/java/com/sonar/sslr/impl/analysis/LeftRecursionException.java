@@ -19,9 +19,26 @@ public class LeftRecursionException extends RuntimeException {
   public LeftRecursionException(Stack<RuleMatcher> stack) {
     checkNotNull(stack, "stack cannot be null");
     checkArgument(stack.size() >= 2, "stack size must be at least 2");
-    checkArgument(stack.get(stack.size() - 1).equals(stack.get(0)), "the first and last rule must be equal");
+
+    RuleMatcher leftRecursiveRule = stack.get(stack.size() - 1);
+    int i;
+    for (i = 0; i < stack.size() - 1; i++) {
+      if (leftRecursiveRule.equals(stack.get(i))) {
+        break;
+      }
+    }
+    checkArgument(i < stack.size() - 1, "the latest added rule \"" + leftRecursiveRule.getName() + "\" should appear twice in the stack");
 
     this.stack = stack;
+  }
+
+  public RuleMatcher getLeftRecursiveRule() {
+    return stack.get(stack.size() - 1);
+  }
+
+  @Override
+  public String toString() {
+    return super.toString();
   }
 
 }
