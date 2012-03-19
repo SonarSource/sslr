@@ -6,6 +6,7 @@
 package com.sonar.sslr.impl.analysis;
 
 import com.sonar.sslr.impl.matcher.RuleMatcher;
+import org.apache.commons.io.IOUtils;
 
 import java.util.Stack;
 
@@ -36,9 +37,22 @@ public class LeftRecursionException extends RuntimeException {
     return stack.get(stack.size() - 1);
   }
 
+  public String getRulesStackTrace() {
+    StringBuilder sb = new StringBuilder();
+
+    for (RuleMatcher rule : stack) {
+      sb.append("\t");
+      sb.append("called by ");
+      sb.append(rule.getName());
+      sb.append(IOUtils.LINE_SEPARATOR);
+    }
+
+    return sb.toString();
+  }
+
   @Override
   public String toString() {
-    return super.toString();
+    return "The rule \"" + getLeftRecursiveRule().getName() + "\" contains a left recursion." + IOUtils.LINE_SEPARATOR + getRulesStackTrace();
   }
 
 }
