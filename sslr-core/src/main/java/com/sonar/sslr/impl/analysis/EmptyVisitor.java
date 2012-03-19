@@ -11,6 +11,9 @@ import java.util.Stack;
 
 public class EmptyVisitor {
 
+  private EmptyVisitor() {
+  }
+
   public static boolean empty(Matcher matcher) {
     return empty(matcher, new Stack<RuleMatcher>());
   }

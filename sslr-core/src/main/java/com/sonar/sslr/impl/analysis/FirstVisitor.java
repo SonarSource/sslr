@@ -15,6 +15,9 @@ import static com.sonar.sslr.impl.analysis.EmptyVisitor.*;
 
 public class FirstVisitor {
 
+  private FirstVisitor() {
+  }
+
   public static Set<Matcher> first(Matcher matcher) {
     return first(matcher, new Stack<RuleMatcher>());
   }
