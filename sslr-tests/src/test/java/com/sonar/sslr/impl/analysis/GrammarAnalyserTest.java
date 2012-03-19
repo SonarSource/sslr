@@ -54,6 +54,8 @@ public class GrammarAnalyserTest {
     RuleMatcher rule = getRuleMatcher(grammar.rule);
     assertThat(analyser.hasIssues(rule), is(true));
     assertThat(analyser.isSkipped(rule), is(true));
+    Exception e = analyser.getSkippedCause(rule);
+    assertThat(e instanceof UnsupportedMatcherException, is(true));
     assertThat(analyser.isLeftRecursive(rule), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(rule), is(false));
     assertThat(analyser.hasEmptyRepetitions(rule), is(false));

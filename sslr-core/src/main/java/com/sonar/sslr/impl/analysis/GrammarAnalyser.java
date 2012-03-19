@@ -23,7 +23,7 @@ import static com.sonar.sslr.impl.analysis.FirstVisitor.*;
 public class GrammarAnalyser {
 
   private final Set<RuleMatcher> rules;
-  private final Map<RuleMatcher, UnsupportedMatcherException> skippedRules = Maps.newHashMap();
+  private final Map<RuleMatcher, Exception> skippedRules = Maps.newHashMap();
   private final Map<RuleMatcher, LeftRecursionException> dependOnLeftRecursiveRules = Maps.newHashMap();
   private final Map<RuleMatcher, LeftRecursionException> leftRecursiveRules = Maps.newHashMap();
   private final Map<RuleMatcher, Set<OneToNMatcher>> emptyRepetitions = Maps.newHashMap();
@@ -81,7 +81,7 @@ public class GrammarAnalyser {
     return skippedRules.containsKey(rule);
   }
 
-  public UnsupportedMatcherException getSkippedCause(RuleMatcher rule) {
+  public Exception getSkippedCause(RuleMatcher rule) {
     checkArgument(isSkipped(rule), "The given rule \"" + rule.getName() + "\" has not skipped");
     return skippedRules.get(rule);
   }
@@ -124,14 +124,14 @@ public class GrammarAnalyser {
       if (!emptyAlternativeVisitor.getEmptyAlternatives().isEmpty()) {
         emptyAlternatives.put(rule, emptyAlternativeVisitor.getEmptyAlternatives());
       }
-    } catch (UnsupportedMatcherException e) {
-      skippedRules.put(rule, e);
     } catch (LeftRecursionException e) {
       if (rule.equals(e.getLeftRecursiveRule())) {
         leftRecursiveRules.put(rule, e);
       } else {
         dependOnLeftRecursiveRules.put(rule, e);
       }
+    } catch (Exception e) {
+      skippedRules.put(rule, e);
     }
   }
 

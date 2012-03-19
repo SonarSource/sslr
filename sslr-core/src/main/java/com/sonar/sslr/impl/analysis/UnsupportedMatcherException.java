@@ -20,10 +20,6 @@ public class UnsupportedMatcherException extends RuntimeException {
     this.matcher = matcher;
   }
 
-  public Matcher getMatcher() {
-    return matcher;
-  }
-
   @Override
   public String toString() {
     return "The matcher \"" + matcher.getClass().getSimpleName() + "\" is not supported";
