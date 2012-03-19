@@ -48,7 +48,7 @@ public class GrammarAnalyserStream {
             System.out.println();
           }
 
-          if (analyser.hasEmptyRepetitions(rule)) {
+          if (analyser.hasEmptyAlternatives(rule)) {
             System.out.println("\tThis rule contains the following empty alternatives, which lead to dead grammar parts:");
             for (EmptyAlternative emptyAlternative : analyser.getEmptyAlternatives(rule)) {
               System.out.println("\t\tAlternative " + MatcherTreePrinter.print(emptyAlternative.getAlternative()) + " in "
