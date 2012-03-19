@@ -80,6 +80,10 @@ public class GrammarAnalyser {
     return !dependOnLeftRecursiveRules.isEmpty() || !leftRecursiveRules.isEmpty() || !emptyRepetitions.isEmpty() || !emptyAlternatives.isEmpty();
   }
 
+  public boolean hasIssues(RuleMatcher rule) {
+    return isLeftRecursive(rule) || isDependingOnLeftRecursiveRule(rule) || hasEmptyRepetitions(rule) || hasEmptyAlternatives(rule);
+  }
+
   private Set<RuleMatcher> getRuleMatchers(Grammar grammar) {
     try {
       Set<RuleMatcher> ruleMatchers = Sets.newHashSet();

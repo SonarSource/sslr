@@ -5,6 +5,8 @@
  */
 package com.sonar.sslr.impl.analysis;
 
+import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
+import com.sonar.sslr.impl.matcher.OneToNMatcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 import java.io.PrintStream;
@@ -20,15 +22,37 @@ public class GrammarAnalyserStream {
     System.out.println();
 
     for (RuleMatcher rule : analyser.getRules()) {
-      if (analyser.isLeftRecursive(rule)) {
-        LeftRecursionException e = analyser.getLeftRecursionException(rule);
+      if (analyser.hasIssues(rule)) {
+        System.out.println(rule.getName() + ": *** NOK ***");
 
-        System.out.println(rule.getName() + ": *** NOK, contains a left recursion ***");
-        System.out.println(e.getRulesStackTrace());
-      } else if (analyser.isDependingOnLeftRecursiveRule(rule)) {
-        LeftRecursionException e = analyser.getLeftRecursionException(rule);
+        if (analyser.isLeftRecursive(rule)) {
+          LeftRecursionException e = analyser.getLeftRecursionException(rule);
 
-        System.out.println(rule.getName() + ": *** NOK, dependency on left recursive rule " + e.getLeftRecursiveRule().getName() + " ***");
+          System.out.println("\tThis rule is left recursive!");
+          System.out.println("\tStack trace:");
+          System.out.println(e.getRulesStackTrace());
+        } else if (analyser.isDependingOnLeftRecursiveRule(rule)) {
+          LeftRecursionException e = analyser.getLeftRecursionException(rule);
+
+          System.out.println("\tThis rule depends on the left recursive rule \"" + e.getLeftRecursiveRule().getName() + "\"");
+        } else {
+          if (analyser.hasEmptyRepetitions(rule)) {
+            System.out.println("\tThis rule contains the following empty repetitions, which lead to infinite loops:");
+            for (OneToNMatcher matcher : analyser.getEmptyRepetitions(rule)) {
+              System.out.println("\t\t" + MatcherTreePrinter.print(matcher));
+            }
+            System.out.println();
+          }
+
+          if (analyser.hasEmptyRepetitions(rule)) {
+            System.out.println("\tThis rule contains the following empty alternatives, which lead to dead grammar parts:");
+            for (EmptyAlternative emptyAlternative : analyser.getEmptyAlternatives(rule)) {
+              System.out.println("\t\tAlternative " + MatcherTreePrinter.print(emptyAlternative.getAlternative()) + " in "
+                + MatcherTreePrinter.print(emptyAlternative.getOrMatcher()));
+            }
+            System.out.println();
+          }
+        }
       }
     }
 

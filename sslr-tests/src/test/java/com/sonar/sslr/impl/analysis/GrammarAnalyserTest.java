@@ -50,6 +50,7 @@ public class GrammarAnalyserTest {
     assertThat(analyser.hasIssues(), is(false));
 
     RuleMatcher rule = getRuleMatcher(grammar.rule);
+    assertThat(analyser.hasIssues(rule), is(false));
     assertThat(analyser.isLeftRecursive(rule), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(rule), is(false));
     assertThat(analyser.hasEmptyRepetitions(rule), is(false));
@@ -80,6 +81,7 @@ public class GrammarAnalyserTest {
     assertThat(analyser.hasIssues(), is(true));
 
     RuleMatcher rule = getRuleMatcher(grammar.rule);
+    assertThat(analyser.hasIssues(rule), is(true));
     assertThat(analyser.isLeftRecursive(rule), is(true));
     assertThat(analyser.isDependingOnLeftRecursiveRule(rule), is(false));
     assertThat(analyser.getLeftRecursionException(rule).getLeftRecursiveRule(), is(rule));
@@ -111,6 +113,7 @@ public class GrammarAnalyserTest {
     assertThat(analyser.hasIssues(), is(true));
 
     RuleMatcher ruleA = getRuleMatcher(grammar.ruleA);
+    assertThat(analyser.hasIssues(ruleA), is(true));
     assertThat(analyser.isLeftRecursive(ruleA), is(true));
     assertThat(analyser.isDependingOnLeftRecursiveRule(ruleA), is(false));
     assertThat(analyser.getLeftRecursionException(ruleA).getLeftRecursiveRule(), is(ruleA));
@@ -118,6 +121,7 @@ public class GrammarAnalyserTest {
     assertThat(analyser.hasEmptyAlternatives(ruleA), is(false));
 
     RuleMatcher ruleB = getRuleMatcher(grammar.ruleB);
+    assertThat(analyser.hasIssues(ruleB), is(true));
     assertThat(analyser.isLeftRecursive(ruleB), is(true));
     assertThat(analyser.isDependingOnLeftRecursiveRule(ruleB), is(false));
     assertThat(analyser.getLeftRecursionException(ruleB).getLeftRecursiveRule(), is(ruleB));
@@ -153,12 +157,14 @@ public class GrammarAnalyserTest {
     RuleMatcher rule = getRuleMatcher(grammar.rule);
     RuleMatcher leftRecursiveRule = getRuleMatcher(grammar.leftRecursiveRule);
 
+    assertThat(analyser.hasIssues(rule), is(true));
     assertThat(analyser.isLeftRecursive(rule), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(rule), is(true));
     assertThat(analyser.getLeftRecursionException(rule).getLeftRecursiveRule(), is(leftRecursiveRule));
     assertThat(analyser.hasEmptyRepetitions(rule), is(false));
     assertThat(analyser.hasEmptyAlternatives(rule), is(false));
 
+    assertThat(analyser.hasIssues(leftRecursiveRule), is(true));
     assertThat(analyser.isLeftRecursive(leftRecursiveRule), is(true));
     assertThat(analyser.isDependingOnLeftRecursiveRule(leftRecursiveRule), is(false));
     assertThat(analyser.getLeftRecursionException(leftRecursiveRule).getLeftRecursiveRule(), is(leftRecursiveRule));
@@ -192,6 +198,7 @@ public class GrammarAnalyserTest {
     assertThat(analyser.hasIssues(), is(true));
 
     RuleMatcher rule = getRuleMatcher(grammar.rule);
+    assertThat(analyser.hasIssues(rule), is(true));
     assertThat(analyser.isLeftRecursive(rule), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(rule), is(false));
     assertThat(analyser.hasEmptyRepetitions(rule), is(true));
@@ -224,6 +231,7 @@ public class GrammarAnalyserTest {
     assertThat(analyser.hasIssues(), is(true));
 
     RuleMatcher ruleA = getRuleMatcher(grammar.ruleA);
+    assertThat(analyser.hasIssues(ruleA), is(true));
     assertThat(analyser.isLeftRecursive(ruleA), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(ruleA), is(false));
     assertThat(analyser.hasEmptyRepetitions(ruleA), is(true));
@@ -231,6 +239,7 @@ public class GrammarAnalyserTest {
     assertThat(analyser.hasEmptyAlternatives(ruleA), is(false));
 
     RuleMatcher ruleB = getRuleMatcher(grammar.ruleB);
+    assertThat(analyser.hasIssues(ruleB), is(true));
     assertThat(analyser.isLeftRecursive(ruleB), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(ruleB), is(false));
     assertThat(analyser.hasEmptyRepetitions(ruleB), is(true));
@@ -238,6 +247,7 @@ public class GrammarAnalyserTest {
     assertThat(analyser.hasEmptyAlternatives(ruleB), is(false));
 
     RuleMatcher ruleC = getRuleMatcher(grammar.ruleC);
+    assertThat(analyser.hasIssues(ruleC), is(false));
     assertThat(analyser.isLeftRecursive(ruleC), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(ruleC), is(false));
     assertThat(analyser.hasEmptyRepetitions(ruleC), is(false));
@@ -283,6 +293,7 @@ public class GrammarAnalyserTest {
     assertThat(analyser.hasIssues(), is(true));
 
     RuleMatcher rule = getRuleMatcher(grammar.rule);
+    assertThat(analyser.hasIssues(rule), is(true));
     assertThat(analyser.isLeftRecursive(rule), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(rule), is(false));
     assertThat(analyser.hasEmptyRepetitions(rule), is(false));
@@ -316,6 +327,7 @@ public class GrammarAnalyserTest {
     assertThat(analyser.hasIssues(), is(true));
 
     RuleMatcher ruleA = getRuleMatcher(grammar.ruleA);
+    assertThat(analyser.hasIssues(ruleA), is(true));
     assertThat(analyser.isLeftRecursive(ruleA), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(ruleA), is(false));
     assertThat(analyser.hasEmptyRepetitions(ruleA), is(false));
@@ -329,6 +341,7 @@ public class GrammarAnalyserTest {
         ));
 
     RuleMatcher ruleB = getRuleMatcher(grammar.ruleB);
+    assertThat(analyser.hasIssues(ruleB), is(true));
     assertThat(analyser.isLeftRecursive(ruleB), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(ruleB), is(false));
     assertThat(analyser.hasEmptyRepetitions(ruleB), is(false));
@@ -336,6 +349,7 @@ public class GrammarAnalyserTest {
     assertThat(analyser.getEmptyAlternatives(ruleB), is((Set) Sets.newHashSet(new EmptyAlternative(grammar.orMatcherRuleB, getRuleMatcher(grammar.ruleC)))));
 
     RuleMatcher ruleC = getRuleMatcher(grammar.ruleC);
+    assertThat(analyser.hasIssues(ruleC), is(false));
     assertThat(analyser.isLeftRecursive(ruleC), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(ruleC), is(false));
     assertThat(analyser.hasEmptyRepetitions(ruleC), is(false));
