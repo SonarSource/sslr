@@ -25,7 +25,11 @@ public class GrammarAnalyserStream {
       if (analyser.hasIssues(rule)) {
         System.out.println(rule.getName() + ": *** NOK ***");
 
-        if (analyser.isLeftRecursive(rule)) {
+        if (analyser.isSkipped(rule)) {
+          UnsupportedMatcherException e = analyser.getSkippedCause(rule);
+
+          System.out.println("\tThis rule depends on an unsupported matcher \"" + e.getMatcher().getClass().getSimpleName() + "\"");
+        } else if (analyser.isLeftRecursive(rule)) {
           LeftRecursionException e = analyser.getLeftRecursionException(rule);
 
           System.out.println("\tThis rule is left recursive!");

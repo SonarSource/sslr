@@ -30,7 +30,7 @@ public abstract class MatcherVisitor<R, U> {
     } else if (matcher instanceof RuleMatcher) {
       return visit((RuleMatcher) matcher, userObject);
     } else {
-      throw new IllegalArgumentException("The matcher type \"" + matcher.getClass().getSimpleName() + "\" is not supported");
+      throw new UnsupportedMatcherException(matcher);
     }
   }
 

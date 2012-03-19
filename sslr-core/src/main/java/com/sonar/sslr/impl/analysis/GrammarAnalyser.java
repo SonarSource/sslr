@@ -23,6 +23,7 @@ import static com.sonar.sslr.impl.analysis.FirstVisitor.*;
 public class GrammarAnalyser {
 
   private final Set<RuleMatcher> rules;
+  private final Map<RuleMatcher, UnsupportedMatcherException> skippedRules = Maps.newHashMap();
   private final Map<RuleMatcher, LeftRecursionException> dependOnLeftRecursiveRules = Maps.newHashMap();
   private final Map<RuleMatcher, LeftRecursionException> leftRecursiveRules = Maps.newHashMap();
   private final Map<RuleMatcher, Set<OneToNMatcher>> emptyRepetitions = Maps.newHashMap();
@@ -76,12 +77,21 @@ public class GrammarAnalyser {
     return emptyAlternatives.get(rule);
   }
 
+  public boolean isSkipped(RuleMatcher rule) {
+    return skippedRules.containsKey(rule);
+  }
+
+  public UnsupportedMatcherException getSkippedCause(RuleMatcher rule) {
+    checkArgument(isSkipped(rule), "The given rule \"" + rule.getName() + "\" has not skipped");
+    return skippedRules.get(rule);
+  }
+
   public boolean hasIssues() {
-    return !dependOnLeftRecursiveRules.isEmpty() || !leftRecursiveRules.isEmpty() || !emptyRepetitions.isEmpty() || !emptyAlternatives.isEmpty();
+    return !skippedRules.isEmpty() || !dependOnLeftRecursiveRules.isEmpty() || !leftRecursiveRules.isEmpty() || !emptyRepetitions.isEmpty() || !emptyAlternatives.isEmpty();
   }
 
   public boolean hasIssues(RuleMatcher rule) {
-    return isLeftRecursive(rule) || isDependingOnLeftRecursiveRule(rule) || hasEmptyRepetitions(rule) || hasEmptyAlternatives(rule);
+    return isSkipped(rule) || isLeftRecursive(rule) || isDependingOnLeftRecursiveRule(rule) || hasEmptyRepetitions(rule) || hasEmptyAlternatives(rule);
   }
 
   private Set<RuleMatcher> getRuleMatchers(Grammar grammar) {
@@ -114,6 +124,8 @@ public class GrammarAnalyser {
       if (!emptyAlternativeVisitor.getEmptyAlternatives().isEmpty()) {
         emptyAlternatives.put(rule, emptyAlternativeVisitor.getEmptyAlternatives());
       }
+    } catch (UnsupportedMatcherException e) {
+      skippedRules.put(rule, e);
     } catch (LeftRecursionException e) {
       if (rule.equals(e.getLeftRecursiveRule())) {
         leftRecursiveRules.put(rule, e);

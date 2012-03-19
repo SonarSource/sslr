@@ -16,6 +16,8 @@ import org.junit.Test;
 
 import java.util.Set;
 
+import static com.sonar.sslr.api.GenericTokenType.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -42,6 +44,38 @@ public class GrammarAnalyserTest {
   }
 
   @Test
+  public void unsupportedMatcherTest() {
+    UnsupportedMatcherGrammar grammar = new UnsupportedMatcherGrammar();
+
+    GrammarAnalyser analyser = new GrammarAnalyser(grammar);
+    assertThat(analyser.getRules(), is(getSet(grammar.rule)));
+    assertThat(analyser.hasIssues(), is(true));
+
+    RuleMatcher rule = getRuleMatcher(grammar.rule);
+    assertThat(analyser.hasIssues(rule), is(true));
+    assertThat(analyser.isSkipped(rule), is(true));
+    assertThat(analyser.isLeftRecursive(rule), is(false));
+    assertThat(analyser.isDependingOnLeftRecursiveRule(rule), is(false));
+    assertThat(analyser.hasEmptyRepetitions(rule), is(false));
+    assertThat(analyser.hasEmptyAlternatives(rule), is(false));
+  }
+
+  private static class UnsupportedMatcherGrammar extends Grammar {
+
+    public Rule rule;
+
+    public UnsupportedMatcherGrammar() {
+      rule.is(till(EOF));
+    }
+
+    @Override
+    public Rule getRootRule() {
+      return null;
+    }
+
+  }
+
+  @Test
   public void singleRuleNoIssuesTest() {
     SingleRuleNoIssuesGrammar grammar = new SingleRuleNoIssuesGrammar();
 
@@ -51,6 +85,7 @@ public class GrammarAnalyserTest {
 
     RuleMatcher rule = getRuleMatcher(grammar.rule);
     assertThat(analyser.hasIssues(rule), is(false));
+    assertThat(analyser.isSkipped(rule), is(false));
     assertThat(analyser.isLeftRecursive(rule), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(rule), is(false));
     assertThat(analyser.hasEmptyRepetitions(rule), is(false));
