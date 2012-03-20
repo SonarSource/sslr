@@ -5,16 +5,16 @@
  */
 package com.sonar.sslr.test.lexer;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.Lexer;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import static com.sonar.sslr.api.GenericTokenType.*;
 
 public final class MockHelper {
 
@@ -26,17 +26,7 @@ public final class MockHelper {
   }
 
   public static Token mockToken(TokenType type, String value) {
-    try {
-      return Token.builder()
-          .setType(type)
-          .setValueAndOriginalValue(value)
-          .setURI(new URI("tests://unittest"))
-          .setLine(1)
-          .setColumn(1)
-          .build();
-    } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
-    }
+    return mockTokenBuilder(type, value).build();
   }
 
   public static Token.Builder mockTokenBuilder(TokenType type, String value) {
