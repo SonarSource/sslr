@@ -12,7 +12,7 @@ import static com.google.common.base.Preconditions.*;
 public class UnsupportedMatcherException extends RuntimeException {
 
   private static final long serialVersionUID = -155411423005566354L;
-  private final Matcher matcher;
+  private final transient Matcher matcher;
 
   public UnsupportedMatcherException(Matcher matcher) {
     checkNotNull(matcher, "matcher cannot be null");
