@@ -17,8 +17,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import static com.google.common.base.Preconditions.*;
-import static com.sonar.sslr.impl.analysis.FirstVisitor.*;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.sonar.sslr.impl.analysis.FirstVisitor.first;
 
 public class GrammarAnalyser {
 
@@ -98,7 +98,7 @@ public class GrammarAnalyser {
     try {
       Set<RuleMatcher> ruleMatchers = Sets.newHashSet();
 
-      for (Field ruleField : grammar.getAllRuleFields(grammar.getClass())) {
+      for (Field ruleField : Grammar.getAllRuleFields(grammar.getClass())) {
         RuleDefinition rule = (RuleDefinition) ruleField.get(grammar);
         ruleMatchers.add(rule.getRule());
       }
