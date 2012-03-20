@@ -12,17 +12,17 @@ import static com.google.common.base.Preconditions.*;
 public class UnsupportedMatcherException extends RuntimeException {
 
   private static final long serialVersionUID = -155411423005566354L;
-  private final transient Matcher matcher;
+  private final String matcher;
 
   public UnsupportedMatcherException(Matcher matcher) {
     checkNotNull(matcher, "matcher cannot be null");
 
-    this.matcher = matcher;
+    this.matcher = matcher.getClass().getSimpleName();
   }
 
   @Override
   public String toString() {
-    return "The matcher \"" + matcher.getClass().getSimpleName() + "\" is not supported";
+    return "The matcher \"" + matcher + "\" is not supported";
   }
 
 }
