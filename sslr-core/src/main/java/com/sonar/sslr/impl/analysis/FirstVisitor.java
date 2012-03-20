@@ -13,7 +13,7 @@ import java.util.Stack;
 
 import static com.sonar.sslr.impl.analysis.EmptyVisitor.*;
 
-public class FirstVisitor {
+public final class FirstVisitor {
 
   private FirstVisitor() {
   }

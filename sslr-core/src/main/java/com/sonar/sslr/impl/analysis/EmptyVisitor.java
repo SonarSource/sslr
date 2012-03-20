@@ -9,7 +9,7 @@ import com.sonar.sslr.impl.matcher.*;
 
 import java.util.Stack;
 
-public class EmptyVisitor {
+public final class EmptyVisitor {
 
   private EmptyVisitor() {
   }

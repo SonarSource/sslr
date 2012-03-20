@@ -9,6 +9,9 @@
   <artifactId>sslr-devkit</artifactId>
   <name>SonarSource :: Language Recognizer :: Development Kit</name>
 
+  <properties>
+    <sonar.switchoffviolations.configFile>${project.basedir}/violations-filter.txt</sonar.switchoffviolations.configFile>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.codehaus.sonar</groupId>

@@ -9,6 +9,9 @@
   <artifactId>sslr-testing-harness</artifactId>
   <name>SonarSource :: Language Recognizer :: Testing Harness</name>
 
+  <properties>
+    <sonar.switchoffviolations.configFile>${project.basedir}/violations-filter.txt</sonar.switchoffviolations.configFile>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>com.sonarsource.sslr</groupId>
