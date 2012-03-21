@@ -30,7 +30,7 @@ public class IdentifiersTooLongTest {
   public void valuesTest() {
     AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("//IDENTIFIER[string-length(@tokenValue) > 10]");
 
-    List<AstNode> nodes = xpath.getValues(fileNode);
+    List<AstNode> nodes = xpath.selectNodes(fileNode);
 
     assertThat(nodes.size(), is(3));
     assertThat(nodes.get(0).getTokenValue(), is("aaaaaaaaa11"));
@@ -45,7 +45,7 @@ public class IdentifiersTooLongTest {
   public void noResultValuesTest() {
     AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("//IDENTIFIER[string-length(@tokenValue) > 50]");
 
-    List<AstNode> nodes = xpath.getValues(fileNode);
+    List<AstNode> nodes = xpath.selectNodes(fileNode);
 
     assertThat(nodes.size(), is(0));
   }

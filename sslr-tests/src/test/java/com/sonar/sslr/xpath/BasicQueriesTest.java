@@ -29,61 +29,61 @@ public class BasicQueriesTest {
   @Test
   public void compilationUnitTest() {
     AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("/compilationUnit");
-    assertThat(xpath.getValue(fileNode), is(fileNode));
+    assertThat(xpath.selectSingleNode(fileNode), is(fileNode));
   }
 
   @Test
   public void anyCompilationUnitTest() {
     AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("//compilationUnit");
-    assertThat(xpath.getValue(fileNode), is(fileNode));
+    assertThat(xpath.selectSingleNode(fileNode), is(fileNode));
   }
 
   @Test
   public void relativeCompilationUnitTest() {
     AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("./compilationUnit");
-    assertThat(xpath.getValue(fileNode), is(fileNode));
+    assertThat(xpath.selectSingleNode(fileNode), is(fileNode));
   }
 
   @Test
   public void compilationUnitWithPredicateWithEOFTest() {
     AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("/compilationUnit[not(not(EOF))]");
-    assertThat(xpath.getValue(fileNode), is(fileNode));
+    assertThat(xpath.selectSingleNode(fileNode), is(fileNode));
   }
 
   @Test
   public void compilationUnitWithPredicateWithoutEOFTest() {
     AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("/compilationUnit[not(EOF)]");
-    assertThat(xpath.getValue(fileNode), nullValue());
+    assertThat(xpath.selectSingleNode(fileNode), nullValue());
   }
 
   @Test
   public void EOFTest() {
     AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("/compilationUnit/EOF");
-    assertThat(xpath.getValue(fileNode), is(fileNode.findFirstChild(EOF)));
+    assertThat(xpath.selectSingleNode(fileNode), is(fileNode.findFirstChild(EOF)));
   }
 
   @Test
   public void anyEOFTest() {
     AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("//EOF");
-    assertThat(xpath.getValue(fileNode), is(fileNode.findFirstChild(EOF)));
+    assertThat(xpath.selectSingleNode(fileNode), is(fileNode.findFirstChild(EOF)));
   }
 
   @Test
   public void getTokenValueAttributeTest() {
     AstNodeXPathQuery<String> xpath = AstNodeXPathQuery.create("string(/compilationUnit/@tokenValue)");
-    assertThat(xpath.getValue(fileNode), is("int"));
+    assertThat(xpath.selectSingleNode(fileNode), is("int"));
   }
 
   @Test
   public void getTokenLineAttributeTest() {
     AstNodeXPathQuery<String> xpath = AstNodeXPathQuery.create("string(/compilationUnit/@tokenLine)");
-    assertThat(xpath.getValue(fileNode), is("2"));
+    assertThat(xpath.selectSingleNode(fileNode), is("2"));
   }
 
   @Test
   public void getTokenColumnAttributeTest() {
     AstNodeXPathQuery<String> xpath = AstNodeXPathQuery.create("string(/compilationUnit/@tokenColumn)");
-    assertThat(xpath.getValue(fileNode), is("0"));
+    assertThat(xpath.selectSingleNode(fileNode), is("0"));
   }
 
   @Test
@@ -93,20 +93,20 @@ public class BasicQueriesTest {
     AstNode declarationAtLineFour = fileNode.getChild(1);
     assertThat(declarationAtLineFour.is(getGrammar().definition), is(true));
     assertThat(declarationAtLineFour.getTokenLine(), is(4));
-    assertThat(xpath1.getValue(fileNode), is(declarationAtLineFour));
-    assertThat(xpath1.getValue(fileNode), is(xpath2.getValue(fileNode)));
+    assertThat(xpath1.selectSingleNode(fileNode), is(declarationAtLineFour));
+    assertThat(xpath1.selectSingleNode(fileNode), is(xpath2.selectSingleNode(fileNode)));
   }
 
   @Test
   public void identifiersCountTest() {
     AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("/compilationUnit[count(//IDENTIFIER) = 2]");
-    assertThat(xpath.getValue(fileNode), is(fileNode));
+    assertThat(xpath.selectSingleNode(fileNode), is(fileNode));
   }
 
   @Test
   public void getIdentifiersTest() {
     AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("//IDENTIFIER");
-    List<AstNode> nodes = xpath.getValues(fileNode);
+    List<AstNode> nodes = xpath.selectNodes(fileNode);
     assertThat(nodes.size(), is(2));
     assertThat(nodes.get(0).getTokenValue(), is("a"));
     assertThat(nodes.get(1).getTokenValue(), is("b"));

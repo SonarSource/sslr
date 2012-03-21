@@ -41,7 +41,7 @@ public abstract class AbstractXPathCheck<GRAMMAR extends Grammar> extends SquidC
   @Override
   public void visitFile(AstNode fileNode) {
     if (query != null) {
-      List<Object> objects = query.getValues(fileNode);
+      List<Object> objects = query.selectNodes(fileNode);
 
       for (Object object : objects) {
         if (object instanceof AstNode) {

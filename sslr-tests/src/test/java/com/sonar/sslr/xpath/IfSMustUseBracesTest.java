@@ -30,10 +30,10 @@ public class IfSMustUseBracesTest {
     AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create(
         "//ifStatement/statement[not(compoundStatement)]/..|//elseClause/statement[not(compoundStatement)]/..");
 
-    List<AstNode> nodes = xpath.getValues(fileNode);
+    List<AstNode> nodes = xpath.selectNodes(fileNode);
 
     assertThat(nodes.size(), is(2));
-    assertThat(nodes.get(0), is(xpath.getValue(fileNode)));
+    assertThat(nodes.get(0), is(xpath.selectSingleNode(fileNode)));
   }
 
   @Test
@@ -41,7 +41,7 @@ public class IfSMustUseBracesTest {
     AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create(
         "//ifStatement/statement[not(compoundStatement)]/..|//elseClause/statement[not(compoundStatement)]/..");
 
-    List<AstNode> nodes = xpath.getValues(fileNode);
+    List<AstNode> nodes = xpath.selectNodes(fileNode);
 
     assertThat(nodes.size(), is(2));
     assertThat(nodes.get(0).is(getGrammar().ifStatement), is(true));

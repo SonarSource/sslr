@@ -26,10 +26,10 @@ public final class AstNodeXPathQuery<TYPE> {
   }
 
   /**
-   * Evaluate the XPath query on the given AstNode and returns the first result.
+   * Evaluate the XPath query on the given AstNode and returns the first result, or null if there was no result.
    *
    * <pre>
-   * In the following case, AstNodeXpathQuery.create('/a/b').getValue(node) would return the AstNode of B2.
+   * In the following case, AstNodeXpathQuery.create('/a/b').selectSingleNode(node) would return the AstNode of B2.
    *
    *   A1
    *    |__ C1
@@ -40,9 +40,9 @@ public final class AstNodeXPathQuery<TYPE> {
    *
    * @param astNode
    *          The AstNode on which to evaluate the query against to.
-   * @return The resulting element, or null if no result available.
+   * @return The first result or null if there was no result.
    */
-  public TYPE getValue(AstNode astNode) {
+  public TYPE selectSingleNode(AstNode astNode) {
     try {
       AstNode wrappedDocumentAstNode = AstNodeNavigator.getWrappedDocumentAstNode(astNode);
       astNodeNavigator.setDocumentAstNode(wrappedDocumentAstNode);
@@ -56,7 +56,7 @@ public final class AstNodeXPathQuery<TYPE> {
    * Evaluate the XPath query on the given AstNode and returns all matching elements.
    *
    * <pre>
-   * In the following case, AstNodeXpathQuery.create('/a/b').getValues(node) would return the AstNode of B2 and B3, in that order.
+   * In the following case, AstNodeXpathQuery.create('/a/b').selectNodes(node) would return the AstNode of B2 and B3, in that order.
    *
    *   A1
    *    |__ C1
@@ -69,7 +69,7 @@ public final class AstNodeXPathQuery<TYPE> {
    *          The AstNode on which to evaluate the query against to.
    * @return The list of resulting elements, empty when no result available.
    */
-  public List<TYPE> getValues(AstNode astNode) {
+  public List<TYPE> selectNodes(AstNode astNode) {
     try {
       AstNode wrappedDocumentAstNode = AstNodeNavigator.getWrappedDocumentAstNode(astNode);
       astNodeNavigator.setDocumentAstNode(wrappedDocumentAstNode);
