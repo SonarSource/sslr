@@ -39,12 +39,6 @@ public class BasicQueriesTest {
   }
 
   @Test
-  public void relativeCompilationUnitTest() {
-    AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("./compilationUnit");
-    assertThat(xpath.selectSingleNode(fileNode), is(fileNode));
-  }
-
-  @Test
   public void compilationUnitWithPredicateWithEOFTest() {
     AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("/compilationUnit[not(not(EOF))]");
     assertThat(xpath.selectSingleNode(fileNode), is(fileNode));

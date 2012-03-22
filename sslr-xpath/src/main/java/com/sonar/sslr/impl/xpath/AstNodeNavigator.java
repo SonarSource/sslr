@@ -14,25 +14,12 @@ import org.jaxen.util.SingleObjectIterator;
 import java.util.Collections;
 import java.util.Iterator;
 
-import static com.google.common.base.Preconditions.*;
-
 @SuppressWarnings("serial")
 public class AstNodeNavigator extends DefaultNavigator {
 
   private static final Iterator EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
 
-  private transient AstNode wrappedDocumentAstNode;
-
-  public static AstNode getWrappedDocumentAstNode(AstNode documentAstNode) {
-    AstNode wrappedDocumentAstNode = new AstNode(null, "[root]", null);
-    wrappedDocumentAstNode.addChild(documentAstNode);
-    return wrappedDocumentAstNode;
-  }
-
-  public void setDocumentAstNode(AstNode wrappedDocumentAstNode) {
-    checkNotNull(wrappedDocumentAstNode, "wrappedDocumentAstNode cannot be null");
-    this.wrappedDocumentAstNode = wrappedDocumentAstNode;
-  }
+  private AstNode documentNode = null;
 
   /* Type conversions */
 
@@ -129,7 +116,8 @@ public class AstNodeNavigator extends DefaultNavigator {
 
   @Override
   public boolean isDocument(Object object) {
-    return wrappedDocumentAstNode.equals(object);
+    computeDocumentNode(object);
+    return documentNode.equals(object);
   }
 
   @Override
@@ -154,55 +142,76 @@ public class AstNodeNavigator extends DefaultNavigator {
 
   /* Navigation */
 
-  @Override
-  public Object getDocumentNode(Object contextNode) {
-    return wrappedDocumentAstNode;
-  }
+  private void computeDocumentNode(Object contextNode) {
+    if (documentNode == null) {
+      if (isElement(contextNode)) {
+        AstNode root = (AstNode) contextNode;
 
-  @Override
-  public Iterator getChildAxisIterator(Object object) {
-    if (isAttribute(object)) {
-      return EMPTY_ITERATOR;
-    } else if (isElement(object)) {
-      AstNode astNode = (AstNode) object;
-      return astNode.getChildren().iterator();
-    } else {
-      throw new UnsupportedOperationException("Unsupported parent for child axis object type \"" + object.getClass().getSimpleName() + "\"");
+        while (root.getParent() != null) {
+          root = root.getParent();
+        }
+
+        documentNode = new AstNode(null, "[root]", null);
+        documentNode.addChild(root);
+      } else if (isAttribute(contextNode)) {
+        Attribute attribute = (Attribute) contextNode;
+        computeDocumentNode(attribute.getAstNode());
+      } else {
+        throw new UnsupportedOperationException("Unsupported context object type for computing document node \"" + contextNode.getClass().getSimpleName() + "\"");
+      }
     }
   }
 
   @Override
-  public Object getParentNode(Object object) {
-    if (isAttribute(object)) {
-      Attribute attribute = (Attribute) object;
+  public Object getDocumentNode(Object contextNode) {
+    computeDocumentNode(contextNode);
+    return documentNode;
+  }
+
+  @Override
+  public Iterator getChildAxisIterator(Object contextNode) {
+    if (isElement(contextNode)) {
+      AstNode astNode = (AstNode) contextNode;
+      return astNode.getChildren().iterator();
+    } else if (isAttribute(contextNode)) {
+      return EMPTY_ITERATOR;
+    } else {
+      throw new UnsupportedOperationException("Unsupported context object type for child axis \"" + contextNode.getClass().getSimpleName() + "\"");
+    }
+  }
+
+  @Override
+  public Object getParentNode(Object contextNode) {
+    if (isElement(contextNode)) {
+      AstNode astNode = (AstNode) contextNode;
+      return astNode.getParent();
+    } else if (isAttribute(contextNode)) {
+      Attribute attribute = (Attribute) contextNode;
       return attribute.getAstNode();
     } else {
-      AstNode astNode = (AstNode) object;
-      return astNode.getParent();
+      throw new UnsupportedOperationException("Unsupported context object type for parent node \"" + contextNode.getClass().getSimpleName() + "\"");
     }
   }
 
   @SuppressWarnings("unchecked")
   @Override
-  public Iterator getParentAxisIterator(Object object) {
-    if (isAttribute(object)) {
-      Attribute attribute = (Attribute) object;
-
+  public Iterator getParentAxisIterator(Object contextNode) {
+    if (isElement(contextNode)) {
+      AstNode astNode = (AstNode) contextNode;
+      AstNode parent = astNode.getParent();
+      return parent == null ? EMPTY_ITERATOR : new SingleObjectIterator(parent);
+    } else if (isAttribute(contextNode)) {
+      Attribute attribute = (Attribute) contextNode;
       return new SingleObjectIterator(attribute.getAstNode());
     } else {
-      AstNode astNode = (AstNode) object;
-      AstNode parent = astNode.getParent();
-
-      return parent == null ? EMPTY_ITERATOR : new SingleObjectIterator(parent);
+      throw new UnsupportedOperationException("Unsupported context object type for parent axis \"" + contextNode.getClass().getSimpleName() + "\"");
     }
   }
 
   @Override
-  public Iterator getAttributeAxisIterator(Object object) {
-    if (isAttribute(object)) {
-      return EMPTY_ITERATOR;
-    } else if (isElement(object)) {
-      AstNode astNode = (AstNode) object;
+  public Iterator getAttributeAxisIterator(Object contextNode) {
+    if (isElement(contextNode)) {
+      AstNode astNode = (AstNode) contextNode;
 
       if (!astNode.hasToken()) {
         return EMPTY_ITERATOR;
@@ -213,8 +222,10 @@ public class AstNodeNavigator extends DefaultNavigator {
             new Attribute("tokenValue", astNode)
             ).iterator();
       }
+    } else if (isAttribute(contextNode)) {
+      return EMPTY_ITERATOR;
     } else {
-      throw new UnsupportedOperationException("Unsupported parent for attribute axis object type \"" + object.getClass().getSimpleName() + "\"");
+      throw new UnsupportedOperationException("Unsupported context object type for attribute axis \"" + contextNode.getClass().getSimpleName() + "\"");
     }
   }
 

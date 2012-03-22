@@ -44,9 +44,7 @@ public final class AstNodeXPathQuery<TYPE> {
    */
   public TYPE selectSingleNode(AstNode astNode) {
     try {
-      AstNode wrappedDocumentAstNode = AstNodeNavigator.getWrappedDocumentAstNode(astNode);
-      astNodeNavigator.setDocumentAstNode(wrappedDocumentAstNode);
-      return (TYPE) expression.selectSingleNode(wrappedDocumentAstNode);
+      return (TYPE) expression.selectSingleNode(astNode);
     } catch (JaxenException e) {
       throw new RuntimeException(e);
     }
@@ -71,9 +69,7 @@ public final class AstNodeXPathQuery<TYPE> {
    */
   public List<TYPE> selectNodes(AstNode astNode) {
     try {
-      AstNode wrappedDocumentAstNode = AstNodeNavigator.getWrappedDocumentAstNode(astNode);
-      astNodeNavigator.setDocumentAstNode(wrappedDocumentAstNode);
-      return expression.selectNodes(wrappedDocumentAstNode);
+      return expression.selectNodes(astNode);
     } catch (JaxenException e) {
       throw new RuntimeException(e);
     }
