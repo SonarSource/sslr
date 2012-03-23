@@ -19,7 +19,7 @@ public class AstNodeNavigator extends DefaultNavigator {
 
   private static final Iterator EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
 
-  private AstNode documentNode = null;
+  private transient AstNode documentNode = null;
 
   /* Type conversions */
 
