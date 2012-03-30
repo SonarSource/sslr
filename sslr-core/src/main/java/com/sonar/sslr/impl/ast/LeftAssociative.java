@@ -5,34 +5,32 @@
  */
 package com.sonar.sslr.impl.ast;
 
-import org.apache.commons.lang.NotImplementedException;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 
 /**
  * Utility class which helps to deal with left associative rules, which typically have the form:
- * 
+ *
  * <pre>
  * higherPrecendenceExpressionRule.is(
  *     lowerPrecedenceExpressionRule,
  *     o2n(highPrecedenceOperator, lowerPrecedenceExpressionRule)
  *     ).skipIfOneChild();
  * </pre>
- * 
+ *
  * Let's take as an example a simple calculator with the binary subtraction as only operator:
- * 
+ *
  * <pre>
  * primaryExpression.is(INTEGER_LITERAL);
- * 
+ *
  * substractionExpression.is(
  *     primaryExpression,
  *     o2n(&quot;-&quot;, primaryExpression)
  *     ).skipIfOneChild();
  * </pre>
- * 
+ *
  * The interpretation of the subtraction is made easy by this class, and is done as follows:
- * 
+ *
  * <pre>
  * public int evaluate(AstNode node) {
  *   if (node.getType() == primaryExpression) {
@@ -43,19 +41,19 @@ import com.sonar.sslr.api.AstNodeType;
  *     throw new IllegalArgumentException(&quot;Unsupported node type &quot; + node.getType());
  *   }
  * }
- * 
+ *
  * private int evaluatePrimaryExpression(AstNode node) {
  *   return Integer.parseInt(node.getTokenOriginalValue());
  * }
- * 
+ *
  * private int evaluateSubtractionExpression(AstNode node) {
  *   int accumulator = evaluate(node.getChild(0));
- * 
+ *
  *   for (LeftAssociative.OperatorAndOperand operatorAndOperand : new LeftAssociative.Iterator(node)) {
  *     // If several binary operators have the same precedence, use operatorAndOperand.getOperator()
  *     accumulator -= evaluate(operatorAndOperand.getOperand());
  *   }
- * 
+ *
  *   return accumulator;
  * }
  * </pre>
@@ -95,10 +93,12 @@ public final class LeftAssociative {
       index = 1;
     }
 
+    @Override
     public boolean hasNext() {
       return index + 1 < leftAssociativeNode.getNumberOfChildren();
     }
 
+    @Override
     public OperatorAndOperand next() {
       OperatorAndOperand operatorAndOperand = new OperatorAndOperand(leftAssociativeNode.getChild(index).getType(),
           leftAssociativeNode.getChild(index + 1));
@@ -108,10 +108,12 @@ public final class LeftAssociative {
       return operatorAndOperand;
     }
 
+    @Override
     public void remove() {
-      throw new NotImplementedException();
+      throw new UnsupportedOperationException();
     }
 
+    @Override
     public java.util.Iterator<OperatorAndOperand> iterator() {
       return this;
     }
