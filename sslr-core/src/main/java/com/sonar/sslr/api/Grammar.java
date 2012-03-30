@@ -7,19 +7,11 @@
 package com.sonar.sslr.api;
 
 import com.sonar.sslr.impl.matcher.RuleDefinition;
-import org.apache.commons.lang.ArrayUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A Grammar is used to list and define all production rules (@link {@link Rule}) of a context-free grammar. For each production rule, a
- * public Rule field must exist. All those public Rule fields are automatically instantiated when creating a Grammar object.
- *
- * @see Rule
- * @see <a href="http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">Backus�Naur Form</a>
- */
 public abstract class Grammar {
 
   public Grammar() {
@@ -35,7 +27,7 @@ public abstract class Grammar {
    * @return the rule fields declared in this class, excluding the inherited ones
    * @see getAllRuleFields
    */
-  public static Field[] getRuleFields(Class grammarClass) {
+  public static List<Field> getRuleFields(Class grammarClass) {
     Field[] fields = grammarClass.getDeclaredFields();
 
     List<Field> ruleFields = new ArrayList<Field>();
@@ -45,7 +37,7 @@ public abstract class Grammar {
       }
     }
 
-    return ruleFields.toArray(new Field[ruleFields.size()]);
+    return ruleFields;
   }
 
   /**
@@ -57,12 +49,12 @@ public abstract class Grammar {
    * @return the rule fields declared in this class, as well as the inherited ones
    * @see getRuleFields
    */
-  public static Field[] getAllRuleFields(Class grammarClass) {
-    Field[] ruleFields = getRuleFields(grammarClass);
+  public static List<Field> getAllRuleFields(Class grammarClass) {
+    List<Field> ruleFields = getRuleFields(grammarClass);
 
     Class superClass = grammarClass.getSuperclass();
     while (superClass != null) {
-      ruleFields = (Field[]) ArrayUtils.addAll(ruleFields, getRuleFields(superClass));
+      ruleFields.addAll(getRuleFields(superClass));
       superClass = superClass.getSuperclass();
     }
 

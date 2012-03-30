@@ -5,16 +5,14 @@
  */
 package com.sonar.sslr.test.parser;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
-import org.apache.commons.lang.StringUtils;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.Parser;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 class ParseMatcher extends BaseMatcher<Parser> {
 
@@ -24,8 +22,9 @@ class ParseMatcher extends BaseMatcher<Parser> {
     this.sourceCode = sourceCode;
   }
 
+  @Override
   public boolean matches(Object obj) {
-    if ( !(obj instanceof Parser)) {
+    if (!(obj instanceof Parser)) {
       return false;
     }
     Parser parser = (Parser) obj;
@@ -40,15 +39,16 @@ class ParseMatcher extends BaseMatcher<Parser> {
       parser.printStackTrace(new PrintStream(baos));
       String message = baos.toString();
 
-      if (StringUtils.isEmpty(message)) {
+      if (message.isEmpty()) {
         message = e.getMessage();
       }
       throw new AssertionError(message);
     }
     return !parser.getParsingState().hasNextToken()
-        || parser.getParsingState().readToken(parser.getParsingState().lexerIndex).getType() == GenericTokenType.EOF;
+      || parser.getParsingState().readToken(parser.getParsingState().lexerIndex).getType() == GenericTokenType.EOF;
   }
 
+  @Override
   public void describeTo(Description desc) {
     desc.appendText("Tokens haven't been all consumed '" + sourceCode + "'");
   }

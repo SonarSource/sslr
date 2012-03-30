@@ -9,6 +9,7 @@ package com.sonar.sslr.api;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -19,14 +20,14 @@ public class GrammarTest {
 
   @Test
   public void testGetRuleFields() {
-    Field[] ruleFields = Grammar.getRuleFields(MyGrammar.class);
-    assertThat(ruleFields.length, is(1));
+    List<Field> ruleFields = Grammar.getRuleFields(MyGrammar.class);
+    assertThat(ruleFields.size(), is(1));
   }
 
   @Test
   public void testGetAllRuleFields() {
-    Field[] ruleFields = Grammar.getAllRuleFields(MyGrammar.class);
-    assertThat(ruleFields.length, is(5));
+    List<Field> ruleFields = Grammar.getAllRuleFields(MyGrammar.class);
+    assertThat(ruleFields.size(), is(5));
   }
 
   @Test
@@ -36,7 +37,7 @@ public class GrammarTest {
 
   @Test
   public void shouldAutomaticallyInstanciateInheritedRules() throws IllegalAccessException {
-    Field[] ruleFields = Grammar.getAllRuleFields(MyGrammar.class);
+    List<Field> ruleFields = Grammar.getAllRuleFields(MyGrammar.class);
 
     for (Field ruleField : ruleFields) {
       ruleField.setAccessible(true);

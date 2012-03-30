@@ -16,7 +16,6 @@
     <dependency>
       <groupId>org.codehaus.sonar</groupId>
       <artifactId>sonar-colorizer</artifactId>
-      <version>${sonar.version}</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.sonar</groupId>
@@ -25,10 +24,6 @@
     <dependency>
       <groupId>com.sonarsource.sslr</groupId>
       <artifactId>sslr-core</artifactId>
-    </dependency>  
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
     </dependency>
   </dependencies>
 </project>
