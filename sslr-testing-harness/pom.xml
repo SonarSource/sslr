@@ -22,14 +22,6 @@
       <artifactId>sslr-devkit</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.sonarsource.sslr</groupId>
-      <artifactId>sslr-squid-bridge</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.sonar</groupId>
-      <artifactId>sonar-squid</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-all</artifactId>
     </dependency>

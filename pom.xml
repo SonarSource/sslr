@@ -31,8 +31,7 @@
     <module>sslr-core</module>
     <module>sslr-devkit</module>
     <module>sslr-testing-harness</module>
-    <module>sslr-xpath</module>    
-    <module>sslr-squid-bridge</module>
+    <module>sslr-xpath</module>
     <module>sslr-tests</module>
   </modules>
 
@@ -66,16 +65,6 @@
       <dependency>
         <groupId>org.codehaus.sonar</groupId>
         <artifactId>sonar-channel</artifactId>
-        <version>${sonar.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.sonar</groupId>
-        <artifactId>sonar-squid</artifactId>
-        <version>${sonar.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.sonar</groupId>
-        <artifactId>sonar-plugin-api</artifactId>
         <version>${sonar.version}</version>
       </dependency>
       <dependency>
