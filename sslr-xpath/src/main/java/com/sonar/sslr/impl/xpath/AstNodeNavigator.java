@@ -14,6 +14,8 @@ import org.jaxen.util.SingleObjectIterator;
 import java.util.Collections;
 import java.util.Iterator;
 
+import static com.google.common.base.Preconditions.*;
+
 @SuppressWarnings("serial")
 public class AstNodeNavigator extends DefaultNavigator {
 
@@ -115,9 +117,9 @@ public class AstNodeNavigator extends DefaultNavigator {
   }
 
   @Override
-  public boolean isDocument(Object object) {
-    computeDocumentNode(object);
-    return documentNode.equals(object);
+  public boolean isDocument(Object contextObject) {
+    computeDocumentNode(contextObject);
+    return documentNode == null ? false : documentNode.equals(contextObject);
   }
 
   @Override
@@ -156,8 +158,6 @@ public class AstNodeNavigator extends DefaultNavigator {
       } else if (isAttribute(contextNode)) {
         Attribute attribute = (Attribute) contextNode;
         computeDocumentNode(attribute.getAstNode());
-      } else {
-        throw new UnsupportedOperationException("Unsupported context object type for computing document node \"" + contextNode.getClass().getSimpleName() + "\"");
       }
     }
   }
@@ -165,6 +165,7 @@ public class AstNodeNavigator extends DefaultNavigator {
   @Override
   public Object getDocumentNode(Object contextNode) {
     computeDocumentNode(contextNode);
+    checkNotNull(documentNode, "Unable to compute the document node from the context node \"" + contextNode.getClass().getSimpleName() + "\": " + contextNode);
     return documentNode;
   }
 
@@ -176,7 +177,7 @@ public class AstNodeNavigator extends DefaultNavigator {
     } else if (isAttribute(contextNode)) {
       return EMPTY_ITERATOR;
     } else {
-      throw new UnsupportedOperationException("Unsupported context object type for child axis \"" + contextNode.getClass().getSimpleName() + "\"");
+      throw new UnsupportedOperationException("Unsupported context object type for child axis \"" + contextNode.getClass().getSimpleName() + "\": " + contextNode);
     }
   }
 
@@ -189,7 +190,7 @@ public class AstNodeNavigator extends DefaultNavigator {
       Attribute attribute = (Attribute) contextNode;
       return attribute.getAstNode();
     } else {
-      throw new UnsupportedOperationException("Unsupported context object type for parent node \"" + contextNode.getClass().getSimpleName() + "\"");
+      throw new UnsupportedOperationException("Unsupported context object type for parent node \"" + contextNode.getClass().getSimpleName() + "\": " + contextNode);
     }
   }
 
@@ -204,7 +205,7 @@ public class AstNodeNavigator extends DefaultNavigator {
       Attribute attribute = (Attribute) contextNode;
       return new SingleObjectIterator(attribute.getAstNode());
     } else {
-      throw new UnsupportedOperationException("Unsupported context object type for parent axis \"" + contextNode.getClass().getSimpleName() + "\"");
+      throw new UnsupportedOperationException("Unsupported context object type for parent axis \"" + contextNode.getClass().getSimpleName() + "\": " + contextNode);
     }
   }
 
@@ -225,7 +226,7 @@ public class AstNodeNavigator extends DefaultNavigator {
     } else if (isAttribute(contextNode)) {
       return EMPTY_ITERATOR;
     } else {
-      throw new UnsupportedOperationException("Unsupported context object type for attribute axis \"" + contextNode.getClass().getSimpleName() + "\"");
+      throw new UnsupportedOperationException("Unsupported context object type for attribute axis \"" + contextNode.getClass().getSimpleName() + "\": " + contextNode);
     }
   }
 

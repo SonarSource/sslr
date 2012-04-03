@@ -153,6 +153,30 @@ public class AstNodeXPathQueryTest {
     assertThat(expr.selectNodes(tree).size(), is(1));
   }
 
+  @Test
+  public void relativeNamePredicate() {
+    AstNodeXPathQuery<AstNode> expr = AstNodeXPathQuery.create(".[name() = \"tree\"]");
+    AstNode tree = new AstNode(new NodeType(), "tree", null);
+
+    assertThat(expr.selectSingleNode(tree), is(tree));
+  }
+
+  @Test
+  public void relativeCountPredicate() {
+    AstNodeXPathQuery<AstNode> expr = AstNodeXPathQuery.create(".[count(*) = 3]");
+    AstNode tree = new AstNode(new NodeType(), "tree", null);
+
+    AstNode branch1 = new AstNode(new NodeType(), "branch1", null);
+    AstNode branch2 = new AstNode(new NodeType(), "branch2", null);
+    AstNode branch3 = new AstNode(new NodeType(), "branch3", null);
+
+    tree.addChild(branch1);
+    tree.addChild(branch2);
+    tree.addChild(branch3);
+
+    assertThat(expr.selectSingleNode(tree), is(tree));
+  }
+
   static class NodeType implements AstNodeType {
 
   }
