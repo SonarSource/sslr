@@ -74,7 +74,6 @@ public class SsdkGui extends javax.swing.JFrame {
 
     openButton.setText("Open file");
     openButton.addActionListener(new ActionListener() {
-      @Override
       public void actionPerformed(ActionEvent event) {
         int returnVal = fileChooser.showOpenDialog(SsdkGui.this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -87,7 +86,6 @@ public class SsdkGui extends javax.swing.JFrame {
 
     parseButton.setText("Parse text");
     parseButton.addActionListener(new ActionListener() {
-      @Override
       public void actionPerformed(ActionEvent event) {
         String code = "";
         Document document = codeEditor.getDocument();
@@ -111,7 +109,6 @@ public class SsdkGui extends javax.swing.JFrame {
 
     astTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
     astTree.addTreeSelectionListener(new TreeSelectionListener() {
-      @Override
       public void valueChanged(TreeSelectionEvent event) {
         highlightSelectedPaths();
         scrollToFirstSelectedPath();
@@ -127,7 +124,6 @@ public class SsdkGui extends javax.swing.JFrame {
       }
     });
     codeEditor.addCaretListener(new CaretListener() {
-      @Override
       public void caretUpdate(CaretEvent event) {
         selectPath();
         scrollToSelectedPath();
@@ -319,7 +315,7 @@ public class SsdkGui extends javax.swing.JFrame {
       userObjectToTreeNodeCache.clear();
     }
 
-    if (!code.isEmpty()) {
+    if (code.length() > 0) {
       try {
         AstNode astNode = parser.parse(code);
         DefaultMutableTreeNode treeNode = new DefaultMutableTreeNode(astNode);

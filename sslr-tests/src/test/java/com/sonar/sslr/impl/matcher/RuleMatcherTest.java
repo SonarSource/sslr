@@ -84,7 +84,6 @@ public class RuleMatcherTest {
 
     RecognitionExceptionListener listener = new RecognitionExceptionListener() {
 
-      @Override
       public void processRecognitionException(RecognitionException e) {
         assertThat(parsingState.lexerIndex, is(0));
       }

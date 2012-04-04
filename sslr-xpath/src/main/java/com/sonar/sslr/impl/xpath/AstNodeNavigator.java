@@ -25,17 +25,14 @@ public class AstNodeNavigator extends DefaultNavigator {
 
   /* Type conversions */
 
-  @Override
   public String getTextStringValue(Object arg0) {
     throw new UnsupportedOperationException();
   }
 
-  @Override
   public String getCommentStringValue(Object arg0) {
     throw new UnsupportedOperationException();
   }
 
-  @Override
   public String getAttributeStringValue(Object attributeObject) {
     Attribute attribute = (Attribute) attributeObject;
 
@@ -50,94 +47,78 @@ public class AstNodeNavigator extends DefaultNavigator {
     }
   }
 
-  @Override
   public String getElementStringValue(Object arg0) {
     throw new UnsupportedOperationException();
   }
 
   /* Namespaces */
 
-  @Override
   public String getNamespacePrefix(Object arg0) {
     throw new UnsupportedOperationException();
   }
 
-  @Override
   public String getNamespaceStringValue(Object arg0) {
     throw new UnsupportedOperationException();
   }
 
   /* Attributes */
 
-  @Override
   public String getAttributeName(Object attributeObject) {
     Attribute attribute = (Attribute) attributeObject;
 
     return attribute.getName();
   }
 
-  @Override
   public String getAttributeQName(Object attributeObject) {
     return getAttributeName(attributeObject);
   }
 
-  @Override
   public String getAttributeNamespaceUri(Object arg0) {
     return "";
   }
 
   /* Elements */
 
-  @Override
   public String getElementName(Object astNodeObject) {
     AstNode astNode = (AstNode) astNodeObject;
     return astNode.getName();
   }
 
-  @Override
   public String getElementQName(Object astNodeObject) {
     return getElementName(astNodeObject);
   }
 
-  @Override
   public String getElementNamespaceUri(Object astNodeObject) {
     return "";
   }
 
   /* Types */
 
-  @Override
   public boolean isAttribute(Object object) {
     return object instanceof Attribute;
   }
 
-  @Override
   public boolean isComment(Object object) {
     return false;
   }
 
-  @Override
   public boolean isDocument(Object contextObject) {
     computeDocumentNode(contextObject);
     return documentNode == null ? false : documentNode.equals(contextObject);
   }
 
-  @Override
   public boolean isElement(Object object) {
     return object instanceof AstNode;
   }
 
-  @Override
   public boolean isNamespace(Object arg0) {
     return false;
   }
 
-  @Override
   public boolean isProcessingInstruction(Object arg0) {
     return false;
   }
 
-  @Override
   public boolean isText(Object arg0) {
     return false;
   }
@@ -232,7 +213,6 @@ public class AstNodeNavigator extends DefaultNavigator {
 
   /* Unknown */
 
-  @Override
   public XPath parseXPath(String arg0) {
     return null;
   }

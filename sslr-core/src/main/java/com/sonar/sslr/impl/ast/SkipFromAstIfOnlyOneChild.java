@@ -10,7 +10,6 @@ import com.sonar.sslr.api.AstNodeSkippingPolicy;
 
 public class SkipFromAstIfOnlyOneChild implements AstNodeSkippingPolicy {
 
-  @Override
   public boolean hasToBeSkippedFromAst(AstNode node) {
     return node.getNumberOfChildren() == 1;
   }

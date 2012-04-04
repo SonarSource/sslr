@@ -22,7 +22,6 @@ class ParseMatcher extends BaseMatcher<Parser> {
     this.sourceCode = sourceCode;
   }
 
-  @Override
   public boolean matches(Object obj) {
     if (!(obj instanceof Parser)) {
       return false;
@@ -39,7 +38,7 @@ class ParseMatcher extends BaseMatcher<Parser> {
       parser.printStackTrace(new PrintStream(baos));
       String message = baos.toString();
 
-      if (message.isEmpty()) {
+      if (message.length() == 0) {
         message = e.getMessage();
       }
       throw new AssertionError(message);
@@ -48,7 +47,6 @@ class ParseMatcher extends BaseMatcher<Parser> {
       || parser.getParsingState().readToken(parser.getParsingState().lexerIndex).getType() == GenericTokenType.EOF;
   }
 
-  @Override
   public void describeTo(Description desc) {
     desc.appendText("Tokens haven't been all consumed '" + sourceCode + "'");
   }

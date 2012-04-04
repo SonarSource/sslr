@@ -93,12 +93,10 @@ public final class LeftAssociative {
       index = 1;
     }
 
-    @Override
     public boolean hasNext() {
       return index + 1 < leftAssociativeNode.getNumberOfChildren();
     }
 
-    @Override
     public OperatorAndOperand next() {
       OperatorAndOperand operatorAndOperand = new OperatorAndOperand(leftAssociativeNode.getChild(index).getType(),
           leftAssociativeNode.getChild(index + 1));
@@ -108,12 +106,10 @@ public final class LeftAssociative {
       return operatorAndOperand;
     }
 
-    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }
 
-    @Override
     public java.util.Iterator<OperatorAndOperand> iterator() {
       return this;
     }
