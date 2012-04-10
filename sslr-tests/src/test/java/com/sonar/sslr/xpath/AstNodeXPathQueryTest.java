@@ -177,6 +177,27 @@ public class AstNodeXPathQueryTest {
     assertThat(expr.selectSingleNode(tree), is(tree));
   }
 
+  @Test
+  public void noCacheTest() {
+    AstNodeXPathQuery<AstNode> expr = AstNodeXPathQuery.create("//branch");
+
+    AstNode tree1 = new AstNode(new NodeType(), "tree", null);
+    AstNode branch11 = new AstNode(new NodeType(), "branch", null);
+    AstNode branch12 = new AstNode(new NodeType(), "branch", null);
+    AstNode branch13 = new AstNode(new NodeType(), "branch", null);
+    tree1.addChild(branch11);
+    tree1.addChild(branch12);
+    tree1.addChild(branch13);
+
+    assertThat(expr.selectNodes(tree1).size(), is(3));
+
+    AstNode tree2 = new AstNode(new NodeType(), "tree", null);
+    AstNode branch21 = new AstNode(new NodeType(), "branch", null);
+    tree2.addChild(branch21);
+
+    assertThat(expr.selectNodes(tree2).size(), is(1));
+  }
+
   static class NodeType implements AstNodeType {
 
   }

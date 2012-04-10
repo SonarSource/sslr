@@ -44,6 +44,7 @@ public final class AstNodeXPathQuery<TYPE> {
    */
   public TYPE selectSingleNode(AstNode astNode) {
     try {
+      astNodeNavigator.reset();
       return (TYPE) expression.selectSingleNode(astNode);
     } catch (JaxenException e) {
       throw new RuntimeException(e);
@@ -69,6 +70,7 @@ public final class AstNodeXPathQuery<TYPE> {
    */
   public List<TYPE> selectNodes(AstNode astNode) {
     try {
+      astNodeNavigator.reset();
       return expression.selectNodes(astNode);
     } catch (JaxenException e) {
       throw new RuntimeException(e);

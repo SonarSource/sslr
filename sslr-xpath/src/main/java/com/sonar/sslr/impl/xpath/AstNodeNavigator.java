@@ -23,6 +23,10 @@ public class AstNodeNavigator extends DefaultNavigator {
 
   private transient AstNode documentNode = null;
 
+  public void reset() {
+    documentNode = null;
+  }
+
   /* Type conversions */
 
   public String getTextStringValue(Object arg0) {
