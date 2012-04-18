@@ -5,18 +5,17 @@
  */
 package com.sonar.sslr.impl.ast;
 
-import static com.sonar.sslr.test.lexer.MockHelper.*;
-import static org.mockito.Mockito.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
+import com.sonar.sslr.api.*;
+import com.sonar.sslr.impl.MockTokenType;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
 
-import com.sonar.sslr.api.*;
-import com.sonar.sslr.impl.MockTokenType;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
+import static org.mockito.Mockito.*;
 
 public class AstWalkerTest {
 
@@ -31,31 +30,15 @@ public class AstWalkerTest {
   private final Token token = mockToken(MockTokenType.WORD, "word");
 
   private final AstNodeType animal = new AstNodeType() {
-
-    public boolean hasToBeSkippedFromAst(AstNode node) {
-      return false;
-    }
   };
 
   private final AstNodeType dog = new AstNodeType() {
-
-    public boolean hasToBeSkippedFromAst(AstNode node) {
-      return false;
-    }
   };
 
   private final AstNodeType cat = new AstNodeType() {
-
-    public boolean hasToBeSkippedFromAst(AstNode node) {
-      return false;
-    }
   };
 
   private final AstNodeType tiger = new AstNodeType() {
-
-    public boolean hasToBeSkippedFromAst(AstNode node) {
-      return false;
-    }
   };
 
   private final AstVisitor astVisitor = mock(AstVisitor.class);

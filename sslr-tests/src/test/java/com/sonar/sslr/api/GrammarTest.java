@@ -11,8 +11,9 @@ import org.junit.Test;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 public class GrammarTest {
 
@@ -49,6 +50,7 @@ public class GrammarTest {
 
     Rule basePackageRule;
     public Rule basePublicRule;
+    @SuppressWarnings("unused")
     private Rule basePrivateRule;
     protected Rule baseProtectedRule;
 
@@ -56,6 +58,7 @@ public class GrammarTest {
 
   public class MyGrammar extends MyBaseGrammar {
 
+    @SuppressWarnings("unused")
     private int junkIntField;
     public Object junkObjectField;
     public Rule rootRule;
