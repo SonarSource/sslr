@@ -40,7 +40,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 @SuppressWarnings("serial")
 public class SsdkGui extends javax.swing.JFrame {
@@ -60,7 +61,7 @@ public class SsdkGui extends javax.swing.JFrame {
   private final JScrollPane codeEditorScrollPane = new JScrollPane(codeEditor);
   private final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, codeEditorScrollPane, astTreeScrollPane);
 
-  private final Map<Integer, Integer> lineOffsets = Maps.newHashMap();
+  private final Offsets lineOffsets = new Offsets();
   private final transient Parser<? extends Grammar> parser;
   private final List<Tokenizer> colorizerTokenizers;
   private final transient HtmlRenderer htmlRenderer = new HtmlRenderer(new HtmlOptions(false, null, false));
@@ -150,7 +151,7 @@ public class SsdkGui extends javax.swing.JFrame {
           Token firstToken = astNode.getToken();
           Token lastToken = astNode.getLastToken();
 
-          codeEditor.getHighlighter().addHighlight(getStartOffset(firstToken), getEndOffset(lastToken),
+          codeEditor.getHighlighter().addHighlight(lineOffsets.getStartOffset(firstToken), lineOffsets.getEndOffset(lastToken),
               new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY));
         } catch (BadLocationException e) {
           LOG.error("Error with the highlighter", e);
@@ -171,7 +172,7 @@ public class SsdkGui extends javax.swing.JFrame {
 
       try {
         codeEditor.scrollRectToVisible(codeEditor.modelToView(0));
-        codeEditor.scrollRectToVisible(codeEditor.modelToView(getOffset(line, 0)));
+        codeEditor.scrollRectToVisible(codeEditor.modelToView(lineOffsets.getOffset(line, 0)));
       } catch (BadLocationException e) {
         LOG.error("Error with the scrolling", e);
       }
@@ -203,8 +204,8 @@ public class SsdkGui extends javax.swing.JFrame {
   private void selectPath() {
     if (!EMPTY_TREE_MODEL.equals(astTree.getModel())) {
       int offset = codeEditor.getCaretPosition();
-      int line = getLineFromOffset(offset);
-      int column = getColumnFromOffsetAndLine(offset, line);
+      int line = lineOffsets.getLineFromOffset(offset);
+      int column = lineOffsets.getColumnFromOffsetAndLine(offset, line);
 
       int minimumOffset = Integer.MAX_VALUE;
       DefaultMutableTreeNode treeNode = null;
@@ -215,8 +216,8 @@ public class SsdkGui extends javax.swing.JFrame {
           AstNode astNode = (AstNode) treeNodeChild.getUserObject();
           Token token = astNode.getToken();
 
-          if ((token.getLine() > line || token.getLine() == line && token.getColumn() >= column) && getStartOffset(token) < minimumOffset) {
-            minimumOffset = getStartOffset(token);
+          if ((token.getLine() > line || token.getLine() == line && token.getColumn() >= column) && lineOffsets.getStartOffset(token) < minimumOffset) {
+            minimumOffset = lineOffsets.getStartOffset(token);
             treeNode = treeNodeChild;
           }
         }
@@ -248,54 +249,9 @@ public class SsdkGui extends javax.swing.JFrame {
   }
 
   private void loadFromString(String code) {
-    computeLineOffsets(code);
-
     showCode(code);
+    lineOffsets.computeLineOffsets(code, codeEditor.getDocument().getEndPosition().getOffset());
     showAst(code);
-  }
-
-  private void computeLineOffsets(String code) {
-    lineOffsets.clear();
-
-    int currentOffset = 1;
-
-    String[] lines = code.split("(\r)?\n", -1);
-    for (int line = 1; line <= lines.length; line++) {
-      lineOffsets.put(line, currentOffset);
-      currentOffset += lines[line - 1].length() + 1;
-    }
-  }
-
-  private int getLineFromOffset(int offset) {
-    int line;
-
-    for (line = 1; lineOffsets.containsKey(line + 1) && offset >= lineOffsets.get(line + 1); line++) {
-    }
-
-    return line;
-  }
-
-  private int getColumnFromOffsetAndLine(int offset, int line) {
-    return offset - lineOffsets.get(line);
-  }
-
-  private int getStartOffset(Token token) {
-    return getOffset(token.getLine(), token.getColumn());
-  }
-
-  private int getEndOffset(Token token) {
-    String[] tokenLines = token.getOriginalValue().split("(\r)?\n", -1);
-
-    int tokenLastLine = token.getLine() + tokenLines.length - 1;
-    int tokenLastLineColumn = (tokenLines.length > 1 ? 0 : token.getColumn()) + tokenLines[tokenLines.length - 1].length();
-
-    return getOffset(tokenLastLine, tokenLastLineColumn);
-  }
-
-  private int getOffset(int line, int column) {
-    return lineOffsets.containsKey(line) ?
-        Math.min(lineOffsets.get(line) + column, codeEditor.getDocument().getEndPosition().getOffset() - 1) :
-        codeEditor.getDocument().getEndPosition().getOffset() - 1;
   }
 
   private void showCode(String code) {
