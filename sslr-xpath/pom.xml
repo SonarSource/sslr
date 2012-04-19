@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>com.sonarsource.sslr</groupId>
     <artifactId>sslr</artifactId>
@@ -8,11 +9,13 @@
   </parent>
 
   <artifactId>sslr-xpath</artifactId>
+
   <name>SonarSource :: Language Recognizer :: XPath</name>
 
   <properties>
     <sonar.switchoffviolations.configFile>${project.basedir}/violations-filter.txt</sonar.switchoffviolations.configFile>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -23,4 +26,5 @@
       <artifactId>jaxen</artifactId>
     </dependency>
   </dependencies>
+
 </project>
