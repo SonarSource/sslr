@@ -5,16 +5,16 @@
  */
 package com.sonar.sslr.test.miniC;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
-import static com.sonar.sslr.test.lexer.LexerMatchers.*;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.*;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Literals.*;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.*;
-import static org.junit.Assert.*;
-
+import com.sonar.sslr.impl.Lexer;
 import org.junit.Test;
 
-import com.sonar.sslr.impl.Lexer;
+import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
+import static com.sonar.sslr.test.lexer.LexerMatchers.hasComment;
+import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.*;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Literals.INTEGER;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.*;
+import static org.junit.Assert.assertThat;
 
 public class MiniCLexerTest {
 
@@ -45,6 +45,7 @@ public class MiniCLexerTest {
     assertThat(lexer.lex("while"), hasToken(WHILE));
     assertThat(lexer.lex("break"), hasToken(BREAK));
     assertThat(lexer.lex("continue"), hasToken(CONTINUE));
+    assertThat(lexer.lex("struct"), hasToken(STRUCT));
   }
 
   @Test

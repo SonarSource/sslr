@@ -8,10 +8,11 @@ package com.sonar.sslr.test.miniC;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
+import static com.sonar.sslr.api.GenericTokenType.EOF;
+import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.*;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Literals.*;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Literals.INTEGER;
 import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.*;
 
 public class MiniCGrammar extends Grammar {
@@ -25,6 +26,8 @@ public class MiniCGrammar extends Grammar {
 
   public Rule compilationUnit;
   public Rule definition;
+  public Rule structDefinition;
+  public Rule structMember;
   public Rule functionDefinition;
   public Rule variableDefinition;
   public Rule parametersList;
@@ -81,9 +84,14 @@ public class MiniCGrammar extends Grammar {
     compilationUnit.is(o2n(definition), EOF);
 
     definition.is(or(
+        structDefinition,
         functionDefinition,
         variableDefinition
         ));
+
+    structDefinition.is(STRUCT, IDENTIFIER, BRACE_L, one2n(structMember, SEMICOLON), BRACE_R);
+
+    structMember.is(binType, IDENTIFIER);
 
     functionDefinition.is(binType, binFunctionDefinition, PAREN_L, opt(parametersList), PAREN_R, compoundStatement);
 

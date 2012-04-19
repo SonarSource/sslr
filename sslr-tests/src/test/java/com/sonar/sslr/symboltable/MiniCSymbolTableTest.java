@@ -24,6 +24,9 @@ public class MiniCSymbolTableTest {
     // Build AST
     AstNode ast = parser.parse(lines(
         "int g;",
+        "struct s {",
+        "  int a;",
+        "}",
         "void myFunction(int p) {",
         "  int a = anotherFunction();",
         "  { int b; }",

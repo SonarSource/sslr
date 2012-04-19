@@ -12,7 +12,8 @@ import com.sonar.sslr.impl.channel.BlackHoleChannel;
 import com.sonar.sslr.impl.channel.IdentifierAndKeywordChannel;
 import com.sonar.sslr.impl.channel.PunctuatorChannel;
 
-import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.*;
+import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.commentRegexp;
+import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.regexp;
 
 public final class MiniCLexer {
 
@@ -69,6 +70,7 @@ public final class MiniCLexer {
 
   public static enum Keywords implements TokenType {
 
+    STRUCT("struct"),
     INT("int"), VOID("void"),
     RETURN("return"), IF("if"), ELSE("else"), WHILE("while"),
     CONTINUE("continue"), BREAK("break");

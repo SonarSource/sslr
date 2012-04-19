@@ -9,6 +9,7 @@ import com.google.common.collect.Maps;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.AstVisitor;
+import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.ast.AstWalker;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
 
@@ -65,6 +66,24 @@ public class MiniCSymbolTableBuilder {
 
     public void visitNode(AstNode ast) {
       setCurrentScope(new LocalScope(ast, getCurrentScope()));
+      astToScope.put(ast, getCurrentScope());
+    }
+
+    public void leaveNode(AstNode ast) {
+      setCurrentScope(getCurrentScope().getEnclosingScope());
+    }
+  }
+
+  private static class StructDefinitionVisitor extends AbstractAstVisitor {
+    public StructDefinitionVisitor(Rule structDefinition) {
+      super(structDefinition);
+    }
+
+    public void visitNode(AstNode ast) {
+      String name = ast.getChild(1).getTokenValue();
+      StructSymbol structSymbol = new StructSymbol(ast, name, getCurrentScope());
+      getCurrentScope().define(structSymbol);
+      setCurrentScope(structSymbol);
       astToScope.put(ast, getCurrentScope());
     }
 
@@ -177,6 +196,7 @@ public class MiniCSymbolTableBuilder {
   }
 
   private final CompoundStatementVisitor compoundStatementVisitor;
+  private final StructDefinitionVisitor structDefinitionVisitor;
   private final FunctionDefinitionVisitor functionDefinitionVisitor;
   private final VariableDefinitionVisitor variableDefinitionVisitor;
   private final TypeVisitor binTypeVisitor;
@@ -193,10 +213,12 @@ public class MiniCSymbolTableBuilder {
 
   public MiniCSymbolTableBuilder(MiniCGrammar grammar) {
     compoundStatementVisitor = new CompoundStatementVisitor(grammar.compoundStatement);
+    structDefinitionVisitor = new StructDefinitionVisitor(grammar.structDefinition);
     functionDefinitionVisitor = new FunctionDefinitionVisitor(grammar.functionDefinition);
     variableDefinitionVisitor = new VariableDefinitionVisitor(
         grammar.variableDefinition,
-        grammar.parameterDeclaration
+        grammar.parameterDeclaration,
+        grammar.structMember
         );
     binTypeVisitor = new TypeVisitor(grammar.binType);
     referenceVisitor = new ReferenceVisitor(grammar.binFunctionReference, grammar.binVariableReference);
@@ -209,7 +231,7 @@ public class MiniCSymbolTableBuilder {
     currentScope = new LocalScope(ast);
     currentScope.importScope(globalScope);
     astToScope.put(null, currentScope);
-    AstWalker walker = new AstWalker(compoundStatementVisitor, functionDefinitionVisitor, variableDefinitionVisitor);
+    AstWalker walker = new AstWalker(compoundStatementVisitor, structDefinitionVisitor, functionDefinitionVisitor, variableDefinitionVisitor);
     walker.walkAndVisit(ast);
     return currentScope;
   }
