@@ -3,8 +3,9 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.symboltable;
+package com.sonar.sslr.api.symboltable;
 
+import com.google.common.base.Predicate;
 import com.sonar.sslr.api.AstNode;
 
 import java.util.Collection;
@@ -56,5 +57,7 @@ public interface Scope {
    * However question: how we can achieve this, if this interface might be implemented by clients?
    */
   void define(Symbol symbol);
+
+  Symbol lookup(String name, Predicate predicate);
 
 }

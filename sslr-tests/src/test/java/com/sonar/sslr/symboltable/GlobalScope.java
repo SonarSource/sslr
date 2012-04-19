@@ -5,8 +5,11 @@
  */
 package com.sonar.sslr.symboltable;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.symboltable.Scope;
+import com.sonar.sslr.api.symboltable.Symbol;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -46,6 +49,10 @@ public class GlobalScope implements Scope {
 
   public void importScope(Scope scope) {
     throw new UnsupportedOperationException();
+  }
+
+  public Symbol lookup(String name, Predicate predicate) {
+    return null;
   }
 
 }

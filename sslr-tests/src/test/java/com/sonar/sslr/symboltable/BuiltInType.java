@@ -5,6 +5,8 @@
  */
 package com.sonar.sslr.symboltable;
 
+import com.sonar.sslr.api.symboltable.Type;
+
 import com.sonar.sslr.api.AstNode;
 
 public class BuiltInType implements Type {

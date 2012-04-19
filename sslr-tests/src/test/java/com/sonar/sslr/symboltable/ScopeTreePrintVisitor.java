@@ -5,6 +5,9 @@
  */
 package com.sonar.sslr.symboltable;
 
+import com.sonar.sslr.api.symboltable.Scope;
+import com.sonar.sslr.api.symboltable.ScopeTreeVisitor;
+
 public class ScopeTreePrintVisitor implements ScopeTreeVisitor {
   private int depth;
 

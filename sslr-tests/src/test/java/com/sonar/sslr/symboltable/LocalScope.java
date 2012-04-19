@@ -5,8 +5,11 @@
  */
 package com.sonar.sslr.symboltable;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.symboltable.Scope;
+import com.sonar.sslr.api.symboltable.Symbol;
 
 import java.util.Collection;
 import java.util.List;
@@ -60,6 +63,15 @@ public class LocalScope implements Scope {
 
   public Collection<Symbol> getMembers() {
     return members;
+  }
+
+  public Symbol lookup(String name, Predicate predicate) {
+    for (Symbol symbol : getMembers()) {
+      if (name.equals(symbol.getName()) && predicate.apply(symbol)) {
+        return symbol;
+      }
+    }
+    return enclosingScope == null ? null : enclosingScope.lookup(name, predicate);
   }
 
   @Override

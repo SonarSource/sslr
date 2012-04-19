@@ -3,7 +3,7 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.symboltable;
+package com.sonar.sslr.api.symboltable;
 
 import com.sonar.sslr.api.AstNode;
 

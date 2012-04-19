@@ -6,6 +6,7 @@
 package com.sonar.sslr.symboltable;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.symboltable.Symbol;
 
 public class VariableSymbol implements Symbol {
 
