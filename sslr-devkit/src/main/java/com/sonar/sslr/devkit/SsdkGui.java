@@ -62,9 +62,9 @@ public class SsdkGui extends javax.swing.JFrame {
   private final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, codeEditorScrollPane, astTreeScrollPane);
 
   private final Offsets lineOffsets = new Offsets();
-  private final transient Parser<? extends Grammar> parser;
+  private final Parser<? extends Grammar> parser;
   private final List<Tokenizer> colorizerTokenizers;
-  private final transient HtmlRenderer htmlRenderer = new HtmlRenderer(new HtmlOptions(false, null, false));
+  private final HtmlRenderer htmlRenderer = new HtmlRenderer(new HtmlOptions(false, null, false));
 
   public SsdkGui(Parser<? extends Grammar> parser, List<Tokenizer> colorizerTokenizers) {
     this.parser = parser;
@@ -322,6 +322,14 @@ public class SsdkGui extends javax.swing.JFrame {
       LOG.error("Unable to read the CSS file '" + CSS_PATH + "'", e);
       return "";
     }
+  }
+
+  private void readObject(ObjectInputStream os) throws NotSerializableException {
+    throw new NotSerializableException(getClass().getName());
+  }
+
+  private void writeObject(ObjectOutputStream os) throws NotSerializableException {
+    throw new NotSerializableException(getClass().getName());
   }
 
 }
