@@ -5,19 +5,18 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
+import com.google.common.collect.ImmutableMap;
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.TokenType;
+import com.sonar.sslr.impl.Lexer;
+import org.sonar.channel.Channel;
+import org.sonar.channel.CodeReader;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.sonar.channel.Channel;
-import org.sonar.channel.CodeReader;
-
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.TokenType;
-import com.sonar.sslr.impl.Lexer;
+import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
 
 public class IdentifierAndKeywordChannel extends Channel<Lexer> {
 
@@ -27,13 +26,14 @@ public class IdentifierAndKeywordChannel extends Channel<Lexer> {
   private final boolean caseSensitive;
 
   public IdentifierAndKeywordChannel(String regexp, boolean caseSensitive, TokenType[]... keywordSets) {
-    keywordsMap = new HashMap<String, TokenType>();
+    ImmutableMap.Builder<String, TokenType> keywordsMapBuilder = ImmutableMap.builder();
     for (TokenType[] keywords : keywordSets) {
       for (TokenType keyword : keywords) {
         String keywordValue = caseSensitive ? keyword.getValue() : keyword.getValue().toUpperCase();
-        keywordsMap.put(keywordValue, keyword);
+        keywordsMapBuilder.put(keywordValue, keyword);
       }
     }
+    this.keywordsMap = keywordsMapBuilder.build();
     this.caseSensitive = caseSensitive;
     matcher = Pattern.compile(regexp).matcher("");
   }
@@ -42,13 +42,14 @@ public class IdentifierAndKeywordChannel extends Channel<Lexer> {
   public boolean consume(CodeReader code, Lexer lexer) {
     if (code.popTo(matcher, tmpBuilder) > 0) {
       String word = tmpBuilder.toString();
-      String wordOriginal = tmpBuilder.toString();
-      if ( !caseSensitive) {
+      String wordOriginal = word;
+      if (!caseSensitive) {
         word = word.toUpperCase();
       }
 
+      TokenType keywordType = keywordsMap.get(word);
       Token token = Token.builder()
-          .setType(isKeyword(word) ? keywordsMap.get(word) : IDENTIFIER)
+          .setType(keywordType == null ? IDENTIFIER : keywordType)
           .setValueAndOriginalValue(word, wordOriginal)
           .setURI(lexer.getURI())
           .setLine(code.getPreviousCursor().getLine())
@@ -61,10 +62,6 @@ public class IdentifierAndKeywordChannel extends Channel<Lexer> {
       return true;
     }
     return false;
-  }
-
-  private boolean isKeyword(String word) {
-    return keywordsMap.containsKey(word);
   }
 
 }
