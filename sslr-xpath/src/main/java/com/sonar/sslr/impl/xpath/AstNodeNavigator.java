@@ -5,6 +5,7 @@
  */
 package com.sonar.sslr.impl.xpath;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 import org.jaxen.DefaultNavigator;
@@ -14,7 +15,7 @@ import org.jaxen.util.SingleObjectIterator;
 import java.util.Collections;
 import java.util.Iterator;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 @SuppressWarnings("serial")
 public class AstNodeNavigator extends DefaultNavigator {
@@ -221,7 +222,8 @@ public class AstNodeNavigator extends DefaultNavigator {
     return null;
   }
 
-  private static class Attribute {
+  @VisibleForTesting
+  public static class Attribute {
 
     private final String name;
     private final AstNode astNode;
