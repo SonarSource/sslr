@@ -29,11 +29,10 @@ public final class Offsets {
   }
 
   public int getLineFromOffset(int offset) {
-    int line;
-
-    for (line = 1; lineOffsets.containsKey(line + 1) && offset >= lineOffsets.get(line + 1); line++) {
+    int line = 1;
+    while (lineOffsets.containsKey(line + 1) && offset >= lineOffsets.get(line + 1)) {
+      line++;
     }
-
     return line;
   }
 
