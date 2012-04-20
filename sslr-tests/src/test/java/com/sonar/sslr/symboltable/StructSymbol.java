@@ -7,6 +7,7 @@ package com.sonar.sslr.symboltable;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.symboltable.Scope;
+import com.sonar.sslr.api.symboltable.ScopedSymbol;
 import com.sonar.sslr.api.symboltable.Type;
 
 public class StructSymbol extends ScopedSymbol implements Type {

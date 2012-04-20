@@ -5,6 +5,12 @@
  */
 package com.sonar.sslr.symboltable;
 
+import com.sonar.sslr.api.symboltable.LocalScope;
+
+import com.sonar.sslr.api.symboltable.SymbolTableBuilder;
+import com.sonar.sslr.api.symboltable.SymbolTableBuilderContext;
+import com.sonar.sslr.api.symboltable.SymbolTableElementBuilder;
+
 import com.google.common.base.Predicates;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.symboltable.Scope;

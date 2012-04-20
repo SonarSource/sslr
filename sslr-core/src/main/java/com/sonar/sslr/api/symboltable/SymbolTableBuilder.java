@@ -3,19 +3,20 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.symboltable;
+package com.sonar.sslr.api.symboltable;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.AstVisitor;
-import com.sonar.sslr.api.symboltable.Scope;
-import com.sonar.sslr.api.symboltable.SymbolTable;
 import com.sonar.sslr.impl.ast.AstWalker;
 
 import java.util.List;
 
+/**
+ * Implementation of two-phase algorithm for building {@link SymbolTable} based on AST.
+ */
 public class SymbolTableBuilder {
 
   private final List<SymbolTableElementBuilder> firstPhase = Lists.newArrayList();

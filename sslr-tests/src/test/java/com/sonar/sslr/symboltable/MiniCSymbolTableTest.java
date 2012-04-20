@@ -12,6 +12,7 @@ import com.sonar.sslr.api.symboltable.*;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
 import com.sonar.sslr.test.miniC.MiniCParser;
+import com.sonar.sslr.test.symboltable.ScopeTreePrintVisitor;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -51,28 +52,23 @@ public class MiniCSymbolTableTest {
     // Build Symbol Table
     SymbolTable symbolTable = new MiniCSymbolTableBuilder(grammar).buildSymbolTable(ast);
 
-    new ScopeTreeWalker(new ScopeTreePrintVisitor()).walk(symbolTable.getEnclosingScope(ast));
+    ScopeTreePrintVisitor visitor = new ScopeTreePrintVisitor();
+    new ScopeTreeWalker(visitor).walk(symbolTable.getEnclosingScope(ast));
+    assertThat(visitor.getTotalNumberOfScopes(), is(7));
+    assertThat(visitor.getTotalNumberOfSymbols(), is(8));
 
-    Counter counter = new Counter(symbolTable);
-    new ScopeTreeWalker(counter).walk(symbolTable.getEnclosingScope(ast));
-    assertThat(counter.symbols, is(8));
-    assertThat(counter.scopes, is(7));
+    new ScopeTreeWalker(new Detector(symbolTable)).walk(symbolTable.getEnclosingScope(ast));
   }
 
-  private static class Counter implements ScopeTreeVisitor {
+  private static class Detector implements ScopeTreeVisitor {
 
     private final SymbolTable symbolTable;
 
-    private int symbols;
-    private int scopes;
-
-    public Counter(SymbolTable symbolTable) {
+    public Detector(SymbolTable symbolTable) {
       this.symbolTable = symbolTable;
     }
 
     public void visitScope(Scope scope) {
-      symbols += scope.getMembers().size();
-      scopes++;
     }
 
     public void leaveScope(Scope scope) {

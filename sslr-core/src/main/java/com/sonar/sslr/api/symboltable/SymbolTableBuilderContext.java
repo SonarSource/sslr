@@ -3,15 +3,12 @@
  * All rights reserved
  * mailto:contact AT sonarsource DOT com
  */
-package com.sonar.sslr.symboltable;
+package com.sonar.sslr.api.symboltable;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.symboltable.Scope;
-import com.sonar.sslr.api.symboltable.Symbol;
-import com.sonar.sslr.api.symboltable.SymbolTable;
 
 import java.util.Collection;
 import java.util.IdentityHashMap;
