@@ -5,14 +5,14 @@
  */
 package com.sonar.sslr.symboltable;
 
-import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.symboltable.Scope;
 import com.sonar.sslr.api.symboltable.ScopedSymbol;
+import com.sonar.sslr.api.symboltable.SymbolTable;
 
 public class MethodSymbol extends ScopedSymbol {
 
-  public MethodSymbol(AstNode ast, Scope enclosingScope, String name) {
-    super(ast, name, enclosingScope);
+  public MethodSymbol(SymbolTable symbolTable, Scope enclosingScope, String name) {
+    super(symbolTable, name, enclosingScope);
   }
 
   @Override

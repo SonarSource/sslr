@@ -43,14 +43,6 @@ public class GlobalScope implements Scope {
     members.add(symbol);
   }
 
-  public Collection<Scope> getImportedScopes() {
-    return Collections.emptyList();
-  }
-
-  public void importScope(Scope scope) {
-    throw new UnsupportedOperationException();
-  }
-
   public Symbol lookup(String name, Predicate predicate) {
     return null;
   }

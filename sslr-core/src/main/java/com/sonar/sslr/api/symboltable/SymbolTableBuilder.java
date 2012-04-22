@@ -35,11 +35,10 @@ public class SymbolTableBuilder {
   /**
    * Builds Symbol Table starting from specified AST node.
    */
-  public SymbolTable buildSymbolTable(AstNode astNode, Scope rootScope) {
+  public SymbolTable buildSymbolTable(AstNode astNode) {
     // Build tree of scopes and populate it by definitions
 
     SymbolTableBuilderContext symbolTable = new SymbolTableBuilderContext();
-    symbolTable.defineScope(astNode, rootScope);
 
     // At this point we should be able to detect that symbol hides another symbol just by visiting tree of scopes,
     // e.g. local variable hides another local variable, parameter or global variable,

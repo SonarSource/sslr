@@ -17,29 +17,25 @@ import java.util.List;
  */
 public class LocalScope implements Scope {
 
-  private final AstNode astNode;
-  private final Scope enclosingScope;
+  private final SymbolTable symbolTable;
   private final List<Symbol> members = Lists.newArrayList();
   private final List<Scope> nestedScopes = Lists.newArrayList();
-  private final List<Scope> importedScopes = Lists.newArrayList();
 
-  public LocalScope(AstNode astNode) {
-    this.astNode = astNode;
-    this.enclosingScope = null;
+  public LocalScope(SymbolTable symbolTable) {
+    this.symbolTable = symbolTable;
   }
 
-  public LocalScope(AstNode astNode, Scope enclosingScope) {
-    this.astNode = astNode;
-    this.enclosingScope = enclosingScope;
+  public LocalScope(SymbolTable symbolTable, Scope enclosingScope) {
+    this.symbolTable = symbolTable;
     enclosingScope.addNestedScope(this);
   }
 
   public AstNode getAstNode() {
-    return astNode;
+    return symbolTable.getAstNode(this);
   }
 
   public Scope getEnclosingScope() {
-    return enclosingScope;
+    return symbolTable.getEnclosingScope(getAstNode().getParent());
   }
 
   public Collection<Scope> getNestedScopes() {
@@ -48,14 +44,6 @@ public class LocalScope implements Scope {
 
   public void addNestedScope(Scope nestedScope) {
     nestedScopes.add(nestedScope);
-  }
-
-  public Collection<Scope> getImportedScopes() {
-    return importedScopes;
-  }
-
-  public void importScope(Scope scope) {
-    importedScopes.add(scope);
   }
 
   public void define(Symbol symbol) {
@@ -72,6 +60,7 @@ public class LocalScope implements Scope {
         return symbol;
       }
     }
+    Scope enclosingScope = getEnclosingScope();
     return enclosingScope == null ? null : enclosingScope.lookup(name, predicate);
   }
 

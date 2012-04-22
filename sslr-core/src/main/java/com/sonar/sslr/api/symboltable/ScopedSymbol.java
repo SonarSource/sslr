@@ -18,22 +18,27 @@ import java.util.List;
  */
 public abstract class ScopedSymbol implements Symbol, Scope {
 
-  private final AstNode astNode;
+  private final SymbolTable symbolTable;
   private final String name;
-  private final Scope enclosingScope;
   private final List<Symbol> members = Lists.newArrayList();
   private final List<Scope> nestedScopes = Lists.newArrayList();
-  private final List<Scope> importedScopes = Lists.newArrayList();
 
-  public ScopedSymbol(AstNode astNode, String name, Scope enclosingScope) {
-    this.astNode = astNode;
+  public ScopedSymbol(SymbolTable symbolTable, String name, Scope enclosingScope) {
+    this.symbolTable = symbolTable;
     this.name = name;
-    this.enclosingScope = enclosingScope;
     enclosingScope.addNestedScope(this);
   }
 
+  public AstNode getAstNode() {
+    return symbolTable.getAstNode(this);
+  }
+
+  public String getName() {
+    return name;
+  }
+
   public Scope getEnclosingScope() {
-    return enclosingScope;
+    return symbolTable.getEnclosingScope(getAstNode().getParent());
   }
 
   public Collection<Scope> getNestedScopes() {
@@ -44,24 +49,8 @@ public abstract class ScopedSymbol implements Symbol, Scope {
     nestedScopes.add(nestedScope);
   }
 
-  public Collection<Scope> getImportedScopes() {
-    return importedScopes;
-  }
-
-  public void importScope(Scope scope) {
-    importedScopes.add(scope);
-  }
-
   public void define(Symbol symbol) {
     members.add(symbol);
-  }
-
-  public AstNode getAstNode() {
-    return astNode;
-  }
-
-  public String getName() {
-    return name;
   }
 
   public Collection<Symbol> getMembers() {
@@ -74,6 +63,7 @@ public abstract class ScopedSymbol implements Symbol, Scope {
         return symbol;
       }
     }
+    Scope enclosingScope = getEnclosingScope();
     return enclosingScope == null ? null : enclosingScope.lookup(name, predicate);
   }
 

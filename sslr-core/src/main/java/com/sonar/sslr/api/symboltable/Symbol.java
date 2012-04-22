@@ -10,7 +10,7 @@ import com.sonar.sslr.api.AstNode;
 /**
  * Entity of program, which can be referenced.
  */
-public interface Symbol {
+public interface Symbol extends SymbolTableElement {
 
   /**
    * Returns associated AST node.
@@ -18,11 +18,13 @@ public interface Symbol {
   AstNode getAstNode();
 
   /**
+   * Returns enclosing scope.
+   */
+  Scope getEnclosingScope();
+
+  /**
    * Returns name of this symbol.
    */
   String getName();
-
-  // TODO Godin: do we want to be able to determine scope, where this symbol was defined?
-  // In fact this will be straightforward, if AST node will know enclosing scope.
 
 }

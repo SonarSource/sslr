@@ -19,9 +19,22 @@ public final class SymbolTableBuilderContext implements SymbolTable {
   private final IdentityHashMap<AstNode, Symbol> astToSymbol = Maps.newIdentityHashMap();
   private final Multimap<Symbol, AstNode> references = HashMultimap.create();
 
-  public void defineSymbol(AstNode astNode, Symbol symbol) {
-    astToSymbol.put(astNode, symbol);
-    getEnclosingScope(astNode).define(symbol);
+  private final IdentityHashMap<SymbolTableElement, AstNode> elementToAstNode = Maps.newIdentityHashMap();
+
+  public void define(AstNode astNode, SymbolTableElement element) {
+    elementToAstNode.put(element, astNode);
+    if (element instanceof Symbol) {
+      Symbol symbol = (Symbol) element;
+      astToSymbol.put(astNode, symbol);
+      getEnclosingScope(astNode).define(symbol);
+    }
+    if (element instanceof Scope) {
+      astToScope.put(astNode, (Scope) element);
+    }
+  }
+
+  public AstNode getAstNode(SymbolTableElement element) {
+    return elementToAstNode.get(element);
   }
 
   public Symbol getEnclosingSymbol(AstNode astNode) {
@@ -31,10 +44,6 @@ public final class SymbolTableBuilderContext implements SymbolTable {
       astNode = astNode.getParent();
     }
     return result;
-  }
-
-  public void defineScope(AstNode astNode, Scope scope) {
-    astToScope.put(astNode, scope);
   }
 
   public Scope getEnclosingScope(AstNode astNode) {

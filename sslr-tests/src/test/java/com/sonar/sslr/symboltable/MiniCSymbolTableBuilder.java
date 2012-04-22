@@ -5,17 +5,9 @@
  */
 package com.sonar.sslr.symboltable;
 
-import com.sonar.sslr.api.symboltable.LocalScope;
-
-import com.sonar.sslr.api.symboltable.SymbolTableBuilder;
-import com.sonar.sslr.api.symboltable.SymbolTableBuilderContext;
-import com.sonar.sslr.api.symboltable.SymbolTableElementBuilder;
-
 import com.google.common.base.Predicates;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.symboltable.Scope;
-import com.sonar.sslr.api.symboltable.Symbol;
-import com.sonar.sslr.api.symboltable.SymbolTable;
+import com.sonar.sslr.api.symboltable.*;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
 
 public class MiniCSymbolTableBuilder {
@@ -32,37 +24,42 @@ public class MiniCSymbolTableBuilder {
   private final SymbolTableBuilder builder = new SymbolTableBuilder();
 
   public MiniCSymbolTableBuilder(MiniCGrammar grammar) {
+    builder.addToFirstPhase(new SymbolTableElementBuilder(grammar.compilationUnit) {
+      @Override
+      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTable) {
+        Scope scope = new LocalScope(symbolTable);
+        symbolTable.define(astNode, scope);
+      }
+    });
     builder.addToFirstPhase(new SymbolTableElementBuilder(grammar.compoundStatement) {
       @Override
       public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTable) {
-        Scope scope = new LocalScope(astNode, symbolTable.getEnclosingScope(astNode));
-        symbolTable.defineScope(astNode, scope);
+        Scope scope = new LocalScope(symbolTable, symbolTable.getEnclosingScope(astNode));
+        symbolTable.define(astNode, scope);
       }
     });
     builder.addToFirstPhase(new SymbolTableElementBuilder(grammar.structDefinition) {
       @Override
       public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTable) {
         String name = astNode.getChild(1).getTokenValue();
-        StructSymbol structSymbol = new StructSymbol(astNode, name, symbolTable.getEnclosingScope(astNode));
-        symbolTable.defineSymbol(astNode, structSymbol);
-        symbolTable.defineScope(astNode, structSymbol);
+        StructSymbol structSymbol = new StructSymbol(symbolTable, name, symbolTable.getEnclosingScope(astNode));
+        symbolTable.define(astNode, structSymbol);
       }
     });
     builder.addToFirstPhase(new SymbolTableElementBuilder(grammar.functionDefinition) {
       @Override
       public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTable) {
         String name = astNode.getChild(1).getTokenValue();
-        MethodSymbol methodSymbol = new MethodSymbol(astNode, symbolTable.getEnclosingScope(astNode), name);
-        symbolTable.defineSymbol(astNode, methodSymbol);
-        symbolTable.defineScope(astNode, methodSymbol);
+        MethodSymbol methodSymbol = new MethodSymbol(symbolTable, symbolTable.getEnclosingScope(astNode), name);
+        symbolTable.define(astNode, methodSymbol);
       }
     });
     builder.addToFirstPhase(new SymbolTableElementBuilder(grammar.variableDefinition, grammar.parameterDeclaration, grammar.structMember) {
       @Override
       public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTable) {
         String name = astNode.getChild(1).getTokenValue();
-        VariableSymbol variableSymbol = new VariableSymbol(astNode, name);
-        symbolTable.defineSymbol(astNode, variableSymbol);
+        VariableSymbol variableSymbol = new VariableSymbol(symbolTable, name);
+        symbolTable.define(astNode, variableSymbol);
       }
     });
 
@@ -78,9 +75,7 @@ public class MiniCSymbolTableBuilder {
   }
 
   public SymbolTable buildSymbolTable(AstNode astNode) {
-    Scope rootScope = new LocalScope(astNode);
-    rootScope.importScope(globalScope);
-    return builder.buildSymbolTable(astNode, rootScope);
+    return builder.buildSymbolTable(astNode);
   }
 
 }

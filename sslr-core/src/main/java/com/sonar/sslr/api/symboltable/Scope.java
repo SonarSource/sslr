@@ -13,7 +13,7 @@ import java.util.Collection;
 /**
  * Region of code with a well-defined boundaries that groups symbol definitions.
  */
-public interface Scope {
+public interface Scope extends SymbolTableElement {
 
   /**
    * Returns associated AST node.
@@ -35,17 +35,6 @@ public interface Scope {
    * However question: how we can achieve this, if this interface might be implemented by clients?
    */
   void addNestedScope(Scope nestedScope);
-
-  /**
-   * TODO comment me
-   */
-  Collection<Scope> getImportedScopes();
-
-  /**
-   * TODO Godin: in fact tree of scopes should be immutable after construction.
-   * However question: how we can achieve this, if this interface might be implemented by clients?
-   */
-  void importScope(Scope scope);
 
   /**
    * Returns all symbols defined in this scope.

@@ -22,6 +22,11 @@ public interface SymbolTable {
   Scope getEnclosingScope(AstNode astNode);
 
   /**
+   * Returns AST node for specified element.
+   */
+  AstNode getAstNode(SymbolTableElement element);
+
+  /**
    * Returns references to specified symbol.
    */
   Collection<AstNode> getReferences(Symbol symbol);

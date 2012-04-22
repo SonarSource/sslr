@@ -5,30 +5,18 @@
  */
 package com.sonar.sslr.symboltable;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.symboltable.Symbol;
+import com.sonar.sslr.api.symboltable.BaseSymbol;
+import com.sonar.sslr.api.symboltable.SymbolTable;
 
-public class VariableSymbol implements Symbol {
+public class VariableSymbol extends BaseSymbol {
 
-  private final AstNode ast;
-  private final String name;
-
-  public VariableSymbol(AstNode ast, String name) {
-    this.ast = ast;
-    this.name = name;
-  }
-
-  public AstNode getAstNode() {
-    return ast;
-  }
-
-  public String getName() {
-    return name;
+  public VariableSymbol(SymbolTable symbolTable, String name) {
+    super(symbolTable, name);
   }
 
   @Override
   public String toString() {
-    return "Variable{" + name + "}";
+    return "Variable{" + getName() + "}";
   }
 
 }
