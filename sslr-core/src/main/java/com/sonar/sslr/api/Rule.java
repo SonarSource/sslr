@@ -10,7 +10,6 @@ package com.sonar.sslr.api;
  * A Rule describes a context free grammar syntactic rule.
  *
  * @see Grammar
- * @see <a href="http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">Backus�Naur Form</a>
  */
 public interface Rule extends AstNodeType {
 
@@ -35,31 +34,6 @@ public interface Rule extends AstNodeType {
    * @return this rule
    */
   Rule override(Object... matchers);
-
-  /**
-   * The method {@link #is(Object...)} must be first called to be able to add a new alternative to this rule
-   *
-   * @see {@link com.sonar.sslr.impl.matcher.GrammarFunctions.Standard#or(Object...)}
-   * @return this rule
-   */
-  Rule or(Object... matchers);
-
-  /**
-   * The method {@link #is(Object...)} must be first called to be able to extend this rule definition
-   *
-   * @see {@link com.sonar.sslr.impl.matcher.GrammarFunctions.Standard#and(Object...)}
-   * @return this rule
-   */
-  Rule and(Object... matchers);
-
-  /**
-   * The method {@link #is(Object...)} must be first called to be able to add a new alternative to this rule. This alternative will be the
-   * first one to be tested before testing previous ones.
-   *
-   * @see {@link com.sonar.sslr.impl.matcher.GrammarFunctions.Standard#or(Object...)}
-   * @return this rule
-   */
-  Rule orBefore(Object... matchers);
 
   /**
    * Remove this node from the AST and attached its children directly to its parent

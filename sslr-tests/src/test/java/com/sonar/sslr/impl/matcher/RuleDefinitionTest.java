@@ -23,18 +23,6 @@ public class RuleDefinitionTest {
   }
 
   @Test(expected = IllegalStateException.class)
-  public void testEmptyOr() {
-    RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
-    javaClassDefinition.or();
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void testCallingOrWithoutHavingCallIsFirst() {
-    RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
-    javaClassDefinition.or("keyword");
-  }
-
-  @Test(expected = IllegalStateException.class)
   public void testMoreThanOneDefinitionForASigleRuleWithIs() {
     RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
     javaClassDefinition.is("option1");
@@ -55,26 +43,6 @@ public class RuleDefinitionTest {
     assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(\"option1\")"));
     myRule.override("option2");
     assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(\"option2\")"));
-  }
-
-  @Test
-  public void testOr() {
-    RuleDefinition myRule = RuleDefinition.newRuleBuilder("MyRule");
-    myRule.is("option1");
-    assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(\"option1\")"));
-    myRule.or("option2");
-    assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(or(\"option1\", \"option2\"))"));
-    myRule.or("option3", "option4");
-    assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(or(or(\"option1\", \"option2\"), and(\"option3\", \"option4\")))"));
-  }
-
-  @Test
-  public void testOrBefore() {
-    RuleDefinition myRule = RuleDefinition.newRuleBuilder("MyRule");
-    myRule.is("option1");
-    assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(\"option1\")"));
-    myRule.orBefore("option2");
-    assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(or(\"option2\", \"option1\"))"));
   }
 
   @Test

@@ -45,9 +45,6 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
     ruleMatcher.setNodeType(this);
   }
 
-  /**
-   * ${@inheritDoc}
-   */
   public RuleDefinition is(Object... matchers) {
     throwExceptionIfRuleAlreadyDefined("The rule '" + ruleMatcher + "' has already been defined somewhere in the grammar.");
     throwExceptionIfEmptyListOfMatchers(matchers);
@@ -55,9 +52,6 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
     return this;
   }
 
-  /**
-   * ${@inheritDoc}
-   */
   public RuleDefinition override(Object... matchers) {
     throwExceptionIfEmptyListOfMatchers(matchers);
     setMatcher(GrammarFunctions.Standard.and(matchers));
@@ -66,27 +60,6 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
 
   public void mock() {
     setMatcher(Standard.or(ruleMatcher.getName(), ruleMatcher.getName().toUpperCase()));
-  }
-
-  public RuleDefinition or(Object... matchers) {
-    throwExceptionIfEmptyListOfMatchers(matchers);
-    throwExceptionIfRuleNotAlreadyDefined("The Rule.or(...) can't be called if the method Rule.is(...) hasn't been called first.");
-    setMatcher(GrammarFunctions.Standard.or(ruleMatcher.children[0], GrammarFunctions.Standard.and(matchers)));
-    return this;
-  }
-
-  public RuleDefinition and(Object... matchers) {
-    throwExceptionIfEmptyListOfMatchers(matchers);
-    throwExceptionIfRuleNotAlreadyDefined("The Rule.and(...) can't be called if the method Rule.is(...) hasn't been called first.");
-    setMatcher(GrammarFunctions.Standard.and(ruleMatcher.children[0], GrammarFunctions.Standard.and(matchers)));
-    return this;
-  }
-
-  public RuleDefinition orBefore(Object... matchers) {
-    throwExceptionIfEmptyListOfMatchers(matchers);
-    throwExceptionIfRuleNotAlreadyDefined("The Rule.or(...) can't be called if the method Rule.is(...) hasn't been called first.");
-    setMatcher(GrammarFunctions.Standard.or(GrammarFunctions.Standard.and(matchers), ruleMatcher.children[0]));
-    return this;
   }
 
   public void skip() {
@@ -111,12 +84,6 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
 
   private void throwExceptionIfRuleAlreadyDefined(String exceptionMessage) {
     if (ruleMatcher.children.length != 0) {
-      throw new IllegalStateException(exceptionMessage);
-    }
-  }
-
-  private void throwExceptionIfRuleNotAlreadyDefined(String exceptionMessage) {
-    if (ruleMatcher.children.length == 0) {
       throw new IllegalStateException(exceptionMessage);
     }
   }
