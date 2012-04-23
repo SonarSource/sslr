@@ -6,14 +6,13 @@
 
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.test.lexer.MockHelper.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
+import org.junit.Test;
+
+import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 public class RuleDefinitionTest {
 
@@ -21,12 +20,6 @@ public class RuleDefinitionTest {
   public void testEmptyIs() {
     RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
     javaClassDefinition.is();
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void testEmptyIsOr() {
-    RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
-    javaClassDefinition.isOr();
   }
 
   @Test(expected = IllegalStateException.class)
@@ -46,20 +39,6 @@ public class RuleDefinitionTest {
     RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
     javaClassDefinition.is("option1");
     javaClassDefinition.is("option2");
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void testMoreThanOneDefinitionForASigleRuleWithIsOr() {
-    RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
-    javaClassDefinition.is("");
-    javaClassDefinition.isOr("");
-  }
-
-  @Test
-  public void testIsOr() {
-    RuleDefinition myRule = RuleDefinition.newRuleBuilder("MyRule");
-    myRule.isOr("option1", "option2");
-    assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(or(\"option1\", \"option2\"))"));
   }
 
   @Test

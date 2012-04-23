@@ -62,15 +62,6 @@ public interface Rule extends AstNodeType {
   Rule orBefore(Object... matchers);
 
   /**
-   * The method {@link #is(Object...)} is just a utility method which prevents writing is(or());
-   *
-   * @see {@link #is(Object...)}
-   * @see {@link com.sonar.sslr.impl.matcher.GrammarFunctions.Standard#or(Object...)}
-   * @return this rule
-   */
-  Rule isOr(Object... matchers);
-
-  /**
    * Remove this node from the AST and attached its children directly to its parent
    */
   void skip();

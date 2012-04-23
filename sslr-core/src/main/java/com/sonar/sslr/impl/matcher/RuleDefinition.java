@@ -68,13 +68,6 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
     setMatcher(Standard.or(ruleMatcher.getName(), ruleMatcher.getName().toUpperCase()));
   }
 
-  public RuleDefinition isOr(Object... matchers) {
-    throwExceptionIfRuleAlreadyDefined("The rule '" + ruleMatcher + "' has already been defined somewhere in the grammar.");
-    throwExceptionIfEmptyListOfMatchers(matchers);
-    setMatcher(GrammarFunctions.Standard.or(matchers));
-    return this;
-  }
-
   public RuleDefinition or(Object... matchers) {
     throwExceptionIfEmptyListOfMatchers(matchers);
     throwExceptionIfRuleNotAlreadyDefined("The Rule.or(...) can't be called if the method Rule.is(...) hasn't been called first.");
