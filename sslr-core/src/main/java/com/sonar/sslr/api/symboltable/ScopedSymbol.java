@@ -5,66 +5,21 @@
  */
 package com.sonar.sslr.api.symboltable;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
-import com.sonar.sslr.api.AstNode;
-
-import java.util.Collection;
-import java.util.List;
-
 /**
  * Default implementation of named {@link Scope}.
  * Examples: class, method, struct, namespace.
  */
-public abstract class ScopedSymbol implements Symbol, Scope {
+public abstract class ScopedSymbol extends LocalScope implements Symbol {
 
-  private final SymbolTable symbolTable;
   private final String name;
-  private final List<Symbol> members = Lists.newArrayList();
-  private final List<Scope> nestedScopes = Lists.newArrayList();
 
-  public ScopedSymbol(SymbolTable symbolTable, String name, Scope enclosingScope) {
-    this.symbolTable = symbolTable;
+  public ScopedSymbol(SymbolTable symbolTable, String name) {
+    super(symbolTable);
     this.name = name;
-    enclosingScope.addNestedScope(this);
-  }
-
-  public AstNode getAstNode() {
-    return symbolTable.getAstNode(this);
   }
 
   public String getName() {
     return name;
-  }
-
-  public Scope getEnclosingScope() {
-    return symbolTable.getEnclosingScope(getAstNode().getParent());
-  }
-
-  public Collection<Scope> getNestedScopes() {
-    return nestedScopes;
-  }
-
-  public void addNestedScope(Scope nestedScope) {
-    nestedScopes.add(nestedScope);
-  }
-
-  public void define(Symbol symbol) {
-    members.add(symbol);
-  }
-
-  public Collection<Symbol> getMembers() {
-    return members;
-  }
-
-  public Symbol lookup(String name, Predicate predicate) {
-    for (Symbol symbol : getMembers()) {
-      if (name.equals(symbol.getName()) && predicate.apply(symbol)) {
-        return symbol;
-      }
-    }
-    Scope enclosingScope = getEnclosingScope();
-    return enclosingScope == null ? null : enclosingScope.lookup(name, predicate);
   }
 
 }

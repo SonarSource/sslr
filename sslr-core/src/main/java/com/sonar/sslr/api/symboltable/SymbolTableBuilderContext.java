@@ -25,10 +25,15 @@ public final class SymbolTableBuilderContext implements SymbolTable {
     elementToAstNode.put(element, astNode);
     if (element instanceof Symbol) {
       Symbol symbol = (Symbol) element;
-      astToSymbol.put(astNode, symbol);
       getEnclosingScope(astNode).define(symbol);
+      astToSymbol.put(astNode, symbol);
     }
     if (element instanceof Scope) {
+      Scope scope = (Scope) element;
+      Scope enclosingScope = getEnclosingScope(astNode);
+      if (enclosingScope != null) {
+        enclosingScope.addNestedScope(scope);
+      }
       astToScope.put(astNode, (Scope) element);
     }
   }

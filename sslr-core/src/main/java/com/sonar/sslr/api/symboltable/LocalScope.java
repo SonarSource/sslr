@@ -25,11 +25,6 @@ public class LocalScope implements Scope {
     this.symbolTable = symbolTable;
   }
 
-  public LocalScope(SymbolTable symbolTable, Scope enclosingScope) {
-    this.symbolTable = symbolTable;
-    enclosingScope.addNestedScope(this);
-  }
-
   public AstNode getAstNode() {
     return symbolTable.getAstNode(this);
   }

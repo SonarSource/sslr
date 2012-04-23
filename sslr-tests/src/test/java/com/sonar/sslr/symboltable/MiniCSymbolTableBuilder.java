@@ -34,7 +34,7 @@ public class MiniCSymbolTableBuilder {
     builder.addToFirstPhase(new SymbolTableElementBuilder(grammar.compoundStatement) {
       @Override
       public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTable) {
-        Scope scope = new LocalScope(symbolTable, symbolTable.getEnclosingScope(astNode));
+        Scope scope = new LocalScope(symbolTable);
         symbolTable.define(astNode, scope);
       }
     });
@@ -42,7 +42,7 @@ public class MiniCSymbolTableBuilder {
       @Override
       public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTable) {
         String name = astNode.getChild(1).getTokenValue();
-        StructSymbol structSymbol = new StructSymbol(symbolTable, name, symbolTable.getEnclosingScope(astNode));
+        StructSymbol structSymbol = new StructSymbol(symbolTable, name);
         symbolTable.define(astNode, structSymbol);
       }
     });
@@ -50,7 +50,7 @@ public class MiniCSymbolTableBuilder {
       @Override
       public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTable) {
         String name = astNode.getChild(1).getTokenValue();
-        MethodSymbol methodSymbol = new MethodSymbol(symbolTable, symbolTable.getEnclosingScope(astNode), name);
+        MethodSymbol methodSymbol = new MethodSymbol(symbolTable, name);
         symbolTable.define(astNode, methodSymbol);
       }
     });

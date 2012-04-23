@@ -5,15 +5,14 @@
  */
 package com.sonar.sslr.symboltable;
 
-import com.sonar.sslr.api.symboltable.Scope;
 import com.sonar.sslr.api.symboltable.ScopedSymbol;
 import com.sonar.sslr.api.symboltable.SymbolTable;
 import com.sonar.sslr.api.symboltable.Type;
 
 public class StructSymbol extends ScopedSymbol implements Type {
 
-  public StructSymbol(SymbolTable symbolTable, String name, Scope enclosingScope) {
-    super(symbolTable, name, enclosingScope);
+  public StructSymbol(SymbolTable symbolTable, String name) {
+    super(symbolTable, name);
   }
 
   @Override
