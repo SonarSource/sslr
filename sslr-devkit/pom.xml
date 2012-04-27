@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.sonarsource.sslr</groupId>
+    <groupId>org.codehaus.sonar.sslr</groupId>
     <artifactId>sslr</artifactId>
     <version>1.13-SNAPSHOT</version>
   </parent>
@@ -27,7 +27,7 @@
       <artifactId>sonar-channel</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.sonarsource.sslr</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>sslr-core</artifactId>
     </dependency>
     <dependency>

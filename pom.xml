@@ -3,23 +3,41 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.sonarsource.parent</groupId>
+    <groupId>org.codehaus.sonar-plugins</groupId>
     <artifactId>parent</artifactId>
-    <version>14</version>
+    <version>12</version>
   </parent>
 
-  <groupId>com.sonarsource.sslr</groupId>
+  <groupId>org.codehaus.sonar.sslr</groupId>
   <artifactId>sslr</artifactId>
   <version>1.13-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>SonarSource :: Language Recognizer</name>
+  <description></description>
+  <url></url>
+  <inceptionYear>2010</inceptionYear>
+  <organization>
+    <name>SonarSource</name>
+    <url>http://www.sonarsource.com</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>GNU LGPL 3</name>
+      <url>http://www.gnu.org/licenses/lgpl.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <scm>
-    <connection>scm:svn:https://subversion.assembla.com/svn/sonarsourcecode/trunk/sslr</connection>
-    <developerConnection>scm:svn:https://subversion.assembla.com/svn/sonarsourcecode/trunk/sslr</developerConnection>
-    <url>https://subversion.assembla.com/svn/sonarsourcecode/trunk/sslr</url>
+    <connection>scm:git:git@github.com:SonarSource/sslr.git</connection>
+    <developerConnection>scm:git:git@github.com:SonarSource/sslr.git</developerConnection>
+    <url>https://github.com/SonarSource/sslr</url>
   </scm>
+  <issueManagement>
+  </issueManagement>
+  <ciManagement>
+  </ciManagement>
 
   <properties>
     <sonar.version>2.11</sonar.version>
