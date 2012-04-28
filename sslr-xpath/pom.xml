@@ -22,7 +22,7 @@
       <artifactId>sslr-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.sonarsource.jaxen</groupId>
+      <groupId>jaxen</groupId>
       <artifactId>jaxen</artifactId>
     </dependency>
   </dependencies>
