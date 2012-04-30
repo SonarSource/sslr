@@ -32,7 +32,7 @@
   <scm>
     <connection>scm:git:git@github.com:SonarSource/sslr.git</connection>
     <developerConnection>scm:git:git@github.com:SonarSource/sslr.git</developerConnection>
-    <url>https://github.com/SonarSource/sslr-squid-bridge</url>
+    <url>https://github.com/SonarSource/sslr</url>
   </scm>
   <issueManagement>
   </issueManagement>
