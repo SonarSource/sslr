@@ -9,5 +9,5 @@ void bbbbbbbb10()
 
 int bbbbbbbbbbbbb15()
 {
-	int ccccccccc11;
+  int ccccccccc11;
 }

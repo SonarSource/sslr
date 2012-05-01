@@ -14,7 +14,7 @@ int iterativeFibonacci(int n)
   int f2 = 0;
   int f1 = 1;
   int i;
-  
+
   i = 0;
   while (i++ < n)
   {
@@ -22,6 +22,6 @@ int iterativeFibonacci(int n)
     f2 = f1;
     f1 = oldF2 + f1;
   }
-  
+
   return f2;
 }
