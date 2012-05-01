@@ -13,7 +13,6 @@
   <name>SonarSource :: Language Recognizer :: Development Kit</name>
 
   <properties>
-    <sonar.switchoffviolations.configFile>${project.basedir}/violations-filter.txt</sonar.switchoffviolations.configFile>
     <sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath>
   </properties>
 
