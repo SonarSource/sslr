@@ -21,19 +21,16 @@ package com.sonar.sslr.symboltable;
 
 import com.google.common.base.Predicates;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.symboltable.*;
+import com.sonar.sslr.api.symboltable.LocalScope;
+import com.sonar.sslr.api.symboltable.Scope;
+import com.sonar.sslr.api.symboltable.Symbol;
+import com.sonar.sslr.api.symboltable.SymbolTable;
+import com.sonar.sslr.api.symboltable.SymbolTableBuilder;
+import com.sonar.sslr.api.symboltable.SymbolTableBuilderContext;
+import com.sonar.sslr.api.symboltable.SymbolTableElementBuilder;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
 
 public class MiniCSymbolTableBuilder {
-
-  private static final GlobalScope globalScope;
-
-  static {
-    // Build global scope with built-in-types, it should be reusable - no need to build it for each compilation unit
-    globalScope = new GlobalScope();
-    globalScope.define(new BuiltInType("int"));
-    globalScope.define(new BuiltInType("void"));
-  }
 
   private final SymbolTableBuilder builder = new SymbolTableBuilder();
 
