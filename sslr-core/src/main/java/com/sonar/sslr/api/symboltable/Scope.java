@@ -20,7 +20,6 @@
 package com.sonar.sslr.api.symboltable;
 
 import com.google.common.base.Predicate;
-import com.sonar.sslr.api.AstNode;
 
 import java.util.Collection;
 
@@ -28,11 +27,6 @@ import java.util.Collection;
  * Region of code with a well-defined boundaries that groups symbol definitions.
  */
 public interface Scope extends SymbolTableElement {
-
-  /**
-   * Returns associated AST node.
-   */
-  AstNode getAstNode();
 
   /**
    * Returns enclosing scope.
