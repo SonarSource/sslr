@@ -64,8 +64,8 @@ public class MiniCSymbolTableBuilder {
       @Override
       public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTable) {
         String name = astNode.getChild(1).getTokenValue();
-        MethodSymbol methodSymbol = new MethodSymbol(symbolTable, name);
-        symbolTable.define(astNode, methodSymbol);
+        FunctionSymbol functionSymbol = new FunctionSymbol(symbolTable, name);
+        symbolTable.define(astNode, functionSymbol);
 
         Scope scope = new LocalScope(symbolTable);
         symbolTable.define(astNode, scope);

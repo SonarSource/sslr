@@ -24,19 +24,19 @@ import com.sonar.sslr.api.symboltable.Scope;
 import com.sonar.sslr.api.symboltable.Symbol;
 import com.sonar.sslr.api.symboltable.SymbolTable;
 
-public class MethodSymbol implements Symbol {
+public class FunctionSymbol implements Symbol {
 
   private final SymbolTable symbolTable;
   private final String name;
 
-  public MethodSymbol(SymbolTable symbolTable, String name) {
+  public FunctionSymbol(SymbolTable symbolTable, String name) {
     this.symbolTable = symbolTable;
     this.name = name;
   }
 
   @Override
   public String toString() {
-    return "Method{" + getName() + "}";
+    return "Function{" + getName() + "}";
   }
 
   public AstNode getAstNode() {
