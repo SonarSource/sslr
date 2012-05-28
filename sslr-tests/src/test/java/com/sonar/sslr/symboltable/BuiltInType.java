@@ -21,9 +21,9 @@ package com.sonar.sslr.symboltable;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.symboltable.Scope;
-import com.sonar.sslr.api.symboltable.Type;
+import com.sonar.sslr.api.symboltable.Symbol;
 
-public class BuiltInType implements Type {
+public class BuiltInType implements Symbol {
 
   private final String name;
 

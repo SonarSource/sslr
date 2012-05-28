@@ -21,9 +21,8 @@ package com.sonar.sslr.symboltable;
 
 import com.sonar.sslr.api.symboltable.ScopedSymbol;
 import com.sonar.sslr.api.symboltable.SymbolTable;
-import com.sonar.sslr.api.symboltable.Type;
 
-public class StructSymbol extends ScopedSymbol implements Type {
+public class StructSymbol extends ScopedSymbol {
 
   public StructSymbol(SymbolTable symbolTable, String name) {
     super(symbolTable, name);
