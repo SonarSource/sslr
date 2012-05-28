@@ -34,6 +34,7 @@ import java.util.List;
  * <p>
  * Commonly, the first phase is used to create scopes and define the symbols,
  * and the second phase is used to track the usage of those already defined symbols.
+ *
  * In languages where forward references are not allowed, those two phases can be easily
  * merged in a single one.
  * </p>
