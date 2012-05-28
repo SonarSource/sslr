@@ -41,16 +41,16 @@ import java.util.List;
  */
 public class SymbolTableBuilder {
 
-  private final List<SymbolTableElementBuilder> firstPhase = Lists.newArrayList();
-  private final List<SymbolTableElementBuilder> secondPhase = Lists.newArrayList();
+  private final List<SymbolTableBuilderVisitor> firstPhase = Lists.newArrayList();
+  private final List<SymbolTableBuilderVisitor> secondPhase = Lists.newArrayList();
 
-  public SymbolTableBuilder addToFirstPhase(SymbolTableElementBuilder elementBuilder) {
-    firstPhase.add(elementBuilder);
+  public SymbolTableBuilder addToFirstPhase(SymbolTableBuilderVisitor symbolTableElementBuilder) {
+    firstPhase.add(symbolTableElementBuilder);
     return this;
   }
 
-  public SymbolTableBuilder addToSecondPhase(SymbolTableElementBuilder elementBuilder) {
-    secondPhase.add(elementBuilder);
+  public SymbolTableBuilder addToSecondPhase(SymbolTableBuilderVisitor symbolTableElementBuilder) {
+    secondPhase.add(symbolTableElementBuilder);
     return this;
   }
 
@@ -60,7 +60,7 @@ public class SymbolTableBuilder {
   public SymbolTable buildSymbolTable(AstNode astNode) {
     // Build tree of scopes and populate it by definitions
 
-    SymbolTableBuilderContext symbolTable = new SymbolTableBuilderContext();
+    SymbolTableBuilderContext symbolTableBuilderContext = new SymbolTableBuilderContext();
 
     // At this point we should be able to detect that symbol hides another symbol just by visiting tree of scopes,
     // e.g. local variable hides another local variable, parameter or global variable,
@@ -68,20 +68,20 @@ public class SymbolTableBuilder {
 
     // Resolve type references, resolve identifiers within expressions and on the left side of assignments
 
-    new AstWalker(createVisitors(symbolTable, firstPhase)).walkAndVisit(astNode);
+    new AstWalker(createVisitors(symbolTableBuilderContext, firstPhase)).walkAndVisit(astNode);
 
     // At this point we should be able to find where symbols are used,
     // e.g. find unused parameter, unused local variable, assigning value to parameter, "jumbled loop increment"
 
-    new AstWalker(createVisitors(symbolTable, secondPhase)).walkAndVisit(astNode);
+    new AstWalker(createVisitors(symbolTableBuilderContext, secondPhase)).walkAndVisit(astNode);
 
-    return symbolTable;
+    return symbolTableBuilderContext;
   }
 
-  private static List<AstVisitor> createVisitors(SymbolTableBuilderContext symbolTable, List<SymbolTableElementBuilder> builders) {
+  private static List<AstVisitor> createVisitors(SymbolTableBuilderContext symbolTableBuilderContext, List<SymbolTableBuilderVisitor> symbolTableElementBuilders) {
     ImmutableList.Builder<AstVisitor> visitors = ImmutableList.builder();
-    for (SymbolTableElementBuilder builder : builders) {
-      visitors.add(new AstVisitorForSymbolTable(builder, symbolTable));
+    for (SymbolTableBuilderVisitor symbolTableElementBuilder : symbolTableElementBuilders) {
+      visitors.add(new AstVisitorForSymbolTable(symbolTableBuilderContext, symbolTableElementBuilder));
     }
     return visitors.build();
   }
@@ -91,16 +91,16 @@ public class SymbolTableBuilder {
    */
   private static class AstVisitorForSymbolTable implements AstVisitor {
 
-    private final SymbolTableElementBuilder builder;
+    private final SymbolTableBuilderVisitor symbolTableElementBuilder;
     private final SymbolTableBuilderContext symbolTableBuilderContext;
 
-    public AstVisitorForSymbolTable(SymbolTableElementBuilder builder, SymbolTableBuilderContext symbolTableBuilderContext) {
-      this.builder = builder;
+    public AstVisitorForSymbolTable(SymbolTableBuilderContext symbolTableBuilderContext, SymbolTableBuilderVisitor symbolTableElementBuilder) {
       this.symbolTableBuilderContext = symbolTableBuilderContext;
+      this.symbolTableElementBuilder = symbolTableElementBuilder;
     }
 
     public List<AstNodeType> getAstNodeTypesToVisit() {
-      return builder.getNodeTypes();
+      return symbolTableElementBuilder.getNodeTypes();
     }
 
     public void visitFile(AstNode astNode) {
@@ -112,7 +112,7 @@ public class SymbolTableBuilder {
     }
 
     public void visitNode(AstNode astNode) {
-      builder.visitNode(astNode, symbolTableBuilderContext);
+      symbolTableElementBuilder.visitNode(symbolTableBuilderContext, astNode);
     }
 
     public void leaveNode(AstNode astNode) {

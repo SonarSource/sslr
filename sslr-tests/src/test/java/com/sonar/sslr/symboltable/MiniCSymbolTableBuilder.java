@@ -27,7 +27,7 @@ import com.sonar.sslr.api.symboltable.Symbol;
 import com.sonar.sslr.api.symboltable.SymbolTable;
 import com.sonar.sslr.api.symboltable.SymbolTableBuilder;
 import com.sonar.sslr.api.symboltable.SymbolTableBuilderContext;
-import com.sonar.sslr.api.symboltable.SymbolTableElementBuilder;
+import com.sonar.sslr.api.symboltable.SymbolTableBuilderVisitor;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
 
 public class MiniCSymbolTableBuilder {
@@ -35,23 +35,23 @@ public class MiniCSymbolTableBuilder {
   private final SymbolTableBuilder builder = new SymbolTableBuilder();
 
   public MiniCSymbolTableBuilder(MiniCGrammar grammar) {
-    builder.addToFirstPhase(new SymbolTableElementBuilder(grammar.compilationUnit) {
+    builder.addToFirstPhase(new SymbolTableBuilderVisitor(grammar.compilationUnit) {
       @Override
-      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTableBuilderContext) {
+      public void visitNode(SymbolTableBuilderContext symbolTableBuilderContext, AstNode astNode) {
         Scope scope = new LocalScope(symbolTableBuilderContext);
         symbolTableBuilderContext.define(astNode, scope);
       }
     });
-    builder.addToFirstPhase(new SymbolTableElementBuilder(grammar.compoundStatement) {
+    builder.addToFirstPhase(new SymbolTableBuilderVisitor(grammar.compoundStatement) {
       @Override
-      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTableBuilderContext) {
+      public void visitNode(SymbolTableBuilderContext symbolTableBuilderContext, AstNode astNode) {
         Scope scope = new LocalScope(symbolTableBuilderContext);
         symbolTableBuilderContext.define(astNode, scope);
       }
     });
-    builder.addToFirstPhase(new SymbolTableElementBuilder(grammar.structDefinition) {
+    builder.addToFirstPhase(new SymbolTableBuilderVisitor(grammar.structDefinition) {
       @Override
-      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTableBuilderContext) {
+      public void visitNode(SymbolTableBuilderContext symbolTableBuilderContext, AstNode astNode) {
         String name = astNode.getChild(1).getTokenValue();
         StructSymbol structSymbol = new StructSymbol(symbolTableBuilderContext, name);
         symbolTableBuilderContext.define(astNode, structSymbol);
@@ -60,9 +60,9 @@ public class MiniCSymbolTableBuilder {
         symbolTableBuilderContext.define(astNode, scope);
       }
     });
-    builder.addToFirstPhase(new SymbolTableElementBuilder(grammar.functionDefinition) {
+    builder.addToFirstPhase(new SymbolTableBuilderVisitor(grammar.functionDefinition) {
       @Override
-      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTableBuilderContext) {
+      public void visitNode(SymbolTableBuilderContext symbolTableBuilderContext, AstNode astNode) {
         String name = astNode.getChild(1).getTokenValue();
         FunctionSymbol functionSymbol = new FunctionSymbol(symbolTableBuilderContext, name);
         symbolTableBuilderContext.define(astNode, functionSymbol);
@@ -71,18 +71,18 @@ public class MiniCSymbolTableBuilder {
         symbolTableBuilderContext.define(astNode, scope);
       }
     });
-    builder.addToFirstPhase(new SymbolTableElementBuilder(grammar.variableDefinition, grammar.parameterDeclaration, grammar.structMember) {
+    builder.addToFirstPhase(new SymbolTableBuilderVisitor(grammar.variableDefinition, grammar.parameterDeclaration, grammar.structMember) {
       @Override
-      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTableBuilderContext) {
+      public void visitNode(SymbolTableBuilderContext symbolTableBuilderContext, AstNode astNode) {
         String name = astNode.getChild(1).getTokenValue();
         VariableSymbol variableSymbol = new VariableSymbol(symbolTableBuilderContext, name);
         symbolTableBuilderContext.define(astNode, variableSymbol);
       }
     });
 
-    builder.addToSecondPhase(new SymbolTableElementBuilder(grammar.binVariableReference) {
+    builder.addToSecondPhase(new SymbolTableBuilderVisitor(grammar.binVariableReference) {
       @Override
-      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTableBuilderContext) {
+      public void visitNode(SymbolTableBuilderContext symbolTableBuilderContext, AstNode astNode) {
         Scope enclosingScope = symbolTableBuilderContext.getEnclosingScope(astNode);
         String referencedName = astNode.getTokenValue();
         Symbol referencedSymbol = enclosingScope.lookup(referencedName, Predicates.instanceOf(VariableSymbol.class));

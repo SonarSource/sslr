@@ -25,11 +25,11 @@ import com.sonar.sslr.api.AstNodeType;
 
 import java.util.List;
 
-public abstract class SymbolTableElementBuilder {
+public abstract class SymbolTableBuilderVisitor {
 
   private final List<AstNodeType> nodeTypes;
 
-  public SymbolTableElementBuilder(AstNodeType... nodeTypes) {
+  public SymbolTableBuilderVisitor(AstNodeType... nodeTypes) {
     this.nodeTypes = ImmutableList.of(nodeTypes);
   }
 
@@ -37,6 +37,6 @@ public abstract class SymbolTableElementBuilder {
     return nodeTypes;
   }
 
-  public abstract void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTable);
+  public abstract void visitNode(SymbolTableBuilderContext symbolTableBuilderContext, AstNode astNode);
 
 }
