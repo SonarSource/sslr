@@ -63,14 +63,14 @@ public class LocalScope implements Scope {
     return members;
   }
 
-  public Symbol lookup(String name, Predicate predicate) {
+  public Symbol resolve(String name, Predicate predicate) {
     for (Symbol symbol : getMembers()) {
       if (name.equals(symbol.getName()) && predicate.apply(symbol)) {
         return symbol;
       }
     }
     Scope enclosingScope = getEnclosingScope();
-    return enclosingScope == null ? null : enclosingScope.lookup(name, predicate);
+    return enclosingScope == null ? null : enclosingScope.resolve(name, predicate);
   }
 
   @Override

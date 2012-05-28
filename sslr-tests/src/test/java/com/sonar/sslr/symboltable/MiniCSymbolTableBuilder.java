@@ -85,7 +85,7 @@ public class MiniCSymbolTableBuilder {
       public void visitNode(SymbolTableBuilderContext symbolTableBuilderContext, AstNode astNode) {
         Scope enclosingScope = symbolTableBuilderContext.getEnclosingScope(astNode);
         String referencedName = astNode.getTokenValue();
-        Symbol referencedSymbol = enclosingScope.lookup(referencedName, Predicates.instanceOf(VariableSymbol.class));
+        Symbol referencedSymbol = enclosingScope.resolve(referencedName, Predicates.instanceOf(VariableSymbol.class));
         symbolTableBuilderContext.addReference(astNode, referencedSymbol);
       }
     });

@@ -97,7 +97,7 @@ public class MiniCSymbolTableTest {
             }
           }
           if (scope.getEnclosingScope() != null) {
-            Symbol hidden = scope.getEnclosingScope().lookup(symbol.getName(), Predicates.instanceOf(VariableSymbol.class));
+            Symbol hidden = scope.getEnclosingScope().resolve(symbol.getName(), Predicates.instanceOf(VariableSymbol.class));
             if (hidden != null) {
               System.out.println(symbol + " at line " + symbol.getAstNode().getTokenLine() + " hides " + hidden + " from line " + hidden.getAstNode().getTokenLine());
             }

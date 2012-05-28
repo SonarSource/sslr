@@ -61,6 +61,6 @@ public interface Scope extends SymbolTableElement {
    */
   void define(Symbol symbol);
 
-  Symbol lookup(String name, Predicate predicate);
+  Symbol resolve(String name, Predicate predicate);
 
 }
