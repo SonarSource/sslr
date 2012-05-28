@@ -55,6 +55,9 @@ public class MiniCSymbolTableBuilder {
         String name = astNode.getChild(1).getTokenValue();
         StructSymbol structSymbol = new StructSymbol(symbolTable, name);
         symbolTable.define(astNode, structSymbol);
+
+        Scope scope = new LocalScope(symbolTable);
+        symbolTable.define(astNode, scope);
       }
     });
     builder.addToFirstPhase(new SymbolTableElementBuilder(grammar.functionDefinition) {
@@ -63,6 +66,9 @@ public class MiniCSymbolTableBuilder {
         String name = astNode.getChild(1).getTokenValue();
         MethodSymbol methodSymbol = new MethodSymbol(symbolTable, name);
         symbolTable.define(astNode, methodSymbol);
+
+        Scope scope = new LocalScope(symbolTable);
+        symbolTable.define(astNode, scope);
       }
     });
     builder.addToFirstPhase(new SymbolTableElementBuilder(grammar.variableDefinition, grammar.parameterDeclaration, grammar.structMember) {
