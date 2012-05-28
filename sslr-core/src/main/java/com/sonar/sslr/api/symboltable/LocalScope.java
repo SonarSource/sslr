@@ -21,7 +21,6 @@ package com.sonar.sslr.api.symboltable;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
-import com.sonar.sslr.api.AstNode;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,12 +38,8 @@ public class LocalScope implements Scope {
     this.symbolTable = symbolTable;
   }
 
-  public AstNode getAstNode() {
-    return symbolTable.getAstNode(this);
-  }
-
   public Scope getEnclosingScope() {
-    return symbolTable.getEnclosingScope(getAstNode().getParent());
+    return symbolTable.getEnclosingScope(symbolTable.getAstNode(this).getParent());
   }
 
   public Collection<Scope> getNestedScopes() {
