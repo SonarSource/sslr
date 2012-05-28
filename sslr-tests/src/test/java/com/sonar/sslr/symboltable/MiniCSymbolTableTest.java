@@ -22,7 +22,11 @@ package com.sonar.sslr.symboltable;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicates;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.symboltable.*;
+import com.sonar.sslr.api.symboltable.Scope;
+import com.sonar.sslr.api.symboltable.ScopeTreeVisitor;
+import com.sonar.sslr.api.symboltable.ScopeTreeWalker;
+import com.sonar.sslr.api.symboltable.Symbol;
+import com.sonar.sslr.api.symboltable.SymbolTableBuilderContext;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
 import com.sonar.sslr.test.miniC.MiniCParser;
@@ -64,7 +68,7 @@ public class MiniCSymbolTableTest {
         "}"));
 
     // Build Symbol Table
-    SymbolTable symbolTable = new MiniCSymbolTableBuilder(grammar).buildSymbolTable(ast);
+    SymbolTableBuilderContext symbolTable = new MiniCSymbolTableBuilder(grammar).buildSymbolTable(ast);
 
     ScopeTreePrintVisitor visitor = new ScopeTreePrintVisitor();
     new ScopeTreeWalker(visitor).walk(symbolTable.getEnclosingScope(ast));
@@ -76,10 +80,10 @@ public class MiniCSymbolTableTest {
 
   private static class Detector implements ScopeTreeVisitor {
 
-    private final SymbolTable symbolTable;
+    private final SymbolTableBuilderContext symbolTableBuilderContext;
 
-    public Detector(SymbolTable symbolTable) {
-      this.symbolTable = symbolTable;
+    public Detector(SymbolTableBuilderContext symbolTable) {
+      this.symbolTableBuilderContext = symbolTable;
     }
 
     public void visitScope(Scope scope) {
@@ -88,7 +92,7 @@ public class MiniCSymbolTableTest {
     public void leaveScope(Scope scope) {
       for (Symbol symbol : scope.getMembers()) {
         if (symbol instanceof VariableSymbol) {
-          Collection<AstNode> references = symbolTable.getReferences(symbol);
+          Collection<AstNode> references = symbolTableBuilderContext.getReferences(symbol);
           if (references.isEmpty()) {
             System.out.println("Unused " + symbol + " at line " + symbol.getAstNode().getTokenLine());
           } else {

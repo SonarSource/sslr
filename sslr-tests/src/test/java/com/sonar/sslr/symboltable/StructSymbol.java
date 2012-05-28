@@ -19,13 +19,14 @@
  */
 package com.sonar.sslr.symboltable;
 
+import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.symboltable.BaseSymbol;
-import com.sonar.sslr.api.symboltable.SymbolTable;
+import com.sonar.sslr.api.symboltable.Scope;
 
 public class StructSymbol extends BaseSymbol {
 
-  public StructSymbol(SymbolTable symbolTable, String name) {
-    super(symbolTable, name);
+  public StructSymbol(Scope scope, String name, AstNode astNode) {
+    super(scope, name, astNode);
   }
 
   @Override

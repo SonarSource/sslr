@@ -30,16 +30,16 @@ import java.util.List;
  */
 public class LocalScope implements Scope {
 
-  private final SymbolTable symbolTable;
+  private final Scope enclosingScope;
   private final List<Symbol> members = Lists.newArrayList();
   private final List<Scope> nestedScopes = Lists.newArrayList();
 
-  public LocalScope(SymbolTable symbolTable) {
-    this.symbolTable = symbolTable;
+  public LocalScope(Scope enclosingScope) {
+    this.enclosingScope = enclosingScope;
   }
 
   public Scope getEnclosingScope() {
-    return symbolTable.getEnclosingScope(symbolTable.getAstNode(this).getParent());
+    return enclosingScope;
   }
 
   public Collection<Scope> getNestedScopes() {

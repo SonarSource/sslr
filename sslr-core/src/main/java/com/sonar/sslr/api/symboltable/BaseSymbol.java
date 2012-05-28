@@ -26,20 +26,22 @@ import com.sonar.sslr.api.AstNode;
  */
 public abstract class BaseSymbol implements Symbol {
 
-  private final SymbolTable symbolTable;
+  private final Scope scope;
   private final String name;
+  private final AstNode astNode;
 
-  public BaseSymbol(SymbolTable symbolTable, String name) {
-    this.symbolTable = symbolTable;
+  public BaseSymbol(Scope scope, String name, AstNode astNode) {
+    this.scope = scope;
     this.name = name;
+    this.astNode = astNode;
   }
 
   public AstNode getAstNode() {
-    return symbolTable.getAstNode(this);
+    return astNode;
   }
 
   public Scope getEnclosingScope() {
-    return symbolTable.getEnclosingScope(getAstNode());
+    return scope;
   }
 
   public String getName() {

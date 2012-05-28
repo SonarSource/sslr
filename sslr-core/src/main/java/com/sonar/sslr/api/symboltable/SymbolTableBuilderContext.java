@@ -27,33 +27,23 @@ import com.sonar.sslr.api.AstNode;
 import java.util.Collection;
 import java.util.IdentityHashMap;
 
-public final class SymbolTableBuilderContext implements SymbolTable {
+public final class SymbolTableBuilderContext {
 
   private final IdentityHashMap<AstNode, Scope> astToScope = Maps.newIdentityHashMap();
   private final IdentityHashMap<AstNode, Symbol> astToSymbol = Maps.newIdentityHashMap();
   private final Multimap<Symbol, AstNode> references = HashMultimap.create();
 
-  private final IdentityHashMap<SymbolTableElement, AstNode> elementToAstNode = Maps.newIdentityHashMap();
-
-  public void define(AstNode astNode, SymbolTableElement element) {
-    elementToAstNode.put(element, astNode);
-    if (element instanceof Symbol) {
-      Symbol symbol = (Symbol) element;
-      getEnclosingScope(astNode).define(symbol);
-      astToSymbol.put(astNode, symbol);
-    }
-    if (element instanceof Scope) {
-      Scope scope = (Scope) element;
-      Scope enclosingScope = getEnclosingScope(astNode);
-      if (enclosingScope != null) {
-        enclosingScope.addNestedScope(scope);
-      }
-      astToScope.put(astNode, (Scope) element);
-    }
+  public void define(Symbol symbol) {
+    getEnclosingScope(symbol.getAstNode()).define(symbol);
+    astToSymbol.put(symbol.getAstNode(), symbol);
   }
 
-  public AstNode getAstNode(SymbolTableElement element) {
-    return elementToAstNode.get(element);
+  public void define(AstNode astNode, Scope scope) {
+    Scope enclosingScope = scope.getEnclosingScope();
+    if (enclosingScope != null) {
+      enclosingScope.addNestedScope(scope);
+    }
+    astToScope.put(astNode, scope);
   }
 
   public Symbol getEnclosingSymbol(AstNode astNode) {

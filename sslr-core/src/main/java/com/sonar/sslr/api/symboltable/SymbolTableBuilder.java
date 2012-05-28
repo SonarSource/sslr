@@ -29,7 +29,7 @@ import com.sonar.sslr.impl.ast.AstWalker;
 import java.util.List;
 
 /**
- * Implementation of two-phase algorithm for building {@link SymbolTable} based on AST.
+ * Implementation of two-phase algorithm for building {@link SymbolTableBuilderContext} based on AST.
  *
  * <p>
  * Commonly, the first phase is used to create scopes and define the symbols,
@@ -57,7 +57,7 @@ public class SymbolTableBuilder {
   /**
    * Builds Symbol Table starting from specified AST node.
    */
-  public SymbolTable buildSymbolTable(AstNode astNode) {
+  public SymbolTableBuilderContext buildSymbolTable(AstNode astNode) {
     // Build tree of scopes and populate it by definitions
 
     SymbolTableBuilderContext symbolTableBuilderContext = new SymbolTableBuilderContext();

@@ -26,7 +26,7 @@ import java.util.Collection;
 /**
  * Region of code with a well-defined boundaries that groups symbol definitions.
  */
-public interface Scope extends SymbolTableElement {
+public interface Scope {
 
   /**
    * Returns enclosing scope.

@@ -24,7 +24,7 @@ import com.sonar.sslr.api.AstNode;
 /**
  * Entity of program, which can be referenced.
  */
-public interface Symbol extends SymbolTableElement {
+public interface Symbol {
 
   /**
    * Returns associated AST node.

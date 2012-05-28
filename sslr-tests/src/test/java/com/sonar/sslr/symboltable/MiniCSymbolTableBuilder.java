@@ -24,7 +24,6 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.symboltable.LocalScope;
 import com.sonar.sslr.api.symboltable.Scope;
 import com.sonar.sslr.api.symboltable.Symbol;
-import com.sonar.sslr.api.symboltable.SymbolTable;
 import com.sonar.sslr.api.symboltable.SymbolTableBuilder;
 import com.sonar.sslr.api.symboltable.SymbolTableBuilderContext;
 import com.sonar.sslr.api.symboltable.SymbolTableBuilderVisitor;
@@ -38,45 +37,55 @@ public class MiniCSymbolTableBuilder {
     builder.addToFirstPhase(new SymbolTableBuilderVisitor(grammar.compilationUnit) {
       @Override
       public void visitNode(SymbolTableBuilderContext symbolTableBuilderContext, AstNode astNode) {
-        Scope scope = new LocalScope(symbolTableBuilderContext);
-        symbolTableBuilderContext.define(astNode, scope);
+        Scope currentScope = symbolTableBuilderContext.getEnclosingScope(astNode);
+
+        Scope newCurrentScope = new LocalScope(currentScope);
+        symbolTableBuilderContext.define(astNode, newCurrentScope);
       }
     });
     builder.addToFirstPhase(new SymbolTableBuilderVisitor(grammar.compoundStatement) {
       @Override
       public void visitNode(SymbolTableBuilderContext symbolTableBuilderContext, AstNode astNode) {
-        Scope scope = new LocalScope(symbolTableBuilderContext);
-        symbolTableBuilderContext.define(astNode, scope);
+        Scope currentScope = symbolTableBuilderContext.getEnclosingScope(astNode);
+
+        Scope newCurrentScope = new LocalScope(currentScope);
+        symbolTableBuilderContext.define(astNode, newCurrentScope);
       }
     });
     builder.addToFirstPhase(new SymbolTableBuilderVisitor(grammar.structDefinition) {
       @Override
       public void visitNode(SymbolTableBuilderContext symbolTableBuilderContext, AstNode astNode) {
         String name = astNode.getChild(1).getTokenValue();
-        StructSymbol structSymbol = new StructSymbol(symbolTableBuilderContext, name);
-        symbolTableBuilderContext.define(astNode, structSymbol);
+        Scope currentScope = symbolTableBuilderContext.getEnclosingScope(astNode);
 
-        Scope scope = new LocalScope(symbolTableBuilderContext);
-        symbolTableBuilderContext.define(astNode, scope);
+        StructSymbol structSymbol = new StructSymbol(currentScope, name, astNode);
+        symbolTableBuilderContext.define(structSymbol);
+
+        Scope newCurrentScope = new LocalScope(currentScope);
+        symbolTableBuilderContext.define(astNode, newCurrentScope);
       }
     });
     builder.addToFirstPhase(new SymbolTableBuilderVisitor(grammar.functionDefinition) {
       @Override
       public void visitNode(SymbolTableBuilderContext symbolTableBuilderContext, AstNode astNode) {
         String name = astNode.getChild(1).getTokenValue();
-        FunctionSymbol functionSymbol = new FunctionSymbol(symbolTableBuilderContext, name);
-        symbolTableBuilderContext.define(astNode, functionSymbol);
+        Scope currentScope = symbolTableBuilderContext.getEnclosingScope(astNode);
 
-        Scope scope = new LocalScope(symbolTableBuilderContext);
-        symbolTableBuilderContext.define(astNode, scope);
+        FunctionSymbol functionSymbol = new FunctionSymbol(currentScope, name, astNode);
+        symbolTableBuilderContext.define(functionSymbol);
+
+        Scope newCurrentScope = new LocalScope(currentScope);
+        symbolTableBuilderContext.define(astNode, newCurrentScope);
       }
     });
     builder.addToFirstPhase(new SymbolTableBuilderVisitor(grammar.variableDefinition, grammar.parameterDeclaration, grammar.structMember) {
       @Override
       public void visitNode(SymbolTableBuilderContext symbolTableBuilderContext, AstNode astNode) {
         String name = astNode.getChild(1).getTokenValue();
-        VariableSymbol variableSymbol = new VariableSymbol(symbolTableBuilderContext, name);
-        symbolTableBuilderContext.define(astNode, variableSymbol);
+        Scope currentScope = symbolTableBuilderContext.getEnclosingScope(astNode);
+
+        VariableSymbol variableSymbol = new VariableSymbol(currentScope, name, astNode);
+        symbolTableBuilderContext.define(variableSymbol);
       }
     });
 
@@ -91,7 +100,7 @@ public class MiniCSymbolTableBuilder {
     });
   }
 
-  public SymbolTable buildSymbolTable(AstNode astNode) {
+  public SymbolTableBuilderContext buildSymbolTable(AstNode astNode) {
     return builder.buildSymbolTable(astNode);
   }
 
