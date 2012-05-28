@@ -19,36 +19,18 @@
  */
 package com.sonar.sslr.symboltable;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.symboltable.Scope;
-import com.sonar.sslr.api.symboltable.Symbol;
+import com.sonar.sslr.api.symboltable.BaseSymbol;
 import com.sonar.sslr.api.symboltable.SymbolTable;
 
-public class FunctionSymbol implements Symbol {
-
-  private final SymbolTable symbolTable;
-  private final String name;
+public class FunctionSymbol extends BaseSymbol {
 
   public FunctionSymbol(SymbolTable symbolTable, String name) {
-    this.symbolTable = symbolTable;
-    this.name = name;
+    super(symbolTable, name);
   }
 
   @Override
   public String toString() {
     return "Function{" + getName() + "}";
-  }
-
-  public AstNode getAstNode() {
-    return symbolTable.getAstNode(this);
-  }
-
-  public Scope getEnclosingScope() {
-    return symbolTable.getEnclosingScope(getAstNode().getParent());
-  }
-
-  public String getName() {
-    return name;
   }
 
 }
