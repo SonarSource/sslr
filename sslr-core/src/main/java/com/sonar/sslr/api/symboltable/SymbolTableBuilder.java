@@ -92,11 +92,11 @@ public class SymbolTableBuilder {
   private static class AstVisitorForSymbolTable implements AstVisitor {
 
     private final SymbolTableElementBuilder builder;
-    private final SymbolTableBuilderContext symbolTable;
+    private final SymbolTableBuilderContext symbolTableBuilderContext;
 
-    public AstVisitorForSymbolTable(SymbolTableElementBuilder builder, SymbolTableBuilderContext symbolTable) {
+    public AstVisitorForSymbolTable(SymbolTableElementBuilder builder, SymbolTableBuilderContext symbolTableBuilderContext) {
       this.builder = builder;
-      this.symbolTable = symbolTable;
+      this.symbolTableBuilderContext = symbolTableBuilderContext;
     }
 
     public List<AstNodeType> getAstNodeTypesToVisit() {
@@ -112,7 +112,7 @@ public class SymbolTableBuilder {
     }
 
     public void visitNode(AstNode astNode) {
-      builder.visitNode(astNode, symbolTable);
+      builder.visitNode(astNode, symbolTableBuilderContext);
     }
 
     public void leaveNode(AstNode astNode) {

@@ -37,56 +37,56 @@ public class MiniCSymbolTableBuilder {
   public MiniCSymbolTableBuilder(MiniCGrammar grammar) {
     builder.addToFirstPhase(new SymbolTableElementBuilder(grammar.compilationUnit) {
       @Override
-      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTable) {
-        Scope scope = new LocalScope(symbolTable);
-        symbolTable.define(astNode, scope);
+      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTableBuilderContext) {
+        Scope scope = new LocalScope(symbolTableBuilderContext);
+        symbolTableBuilderContext.define(astNode, scope);
       }
     });
     builder.addToFirstPhase(new SymbolTableElementBuilder(grammar.compoundStatement) {
       @Override
-      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTable) {
-        Scope scope = new LocalScope(symbolTable);
-        symbolTable.define(astNode, scope);
+      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTableBuilderContext) {
+        Scope scope = new LocalScope(symbolTableBuilderContext);
+        symbolTableBuilderContext.define(astNode, scope);
       }
     });
     builder.addToFirstPhase(new SymbolTableElementBuilder(grammar.structDefinition) {
       @Override
-      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTable) {
+      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTableBuilderContext) {
         String name = astNode.getChild(1).getTokenValue();
-        StructSymbol structSymbol = new StructSymbol(symbolTable, name);
-        symbolTable.define(astNode, structSymbol);
+        StructSymbol structSymbol = new StructSymbol(symbolTableBuilderContext, name);
+        symbolTableBuilderContext.define(astNode, structSymbol);
 
-        Scope scope = new LocalScope(symbolTable);
-        symbolTable.define(astNode, scope);
+        Scope scope = new LocalScope(symbolTableBuilderContext);
+        symbolTableBuilderContext.define(astNode, scope);
       }
     });
     builder.addToFirstPhase(new SymbolTableElementBuilder(grammar.functionDefinition) {
       @Override
-      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTable) {
+      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTableBuilderContext) {
         String name = astNode.getChild(1).getTokenValue();
-        FunctionSymbol functionSymbol = new FunctionSymbol(symbolTable, name);
-        symbolTable.define(astNode, functionSymbol);
+        FunctionSymbol functionSymbol = new FunctionSymbol(symbolTableBuilderContext, name);
+        symbolTableBuilderContext.define(astNode, functionSymbol);
 
-        Scope scope = new LocalScope(symbolTable);
-        symbolTable.define(astNode, scope);
+        Scope scope = new LocalScope(symbolTableBuilderContext);
+        symbolTableBuilderContext.define(astNode, scope);
       }
     });
     builder.addToFirstPhase(new SymbolTableElementBuilder(grammar.variableDefinition, grammar.parameterDeclaration, grammar.structMember) {
       @Override
-      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTable) {
+      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTableBuilderContext) {
         String name = astNode.getChild(1).getTokenValue();
-        VariableSymbol variableSymbol = new VariableSymbol(symbolTable, name);
-        symbolTable.define(astNode, variableSymbol);
+        VariableSymbol variableSymbol = new VariableSymbol(symbolTableBuilderContext, name);
+        symbolTableBuilderContext.define(astNode, variableSymbol);
       }
     });
 
     builder.addToSecondPhase(new SymbolTableElementBuilder(grammar.binVariableReference) {
       @Override
-      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTable) {
-        Scope enclosingScope = symbolTable.getEnclosingScope(astNode);
+      public void visitNode(AstNode astNode, SymbolTableBuilderContext symbolTableBuilderContext) {
+        Scope enclosingScope = symbolTableBuilderContext.getEnclosingScope(astNode);
         String referencedName = astNode.getTokenValue();
         Symbol referencedSymbol = enclosingScope.lookup(referencedName, Predicates.instanceOf(VariableSymbol.class));
-        symbolTable.addReference(astNode, referencedSymbol);
+        symbolTableBuilderContext.addReference(astNode, referencedSymbol);
       }
     });
   }
