@@ -35,9 +35,20 @@
     <url>https://github.com/SonarSource/sslr</url>
   </scm>
   <issueManagement>
+    <system>Jira</system>
+    <url>http://jira.sonarsource.com/browse/SSLR</url>
   </issueManagement>
   <ciManagement>
+    <system>Cloudbees</system>
+    <url>https://sonarplugins.ci.cloudbees.com/job/sslr/</url>
   </ciManagement>
+  <distributionManagement>
+    <repository>
+      <id>codehaus-nexus-staging</id>
+      <name>Codehaus Release Repository</name>
+      <url>https://nexus.codehaus.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
 
   <properties>
     <license.title>SonarSource Language Recognizer</license.title>
@@ -187,7 +198,42 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <localCheckout>true</localCheckout>
+          <pushChanges>false</pushChanges>
+          <mavenExecutorId>forked-path</mavenExecutorId>
+          <preparationGoals>clean install</preparationGoals>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
