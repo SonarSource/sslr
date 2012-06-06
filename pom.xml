@@ -10,12 +10,12 @@
 
   <groupId>org.codehaus.sonar.sslr</groupId>
   <artifactId>sslr</artifactId>
-  <version>1.13-SNAPSHOT</version>
+  <version>1.13</version>
   <packaging>pom</packaging>
 
   <name>SonarSource :: Language Recognizer</name>
-  <description></description>
-  <url></url>
+  <description />
+  <url />
   <inceptionYear>2010</inceptionYear>
   <organization>
     <name>SonarSource</name>
