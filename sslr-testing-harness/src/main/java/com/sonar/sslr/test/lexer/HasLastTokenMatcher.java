@@ -19,13 +19,12 @@
  */
 package com.sonar.sslr.test.lexer;
 
-import java.util.List;
-
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.TokenType;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.TokenType;
+import java.util.List;
 
 class HasLastTokenMatcher extends BaseMatcher<List<Token>> {
 
@@ -38,11 +37,11 @@ class HasLastTokenMatcher extends BaseMatcher<List<Token>> {
   }
 
   public boolean matches(Object obj) {
-    if ( !(obj instanceof List)) {
+    if (!(obj instanceof List)) {
       return false;
     }
     List<Token> tokens = (List<Token>) obj;
-    if (tokens.size() == 0) {
+    if (tokens.isEmpty()) {
       throw new IllegalArgumentException("There must be at least one lexed token.");
     }
     Token lastToken = tokens.get(tokens.size() - 1);
@@ -52,4 +51,5 @@ class HasLastTokenMatcher extends BaseMatcher<List<Token>> {
   public void describeTo(Description desc) {
     desc.appendText("Token('" + tokenValue + "'," + tokenType + ")");
   }
+
 }

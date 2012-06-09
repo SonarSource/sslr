@@ -64,7 +64,6 @@ public class LocalScope implements Scope {
         return symbol;
       }
     }
-    Scope enclosingScope = getEnclosingScope();
     return enclosingScope == null ? null : enclosingScope.resolve(name, predicate);
   }
 

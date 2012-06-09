@@ -36,8 +36,7 @@ public final class MiniCColorizer {
     return Arrays.asList(
         new CDocTokenizer("<span class=\"cd\">", "</span>"),
         new CppDocTokenizer("<span class=\"cppd\">", "</span>"),
-        new KeywordsTokenizer("<span class=\"k\">", "</span>", MiniCLexer.Keywords.keywordValues())
-        );
+        new KeywordsTokenizer("<span class=\"k\">", "</span>", MiniCLexer.Keywords.keywordValues()));
   }
 
 }

@@ -19,6 +19,7 @@
  */
 package com.sonar.sslr.impl.matcher;
 
+import com.google.common.base.Objects;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 
@@ -51,11 +52,7 @@ public final class TokenTypeMatcher extends TokenMatcher {
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + getClass().hashCode();
-    result = prime * result + (type == null ? 0 : type.hashCode());
-    return result;
+    return Objects.hashCode(getClass(), type);
   }
 
   @Override
@@ -63,21 +60,11 @@ public final class TokenTypeMatcher extends TokenMatcher {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (obj == null || obj.getClass() != getClass()) {
       return false;
     }
     TokenTypeMatcher other = (TokenTypeMatcher) obj;
-    if (type == null) {
-      if (other.type != null) {
-        return false;
-      }
-    } else if ( !type.equals(other.type)) {
-      return false;
-    }
-    return true;
+    return Objects.equal(this.type, other.type);
   }
 
 }
