@@ -19,19 +19,19 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
-import static com.sonar.sslr.test.lexer.MockHelper.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-
-import java.io.StringReader;
-
+import com.sonar.sslr.api.TokenType;
+import com.sonar.sslr.impl.Lexer;
 import org.junit.Test;
 import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
 
-import com.sonar.sslr.api.TokenType;
-import com.sonar.sslr.impl.Lexer;
+import java.io.StringReader;
+
+import static com.sonar.sslr.api.GenericTokenType.UNKNOWN_CHAR;
+import static com.sonar.sslr.test.lexer.MockHelper.mockLexer;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class UnknownCharacterChannelTest {
 
@@ -46,19 +46,19 @@ public class UnknownCharacterChannelTest {
 
   @Test
   public void shouldConsumeEofCharacter() {
-    assertFalse(channel.consume(new CodeReader(""), null));
+    assertThat(channel.consume(new CodeReader(""), null)).isFalse();
   }
 
   @Test
   public void shouldConsumeBomCharacter() {
-    assertTrue(channel.consume(new CodeReader("\uFEFF"), lexer));
-    assertThat(lexer.getTokens().size(), is(0));
+    assertThat(channel.consume(new CodeReader("\uFEFF"), lexer)).isTrue();
+    assertThat(lexer.getTokens().size()).isEqualTo(0);
   }
 
   private void check(String input, Channel<Lexer> channel, TokenType expectedTokenType, String expectedTokenValue, Lexer lexer) {
     CodeReader code = new CodeReader(new StringReader(input));
 
-    assertTrue(channel.consume(code, lexer));
+    assertThat(channel.consume(code, lexer)).isTrue();
     assertThat(lexer.getTokens().size(), is(1));
     assertThat(lexer.getTokens().get(0).getType(), is(expectedTokenType));
     assertThat(lexer.getTokens().get(0).getValue(), is(expectedTokenValue));

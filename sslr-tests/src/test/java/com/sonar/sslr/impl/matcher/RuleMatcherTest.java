@@ -25,12 +25,17 @@ import com.sonar.sslr.impl.ParsingState;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.sonar.sslr.impl.MockTokenType.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.test.lexer.TokenUtils.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static com.sonar.sslr.impl.MockTokenType.WORD;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
+import static com.sonar.sslr.test.lexer.TokenUtils.lex;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class RuleMatcherTest {
 
@@ -46,12 +51,12 @@ public class RuleMatcherTest {
 
   @Test
   public void getName() {
-    assertEquals("JavaClassDefinition", javaClassDefinition.getRule().getName());
+    assertThat(javaClassDefinition.getRule().getName()).isEqualTo("JavaClassDefinition");
   }
 
   @Test
   public void getToString() {
-    assertEquals("JavaClassDefinition", javaClassDefinition.getRule().getName());
+    assertThat(javaClassDefinition.getRule().getName()).isEqualTo("JavaClassDefinition");
   }
 
   @Test

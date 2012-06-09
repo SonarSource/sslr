@@ -19,17 +19,16 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.test.lexer.TokenUtils.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
+import org.junit.Test;
+
+import static com.sonar.sslr.api.GenericTokenType.EOF;
+import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.adjacent;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.test.lexer.TokenUtils.lex;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class TokenTypeMatcherTest {
 
@@ -38,19 +37,19 @@ public class TokenTypeMatcherTest {
     TokenTypeMatcher matcher = new TokenTypeMatcher(IDENTIFIER);
     AstNode node = matcher.match(new ParsingState(lex("print screen")));
 
-    assertTrue(node.is(IDENTIFIER));
+    assertThat(node.is(IDENTIFIER)).isTrue();
   }
 
   @Test
   public void testToString() {
-    assertEquals(and(IDENTIFIER).toString(), "IDENTIFIER");
+    assertThat(and(IDENTIFIER).toString()).isEqualTo("IDENTIFIER");
   }
 
   @Test
   public void testEqualsAndHashCode() {
-    assertThat(and(IDENTIFIER) == and(IDENTIFIER), is(true));
-    assertThat(and(IDENTIFIER) == and(EOF), is(false));
-    assertThat(and(IDENTIFIER) == adjacent("("), is(false));
+    assertThat(and(IDENTIFIER) == and(IDENTIFIER)).isTrue();
+    assertThat(and(IDENTIFIER) == and(EOF)).isFalse();
+    assertThat(and(IDENTIFIER) == adjacent("(")).isFalse();
   }
 
 }

@@ -19,12 +19,14 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.adjacent;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.anyTokenButNot;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
 
 public class AnyTokenButNotMatcherTest {
 
@@ -36,14 +38,14 @@ public class AnyTokenButNotMatcherTest {
 
   @Test
   public void testToString() {
-    assertEquals(anyTokenButNot("(").toString(), "anyTokenButNot");
+    assertThat(anyTokenButNot("(").toString()).isEqualTo("anyTokenButNot");
   }
 
   @Test
   public void testEqualsAndHashCode() {
-    assertThat(anyTokenButNot("a") == anyTokenButNot("a"), is(true));
-    assertThat(anyTokenButNot("a") == anyTokenButNot("b"), is(false));
-    assertThat(anyTokenButNot("a") == adjacent("a"), is(false));
+    assertThat(anyTokenButNot("a") == anyTokenButNot("a")).isTrue();
+    assertThat(anyTokenButNot("a") == anyTokenButNot("b")).isFalse();
+    assertThat(anyTokenButNot("a") == adjacent("a")).isFalse();
   }
 
 }

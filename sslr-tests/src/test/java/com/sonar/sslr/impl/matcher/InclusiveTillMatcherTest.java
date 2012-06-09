@@ -19,17 +19,18 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.events.IdentifierLexer;
+import org.junit.Test;
+
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.adjacent;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.till;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
 
 public class InclusiveTillMatcherTest {
 
@@ -43,22 +44,22 @@ public class InclusiveTillMatcherTest {
 
   @Test
   public void testToString() {
-    assertEquals(till("(").toString(), "till");
+    assertThat(till("(").toString()).isEqualTo("till");
   }
 
   @Test
   public void testAstNodeTokens() {
     ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three four"));
     AstNode astNode = till("three").match(state);
-    assertEquals(3, state.lexerIndex);
-    assertEquals(3, astNode.getChildren().size());
+    assertThat(state.lexerIndex).isEqualTo(3);
+    assertThat(astNode.getChildren().size()).isEqualTo(3);
   }
 
   @Test
   public void testEqualsAndHashCode() {
-    assertThat(till("a") == till("a"), is(true));
-    assertThat(till("a") == till("b"), is(false));
-    assertThat(till("a") == adjacent("a"), is(false));
+    assertThat(till("a") == till("a")).isTrue();
+    assertThat(till("a") == till("b")).isFalse();
+    assertThat(till("a") == adjacent("a")).isFalse();
   }
 
 }

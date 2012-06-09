@@ -21,40 +21,36 @@ package com.sonar.sslr.impl.matcher;
 
 import org.junit.Test;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertThat;
 
 public class NotMatcherTest {
 
   @Test
   public void ok() {
-    assertThat(and("one", com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not("two"), "three"), match("one three"));
-    assertThat(and("one", com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not("two"), "two"),
+    assertThat(and("one", GrammarFunctions.Predicate.not("two"), "three"), match("one three"));
+    assertThat(and("one", GrammarFunctions.Predicate.not("two"), "two"),
         org.hamcrest.Matchers.not(match("one two")));
 
-    assertThat(and(opt(com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not(and("one", "two")), "one"), opt(and("one", "two"))),
+    assertThat(and(opt(GrammarFunctions.Predicate.not(and("one", "two")), "one"), opt(and("one", "two"))),
         match("one"));
-    assertThat(and(opt(com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not(and("one", "two")), "one"), opt(and("one", "two"))),
+    assertThat(and(opt(GrammarFunctions.Predicate.not(and("one", "two")), "one"), opt(and("one", "two"))),
         match("one two"));
   }
 
   @Test
   public void testToString() {
-    assertEquals(GrammarFunctions.Predicate.not("(").toString(), "not");
+    assertThat(GrammarFunctions.Predicate.not("(").toString()).isEqualTo("not");
   }
 
   @Test
   public void testEqualsAndHashCode() {
-    assertThat(
-        com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not("a") == com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not("a"),
-        is(true));
-    assertThat(
-        com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not("a") == com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not("b"),
-        is(false));
-    assertThat(com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not("a") == next("a"), is(false));
+    assertThat(GrammarFunctions.Predicate.not("a") == GrammarFunctions.Predicate.not("a")).isTrue();
+    assertThat(GrammarFunctions.Predicate.not("a") == GrammarFunctions.Predicate.not("b")).isFalse();
+    assertThat(GrammarFunctions.Predicate.not("a") == GrammarFunctions.Predicate.next("a")).isFalse();
   }
 
 }

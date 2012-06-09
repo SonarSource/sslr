@@ -19,13 +19,16 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isFalse;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isTrue;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
 
 public class OneToNMatcherTest {
 
@@ -37,14 +40,14 @@ public class OneToNMatcherTest {
 
   @Test
   public void testToString() {
-    assertEquals(one2n("(").toString(), "one2n");
+    assertThat(one2n("(").toString()).isEqualTo("one2n");
   }
 
   @Test
   public void testEqualsAndHashCode() {
-    assertThat(one2n("a", "a") == one2n("a", "a"), is(true));
-    assertThat(one2n("a", "a") == one2n("a", "b"), is(false));
-    assertThat(one2n("a", "a") == longestOne("a", "a"), is(false));
+    assertThat(one2n("a", "a") == one2n("a", "a")).isTrue();
+    assertThat(one2n("a", "a") == one2n("a", "b")).isFalse();
+    assertThat(one2n("a", "a") == longestOne("a", "a")).isFalse();
   }
 
 }

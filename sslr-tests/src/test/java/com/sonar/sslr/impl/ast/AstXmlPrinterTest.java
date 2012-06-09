@@ -19,14 +19,14 @@
  */
 package com.sonar.sslr.impl.ast;
 
-import static com.sonar.sslr.test.lexer.MockHelper.*;
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
+import org.junit.Test;
+
+import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
+import static com.sonar.sslr.test.lexer.MockHelper.mockTokenBuilder;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class AstXmlPrinterTest {
 
@@ -34,13 +34,14 @@ public class AstXmlPrinterTest {
   public void testPrintRuleAstNode() {
     AstNode root = new AstNode(RuleDefinition.newRuleBuilder("expr"), "expr", mockTokenBuilder(new WordTokenType(), "word").setLine(34)
         .setColumn(12).build());
-    assertEquals("<expr tokenValue=\"word\" tokenLine=\"34\" tokenColumn=\"12\"/>", AstXmlPrinter.print(root));
+
+    assertThat(AstXmlPrinter.print(root)).isEqualTo("<expr tokenValue=\"word\" tokenLine=\"34\" tokenColumn=\"12\"/>");
   }
 
   @Test
   public void testPrintWordAstNode() {
     AstNode root = new AstNode(mockToken(new WordTokenType(), "myword"));
-    assertEquals("<WORD tokenValue=\"myword\" tokenLine=\"1\" tokenColumn=\"1\"/>", AstXmlPrinter.print(root));
+    assertThat(AstXmlPrinter.print(root)).isEqualTo("<WORD tokenValue=\"myword\" tokenLine=\"1\" tokenColumn=\"1\"/>");
   }
 
   @Test
@@ -50,13 +51,14 @@ public class AstXmlPrinterTest {
     astNode.addChild(new AstNode(mockToken(new WordTokenType(), "=")));
     astNode.addChild(new AstNode(mockToken(new WordTokenType(), "4")));
 
-    StringBuilder expectedResult = new StringBuilder();
-    expectedResult.append("<expr>\n");
-    expectedResult.append("  <WORD tokenValue=\"x\" tokenLine=\"1\" tokenColumn=\"1\"/>\n");
-    expectedResult.append("  <WORD tokenValue=\"=\" tokenLine=\"1\" tokenColumn=\"1\"/>\n");
-    expectedResult.append("  <WORD tokenValue=\"4\" tokenLine=\"1\" tokenColumn=\"1\"/>\n");
-    expectedResult.append("</expr>");
-    assertEquals(expectedResult.toString(), AstXmlPrinter.print(astNode));
+    String expectedResult = new StringBuilder()
+        .append("<expr>\n")
+        .append("  <WORD tokenValue=\"x\" tokenLine=\"1\" tokenColumn=\"1\"/>\n")
+        .append("  <WORD tokenValue=\"=\" tokenLine=\"1\" tokenColumn=\"1\"/>\n")
+        .append("  <WORD tokenValue=\"4\" tokenLine=\"1\" tokenColumn=\"1\"/>\n")
+        .append("</expr>")
+        .toString();
+    assertThat(AstXmlPrinter.print(astNode)).isEqualTo(expectedResult);
   }
 
   private static class WordTokenType implements TokenType {

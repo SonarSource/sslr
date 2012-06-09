@@ -19,25 +19,25 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
-import static com.sonar.sslr.test.lexer.MockHelper.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.impl.MockTokenType;
+import org.junit.Test;
+
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.adjacent;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
 
 public class TokenTypeClassMatcherTest {
 
   @Test
   public void testIsExpectedToken() {
     TokenTypeClassMatcher matcher = new TokenTypeClassMatcher(GenericTokenType.class);
-    assertFalse(matcher.isExpectedToken(mockToken(MockTokenType.WORD2, "word2")));
-    assertTrue(matcher.isExpectedToken(mockToken(GenericTokenType.IDENTIFIER, "word2")));
+    assertThat(matcher.isExpectedToken(mockToken(MockTokenType.WORD2, "word2"))).isFalse();
+    assertThat(matcher.isExpectedToken(mockToken(GenericTokenType.IDENTIFIER, "word2"))).isTrue();
   }
 
   @Test
@@ -48,14 +48,14 @@ public class TokenTypeClassMatcherTest {
 
   @Test
   public void testToString() {
-    assertEquals(and(GenericTokenType.class).toString(), GenericTokenType.class.getCanonicalName() + ".class");
+    assertThat(and(GenericTokenType.class).toString()).isEqualTo(GenericTokenType.class.getCanonicalName() + ".class");
   }
 
   @Test
   public void testEqualsAndHashCode() {
-    assertThat(and(GenericTokenType.class) == and(GenericTokenType.class), is(true));
-    assertThat(and(GenericTokenType.class) == and(MockTokenType.class), is(false));
-    assertThat(and(GenericTokenType.class) == adjacent("("), is(false));
+    assertThat(and(GenericTokenType.class) == and(GenericTokenType.class)).isTrue();
+    assertThat(and(GenericTokenType.class) == and(MockTokenType.class)).isFalse();
+    assertThat(and(GenericTokenType.class) == adjacent("(")).isFalse();
   }
 
 }

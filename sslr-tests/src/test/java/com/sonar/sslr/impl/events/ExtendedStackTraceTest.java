@@ -19,21 +19,20 @@
  */
 package com.sonar.sslr.impl.events;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
-import org.junit.Test;
-
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.Parser;
+import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+import static com.sonar.sslr.api.GenericTokenType.EOF;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.till;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class ExtendedStackTraceTest {
 
@@ -115,7 +114,7 @@ public class ExtendedStackTraceTest {
     expected.append("  \"hehe\" at 1:8 consumed by root" + System.getProperty("line.separator"));
     expected.append("  \"bonjour\" at 1:0 consumed by root" + System.getProperty("line.separator"));
 
-    assertEquals(baos.toString(), expected.toString());
+    assertThat(baos.toString()).isEqualTo(expected.toString());
 
     p = Parser.builder((MyTestGrammar) new MyTestGrammarDecoratorV2()).withLexer(IdentifierLexer.create())
         .setParsingEventListeners(extendedStackTrace).build();
@@ -148,7 +147,7 @@ public class ExtendedStackTraceTest {
     expected.append("  \"hehe\" at 1:8 consumed by rule2" + System.getProperty("line.separator"));
     expected.append("  \"bonjour\" at 1:0 consumed by root" + System.getProperty("line.separator"));
 
-    assertEquals(baos.toString(), expected.toString());
+    assertThat(baos.toString()).isEqualTo(expected.toString());
   }
 
   @Test
@@ -185,7 +184,7 @@ public class ExtendedStackTraceTest {
     expected.append("  \"hehe\" at 1:8 consumed by root" + System.getProperty("line.separator"));
     expected.append("  \"bonjour\" at 1:0 consumed by root" + System.getProperty("line.separator"));
 
-    assertEquals(baos.toString(), expected.toString());
+    assertThat(baos.toString()).isEqualTo(expected.toString());
   }
 
   @Test
@@ -215,7 +214,7 @@ public class ExtendedStackTraceTest {
     expected.append("    4 !" + System.getProperty("line.separator"));
     expected.append("  --> huhu till BANGEOF" + System.getProperty("line.separator"));
 
-    assertThat(actual.startsWith(expected.toString()), is(true));
+    assertThat(actual.startsWith(expected.toString())).isTrue();
   }
 
 }

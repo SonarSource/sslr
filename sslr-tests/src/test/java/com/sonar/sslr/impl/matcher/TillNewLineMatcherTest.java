@@ -19,18 +19,18 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.events.IdentifierLexer;
+import org.junit.Test;
+
+import static com.sonar.sslr.api.GenericTokenType.EOF;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.anyToken;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.tillNewLine;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertThat;
 
 public class TillNewLineMatcherTest {
 
@@ -53,21 +53,21 @@ public class TillNewLineMatcherTest {
 
   @Test
   public void testToString() {
-    assertEquals(tillNewLine().toString(), "tillNewLine()");
+    assertThat(tillNewLine().toString()).isEqualTo("tillNewLine()");
   }
 
   @Test
   public void testAstNodeTokens() {
     ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three\nfour"));
     AstNode astNode = tillNewLine().match(state);
-    assertEquals(3, state.lexerIndex);
-    assertEquals(3, astNode.getChildren().size());
+    assertThat(state.lexerIndex).isEqualTo(3);
+    assertThat(astNode.getChildren().size()).isEqualTo(3);
   }
 
   @Test
   public void testEqualsAndHashCode() {
-    assertThat(tillNewLine() == tillNewLine(), is(true));
-    assertThat(tillNewLine() == anyToken(), is(false));
+    assertThat(tillNewLine() == tillNewLine()).isTrue();
+    assertThat(tillNewLine() == anyToken()).isFalse();
   }
 
 }

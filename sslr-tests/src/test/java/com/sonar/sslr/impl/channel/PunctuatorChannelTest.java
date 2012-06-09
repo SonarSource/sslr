@@ -19,17 +19,17 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import static com.sonar.sslr.test.lexer.LexerMatchers.*;
-import static com.sonar.sslr.test.lexer.MockHelper.*;
-import static org.junit.Assert.*;
-import static org.sonar.test.channel.ChannelMatchers.*;
-
-import org.junit.Test;
-import org.sonar.channel.CodeReader;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.Lexer;
+import org.junit.Test;
+import org.sonar.channel.CodeReader;
+
+import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
+import static com.sonar.sslr.test.lexer.MockHelper.mockLexer;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertThat;
+import static org.sonar.test.channel.ChannelMatchers.consume;
 
 public class PunctuatorChannelTest {
 
@@ -53,12 +53,12 @@ public class PunctuatorChannelTest {
     assertThat(channel, consume("*=,", lexer));
     assertThat(lexer.getTokens(), hasToken("*=", MyPunctuatorAndOperator.MUL_ASSIGN));
 
-    assertFalse(channel.consume(new CodeReader("!"), lexer));
+    assertThat(channel.consume(new CodeReader("!"), lexer)).isFalse();
   }
 
   @Test
   public void testNotConsumeWord() {
-    assertFalse(channel.consume(new CodeReader("word"), lexer));
+    assertThat(channel.consume(new CodeReader("word"), lexer)).isFalse();
   }
 
   private enum MyPunctuatorAndOperator implements TokenType {

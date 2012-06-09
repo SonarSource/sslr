@@ -19,13 +19,16 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isFalse;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isTrue;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
 
 public class AndMatcherTest {
 
@@ -38,15 +41,15 @@ public class AndMatcherTest {
 
   @Test
   public void testToString() {
-    assertEquals(and("(").toString(), "\"(\"");
-    assertEquals(and("(", ")").toString(), "and");
+    assertThat(and("(").toString()).isEqualTo("\"(\"");
+    assertThat(and("(", ")").toString()).isEqualTo("and");
   }
 
   @Test
   public void testEqualsAndHashCode() {
-    assertThat(and("a", "a") == and("a", "a"), is(true));
-    assertThat(and("a", "a") == and("a", "b"), is(false));
-    assertThat(and("a", "a") == longestOne("a", "a"), is(false));
+    assertThat(and("a", "a") == and("a", "a")).isTrue();
+    assertThat(and("a", "a") == and("a", "b")).isFalse();
+    assertThat(and("a", "a") == longestOne("a", "a")).isFalse();
   }
 
 }

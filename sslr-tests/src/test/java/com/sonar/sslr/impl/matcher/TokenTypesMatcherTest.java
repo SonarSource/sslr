@@ -19,25 +19,26 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.test.lexer.MockHelper.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.MockTokenType;
+import org.junit.Test;
+
+import static com.sonar.sslr.api.GenericTokenType.COMMENT;
+import static com.sonar.sslr.api.GenericTokenType.EOF;
+import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
+import static com.sonar.sslr.api.GenericTokenType.LITERAL;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isOneOfThem;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class TokenTypesMatcherTest {
 
   @Test
   public void ok() {
     TokenTypesMatcher matcher = new TokenTypesMatcher(MockTokenType.values());
-    assertTrue(matcher.isExpectedToken(mockToken(MockTokenType.WORD2, "word2")));
+    assertThat(matcher.isExpectedToken(mockToken(MockTokenType.WORD2, "word2"))).isTrue();
 
     TokenType dummyTokenType = new TokenType() {
 
@@ -54,21 +55,21 @@ public class TokenTypesMatcherTest {
       }
     };
 
-    assertFalse(matcher.isExpectedToken(mockToken(dummyTokenType, "word2")));
+    assertThat(matcher.isExpectedToken(mockToken(dummyTokenType, "word2"))).isFalse();
   }
 
   @Test
   public void testToString() {
-    assertEquals(new TokenTypesMatcher(MockTokenType.values()).toString(), "isOneOfThem");
+    assertThat(new TokenTypesMatcher(MockTokenType.values()).toString()).isEqualTo("isOneOfThem");
   }
 
   @Test
   public void testEqualsAndHashCode() {
-    assertThat(isOneOfThem(IDENTIFIER, EOF) == isOneOfThem(IDENTIFIER, EOF), is(true));
-    assertThat(isOneOfThem(IDENTIFIER, EOF) == isOneOfThem(EOF, IDENTIFIER), is(true));
-    assertThat(isOneOfThem(IDENTIFIER, EOF, COMMENT) == isOneOfThem(EOF, COMMENT, IDENTIFIER), is(true));
-    assertThat(isOneOfThem(IDENTIFIER, EOF) == isOneOfThem(IDENTIFIER, LITERAL), is(false));
-    assertThat(isOneOfThem(IDENTIFIER, EOF) == and(IDENTIFIER, EOF), is(false));
+    assertThat(isOneOfThem(IDENTIFIER, EOF) == isOneOfThem(IDENTIFIER, EOF)).isTrue();
+    assertThat(isOneOfThem(IDENTIFIER, EOF) == isOneOfThem(EOF, IDENTIFIER)).isTrue();
+    assertThat(isOneOfThem(IDENTIFIER, EOF, COMMENT) == isOneOfThem(EOF, COMMENT, IDENTIFIER)).isTrue();
+    assertThat(isOneOfThem(IDENTIFIER, EOF) == isOneOfThem(IDENTIFIER, LITERAL)).isFalse();
+    assertThat(isOneOfThem(IDENTIFIER, EOF) == and(IDENTIFIER, EOF)).isFalse();
   }
 
 }

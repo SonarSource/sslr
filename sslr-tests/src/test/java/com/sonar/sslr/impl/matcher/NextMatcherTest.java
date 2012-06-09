@@ -19,13 +19,14 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.next;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
 
 public class NextMatcherTest {
 
@@ -37,14 +38,14 @@ public class NextMatcherTest {
 
   @Test
   public void testToString() {
-    assertEquals(next("(").toString(), "next");
+    assertThat(next("(").toString()).isEqualTo("next");
   }
 
   @Test
   public void testEqualsAndHashCode() {
-    assertThat(next("a", "a") == next("a", "a"), is(true));
-    assertThat(next("a", "a") == next("a", "b"), is(false));
-    assertThat(next("a", "a") == and("a", "a"), is(false));
+    assertThat(next("a", "a") == next("a", "a")).isTrue();
+    assertThat(next("a", "a") == next("a", "b")).isFalse();
+    assertThat(next("a", "a") == and("a", "a")).isFalse();
   }
 
 }

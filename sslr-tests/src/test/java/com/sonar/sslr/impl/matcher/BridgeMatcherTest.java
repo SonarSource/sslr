@@ -30,13 +30,17 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
-import static com.sonar.sslr.impl.matcher.MyPunctuator.*;
-import static com.sonar.sslr.test.lexer.MockHelper.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.bridge;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static com.sonar.sslr.impl.matcher.MyPunctuator.CAT;
+import static com.sonar.sslr.impl.matcher.MyPunctuator.DOG;
+import static com.sonar.sslr.impl.matcher.MyPunctuator.LEFT;
+import static com.sonar.sslr.impl.matcher.MyPunctuator.RIGHT;
+import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
 
 public class BridgeMatcherTest {
 
@@ -70,22 +74,22 @@ public class BridgeMatcherTest {
 
   @Test
   public void testToString() {
-    assertEquals(bridge(LEFT, RIGHT).toString(), "bridge(LEFT, RIGHT)");
+    assertThat(bridge(LEFT, RIGHT).toString()).isEqualTo("bridge(LEFT, RIGHT)");
   }
 
   @Test
   public void testAstNodeTokens() {
     ParsingState state = new ParsingState(IdentifierLexer.create().lex("one "));
     AstNode astNode = bridge(GenericTokenType.IDENTIFIER, GenericTokenType.EOF).match(state);
-    assertEquals(2, state.lexerIndex);
-    assertEquals(2, astNode.getChildren().size());
+    assertThat(state.lexerIndex).isEqualTo(2);
+    assertThat(astNode.getChildren().size()).isEqualTo(2);
   }
 
   @Test
   public void testEqualsAndHashCode() {
-    assertThat(bridge(LEFT, RIGHT) == bridge(LEFT, RIGHT), is(true));
-    assertThat(bridge(LEFT, LEFT) == bridge(LEFT, RIGHT), is(false));
-    assertThat(bridge(LEFT, LEFT) == and(LEFT, RIGHT), is(false));
+    assertThat(bridge(LEFT, RIGHT) == bridge(LEFT, RIGHT)).isTrue();
+    assertThat(bridge(LEFT, LEFT) == bridge(LEFT, RIGHT)).isFalse();
+    assertThat(bridge(LEFT, LEFT) == and(LEFT, RIGHT)).isFalse();
   }
 
 }

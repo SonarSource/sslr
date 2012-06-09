@@ -23,10 +23,10 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import org.junit.Test;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.test.lexer.TokenUtils.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.anyToken;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.tillNewLine;
+import static com.sonar.sslr.test.lexer.TokenUtils.lex;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class AnyTokenMatcherTest {
 
@@ -34,21 +34,21 @@ public class AnyTokenMatcherTest {
   public void ok() {
     AnyTokenMatcher matcher = new AnyTokenMatcher();
     AstNode node = matcher.match(new ParsingState(lex("print screen")));
-    assertEquals("print", node.getTokenValue());
+    assertThat(node.getTokenValue()).isEqualTo("print");
 
     node = matcher.match(new ParsingState(lex(".")));
-    assertEquals(".", node.getTokenValue());
+    assertThat(node.getTokenValue()).isEqualTo(".");
   }
 
   @Test
   public void testToString() {
-    assertEquals(anyToken().toString(), "anyToken()");
+    assertThat(anyToken().toString()).isEqualTo("anyToken()");
   }
 
   @Test
   public void testEqualsAndHashCode() {
-    assertThat(anyToken() == anyToken(), is(true));
-    assertThat(anyToken() == tillNewLine(), is(false));
+    assertThat(anyToken() == anyToken()).isTrue();
+    assertThat(anyToken() == tillNewLine()).isFalse();
   }
 
 }

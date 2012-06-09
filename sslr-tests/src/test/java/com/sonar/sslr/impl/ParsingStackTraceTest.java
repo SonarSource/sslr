@@ -19,21 +19,20 @@
  */
 package com.sonar.sslr.impl;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.test.lexer.TokenUtils.*;
-import static org.junit.Assert.*;
-
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.List;
+
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.till;
+import static com.sonar.sslr.test.lexer.TokenUtils.lex;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class ParsingStackTraceTest {
 
@@ -73,7 +72,7 @@ public class ParsingStackTraceTest {
     expected.append("------\n");
     expected.append("Expected : <\"class\"> but was : <clas [IDENTIFIER]> ('tests://unittest': Line 3 / Column 16)\n");
 
-    assertEquals(expected.toString(), ParsingStackTrace.generateFullStackTrace(state));
+    assertThat(ParsingStackTrace.generateFullStackTrace(state)).isEqualTo(expected.toString());
   }
 
   @Test
@@ -97,7 +96,7 @@ public class ParsingStackTraceTest {
     expected
         .append("Expected : <\"class\"> but was : <clas [IDENTIFIER]> (copy book 'tests://unittest': Line 3 / Column 16 called from file 'file1': Line 20)\n");
 
-    assertEquals(expected.toString(), ParsingStackTrace.generate(modifiedState));
+    assertThat(ParsingStackTrace.generate(modifiedState)).isEqualTo(expected.toString());
   }
 
   @Test
@@ -114,7 +113,7 @@ public class ParsingStackTraceTest {
     expected.append("------\n");
     expected.append("Expected : <\"class\"> but was : <EOF> ('tests://unittest')\n");
 
-    assertEquals(expected.toString(), ParsingStackTrace.generateFullStackTrace(state));
+    assertThat(ParsingStackTrace.generateFullStackTrace(state)).isEqualTo(expected.toString());
   }
 
   public class JavaGrammar extends Grammar {

@@ -24,11 +24,12 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.events.IdentifierLexer;
 import org.junit.Test;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.adjacent;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.exclusiveTill;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertThat;
 
 public class ExclusiveTillMatcherTest {
 
@@ -41,22 +42,22 @@ public class ExclusiveTillMatcherTest {
 
   @Test
   public void testToString() {
-    assertEquals(exclusiveTill("(").toString(), "exclusiveTill");
+    assertThat(exclusiveTill("(").toString()).isEqualTo("exclusiveTill");
   }
 
   @Test
   public void testAstNodeTokens() {
     ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three four"));
     AstNode astNode = exclusiveTill("three").match(state);
-    assertEquals(2, state.lexerIndex);
-    assertEquals(2, astNode.getChildren().size());
+    assertThat(state.lexerIndex).isEqualTo(2);
+    assertThat(astNode.getChildren().size()).isEqualTo(2);
   }
 
   @Test
   public void testEqualsAndHashCode() {
-    assertThat(exclusiveTill("a", "a") == exclusiveTill("a", "a"), is(true));
-    assertThat(exclusiveTill("a", "a") == exclusiveTill("a", "b"), is(false));
-    assertThat(exclusiveTill("a", "a") == adjacent("a"), is(false));
+    assertThat(exclusiveTill("a", "a") == exclusiveTill("a", "a")).isTrue();
+    assertThat(exclusiveTill("a", "a") == exclusiveTill("a", "b")).isFalse();
+    assertThat(exclusiveTill("a", "a") == adjacent("a")).isFalse();
   }
 
 }

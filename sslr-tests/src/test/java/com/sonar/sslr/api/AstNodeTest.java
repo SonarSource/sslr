@@ -23,10 +23,14 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.sonar.sslr.test.lexer.MockHelper.*;
-import static com.sonar.sslr.test.miniC.MiniCParser.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
+import static com.sonar.sslr.test.miniC.MiniCParser.getGrammar;
+import static com.sonar.sslr.test.miniC.MiniCParser.parseString;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThat;
 
 public class AstNodeTest {
 
@@ -46,7 +50,7 @@ public class AstNodeTest {
     AstNode expr = new AstNode(new NodeType(), "expr", null);
     expr.addChild(null);
 
-    assertFalse(expr.hasChildren());
+    assertThat(expr.hasChildren()).isFalse();
   }
 
   @Test
@@ -77,7 +81,7 @@ public class AstNodeTest {
   @Test
   public void testHasChildren() {
     AstNode expr = new AstNode(new NodeType(), "expr", null);
-    assertFalse(expr.hasChildren());
+    assertThat(expr.hasChildren()).isFalse();
   }
 
   @Test
@@ -232,10 +236,10 @@ public class AstNodeTest {
     expr.addChild(identifier);
 
     assertThat(expr.findFirstChild(indentifierRule), is(identifier));
-    assertTrue(expr.hasChildren(indentifierRule));
+    assertThat(expr.hasChildren(indentifierRule)).isTrue();
     NodeType anotherRule = new NodeType();
     assertThat(expr.findFirstChild(anotherRule), is(nullValue()));
-    assertFalse(expr.hasChildren(anotherRule));
+    assertThat(expr.hasChildren(anotherRule)).isFalse();
   }
 
   @Test
@@ -247,8 +251,8 @@ public class AstNodeTest {
     expr.addChild(stat);
     expr.addChild(identifier);
 
-    assertTrue(identifier.hasParents(exprRule));
-    assertFalse(identifier.hasParents(new NodeType()));
+    assertThat(identifier.hasParents(exprRule)).isTrue();
+    assertThat(identifier.hasParents(new NodeType())).isFalse();
   }
 
   @Test

@@ -21,21 +21,23 @@ package com.sonar.sslr.impl.matcher;
 
 import org.junit.Test;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static org.junit.Assert.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class MatcherTreePrinterTest {
 
   @Test
   public void testPrint() {
-    assertEquals(MatcherTreePrinter.print(or("test")), "\"test\"");
-    assertEquals(MatcherTreePrinter.print(and("a", "b")), "and(\"a\", \"b\")");
-    assertEquals(MatcherTreePrinter.print(o2n("a")), "opt(one2n(\"a\"))");
-    assertEquals(MatcherTreePrinter.print(o2n("a", "b")), "opt(one2n(and(\"a\", \"b\")))");
+    assertThat(MatcherTreePrinter.print(or("test"))).isEqualTo("\"test\"");
+    assertThat(MatcherTreePrinter.print(and("a", "b"))).isEqualTo("and(\"a\", \"b\")");
+    assertThat(MatcherTreePrinter.print(o2n("a"))).isEqualTo("opt(one2n(\"a\"))");
+    assertThat(MatcherTreePrinter.print(o2n("a", "b"))).isEqualTo("opt(one2n(and(\"a\", \"b\")))");
 
     RuleDefinition heheBuilder = RuleDefinition.newRuleBuilder("hehe");
     RuleMatcher hehe = heheBuilder.is("bonjour", heheBuilder).getRule();
-    assertEquals(MatcherTreePrinter.print(hehe), "hehe.is(and(\"bonjour\", hehe))");
+    assertThat(MatcherTreePrinter.print(hehe)).isEqualTo("hehe.is(and(\"bonjour\", hehe))");
   }
 
 }

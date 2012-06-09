@@ -19,16 +19,6 @@
  */
 package com.sonar.sslr.impl.events;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static org.junit.Assert.*;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
-import org.junit.Test;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
@@ -37,6 +27,15 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
+import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+import static com.sonar.sslr.api.GenericTokenType.EOF;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class ParsingEventListenerTest {
 
@@ -144,7 +143,7 @@ public class ParsingEventListenerTest {
     expected.println("Exit matcher and(\"bonjour\", longestOne(rule1, rule2), and(\"olaa\", \"uhu\"), EOF) with match until index 6");
     expected.println("Exit rule root with match until index 6");
 
-    assertEquals(baos.toString(), baosExpected.toString());
+    assertThat(baos.toString()).isEqualTo(baosExpected.toString());
   }
 
 }

@@ -19,12 +19,15 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.anyToken;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isFalse;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isTrue;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.tillNewLine;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertThat;
 
 public class BooleanMatcherTest {
 
@@ -36,16 +39,16 @@ public class BooleanMatcherTest {
 
   @Test
   public void testToString() {
-    assertEquals(isTrue().toString(), "isTrue()");
-    assertEquals(isFalse().toString(), "isFalse()");
+    assertThat(isTrue().toString()).isEqualTo("isTrue()");
+    assertThat(isFalse().toString()).isEqualTo("isFalse()");
   }
 
   @Test
   public void testEqualsAndHashCode() {
-    assertThat(isTrue() == isTrue(), is(true));
-    assertThat(isFalse() == isFalse(), is(true));
-    assertThat(isTrue() == isFalse(), is(false));
-    assertThat(anyToken() == tillNewLine(), is(false));
+    assertThat(isTrue() == isTrue()).isTrue();
+    assertThat(isFalse() == isFalse()).isTrue();
+    assertThat(isTrue() == isFalse()).isFalse();
+    assertThat(anyToken() == tillNewLine()).isFalse();
   }
 
 }
