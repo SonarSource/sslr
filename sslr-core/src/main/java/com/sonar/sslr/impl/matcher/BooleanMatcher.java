@@ -55,17 +55,11 @@ public final class BooleanMatcher extends TokenMatcher {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (obj == null || obj.getClass() != getClass()) {
       return false;
     }
     BooleanMatcher other = (BooleanMatcher) obj;
-    if (internalState != other.internalState) {
-      return false;
-    }
-    return true;
+    return this.internalState == other.internalState;
   }
 
 }

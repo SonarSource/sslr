@@ -19,6 +19,7 @@
  */
 package com.sonar.sslr.impl.analysis;
 
+import com.google.common.base.Objects;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.OrMatcher;
 
@@ -54,28 +55,12 @@ public class EmptyAlternative {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (obj == null || obj.getClass() != getClass()) {
       return false;
     }
     EmptyAlternative other = (EmptyAlternative) obj;
-    if (alternative == null) {
-      if (other.alternative != null) {
-        return false;
-      }
-    } else if (!alternative.equals(other.alternative)) {
-      return false;
-    }
-    if (orMatcher == null) {
-      if (other.orMatcher != null) {
-        return false;
-      }
-    } else if (!orMatcher.equals(other.orMatcher)) {
-      return false;
-    }
-    return true;
+    return Objects.equal(this.alternative, other.alternative)
+        && Objects.equal(this.orMatcher, other.orMatcher);
   }
 
 }

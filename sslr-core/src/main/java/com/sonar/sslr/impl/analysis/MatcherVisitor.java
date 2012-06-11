@@ -31,21 +31,23 @@ public abstract class MatcherVisitor<R, U> {
   }
 
   public final R visit(Matcher matcher, U userObject) {
+    final R result;
     if (matcher instanceof TokenMatcher) {
-      return visit((TokenMatcher) matcher, userObject);
+      result = visit((TokenMatcher) matcher, userObject);
     } else if (matcher instanceof OrMatcher) {
-      return visit((OrMatcher) matcher, userObject);
+      result = visit((OrMatcher) matcher, userObject);
     } else if (matcher instanceof AndMatcher) {
-      return visit((AndMatcher) matcher, userObject);
+      result = visit((AndMatcher) matcher, userObject);
     } else if (matcher instanceof OptMatcher) {
-      return visit((OptMatcher) matcher, userObject);
+      result = visit((OptMatcher) matcher, userObject);
     } else if (matcher instanceof OneToNMatcher) {
-      return visit((OneToNMatcher) matcher, userObject);
+      result = visit((OneToNMatcher) matcher, userObject);
     } else if (matcher instanceof RuleMatcher) {
-      return visit((RuleMatcher) matcher, userObject);
+      result = visit((RuleMatcher) matcher, userObject);
     } else {
       throw new UnsupportedMatcherException(matcher);
     }
+    return result;
   }
 
   public abstract R visit(TokenMatcher matcher, U userObject);

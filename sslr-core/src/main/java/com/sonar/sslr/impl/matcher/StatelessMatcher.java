@@ -41,17 +41,11 @@ public abstract class StatelessMatcher extends MemoizedMatcher {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (obj == null || obj.getClass() != getClass()) {
       return false;
     }
     StatelessMatcher other = (StatelessMatcher) obj;
-    if ( !Arrays.equals(children, other.children)) {
-      return false;
-    }
-    return true;
+    return Arrays.equals(children, other.children);
   }
 
 }

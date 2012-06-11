@@ -20,7 +20,7 @@
 package com.sonar.sslr.impl.xpath;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Iterators;
 import com.sonar.sslr.api.AstNode;
 import org.jaxen.DefaultNavigator;
 import org.jaxen.XPath;
@@ -213,15 +213,10 @@ public class AstNodeNavigator extends DefaultNavigator {
   public Iterator getAttributeAxisIterator(Object contextNode) {
     if (isElement(contextNode)) {
       AstNode astNode = (AstNode) contextNode;
-
       if (!astNode.hasToken()) {
         return EMPTY_ITERATOR;
       } else {
-        return Lists.newArrayList(
-            new Attribute("tokenLine", astNode),
-            new Attribute("tokenColumn", astNode),
-            new Attribute("tokenValue", astNode)
-            ).iterator();
+        return Iterators.forArray(new Attribute("tokenLine", astNode), new Attribute("tokenColumn", astNode), new Attribute("tokenValue", astNode));
       }
     } else if (isAttribute(contextNode)) {
       return EMPTY_ITERATOR;
