@@ -22,12 +22,18 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.GenericTokenType;
 import org.junit.Test;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static com.sonar.sslr.api.GenericTokenType.EOF;
+import static com.sonar.sslr.api.GenericTokenType.EOL;
+import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.next;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 public class GrammarFunctionsTest {
 
@@ -43,6 +49,44 @@ public class GrammarFunctionsTest {
             longestOne("one", "two", "three")) == and(or("hehe", "huhu", and("haha", opt("hoho"))),
             IDENTIFIER, next("hehe", com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not(and("hmmm"))), GenericTokenType.class,
             longestOne("one", "two", "three")), is(true));
+  }
+
+  @Test
+  public void test_and() {
+    assertThat(and("(").toString()).isEqualTo("\"(\"");
+    assertThat(and("(", ")").toString()).isEqualTo("and");
+
+    assertThat(and("a", "a") == and("a", "a")).isTrue();
+    assertThat(and("a", "a") == and("a", "b")).isFalse();
+    assertThat(and("a", "a") == longestOne("a", "a")).isFalse();
+  }
+
+  @Test
+  public void test_or() {
+    assertThat(or("(").toString()).isEqualTo("\"(\"");
+    assertThat(or("(", ")").toString()).isEqualTo("or");
+
+    assertThat(or("a", "a") == or("a", "a")).isTrue();
+    assertThat(or("a", "a") == or("a", "b")).isFalse();
+    assertThat(or("a", "a") == longestOne("a", "a")).isFalse();
+  }
+
+  @Test
+  public void test_one2n() {
+    assertThat(one2n("(").toString()).isEqualTo("one2n");
+
+    assertThat(one2n("a", "a") == one2n("a", "a")).isTrue();
+    assertThat(one2n("a", "a") == one2n("a", "b")).isFalse();
+    assertThat(one2n("a", "a") == longestOne("a", "a")).isFalse();
+  }
+
+  @Test
+  public void test_opt() {
+    assertThat(opt("(").toString()).isEqualTo("opt");
+
+    assertThat(opt("a", "a") == opt("a", "a")).isTrue();
+    assertThat(opt("a", "a") == opt("a", "b")).isFalse();
+    assertThat(opt("a", "a") == longestOne("a", "a")).isFalse();
   }
 
 }

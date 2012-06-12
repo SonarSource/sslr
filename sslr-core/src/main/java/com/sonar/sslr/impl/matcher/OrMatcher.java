@@ -23,6 +23,9 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 
+/**
+ * A {@link Matcher} trying all of its submatchers in sequence and succeeding when the first submatcher succeeds.
+ */
 public final class OrMatcher extends StatelessMatcher {
 
   protected OrMatcher(Matcher... matchers) {

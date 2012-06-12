@@ -49,6 +49,10 @@ public abstract class Matcher {
     }
   }
 
+  /**
+   * @return AST node, which was constructed
+   * @throws BacktrackingEvent if the match was not successful
+   */
   public abstract AstNode match(ParsingState parsingState);
 
   protected final void enterEvent(ParsingState parsingState) {

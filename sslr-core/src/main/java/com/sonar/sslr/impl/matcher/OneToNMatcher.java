@@ -23,6 +23,10 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 
+/**
+ * A {@link Matcher} that repeatedly tries its submatcher against the input.
+ * Succeeds if its submatcher succeeds at least once.
+ */
 public final class OneToNMatcher extends StatelessMatcher {
 
   protected OneToNMatcher(Matcher matcher) {

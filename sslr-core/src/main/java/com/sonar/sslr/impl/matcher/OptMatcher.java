@@ -22,6 +22,9 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 
+/**
+ * A {@link Matcher} that tries its submatcher once against the input and always succeeds.
+ */
 public final class OptMatcher extends StatelessMatcher {
 
   protected OptMatcher(Matcher matcher) {

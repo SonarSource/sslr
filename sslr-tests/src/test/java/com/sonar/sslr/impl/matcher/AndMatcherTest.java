@@ -19,37 +19,60 @@
  */
 package com.sonar.sslr.impl.matcher;
 
+import com.sonar.sslr.impl.BacktrackingEvent;
+import com.sonar.sslr.impl.ParsingState;
 import org.junit.Test;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isFalse;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isTrue;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static org.fest.assertions.Assertions.assertThat;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 public class AndMatcherTest {
 
   @Test
-  public void ok() {
-    assertThat(and(isTrue(), isTrue(), isTrue()), match("one two three"));
-    assertThat(and(isTrue(), isFalse()), not(match("one two")));
-    assertThat(and(isFalse(), isFalse()), not(match("one two")));
+  public void should_move_forward() {
+    Matcher matcher = new AndMatcher(MockedMatchers.mockTrue(), MockedMatchers.mockTrue());
+    ParsingState parsingState = mock(ParsingState.class);
+    assertThat(matcher.isMatching(parsingState)).isTrue();
+    assertThat(parsingState.lexerIndex).isEqualTo(0);
+    matcher.match(parsingState);
+    assertThat(parsingState.lexerIndex).isEqualTo(2);
   }
 
   @Test
-  public void testToString() {
-    assertThat(and("(").toString()).isEqualTo("\"(\"");
-    assertThat(and("(", ")").toString()).isEqualTo("and");
+  public void should_not_move_forward() {
+    Matcher matcher = new AndMatcher(MockedMatchers.mockTrue(), MockedMatchers.mockFalse());
+    ParsingState parsingState = mock(ParsingState.class);
+    assertThat(matcher.isMatching(parsingState)).isFalse();
+    assertThat(parsingState.lexerIndex).isEqualTo(0);
+    try {
+      matcher.match(parsingState);
+      fail();
+    } catch (BacktrackingEvent e) {
+      // OK
+    }
+    assertThat(parsingState.lexerIndex).isEqualTo(1);
   }
 
   @Test
-  public void testEqualsAndHashCode() {
-    assertThat(and("a", "a") == and("a", "a")).isTrue();
-    assertThat(and("a", "a") == and("a", "b")).isFalse();
-    assertThat(and("a", "a") == longestOne("a", "a")).isFalse();
+  public void test_toString() {
+    assertThat(new AndMatcher().toString()).isEqualTo("and");
+  }
+
+  @Test
+  public void test_equals_and_hashCode() {
+    Matcher first = new AndMatcher(MockedMatchers.mockTrue());
+    assertThat(first.equals(first)).isTrue();
+    assertThat(first.equals(null)).isFalse();
+    // different matcher
+    assertThat(first.equals(MockedMatchers.mockTrue())).isFalse();
+    // same submatchers
+    Matcher second = new AndMatcher(MockedMatchers.mockTrue());
+    assertThat(first.equals(second)).isTrue();
+    assertThat(first.hashCode() == second.hashCode()).isTrue();
+    // different submatchers
+    Matcher third = new AndMatcher(MockedMatchers.mockFalse());
+    assertThat(first.equals(third)).isFalse();
   }
 
 }

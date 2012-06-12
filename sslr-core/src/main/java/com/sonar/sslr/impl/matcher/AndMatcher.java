@@ -22,6 +22,9 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 
+/**
+ * A {@link Matcher} that tries all of its submatchers in sequence and only succeeds if all submatchers succeed.
+ */
 public final class AndMatcher extends StatelessMatcher {
 
   protected AndMatcher(Matcher... matchers) {

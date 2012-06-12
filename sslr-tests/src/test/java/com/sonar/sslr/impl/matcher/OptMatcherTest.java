@@ -19,35 +19,54 @@
  */
 package com.sonar.sslr.impl.matcher;
 
+import com.sonar.sslr.impl.ParsingState;
 import org.junit.Test;
+import org.mockito.Mockito;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isFalse;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isTrue;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static org.fest.assertions.Assertions.assertThat;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class OptMatcherTest {
 
   @Test
-  public void ok() {
-    assertThat(opt(isFalse()), not(match("one")));
-    assertThat(opt(isTrue()), match("one"));
+  public void should_move_forward() {
+    Matcher matcher = new OptMatcher(MockedMatchers.mockTrue());
+    ParsingState parsingState = mock(ParsingState.class);
+    assertThat(matcher.isMatching(parsingState)).isTrue();
+    assertThat(parsingState.lexerIndex).isEqualTo(0);
+    matcher.match(parsingState);
+    assertThat(parsingState.lexerIndex).isEqualTo(1);
   }
 
   @Test
-  public void testToString() {
-    assertThat(opt("(").toString()).isEqualTo("opt");
+  public void should_not_move_forward() {
+    Matcher matcher = new OptMatcher(MockedMatchers.mockFalse());
+    ParsingState parsingState = mock(ParsingState.class);
+    assertThat(matcher.isMatching(parsingState)).isTrue();
+    assertThat(parsingState.lexerIndex).isEqualTo(0);
+    matcher.match(parsingState);
+    assertThat(parsingState.lexerIndex).isEqualTo(0);
   }
 
   @Test
-  public void testEqualsAndHashCode() {
-    assertThat(opt("a", "a") == opt("a", "a")).isTrue();
-    assertThat(opt("a", "a") == opt("a", "b")).isFalse();
-    assertThat(opt("a", "a") == longestOne("a", "a")).isFalse();
+  public void test_toString() {
+    assertThat(new OptMatcher(Mockito.mock(Matcher.class)).toString()).isEqualTo("opt");
+  }
+
+  @Test
+  public void test_equals_and_hashCode() {
+    Matcher first = new OptMatcher(MockedMatchers.mockTrue());
+    assertThat(first.equals(first)).isTrue();
+    assertThat(first.equals(null)).isFalse();
+    // different matcher
+    assertThat(first.equals(MockedMatchers.mockTrue())).isFalse();
+    // same submatchers
+    Matcher second = new OptMatcher(MockedMatchers.mockTrue());
+    assertThat(first.equals(second)).isTrue();
+    assertThat(first.hashCode() == second.hashCode()).isTrue();
+    // different submatchers
+    Matcher third = new OptMatcher(MockedMatchers.mockFalse());
+    assertThat(first.equals(third)).isFalse();
   }
 
 }

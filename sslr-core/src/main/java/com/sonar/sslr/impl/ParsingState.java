@@ -114,7 +114,7 @@ public class ParsingState {
     return tokens[lexerSize - 1].getLine();
   }
 
-  public final void memoizeAst(MemoizedMatcher matcher, AstNode astNode) {
+  public void memoizeAst(MemoizedMatcher matcher, AstNode astNode) {
     astNode.setToIndex(lexerIndex);
     astNodeMemoization[astNode.getFromIndex()] = astNode;
     astMatcherMemoization[astNode.getFromIndex()] = matcher;
@@ -127,14 +127,14 @@ public class ParsingState {
     }
   }
 
-  public final boolean hasMemoizedAst(MemoizedMatcher matcher) {
+  public boolean hasMemoizedAst(MemoizedMatcher matcher) {
     if (astMatcherMemoization[lexerIndex] == matcher) {
       return true;
     }
     return false;
   }
 
-  public final AstNode getMemoizedAst(MemoizedMatcher matcher) {
+  public AstNode getMemoizedAst(MemoizedMatcher matcher) {
     if (hasMemoizedAst(matcher)) {
       return astNodeMemoization[lexerIndex];
     }
