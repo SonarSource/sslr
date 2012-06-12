@@ -24,7 +24,7 @@ import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.ParsingState;
 
-public final class RuleMatcher extends MemoizedMatcher {
+public final class RuleMatcher extends StandardMatcher {
 
   private final String name;
   private boolean recoveryRule = false;
@@ -35,26 +35,41 @@ public final class RuleMatcher extends MemoizedMatcher {
   }
 
   @Override
-  protected AstNode matchWorker(ParsingState parsingState) {
+  protected MatchResult doMatch(ParsingState parsingState) {
+    enterEvent(parsingState);
+    MatchResult matchResult = memoizerLookup(parsingState);
+    if (matchResult != null) {
+      return matchResult;
+    }
+
     int startIndex = parsingState.lexerIndex;
     if (super.children.length == 0) {
       throw new IllegalStateException("The rule '" + name + "' hasn't beed defined.");
     }
 
+    matchResult = super.children[0].doMatch(parsingState);
+
     if (recoveryRule) {
       RecognitionException recognitionException = parsingState.extendedStackTrace == null ?
           new RecognitionException(parsingState, false) : new RecognitionException(parsingState.extendedStackTrace, false);
 
-      if (super.children[0].isMatching(parsingState)) {
+      if (matchResult.isMatching()) {
+        parsingState.lexerIndex = startIndex;
         parsingState.notifyListeners(recognitionException);
+        parsingState.lexerIndex = matchResult.getToIndex();
       }
     }
 
-    AstNode childNode = super.children[0].match(parsingState);
+    if (!matchResult.isMatching()) {
+      exitWithoutMatchEvent(parsingState);
+      return MatchResult.fail(parsingState, startIndex);
+    }
 
+    AstNode childNode = matchResult.getAstNode();
     AstNode astNode = new AstNode(astNodeType, name, parsingState.peekTokenIfExists(startIndex, super.children[0]));
     astNode.addChild(childNode);
-    return astNode;
+    exitWithMatchEvent(parsingState, astNode);
+    return memoize(parsingState, MatchResult.succeed(parsingState, startIndex, astNode));
   }
 
   public void setNodeType(AstNodeType astNodeType) {
@@ -72,6 +87,16 @@ public final class RuleMatcher extends MemoizedMatcher {
   @Override
   public String toString() {
     return getName();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return this == obj;
+  }
+
+  @Override
+  public int hashCode() {
+    return getName().hashCode();
   }
 
 }

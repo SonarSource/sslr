@@ -20,39 +20,44 @@
 package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 
 /**
  * A {@link Matcher} that repeatedly tries its submatcher against the input.
  * Succeeds if its submatcher succeeds at least once.
  */
-public final class OneToNMatcher extends StatelessMatcher {
+public final class OneToNMatcher extends StandardMatcher {
 
   protected OneToNMatcher(Matcher matcher) {
     super(matcher);
   }
 
   @Override
-  protected AstNode matchWorker(ParsingState parsingState) {
+  protected MatchResult doMatch(ParsingState parsingState) {
+    enterEvent(parsingState);
+    MatchResult matchResult = memoizerLookup(parsingState);
+    if (matchResult != null) {
+      return matchResult;
+    }
     int startIndex = parsingState.lexerIndex;
     AstNode astNode = null;
-    boolean match = true;
     int loop = 0;
     do {
-      match = super.children[0].isMatching(parsingState);
-      if (match) {
+      matchResult = super.children[0].doMatch(parsingState);
+      if (matchResult.isMatching()) {
         if (astNode == null) {
           astNode = new AstNode(null, "oneToNMatcher", parsingState.peekTokenIfExists(startIndex, this));
         }
-        astNode.addChild(super.children[0].match(parsingState));
+        astNode.addChild(matchResult.getAstNode());
         loop++;
       }
-    } while (match);
+    } while (matchResult.isMatching());
     if (loop == 0) {
-      throw BacktrackingEvent.create();
+      exitWithoutMatchEvent(parsingState);
+      return MatchResult.fail(parsingState, startIndex);
     }
-    return astNode;
+    exitWithMatchEvent(parsingState, astNode);
+    return memoize(parsingState, MatchResult.succeed(parsingState, startIndex, astNode));
   }
 
   @Override

@@ -55,6 +55,57 @@ public abstract class Matcher {
    */
   public abstract AstNode match(ParsingState parsingState);
 
+  protected MatchResult doMatch(ParsingState parsingState) {
+    // For forward compatibility
+    int startingIndex = parsingState.lexerIndex;
+    try {
+      AstNode astNode = match(parsingState);
+      return MatchResult.succeed(parsingState, startingIndex, astNode);
+    } catch (BacktrackingEvent e) {
+      return MatchResult.fail(parsingState, startingIndex);
+    }
+  }
+
+  protected static class MatchResult {
+
+    private final AstNode astNode;
+    private final int toIndex;
+
+    private static final MatchResult NO_MATCH = new MatchResult(-1, null);
+
+    protected static MatchResult fail(ParsingState parsingState, int startingIndex) {
+      parsingState.lexerIndex = startingIndex;
+      return NO_MATCH;
+    }
+
+    protected static MatchResult succeed(ParsingState parsingState, int startingIndex, AstNode astNode) {
+      int toIndex = parsingState.lexerIndex;
+      if (astNode != null) {
+        astNode.setFromIndex(startingIndex);
+        astNode.setToIndex(toIndex);
+      }
+      return new MatchResult(toIndex, astNode);
+    }
+
+    private MatchResult(int toIndex, AstNode astNode) {
+      this.toIndex = toIndex;
+      this.astNode = astNode;
+    }
+
+    public boolean isMatching() {
+      return toIndex >= 0;
+    }
+
+    public AstNode getAstNode() {
+      return astNode;
+    }
+
+    public int getToIndex() {
+      return toIndex;
+    }
+
+  }
+
   protected final void enterEvent(ParsingState parsingState) {
     if (parsingState.parsingEventListeners != null) {
       if (this instanceof RuleMatcher) {
@@ -66,6 +117,38 @@ public abstract class Matcher {
         /* Fire the enterMatcher event */
         for (ParsingEventListener listener : parsingState.parsingEventListeners) {
           listener.enterMatcher(this, parsingState);
+        }
+      }
+    }
+  }
+
+  protected void exitWithMatchEvent(ParsingState parsingState, AstNode astNode) {
+    if (parsingState.parsingEventListeners != null) {
+      if (this instanceof RuleMatcher) {
+        /* Fire the exitWithMatchRule event */
+        for (ParsingEventListener listener : parsingState.parsingEventListeners) {
+          listener.exitWithMatchRule((RuleMatcher) this, parsingState, astNode);
+        }
+      } else {
+        /* Fire the exitWithMatchMatcher event */
+        for (ParsingEventListener listener : parsingState.parsingEventListeners) {
+          listener.exitWithMatchMatcher(this, parsingState, astNode);
+        }
+      }
+    }
+  }
+
+  protected void exitWithoutMatchEvent(ParsingState parsingState) {
+    if (parsingState.parsingEventListeners != null) {
+      if (this instanceof RuleMatcher) {
+        /* Fire the exitWithoutMatchRule event */
+        for (ParsingEventListener listener : parsingState.parsingEventListeners) {
+          listener.exitWithoutMatchRule((RuleMatcher) this, parsingState);
+        }
+      } else {
+        /* Fire the exitWithoutMatchMatcher event */
+        for (ParsingEventListener listener : parsingState.parsingEventListeners) {
+          listener.exitWithoutMatchMatcher(this, parsingState);
         }
       }
     }

@@ -51,7 +51,9 @@ public class AndMatcherTest {
     } catch (BacktrackingEvent e) {
       // OK
     }
-    assertThat(parsingState.lexerIndex).isEqualTo(1);
+    // NOTE: in fact we don't care about state, when matcher fails
+    // previous version keeps state (1), whereas new version restores state (0)
+    assertThat(parsingState.lexerIndex).isIn(0, 1);
   }
 
   @Test

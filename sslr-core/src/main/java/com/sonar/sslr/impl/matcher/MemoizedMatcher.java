@@ -39,7 +39,7 @@ public abstract class MemoizedMatcher extends Matcher {
   }
 
   @Override
-  public final AstNode match(ParsingState parsingState) {
+  public AstNode match(ParsingState parsingState) {
     enterEvent(parsingState);
 
     /* Memoizer lookup */
@@ -70,17 +70,17 @@ public abstract class MemoizedMatcher extends Matcher {
     }
   }
 
-  private void memoizeAst(ParsingState parsingState, AstNode astNode) {
+  protected void memoizeAst(ParsingState parsingState, AstNode astNode) {
     parsingState.memoizeAst(this, astNode);
   }
 
-  private AstNode getMemoizedAst(ParsingState parsingState) {
+  protected AstNode getMemoizedAst(ParsingState parsingState) {
     return parsingState.getMemoizedAst(this);
   }
 
   protected abstract AstNode matchWorker(ParsingState parsingState);
 
-  private void memoizerHitEvent(ParsingState parsingState) {
+  protected void memoizerHitEvent(ParsingState parsingState) {
     if (parsingState.parsingEventListeners != null) {
       for (ParsingEventListener parsingEventListener : parsingState.parsingEventListeners) {
         parsingEventListener.memoizerHit(this, parsingState);
@@ -88,7 +88,7 @@ public abstract class MemoizedMatcher extends Matcher {
     }
   }
 
-  private void memoizerMissEvent(ParsingState parsingState) {
+  protected void memoizerMissEvent(ParsingState parsingState) {
     if (parsingState.parsingEventListeners != null) {
       for (ParsingEventListener parsingEventListener : parsingState.parsingEventListeners) {
         parsingEventListener.memoizerMiss(this, parsingState);
@@ -96,35 +96,4 @@ public abstract class MemoizedMatcher extends Matcher {
     }
   }
 
-  private void exitWithMatchEvent(ParsingState parsingState, AstNode astNode) {
-    if (parsingState.parsingEventListeners != null) {
-      if (this instanceof RuleMatcher) {
-        /* Fire the exitWithMatchRule event */
-        for (ParsingEventListener listener : parsingState.parsingEventListeners) {
-          listener.exitWithMatchRule((RuleMatcher) this, parsingState, astNode);
-        }
-      } else {
-        /* Fire the exitWithMatchMatcher event */
-        for (ParsingEventListener listener : parsingState.parsingEventListeners) {
-          listener.exitWithMatchMatcher(this, parsingState, astNode);
-        }
-      }
-    }
-  }
-
-  private void exitWithoutMatchEvent(ParsingState parsingState) {
-    if (parsingState.parsingEventListeners != null) {
-      if (this instanceof RuleMatcher) {
-        /* Fire the exitWithoutMatchRule event */
-        for (ParsingEventListener listener : parsingState.parsingEventListeners) {
-          listener.exitWithoutMatchRule((RuleMatcher) this, parsingState);
-        }
-      } else {
-        /* Fire the exitWithoutMatchMatcher event */
-        for (ParsingEventListener listener : parsingState.parsingEventListeners) {
-          listener.exitWithoutMatchMatcher(this, parsingState);
-        }
-      }
-    }
-  }
 }

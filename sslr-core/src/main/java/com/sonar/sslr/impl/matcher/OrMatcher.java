@@ -20,26 +20,35 @@
 package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 
 /**
  * A {@link Matcher} trying all of its submatchers in sequence and succeeding when the first submatcher succeeds.
  */
-public final class OrMatcher extends StatelessMatcher {
+public final class OrMatcher extends StandardMatcher {
 
   protected OrMatcher(Matcher... matchers) {
     super(matchers);
   }
 
   @Override
-  protected AstNode matchWorker(ParsingState parsingState) {
+  protected MatchResult doMatch(ParsingState parsingState) {
+    enterEvent(parsingState);
+    MatchResult matchResult = memoizerLookup(parsingState);
+    if (matchResult != null) {
+      return matchResult;
+    }
+    int startingIndex = parsingState.lexerIndex;
     for (Matcher matcher : super.children) {
-      if (matcher.isMatching(parsingState)) {
-        return matcher.match(parsingState);
+      matchResult = matcher.doMatch(parsingState);
+      if (matchResult.isMatching()) {
+        AstNode astNode = matchResult.getAstNode();
+        exitWithMatchEvent(parsingState, astNode);
+        return memoize(parsingState, MatchResult.succeed(parsingState, startingIndex, astNode));
       }
     }
-    throw BacktrackingEvent.create();
+    exitWithoutMatchEvent(parsingState);
+    return MatchResult.fail(parsingState, startingIndex);
   }
 
   @Override

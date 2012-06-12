@@ -25,26 +25,38 @@ import com.sonar.sslr.impl.ParsingState;
 /**
  * A {@link Matcher} that tries all of its submatchers in sequence and only succeeds if all submatchers succeed.
  */
-public final class AndMatcher extends StatelessMatcher {
+public final class AndMatcher extends StandardMatcher {
 
   protected AndMatcher(Matcher... matchers) {
     super(matchers);
   }
 
   @Override
-  protected AstNode matchWorker(ParsingState parsingState) {
+  protected MatchResult doMatch(ParsingState parsingState) {
+    enterEvent(parsingState);
+    MatchResult matchResult = memoizerLookup(parsingState);
+    if (matchResult != null) {
+      return matchResult;
+    }
     AstNode[] childNodes = new AstNode[super.children.length];
     int startIndex = parsingState.lexerIndex;
 
     for (int i = 0; i < super.children.length; i++) {
-      childNodes[i] = super.children[i].match(parsingState);
+      matchResult = super.children[i].doMatch(parsingState);
+      if (matchResult.isMatching()) {
+        childNodes[i] = matchResult.getAstNode();
+      } else {
+        exitWithoutMatchEvent(parsingState);
+        return MatchResult.fail(parsingState, startIndex);
+      }
     }
 
     AstNode astNode = new AstNode(null, "AllMatcher", parsingState.peekTokenIfExists(startIndex, this));
     for (AstNode childNode : childNodes) {
       astNode.addChild(childNode);
     }
-    return astNode;
+    exitWithMatchEvent(parsingState, astNode);
+    return memoize(parsingState, MatchResult.succeed(parsingState, startIndex, astNode));
   }
 
   @Override

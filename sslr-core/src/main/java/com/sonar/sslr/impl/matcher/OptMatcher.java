@@ -25,18 +25,24 @@ import com.sonar.sslr.impl.ParsingState;
 /**
  * A {@link Matcher} that tries its submatcher once against the input and always succeeds.
  */
-public final class OptMatcher extends StatelessMatcher {
+public final class OptMatcher extends StandardMatcher {
 
   protected OptMatcher(Matcher matcher) {
     super(matcher);
   }
 
   @Override
-  protected AstNode matchWorker(ParsingState parsingState) {
-    if (super.children[0].isMatching(parsingState)) {
-      return super.children[0].match(parsingState);
+  protected MatchResult doMatch(ParsingState parsingState) {
+    enterEvent(parsingState);
+    MatchResult matchResult = memoizerLookup(parsingState);
+    if (matchResult != null) {
+      return matchResult;
     }
-    return null;
+    int startIndex = parsingState.lexerIndex;
+    matchResult = super.children[0].doMatch(parsingState);
+    AstNode astNode = matchResult.getAstNode();
+    exitWithMatchEvent(parsingState, astNode);
+    return memoize(parsingState, MatchResult.succeed(parsingState, startIndex, astNode));
   }
 
   @Override
