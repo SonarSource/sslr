@@ -55,6 +55,9 @@ public class ParsingState {
     astMatcherMemoization = new MemoizedMatcher[lexerSize + 1];
   }
 
+  /**
+   * @throws BacktrackingEvent
+   */
   public final Token popToken(Matcher matcher) {
     if (lexerIndex >= outpostMatcherTokenIndex) {
       outpostMatcherTokenIndex = lexerIndex;
@@ -70,6 +73,9 @@ public class ParsingState {
     return lexerIndex < lexerSize;
   }
 
+  /**
+   * @throws BacktrackingEvent
+   */
   public final Token peekToken(int index, Matcher matcher) {
     if (index > outpostMatcherTokenIndex) {
       outpostMatcherTokenIndex = index;
@@ -77,6 +83,18 @@ public class ParsingState {
     }
     if (index >= lexerSize) {
       throw BacktrackingEvent.create();
+    }
+    return tokens[index];
+  }
+
+  public final Token peekTokenIfExists(int index, Matcher matcher) {
+    // Note that implementation almost the same as in peekToken
+    if (index > outpostMatcherTokenIndex) {
+      outpostMatcherTokenIndex = index;
+      outpostMatcher = matcher;
+    }
+    if (index >= lexerSize) {
+      return null;
     }
     return tokens[index];
   }
@@ -139,14 +157,6 @@ public class ParsingState {
       return astNodeMemoization[lexerIndex];
     }
     return null;
-  }
-
-  public final Token peekTokenIfExists(int index, Matcher matcher) {
-    try {
-      return peekToken(index, matcher);
-    } catch (BacktrackingEvent e) {
-      return null;
-    }
   }
 
   public final void addListeners(RecognitionExceptionListener... listeners) {
