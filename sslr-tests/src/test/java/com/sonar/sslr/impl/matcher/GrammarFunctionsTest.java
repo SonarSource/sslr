@@ -31,8 +31,10 @@ import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
+import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 public class GrammarFunctionsTest {
@@ -87,6 +89,36 @@ public class GrammarFunctionsTest {
     assertThat(opt("a", "a") == opt("a", "a")).isTrue();
     assertThat(opt("a", "a") == opt("a", "b")).isFalse();
     assertThat(opt("a", "a") == longestOne("a", "a")).isFalse();
+  }
+
+  @Test
+  public void test_not() {
+    assertThat(GrammarFunctions.Predicate.not("(").toString()).isEqualTo("not");
+
+    assertThat(GrammarFunctions.Predicate.not("a") == GrammarFunctions.Predicate.not("a")).isTrue();
+    assertThat(GrammarFunctions.Predicate.not("a") == GrammarFunctions.Predicate.not("b")).isFalse();
+    assertThat(GrammarFunctions.Predicate.not("a") == GrammarFunctions.Predicate.next("a")).isFalse();
+
+    assertThat(and("one", GrammarFunctions.Predicate.not("two"), "three"), match("one three"));
+    assertThat(and("one", GrammarFunctions.Predicate.not("two"), "two"),
+        org.hamcrest.Matchers.not(match("one two")));
+
+    assertThat(and(opt(GrammarFunctions.Predicate.not(and("one", "two")), "one"), opt(and("one", "two"))),
+        match("one"));
+    assertThat(and(opt(GrammarFunctions.Predicate.not(and("one", "two")), "one"), opt(and("one", "two"))),
+        match("one two"));
+  }
+
+  @Test
+  public void test_next() {
+    assertThat(next("(").toString()).isEqualTo("next");
+
+    assertThat(next("a", "a") == next("a", "a")).isTrue();
+    assertThat(next("a", "a") == next("a", "b")).isFalse();
+    assertThat(next("a", "a") == and("a", "a")).isFalse();
+
+    assertThat(and(next("one"), "one"), match("one"));
+    assertThat(and(next("two"), "one"), not(match("one")));
   }
 
 }

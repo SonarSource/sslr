@@ -23,6 +23,10 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 
+/**
+ * A special {@link Matcher} not actually matching any input but rather trying its submatcher against the current input
+ * position. Succeeds if the submatcher would succeed.
+ */
 public final class NextMatcher extends StatelessMatcher {
 
   protected NextMatcher(Matcher matcher) {

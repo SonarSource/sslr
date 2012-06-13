@@ -19,38 +19,60 @@
  */
 package com.sonar.sslr.impl.matcher;
 
+import com.sonar.sslr.impl.BacktrackingEvent;
+import com.sonar.sslr.impl.ParsingState;
 import org.junit.Test;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 public class NotMatcherTest {
 
   @Test
-  public void ok() {
-    assertThat(and("one", GrammarFunctions.Predicate.not("two"), "three"), match("one three"));
-    assertThat(and("one", GrammarFunctions.Predicate.not("two"), "two"),
-        org.hamcrest.Matchers.not(match("one two")));
-
-    assertThat(and(opt(GrammarFunctions.Predicate.not(and("one", "two")), "one"), opt(and("one", "two"))),
-        match("one"));
-    assertThat(and(opt(GrammarFunctions.Predicate.not(and("one", "two")), "one"), opt(and("one", "two"))),
-        match("one two"));
+  public void should_succeed_but_not_move_forward() {
+    Matcher matcher = new NotMatcher(MockedMatchers.mockFalse());
+    ParsingState parsingState = mock(ParsingState.class);
+    assertThat(matcher.isMatching(parsingState)).isTrue();
+    assertThat(parsingState.lexerIndex).isEqualTo(0);
+    matcher.match(parsingState);
+    assertThat(parsingState.lexerIndex).isEqualTo(0);
   }
 
   @Test
-  public void testToString() {
-    assertThat(GrammarFunctions.Predicate.not("(").toString()).isEqualTo("not");
+  public void should_fail() {
+    Matcher matcher = new NotMatcher(MockedMatchers.mockTrue());
+    ParsingState parsingState = mock(ParsingState.class);
+    assertThat(matcher.isMatching(parsingState)).isFalse();
+    assertThat(parsingState.lexerIndex).isEqualTo(0);
+    try {
+      matcher.match(parsingState);
+      fail();
+    } catch (BacktrackingEvent e) {
+      // OK
+    }
+    assertThat(parsingState.lexerIndex).isEqualTo(0);
   }
 
   @Test
-  public void testEqualsAndHashCode() {
-    assertThat(GrammarFunctions.Predicate.not("a") == GrammarFunctions.Predicate.not("a")).isTrue();
-    assertThat(GrammarFunctions.Predicate.not("a") == GrammarFunctions.Predicate.not("b")).isFalse();
-    assertThat(GrammarFunctions.Predicate.not("a") == GrammarFunctions.Predicate.next("a")).isFalse();
+  public void test_toString() {
+    assertThat(new NotMatcher(MockedMatchers.mockTrue()).toString()).isEqualTo("not");
+  }
+
+  @Test
+  public void test_equals_and_hashCode() {
+    Matcher first = new NotMatcher(MockedMatchers.mockTrue());
+    assertThat(first.equals(first)).isTrue();
+    assertThat(first.equals(null)).isFalse();
+    // different matcher
+    assertThat(first.equals(MockedMatchers.mockTrue())).isFalse();
+    // same submatchers
+    Matcher second = new NotMatcher(MockedMatchers.mockTrue());
+    assertThat(first.equals(second)).isTrue();
+    assertThat(first.hashCode() == second.hashCode()).isTrue();
+    // different submatchers
+    Matcher third = new NotMatcher(MockedMatchers.mockFalse());
+    assertThat(first.equals(third)).isFalse();
   }
 
 }
