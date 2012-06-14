@@ -8,30 +8,18 @@
     <version>1.14-SNAPSHOT</version>
   </parent>
 
-  <artifactId>sslr-tests</artifactId>
+  <artifactId>sslr-grammar-analyser</artifactId>
 
-  <name>SonarSource :: Language Recognizer :: Tests</name>
+  <name>SonarSource :: Language Recognizer :: Grammar Analyser</name>
+
+  <properties>
+    <sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath>
+  </properties>
 
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>sslr-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>sslr-grammar-analyser</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>sslr-xpath</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>sslr-testing-harness</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.codehaus.sonar</groupId>

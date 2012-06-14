@@ -66,6 +66,7 @@
     <module>sslr-testing-harness</module>
     <module>sslr-xpath</module>
     <module>sslr-tests</module>
+    <module>sslr-grammar-analyser</module>
   </modules>
 
   <dependencyManagement>
@@ -78,6 +79,11 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>sslr-xpath</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>sslr-grammar-analyser</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

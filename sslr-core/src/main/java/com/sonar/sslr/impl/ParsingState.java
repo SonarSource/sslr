@@ -56,7 +56,7 @@ public class ParsingState {
   }
 
   /**
-   * @throws BacktrackingEvent
+   * @throws BacktrackingEvent when there is no next token
    */
   public final Token popToken(Matcher matcher) {
     if (lexerIndex >= outpostMatcherTokenIndex) {
@@ -74,7 +74,7 @@ public class ParsingState {
   }
 
   /**
-   * @throws BacktrackingEvent
+   * @throws BacktrackingEvent when there is no next token
    */
   public final Token peekToken(int index, Matcher matcher) {
     if (index > outpostMatcherTokenIndex) {
@@ -87,6 +87,9 @@ public class ParsingState {
     return tokens[index];
   }
 
+  /**
+   * @return null, when there is no next token
+   */
   public final Token peekTokenIfExists(int index, Matcher matcher) {
     // Note that implementation almost the same as in peekToken
     if (index > outpostMatcherTokenIndex) {
@@ -99,6 +102,9 @@ public class ParsingState {
     return tokens[index];
   }
 
+  /**
+   * @throws BacktrackingEvent when there is no next token
+   */
   public final Token peekToken(Matcher matcher) {
     return peekToken(lexerIndex, matcher);
   }
