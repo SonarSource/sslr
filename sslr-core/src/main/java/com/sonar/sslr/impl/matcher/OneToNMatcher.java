@@ -35,10 +35,7 @@ public final class OneToNMatcher extends StandardMatcher {
   @Override
   protected MatchResult doMatch(ParsingState parsingState) {
     enterEvent(parsingState);
-    MatchResult matchResult = memoizerLookup(parsingState);
-    if (matchResult != null) {
-      return matchResult;
-    }
+    MatchResult matchResult;
     int startIndex = parsingState.lexerIndex;
     AstNode astNode = null;
     int loop = 0;
@@ -57,7 +54,7 @@ public final class OneToNMatcher extends StandardMatcher {
       return MatchResult.fail(parsingState, startIndex);
     }
     exitWithMatchEvent(parsingState, astNode);
-    return memoize(parsingState, MatchResult.succeed(parsingState, startIndex, astNode));
+    return MatchResult.succeed(parsingState, startIndex, astNode);
   }
 
   @Override

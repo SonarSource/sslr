@@ -21,20 +21,21 @@ package com.sonar.sslr.impl.analysis;
 
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
-import com.sonar.sslr.impl.matcher.TokenMatcher;
 import org.junit.Test;
 
-import static com.sonar.sslr.impl.analysis.EmptyVisitor.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static com.sonar.sslr.impl.analysis.EmptyVisitor.empty;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 public class EmptyVisitorTest {
 
   @Test
   public void tokenTest() {
     Matcher matcher = and("value");
-    assertThat(matcher instanceof TokenMatcher, is(true));
     assertThat(empty(matcher), is(false));
   }
 

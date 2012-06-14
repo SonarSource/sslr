@@ -22,19 +22,18 @@ package com.sonar.sslr.impl.analysis;
 import com.google.common.collect.Sets;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.impl.matcher.Matcher;
-import com.sonar.sslr.impl.matcher.OrMatcher;
-import com.sonar.sslr.impl.matcher.RuleDefinition;
-import com.sonar.sslr.impl.matcher.RuleMatcher;
+import com.sonar.sslr.impl.matcher.*;
 import org.junit.Test;
 
 import java.util.Set;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static com.sonar.sslr.api.GenericTokenType.EOF;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.till;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 public class GrammarAnalyserTest {
 
@@ -253,7 +252,7 @@ public class GrammarAnalyserTest {
     assertThat(analyser.isLeftRecursive(rule), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(rule), is(false));
     assertThat(analyser.hasEmptyRepetitions(rule), is(true));
-    assertThat(analyser.getEmptyRepetitions(rule), is((Set) Sets.newHashSet(grammar.emptyRepetition)));
+    assertThat(analyser.getEmptyRepetitions(rule), is((Set) Sets.newHashSet(DelegatingMatcher.unwrap(grammar.emptyRepetition))));
     assertThat(analyser.hasEmptyAlternatives(rule), is(false));
   }
 
@@ -286,7 +285,8 @@ public class GrammarAnalyserTest {
     assertThat(analyser.isLeftRecursive(ruleA), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(ruleA), is(false));
     assertThat(analyser.hasEmptyRepetitions(ruleA), is(true));
-    assertThat(analyser.getEmptyRepetitions(ruleA), is((Set) Sets.newHashSet(grammar.emptyRepetitionRuleA1, grammar.emptyRepetitionRuleA2)));
+    assertThat(analyser.getEmptyRepetitions(ruleA),
+        is((Set) Sets.newHashSet(DelegatingMatcher.unwrap(grammar.emptyRepetitionRuleA1), DelegatingMatcher.unwrap(grammar.emptyRepetitionRuleA2))));
     assertThat(analyser.hasEmptyAlternatives(ruleA), is(false));
 
     RuleMatcher ruleB = getRuleMatcher(grammar.ruleB);
@@ -294,7 +294,7 @@ public class GrammarAnalyserTest {
     assertThat(analyser.isLeftRecursive(ruleB), is(false));
     assertThat(analyser.isDependingOnLeftRecursiveRule(ruleB), is(false));
     assertThat(analyser.hasEmptyRepetitions(ruleB), is(true));
-    assertThat(analyser.getEmptyRepetitions(ruleB), is((Set) Sets.newHashSet(grammar.emptyRepetitionRuleB)));
+    assertThat(analyser.getEmptyRepetitions(ruleB), is((Set) Sets.newHashSet(DelegatingMatcher.unwrap(grammar.emptyRepetitionRuleB))));
     assertThat(analyser.hasEmptyAlternatives(ruleB), is(false));
 
     RuleMatcher ruleC = getRuleMatcher(grammar.ruleC);
@@ -356,7 +356,7 @@ public class GrammarAnalyserTest {
 
     public Rule rule;
     public Matcher emptyAlternative = opt("foo");
-    public OrMatcher orMatcher = (OrMatcher) or(emptyAlternative, "bar");
+    public OrMatcher orMatcher = (OrMatcher) DelegatingMatcher.unwrap(or(emptyAlternative, "bar"));
 
     public SingleEmptyAlternativeGrammar() {
       rule.is(orMatcher);
@@ -414,11 +414,11 @@ public class GrammarAnalyserTest {
     public Rule ruleC;
 
     public Matcher emptyAlternativeRuleA1 = opt("hello");
-    public OrMatcher orMatcherRuleA1 = (OrMatcher) or("foo", emptyAlternativeRuleA1);
+    public OrMatcher orMatcherRuleA1 = (OrMatcher) DelegatingMatcher.unwrap(or("foo", emptyAlternativeRuleA1));
     public Matcher emptyAlternativeRuleA2 = opt("world");
-    public OrMatcher orMatcherRuleA2 = (OrMatcher) or("foo", emptyAlternativeRuleA2);
+    public OrMatcher orMatcherRuleA2 = (OrMatcher) DelegatingMatcher.unwrap(or("foo", emptyAlternativeRuleA2));
 
-    public OrMatcher orMatcherRuleB = (OrMatcher) or("foo", ruleC);
+    public OrMatcher orMatcherRuleB = (OrMatcher) DelegatingMatcher.unwrap(or("foo", ruleC));
 
     public MultipleEmptyAlternativesGrammar() {
       ruleA.is(

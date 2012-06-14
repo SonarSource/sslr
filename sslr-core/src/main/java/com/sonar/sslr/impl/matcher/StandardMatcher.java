@@ -56,26 +56,6 @@ public class StandardMatcher extends MemoizedMatcher {
     throw new UnsupportedOperationException();
   }
 
-  protected MatchResult memoizerLookup(ParsingState parsingState) {
-    AstNode memoizedAstNode = getMemoizedAst(parsingState);
-    if (memoizedAstNode != null) {
-      memoizerHitEvent(parsingState);
-      parsingState.lexerIndex = memoizedAstNode.getToIndex();
-      exitWithMatchEvent(parsingState, memoizedAstNode);
-      return MatchResult.succeed(parsingState, memoizedAstNode.getFromIndex(), memoizedAstNode);
-    } else {
-      memoizerMissEvent(parsingState);
-      return null;
-    }
-  }
-
-  protected MatchResult memoize(ParsingState parsingState, MatchResult matchResult) {
-    if (matchResult.getAstNode() != null) {
-      memoizeAst(parsingState, matchResult.getAstNode());
-    }
-    return matchResult;
-  }
-
   @Override
   public int hashCode() {
     final int prime = 31;

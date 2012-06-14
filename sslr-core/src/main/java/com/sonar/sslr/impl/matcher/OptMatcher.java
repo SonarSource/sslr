@@ -34,15 +34,11 @@ public final class OptMatcher extends StandardMatcher {
   @Override
   protected MatchResult doMatch(ParsingState parsingState) {
     enterEvent(parsingState);
-    MatchResult matchResult = memoizerLookup(parsingState);
-    if (matchResult != null) {
-      return matchResult;
-    }
     int startIndex = parsingState.lexerIndex;
-    matchResult = super.children[0].doMatch(parsingState);
+    MatchResult matchResult = super.children[0].doMatch(parsingState);
     AstNode astNode = matchResult.getAstNode();
     exitWithMatchEvent(parsingState, astNode);
-    return memoize(parsingState, MatchResult.succeed(parsingState, startIndex, astNode));
+    return MatchResult.succeed(parsingState, startIndex, astNode);
   }
 
   @Override

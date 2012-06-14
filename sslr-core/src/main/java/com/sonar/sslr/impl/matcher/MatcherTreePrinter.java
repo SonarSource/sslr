@@ -29,6 +29,8 @@ public final class MatcherTreePrinter {
   }
 
   private static String print(Matcher matcher, boolean expandRule) {
+    matcher = DelegatingMatcher.unwrap(matcher);
+
     Matcher[] children = matcher.children;
 
     StringBuilder result = new StringBuilder(matcher.toString());

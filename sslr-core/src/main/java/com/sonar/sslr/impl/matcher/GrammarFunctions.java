@@ -40,6 +40,8 @@ public final class GrammarFunctions {
   };
 
   private static Matcher getCachedMatcher(Matcher matcher) {
+    matcher = wrapByMemoMatcher(matcher);
+
     if (MATCHER_CACHE.get().containsKey(matcher)) {
       return MATCHER_CACHE.get().get(matcher);
     }
@@ -300,6 +302,7 @@ public final class GrammarFunctions {
     public static Matcher longestOne(Object... elements) {
       return getCachedMatcher(new LongestOneMatcher(convertToMatchers(elements)));
     }
+
   }
 
   protected static Matcher[] convertToMatchers(Object[] objects) {
@@ -319,8 +322,7 @@ public final class GrammarFunctions {
     if (object == null) {
       throw new IllegalStateException("Null is not a valid matcher.");
     }
-
-    Matcher matcher;
+    final Matcher matcher;
     if (object instanceof String) {
       matcher = getCachedMatcher(new TokenValueMatcher((String) object));
     } else if (object instanceof TokenType) {
@@ -330,16 +332,16 @@ public final class GrammarFunctions {
       matcher = ((RuleDefinition) object).getRule();
     } else if (object instanceof Class) {
       matcher = getCachedMatcher(new TokenTypeClassMatcher((Class) object));
+    } else if (object instanceof Matcher) {
+      matcher = (Matcher) object;
     } else {
-      try {
-        matcher = (Matcher) object;
-      } catch (ClassCastException e) {
-        throw new IllegalStateException(
-            "The matcher object can't be anything else than a Rule, Matcher, String, TokenType or Class. Object = " + object);
-      }
+      throw new IllegalStateException("The matcher object can't be anything else than a Rule, Matcher, String, TokenType or Class. Object = " + object);
     }
-
     return matcher;
+  }
+
+  private static Matcher wrapByMemoMatcher(Matcher matcher) {
+    return matcher instanceof MemoMatcher ? matcher : new MemoMatcher(matcher);
   }
 
 }

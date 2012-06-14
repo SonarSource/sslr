@@ -34,17 +34,13 @@ public abstract class TokenMatcher extends StandardMatcher {
   @Override
   protected final MatchResult doMatch(ParsingState parsingState) {
     enterEvent(parsingState);
-    MatchResult matchResult = memoizerLookup(parsingState);
-    if (matchResult != null) {
-      return matchResult;
-    }
     int startingIndex = parsingState.lexerIndex;
     Token token = parsingState.peekTokenIfExists(parsingState.lexerIndex, this);
     if (token != null && isExpectedToken(token)) {
       token = parsingState.popToken(this);
       AstNode astNode = hasToBeSkippedFromAst ? null : new AstNode(token);
       exitWithMatchEvent(parsingState, astNode);
-      return memoize(parsingState, MatchResult.succeed(parsingState, startingIndex, astNode));
+      return MatchResult.succeed(parsingState, startingIndex, astNode);
     } else {
       exitWithoutMatchEvent(parsingState);
       return MatchResult.fail(parsingState, startingIndex);

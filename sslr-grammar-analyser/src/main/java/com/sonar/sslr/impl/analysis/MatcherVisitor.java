@@ -32,6 +32,9 @@ public abstract class MatcherVisitor<R, U> {
 
   public final R visit(Matcher matcher, U userObject) {
     final R result;
+
+    matcher = DelegatingMatcher.unwrap(matcher);
+
     if (matcher instanceof TokenMatcher) {
       result = visit((TokenMatcher) matcher, userObject);
     } else if (matcher instanceof OrMatcher) {

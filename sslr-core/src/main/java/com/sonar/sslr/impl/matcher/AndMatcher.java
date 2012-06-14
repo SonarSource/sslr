@@ -34,15 +34,11 @@ public final class AndMatcher extends StandardMatcher {
   @Override
   protected MatchResult doMatch(ParsingState parsingState) {
     enterEvent(parsingState);
-    MatchResult matchResult = memoizerLookup(parsingState);
-    if (matchResult != null) {
-      return matchResult;
-    }
     AstNode[] childNodes = new AstNode[super.children.length];
     int startIndex = parsingState.lexerIndex;
 
     for (int i = 0; i < super.children.length; i++) {
-      matchResult = super.children[i].doMatch(parsingState);
+      MatchResult matchResult = super.children[i].doMatch(parsingState);
       if (matchResult.isMatching()) {
         childNodes[i] = matchResult.getAstNode();
       } else {
@@ -56,7 +52,7 @@ public final class AndMatcher extends StandardMatcher {
       astNode.addChild(childNode);
     }
     exitWithMatchEvent(parsingState, astNode);
-    return memoize(parsingState, MatchResult.succeed(parsingState, startIndex, astNode));
+    return MatchResult.succeed(parsingState, startIndex, astNode);
   }
 
   @Override

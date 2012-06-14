@@ -130,6 +130,10 @@ public class ParsingEventListenerTest {
     expected.println("Exit matcher and(\"hehe\", \"huhu\") with match until index 3");
     expected.println("Exit rule rule2 with match until index 3");
     expected.println("Entered rule rule2 at index 1");
+
+    expected.println("Entered matcher and(\"hehe\", \"huhu\") at index 1");
+    expected.println("Exit matcher and(\"hehe\", \"huhu\") with match until index 3");
+
     expected.println("Exit rule rule2 with match until index 3");
     expected.println("Exit matcher longestOne(rule1, rule2) with match until index 3");
     expected.println("Entered matcher and(\"olaa\", \"uhu\") at index 3");

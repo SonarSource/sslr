@@ -37,17 +37,13 @@ public final class RuleMatcher extends StandardMatcher {
   @Override
   protected MatchResult doMatch(ParsingState parsingState) {
     enterEvent(parsingState);
-    MatchResult matchResult = memoizerLookup(parsingState);
-    if (matchResult != null) {
-      return matchResult;
-    }
 
     int startIndex = parsingState.lexerIndex;
     if (super.children.length == 0) {
       throw new IllegalStateException("The rule '" + name + "' hasn't beed defined.");
     }
 
-    matchResult = super.children[0].doMatch(parsingState);
+    MatchResult matchResult = super.children[0].doMatch(parsingState);
 
     if (recoveryRule) {
       RecognitionException recognitionException = parsingState.extendedStackTrace == null ?
@@ -69,7 +65,7 @@ public final class RuleMatcher extends StandardMatcher {
     AstNode astNode = new AstNode(astNodeType, name, parsingState.peekTokenIfExists(startIndex, super.children[0]));
     astNode.addChild(childNode);
     exitWithMatchEvent(parsingState, astNode);
-    return memoize(parsingState, MatchResult.succeed(parsingState, startIndex, astNode));
+    return MatchResult.succeed(parsingState, startIndex, astNode);
   }
 
   public void setNodeType(AstNodeType astNodeType) {

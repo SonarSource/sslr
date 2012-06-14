@@ -20,6 +20,7 @@
 package com.sonar.sslr.impl.analysis;
 
 import com.google.common.collect.Sets;
+import com.sonar.sslr.impl.matcher.DelegatingMatcher;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.OrMatcher;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
@@ -27,9 +28,11 @@ import org.junit.Test;
 
 import java.util.Set;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 public class EmptyAlternativeVisitorTest {
 
@@ -54,7 +57,7 @@ public class EmptyAlternativeVisitorTest {
     EmptyAlternativeVisitor visitor = new EmptyAlternativeVisitor();
 
     Matcher alternative = opt("foo");
-    OrMatcher orMatcher = (OrMatcher) or(alternative, "foo", "bar");
+    OrMatcher orMatcher = (OrMatcher) DelegatingMatcher.unwrap(or(alternative, "foo", "bar"));
     visitor.visit(orMatcher);
 
     assertThat(visitor.getEmptyAlternatives(), is((Set) Sets.newHashSet(new EmptyAlternative(orMatcher, alternative))));
@@ -66,7 +69,7 @@ public class EmptyAlternativeVisitorTest {
 
     RuleDefinition rule = RuleDefinition.newRuleBuilder("rule");
     Matcher alternative = opt("foo");
-    OrMatcher orMatcher = (OrMatcher) or(alternative, "foo", "bar");
+    OrMatcher orMatcher = (OrMatcher) DelegatingMatcher.unwrap(or(alternative, "foo", "bar"));
     rule.is(orMatcher);
 
     visitor.visit(rule.getRule());

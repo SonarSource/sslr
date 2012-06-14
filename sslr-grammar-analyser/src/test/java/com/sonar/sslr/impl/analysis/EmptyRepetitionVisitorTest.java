@@ -20,15 +20,18 @@
 package com.sonar.sslr.impl.analysis;
 
 import com.google.common.collect.Sets;
+import com.sonar.sslr.impl.matcher.DelegatingMatcher;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.junit.Test;
 
 import java.util.Set;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 public class EmptyRepetitionVisitorTest {
 
@@ -55,7 +58,7 @@ public class EmptyRepetitionVisitorTest {
     Matcher matcher = one2n(opt("foo"));
     visitor.visit(matcher);
 
-    assertThat(visitor.getEmptyRepetitions(), is((Set) Sets.newHashSet(matcher)));
+    assertThat(visitor.getEmptyRepetitions(), is((Set) Sets.newHashSet(DelegatingMatcher.unwrap(matcher))));
   }
 
   @Test
@@ -68,7 +71,7 @@ public class EmptyRepetitionVisitorTest {
 
     visitor.visit(rule.getRule());
 
-    assertThat(visitor.getEmptyRepetitions(), is((Set) Sets.newHashSet(matcher)));
+    assertThat(visitor.getEmptyRepetitions(), is((Set) Sets.newHashSet(DelegatingMatcher.unwrap(matcher))));
   }
 
   @Test

@@ -20,24 +20,26 @@
 package com.sonar.sslr.impl.analysis;
 
 import com.google.common.collect.Sets;
+import com.sonar.sslr.impl.matcher.DelegatingMatcher;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
-import com.sonar.sslr.impl.matcher.TokenMatcher;
 import org.junit.Test;
 
 import java.util.Set;
 
-import static com.sonar.sslr.impl.analysis.FirstVisitor.*;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static com.sonar.sslr.impl.analysis.FirstVisitor.first;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 public class FirstVisitorTest {
 
   @Test
   public void tokenTest() {
     Matcher matcher = and("value");
-    assertThat(matcher instanceof TokenMatcher, is(true));
     assertThat(first(matcher), is(getSet("value")));
   }
 
@@ -142,7 +144,7 @@ public class FirstVisitorTest {
     Set<Matcher> set = Sets.newHashSet();
 
     for (String tokenValue : tokenValues) {
-      set.add(and(tokenValue));
+      set.add(DelegatingMatcher.unwrap(and(tokenValue)));
     }
 
     return set;

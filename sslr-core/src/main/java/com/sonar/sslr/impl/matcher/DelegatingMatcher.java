@@ -19,37 +19,30 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 
-/**
- * A {@link Matcher} trying all of its submatchers in sequence and succeeding when the first submatcher succeeds.
- */
-public final class OrMatcher extends StandardMatcher {
+public abstract class DelegatingMatcher extends StandardMatcher {
 
-  protected OrMatcher(Matcher... matchers) {
-    super(matchers);
+  public DelegatingMatcher(Matcher delegate) {
+    super(delegate);
+  }
+
+  protected Matcher getDelegate() {
+    return this.children[0];
   }
 
   @Override
   protected MatchResult doMatch(ParsingState parsingState) {
-    enterEvent(parsingState);
-    int startingIndex = parsingState.lexerIndex;
-    for (Matcher matcher : super.children) {
-      MatchResult matchResult = matcher.doMatch(parsingState);
-      if (matchResult.isMatching()) {
-        AstNode astNode = matchResult.getAstNode();
-        exitWithMatchEvent(parsingState, astNode);
-        return MatchResult.succeed(parsingState, startingIndex, astNode);
-      }
-    }
-    exitWithoutMatchEvent(parsingState);
-    return MatchResult.fail(parsingState, startingIndex);
+    return getDelegate().doMatch(parsingState);
   }
 
   @Override
   public String toString() {
-    return "or";
+    return getDelegate().toString();
+  }
+
+  public static Matcher unwrap(Matcher matcher) {
+    return matcher instanceof DelegatingMatcher ? matcher.children[0] : matcher;
   }
 
 }
