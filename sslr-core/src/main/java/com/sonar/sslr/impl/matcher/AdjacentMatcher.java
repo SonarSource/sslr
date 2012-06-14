@@ -21,27 +21,40 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 
-public final class AdjacentMatcher extends StatelessMatcher {
+public final class AdjacentMatcher extends StandardMatcher {
 
   protected AdjacentMatcher(Matcher matcher) {
     super(matcher);
   }
 
   @Override
-  protected AstNode matchWorker(ParsingState parsingState) {
+  protected MatchResult doMatch(ParsingState parsingState) {
+    enterEvent(parsingState);
+    MatchResult matchResult = memoizerLookup(parsingState);
+    if (matchResult != null) {
+      return matchResult;
+    }
     int index = parsingState.lexerIndex;
-    Token nextToken = parsingState.peekToken(index, this);
+    Token nextToken = parsingState.peekTokenIfExists(index, this);
     Token previousToken = parsingState.readToken(index - 1);
-    if (nextToken.getColumn() <= previousToken.getColumn() + previousToken.getValue().length()
+    if (nextToken != null
+        && nextToken.getColumn() <= previousToken.getColumn() + previousToken.getValue().length()
         && nextToken.getLine() == previousToken.getLine()) {
-      AstNode node = new AstNode(null, "adjacentMatcher", nextToken);
-      node.addChild(super.children[0].match(parsingState));
-      return node;
+      matchResult = super.children[0].doMatch(parsingState);
+      if (matchResult.isMatching()) {
+        AstNode node = new AstNode(null, "adjacentMatcher", nextToken);
+        node.addChild(matchResult.getAstNode());
+        exitWithMatchEvent(parsingState, node);
+        return memoize(parsingState, MatchResult.succeed(parsingState, index, node));
+      } else {
+        exitWithoutMatchEvent(parsingState);
+        return MatchResult.fail(parsingState, index);
+      }
     } else {
-      throw BacktrackingEvent.create();
+      exitWithoutMatchEvent(parsingState);
+      return MatchResult.fail(parsingState, index);
     }
   }
 

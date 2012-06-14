@@ -19,26 +19,31 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 
 /**
  * A special {@link Matcher} not actually matching any input but rather trying its submatcher against the current input
  * position. Succeeds if the submatcher would fail.
  */
-public final class NotMatcher extends StatelessMatcher {
+public final class NotMatcher extends StandardMatcher {
 
   protected NotMatcher(Matcher matcher) {
     super(matcher);
   }
 
   @Override
-  protected AstNode matchWorker(ParsingState parsingState) {
-    if (super.children[0].isMatching(parsingState)) {
-      throw BacktrackingEvent.create();
+  protected MatchResult doMatch(ParsingState parsingState) {
+    // Note that memoization not used here, because anyway doesn't work for match failures and for null AstNodes
+    enterEvent(parsingState);
+    int startingIndex = parsingState.lexerIndex;
+    MatchResult matchResult = super.children[0].doMatch(parsingState);
+    if (matchResult.isMatching()) {
+      parsingState.lexerIndex = startingIndex;
+      exitWithoutMatchEvent(parsingState);
+      return MatchResult.fail(parsingState, startingIndex);
     } else {
-      return null;
+      exitWithMatchEvent(parsingState, null);
+      return MatchResult.succeed(parsingState, startingIndex, null);
     }
   }
 

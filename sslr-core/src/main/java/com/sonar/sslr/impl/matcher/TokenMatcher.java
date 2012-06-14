@@ -21,10 +21,9 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 
-public abstract class TokenMatcher extends MemoizedMatcher {
+public abstract class TokenMatcher extends StandardMatcher {
 
   private final boolean hasToBeSkippedFromAst;
 
@@ -33,16 +32,22 @@ public abstract class TokenMatcher extends MemoizedMatcher {
   }
 
   @Override
-  protected final AstNode matchWorker(ParsingState parsingState) {
-    if (isExpectedToken(parsingState.peekToken(parsingState.lexerIndex, this))) {
-      Token token = parsingState.popToken(this);
-      if (hasToBeSkippedFromAst) {
-        return null;
-      } else {
-        return new AstNode(token);
-      }
+  protected final MatchResult doMatch(ParsingState parsingState) {
+    enterEvent(parsingState);
+    MatchResult matchResult = memoizerLookup(parsingState);
+    if (matchResult != null) {
+      return matchResult;
+    }
+    int startingIndex = parsingState.lexerIndex;
+    Token token = parsingState.peekTokenIfExists(parsingState.lexerIndex, this);
+    if (token != null && isExpectedToken(token)) {
+      token = parsingState.popToken(this);
+      AstNode astNode = hasToBeSkippedFromAst ? null : new AstNode(token);
+      exitWithMatchEvent(parsingState, astNode);
+      return memoize(parsingState, MatchResult.succeed(parsingState, startingIndex, astNode));
     } else {
-      throw BacktrackingEvent.create();
+      exitWithoutMatchEvent(parsingState);
+      return MatchResult.fail(parsingState, startingIndex);
     }
   }
 
