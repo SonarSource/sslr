@@ -19,6 +19,10 @@
  */
 package com.sonar.sslr.impl;
 
+/**
+ * @deprecated in 1.14
+ */
+@Deprecated
 public final class BacktrackingEvent extends RuntimeException {
 
   private static final long serialVersionUID = 9043689248001323911L;
