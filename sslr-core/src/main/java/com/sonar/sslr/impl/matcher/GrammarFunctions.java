@@ -40,8 +40,6 @@ public final class GrammarFunctions {
   };
 
   private static Matcher getCachedMatcher(Matcher matcher) {
-    matcher = wrapByMemoMatcher(matcher);
-
     if (MATCHER_CACHE.get().containsKey(matcher)) {
       return MATCHER_CACHE.get().get(matcher);
     }
@@ -303,6 +301,14 @@ public final class GrammarFunctions {
       return getCachedMatcher(new LongestOneMatcher(convertToMatchers(elements)));
     }
 
+    /**
+     * @since 1.14
+     */
+    public static Matcher memoizeMatches(Object element) {
+      Matcher matcher = convertToMatcher(element);
+      return matcher instanceof MemoMatcher ? matcher : getCachedMatcher(new MemoMatcher(matcher));
+    }
+
   }
 
   protected static Matcher[] convertToMatchers(Object[] objects) {
@@ -338,10 +344,6 @@ public final class GrammarFunctions {
       throw new IllegalStateException("The matcher object can't be anything else than a Rule, Matcher, String, TokenType or Class. Object = " + object);
     }
     return matcher;
-  }
-
-  private static Matcher wrapByMemoMatcher(Matcher matcher) {
-    return matcher instanceof MemoMatcher ? matcher : new MemoMatcher(matcher);
   }
 
 }

@@ -24,6 +24,7 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.impl.matcher.GrammarFunctions;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
@@ -98,7 +99,7 @@ public class ParsingEventListenerTest {
     public MyTestGrammarDecorator() {
       root.is("bonjour", longestOne(rule1, rule2), and("olaa", "uhu"), EOF);
       rule1.is("hehe");
-      rule2.is("hehe", "huhu");
+      rule2.is(GrammarFunctions.Advanced.memoizeMatches(and("hehe", "huhu")));
     }
   }
 
