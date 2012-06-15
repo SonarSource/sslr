@@ -25,7 +25,9 @@ import org.junit.Test;
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 import static com.sonar.sslr.api.GenericTokenType.EOL;
 import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.adjacent;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.anyToken;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.anyTokenButNot;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isFalse;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isTrue;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
@@ -142,6 +144,15 @@ public class GrammarFunctionsTest {
 
     assertThat(anyToken() == anyToken()).isTrue();
     assertThat(anyToken() == tillNewLine()).isFalse();
+  }
+
+  @Test
+  public void test_anyTokenButNot() {
+    assertThat(anyTokenButNot("(").toString()).isEqualTo("anyTokenButNot");
+
+    assertThat(anyTokenButNot("a") == anyTokenButNot("a")).isTrue();
+    assertThat(anyTokenButNot("a") == anyTokenButNot("b")).isFalse();
+    assertThat(anyTokenButNot("a") == adjacent("a")).isFalse();
   }
 
 }

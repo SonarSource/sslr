@@ -21,7 +21,6 @@ package com.sonar.sslr.impl.matcher;
 
 import org.junit.Test;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.adjacent;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.anyTokenButNot;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static org.fest.assertions.Assertions.assertThat;
@@ -37,15 +36,24 @@ public class AnyTokenButNotMatcherTest {
   }
 
   @Test
-  public void testToString() {
-    assertThat(anyTokenButNot("(").toString()).isEqualTo("anyTokenButNot");
+  public void test_toString() {
+    assertThat(new AnyTokenButNotMatcher(MockedMatchers.mockTrue()).toString()).isEqualTo("anyTokenButNot");
   }
 
   @Test
-  public void testEqualsAndHashCode() {
-    assertThat(anyTokenButNot("a") == anyTokenButNot("a")).isTrue();
-    assertThat(anyTokenButNot("a") == anyTokenButNot("b")).isFalse();
-    assertThat(anyTokenButNot("a") == adjacent("a")).isFalse();
+  public void test_equals_and_hashCode() {
+    Matcher first = new AnyTokenButNotMatcher(MockedMatchers.mockTrue());
+    assertThat(first.equals(first)).isTrue();
+    assertThat(first.equals(null)).isFalse();
+    // different matcher
+    assertThat(first.equals(MockedMatchers.mockTrue())).isFalse();
+    // same submatchers
+    Matcher second = new AnyTokenButNotMatcher(MockedMatchers.mockTrue());
+    assertThat(first.equals(second)).isTrue();
+    assertThat(first.hashCode() == second.hashCode()).isTrue();
+    // different submatchers
+    Matcher third = new AnyTokenButNotMatcher(MockedMatchers.mockFalse());
+    assertThat(first.equals(third)).isFalse();
   }
 
 }

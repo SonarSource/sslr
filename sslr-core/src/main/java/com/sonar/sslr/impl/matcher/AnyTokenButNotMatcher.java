@@ -20,21 +20,24 @@
 package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 
-public final class AnyTokenButNotMatcher extends StatelessMatcher {
+public final class AnyTokenButNotMatcher extends StandardMatcher {
 
   protected AnyTokenButNotMatcher(Matcher matcher) {
     super(matcher);
   }
 
   @Override
-  protected AstNode matchWorker(ParsingState parsingState) {
-    if (super.children[0].isMatching(parsingState)) {
-      throw BacktrackingEvent.create();
+  protected MatchResult doMatch(ParsingState parsingState) {
+    if (!parsingState.hasNextToken()) {
+      return MatchResult.fail(parsingState, parsingState.lexerIndex);
+    }
+    int startingIndex = parsingState.lexerIndex;
+    if (super.children[0].doMatch(parsingState).isMatching()) {
+      return MatchResult.fail(parsingState, startingIndex);
     } else {
-      return new AstNode(parsingState.popToken(this));
+      return MatchResult.succeed(parsingState, startingIndex, new AstNode(parsingState.popToken(this)));
     }
   }
 
