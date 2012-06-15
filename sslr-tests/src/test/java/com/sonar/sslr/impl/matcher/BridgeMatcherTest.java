@@ -31,7 +31,6 @@ import org.junit.Test;
 import java.util.List;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.bridge;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static com.sonar.sslr.impl.matcher.MyPunctuator.CAT;
 import static com.sonar.sslr.impl.matcher.MyPunctuator.DOG;
@@ -41,6 +40,8 @@ import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class BridgeMatcherTest {
 
@@ -86,10 +87,32 @@ public class BridgeMatcherTest {
   }
 
   @Test
-  public void testEqualsAndHashCode() {
-    assertThat(bridge(LEFT, RIGHT) == bridge(LEFT, RIGHT)).isTrue();
-    assertThat(bridge(LEFT, LEFT) == bridge(LEFT, RIGHT)).isFalse();
-    assertThat(bridge(LEFT, LEFT) == and(LEFT, RIGHT)).isFalse();
+  public void test_toString() {
+    TokenType from = mock(TokenType.class);
+    when(from.getName()).thenReturn("from");
+    TokenType to = mock(TokenType.class);
+    when(to.getName()).thenReturn("to");
+    assertThat(new BridgeMatcher(from, to).toString()).isEqualTo("bridge(from, to)");
+  }
+
+  @Test
+  public void test_equals_and_hashCode() {
+    TokenType from = mock(TokenType.class);
+    TokenType to = mock(TokenType.class);
+    Matcher first = new BridgeMatcher(from, to);
+    assertThat(first.equals(first)).isTrue();
+    assertThat(first.equals(null)).isFalse();
+    // different matcher
+    assertThat(first.equals(MockedMatchers.mockTrue())).isFalse();
+    // same types
+    Matcher second = new BridgeMatcher(from, to);
+    assertThat(first.equals(second)).isTrue();
+    assertThat(first.hashCode() == second.hashCode()).isTrue();
+    // different types
+    Matcher third = new BridgeMatcher(from, mock(TokenType.class));
+    assertThat(first.equals(third)).isFalse();
+    Matcher fourth = new BridgeMatcher(mock(TokenType.class), mock(TokenType.class));
+    assertThat(first.equals(fourth)).isFalse();
   }
 
 }

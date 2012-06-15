@@ -24,7 +24,6 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.events.IdentifierLexer;
 import org.junit.Test;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.adjacent;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.exclusiveTill;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
@@ -41,11 +40,6 @@ public class ExclusiveTillMatcherTest {
   }
 
   @Test
-  public void testToString() {
-    assertThat(exclusiveTill("(").toString()).isEqualTo("exclusiveTill");
-  }
-
-  @Test
   public void testAstNodeTokens() {
     ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three four"));
     AstNode astNode = exclusiveTill("three").match(state);
@@ -54,10 +48,24 @@ public class ExclusiveTillMatcherTest {
   }
 
   @Test
-  public void testEqualsAndHashCode() {
-    assertThat(exclusiveTill("a", "a") == exclusiveTill("a", "a")).isTrue();
-    assertThat(exclusiveTill("a", "a") == exclusiveTill("a", "b")).isFalse();
-    assertThat(exclusiveTill("a", "a") == adjacent("a")).isFalse();
+  public void test_toString() {
+    assertThat(new ExclusiveTillMatcher(MockedMatchers.mockTrue()).toString()).isEqualTo("exclusiveTill");
+  }
+
+  @Test
+  public void test_equals_and_hashCode() {
+    Matcher first = new ExclusiveTillMatcher(MockedMatchers.mockTrue());
+    assertThat(first.equals(first)).isTrue();
+    assertThat(first.equals(null)).isFalse();
+    // different matcher
+    assertThat(first.equals(MockedMatchers.mockTrue())).isFalse();
+    // same submatchers
+    Matcher second = new ExclusiveTillMatcher(MockedMatchers.mockTrue());
+    assertThat(first.equals(second)).isTrue();
+    assertThat(first.hashCode() == second.hashCode()).isTrue();
+    // different submatchers
+    Matcher third = new ExclusiveTillMatcher(MockedMatchers.mockFalse());
+    assertThat(first.equals(third)).isFalse();
   }
 
 }

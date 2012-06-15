@@ -27,6 +27,7 @@ import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+
 public class LongestOneMatcherTest {
 
   @Test
@@ -39,15 +40,24 @@ public class LongestOneMatcherTest {
   }
 
   @Test
-  public void testToString() {
-    assertThat(longestOne("(").toString()).isEqualTo("longestOne");
+  public void test_toString() {
+    assertThat(new LongestOneMatcher(MockedMatchers.mockTrue()).toString()).isEqualTo("longestOne");
   }
 
   @Test
-  public void testEqualsAndHashCode() {
-    assertThat(longestOne("a", "a") == longestOne("a", "a")).isTrue();
-    assertThat(longestOne("a", "a") == longestOne("a", "b")).isFalse();
-    assertThat(longestOne("a", "a") == and("a", "a")).isFalse();
+  public void test_equals_and_hashCode() {
+    Matcher first = new LongestOneMatcher(MockedMatchers.mockTrue());
+    assertThat(first.equals(first)).isTrue();
+    assertThat(first.equals(null)).isFalse();
+    // different matcher
+    assertThat(first.equals(MockedMatchers.mockTrue())).isFalse();
+    // same submatchers
+    Matcher second = new LongestOneMatcher(MockedMatchers.mockTrue());
+    assertThat(first.equals(second)).isTrue();
+    assertThat(first.hashCode() == second.hashCode()).isTrue();
+    // different submatchers
+    Matcher third = new LongestOneMatcher(MockedMatchers.mockFalse());
+    assertThat(first.equals(third)).isFalse();
   }
 
 }

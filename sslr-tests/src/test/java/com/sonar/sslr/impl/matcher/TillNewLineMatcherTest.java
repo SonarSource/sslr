@@ -25,7 +25,6 @@ import com.sonar.sslr.impl.events.IdentifierLexer;
 import org.junit.Test;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.anyToken;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.tillNewLine;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
@@ -52,11 +51,6 @@ public class TillNewLineMatcherTest {
   }
 
   @Test
-  public void testToString() {
-    assertThat(tillNewLine().toString()).isEqualTo("tillNewLine()");
-  }
-
-  @Test
   public void testAstNodeTokens() {
     ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three\nfour"));
     AstNode astNode = tillNewLine().match(state);
@@ -65,9 +59,21 @@ public class TillNewLineMatcherTest {
   }
 
   @Test
-  public void testEqualsAndHashCode() {
-    assertThat(tillNewLine() == tillNewLine()).isTrue();
-    assertThat(tillNewLine() == anyToken()).isFalse();
+  public void test_toString() {
+    assertThat(new TillNewLineMatcher().toString()).isEqualTo("tillNewLine()");
+  }
+
+  @Test
+  public void test_equals_and_hashCode() {
+    Matcher first = new TillNewLineMatcher();
+    assertThat(first.equals(first)).isTrue();
+    assertThat(first.equals(null)).isFalse();
+    // different matcher
+    assertThat(first.equals(MockedMatchers.mockTrue())).isFalse();
+    // same matcher
+    Matcher second = new TillNewLineMatcher();
+    assertThat(first.equals(second)).isTrue();
+    assertThat(first.hashCode() == second.hashCode()).isTrue();
   }
 
 }

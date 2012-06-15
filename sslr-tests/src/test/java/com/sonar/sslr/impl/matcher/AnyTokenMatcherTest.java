@@ -39,7 +39,7 @@ public class AnyTokenMatcherTest {
   }
 
   @Test
-  public void testToString() {
+  public void test_toString() {
     assertThat(new AnyTokenMatcher().toString()).isEqualTo("anyToken()");
   }
 

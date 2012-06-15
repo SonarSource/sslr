@@ -21,40 +21,44 @@ package com.sonar.sslr.impl.matcher;
 
 import org.junit.Test;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.adjacent;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static org.fest.assertions.Assertions.assertThat;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
 
-public class AdjacentMatcherTest {
+public class DelegatingMatcherTest {
 
   @Test
-  public void ok() {
-    assertThat(and("myMacro", adjacent("(")), match("myMacro("));
-    assertThat(and("myMacro", adjacent("(")), not(match("myMacro (")));
+  public void test_unwrap() {
+    Matcher delegate = MockedMatchers.mockTrue();
+    Matcher matcher = newDelegatingMatcher(delegate);
+    assertThat(DelegatingMatcher.unwrap(matcher)).isSameAs(delegate);
+    assertThat(DelegatingMatcher.unwrap(delegate)).isSameAs(delegate);
   }
 
   @Test
   public void test_toString() {
-    assertThat(new AdjacentMatcher(MockedMatchers.mockTrue()).toString()).isEqualTo("adjacent");
+    Matcher delegate = MockedMatchers.mockTrue();
+    assertThat(newDelegatingMatcher(delegate).toString()).isEqualTo(delegate.toString());
   }
 
   @Test
   public void test_equals_and_hashCode() {
-    Matcher first = new AdjacentMatcher(MockedMatchers.mockTrue());
+    Matcher delegate = MockedMatchers.mockTrue();
+    Matcher first = newDelegatingMatcher(delegate);
     assertThat(first.equals(first)).isTrue();
     assertThat(first.equals(null)).isFalse();
     // different matcher
     assertThat(first.equals(MockedMatchers.mockTrue())).isFalse();
-    // same submatchers
-    Matcher second = new AdjacentMatcher(MockedMatchers.mockTrue());
+    // same delegate
+    Matcher second = newDelegatingMatcher(delegate);
     assertThat(first.equals(second)).isTrue();
     assertThat(first.hashCode() == second.hashCode()).isTrue();
-    // different submatchers
-    Matcher third = new AdjacentMatcher(MockedMatchers.mockFalse());
+    // different delegate
+    Matcher third = newDelegatingMatcher(MockedMatchers.mockFalse());
     assertThat(first.equals(third)).isFalse();
+  }
+
+  private static DelegatingMatcher newDelegatingMatcher(Matcher delegate) {
+    return new DelegatingMatcher(delegate) {
+    };
   }
 
 }

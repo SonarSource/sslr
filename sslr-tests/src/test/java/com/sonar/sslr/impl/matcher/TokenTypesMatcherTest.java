@@ -24,14 +24,9 @@ import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.MockTokenType;
 import org.junit.Test;
 
-import static com.sonar.sslr.api.GenericTokenType.COMMENT;
-import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
-import static com.sonar.sslr.api.GenericTokenType.LITERAL;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isOneOfThem;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
 import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class TokenTypesMatcherTest {
 
@@ -59,17 +54,25 @@ public class TokenTypesMatcherTest {
   }
 
   @Test
-  public void testToString() {
-    assertThat(new TokenTypesMatcher(MockTokenType.values()).toString()).isEqualTo("isOneOfThem");
+  public void test_toString() {
+    assertThat(new TokenTypesMatcher(mock(TokenType.class), mock(TokenType.class)).toString()).isEqualTo("isOneOfThem");
   }
 
   @Test
-  public void testEqualsAndHashCode() {
-    assertThat(isOneOfThem(IDENTIFIER, EOF) == isOneOfThem(IDENTIFIER, EOF)).isTrue();
-    assertThat(isOneOfThem(IDENTIFIER, EOF) == isOneOfThem(EOF, IDENTIFIER)).isTrue();
-    assertThat(isOneOfThem(IDENTIFIER, EOF, COMMENT) == isOneOfThem(EOF, COMMENT, IDENTIFIER)).isTrue();
-    assertThat(isOneOfThem(IDENTIFIER, EOF) == isOneOfThem(IDENTIFIER, LITERAL)).isFalse();
-    assertThat(isOneOfThem(IDENTIFIER, EOF) == and(IDENTIFIER, EOF)).isFalse();
+  public void test_equals_and_hashCode() {
+    TokenType tokenType = mock(TokenType.class);
+    Matcher first = new TokenTypesMatcher(tokenType);
+    assertThat(first.equals(first)).isTrue();
+    assertThat(first.equals(null)).isFalse();
+    // different matcher
+    assertThat(first.equals(MockedMatchers.mockTrue())).isFalse();
+    // same type
+    Matcher second = new TokenTypesMatcher(tokenType);
+    assertThat(first.equals(second)).isTrue();
+    assertThat(first.hashCode() == second.hashCode()).isTrue();
+    // different type
+    Matcher third = new TokenTypesMatcher(mock(TokenType.class));
+    assertThat(first.equals(third)).isFalse();
   }
 
 }

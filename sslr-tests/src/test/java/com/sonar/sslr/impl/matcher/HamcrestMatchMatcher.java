@@ -19,12 +19,6 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-/*
- * Copyright (C) 2010 SonarSource SA
- * All rights reserved
- * mailto:contact AT sonarsource DOT com
- */
-
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingStackTrace;

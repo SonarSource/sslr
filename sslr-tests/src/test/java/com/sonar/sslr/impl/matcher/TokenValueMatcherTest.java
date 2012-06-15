@@ -23,8 +23,6 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import org.junit.Test;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.adjacent;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
 import static com.sonar.sslr.test.lexer.TokenUtils.lex;
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -39,15 +37,24 @@ public class TokenValueMatcherTest {
   }
 
   @Test
-  public void testToString() {
+  public void test_toString() {
     assertThat(new TokenValueMatcher("print").toString()).isEqualTo("\"print\"");
   }
 
   @Test
-  public void testEqualsAndHashCode() {
-    assertThat(and("hehe") == and("hehe")).isTrue();
-    assertThat(and("hehe") == and("haha")).isFalse();
-    assertThat(and("hehe") == adjacent("hehe")).isFalse();
+  public void test_equals_and_hashCode() {
+    Matcher first = new TokenValueMatcher("foo");
+    assertThat(first.equals(first)).isTrue();
+    assertThat(first.equals(null)).isFalse();
+    // different matcher
+    assertThat(first.equals(MockedMatchers.mockTrue())).isFalse();
+    // same value
+    Matcher second = new TokenValueMatcher("foo");
+    assertThat(first.equals(second)).isTrue();
+    assertThat(first.hashCode() == second.hashCode()).isTrue();
+    // different value
+    Matcher third = new TokenValueMatcher("bar");
+    assertThat(first.equals(third)).isFalse();
   }
 
 }

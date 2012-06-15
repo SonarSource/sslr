@@ -19,12 +19,6 @@
  */
 package com.sonar.sslr.test.parser;
 
-/*
- * Copyright (C) 2010 SonarSource SA
- * All rights reserved
- * mailto:contact AT sonarsource DOT com
- */
-
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 

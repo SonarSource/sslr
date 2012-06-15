@@ -23,7 +23,6 @@ import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.impl.MockTokenType;
 import org.junit.Test;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.adjacent;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
@@ -47,15 +46,24 @@ public class TokenTypeClassMatcherTest {
   }
 
   @Test
-  public void testToString() {
-    assertThat(and(GenericTokenType.class).toString()).isEqualTo(GenericTokenType.class.getCanonicalName() + ".class");
+  public void test_toString() {
+    assertThat(new TokenTypeClassMatcher(Object.class).toString()).isEqualTo(Object.class.getCanonicalName() + ".class");
   }
 
   @Test
-  public void testEqualsAndHashCode() {
-    assertThat(and(GenericTokenType.class) == and(GenericTokenType.class)).isTrue();
-    assertThat(and(GenericTokenType.class) == and(MockTokenType.class)).isFalse();
-    assertThat(and(GenericTokenType.class) == adjacent("(")).isFalse();
+  public void test_equals_and_hashCode() {
+    Matcher first = new TokenTypeClassMatcher(Object.class);
+    assertThat(first.equals(first)).isTrue();
+    assertThat(first.equals(null)).isFalse();
+    // different matcher
+    assertThat(first.equals(MockedMatchers.mockTrue())).isFalse();
+    // same class
+    Matcher second = new TokenTypeClassMatcher(Object.class);
+    assertThat(first.equals(second)).isTrue();
+    assertThat(first.hashCode() == second.hashCode()).isTrue();
+    // different class
+    Matcher third = new TokenTypeClassMatcher(String.class);
+    assertThat(first.equals(third)).isFalse();
   }
 
 }

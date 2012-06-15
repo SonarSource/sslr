@@ -24,7 +24,6 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.events.IdentifierLexer;
 import org.junit.Test;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.adjacent;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.till;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
 import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
@@ -36,15 +35,10 @@ public class InclusiveTillMatcherTest {
 
   @Test
   public void ok() {
+    assertThat(till("two"), not(match("one")));
     assertThat(till("four"), match("one two three four"));
     assertThat(till("three"), not(match("one two three four")));
-
     assertThat(till(and("three", "four")), match("one two three four"));
-  }
-
-  @Test
-  public void testToString() {
-    assertThat(till("(").toString()).isEqualTo("till");
   }
 
   @Test
@@ -56,10 +50,24 @@ public class InclusiveTillMatcherTest {
   }
 
   @Test
-  public void testEqualsAndHashCode() {
-    assertThat(till("a") == till("a")).isTrue();
-    assertThat(till("a") == till("b")).isFalse();
-    assertThat(till("a") == adjacent("a")).isFalse();
+  public void test_toString() {
+    assertThat(new InclusiveTillMatcher(MockedMatchers.mockTrue()).toString()).isEqualTo("till");
+  }
+
+  @Test
+  public void test_equals_and_hashCode() {
+    Matcher first = new InclusiveTillMatcher(MockedMatchers.mockTrue());
+    assertThat(first.equals(first)).isTrue();
+    assertThat(first.equals(null)).isFalse();
+    // different matcher
+    assertThat(first.equals(MockedMatchers.mockTrue())).isFalse();
+    // same submatchers
+    Matcher second = new InclusiveTillMatcher(MockedMatchers.mockTrue());
+    assertThat(first.equals(second)).isTrue();
+    assertThat(first.hashCode() == second.hashCode()).isTrue();
+    // different submatchers
+    Matcher third = new InclusiveTillMatcher(MockedMatchers.mockFalse());
+    assertThat(first.equals(third)).isFalse();
   }
 
 }
