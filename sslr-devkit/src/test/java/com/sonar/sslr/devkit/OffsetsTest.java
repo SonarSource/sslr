@@ -26,8 +26,7 @@ import org.junit.Test;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class OffsetsTest {
 
@@ -36,35 +35,35 @@ public class OffsetsTest {
     Offsets offsets = new Offsets();
     offsets.computeLineOffsets("line1\nline2\n", 15);
 
-    assertThat(offsets.getOffset(1, 1), is(2));
-    assertThat(offsets.getOffset(1, 2), is(3));
-    assertThat(offsets.getOffset(2, 1), is(8));
-    assertThat(offsets.getOffset(2, 2), is(9));
-    assertThat(offsets.getOffset(3, 1), is(14));
-    assertThat(offsets.getOffset(3, 2), is(14));
-    assertThat(offsets.getOffset(4, 1), is(14));
+    assertThat(offsets.getOffset(1, 1)).isEqualTo(2);
+    assertThat(offsets.getOffset(1, 2)).isEqualTo(3);
+    assertThat(offsets.getOffset(2, 1)).isEqualTo(8);
+    assertThat(offsets.getOffset(2, 2)).isEqualTo(9);
+    assertThat(offsets.getOffset(3, 1)).isEqualTo(14);
+    assertThat(offsets.getOffset(3, 2)).isEqualTo(14);
+    assertThat(offsets.getOffset(4, 1)).isEqualTo(14);
 
-    assertThat(offsets.getLineFromOffset(2), is(1));
-    assertThat(offsets.getLineFromOffset(3), is(1));
-    assertThat(offsets.getLineFromOffset(8), is(2));
-    assertThat(offsets.getLineFromOffset(9), is(2));
-    assertThat(offsets.getLineFromOffset(14), is(3));
-    assertThat(offsets.getLineFromOffset(15), is(3));
+    assertThat(offsets.getLineFromOffset(2)).isEqualTo(1);
+    assertThat(offsets.getLineFromOffset(3)).isEqualTo(1);
+    assertThat(offsets.getLineFromOffset(8)).isEqualTo(2);
+    assertThat(offsets.getLineFromOffset(9)).isEqualTo(2);
+    assertThat(offsets.getLineFromOffset(14)).isEqualTo(3);
+    assertThat(offsets.getLineFromOffset(15)).isEqualTo(3);
 
-    assertThat(offsets.getColumnFromOffsetAndLine(2, 1), is(1));
-    assertThat(offsets.getColumnFromOffsetAndLine(3, 1), is(2));
-    assertThat(offsets.getColumnFromOffsetAndLine(8, 2), is(1));
-    assertThat(offsets.getColumnFromOffsetAndLine(9, 2), is(2));
-    assertThat(offsets.getColumnFromOffsetAndLine(14, 3), is(1));
-    assertThat(offsets.getColumnFromOffsetAndLine(15, 3), is(2));
+    assertThat(offsets.getColumnFromOffsetAndLine(2, 1)).isEqualTo(1);
+    assertThat(offsets.getColumnFromOffsetAndLine(3, 1)).isEqualTo(2);
+    assertThat(offsets.getColumnFromOffsetAndLine(8, 2)).isEqualTo(1);
+    assertThat(offsets.getColumnFromOffsetAndLine(9, 2)).isEqualTo(2);
+    assertThat(offsets.getColumnFromOffsetAndLine(14, 3)).isEqualTo(1);
+    assertThat(offsets.getColumnFromOffsetAndLine(15, 3)).isEqualTo(2);
 
     Token token = mockToken(1, 1, "l");
-    assertThat(offsets.getStartOffset(token), is(2));
-    assertThat(offsets.getEndOffset(token), is(3));
+    assertThat(offsets.getStartOffset(token)).isEqualTo(2);
+    assertThat(offsets.getEndOffset(token)).isEqualTo(3);
 
     token = mockToken(1, 1, "line1\nl");
-    assertThat(offsets.getStartOffset(token), is(2));
-    assertThat(offsets.getEndOffset(token), is(8));
+    assertThat(offsets.getStartOffset(token)).isEqualTo(2);
+    assertThat(offsets.getEndOffset(token)).isEqualTo(8);
   }
 
   private static Token mockToken(int line, int column, String value) {

@@ -31,8 +31,7 @@ import org.junit.rules.ExpectedException;
 
 import java.net.URI;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -69,9 +68,9 @@ public class AstNodeNavigatorTest {
         .setColumn(2)
         .setValueAndOriginalValue("foo", "bar")
         .build());
-    assertThat(navigator.getAttributeStringValue(new Attribute("tokenLine", astNode)), is("1"));
-    assertThat(navigator.getAttributeStringValue(new Attribute("tokenColumn", astNode)), is("2"));
-    assertThat(navigator.getAttributeStringValue(new Attribute("tokenValue", astNode)), is("bar"));
+    assertThat(navigator.getAttributeStringValue(new Attribute("tokenLine", astNode))).isEqualTo("1");
+    assertThat(navigator.getAttributeStringValue(new Attribute("tokenColumn", astNode))).isEqualTo("2");
+    assertThat(navigator.getAttributeStringValue(new Attribute("tokenValue", astNode))).isEqualTo("bar");
   }
 
   @Test
@@ -108,53 +107,53 @@ public class AstNodeNavigatorTest {
   public void getAttributeName() {
     Attribute attribute = mock(Attribute.class);
     when(attribute.getName()).thenReturn("foo");
-    assertThat(navigator.getAttributeName(attribute), is("foo"));
+    assertThat(navigator.getAttributeName(attribute)).isEqualTo("foo");
   }
 
   @Test
   public void getAttributeQName() {
     Attribute attribute = mock(Attribute.class);
     when(attribute.getName()).thenReturn("foo");
-    assertThat(navigator.getAttributeQName(attribute), is("foo"));
+    assertThat(navigator.getAttributeQName(attribute)).isEqualTo("foo");
   }
 
   /* Elements */
 
   @Test
   public void getAttributeNamespaceUri() {
-    assertThat(navigator.getAttributeNamespaceUri(null), is(""));
+    assertThat(navigator.getAttributeNamespaceUri(null)).isEqualTo("");
   }
 
   @Test
   public void getElementName() {
     AstNode astNode = mock(AstNode.class);
     when(astNode.getName()).thenReturn("foo");
-    assertThat(navigator.getElementName(astNode), is("foo"));
+    assertThat(navigator.getElementName(astNode)).isEqualTo("foo");
   }
 
   @Test
   public void getElementQName() {
     AstNode astNode = mock(AstNode.class);
     when(astNode.getName()).thenReturn("foo");
-    assertThat(navigator.getElementQName(astNode), is("foo"));
+    assertThat(navigator.getElementQName(astNode)).isEqualTo("foo");
   }
 
   @Test
   public void getElementNamespaceUri() {
-    assertThat(navigator.getElementNamespaceUri(null), is(""));
+    assertThat(navigator.getElementNamespaceUri(null)).isEqualTo("");
   }
 
   /* Types */
 
   @Test
   public void isAttribute() {
-    assertThat(navigator.isAttribute(mock(AstNodeNavigator.Attribute.class)), is(true));
-    assertThat(navigator.isAttribute(null), is(false));
+    assertThat(navigator.isAttribute(mock(AstNodeNavigator.Attribute.class))).isTrue();
+    assertThat(navigator.isAttribute(null)).isFalse();
   }
 
   @Test
   public void isComment() {
-    assertThat(navigator.isComment(null), is(false));
+    assertThat(navigator.isComment(null)).isFalse();
   }
 
   @Test
@@ -162,35 +161,35 @@ public class AstNodeNavigatorTest {
     AstNode astNode = mock(AstNode.class);
     Attribute attribute = mock(Attribute.class);
     when(attribute.getAstNode()).thenReturn(astNode);
-    assertThat(navigator.isDocument(attribute), is(false));
-    assertThat(navigator.isDocument(astNode), is(false));
-    assertThat(navigator.isDocument(navigator.getDocumentNode(astNode)), is(true));
+    assertThat(navigator.isDocument(attribute)).isFalse();
+    assertThat(navigator.isDocument(astNode)).isFalse();
+    assertThat(navigator.isDocument(navigator.getDocumentNode(astNode))).isTrue();
   }
 
   @Test
   public void isDocument2() {
-    assertThat(navigator.isDocument(null), is(false));
+    assertThat(navigator.isDocument(null)).isFalse();
   }
 
   @Test
   public void isElement() {
-    assertThat(navigator.isElement(mock(AstNode.class)), is(true));
-    assertThat(navigator.isElement(null), is(false));
+    assertThat(navigator.isElement(mock(AstNode.class))).isTrue();
+    assertThat(navigator.isElement(null)).isFalse();
   }
 
   @Test
   public void isNamespace() {
-    assertThat(navigator.isNamespace(null), is(false));
+    assertThat(navigator.isNamespace(null)).isFalse();
   }
 
   @Test
   public void isProcessingInstruction() {
-    assertThat(navigator.isProcessingInstruction(null), is(false));
+    assertThat(navigator.isProcessingInstruction(null)).isFalse();
   }
 
   @Test
   public void isText() {
-    assertThat(navigator.isText(null), is(false));
+    assertThat(navigator.isText(null)).isFalse();
   }
 
   /* Navigation */
@@ -203,13 +202,13 @@ public class AstNodeNavigatorTest {
     Attribute attribute = mock(Attribute.class);
     when(attribute.getAstNode()).thenReturn(astNode);
     AstNode documentNode = (AstNode) navigator.getDocumentNode(attribute);
-    assertThat(documentNode.getName(), is("[root]"));
+    assertThat(documentNode.getName()).isEqualTo("[root]");
   }
 
   @Test
   public void getChildAxisIterator() {
     Attribute attribute = mock(Attribute.class);
-    assertThat(navigator.getChildAxisIterator(attribute).hasNext(), is(false));
+    assertThat(navigator.getChildAxisIterator(attribute).hasNext()).isFalse();
   }
 
   @Test
@@ -225,8 +224,8 @@ public class AstNodeNavigatorTest {
     when(astNode.getParent()).thenReturn(rootAstNode);
     Attribute attribute = mock(Attribute.class);
     when(attribute.getAstNode()).thenReturn(astNode);
-    assertThat(navigator.getParentNode(attribute), sameInstance((Object) astNode));
-    assertThat(navigator.getParentNode(astNode), sameInstance((Object) rootAstNode));
+    assertThat(navigator.getParentNode(attribute)).isSameAs(astNode);
+    assertThat(navigator.getParentNode(astNode)).isSameAs(rootAstNode);
   }
 
   @Test
@@ -251,7 +250,7 @@ public class AstNodeNavigatorTest {
 
   @Test
   public void parseXPath() {
-    assertThat(navigator.parseXPath(null), nullValue());
+    assertThat(navigator.parseXPath(null)).isNull();
   }
 
 }

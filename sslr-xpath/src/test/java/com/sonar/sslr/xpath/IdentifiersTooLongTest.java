@@ -19,17 +19,15 @@
  */
 package com.sonar.sslr.xpath;
 
-import static com.sonar.sslr.test.miniC.MiniCParser.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-import java.util.List;
-
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
+import java.util.List;
+
+import static com.sonar.sslr.test.miniC.MiniCParser.parseFile;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class IdentifiersTooLongTest {
 
@@ -46,13 +44,13 @@ public class IdentifiersTooLongTest {
 
     List<AstNode> nodes = xpath.selectNodes(fileNode);
 
-    assertThat(nodes.size(), is(3));
-    assertThat(nodes.get(0).getTokenValue(), is("aaaaaaaaa11"));
-    assertThat(nodes.get(0).getTokenLine(), is(3));
-    assertThat(nodes.get(1).getTokenValue(), is("bbbbbbbbbbbbb15"));
-    assertThat(nodes.get(1).getTokenLine(), is(10));
-    assertThat(nodes.get(2).getTokenValue(), is("ccccccccc11"));
-    assertThat(nodes.get(2).getTokenLine(), is(12));
+    assertThat(nodes.size()).isEqualTo(3);
+    assertThat(nodes.get(0).getTokenValue()).isEqualTo("aaaaaaaaa11");
+    assertThat(nodes.get(0).getTokenLine()).isEqualTo(3);
+    assertThat(nodes.get(1).getTokenValue()).isEqualTo("bbbbbbbbbbbbb15");
+    assertThat(nodes.get(1).getTokenLine()).isEqualTo(10);
+    assertThat(nodes.get(2).getTokenValue()).isEqualTo("ccccccccc11");
+    assertThat(nodes.get(2).getTokenLine()).isEqualTo(12);
   }
 
   @Test
@@ -61,7 +59,7 @@ public class IdentifiersTooLongTest {
 
     List<AstNode> nodes = xpath.selectNodes(fileNode);
 
-    assertThat(nodes.size(), is(0));
+    assertThat(nodes.size()).isEqualTo(0);
   }
 
 }

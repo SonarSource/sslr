@@ -24,8 +24,7 @@ import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class AstNodeXPathQueryTest {
 
@@ -38,7 +37,7 @@ public class AstNodeXPathQueryTest {
     tree.addChild(branch);
     branch.addChild(leaf);
 
-    assertThat(expr.selectSingleNode(tree), is(leaf));
+    assertThat(expr.selectSingleNode(tree)).isEqualTo(leaf);
   }
 
   @Test
@@ -46,7 +45,7 @@ public class AstNodeXPathQueryTest {
     AstNodeXPathQuery<AstNode> expr = AstNodeXPathQuery.create("branch");
     AstNode tree = new AstNode(new NodeType(), "tree", null);
 
-    assertThat(expr.selectSingleNode(tree), nullValue());
+    assertThat(expr.selectSingleNode(tree)).isNull();
   }
 
   @Test
@@ -60,7 +59,7 @@ public class AstNodeXPathQueryTest {
     branch.addChild(leaf1);
     branch.addChild(leaf2);
 
-    assertThat(expr.selectNodes(tree).size(), is(2));
+    assertThat(expr.selectNodes(tree).size()).isEqualTo(2);
   }
 
   @Test
@@ -68,7 +67,7 @@ public class AstNodeXPathQueryTest {
     AstNodeXPathQuery<AstNode> expr = AstNodeXPathQuery.create("//branch");
     AstNode tree = new AstNode(new NodeType(), "tree", null);
 
-    assertThat(expr.selectNodes(tree).size(), is(0));
+    assertThat(expr.selectNodes(tree).size()).isEqualTo(0);
   }
 
   @Test
@@ -81,7 +80,7 @@ public class AstNodeXPathQueryTest {
     tree.addChild(branch);
     branch.addChild(leaf);
 
-    assertThat(expr.selectSingleNode(branch), is(leaf));
+    assertThat(expr.selectSingleNode(branch)).isEqualTo(leaf);
   }
 
   @Test
@@ -94,7 +93,7 @@ public class AstNodeXPathQueryTest {
     tree.addChild(branch);
     branch.addChild(leaf);
 
-    assertThat(expr.selectSingleNode(branch), is(tree));
+    assertThat(expr.selectSingleNode(branch)).isEqualTo(tree);
   }
 
   @Test
@@ -112,7 +111,7 @@ public class AstNodeXPathQueryTest {
 
     branch1.addChild(leaf);
 
-    assertThat(expr.selectSingleNode(branch1), is(branch2));
+    assertThat(expr.selectSingleNode(branch1)).isEqualTo(branch2);
   }
 
   @Test
@@ -125,7 +124,7 @@ public class AstNodeXPathQueryTest {
     tree.addChild(branch);
     branch.addChild(leaf);
 
-    assertThat(expr.selectSingleNode(tree), is(tree));
+    assertThat(expr.selectSingleNode(tree)).isEqualTo(tree);
   }
 
   @Test
@@ -138,7 +137,7 @@ public class AstNodeXPathQueryTest {
     tree.addChild(branch);
     branch.addChild(leaf);
 
-    assertThat(expr.selectSingleNode(branch), is(branch));
+    assertThat(expr.selectSingleNode(branch)).isEqualTo(branch);
   }
 
   @Test
@@ -151,7 +150,7 @@ public class AstNodeXPathQueryTest {
     tree.addChild(branch);
     branch.addChild(leaf);
 
-    assertThat(expr.selectSingleNode(branch), is(leaf));
+    assertThat(expr.selectSingleNode(branch)).isEqualTo(leaf);
   }
 
   @Test
@@ -164,7 +163,7 @@ public class AstNodeXPathQueryTest {
     tree.addChild(branch);
     branch.addChild(leaf);
 
-    assertThat(expr.selectNodes(tree).size(), is(1));
+    assertThat(expr.selectNodes(tree).size()).isEqualTo(1);
   }
 
   @Test
@@ -172,7 +171,7 @@ public class AstNodeXPathQueryTest {
     AstNodeXPathQuery<AstNode> expr = AstNodeXPathQuery.create(".[name() = \"tree\"]");
     AstNode tree = new AstNode(new NodeType(), "tree", null);
 
-    assertThat(expr.selectSingleNode(tree), is(tree));
+    assertThat(expr.selectSingleNode(tree)).isEqualTo(tree);
   }
 
   @Test
@@ -188,7 +187,7 @@ public class AstNodeXPathQueryTest {
     tree.addChild(branch2);
     tree.addChild(branch3);
 
-    assertThat(expr.selectSingleNode(tree), is(tree));
+    assertThat(expr.selectSingleNode(tree)).isEqualTo(tree);
   }
 
   @Test
@@ -203,13 +202,13 @@ public class AstNodeXPathQueryTest {
     tree1.addChild(branch12);
     tree1.addChild(branch13);
 
-    assertThat(expr.selectNodes(tree1).size(), is(3));
+    assertThat(expr.selectNodes(tree1).size()).isEqualTo(3);
 
     AstNode tree2 = new AstNode(new NodeType(), "tree", null);
     AstNode branch21 = new AstNode(new NodeType(), "branch", null);
     tree2.addChild(branch21);
 
-    assertThat(expr.selectNodes(tree2).size(), is(1));
+    assertThat(expr.selectNodes(tree2).size()).isEqualTo(1);
   }
 
   static class NodeType implements AstNodeType {

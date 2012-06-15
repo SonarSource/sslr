@@ -26,9 +26,9 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.sonar.sslr.test.miniC.MiniCParser.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static com.sonar.sslr.test.miniC.MiniCParser.getGrammar;
+import static com.sonar.sslr.test.miniC.MiniCParser.parseFile;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class IfSMustUseBracesTest {
 
@@ -46,8 +46,8 @@ public class IfSMustUseBracesTest {
 
     List<AstNode> nodes = xpath.selectNodes(fileNode);
 
-    assertThat(nodes.size(), is(2));
-    assertThat(nodes.get(0), is(xpath.selectSingleNode(fileNode)));
+    assertThat(nodes.size()).isEqualTo(2);
+    assertThat(nodes.get(0)).isEqualTo(xpath.selectSingleNode(fileNode));
   }
 
   @Test
@@ -57,11 +57,11 @@ public class IfSMustUseBracesTest {
 
     List<AstNode> nodes = xpath.selectNodes(fileNode);
 
-    assertThat(nodes.size(), is(2));
-    assertThat(nodes.get(0).is(getGrammar().ifStatement), is(true));
-    assertThat(nodes.get(0).getTokenLine(), is(3));
-    assertThat(nodes.get(1).is(getGrammar().elseClause), is(true));
-    assertThat(nodes.get(1).getTokenLine(), is(16));
+    assertThat(nodes.size()).isEqualTo(2);
+    assertThat(nodes.get(0).is(getGrammar().ifStatement)).isTrue();
+    assertThat(nodes.get(0).getTokenLine()).isEqualTo(3);
+    assertThat(nodes.get(1).is(getGrammar().elseClause)).isTrue();
+    assertThat(nodes.get(1).getTokenLine()).isEqualTo(16);
   }
 
 }
