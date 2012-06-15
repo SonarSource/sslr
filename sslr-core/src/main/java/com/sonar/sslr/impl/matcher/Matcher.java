@@ -66,7 +66,7 @@ public abstract class Matcher {
     }
   }
 
-  protected static class MatchResult {
+  protected static final class MatchResult {
 
     private final AstNode astNode;
     private final int toIndex;

@@ -25,7 +25,11 @@ import org.junit.Test;
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 import static com.sonar.sslr.api.GenericTokenType.EOL;
 import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.anyToken;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isFalse;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isTrue;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.tillNewLine;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.next;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
@@ -119,6 +123,25 @@ public class GrammarFunctionsTest {
 
     assertThat(and(next("one"), "one"), match("one"));
     assertThat(and(next("two"), "one"), not(match("one")));
+  }
+
+  @Test
+  public void test_boolean() {
+    assertThat(isTrue().toString()).isEqualTo("isTrue()");
+    assertThat(isFalse().toString()).isEqualTo("isFalse()");
+
+    assertThat(isTrue() == isTrue()).isTrue();
+    assertThat(isFalse() == isFalse()).isTrue();
+    assertThat(isTrue() == isFalse()).isFalse();
+    assertThat(anyToken() == tillNewLine()).isFalse();
+  }
+
+  @Test
+  public void test_anyToken() {
+    assertThat(anyToken().toString()).isEqualTo("anyToken()");
+
+    assertThat(anyToken() == anyToken()).isTrue();
+    assertThat(anyToken() == tillNewLine()).isFalse();
   }
 
 }

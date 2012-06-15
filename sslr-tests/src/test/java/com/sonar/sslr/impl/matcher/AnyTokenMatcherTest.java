@@ -23,8 +23,6 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import org.junit.Test;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.anyToken;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.tillNewLine;
 import static com.sonar.sslr.test.lexer.TokenUtils.lex;
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -42,13 +40,20 @@ public class AnyTokenMatcherTest {
 
   @Test
   public void testToString() {
-    assertThat(anyToken().toString()).isEqualTo("anyToken()");
+    assertThat(new AnyTokenMatcher().toString()).isEqualTo("anyToken()");
   }
 
   @Test
-  public void testEqualsAndHashCode() {
-    assertThat(anyToken() == anyToken()).isTrue();
-    assertThat(anyToken() == tillNewLine()).isFalse();
+  public void test_equals_and_hashCode() {
+    Matcher first = new AnyTokenMatcher();
+    assertThat(first.equals(first)).isTrue();
+    assertThat(first.equals(null)).isFalse();
+    // different matcher
+    assertThat(first.equals(MockedMatchers.mockTrue())).isFalse();
+    // same matcher
+    Matcher second = new AnyTokenMatcher();
+    assertThat(first.equals(second)).isTrue();
+    assertThat(first.hashCode() == second.hashCode()).isTrue();
   }
 
 }

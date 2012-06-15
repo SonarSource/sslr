@@ -19,36 +19,43 @@
  */
 package com.sonar.sslr.impl.matcher;
 
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.TokenType;
+import com.sonar.sslr.test.lexer.MockHelper;
 import org.junit.Test;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.anyToken;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isFalse;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isTrue;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.tillNewLine;
-import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class BooleanMatcherTest {
 
   @Test
   public void ok() {
-    assertThat(isTrue(), match("hehe"));
-    assertThat(isFalse(), org.hamcrest.Matchers.not(match("hehe")));
+    Token token = MockHelper.mockToken(mock(TokenType.class), "foo");
+    assertThat(new BooleanMatcher(true).isExpectedToken(token)).isTrue();
+    assertThat(new BooleanMatcher(false).isExpectedToken(token)).isFalse();
   }
 
   @Test
-  public void testToString() {
-    assertThat(isTrue().toString()).isEqualTo("isTrue()");
-    assertThat(isFalse().toString()).isEqualTo("isFalse()");
+  public void test_toString() {
+    assertThat(new BooleanMatcher(true).toString()).isEqualTo("isTrue()");
+    assertThat(new BooleanMatcher(false).toString()).isEqualTo("isFalse()");
   }
 
   @Test
-  public void testEqualsAndHashCode() {
-    assertThat(isTrue() == isTrue()).isTrue();
-    assertThat(isFalse() == isFalse()).isTrue();
-    assertThat(isTrue() == isFalse()).isFalse();
-    assertThat(anyToken() == tillNewLine()).isFalse();
+  public void test_equals_and_hashCode() {
+    Matcher first = new BooleanMatcher(true);
+    assertThat(first.equals(first)).isTrue();
+    assertThat(first.equals(null)).isFalse();
+    // different matcher
+    assertThat(first.equals(MockedMatchers.mockTrue())).isFalse();
+    // same internal state
+    Matcher second = new BooleanMatcher(true);
+    assertThat(first.equals(second)).isTrue();
+    assertThat(first.hashCode() == second.hashCode()).isTrue();
+    // different internal state
+    Matcher third = new BooleanMatcher(false);
+    assertThat(first.equals(third)).isFalse();
   }
 
 }
