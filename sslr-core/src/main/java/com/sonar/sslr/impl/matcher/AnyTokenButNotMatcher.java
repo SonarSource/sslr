@@ -30,14 +30,19 @@ public final class AnyTokenButNotMatcher extends StandardMatcher {
 
   @Override
   protected MatchResult doMatch(ParsingState parsingState) {
+    enterEvent(parsingState);
     if (!parsingState.hasNextToken()) {
+      exitWithoutMatchEvent(parsingState);
       return MatchResult.fail(parsingState, parsingState.lexerIndex);
     }
     int startingIndex = parsingState.lexerIndex;
     if (super.children[0].doMatch(parsingState).isMatching()) {
+      exitWithoutMatchEvent(parsingState);
       return MatchResult.fail(parsingState, startingIndex);
     } else {
-      return MatchResult.succeed(parsingState, startingIndex, new AstNode(parsingState.popToken(this)));
+      AstNode astNode = new AstNode(parsingState.popToken(this));
+      exitWithMatchEvent(parsingState, astNode);
+      return MatchResult.succeed(parsingState, startingIndex, astNode);
     }
   }
 
