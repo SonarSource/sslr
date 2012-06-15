@@ -55,6 +55,9 @@ public abstract class Matcher {
    */
   public abstract AstNode match(ParsingState parsingState);
 
+  /**
+   * @since 1.14
+   */
   protected MatchResult doMatch(ParsingState parsingState) {
     // For forward compatibility
     int startingIndex = parsingState.lexerIndex;
@@ -66,6 +69,9 @@ public abstract class Matcher {
     }
   }
 
+  /**
+   * @since 1.14
+   */
   protected static final class MatchResult {
 
     private final AstNode astNode;

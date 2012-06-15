@@ -21,6 +21,9 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.impl.ParsingState;
 
+/**
+ * @since 1.14
+ */
 public abstract class DelegatingMatcher extends StandardMatcher {
 
   public DelegatingMatcher(Matcher delegate) {

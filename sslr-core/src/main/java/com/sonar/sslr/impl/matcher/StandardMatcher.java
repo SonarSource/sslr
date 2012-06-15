@@ -27,6 +27,8 @@ import java.util.Arrays;
 
 /**
  * This class allows to remove usage of {@link BacktrackingEvent} from {@link Matcher}s.
+ *
+ * @since 1.14
  */
 public class StandardMatcher extends MemoizedMatcher {
 

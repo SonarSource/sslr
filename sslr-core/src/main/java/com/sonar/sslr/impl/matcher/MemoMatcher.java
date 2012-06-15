@@ -25,6 +25,8 @@ import com.sonar.sslr.impl.events.ParsingEventListener;
 
 /**
  * Special wrapping {@link Matcher} that performs memoization of its submatcher.
+ *
+ * @since 1.14
  */
 public class MemoMatcher extends DelegatingMatcher {
 
