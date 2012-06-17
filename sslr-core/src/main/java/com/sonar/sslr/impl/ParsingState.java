@@ -109,7 +109,7 @@ public class ParsingState {
     return peekToken(lexerIndex, matcher);
   }
 
-  public final Token readToken(int tokenIndex) {
+  public Token readToken(int tokenIndex) {
     if (tokenIndex >= tokens.length) {
       return null;
     }

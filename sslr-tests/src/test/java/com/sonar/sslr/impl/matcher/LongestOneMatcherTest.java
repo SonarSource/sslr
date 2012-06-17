@@ -19,6 +19,8 @@
  */
 package com.sonar.sslr.impl.matcher;
 
+import com.sonar.sslr.impl.BacktrackingEvent;
+import com.sonar.sslr.impl.ParsingState;
 import org.junit.Test;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
@@ -27,6 +29,8 @@ import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 public class LongestOneMatcherTest {
 
@@ -37,6 +41,21 @@ public class LongestOneMatcherTest {
     assertThat(longestOne(and("hehe", "haha"), "hehe"), match("hehe haha"));
     assertThat(longestOne("hehe", and("hehe", "haha")), not(match("hehe haha huhu")));
     assertThat(longestOne(and("hehe", "haha"), "hehe"), not(match("hehe haha huhu")));
+  }
+
+  @Test
+  public void should_not_move_forward() {
+    Matcher matcher = new LongestOneMatcher(MockedMatchers.mockFalse());
+    ParsingState parsingState = mock(ParsingState.class);
+    assertThat(matcher.isMatching(parsingState)).isFalse();
+    assertThat(parsingState.lexerIndex).isEqualTo(0);
+    try {
+      matcher.match(parsingState);
+      fail();
+    } catch (BacktrackingEvent e) {
+      // OK
+    }
+    assertThat(parsingState.lexerIndex).isEqualTo(0);
   }
 
   @Test

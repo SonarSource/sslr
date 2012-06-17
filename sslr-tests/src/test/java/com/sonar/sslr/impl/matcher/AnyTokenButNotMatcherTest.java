@@ -19,6 +19,8 @@
  */
 package com.sonar.sslr.impl.matcher;
 
+import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.impl.matcher.Matcher.MatchResult;
 import org.junit.Test;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.anyTokenButNot;
@@ -26,6 +28,7 @@ import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class AnyTokenButNotMatcherTest {
 
@@ -33,6 +36,15 @@ public class AnyTokenButNotMatcherTest {
   public void ok() {
     assertThat(anyTokenButNot("two"), match("one"));
     assertThat(anyTokenButNot("one"), not(match("one")));
+  }
+
+  @Test
+  public void test_eos() {
+    // end of stream
+    ParsingState parsingState = mock(ParsingState.class);
+    MatchResult result = new AnyTokenButNotMatcher(MockedMatchers.mockTrue()).doMatch(parsingState);
+    assertThat(result.isMatching()).isFalse();
+    assertThat(parsingState.lexerIndex).isEqualTo(0);
   }
 
   @Test

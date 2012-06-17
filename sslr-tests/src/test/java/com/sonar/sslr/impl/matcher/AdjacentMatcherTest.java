@@ -19,6 +19,8 @@
  */
 package com.sonar.sslr.impl.matcher;
 
+import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.impl.matcher.Matcher.MatchResult;
 import org.junit.Test;
 
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.adjacent;
@@ -27,6 +29,7 @@ import static com.sonar.sslr.impl.matcher.HamcrestMatchMatcher.match;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class AdjacentMatcherTest {
 
@@ -34,6 +37,15 @@ public class AdjacentMatcherTest {
   public void ok() {
     assertThat(and("myMacro", adjacent("(")), match("myMacro("));
     assertThat(and("myMacro", adjacent("(")), not(match("myMacro (")));
+  }
+
+  @Test
+  public void test_eos() {
+    // end of stream - peekTokenIfExists will return null
+    ParsingState parsingState = mock(ParsingState.class);
+    MatchResult result = new AdjacentMatcher(MockedMatchers.mockTrue()).doMatch(parsingState);
+    assertThat(result.isMatching()).isFalse();
+    assertThat(parsingState.lexerIndex).isEqualTo(0);
   }
 
   @Test
