@@ -24,6 +24,8 @@ import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.events.ParsingEventListener;
 
+import javax.annotation.Nullable;
+
 public abstract class Matcher {
 
   public Matcher[] children;
@@ -84,7 +86,7 @@ public abstract class Matcher {
       return NO_MATCH;
     }
 
-    protected static MatchResult succeed(ParsingState parsingState, int startingIndex, AstNode astNode) {
+    protected static MatchResult succeed(ParsingState parsingState, int startingIndex, @Nullable AstNode astNode) {
       int toIndex = parsingState.lexerIndex;
       if (astNode != null) {
         astNode.setFromIndex(startingIndex);
@@ -93,7 +95,7 @@ public abstract class Matcher {
       return new MatchResult(toIndex, astNode);
     }
 
-    private MatchResult(int toIndex, AstNode astNode) {
+    private MatchResult(int toIndex, @Nullable AstNode astNode) {
       this.toIndex = toIndex;
       this.astNode = astNode;
     }
@@ -128,7 +130,7 @@ public abstract class Matcher {
     }
   }
 
-  protected void exitWithMatchEvent(ParsingState parsingState, AstNode astNode) {
+  protected void exitWithMatchEvent(ParsingState parsingState, @Nullable AstNode astNode) {
     if (parsingState.parsingEventListeners != null) {
       if (this instanceof RuleMatcher) {
         /* Fire the exitWithMatchRule event */
