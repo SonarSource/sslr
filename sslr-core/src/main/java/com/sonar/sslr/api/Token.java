@@ -19,13 +19,14 @@
  */
 package com.sonar.sslr.api;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import java.net.URI;
-import java.util.Collections;
 import java.util.List;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Tokens are string of character like an identifier, a literal, an integer, ... which are produced by the lexer to feed the parser.
@@ -54,7 +55,7 @@ public final class Token {
     this.column = builder.column;
     this.uri = builder.uri;
     this.generatedCode = builder.generatedCode;
-    this.trivia = Collections.unmodifiableList(builder.trivia);
+    this.trivia = ImmutableList.copyOf(builder.trivia);
     this.copyBook = builder.copyBook;
     this.copyBookOriginalLine = builder.copyBookOriginalLine;
     this.copyBookOriginalFileName = builder.copyBookOriginalFileName;
@@ -152,7 +153,7 @@ public final class Token {
     private URI uri;
     private int line = 0;
     private int column = -1;
-    private List<Trivia> trivia = Collections.EMPTY_LIST;
+    private List<Trivia> trivia = ImmutableList.of();
     private boolean generatedCode = false;
     private boolean copyBook = false;
     private int copyBookOriginalLine = -1;
