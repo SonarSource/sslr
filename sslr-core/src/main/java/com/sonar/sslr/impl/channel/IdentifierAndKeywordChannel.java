@@ -38,6 +38,7 @@ public class IdentifierAndKeywordChannel extends Channel<Lexer> {
   private final StringBuilder tmpBuilder = new StringBuilder();
   private final Matcher matcher;
   private final boolean caseSensitive;
+  private final Token.Builder tokenBuilder = Token.builder();
 
   public IdentifierAndKeywordChannel(String regexp, boolean caseSensitive, TokenType[]... keywordSets) {
     ImmutableMap.Builder<String, TokenType> keywordsMapBuilder = ImmutableMap.builder();
@@ -62,7 +63,7 @@ public class IdentifierAndKeywordChannel extends Channel<Lexer> {
       }
 
       TokenType keywordType = keywordsMap.get(word);
-      Token token = Token.builder()
+      Token token = tokenBuilder
           .setType(keywordType == null ? IDENTIFIER : keywordType)
           .setValueAndOriginalValue(word, wordOriginal)
           .setURI(lexer.getURI())

@@ -19,15 +19,14 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
-
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.impl.Lexer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
 
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.Lexer;
+import static com.sonar.sslr.api.GenericTokenType.UNKNOWN_CHAR;
 
 public class UnknownCharacterChannel extends Channel<Lexer> {
 
@@ -37,6 +36,7 @@ public class UnknownCharacterChannel extends Channel<Lexer> {
   public static final char BOM_CHAR = '\uFEFF';
 
   private boolean shouldLogWarning = false;
+  private final Token.Builder tokenBuilder = Token.builder();
 
   public UnknownCharacterChannel() {
   }
@@ -57,7 +57,7 @@ public class UnknownCharacterChannel extends Channel<Lexer> {
             + code.getColumnPosition() + ")");
       }
 
-      Token token = Token.builder()
+      Token token = tokenBuilder
           .setType(UNKNOWN_CHAR)
           .setValueAndOriginalValue(String.valueOf(unknownChar))
           .setURI(lexer.getURI())

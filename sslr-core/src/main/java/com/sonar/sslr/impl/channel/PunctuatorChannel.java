@@ -19,20 +19,20 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import java.util.Arrays;
-import java.util.Comparator;
-
-import org.sonar.channel.Channel;
-import org.sonar.channel.CodeReader;
-
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.Lexer;
+import org.sonar.channel.Channel;
+import org.sonar.channel.CodeReader;
+
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class PunctuatorChannel extends Channel<Lexer> {
 
   public final TokenType[] sortedPunctuators;
   public final char[][] sortedPunctuatorsChars;
+  private final Token.Builder tokenBuilder = Token.builder();
 
   private static class PunctuatorComparator implements Comparator<TokenType> {
 
@@ -62,7 +62,7 @@ public class PunctuatorChannel extends Channel<Lexer> {
       if (code.peek() == sortedPunctuatorsChars[i][0]
           && Arrays.equals(code.peek(sortedPunctuatorsChars[i].length), sortedPunctuatorsChars[i])) {
 
-        Token token = Token.builder()
+        Token token = tokenBuilder
             .setType(sortedPunctuators[i])
             .setValueAndOriginalValue(sortedPunctuators[i].getValue())
             .setURI(lexer.getURI())

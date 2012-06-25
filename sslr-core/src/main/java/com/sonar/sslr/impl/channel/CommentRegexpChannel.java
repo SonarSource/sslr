@@ -19,24 +19,24 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.sonar.channel.Channel;
-import org.sonar.channel.CodeReader;
-
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.impl.Lexer;
 import com.sonar.sslr.impl.LexerException;
+import org.sonar.channel.Channel;
+import org.sonar.channel.CodeReader;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.sonar.sslr.api.GenericTokenType.COMMENT;
 
 public class CommentRegexpChannel extends Channel<Lexer> {
 
   private final StringBuilder tmpBuilder = new StringBuilder();
   private final Matcher matcher;
   private final String regexp;
+  private final Token.Builder tokenBuilder = Token.builder();
 
   public CommentRegexpChannel(String regexp) {
     matcher = Pattern.compile(regexp).matcher("");
@@ -49,7 +49,7 @@ public class CommentRegexpChannel extends Channel<Lexer> {
       if (code.popTo(matcher, tmpBuilder) > 0) {
         String value = tmpBuilder.toString();
 
-        Token token = Token.builder()
+        Token token = tokenBuilder
             .setType(COMMENT)
             .setValueAndOriginalValue(value)
             .setURI(lexer.getURI())

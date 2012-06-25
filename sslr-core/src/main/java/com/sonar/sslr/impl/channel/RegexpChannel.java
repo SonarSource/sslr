@@ -19,16 +19,15 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.sonar.channel.Channel;
-import org.sonar.channel.CodeReader;
-
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.Lexer;
 import com.sonar.sslr.impl.LexerException;
+import org.sonar.channel.Channel;
+import org.sonar.channel.CodeReader;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RegexpChannel extends Channel<Lexer> {
 
@@ -36,6 +35,7 @@ public class RegexpChannel extends Channel<Lexer> {
   private final TokenType type;
   private final Matcher matcher;
   private final String regexp;
+  private final Token.Builder tokenBuilder = Token.builder();
 
   public RegexpChannel(TokenType type, String regexp) {
     matcher = Pattern.compile(regexp).matcher("");
@@ -49,7 +49,7 @@ public class RegexpChannel extends Channel<Lexer> {
       if (code.popTo(matcher, tmpBuilder) > 0) {
         String value = tmpBuilder.toString();
 
-        Token token = Token.builder()
+        Token token = tokenBuilder
             .setType(type)
             .setValueAndOriginalValue(value)
             .setURI(lexer.getURI())

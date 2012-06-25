@@ -145,6 +145,10 @@ public final class Token {
     return new Builder(token);
   }
 
+  /**
+   * Instances can be reused - it is safe to call {@link #build}
+   * multiple times to build multiple tokens in series.
+   */
   public static final class Builder {
 
     private TokenType type;
