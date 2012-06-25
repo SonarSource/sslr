@@ -21,7 +21,9 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.impl.MockTokenType;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static com.sonar.sslr.api.GenericTokenType.COMMENT;
 import static com.sonar.sslr.api.GenericTokenType.EOF;
@@ -53,6 +55,23 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 public class GrammarFunctionsTest {
+
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
+
+  @Test
+  public void convertToMatcher_should_check_type() {
+    thrown.expect(IllegalStateException.class);
+    thrown.expectMessage("The matcher object can't be anything else than a Rule, Matcher, String, TokenType or Class. Object = 1");
+    GrammarFunctions.convertToMatcher(Integer.valueOf(1));
+  }
+
+  @Test
+  public void convertToMatcher_should_not_accept_null() {
+    thrown.expect(IllegalStateException.class);
+    thrown.expectMessage("Null is not a valid matcher.");
+    GrammarFunctions.convertToMatcher(null);
+  }
 
   @Test
   public void testCacheAndEqualsAndHashCode() {
