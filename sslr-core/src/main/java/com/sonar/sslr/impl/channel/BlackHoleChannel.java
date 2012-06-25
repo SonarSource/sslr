@@ -19,14 +19,13 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.sonar.sslr.impl.Lexer;
 import org.sonar.channel.Channel;
 import org.sonar.channel.CodeReader;
 
-import com.sonar.sslr.impl.Lexer;
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BlackHoleChannel extends Channel<Lexer> {
 
@@ -38,10 +37,12 @@ public class BlackHoleChannel extends Channel<Lexer> {
 
   @Override
   public boolean consume(CodeReader code, Lexer lexer) {
-    return code.popTo(matcher, new EmptyAppendable()) != -1;
+    return code.popTo(matcher, EmptyAppendable.INSTANCE) != -1;
   }
 
   private static class EmptyAppendable implements Appendable {
+
+    private static final Appendable INSTANCE = new EmptyAppendable();
 
     public Appendable append(CharSequence csq) throws IOException {
       return this;
