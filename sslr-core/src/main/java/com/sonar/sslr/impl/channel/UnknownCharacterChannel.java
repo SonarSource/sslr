@@ -28,6 +28,10 @@ import org.sonar.channel.CodeReader;
 
 import static com.sonar.sslr.api.GenericTokenType.UNKNOWN_CHAR;
 
+/**
+ * Creates token with type {@link #UNKNOWN_CHAR} for any character, which is not {@link #BOM_CHAR}.
+ * This channel, if present, should be the last one.
+ */
 public class UnknownCharacterChannel extends Channel<Lexer> {
 
   private static final Logger LOG = LoggerFactory.getLogger(UnknownCharacterChannel.class);

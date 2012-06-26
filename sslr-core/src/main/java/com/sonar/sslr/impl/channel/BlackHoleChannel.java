@@ -27,6 +27,14 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Allows to skip characters, which match given regular expression.
+ * <p>
+ * Mostly this channel is used with regular expression "\s++" to remove all whitespace characters.
+ * And in such case this channel should be the first one in a sequence of channels for performance reasons,
+ * because generally whitespace characters are encountered more often than all other and especially between others.
+ * </p>
+ */
 public class BlackHoleChannel extends Channel<Lexer> {
 
   private final Matcher matcher;

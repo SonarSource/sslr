@@ -29,6 +29,11 @@ import org.sonar.channel.CodeReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Creates token of specified type from characters, which match given regular expression.
+ *
+ * @see RegexpChannelBuilder
+ */
 public class RegexpChannel extends Channel<Lexer> {
 
   private final StringBuilder tmpBuilder = new StringBuilder();

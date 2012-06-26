@@ -31,6 +31,11 @@ import java.util.regex.Pattern;
 
 import static com.sonar.sslr.api.GenericTokenType.COMMENT;
 
+/**
+ * Creates comment trivia from characters, which match given regular expression.
+ *
+ * @see RegexpChannelBuilder
+ */
 public class CommentRegexpChannel extends Channel<Lexer> {
 
   private final StringBuilder tmpBuilder = new StringBuilder();
