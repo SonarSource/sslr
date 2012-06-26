@@ -196,10 +196,20 @@ public final class Lexer {
     checkArgument(tokens.length > 0, "at least one token must be given");
 
     Token firstToken = tokens[0];
-    Token firstTokenWithTrivia = Token.builder(firstToken).setTrivia(trivia).build();
+    Token firstTokenWithTrivia;
+
+    // Performance optimization: no need to rebuild token, if there is no trivia
+    if (trivia.isEmpty() && !firstToken.hasTrivia()) {
+      firstTokenWithTrivia = firstToken;
+    } else {
+      firstTokenWithTrivia = Token.builder(firstToken).setTrivia(trivia).build();
+      trivia.clear();
+    }
+
     this.tokens.add(firstTokenWithTrivia);
-    trivia.clear();
-    this.tokens.addAll(Arrays.asList(tokens).subList(1, tokens.length));
+    if (tokens.length > 1) {
+      this.tokens.addAll(Arrays.asList(tokens).subList(1, tokens.length));
+    }
   }
 
   public List<Token> getTokens() {
