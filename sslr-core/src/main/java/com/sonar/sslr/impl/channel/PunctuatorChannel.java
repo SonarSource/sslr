@@ -30,8 +30,8 @@ import java.util.Comparator;
 
 public class PunctuatorChannel extends Channel<Lexer> {
 
-  public final TokenType[] sortedPunctuators;
-  public final char[][] sortedPunctuatorsChars;
+  private final TokenType[] sortedPunctuators;
+  private final char[][] sortedPunctuatorsChars;
   private final Token.Builder tokenBuilder = Token.builder();
 
   private static class PunctuatorComparator implements Comparator<TokenType> {
