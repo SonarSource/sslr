@@ -22,11 +22,7 @@ package com.sonar.sslr.symboltable;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicates;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.symboltable.Scope;
-import com.sonar.sslr.api.symboltable.ScopeTreeVisitor;
-import com.sonar.sslr.api.symboltable.ScopeTreeWalker;
-import com.sonar.sslr.api.symboltable.Symbol;
-import com.sonar.sslr.api.symboltable.SymbolTableBuilderContext;
+import com.sonar.sslr.api.symboltable.*;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
 import com.sonar.sslr.test.miniC.MiniCParser;
@@ -35,8 +31,7 @@ import org.junit.Test;
 
 import java.util.Collection;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class MiniCSymbolTableTest {
 
@@ -72,8 +67,8 @@ public class MiniCSymbolTableTest {
 
     ScopeTreePrintVisitor visitor = new ScopeTreePrintVisitor();
     new ScopeTreeWalker(visitor).walk(symbolTable.getEnclosingScope(ast));
-    assertThat(visitor.getTotalNumberOfScopes(), is(7));
-    assertThat(visitor.getTotalNumberOfSymbols(), is(8));
+    assertThat(visitor.getTotalNumberOfScopes()).isEqualTo(7);
+    assertThat(visitor.getTotalNumberOfSymbols()).isEqualTo(8);
 
     new ScopeTreeWalker(new Detector(symbolTable)).walk(symbolTable.getEnclosingScope(ast));
   }

@@ -24,9 +24,7 @@ import org.junit.Test;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class GrammarTest {
 
@@ -35,18 +33,18 @@ public class GrammarTest {
   @Test
   public void testGetRuleFields() {
     List<Field> ruleFields = Grammar.getRuleFields(MyGrammar.class);
-    assertThat(ruleFields.size(), is(1));
+    assertThat(ruleFields.size()).isEqualTo(1);
   }
 
   @Test
   public void testGetAllRuleFields() {
     List<Field> ruleFields = Grammar.getAllRuleFields(MyGrammar.class);
-    assertThat(ruleFields.size(), is(5));
+    assertThat(ruleFields.size()).isEqualTo(5);
   }
 
   @Test
   public void shouldAutomaticallyInstanciateDirectRules() {
-    assertThat(grammar.rootRule, is(notNullValue()));
+    assertThat(grammar.rootRule).isNotNull();
   }
 
   @Test
@@ -55,7 +53,7 @@ public class GrammarTest {
 
     for (Field ruleField : ruleFields) {
       ruleField.setAccessible(true);
-      assertThat("Current rule name = " + ruleField.getName(), ruleField.get(grammar), is(notNullValue()));
+      assertThat(ruleField.get(grammar)).as("Current rule name = " + ruleField.getName()).isNotNull();
     }
   }
 

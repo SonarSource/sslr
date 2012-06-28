@@ -27,10 +27,6 @@ import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
 import static com.sonar.sslr.test.miniC.MiniCParser.getGrammar;
 import static com.sonar.sslr.test.miniC.MiniCParser.parseString;
 import static org.fest.assertions.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
 
 public class AstNodeTest {
 
@@ -42,7 +38,7 @@ public class AstNodeTest {
     expr.addChild(stat);
     expr.addChild(assign);
 
-    assertThat(expr.getChildren(), hasItems(stat, assign));
+    assertThat(expr.getChildren()).contains(stat, assign);
   }
 
   @Test
@@ -66,7 +62,7 @@ public class AstNodeTest {
     many.addChild(print);
     expr.addChild(many);
 
-    assertThat(expr.getChildren(), hasItems(stat, print));
+    assertThat(expr.getChildren()).contains(stat, print);
   }
 
   @Test
@@ -75,7 +71,7 @@ public class AstNodeTest {
     AstNode all = new AstNode(new NodeType(true), "all", null);
     expr.addChild(all);
 
-    assertThat(expr.getChildren().size(), is(0));
+    assertThat(expr.getChildren().size()).isEqualTo(0);
   }
 
   @Test
@@ -92,8 +88,8 @@ public class AstNodeTest {
     parent.addChild(child1);
     parent.addChild(child2);
 
-    assertThat(parent.getChild(0), is(child1));
-    assertThat(parent.getChild(1), is(child2));
+    assertThat(parent.getChild(0)).isSameAs(child1);
+    assertThat(parent.getChild(1)).isSameAs(child2);
   }
 
   @Test
@@ -105,8 +101,8 @@ public class AstNodeTest {
     parent.addChild(child1);
     parent.addChild(child2);
 
-    assertThat(parent.getLastToken(), is(lastToken));
-    assertThat(child2.getLastToken(), is(lastToken));
+    assertThat(parent.getLastToken()).isSameAs(lastToken);
+    assertThat(child2.getLastToken()).isSameAs(lastToken);
   }
 
   @Test
@@ -119,9 +115,9 @@ public class AstNodeTest {
     parent.addChild(child1);
     parent.addChild(child2);
 
-    assertThat(parent.getTokens().size(), is(2));
-    assertThat(parent.getTokens().get(0), is(child1Token));
-    assertThat(parent.getTokens().get(1), is(child2Token));
+    assertThat(parent.getTokens().size()).isEqualTo(2);
+    assertThat(parent.getTokens().get(0)).isSameAs(child1Token);
+    assertThat(parent.getTokens().get(1)).isSameAs(child2Token);
   }
 
   @Test(expected = IllegalStateException.class)
@@ -141,8 +137,8 @@ public class AstNodeTest {
     statement.addChild(expr1);
     statement.addChild(expr2);
 
-    assertThat(expr1.nextSibling(), is(expr2));
-    assertThat(expr2.nextSibling(), is(nullValue()));
+    assertThat(expr1.nextSibling()).isSameAs(expr2);
+    assertThat(expr2.nextSibling()).isNull();
   }
 
   @Test
@@ -154,8 +150,8 @@ public class AstNodeTest {
     statement.addChild(expr1);
     statement.addChild(expr2);
 
-    assertThat(expr1.previousSibling(), is(nullValue()));
-    assertThat(expr2.previousSibling(), is(expr1));
+    assertThat(expr1.previousSibling()).isNull();
+    assertThat(expr2.previousSibling()).isSameAs(expr1);
   }
 
   @Test
@@ -167,29 +163,29 @@ public class AstNodeTest {
     expr.addChild(stat);
     expr.addChild(identifier);
 
-    assertThat(expr.findFirstDirectChild(statRule), is(stat));
+    assertThat(expr.findFirstDirectChild(statRule)).isSameAs(stat);
     NodeType anotherRule = new NodeType();
-    assertThat(expr.findFirstDirectChild(anotherRule, statRule), is(stat));
+    assertThat(expr.findFirstDirectChild(anotherRule, statRule)).isSameAs(stat);
   }
 
   @Test
   public void testIs() {
     AstNode declarationNode = parseString("int a = 0;").getChild(0);
 
-    assertThat(declarationNode.is(getGrammar().definition), is(true));
-    assertThat(declarationNode.is(getGrammar().compilationUnit, getGrammar().definition), is(true));
-    assertThat(declarationNode.is(getGrammar().definition, getGrammar().compilationUnit), is(true));
-    assertThat(declarationNode.is(getGrammar().compilationUnit), is(false));
+    assertThat(declarationNode.is(getGrammar().definition)).isTrue();
+    assertThat(declarationNode.is(getGrammar().compilationUnit, getGrammar().definition)).isTrue();
+    assertThat(declarationNode.is(getGrammar().definition, getGrammar().compilationUnit)).isTrue();
+    assertThat(declarationNode.is(getGrammar().compilationUnit)).isFalse();
   }
 
   @Test
   public void testIsNot() {
     AstNode declarationNode = parseString("int a = 0;").getChild(0);
 
-    assertThat(declarationNode.isNot(getGrammar().definition), is(false));
-    assertThat(declarationNode.isNot(getGrammar().compilationUnit, getGrammar().definition), is(false));
-    assertThat(declarationNode.isNot(getGrammar().definition, getGrammar().compilationUnit), is(false));
-    assertThat(declarationNode.isNot(getGrammar().compilationUnit), is(true));
+    assertThat(declarationNode.isNot(getGrammar().definition)).isFalse();
+    assertThat(declarationNode.isNot(getGrammar().compilationUnit, getGrammar().definition)).isFalse();
+    assertThat(declarationNode.isNot(getGrammar().definition, getGrammar().compilationUnit)).isFalse();
+    assertThat(declarationNode.isNot(getGrammar().compilationUnit)).isTrue();
   }
 
   @Test
@@ -197,19 +193,19 @@ public class AstNodeTest {
     AstNode fileNode = parseString("int a = 0; int myFunction() { int b = 0; { int c = 0; } }");
 
     List<AstNode> binVariableDeclarationNodes = fileNode.findChildren(getGrammar().binVariableDefinition);
-    assertThat(binVariableDeclarationNodes.size(), is(3));
-    assertThat(binVariableDeclarationNodes.get(0).getTokenValue(), is("a"));
-    assertThat(binVariableDeclarationNodes.get(1).getTokenValue(), is("b"));
-    assertThat(binVariableDeclarationNodes.get(2).getTokenValue(), is("c"));
+    assertThat(binVariableDeclarationNodes.size()).isEqualTo(3);
+    assertThat(binVariableDeclarationNodes.get(0).getTokenValue()).isEqualTo("a");
+    assertThat(binVariableDeclarationNodes.get(1).getTokenValue()).isEqualTo("b");
+    assertThat(binVariableDeclarationNodes.get(2).getTokenValue()).isEqualTo("c");
 
     List<AstNode> binVDeclarationNodes = fileNode.findChildren(getGrammar().binVariableDefinition, getGrammar().binFunctionDefinition);
-    assertThat(binVDeclarationNodes.size(), is(4));
-    assertThat(binVDeclarationNodes.get(0).getTokenValue(), is("a"));
-    assertThat(binVDeclarationNodes.get(1).getTokenValue(), is("myFunction"));
-    assertThat(binVDeclarationNodes.get(2).getTokenValue(), is("b"));
-    assertThat(binVDeclarationNodes.get(3).getTokenValue(), is("c"));
+    assertThat(binVDeclarationNodes.size()).isEqualTo(4);
+    assertThat(binVDeclarationNodes.get(0).getTokenValue()).isEqualTo("a");
+    assertThat(binVDeclarationNodes.get(1).getTokenValue()).isEqualTo("myFunction");
+    assertThat(binVDeclarationNodes.get(2).getTokenValue()).isEqualTo("b");
+    assertThat(binVDeclarationNodes.get(3).getTokenValue()).isEqualTo("c");
 
-    assertThat(fileNode.findChildren(getGrammar().multiplicativeExpression).size(), is(0));
+    assertThat(fileNode.findChildren(getGrammar().multiplicativeExpression).size()).isEqualTo(0);
   }
 
   @Test
@@ -217,13 +213,13 @@ public class AstNodeTest {
     AstNode fileNode = parseString("int a = 0; void myFunction() { int b = 0*3; { int c = 0; } }");
 
     List<AstNode> declarationNodes = fileNode.findDirectChildren(getGrammar().definition);
-    assertThat(declarationNodes.size(), is(2));
-    assertThat(declarationNodes.get(0).getTokenValue(), is("int"));
-    assertThat(declarationNodes.get(1).getTokenValue(), is("void"));
+    assertThat(declarationNodes.size()).isEqualTo(2);
+    assertThat(declarationNodes.get(0).getTokenValue()).isEqualTo("int");
+    assertThat(declarationNodes.get(1).getTokenValue()).isEqualTo("void");
 
     List<AstNode> binVDeclarationNodes = fileNode.findDirectChildren(getGrammar().binVariableDefinition,
         getGrammar().binFunctionDefinition);
-    assertThat(binVDeclarationNodes.size(), is(0));
+    assertThat(binVDeclarationNodes.size()).isEqualTo(0);
   }
 
   @Test
@@ -235,10 +231,10 @@ public class AstNodeTest {
     expr.addChild(stat);
     expr.addChild(identifier);
 
-    assertThat(expr.findFirstChild(indentifierRule), is(identifier));
+    assertThat(expr.findFirstChild(indentifierRule)).isSameAs(identifier);
     assertThat(expr.hasChildren(indentifierRule)).isTrue();
     NodeType anotherRule = new NodeType();
-    assertThat(expr.findFirstChild(anotherRule), is(nullValue()));
+    assertThat(expr.findFirstChild(anotherRule)).isNull();
     assertThat(expr.hasChildren(anotherRule)).isFalse();
   }
 
@@ -263,7 +259,7 @@ public class AstNodeTest {
     statement.addChild(expr1);
     statement.addChild(expr2);
 
-    assertThat(statement.getLastChild(), is(expr2));
+    assertThat(statement.getLastChild()).isSameAs(expr2);
   }
 
   private class NodeType implements AstNodeSkippingPolicy {

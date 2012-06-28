@@ -19,15 +19,14 @@
  */
 package com.sonar.sslr.impl;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
-import static com.sonar.sslr.test.miniC.MiniCParser.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.RecognitionException;
+import org.junit.Test;
+
+import static com.sonar.sslr.api.GenericTokenType.EOF;
+import static com.sonar.sslr.test.miniC.MiniCParser.parseFile;
+import static com.sonar.sslr.test.miniC.MiniCParser.parseString;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class ParserTest {
 
@@ -47,7 +46,7 @@ public class ParserTest {
       parseString(".");
       throw new AssertionError("This should be unreachable!");
     } catch (RecognitionException re) {
-      assertThat(re.isToRetryWithExtendStackTrace(), is(false));
+      assertThat(re.isToRetryWithExtendStackTrace()).isFalse();
     }
   }
 
@@ -57,15 +56,15 @@ public class ParserTest {
       parseString("<");
       throw new AssertionError("This should be unreachable!");
     } catch (RecognitionException re) {
-      assertThat(re.isToRetryWithExtendStackTrace(), is(true));
+      assertThat(re.isToRetryWithExtendStackTrace()).isTrue();
     }
   }
 
   @Test
   public void parse() {
     AstNode compilationUnit = parseString("");
-    assertThat(compilationUnit.getNumberOfChildren(), is(1));
-    assertThat(compilationUnit.getChild(0).is(EOF), is(true));
+    assertThat(compilationUnit.getNumberOfChildren()).isEqualTo(1);
+    assertThat(compilationUnit.getChild(0).is(EOF)).isTrue();
   }
 
 }

@@ -19,14 +19,12 @@
  */
 package com.sonar.sslr.impl.ast;
 
-import static com.sonar.sslr.test.lexer.MockHelper.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
+import org.junit.Test;
+
+import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class SkipFromAstIfOnlyOneChildTest {
 
@@ -41,9 +39,9 @@ public class SkipFromAstIfOnlyOneChildTest {
 
     SkipFromAstIfOnlyOneChild astNodeType = new SkipFromAstIfOnlyOneChild();
 
-    assertThat(astNodeType.hasToBeSkippedFromAst(parent), is(false));
-    assertThat(astNodeType.hasToBeSkippedFromAst(child1), is(false));
-    assertThat(astNodeType.hasToBeSkippedFromAst(child2), is(true));
+    assertThat(astNodeType.hasToBeSkippedFromAst(parent)).isFalse();
+    assertThat(astNodeType.hasToBeSkippedFromAst(child1)).isFalse();
+    assertThat(astNodeType.hasToBeSkippedFromAst(child2)).isTrue();
   }
 
 }

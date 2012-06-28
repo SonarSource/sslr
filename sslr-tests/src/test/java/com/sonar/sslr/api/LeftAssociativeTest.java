@@ -19,13 +19,12 @@
  */
 package com.sonar.sslr.api;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
+import com.sonar.sslr.impl.ast.LeftAssociative;
 import org.junit.Test;
 
-import com.sonar.sslr.impl.ast.LeftAssociative;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class LeftAssociativeTest {
 
@@ -36,8 +35,8 @@ public class LeftAssociativeTest {
 
     LeftAssociative.OperatorAndOperand operatorAndOperand = new LeftAssociative.OperatorAndOperand(operator, operand);
 
-    assertThat(operatorAndOperand.getOperator(), is(operator));
-    assertThat(operatorAndOperand.getOperand(), is(operand));
+    assertThat(operatorAndOperand.getOperator()).isSameAs(operator);
+    assertThat(operatorAndOperand.getOperand()).isSameAs(operand);
   }
 
   @Test
@@ -66,15 +65,15 @@ public class LeftAssociativeTest {
 
     LeftAssociative.Iterator iterator = new LeftAssociative.Iterator(node);
 
-    assertThat(iterator.hasNext(), is(true));
+    assertThat(iterator.hasNext()).isTrue();
     LeftAssociative.OperatorAndOperand operandAndOperator = iterator.next();
-    assertThat(operandAndOperator.getOperator(), is(operator1Type));
-    assertThat(operandAndOperator.getOperand(), is(operand2));
-    assertThat(iterator.hasNext(), is(true));
+    assertThat(operandAndOperator.getOperator()).isSameAs(operator1Type);
+    assertThat(operandAndOperator.getOperand()).isSameAs(operand2);
+    assertThat(iterator.hasNext()).isTrue();
     operandAndOperator = iterator.next();
-    assertThat(operandAndOperator.getOperator(), is(operator2Type));
-    assertThat(operandAndOperator.getOperand(), is(operand3));
-    assertThat(iterator.hasNext(), is(false));
+    assertThat(operandAndOperator.getOperator()).isSameAs(operator2Type);
+    assertThat(operandAndOperator.getOperand()).isSameAs(operand3);
+    assertThat(iterator.hasNext()).isFalse();
   }
 
 }

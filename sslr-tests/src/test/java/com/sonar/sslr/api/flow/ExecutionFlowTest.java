@@ -19,16 +19,17 @@
  */
 package com.sonar.sslr.api.flow;
 
-import static com.sonar.sslr.test.lexer.MockHelper.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
+import com.sonar.sslr.api.AstNode;
 import org.junit.Test;
 import org.mockito.InOrder;
 
-import com.sonar.sslr.api.AstNode;
+import static com.sonar.sslr.test.lexer.MockHelper.mockAstNode;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class ExecutionFlowTest {
 
@@ -41,7 +42,7 @@ public class ExecutionFlowTest {
 
     flow.add(stmt);
 
-    assertThat(flow.getStatement(stmtAstNode), is(stmt));
+    assertThat(flow.getStatement(stmtAstNode)).isSameAs(stmt);
   }
 
   @Test

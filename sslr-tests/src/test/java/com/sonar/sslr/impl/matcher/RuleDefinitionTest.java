@@ -24,8 +24,7 @@ import com.sonar.sslr.api.GenericTokenType;
 import org.junit.Test;
 
 import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class RuleDefinitionTest {
 
@@ -46,25 +45,25 @@ public class RuleDefinitionTest {
   public void testIs() {
     RuleDefinition myRule = RuleDefinition.newRuleBuilder("MyRule");
     myRule.is("option1");
-    assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(\"option1\")"));
+    assertThat(MatcherTreePrinter.print(myRule.getRule())).isEqualTo("MyRule.is(\"option1\")");
   }
 
   @Test
   public void testOverride() {
     RuleDefinition myRule = RuleDefinition.newRuleBuilder("MyRule");
     myRule.is("option1");
-    assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(\"option1\")"));
+    assertThat(MatcherTreePrinter.print(myRule.getRule())).isEqualTo("MyRule.is(\"option1\")");
     myRule.override("option2");
-    assertThat(MatcherTreePrinter.print(myRule.getRule()), is("MyRule.is(\"option2\")"));
+    assertThat(MatcherTreePrinter.print(myRule.getRule())).isEqualTo("MyRule.is(\"option2\")");
   }
 
   @Test
   public void testSkipFromAst() {
     RuleDefinition ruleBuilder = RuleDefinition.newRuleBuilder("MyRule");
-    assertThat(ruleBuilder.hasToBeSkippedFromAst(null), is(false));
+    assertThat(ruleBuilder.hasToBeSkippedFromAst(null)).isFalse();
 
     ruleBuilder.skip();
-    assertThat(ruleBuilder.hasToBeSkippedFromAst(null), is(true));
+    assertThat(ruleBuilder.hasToBeSkippedFromAst(null)).isTrue();
   }
 
   @Test
@@ -79,8 +78,8 @@ public class RuleDefinitionTest {
     parent.addChild(child2);
     child1.addChild(child2);
 
-    assertThat(ruleBuilder.hasToBeSkippedFromAst(parent), is(false));
-    assertThat(ruleBuilder.hasToBeSkippedFromAst(child2), is(false));
-    assertThat(ruleBuilder.hasToBeSkippedFromAst(child1), is(true));
+    assertThat(ruleBuilder.hasToBeSkippedFromAst(parent)).isFalse();
+    assertThat(ruleBuilder.hasToBeSkippedFromAst(child2)).isFalse();
+    assertThat(ruleBuilder.hasToBeSkippedFromAst(child1)).isTrue();
   }
 }

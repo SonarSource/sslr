@@ -31,8 +31,6 @@ import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
 import static com.sonar.sslr.test.lexer.TokenUtils.lex;
 import static org.fest.assertions.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -103,14 +101,14 @@ public class RuleMatcherTest {
     RecognitionExceptionListener listener = new RecognitionExceptionListener() {
 
       public void processRecognitionException(RecognitionException e) {
-        assertThat(parsingState.lexerIndex, is(0));
+        assertThat(parsingState.lexerIndex).isEqualTo(0);
       }
 
     };
     parsingState.addListeners(listener);
     rule.match(parsingState);
 
-    assertThat(parsingState.lexerIndex, is(1));
+    assertThat(parsingState.lexerIndex).isEqualTo(1);
   }
 
 }

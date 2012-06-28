@@ -23,8 +23,7 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class StatelessMatcherTest {
@@ -37,13 +36,13 @@ public class StatelessMatcherTest {
     StatelessMatcher matcher2 = newMatcher(child1);
     StatelessMatcher matcher3 = newMatcher(child2);
 
-    assertThat(matcher1.equals(matcher1), is(true));
-    assertThat(matcher1.equals(matcher2), is(true));
-    assertThat(matcher1.hashCode() == matcher2.hashCode(), is(true));
+    assertThat(matcher1.equals(matcher1)).isTrue();
+    assertThat(matcher1.equals(matcher2)).isTrue();
+    assertThat(matcher1.hashCode() == matcher2.hashCode()).isTrue();
 
-    assertThat(matcher1.equals(null), is(false));
-    assertThat(matcher1.equals(new Object()), is(false));
-    assertThat(matcher1.equals(matcher3), is(false));
+    assertThat(matcher1.equals(null)).isFalse();
+    assertThat(matcher1.equals(new Object())).isFalse();
+    assertThat(matcher1.equals(matcher3)).isFalse();
   }
 
   private StatelessMatcher newMatcher(Matcher child) {

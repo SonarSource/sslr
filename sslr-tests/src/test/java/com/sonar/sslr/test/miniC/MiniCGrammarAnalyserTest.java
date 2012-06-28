@@ -26,8 +26,7 @@ import org.junit.Test;
 
 import java.io.PrintStream;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class MiniCGrammarAnalyserTest {
 
@@ -39,7 +38,7 @@ public class MiniCGrammarAnalyserTest {
       GrammarAnalyserStream.print(analyser, new PrintStream(System.err));
     }
 
-    assertThat(analyser.hasIssues(), is(false));
+    assertThat(analyser.hasIssues()).isFalse();
   }
 
 }

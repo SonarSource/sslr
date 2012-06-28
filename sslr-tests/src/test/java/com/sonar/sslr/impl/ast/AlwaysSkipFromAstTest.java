@@ -19,17 +19,16 @@
  */
 package com.sonar.sslr.impl.ast;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 public class AlwaysSkipFromAstTest {
 
   @Test
   public void testHasToBeSkippedFromAst() {
     AlwaysSkipFromAst skipPolicy = new AlwaysSkipFromAst();
-    assertThat(skipPolicy.hasToBeSkippedFromAst(null), is(true));
+    assertThat(skipPolicy.hasToBeSkippedFromAst(null)).isTrue();
   }
 
 }

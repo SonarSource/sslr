@@ -19,10 +19,9 @@
  */
 package com.sonar.sslr.api.flow;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 public class StatementTest {
 
@@ -30,28 +29,28 @@ public class StatementTest {
 
   @Test
   public void shouldNotHaveNext() {
-    assertThat(stmt.hasNext(), is(false));
+    assertThat(stmt.hasNext()).isFalse();
     stmt.setNext(null);
-    assertThat(stmt.hasNext(), is(false));
+    assertThat(stmt.hasNext()).isFalse();
   }
 
   @Test
   public void shouldHaveNext() {
     stmt.setNext(new Statement(null));
-    assertThat(stmt.hasNext(), is(true));
+    assertThat(stmt.hasNext()).isTrue();
   }
 
   @Test
   public void shouldNotHavePrevious() {
-    assertThat(stmt.hasPrevious(), is(false));
+    assertThat(stmt.hasPrevious()).isFalse();
   }
 
   @Test
   public void shouldHavePrevious() {
     Statement previous = new Statement(null);
     previous.setNext(stmt);
-    assertThat(stmt.hasPrevious(), is(true));
-    assertThat(stmt.getPrevious(), is(previous));
+    assertThat(stmt.hasPrevious()).isTrue();
+    assertThat(stmt.getPrevious()).isSameAs(previous);
   }
 
 }

@@ -19,20 +19,22 @@
  */
 package com.sonar.sslr.impl.events;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.test.lexer.MockHelper.*;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Test;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
+import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class AutoCompleterTest {
 
@@ -296,8 +298,8 @@ public class AutoCompleterTest {
   }
 
   private void assertMatches(AutoCompleter auto, String[][] fullMatches, String[][] partialMatches) {
-    assertThat(auto.getFullMatches().size(), is(fullMatches.length));
-    assertThat(auto.getPartialMatches().size(), is(partialMatches.length));
+    assertThat(auto.getFullMatches().size()).isEqualTo(fullMatches.length);
+    assertThat(auto.getPartialMatches().size()).isEqualTo(partialMatches.length);
 
     /* Compare the full matches */
     for (List<Token> list : auto.getFullMatches()) {

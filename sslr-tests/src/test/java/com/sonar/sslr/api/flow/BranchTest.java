@@ -19,10 +19,9 @@
  */
 package com.sonar.sslr.api.flow;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 public class BranchTest {
 
@@ -30,26 +29,26 @@ public class BranchTest {
   public void testGrandParentBranch() {
     Branch branch = new Branch();
 
-    assertThat(branch.getDepth(), is(1));
-    assertThat(branch.getDepthDetail(), is("1"));
-    assertThat(branch.toString(), is("[BRANCH at level 1 : 1]"));
+    assertThat(branch.getDepth()).isEqualTo(1);
+    assertThat(branch.getDepthDetail()).isEqualTo("1");
+    assertThat(branch.toString()).isEqualTo("[BRANCH at level 1 : 1]");
   }
 
   @Test
   public void shouldHandleDepth() {
     Branch branch = new Branch(new Branch(new Branch()));
 
-    assertThat(branch.getDepth(), is(3));
-    assertThat(branch.getDepthDetail(), is("1.1.1"));
-    assertThat(branch.toString(), is("[BRANCH at level 3 : 1.1.1]"));
+    assertThat(branch.getDepth()).isEqualTo(3);
+    assertThat(branch.getDepthDetail()).isEqualTo("1.1.1");
+    assertThat(branch.toString()).isEqualTo("[BRANCH at level 3 : 1.1.1]");
 
     new Branch(branch);
     new Branch(branch);
     Branch child3 = new Branch(branch);
 
-    assertThat(child3.getDepth(), is(4));
-    assertThat(child3.getDepthDetail(), is("1.1.1.3"));
-    assertThat(child3.toString(), is("[BRANCH at level 4 : 1.1.1.3]"));
+    assertThat(child3.getDepth()).isEqualTo(4);
+    assertThat(child3.getDepthDetail()).isEqualTo("1.1.1.3");
+    assertThat(child3.toString()).isEqualTo("[BRANCH at level 4 : 1.1.1.3]");
   }
 
   @Test
@@ -58,9 +57,9 @@ public class BranchTest {
     Branch child11 = new Branch(parent);
     Branch child12 = new Branch(parent);
 
-    assertThat(parent.isParentOf(child11), is(true));
-    assertThat(child11.isParentOf(parent), is(false));
-    assertThat(child11.isParentOf(child12), is(false));
+    assertThat(parent.isParentOf(child11)).isTrue();
+    assertThat(child11.isParentOf(parent)).isFalse();
+    assertThat(child11.isParentOf(child12)).isFalse();
   }
 
   @Test
@@ -69,8 +68,8 @@ public class BranchTest {
     Branch child11 = new Branch(parent);
     Branch child12 = new Branch(parent);
 
-    assertThat(parent.isParentOrChildOf(child11), is(true));
-    assertThat(child11.isParentOrChildOf(parent), is(true));
-    assertThat(child11.isParentOrChildOf(child12), is(false));
+    assertThat(parent.isParentOrChildOf(child11)).isTrue();
+    assertThat(child11.isParentOrChildOf(parent)).isTrue();
+    assertThat(child11.isParentOrChildOf(child12)).isFalse();
   }
 }
