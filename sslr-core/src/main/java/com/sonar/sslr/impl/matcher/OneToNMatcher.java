@@ -38,7 +38,6 @@ public final class OneToNMatcher extends StandardMatcher {
     MatchResult matchResult;
     int startIndex = parsingState.lexerIndex;
     AstNode astNode = null;
-    int loop = 0;
     do {
       matchResult = super.children[0].doMatch(parsingState);
       if (matchResult.isMatching()) {
@@ -46,10 +45,9 @@ public final class OneToNMatcher extends StandardMatcher {
           astNode = new AstNode(null, "oneToNMatcher", parsingState.peekTokenIfExists(startIndex, this));
         }
         astNode.addChild(matchResult.getAstNode());
-        loop++;
       }
     } while (matchResult.isMatching());
-    if (loop == 0) {
+    if (astNode == null) {
       exitWithoutMatchEvent(parsingState);
       return MatchResult.fail(parsingState, startIndex);
     }
