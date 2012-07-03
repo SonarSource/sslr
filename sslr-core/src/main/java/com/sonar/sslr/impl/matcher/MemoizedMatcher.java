@@ -22,7 +22,6 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.events.ParsingEventListener;
 
 public abstract class MemoizedMatcher extends Matcher {
 
@@ -37,12 +36,10 @@ public abstract class MemoizedMatcher extends Matcher {
     /* Memoizer lookup */
     AstNode memoizedAstNode = getMemoizedAst(parsingState);
     if (memoizedAstNode != null) {
-      memoizerHitEvent(parsingState);
       parsingState.lexerIndex = memoizedAstNode.getToIndex();
       exitWithMatchEvent(parsingState, memoizedAstNode);
       return memoizedAstNode;
     }
-    memoizerMissEvent(parsingState);
 
     int startingIndex = parsingState.lexerIndex;
 
@@ -71,21 +68,5 @@ public abstract class MemoizedMatcher extends Matcher {
   }
 
   protected abstract AstNode matchWorker(ParsingState parsingState);
-
-  protected void memoizerHitEvent(ParsingState parsingState) {
-    if (parsingState.parsingEventListeners != null) {
-      for (ParsingEventListener parsingEventListener : parsingState.parsingEventListeners) {
-        parsingEventListener.memoizerHit(this, parsingState);
-      }
-    }
-  }
-
-  protected void memoizerMissEvent(ParsingState parsingState) {
-    if (parsingState.parsingEventListeners != null) {
-      for (ParsingEventListener parsingEventListener : parsingState.parsingEventListeners) {
-        parsingEventListener.memoizerMiss(this, parsingState);
-      }
-    }
-  }
 
 }

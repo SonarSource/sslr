@@ -22,7 +22,6 @@ package com.sonar.sslr.impl.events;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.matcher.Matcher;
-import com.sonar.sslr.impl.matcher.MemoizedMatcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
 public abstract class ParsingEventListener {
@@ -60,10 +59,4 @@ public abstract class ParsingEventListener {
   public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState) {
   };
 
-  /* Memoization level */
-  public void memoizerHit(MemoizedMatcher matcher, ParsingState parsingState) {
-  };
-
-  public void memoizerMiss(MemoizedMatcher matcher, ParsingState parsingState) {
-  };
 }

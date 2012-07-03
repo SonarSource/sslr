@@ -39,12 +39,10 @@ public class MemoMatcher extends DelegatingMatcher {
     AstNode memoizedAstNode = parsingState.getMemoizedAst(this);
     if (memoizedAstNode != null) {
       enterEvent(getDelegate(), parsingState);
-      memoizerHitEvent(parsingState);
       parsingState.lexerIndex = memoizedAstNode.getToIndex();
       exitWithMatchEvent(getDelegate(), parsingState, memoizedAstNode);
       return MatchResult.succeed(parsingState, memoizedAstNode.getFromIndex(), memoizedAstNode);
     } else {
-      memoizerMissEvent(parsingState);
       MatchResult matchResult = super.doMatch(parsingState);
       if (matchResult.getAstNode() != null) {
         parsingState.memoizeAst(this, matchResult.getAstNode());
