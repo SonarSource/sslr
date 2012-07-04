@@ -19,8 +19,10 @@
  */
 package com.sonar.sslr.impl.matcher;
 
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.TokenType;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -309,6 +311,28 @@ public final class GrammarFunctions {
       return matcher instanceof MemoMatcher ? matcher : getCachedMatcher(new MemoMatcher(matcher));
     }
 
+  }
+
+  /**
+   * Allows to enable memoization for all rules in given grammar.
+   * <p>
+   * Usage of {@link GrammarFunctions.Advanced#memoizeMatches(Object)} is preferable than this method, because provides fine-grained control over memoization.
+   * Also note that this method was introduced in order to simplify migration from version 1.13 and may disappear in future versions.
+   * </p>
+   *
+   * @since 1.14
+   */
+  public static void enableMemoizationOfMatchesForAllRules(Grammar grammar) {
+    for (Field ruleField : Grammar.getAllRuleFields(grammar.getClass())) {
+      String ruleName = ruleField.getName();
+      RuleDefinition rule;
+      try {
+        rule = (RuleDefinition) ruleField.get(grammar);
+      } catch (IllegalAccessException e) {
+        throw new IllegalStateException("Unable to enable memoization for rule '" + ruleName + "'", e);
+      }
+      rule.getRule().memoizeMatches();
+    }
   }
 
   protected static Matcher[] convertToMatchers(Object[] objects) {

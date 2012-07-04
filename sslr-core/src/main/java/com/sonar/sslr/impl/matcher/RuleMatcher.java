@@ -68,6 +68,19 @@ public final class RuleMatcher extends StandardMatcher {
     return MatchResult.succeed(parsingState, startIndex, astNode);
   }
 
+  /**
+   * Should not be used directly, companion of {@link GrammarFunctions#enableMemoizationOfMatchesForAllRules(com.sonar.sslr.api.Grammar)}.
+   *
+   * @since 1.14
+   */
+  void memoizeMatches() {
+    if (this.children.length == 0) {
+      // skip empty rule
+      return;
+    }
+    this.children[0] = GrammarFunctions.Advanced.memoizeMatches(children[0]);
+  }
+
   public void setNodeType(AstNodeType astNodeType) {
     this.astNodeType = astNodeType;
   }
