@@ -29,6 +29,21 @@
     </license>
   </licenses>
 
+  <developers>
+    <developer>
+      <id>dbolkensteyn</id>
+      <name>Dinesh Bolkensteyn</name>
+      <email>dinesh.bolkensteyn@sonarsource.com</email>
+      <organization>SonarSource</organization>
+    </developer>
+    <developer>
+      <id>godin</id>
+      <name>Evgeny Mandrikov</name>
+      <email>evgeny.mandrikov@sonarsource.com</email>
+      <organization>SonarSource</organization>
+    </developer>
+  </developers>
+
   <scm>
     <connection>scm:git:git@github.com:SonarSource/sslr.git</connection>
     <developerConnection>scm:git:git@github.com:SonarSource/sslr.git</developerConnection>
