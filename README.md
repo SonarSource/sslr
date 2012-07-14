@@ -1,3 +1,5 @@
 # SonarSource Language Recognizer
 
-See the homepage : http://docs.codehaus.org/display/SONAR/SSLR
+Project homepage : http://docs.codehaus.org/display/SONAR/SSLR
+
+Issue tracking: http://jira.sonarsource.com/browse/SSLR
