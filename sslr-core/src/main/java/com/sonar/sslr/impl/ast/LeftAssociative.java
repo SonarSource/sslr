@@ -71,7 +71,10 @@ import com.sonar.sslr.api.AstNodeType;
  *   return accumulator;
  * }
  * </pre>
+ *
+ * @deprecated in 1.15
  */
+@Deprecated
 public final class LeftAssociative {
 
   private LeftAssociative() {
