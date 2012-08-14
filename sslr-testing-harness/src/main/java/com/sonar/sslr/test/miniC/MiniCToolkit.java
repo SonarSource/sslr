@@ -21,17 +21,17 @@ package com.sonar.sslr.test.miniC;
 
 import com.sonar.sslr.toolkit.SsdkGui;
 
-public final class MiniCDevkit {
+public final class MiniCToolkit {
 
-  private MiniCDevkit() {
+  private MiniCToolkit() {
   }
 
   public static void main(String[] args) {
-    System.setProperty("com.apple.mrj.application.apple.menu.about.name", "SSDK");
+    System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MiniC Toolkit");
     SsdkGui ssdkGui = new SsdkGui(MiniCParser.create(), MiniCColorizer.getTokenizers());
     ssdkGui.setVisible(true);
     ssdkGui.setSize(1000, 800);
-    ssdkGui.setTitle("MiniC : SonarSource Development Kit");
+    ssdkGui.setTitle("MiniC : Toolkit");
   }
 
 }
