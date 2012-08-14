@@ -27,6 +27,7 @@ import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.impl.Parser;
+import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -43,6 +44,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.event.CaretEvent;
@@ -84,12 +86,14 @@ public class SsdkGui extends javax.swing.JFrame {
 
   private AstNode fileNode = null;
 
+  private final JTabbedPane tabbedPane = new JTabbedPane();
+  private final JTextArea xmlTextArea = new JTextArea();
   private final JTree astTree = new JTree();
   private final JScrollPane astTreeScrollPane = new JScrollPane(astTree);
   private final Map<Object, DefaultMutableTreeNode> userObjectToTreeNodeCache = Maps.newHashMap();
   private final JEditorPane codeEditor = new JEditorPane();
   private final JScrollPane codeEditorScrollPane = new JScrollPane(codeEditor);
-  private final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, codeEditorScrollPane, astTreeScrollPane);
+  private final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, codeEditorScrollPane, tabbedPane);
 
   private final JPanel southPanel = new JPanel(new BorderLayout());
 
@@ -123,12 +127,16 @@ public class SsdkGui extends javax.swing.JFrame {
       }
     });
 
+    tabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
+    tabbedPane.add("Abstract Syntax Tree", astTreeScrollPane);
+    tabbedPane.add("XML", xmlTextArea);
+
     codeEditor.setContentType("text/html");
     codeEditor.setEditable(true);
     codeEditor.addKeyListener(new KeyAdapter() {
       @Override
       public void keyTyped(KeyEvent event) {
-        showAst("");
+        showAstAndXml("");
       }
     });
     codeEditor.addCaretListener(new CaretListener() {
@@ -338,7 +346,7 @@ public class SsdkGui extends javax.swing.JFrame {
   private void loadFromString(String code) {
     showCode(code);
     lineOffsets.computeLineOffsets(code, codeEditor.getDocument().getEndPosition().getOffset());
-    showAst(code);
+    showAstAndXml(code);
   }
 
   private void showCode(String code) {
@@ -352,10 +360,14 @@ public class SsdkGui extends javax.swing.JFrame {
     codeEditor.setText(sb.toString());
   }
 
-  private void showAst(String code) {
+  private void showAstAndXml(String code) {
     if (!EMPTY_TREE_MODEL.equals(astTree.getModel())) {
+      fileNode = null;
+
       astTree.setModel(EMPTY_TREE_MODEL);
       userObjectToTreeNodeCache.clear();
+
+      xmlTextArea.setText("");
     }
 
     if (code.length() > 0) {
@@ -367,12 +379,11 @@ public class SsdkGui extends javax.swing.JFrame {
         addChildNodes(treeNode, fileNode);
 
         astTree.setModel(new DefaultTreeModel(treeNode));
+        xmlTextArea.setText(AstXmlPrinter.print(fileNode));
       } catch (RecognitionException re) {
         fileNode = null;
         LOG.error("Unable to parse the code.", re);
       }
-    } else {
-      fileNode = null;
     }
   }
 
