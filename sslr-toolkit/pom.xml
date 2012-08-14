@@ -18,6 +18,10 @@
 
   <dependencies>
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>sslr-xpath</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.codehaus.sonar</groupId>
       <artifactId>sonar-colorizer</artifactId>
     </dependency>

@@ -27,6 +27,7 @@ import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.impl.Parser;
+import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -35,12 +36,15 @@ import org.sonar.colorizer.HtmlOptions;
 import org.sonar.colorizer.HtmlRenderer;
 import org.sonar.colorizer.Tokenizer;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -82,16 +86,26 @@ public class SsdkGui extends javax.swing.JFrame {
   private static final Logger LOG = LoggerFactory.getLogger("Toolkit");
   private static final DefaultTreeModel EMPTY_TREE_MODEL = new DefaultTreeModel(null);
 
-  private final JFileChooser fileChooser = new JFileChooser();
-  private final JButton openButton = new JButton();
-  private final JButton parseButton = new JButton();
-  private final JPanel buttonPanel = new JPanel();
+  private AstNode fileNode = null;
+
   private final JTree astTree = new JTree();
   private final JScrollPane astTreeScrollPane = new JScrollPane(astTree);
   private final Map<Object, DefaultMutableTreeNode> userObjectToTreeNodeCache = Maps.newHashMap();
   private final JEditorPane codeEditor = new JEditorPane();
   private final JScrollPane codeEditorScrollPane = new JScrollPane(codeEditor);
   private final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, codeEditorScrollPane, astTreeScrollPane);
+
+  private final JPanel southPanel = new JPanel(new BorderLayout());
+
+  private final JTextArea xpathTextArea = new JTextArea();
+  private final JScrollPane xpathTextAreaScrollPane = new JScrollPane(xpathTextArea);
+  private final JPanel xpathPanel = new JPanel(new BorderLayout(10, 5));
+
+  private final JFileChooser fileChooser = new JFileChooser();
+  private final JButton openButton = new JButton();
+  private final JButton parseButton = new JButton();
+  private final JButton xpathButton = new JButton();
+  private final JPanel buttonsPanel = new JPanel();
 
   private final Offsets lineOffsets = new Offsets();
   private final Parser<? extends Grammar> parser;
@@ -104,6 +118,41 @@ public class SsdkGui extends javax.swing.JFrame {
 
     setLayout(new BorderLayout(2, 2));
     setDefaultCloseOperation(SsdkGui.EXIT_ON_CLOSE);
+
+    astTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
+    astTree.addTreeSelectionListener(new TreeSelectionListener() {
+      public void valueChanged(TreeSelectionEvent event) {
+        highlightSelectedPaths();
+        scrollToFirstSelectedPath();
+      }
+    });
+
+    codeEditor.setContentType("text/html");
+    codeEditor.setEditable(true);
+    codeEditor.addKeyListener(new KeyAdapter() {
+      @Override
+      public void keyTyped(KeyEvent event) {
+        showAst("");
+      }
+    });
+    codeEditor.addCaretListener(new CaretListener() {
+      public void caretUpdate(CaretEvent event) {
+        selectPath();
+        scrollToSelectedPath();
+      }
+    });
+
+    splitPane.setDividerLocation(500);
+    add(splitPane, BorderLayout.CENTER);
+
+    xpathTextArea.setText("//IDENTIFIER");
+    xpathTextArea.setRows(8);
+    xpathPanel.add(new JLabel(" XPath query:"), BorderLayout.NORTH);
+    xpathPanel.add(Box.createHorizontalGlue(), BorderLayout.WEST);
+    xpathPanel.add(xpathTextAreaScrollPane, BorderLayout.CENTER);
+    xpathPanel.add(Box.createHorizontalGlue(), BorderLayout.EAST);
+
+    southPanel.add(xpathPanel, BorderLayout.NORTH);
 
     openButton.setText("Open file");
     openButton.addActionListener(new ActionListener() {
@@ -136,37 +185,44 @@ public class SsdkGui extends javax.swing.JFrame {
       }
     });
 
-    buttonPanel.add(openButton);
-    buttonPanel.add(parseButton);
-    add(buttonPanel, BorderLayout.PAGE_END);
-
-    astTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
-    astTree.addTreeSelectionListener(new TreeSelectionListener() {
-      public void valueChanged(TreeSelectionEvent event) {
-        highlightSelectedPaths();
-        scrollToFirstSelectedPath();
+    xpathButton.setText("Evaluate XPath");
+    xpathButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        if (fileNode == null) {
+          LOG.error("The code must be parsed before XPath queries can be evaluated");
+        } else {
+          evaluateXPath(xpathTextArea.getText());
+        }
       }
     });
 
-    codeEditor.setContentType("text/html");
-    codeEditor.setEditable(true);
-    codeEditor.addKeyListener(new KeyAdapter() {
-      @Override
-      public void keyTyped(KeyEvent event) {
-        showAst("");
-      }
-    });
-    codeEditor.addCaretListener(new CaretListener() {
-      public void caretUpdate(CaretEvent event) {
-        selectPath();
-        scrollToSelectedPath();
-      }
-    });
+    buttonsPanel.add(openButton);
+    buttonsPanel.add(parseButton);
+    buttonsPanel.add(xpathButton);
 
-    splitPane.setDividerLocation(500);
-    add(splitPane, BorderLayout.CENTER);
+    southPanel.add(buttonsPanel, BorderLayout.SOUTH);
+
+    add(southPanel, BorderLayout.SOUTH);
 
     loadFromString("");
+  }
+
+  private void evaluateXPath(String xpath) {
+    astTree.clearSelection();
+    codeEditor.getHighlighter().removeAllHighlights();
+
+    try {
+      AstNodeXPathQuery<Object> xpathQuery = AstNodeXPathQuery.create(xpath);
+
+      for (Object object : xpathQuery.selectNodes(fileNode)) {
+        if (object instanceof AstNode) {
+          AstNode astNode = (AstNode) object;
+          highlightAstNode(astNode);
+        }
+      }
+    } catch (RuntimeException e) {
+      LOG.error("Error while evaluating the XPath query", e);
+    }
   }
 
   private void highlightSelectedPaths() {
@@ -178,17 +234,20 @@ public class SsdkGui extends javax.swing.JFrame {
         DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
 
         AstNode astNode = getAstNodeFromUserObject(treeNode.getUserObject());
-
-        try {
-          Token firstToken = astNode.getToken();
-          Token lastToken = astNode.getLastToken();
-
-          codeEditor.getHighlighter().addHighlight(lineOffsets.getStartOffset(firstToken), lineOffsets.getEndOffset(lastToken),
-              new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY));
-        } catch (BadLocationException e) {
-          LOG.error("Error with the highlighter", e);
-        }
+        highlightAstNode(astNode);
       }
+    }
+  }
+
+  private void highlightAstNode(AstNode astNode) {
+    try {
+      Token firstToken = astNode.getToken();
+      Token lastToken = astNode.getLastToken();
+
+      codeEditor.getHighlighter().addHighlight(lineOffsets.getStartOffset(firstToken), lineOffsets.getEndOffset(lastToken),
+          new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY));
+    } catch (BadLocationException e) {
+      LOG.error("Error with the highlighter", e);
     }
   }
 
@@ -305,16 +364,19 @@ public class SsdkGui extends javax.swing.JFrame {
 
     if (code.length() > 0) {
       try {
-        AstNode astNode = parser.parse(code);
-        DefaultMutableTreeNode treeNode = new DefaultMutableTreeNode(astNode);
-        userObjectToTreeNodeCache.put(astNode, treeNode);
+        fileNode = parser.parse(code);
+        DefaultMutableTreeNode treeNode = new DefaultMutableTreeNode(fileNode);
+        userObjectToTreeNodeCache.put(fileNode, treeNode);
 
-        addChildNodes(treeNode, astNode);
+        addChildNodes(treeNode, fileNode);
 
         astTree.setModel(new DefaultTreeModel(treeNode));
       } catch (RecognitionException re) {
+        fileNode = null;
         LOG.error("Unable to parse the code.", re);
       }
+    } else {
+      fileNode = null;
     }
   }
 
