@@ -19,7 +19,7 @@
  */
 package com.sonar.sslr.test.miniC;
 
-import com.sonar.sslr.devkit.SsdkGui;
+import com.sonar.sslr.toolkit.SsdkGui;
 
 public final class MiniCDevkit {
 

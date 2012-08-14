@@ -8,9 +8,9 @@
     <version>1.15-SNAPSHOT</version>
   </parent>
 
-  <artifactId>sslr-devkit</artifactId>
+  <artifactId>sslr-toolkit</artifactId>
 
-  <name>SonarSource :: Language Recognizer :: Development Kit</name>
+  <name>SonarSource :: Language Recognizer :: Toolkit</name>
 
   <properties>
     <sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath>

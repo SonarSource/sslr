@@ -17,10 +17,15 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.devkit;
+package com.sonar.sslr.toolkit;
 
 import com.google.common.collect.Maps;
-import com.sonar.sslr.api.*;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.api.PreprocessingDirective;
+import com.sonar.sslr.api.RecognitionException;
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.impl.Parser;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -30,7 +35,13 @@ import org.sonar.colorizer.HtmlOptions;
 import org.sonar.colorizer.HtmlRenderer;
 import org.sonar.colorizer.Tokenizer;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTree;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -49,7 +60,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.StringReader;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -60,8 +78,8 @@ import static com.google.common.base.Preconditions.checkState;
 @SuppressWarnings("serial")
 public class SsdkGui extends javax.swing.JFrame {
 
-  private static final String CSS_PATH = "/com/sonar/sslr/devkit/codeEditor.css";
-  private static final Logger LOG = LoggerFactory.getLogger("DevKit");
+  private static final String CSS_PATH = "/com/sonar/sslr/toolkit/codeEditor.css";
+  private static final Logger LOG = LoggerFactory.getLogger("Toolkit");
   private static final DefaultTreeModel EMPTY_TREE_MODEL = new DefaultTreeModel(null);
 
   private final JFileChooser fileChooser = new JFileChooser();

@@ -77,7 +77,7 @@
 
   <modules>
     <module>sslr-core</module>
-    <module>sslr-devkit</module>
+    <module>sslr-toolkit</module>
     <module>sslr-testing-harness</module>
     <module>sslr-xpath</module>
     <module>sslr-tests</module>
@@ -108,7 +108,7 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>sslr-devkit</artifactId>
+        <artifactId>sslr-toolkit</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
