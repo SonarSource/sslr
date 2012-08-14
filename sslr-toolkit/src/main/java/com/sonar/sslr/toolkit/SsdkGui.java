@@ -29,7 +29,6 @@ import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.colorizer.HtmlOptions;
@@ -65,9 +64,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -82,8 +79,7 @@ import static com.google.common.base.Preconditions.checkState;
 @SuppressWarnings("serial")
 public class SsdkGui extends javax.swing.JFrame {
 
-  private static final String CSS_PATH = "/com/sonar/sslr/toolkit/codeEditor.css";
-  private static final Logger LOG = LoggerFactory.getLogger("Toolkit");
+  private static final Logger LOG = LoggerFactory.getLogger(SsdkGui.class);
   private static final DefaultTreeModel EMPTY_TREE_MODEL = new DefaultTreeModel(null);
 
   private AstNode fileNode = null;
@@ -348,7 +344,7 @@ public class SsdkGui extends javax.swing.JFrame {
   private void showCode(String code) {
     StringBuffer sb = new StringBuffer();
     sb.append("<html><head><style type=\"text/css\">");
-    sb.append(getCss());
+    sb.append(CssLoader.getCss());
     sb.append("</style></head><body><pre class=\"code\">");
     sb.append(htmlRenderer.render(new StringReader(code), colorizerTokenizers));
     sb.append("</pre></body></html>");
@@ -402,19 +398,6 @@ public class SsdkGui extends javax.swing.JFrame {
           addChildNodes(treeNodeInnerChild, directive.getAst());
         }
       }
-    }
-  }
-
-  private Object getCss() {
-    try {
-      InputStream inputStream = SsdkGui.class.getResourceAsStream(CSS_PATH);
-      if (inputStream == null) {
-        throw new FileNotFoundException("Unable to find the resource " + CSS_PATH);
-      }
-      return IOUtils.toString(inputStream);
-    } catch (IOException e) {
-      LOG.error("Unable to read the CSS file '" + CSS_PATH + "'", e);
-      return "";
     }
   }
 
