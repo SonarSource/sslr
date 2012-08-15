@@ -53,7 +53,8 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.Document;
+import javax.swing.text.Element;
+import javax.swing.text.html.HTMLDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -122,8 +123,8 @@ public class SsdkGui extends javax.swing.JFrame {
     astTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
     astTree.addTreeSelectionListener(new TreeSelectionListener() {
       public void valueChanged(TreeSelectionEvent event) {
-        highlightSelectedPaths();
-        scrollToFirstSelectedPath();
+        highlightCodeForSelectedPaths();
+        scrollCodeToFirstSelectedPath();
       }
     });
 
@@ -141,8 +142,8 @@ public class SsdkGui extends javax.swing.JFrame {
     });
     codeEditor.addCaretListener(new CaretListener() {
       public void caretUpdate(CaretEvent event) {
-        selectPath();
-        scrollToSelectedPath();
+        astSelectPath();
+        scrollAstToSelectedPath();
       }
     });
 
@@ -173,19 +174,9 @@ public class SsdkGui extends javax.swing.JFrame {
     parseButton.setText("Parse text");
     parseButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
-        String code = "";
-        Document document = codeEditor.getDocument();
-        if (document.getLength() > 0) {
-          try {
-            code = document.getText(1, document.getEndPosition().getOffset() - 1);
-          } catch (BadLocationException e) {
-            LOG.error("Error while reading code buffer", e);
-          }
-        }
+        String code = getCode();
 
-        int caretOffset = codeEditor.getCaretPosition();
         loadFromString(code);
-        codeEditor.setCaretPosition(caretOffset);
       }
     });
 
@@ -211,6 +202,21 @@ public class SsdkGui extends javax.swing.JFrame {
     loadFromString("");
   }
 
+  private String getCode() {
+    HTMLDocument htmlDocument = (HTMLDocument) codeEditor.getDocument();
+    Element codeElement = htmlDocument.getElement("code");
+
+    int startOffset = codeElement.getStartOffset();
+    int length = codeElement.getEndOffset() - startOffset - 1;
+
+    try {
+      return htmlDocument.getText(startOffset, length);
+    } catch (BadLocationException e) {
+      LOG.error("Error while getting the code", e);
+      return "";
+    }
+  }
+
   private void evaluateXPath(String xpath) {
     astTree.clearSelection();
     codeEditor.getHighlighter().removeAllHighlights();
@@ -221,7 +227,7 @@ public class SsdkGui extends javax.swing.JFrame {
       for (Object object : xpathQuery.selectNodes(fileNode)) {
         if (object instanceof AstNode) {
           AstNode astNode = (AstNode) object;
-          highlightAstNode(astNode);
+          highlightCodeForAstNode(astNode);
         }
       }
     } catch (RuntimeException e) {
@@ -229,7 +235,7 @@ public class SsdkGui extends javax.swing.JFrame {
     }
   }
 
-  private void highlightSelectedPaths() {
+  private void highlightCodeForSelectedPaths() {
     codeEditor.getHighlighter().removeAllHighlights();
 
     TreePath[] selectedPaths = astTree.getSelectionPaths();
@@ -238,12 +244,12 @@ public class SsdkGui extends javax.swing.JFrame {
         DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
 
         AstNode astNode = getAstNodeFromUserObject(treeNode.getUserObject());
-        highlightAstNode(astNode);
+        highlightCodeForAstNode(astNode);
       }
     }
   }
 
-  private void highlightAstNode(AstNode astNode) {
+  private void highlightCodeForAstNode(AstNode astNode) {
     try {
       Token firstToken = astNode.getToken();
       Token lastToken = astNode.getLastToken();
@@ -251,11 +257,11 @@ public class SsdkGui extends javax.swing.JFrame {
       codeEditor.getHighlighter().addHighlight(lineOffsets.getStartOffset(firstToken), lineOffsets.getEndOffset(lastToken),
           new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY));
     } catch (BadLocationException e) {
-      LOG.error("Error with the highlighter", e);
+      LOG.error("Error while highlighting the code", e);
     }
   }
 
-  private void scrollToFirstSelectedPath() {
+  private void scrollCodeToFirstSelectedPath() {
     TreePath selectedPath = astTree.getSelectionPath();
 
     if (selectedPath != null) {
@@ -269,7 +275,7 @@ public class SsdkGui extends javax.swing.JFrame {
         codeEditor.scrollRectToVisible(codeEditor.modelToView(0));
         codeEditor.scrollRectToVisible(codeEditor.modelToView(lineOffsets.getOffset(line, 0)));
       } catch (BadLocationException e) {
-        LOG.error("Error with the scrolling", e);
+        LOG.error("Error while scrolling to the code", e);
       }
     }
   }
@@ -296,7 +302,7 @@ public class SsdkGui extends javax.swing.JFrame {
     return (AstNode) (parent == null ? userObject : parent.getUserObject());
   }
 
-  private void selectPath() {
+  private void astSelectPath() {
     if (!EMPTY_TREE_MODEL.equals(astTree.getModel())) {
       int offset = codeEditor.getCaretPosition();
       int line = lineOffsets.getLineFromOffset(offset);
@@ -322,12 +328,12 @@ public class SsdkGui extends javax.swing.JFrame {
 
       if (treeNode != null) {
         astTree.addSelectionPath(new TreePath(treeNode.getPath()));
-        highlightSelectedPaths();
+        highlightCodeForSelectedPaths();
       }
     }
   }
 
-  private void scrollToSelectedPath() {
+  private void scrollAstToSelectedPath() {
     TreePath selectionPath = astTree.getSelectionPath();
     if (selectionPath != null) {
       astTree.scrollPathToVisible(selectionPath);
@@ -353,7 +359,7 @@ public class SsdkGui extends javax.swing.JFrame {
     StringBuffer sb = new StringBuffer();
     sb.append("<html><head><style type=\"text/css\">");
     sb.append(CssLoader.getCss());
-    sb.append("</style></head><body><pre class=\"code\">");
+    sb.append("</style></head><body><pre class=\"code\" id=\"code\">");
     sb.append(htmlRenderer.render(new StringReader(code), colorizerTokenizers));
     sb.append("</pre></body></html>");
 
