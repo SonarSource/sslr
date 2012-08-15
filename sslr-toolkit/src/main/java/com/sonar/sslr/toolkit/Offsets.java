@@ -29,8 +29,7 @@ public final class Offsets {
   private final Map<Integer, Integer> lineOffsets = Maps.newHashMap();
   private int endPositionOffset;
 
-  public void computeLineOffsets(String code, int endPositionOffset) {
-    this.endPositionOffset = endPositionOffset;
+  public void computeLineOffsets(String code) {
     lineOffsets.clear();
 
     int currentOffset = 1;
@@ -40,6 +39,8 @@ public final class Offsets {
       lineOffsets.put(line, currentOffset);
       currentOffset += lines[line - 1].length() + 1;
     }
+
+    this.endPositionOffset = currentOffset;
   }
 
   public int getLineFromOffset(int offset) {

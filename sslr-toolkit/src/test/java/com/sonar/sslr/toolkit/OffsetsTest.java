@@ -19,8 +19,6 @@
  */
 package com.sonar.sslr.toolkit;
 
-import com.sonar.sslr.toolkit.Offsets;
-
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import org.junit.Test;
@@ -35,15 +33,15 @@ public class OffsetsTest {
   @Test
   public void test() {
     Offsets offsets = new Offsets();
-    offsets.computeLineOffsets("line1\nline2\n", 15);
+    offsets.computeLineOffsets("line1\nline2\n");
 
     assertThat(offsets.getOffset(1, 1)).isEqualTo(2);
     assertThat(offsets.getOffset(1, 2)).isEqualTo(3);
     assertThat(offsets.getOffset(2, 1)).isEqualTo(8);
     assertThat(offsets.getOffset(2, 2)).isEqualTo(9);
-    assertThat(offsets.getOffset(3, 1)).isEqualTo(14);
-    assertThat(offsets.getOffset(3, 2)).isEqualTo(14);
-    assertThat(offsets.getOffset(4, 1)).isEqualTo(14);
+    assertThat(offsets.getOffset(3, 1)).isEqualTo(13);
+    assertThat(offsets.getOffset(3, 2)).isEqualTo(13);
+    assertThat(offsets.getOffset(4, 1)).isEqualTo(13);
 
     assertThat(offsets.getLineFromOffset(2)).isEqualTo(1);
     assertThat(offsets.getLineFromOffset(3)).isEqualTo(1);

@@ -85,6 +85,8 @@ public class SsdkGui extends javax.swing.JFrame {
   private static final Logger LOG = LoggerFactory.getLogger(SsdkGui.class);
   private static final DefaultTreeModel EMPTY_TREE_MODEL = new DefaultTreeModel(null);
 
+  private boolean caretUpdateEventDisabled = false;
+
   private AstNode fileNode = null;
 
   private final JTabbedPane tabbedPane = new JTabbedPane();
@@ -142,8 +144,10 @@ public class SsdkGui extends javax.swing.JFrame {
     });
     codeEditor.addCaretListener(new CaretListener() {
       public void caretUpdate(CaretEvent event) {
-        astSelectPath();
-        scrollAstToSelectedPath();
+        if (!caretUpdateEventDisabled) {
+          astSelectPath();
+          scrollAstToSelectedPath();
+        }
       }
     });
 
@@ -275,6 +279,8 @@ public class SsdkGui extends javax.swing.JFrame {
         codeEditor.scrollRectToVisible(codeEditor.modelToView(0));
         codeEditor.scrollRectToVisible(codeEditor.modelToView(lineOffsets.getOffset(line, 0)));
       } catch (BadLocationException e) {
+        System.err.println("Current code = " + getCode());
+        System.err.println("invalid location at " + e.offsetRequested());
         LOG.error("Error while scrolling to the code", e);
       }
     }
@@ -351,7 +357,6 @@ public class SsdkGui extends javax.swing.JFrame {
 
   private void loadFromString(String code) {
     showCode(code);
-    lineOffsets.computeLineOffsets(code, codeEditor.getDocument().getEndPosition().getOffset());
     showAstAndXml(code);
   }
 
@@ -363,7 +368,11 @@ public class SsdkGui extends javax.swing.JFrame {
     sb.append(htmlRenderer.render(new StringReader(code), colorizerTokenizers));
     sb.append("</pre></body></html>");
 
+    lineOffsets.computeLineOffsets(code);
+
+    caretUpdateEventDisabled = true;
     codeEditor.setText(sb.toString());
+    caretUpdateEventDisabled = false;
   }
 
   private void showAstAndXml(String code) {
