@@ -211,12 +211,12 @@ public class SsdkGui extends javax.swing.JFrame {
     Element codeElement = htmlDocument.getElement("code");
 
     int startOffset = codeElement.getStartOffset();
-    int length = codeElement.getEndOffset() - startOffset - 1;
+    int length = htmlDocument.getEndPosition().getOffset() - startOffset - 1;
 
     try {
       return htmlDocument.getText(startOffset, length);
     } catch (BadLocationException e) {
-      LOG.error("Error while getting the code", e);
+      LOG.error("Error while getting the code (offset requested = " + e.offsetRequested() + ")", e);
       return "";
     }
   }
@@ -261,7 +261,7 @@ public class SsdkGui extends javax.swing.JFrame {
       codeEditor.getHighlighter().addHighlight(lineOffsets.getStartOffset(firstToken), lineOffsets.getEndOffset(lastToken),
           new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY));
     } catch (BadLocationException e) {
-      LOG.error("Error while highlighting the code", e);
+      LOG.error("Error while highlighting the code (offset requested = " + e.offsetRequested() + ")", e);
     }
   }
 
@@ -279,7 +279,7 @@ public class SsdkGui extends javax.swing.JFrame {
         codeEditor.scrollRectToVisible(codeEditor.modelToView(0));
         codeEditor.scrollRectToVisible(codeEditor.modelToView(lineOffsets.getOffset(line, 0)));
       } catch (BadLocationException e) {
-        LOG.error("Error while scrolling to the code", e);
+        LOG.error("Error while scrolling to the code (offset requested = " + e.offsetRequested() + ")", e);
       }
     }
   }
@@ -354,24 +354,8 @@ public class SsdkGui extends javax.swing.JFrame {
   }
 
   private void loadFromString(String code) {
-    int relativeCaretPosition = getRelativeCaretOffset();
     showCode(code);
     showAstAndXml(code);
-    setRelativeCaretOffset(relativeCaretPosition);
-  }
-
-  private int getRelativeCaretOffset() {
-    return codeEditor.getCaretPosition() - getCodeElementStartOffset();
-  }
-
-  private void setRelativeCaretOffset(int relativeCaretPosition) {
-    codeEditor.setCaretPosition(relativeCaretPosition + getCodeElementStartOffset());
-  }
-
-  private int getCodeElementStartOffset() {
-    HTMLDocument htmlDocument = (HTMLDocument) codeEditor.getDocument();
-    Element codeElement = htmlDocument.getElement("code");
-    return codeElement == null ? 0 : codeElement.getStartOffset();
   }
 
   private void showCode(String code) {
@@ -382,11 +366,11 @@ public class SsdkGui extends javax.swing.JFrame {
     sb.append(htmlRenderer.render(new StringReader(code), colorizerTokenizers));
     sb.append("</pre></body></html>");
 
-    lineOffsets.computeLineOffsets(code);
-
     caretUpdateEventDisabled = true;
     codeEditor.setText(sb.toString());
     caretUpdateEventDisabled = false;
+
+    lineOffsets.computeLineOffsets(getCode());
   }
 
   private void showAstAndXml(String code) {
