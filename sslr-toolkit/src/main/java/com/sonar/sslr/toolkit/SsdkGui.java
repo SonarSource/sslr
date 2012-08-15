@@ -279,8 +279,6 @@ public class SsdkGui extends javax.swing.JFrame {
         codeEditor.scrollRectToVisible(codeEditor.modelToView(0));
         codeEditor.scrollRectToVisible(codeEditor.modelToView(lineOffsets.getOffset(line, 0)));
       } catch (BadLocationException e) {
-        System.err.println("Current code = " + getCode());
-        System.err.println("invalid location at " + e.offsetRequested());
         LOG.error("Error while scrolling to the code", e);
       }
     }
