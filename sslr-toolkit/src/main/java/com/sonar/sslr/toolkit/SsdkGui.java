@@ -144,7 +144,7 @@ public class SsdkGui extends javax.swing.JFrame {
     });
     codeEditor.addCaretListener(new CaretListener() {
       public void caretUpdate(CaretEvent event) {
-        if (!caretUpdateEventDisabled) {
+        if (!caretUpdateEventDisabled && event.getDot() > 0) {
           astSelectPath();
           scrollAstToSelectedPath();
         }
