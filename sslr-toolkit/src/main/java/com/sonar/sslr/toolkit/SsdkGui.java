@@ -354,8 +354,24 @@ public class SsdkGui extends javax.swing.JFrame {
   }
 
   private void loadFromString(String code) {
+    int relativeCaretPosition = getRelativeCaretOffset();
     showCode(code);
     showAstAndXml(code);
+    setRelativeCaretOffset(relativeCaretPosition);
+  }
+
+  private int getRelativeCaretOffset() {
+    return codeEditor.getCaretPosition() - getCodeElementStartOffset();
+  }
+
+  private void setRelativeCaretOffset(int relativeCaretPosition) {
+    codeEditor.setCaretPosition(relativeCaretPosition + getCodeElementStartOffset());
+  }
+
+  private int getCodeElementStartOffset() {
+    HTMLDocument htmlDocument = (HTMLDocument) codeEditor.getDocument();
+    Element codeElement = htmlDocument.getElement("code");
+    return codeElement == null ? 0 : codeElement.getStartOffset();
   }
 
   private void showCode(String code) {
