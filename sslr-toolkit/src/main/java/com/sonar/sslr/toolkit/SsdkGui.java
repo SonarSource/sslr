@@ -91,6 +91,7 @@ public class SsdkGui extends javax.swing.JFrame {
 
   private final JTabbedPane tabbedPane = new JTabbedPane();
   private final JTextArea xmlTextArea = new JTextArea();
+  private final JScrollPane xmlScrollPane = new JScrollPane(xmlTextArea);
   private final JTree astTree = new JTree();
   private final JScrollPane astTreeScrollPane = new JScrollPane(astTree);
   private final Map<Object, DefaultMutableTreeNode> userObjectToTreeNodeCache = Maps.newHashMap();
@@ -132,7 +133,7 @@ public class SsdkGui extends javax.swing.JFrame {
 
     tabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
     tabbedPane.add("Abstract Syntax Tree", astTreeScrollPane);
-    tabbedPane.add("XML", xmlTextArea);
+    tabbedPane.add("XML", xmlScrollPane);
 
     codeEditor.setContentType("text/html");
     codeEditor.setEditable(true);
