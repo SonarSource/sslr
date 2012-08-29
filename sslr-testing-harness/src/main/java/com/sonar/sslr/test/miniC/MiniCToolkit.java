@@ -19,9 +19,9 @@
  */
 package com.sonar.sslr.test.miniC;
 
-import com.sonar.sslr.toolkit.ToolkitPresenter;
-import com.sonar.sslr.toolkit.ToolkitView;
-import com.sonar.sslr.toolkit.ToolkitViewImpl;
+import com.sonar.sslr.toolkit.internal.SourceCodeModel;
+import com.sonar.sslr.toolkit.internal.ToolkitPresenter;
+import com.sonar.sslr.toolkit.internal.ToolkitViewImpl;
 
 public final class MiniCToolkit {
 
@@ -29,18 +29,20 @@ public final class MiniCToolkit {
   }
 
   public static void main(String[] args) {
-    System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MiniC Toolkit");
-    /*
-     * SsdkGui ssdkGui = new SsdkGui(MiniCParser.create(), MiniCColorizer.getTokenizers());
-     * ssdkGui.setVisible(true);
-     * ssdkGui.setSize(1000, 800);
-     * ssdkGui.setTitle("MiniC : Toolkit");
-     */
+    // System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MiniC Toolkit");
+    // SsdkGui ssdkGui = new SsdkGui(MiniCParser.create(), MiniCColorizer.getTokenizers());
+    // ssdkGui.setVisible(true);
+    // ssdkGui.setSize(1000, 800);
+    // ssdkGui.setTitle("MiniC : Toolkit");
 
-    ToolkitPresenter presenter = new ToolkitPresenter();
-    ToolkitView view = new ToolkitViewImpl(presenter);
-    presenter.setView(view);
-    view.run();
+    java.awt.EventQueue.invokeLater(new Runnable() {
+      public void run() {
+        SourceCodeModel model = new SourceCodeModel(MiniCParser.create(), MiniCColorizer.getTokenizers());
+        ToolkitPresenter presenter = new ToolkitPresenter(model);
+        presenter.setView(new ToolkitViewImpl(presenter));
+        presenter.run("MiniC : Toolkit");
+      }
+    });
   }
 
 }
