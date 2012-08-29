@@ -22,6 +22,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.Element;
 import javax.swing.text.html.HTMLDocument;
@@ -96,7 +97,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
 
     sourceCodeEditorPane.setContentType("text/html");
     sourceCodeEditorPane.setEditable(true);
-    ((DefaultCaret) sourceCodeEditorPane.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+    ((DefaultCaret) sourceCodeEditorPane.getCaret()).setUpdatePolicy(DefaultCaret.UPDATE_WHEN_ON_EDT);
 
     sourceCodeOpenButton.setText("Open Source File");
     sourceCodeOpenButton.addActionListener(new ActionListener() {
@@ -106,6 +107,12 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     });
 
     sourceCodeParseButton.setText("Parse Source Code");
+    sourceCodeParseButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        presenter.onSourceCodeParseButtonClick();
+      }
+    });
+
     sourceCodeButtonsPanel.add(sourceCodeOpenButton);
     sourceCodeButtonsPanel.add(sourceCodeParseButton);
 
@@ -232,4 +239,16 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
       }
     });
   }
+
+  public String getSourceCode() {
+    int startOffset = getCodeElementStartOffset();
+    int endOffset = getCodeElementEndOffset();
+
+    try {
+      return sourceCodeEditorPane.getText(startOffset, endOffset - startOffset - 1);
+    } catch (BadLocationException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 }

@@ -54,4 +54,14 @@ public class ToolkitPresenter {
     }
   }
 
+  public void onSourceCodeParseButtonClick() {
+    String sourceCode = view.getSourceCode();
+    model.setSourceCode(sourceCode);
+    Point scrollbarPosition = view.getScrollbarPosition();
+    view.displayHighlightedSourceCode(model.getHighlightedSourceCode());
+    view.displayAst(model.getAstNode());
+    view.displayXml(model.getXml());
+    view.scrollTo(scrollbarPosition);
+  }
+
 }

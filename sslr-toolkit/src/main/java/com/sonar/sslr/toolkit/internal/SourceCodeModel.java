@@ -38,13 +38,13 @@ public class SourceCodeModel {
   }
 
   public void setSourceCode(File source, Charset charset) {
-    astNode = parser.parse(source);
-    sourceCode = Files.toString(source, charset);
+    this.astNode = parser.parse(source);
+    this.sourceCode = Files.toString(source, charset);
   }
 
-  public void setSourceCode(String source) {
-    astNode = parser.parse(source);
-    sourceCode = source;
+  public void setSourceCode(String sourceCode) {
+    this.astNode = parser.parse(sourceCode);
+    this.sourceCode = sourceCode;
   }
 
   public String getHighlightedSourceCode() {

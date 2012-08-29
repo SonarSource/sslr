@@ -64,9 +64,17 @@ public interface ToolkitView {
   Point getScrollbarPosition();
 
   /**
-   * Scroll the source code editor in order to make the given point visible
+   * Scroll the source code editor in order to make the given point visible.
    *
    * @param point
    */
   void scrollTo(Point point);
+
+  /**
+   * Get the source code currently entered in the source code editor.
+   *
+   * @return The source code
+   */
+  String getSourceCode();
+
 }
