@@ -17,29 +17,26 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.toolkit;
+package com.sonar.sslr.toolkit.internal;
 
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 public final class CssLoader {
 
-  private static final Logger LOG = LoggerFactory.getLogger(CssLoader.class);
-  private static final String CSS_PATH = "/com/sonar/sslr/toolkit/codeEditor.css";
+  private static final String CSS_PATH = "/com/sonar/sslr/toolkit/sourceCodeEditor.css";
 
   private CssLoader() {
   }
 
   public static final String getCss() {
     try {
-      InputStream inputStream = SsdkGui.class.getResourceAsStream(CSS_PATH);
+      InputStream inputStream = CssLoader.class.getResourceAsStream(CSS_PATH);
       return IOUtils.toString(inputStream);
-    } catch (Exception e) {
-      LOG.error("Unable to read the CSS file '" + CSS_PATH + "'", e);
-      return "";
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
   }
 

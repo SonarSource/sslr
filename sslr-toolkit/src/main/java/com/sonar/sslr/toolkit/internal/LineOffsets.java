@@ -17,42 +17,32 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.toolkit;
+package com.sonar.sslr.toolkit.internal;
 
 import com.google.common.collect.Maps;
 import com.sonar.sslr.api.Token;
 
 import java.util.Map;
 
-public final class Offsets {
+import static com.google.common.base.Preconditions.checkArgument;
+
+public class LineOffsets {
+
+  private static final String NEWLINE_REGEX = "(\r)?\n|\r";
 
   private final Map<Integer, Integer> lineOffsets = Maps.newHashMap();
-  private int endPositionOffset;
+  private final int endOffset;
 
-  public void computeLineOffsets(String code) {
-    lineOffsets.clear();
+  public LineOffsets(String code) {
+    int currentOffset = 0;
 
-    int currentOffset = 1;
-
-    String[] lines = code.split("(\r)?\n", -1);
+    String[] lines = code.split(NEWLINE_REGEX, -1);
     for (int line = 1; line <= lines.length; line++) {
       lineOffsets.put(line, currentOffset);
       currentOffset += lines[line - 1].length() + 1;
     }
 
-    this.endPositionOffset = currentOffset;
-  }
-
-  public int getLineFromOffset(int offset) {
-    int line = 1;
-    while (lineOffsets.containsKey(line + 1) && offset >= lineOffsets.get(line + 1)) {
-      line++;
-    }
-    return line;
-  }
-
-  public int getColumnFromOffsetAndLine(int offset, int line) {
-    return offset - lineOffsets.get(line);
+    endOffset = currentOffset - 1;
   }
 
   public int getStartOffset(Token token) {
@@ -60,7 +50,7 @@ public final class Offsets {
   }
 
   public int getEndOffset(Token token) {
-    String[] tokenLines = token.getOriginalValue().split("(\r)?\n", -1);
+    String[] tokenLines = token.getOriginalValue().split(NEWLINE_REGEX, -1);
 
     int tokenLastLine = token.getLine() + tokenLines.length - 1;
     int tokenLastLineColumn = (tokenLines.length > 1 ? 0 : token.getColumn()) + tokenLines[tokenLines.length - 1].length();
@@ -69,7 +59,14 @@ public final class Offsets {
   }
 
   public int getOffset(int line, int column) {
-    return lineOffsets.containsKey(line) ? Math.min(lineOffsets.get(line) + column, endPositionOffset - 1) : endPositionOffset - 1;
+    checkArgument(line >= 1);
+    checkArgument(column >= 0);
+
+    if (lineOffsets.containsKey(line)) {
+      return Math.min(lineOffsets.get(line) + column, endOffset);
+    } else {
+      return endOffset;
+    }
   }
 
 }
