@@ -83,16 +83,19 @@ public class ToolkitPresenter {
   public void onSourceCodeOpenButtonClick() {
     File fileToParse = view.pickFileToParse();
     if (fileToParse != null) {
+      view.clearConsole();
       model.setSourceCode(fileToParse, Charset.defaultCharset());
       view.displayHighlightedSourceCode(model.getHighlightedSourceCode());
       view.displayAst(model.getAstNode());
       view.displayXml(model.getXml());
       view.scrollSourceCodeTo(new Point(0, 0));
+      view.setFocusOnAbstractSyntaxTreeView();
       view.enableXPathEvaluateButton();
     }
   }
 
   public void onSourceCodeParseButtonClick() {
+    view.clearConsole();
     String sourceCode = view.getSourceCode();
     model.setSourceCode(sourceCode);
     Point sourceCodeScrollbarPosition = view.getSourceCodeScrollbarPosition();
@@ -100,6 +103,7 @@ public class ToolkitPresenter {
     view.displayAst(model.getAstNode());
     view.displayXml(model.getXml());
     view.scrollSourceCodeTo(sourceCodeScrollbarPosition);
+    view.setFocusOnAbstractSyntaxTreeView();
     view.enableXPathEvaluateButton();
   }
 
@@ -107,6 +111,7 @@ public class ToolkitPresenter {
     String xpath = view.getXPath();
     AstNodeXPathQuery<Object> xpathQuery = AstNodeXPathQuery.create(xpath);
 
+    view.clearConsole();
     view.clearAstSelections();
     view.clearSourceCodeHighlights();
 
@@ -126,6 +131,8 @@ public class ToolkitPresenter {
 
     view.scrollAstTo(firstAstNode);
     view.scrollSourceCodeTo(firstAstNode);
+
+    view.setFocusOnAbstractSyntaxTreeView();
   }
 
   public void onSourceCodeKeyTyped() {

@@ -125,11 +125,13 @@ public class ToolkitPresenterTest {
 
     verify(view).pickFileToParse();
 
+    verify(view).clearConsole();
     verify(model).setSourceCode(file, Charset.defaultCharset());
     verify(view).displayHighlightedSourceCode("my_mocked_highlighted_source_code");
     verify(view).displayAst(astNode);
     verify(view).displayXml("my_mocked_xml");
     verify(view).scrollSourceCodeTo(new Point(0, 0));
+    verify(view).setFocusOnAbstractSyntaxTreeView();
     verify(view).enableXPathEvaluateButton();
   }
 
@@ -147,6 +149,7 @@ public class ToolkitPresenterTest {
 
     verify(view).pickFileToParse();
 
+    verify(view, never()).clearConsole();
     verify(model, never()).setSourceCode(any(File.class), any(Charset.class));
     verify(view, never()).displayHighlightedSourceCode(anyString());
     verify(view, never()).displayAst(any(AstNode.class));
@@ -172,13 +175,14 @@ public class ToolkitPresenterTest {
 
     presenter.onSourceCodeParseButtonClick();
 
+    verify(view).clearConsole();
     verify(view).getSourceCode();
-
     verify(model).setSourceCode("my_mocked_source");
     verify(view).displayHighlightedSourceCode("my_mocked_highlighted_source_code");
     view.displayAst(astNode);
     view.displayXml("my_mocked_xml");
     view.scrollSourceCodeTo(point);
+    verify(view).setFocusOnAbstractSyntaxTreeView();
     verify(view).enableXPathEvaluateButton();
   }
 
@@ -246,6 +250,7 @@ public class ToolkitPresenterTest {
 
     presenter.onXPathEvaluateButtonClick();
 
+    verify(view).clearConsole();
     verify(view).clearAstSelections();
     verify(view).clearSourceCodeHighlights();
 
@@ -254,6 +259,8 @@ public class ToolkitPresenterTest {
 
     verify(view).scrollAstTo(null);
     verify(view).scrollSourceCodeTo((AstNode) null);
+
+    verify(view).setFocusOnAbstractSyntaxTreeView();
   }
 
   @Test

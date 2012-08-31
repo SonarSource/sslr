@@ -180,4 +180,14 @@ public interface ToolkitView {
    */
   public void setFocusOnConsoleView();
 
+  /**
+   * Set the focus on the abstract syntax tree view.
+   */
+  public void setFocusOnAbstractSyntaxTreeView();
+
+  /**
+   * Clear the console.
+   */
+  public void clearConsole();
+
 }

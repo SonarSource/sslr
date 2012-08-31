@@ -134,6 +134,8 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
       }
     });
 
+    consoleTextArea.setEditable(false);
+
     tabbedPane.setTabPlacement(JTabbedPane.TOP);
     tabbedPane.add("Abstract Syntax Tree", astTreeScrollPane);
     tabbedPane.add("XML", xmlScrollPane);
@@ -471,6 +473,14 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
 
   public void setFocusOnConsoleView() {
     tabbedPane.setSelectedComponent(consoleScrollPane);
+  }
+
+  public void setFocusOnAbstractSyntaxTreeView() {
+    tabbedPane.setSelectedComponent(astTreeScrollPane);
+  }
+
+  public void clearConsole() {
+    consoleTextArea.setText("");
   }
 
 }
