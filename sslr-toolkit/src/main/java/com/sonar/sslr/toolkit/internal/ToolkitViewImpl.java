@@ -70,9 +70,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class ToolkitViewImpl extends JFrame implements ToolkitView {
 
   private static final long serialVersionUID = 1L;
-  private final static TreeModel EMPTY_TREE_MODEL = new DefaultTreeModel(null);
+  private static final TreeModel EMPTY_TREE_MODEL = new DefaultTreeModel(null);
 
-  public final ToolkitPresenter presenter;
+  public transient final ToolkitPresenter presenter;
 
   private final JTabbedPane tabbedPane = new JTabbedPane();
 
@@ -106,8 +106,8 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
   private final JButton xpathButton = new JButton();
   private final JPanel xpathButtonPanel = new JPanel();
 
-  private LineOffsets lineOffsets = null;
-  private final DefaultHighlighter.DefaultHighlightPainter highlighter = new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY);
+  private transient LineOffsets lineOffsets = null;
+  private transient final DefaultHighlighter.DefaultHighlightPainter highlighter = new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY);
 
   private boolean sourceCodeTextCursorMovedEventDisabled = false;
   private boolean astSelectionEventDisabled = false;

@@ -19,6 +19,8 @@
  */
 package com.sonar.sslr.guava.internal;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -32,9 +34,13 @@ import java.nio.charset.Charset;
  */
 public class Files {
 
+  private Files() {
+  }
+
   public static String toString(File file, Charset charset) {
+    InputStream in = null;
     try {
-      InputStream in = new FileInputStream(file);
+      in = new FileInputStream(file);
       byte[] b = new byte[(int) file.length()];
       int len = b.length;
       int total = 0;
@@ -50,6 +56,8 @@ public class Files {
       return new String(b, charset.name());
     } catch (IOException e) {
       throw new RuntimeException(e);
+    } finally {
+      IOUtils.closeQuietly(in);
     }
   }
 

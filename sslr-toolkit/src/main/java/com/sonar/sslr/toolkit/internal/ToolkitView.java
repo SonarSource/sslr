@@ -173,21 +173,21 @@ public interface ToolkitView {
    *
    * @param message The message to append
    */
-  public void appendToConsole(String message);
+  void appendToConsole(String message);
 
   /**
    * Set the focus on the console view.
    */
-  public void setFocusOnConsoleView();
+  void setFocusOnConsoleView();
 
   /**
    * Set the focus on the abstract syntax tree view.
    */
-  public void setFocusOnAbstractSyntaxTreeView();
+  void setFocusOnAbstractSyntaxTreeView();
 
   /**
    * Clear the console.
    */
-  public void clearConsole();
+  void clearConsole();
 
 }
