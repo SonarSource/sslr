@@ -17,16 +17,15 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.symboltable;
+package org.sonar.sslr.minic.symboltable;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.symboltable.BaseSymbol;
-import com.sonar.sslr.api.symboltable.Scope;
+import org.sonar.sslr.symboltable.Scope;
+import org.sonar.sslr.symboltable.AbstractScopedSymbol;
 
-public class FunctionSymbol extends BaseSymbol {
+public class FunctionSymbol extends AbstractScopedSymbol {
 
-  public FunctionSymbol(Scope scope, String name, AstNode astNode) {
-    super(scope, name, astNode);
+  public FunctionSymbol(Scope scope, String name) {
+    super(scope, name);
   }
 
   @Override

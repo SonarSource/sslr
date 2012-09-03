@@ -17,31 +17,15 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.api.symboltable;
+package org.sonar.sslr.symboltable;
 
-import com.sonar.sslr.api.AstNode;
+public abstract class AbstractScopedSymbol extends AbstractScope implements Symbol {
 
-/**
- * Default implementation of {@link Symbol}.
- */
-public abstract class BaseSymbol implements Symbol {
-
-  private final Scope scope;
   private final String name;
-  private final AstNode astNode;
 
-  public BaseSymbol(Scope scope, String name, AstNode astNode) {
-    this.scope = scope;
+  public AbstractScopedSymbol(Scope enclosingScope, String name) {
+    super(enclosingScope);
     this.name = name;
-    this.astNode = astNode;
-  }
-
-  public AstNode getAstNode() {
-    return astNode;
-  }
-
-  public Scope getEnclosingScope() {
-    return scope;
   }
 
   public String getName() {

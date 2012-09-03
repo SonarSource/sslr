@@ -17,37 +17,28 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.api.symboltable;
+package org.sonar.sslr.symboltable;
 
-import java.util.Arrays;
-import java.util.List;
+/**
+ * This class provides a skeletal implementation of the {@link Symbol}
+ * interface to minimize the effort required to implement this interface.
+ */
+public abstract class AbstractSymbol implements Symbol {
 
-public class ScopeTreeWalker {
+  private final Scope scope;
+  private final String name;
 
-  private final List<ScopeTreeVisitor> visitors;
-
-  public ScopeTreeWalker(ScopeTreeVisitor... visitors) {
-    this.visitors = Arrays.asList(visitors);
+  public AbstractSymbol(Scope scope, String name) {
+    this.scope = scope;
+    this.name = name;
   }
 
-  public void walk(Scope scope) {
-    visit(scope);
-    for (Scope nestedScope : scope.getNestedScopes()) {
-      walk(nestedScope);
-    }
-    leave(scope);
+  public Scope getEnclosingScope() {
+    return scope;
   }
 
-  private void visit(Scope scope) {
-    for (ScopeTreeVisitor visitor : visitors) {
-      visitor.visitScope(scope);
-    }
-  }
-
-  private void leave(Scope scope) {
-    for (ScopeTreeVisitor visitor : visitors) {
-      visitor.leaveScope(scope);
-    }
+  public String getName() {
+    return name;
   }
 
 }

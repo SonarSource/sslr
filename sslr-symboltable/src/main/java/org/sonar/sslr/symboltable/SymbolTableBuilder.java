@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.api.symboltable;
+package org.sonar.sslr.symboltable;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -29,7 +29,7 @@ import com.sonar.sslr.impl.ast.AstWalker;
 import java.util.List;
 
 /**
- * Implementation of two-phase algorithm for building {@link SymbolTableBuilderContext} based on AST.
+ * Implementation of two-phase algorithm for building {@link SemanticModel} based on AST.
  *
  * <p>
  * Commonly, the first phase is used to create scopes and define the symbols,
@@ -57,10 +57,10 @@ public class SymbolTableBuilder {
   /**
    * Builds Symbol Table starting from specified AST node.
    */
-  public SymbolTableBuilderContext buildSymbolTable(AstNode astNode) {
+  public SemanticModel buildSymbolTable(AstNode astNode) {
     // Build tree of scopes and populate it by definitions
 
-    SymbolTableBuilderContext symbolTableBuilderContext = new SymbolTableBuilderContext();
+    SemanticModel semanticModel = new DefaultSemanticModel();
 
     // At this point we should be able to detect that symbol hides another symbol just by visiting tree of scopes,
     // e.g. local variable hides another local variable, parameter or global variable,
@@ -68,20 +68,20 @@ public class SymbolTableBuilder {
 
     // Resolve type references, resolve identifiers within expressions and on the left side of assignments
 
-    new AstWalker(createVisitors(symbolTableBuilderContext, firstPhase)).walkAndVisit(astNode);
+    new AstWalker(createVisitors(semanticModel, firstPhase)).walkAndVisit(astNode);
 
     // At this point we should be able to find where symbols are used,
     // e.g. find unused parameter, unused local variable, assigning value to parameter, "jumbled loop increment"
 
-    new AstWalker(createVisitors(symbolTableBuilderContext, secondPhase)).walkAndVisit(astNode);
+    new AstWalker(createVisitors(semanticModel, secondPhase)).walkAndVisit(astNode);
 
-    return symbolTableBuilderContext;
+    return semanticModel;
   }
 
-  private static List<AstVisitor> createVisitors(SymbolTableBuilderContext symbolTableBuilderContext, List<SymbolTableBuilderVisitor> symbolTableElementBuilders) {
+  private static List<AstVisitor> createVisitors(SemanticModel semanticModel, List<SymbolTableBuilderVisitor> symbolTableElementBuilders) {
     ImmutableList.Builder<AstVisitor> visitors = ImmutableList.builder();
     for (SymbolTableBuilderVisitor symbolTableElementBuilder : symbolTableElementBuilders) {
-      visitors.add(new AstVisitorForSymbolTable(symbolTableBuilderContext, symbolTableElementBuilder));
+      visitors.add(new AstVisitorForSymbolTable(semanticModel, symbolTableElementBuilder));
     }
     return visitors.build();
   }
@@ -92,10 +92,10 @@ public class SymbolTableBuilder {
   private static class AstVisitorForSymbolTable implements AstVisitor {
 
     private final SymbolTableBuilderVisitor symbolTableElementBuilder;
-    private final SymbolTableBuilderContext symbolTableBuilderContext;
+    private final SemanticModel semanticModel;
 
-    public AstVisitorForSymbolTable(SymbolTableBuilderContext symbolTableBuilderContext, SymbolTableBuilderVisitor symbolTableElementBuilder) {
-      this.symbolTableBuilderContext = symbolTableBuilderContext;
+    public AstVisitorForSymbolTable(SemanticModel semanticModel, SymbolTableBuilderVisitor symbolTableElementBuilder) {
+      this.semanticModel = semanticModel;
       this.symbolTableElementBuilder = symbolTableElementBuilder;
     }
 
@@ -112,7 +112,7 @@ public class SymbolTableBuilder {
     }
 
     public void visitNode(AstNode astNode) {
-      symbolTableElementBuilder.visitNode(symbolTableBuilderContext, astNode);
+      symbolTableElementBuilder.visitNode(semanticModel, astNode);
     }
 
     public void leaveNode(AstNode astNode) {

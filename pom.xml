@@ -82,6 +82,7 @@
     <module>sslr-xpath</module>
     <module>sslr-tests</module>
     <module>sslr-grammar-analyser</module>
+    <module>sslr-symboltable</module>
   </modules>
 
   <dependencyManagement>

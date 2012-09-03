@@ -17,9 +17,20 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-/**
- * Symbol table.
- *
- * @since 1.13
- */
-package com.sonar.sslr.api.symboltable;
+package org.sonar.sslr.minic.symboltable;
+
+import org.sonar.sslr.symboltable.Scope;
+import org.sonar.sslr.symboltable.AbstractScopedSymbol;
+
+public class StructSymbol extends AbstractScopedSymbol {
+
+  public StructSymbol(Scope scope, String name) {
+    super(scope, name);
+  }
+
+  @Override
+  public String toString() {
+    return "Struct{" + getName() + "}";
+  }
+
+}

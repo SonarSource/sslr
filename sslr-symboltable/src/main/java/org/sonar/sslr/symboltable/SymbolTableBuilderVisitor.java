@@ -17,28 +17,26 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.api.symboltable;
+package org.sonar.sslr.symboltable;
 
+import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.AstNodeType;
 
-/**
- * Entity of program, which can be referenced.
- */
-public interface Symbol {
+import java.util.List;
 
-  /**
-   * Returns associated AST node.
-   */
-  AstNode getAstNode();
+public abstract class SymbolTableBuilderVisitor {
 
-  /**
-   * Returns enclosing scope.
-   */
-  Scope getEnclosingScope();
+  private final List<AstNodeType> nodeTypes;
 
-  /**
-   * Returns name of this symbol.
-   */
-  String getName();
+  public SymbolTableBuilderVisitor(AstNodeType... nodeTypes) {
+    this.nodeTypes = ImmutableList.of(nodeTypes);
+  }
+
+  public List<AstNodeType> getNodeTypes() {
+    return nodeTypes;
+  }
+
+  public abstract void visitNode(SemanticModel semanticModel, AstNode astNode);
 
 }

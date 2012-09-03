@@ -17,12 +17,15 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.api.symboltable;
+package org.sonar.sslr.minic.symboltable;
 
-public interface ScopeTreeVisitor {
+import org.sonar.sslr.symboltable.AbstractScope;
+import org.sonar.sslr.symboltable.Scope;
 
-  void visitScope(Scope scope);
+public class LocalScope extends AbstractScope {
 
-  void leaveScope(Scope scope);
+  public LocalScope(Scope enclosingScope) {
+    super(enclosingScope);
+  }
 
 }

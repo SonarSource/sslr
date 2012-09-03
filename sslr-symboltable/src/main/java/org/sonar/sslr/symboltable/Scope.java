@@ -17,26 +17,40 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.api.symboltable;
-
-import com.google.common.collect.ImmutableList;
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.AstNodeType;
+package org.sonar.sslr.symboltable;
 
 import java.util.List;
 
-public abstract class SymbolTableBuilderVisitor {
+/**
+ * Region of code with a well-defined boundaries that groups symbol definitions.
+ *
+ * @see AbstractScope
+ * @see AbstractScopedSymbol
+ */
+public interface Scope {
 
-  private final List<AstNodeType> nodeTypes;
+  /**
+   * Returns the scope enclosing this one or null if none.
+   */
+  Scope getEnclosingScope();
 
-  public SymbolTableBuilderVisitor(AstNodeType... nodeTypes) {
-    this.nodeTypes = ImmutableList.of(nodeTypes);
-  }
+  /**
+   * Returns all nested scopes.
+   */
+  List<Scope> getNestedScopes();
 
-  public List<AstNodeType> getNodeTypes() {
-    return nodeTypes;
-  }
+  void addNestedScope(Scope nestedScope);
 
-  public abstract void visitNode(SymbolTableBuilderContext symbolTableBuilderContext, AstNode astNode);
+  /**
+   * Returns all symbols defined in this scope.
+   */
+  List<Symbol> getMembers();
+
+  void addSymbol(Symbol symbol);
+
+  /**
+   * Returns symbol from this scope of a given kind and with given name.
+   */
+  <T extends Symbol> T lookup(Class<T> kind, String name);
 
 }

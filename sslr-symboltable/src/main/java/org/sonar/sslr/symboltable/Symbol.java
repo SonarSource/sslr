@@ -17,16 +17,15 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.api.symboltable;
-
-import com.google.common.base.Predicate;
-
-import java.util.Collection;
+package org.sonar.sslr.symboltable;
 
 /**
- * Region of code with a well-defined boundaries that groups symbol definitions.
+ * Entity of program, which can be referenced.
+ *
+ * @see AbstractSymbol
+ * @see AbstractScopedSymbol
  */
-public interface Scope {
+public interface Symbol {
 
   /**
    * Returns enclosing scope.
@@ -34,27 +33,8 @@ public interface Scope {
   Scope getEnclosingScope();
 
   /**
-   * Returns all nested scopes.
+   * Returns name of this symbol.
    */
-  Collection<Scope> getNestedScopes();
-
-  /**
-   * TODO Godin: in fact tree of scopes should be immutable after construction.
-   * However question: how we can achieve this, if this interface might be implemented by clients?
-   */
-  void addNestedScope(Scope nestedScope);
-
-  /**
-   * Returns all symbols defined in this scope.
-   */
-  Collection<Symbol> getMembers();
-
-  /**
-   * TODO Godin: in fact tree of scopes should be immutable after construction.
-   * However question: how we can achieve this, if this interface might be implemented by clients?
-   */
-  void define(Symbol symbol);
-
-  Symbol resolve(String name, Predicate predicate);
+  String getName();
 
 }

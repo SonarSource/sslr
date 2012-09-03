@@ -17,21 +17,14 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.symboltable;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.symboltable.BaseSymbol;
-import com.sonar.sslr.api.symboltable.Scope;
+/**
+ * Symbol Table.
+ *
+ * @since 1.15
+ */
+@ParametersAreNonnullByDefault
+package org.sonar.sslr.symboltable;
 
-public class StructSymbol extends BaseSymbol {
+import javax.annotation.ParametersAreNonnullByDefault;
 
-  public StructSymbol(Scope scope, String name, AstNode astNode) {
-    super(scope, name, astNode);
-  }
-
-  @Override
-  public String toString() {
-    return "Struct{" + getName() + "}";
-  }
-
-}

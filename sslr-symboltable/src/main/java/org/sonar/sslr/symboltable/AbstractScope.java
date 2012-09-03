@@ -17,24 +17,23 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.api.symboltable;
+package org.sonar.sslr.symboltable;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
- * Default implementation of {@link Scope}.
+ * This class provides a skeletal implementation of the {@link Scope}
+ * interface to minimize the effort required to implement this interface.
  */
-public class LocalScope implements Scope {
+public abstract class AbstractScope implements Scope {
 
   private final Scope enclosingScope;
   private final List<Symbol> members = Lists.newArrayList();
   private final List<Scope> nestedScopes = Lists.newArrayList();
 
-  public LocalScope(Scope enclosingScope) {
+  public AbstractScope(Scope enclosingScope) {
     this.enclosingScope = enclosingScope;
   }
 
@@ -42,7 +41,7 @@ public class LocalScope implements Scope {
     return enclosingScope;
   }
 
-  public Collection<Scope> getNestedScopes() {
+  public List<Scope> getNestedScopes() {
     return nestedScopes;
   }
 
@@ -50,26 +49,21 @@ public class LocalScope implements Scope {
     nestedScopes.add(nestedScope);
   }
 
-  public void define(Symbol symbol) {
+  public void addSymbol(Symbol symbol) {
     members.add(symbol);
   }
 
-  public Collection<Symbol> getMembers() {
+  public List<Symbol> getMembers() {
     return members;
   }
 
-  public Symbol resolve(String name, Predicate predicate) {
+  public <T extends Symbol> T lookup(Class<T> kind, String name) {
     for (Symbol symbol : getMembers()) {
-      if (name.equals(symbol.getName()) && predicate.apply(symbol)) {
-        return symbol;
+      if (kind.isInstance(symbol) && name.equals(symbol.getName())) {
+        return (T) symbol;
       }
     }
-    return enclosingScope == null ? null : enclosingScope.resolve(name, predicate);
-  }
-
-  @Override
-  public String toString() {
-    return "Local";
+    return null;
   }
 
 }
