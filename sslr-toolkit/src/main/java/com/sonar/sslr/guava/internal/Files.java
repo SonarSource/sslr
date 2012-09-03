@@ -32,7 +32,7 @@ import java.nio.charset.Charset;
  *
  * Used as a workaround till we can actually depend on Guava (SSLR-183)
  */
-public class Files {
+public final class Files {
 
   private Files() {
   }

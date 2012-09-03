@@ -31,7 +31,7 @@ public final class CssLoader {
   private CssLoader() {
   }
 
-  public static final String getCss() {
+  public static String getCss() {
     try {
       InputStream inputStream = CssLoader.class.getResourceAsStream(CSS_PATH);
       return IOUtils.toString(inputStream);
