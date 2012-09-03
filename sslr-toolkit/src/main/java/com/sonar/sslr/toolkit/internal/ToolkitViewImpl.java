@@ -72,7 +72,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
   private static final long serialVersionUID = 1L;
   private static final TreeModel EMPTY_TREE_MODEL = new DefaultTreeModel(null);
 
-  public transient final ToolkitPresenter presenter;
+  public final transient ToolkitPresenter presenter;
 
   private final JTabbedPane tabbedPane = new JTabbedPane();
 
@@ -107,7 +107,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
   private final JPanel xpathButtonPanel = new JPanel();
 
   private transient LineOffsets lineOffsets = null;
-  private transient final DefaultHighlighter.DefaultHighlightPainter highlighter = new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY);
+  private final transient DefaultHighlighter.DefaultHighlightPainter highlighter = new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY);
 
   private boolean sourceCodeTextCursorMovedEventDisabled = false;
   private boolean astSelectionEventDisabled = false;

@@ -24,7 +24,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class CssLoader {
+public final class CssLoader {
 
   private static final String CSS_PATH = "/com/sonar/sslr/toolkit/sourceCodeEditor.css";
 
