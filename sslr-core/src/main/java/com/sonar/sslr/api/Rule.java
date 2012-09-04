@@ -70,11 +70,6 @@ public interface Rule extends AstNodeType {
   void mock();
 
   /**
-   * Experimental
-   */
-  void plug(Object adapter);
-
-  /**
    * A rule should be flagged as being a "Recovery" rule if it's responsibility is to consume
    * some bad tokens in order to recover from a parsing error.
    *
@@ -84,4 +79,5 @@ public interface Rule extends AstNodeType {
    * @see RecognitionExceptionListener
    */
   void recoveryRule();
+
 }

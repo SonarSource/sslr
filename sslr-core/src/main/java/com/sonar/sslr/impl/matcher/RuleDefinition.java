@@ -31,7 +31,6 @@ import com.sonar.sslr.impl.matcher.GrammarFunctions.Standard;
 public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
 
   private RuleMatcher ruleMatcher;
-  private Object adapter;
   private AstNodeType astNodeSkippingPolicy = new NeverSkipFromAst();
 
   private RuleDefinition() {
@@ -91,10 +90,6 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
     astNodeSkippingPolicy = new SkipFromAstIfOnlyOneChild();
   }
 
-  public void plug(Object adapter) {
-    this.adapter = adapter;
-  }
-
   private void throwExceptionIfRuleAlreadyDefined(String exceptionMessage) {
     if (ruleMatcher.children.length != 0) {
       throw new IllegalStateException(exceptionMessage);
@@ -105,10 +100,6 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
     if (matchers.length == 0) {
       throw new IllegalStateException("The rule '" + ruleMatcher + "' should at least contains one matcher.");
     }
-  }
-
-  public Object getAdapter() {
-    return adapter;
   }
 
   public void recoveryRule() {
