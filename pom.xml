@@ -220,7 +220,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.5.3.201107060350</version>
+        <version>0.5.10.201208310627</version>
         <configuration>
           <destFile>target/jacoco.exec</destFile>
         </configuration>
