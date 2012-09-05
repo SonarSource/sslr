@@ -17,27 +17,19 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.toolkit.internal;
+package org.sonar.sslr.internal.toolkit;
 
-import org.apache.commons.io.IOUtils;
+import org.sonar.sslr.internal.toolkit.CssLoader;
 
-import java.io.IOException;
-import java.io.InputStream;
+import org.junit.Test;
 
-public final class CssLoader {
+import static org.fest.assertions.Assertions.assertThat;
 
-  private static final String CSS_PATH = "/com/sonar/sslr/toolkit/sourceCodeEditor.css";
+public class CssLoaderTest {
 
-  private CssLoader() {
-  }
-
-  public static String getCss() {
-    try {
-      InputStream inputStream = CssLoader.class.getResourceAsStream(CSS_PATH);
-      return IOUtils.toString(inputStream);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  @Test
+  public void getCss() {
+    assertThat(CssLoader.getCss()).contains("/* constants */").contains(".code {");
   }
 
 }

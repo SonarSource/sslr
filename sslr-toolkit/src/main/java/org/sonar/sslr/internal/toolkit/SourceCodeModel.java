@@ -17,45 +17,61 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.toolkit;
+package org.sonar.sslr.internal.toolkit;
 
+import org.sonar.sslr.internal.guava.Files;
+
+import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.toolkit.internal.SourceCodeModel;
-import com.sonar.sslr.toolkit.internal.ToolkitPresenter;
-import com.sonar.sslr.toolkit.internal.ToolkitViewImpl;
+import com.sonar.sslr.impl.ast.AstXmlPrinter;
+import org.sonar.colorizer.HtmlOptions;
+import org.sonar.colorizer.HtmlRenderer;
 import org.sonar.colorizer.Tokenizer;
 
-import javax.swing.SwingUtilities;
-
+import java.io.File;
+import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class Toolkit {
+public class SourceCodeModel {
 
   private final Parser<?> parser;
   private final List<Tokenizer> tokenizers;
-  private final String title;
+  private final HtmlRenderer htmlRenderer = new HtmlRenderer(new HtmlOptions(false, null, false));
 
-  public Toolkit(Parser<?> parser, List<Tokenizer> tokenizers, String title) {
+  private String sourceCode;
+  private AstNode astNode;
+
+  public SourceCodeModel(Parser<?> parser, List<Tokenizer> tokenizers) {
     checkNotNull(parser);
     checkNotNull(tokenizers);
-    checkNotNull(title);
 
     this.parser = parser;
     this.tokenizers = tokenizers;
-    this.title = title;
   }
 
-  public void run() {
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        SourceCodeModel model = new SourceCodeModel(parser, tokenizers);
-        ToolkitPresenter presenter = new ToolkitPresenter(model);
-        presenter.setView(new ToolkitViewImpl(presenter));
-        presenter.run(title);
-      }
-    });
+  public void setSourceCode(File source, Charset charset) {
+    this.astNode = parser.parse(source);
+    this.sourceCode = Files.toString(source, charset);
+  }
+
+  public void setSourceCode(String sourceCode) {
+    this.astNode = parser.parse(sourceCode);
+    this.sourceCode = sourceCode;
+  }
+
+  public String getHighlightedSourceCode() {
+    return htmlRenderer.render(new StringReader(sourceCode), tokenizers);
+  }
+
+  public String getXml() {
+    return AstXmlPrinter.print(astNode);
+  }
+
+  public AstNode getAstNode() {
+    return astNode;
   }
 
 }
