@@ -49,9 +49,9 @@ public class HiddenVariableTest {
     Collection<VariableSymbol> variables = semanticModel.getSymbols(VariableSymbol.class);
     for (VariableSymbol variable : variables) {
       Scope scope = variable.getEnclosingScope();
-      VariableSymbol hiddenVariable = MiniCSymbolTableBuilder.resolve(scope.getEnclosingScope(), VariableSymbol.class, variable.getName());
+      VariableSymbol hiddenVariable = MiniCSymbolTableBuilder.resolve(scope.getEnclosingScope(), VariableSymbol.class, variable.getKey());
       if (hiddenVariable != null) {
-        System.out.println("Variable '" + variable.getName() + "' at line " + variable.getLine() + " hides variable at line " + hiddenVariable.getLine());
+        System.out.println("Variable '" + variable.getKey() + "' at line " + variable.getLine() + " hides variable at line " + hiddenVariable.getLine());
         hiddenVariablesCount++;
       }
     }

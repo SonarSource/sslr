@@ -19,18 +19,18 @@
  */
 package org.sonar.sslr.minic.symboltable;
 
-import org.sonar.sslr.symboltable.Scope;
 import org.sonar.sslr.symboltable.AbstractScopedSymbol;
+import org.sonar.sslr.symboltable.Scope;
 
 public class StructSymbol extends AbstractScopedSymbol {
 
-  public StructSymbol(Scope scope, String name) {
-    super(scope, name);
+  public StructSymbol(Scope scope, String key) {
+    super(scope, key);
   }
 
   @Override
   public String toString() {
-    return "Struct{" + getName() + "}";
+    return "Struct{" + getKey() + "}";
   }
 
 }

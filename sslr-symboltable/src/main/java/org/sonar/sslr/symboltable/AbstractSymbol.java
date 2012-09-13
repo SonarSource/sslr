@@ -26,19 +26,19 @@ package org.sonar.sslr.symboltable;
 public abstract class AbstractSymbol implements Symbol {
 
   private final Scope scope;
-  private final String name;
+  private final String key;
 
-  public AbstractSymbol(Scope scope, String name) {
+  public AbstractSymbol(Scope scope, String key) {
     this.scope = scope;
-    this.name = name;
+    this.key = key;
   }
 
   public Scope getEnclosingScope() {
     return scope;
   }
 
-  public String getName() {
-    return name;
+  public String getKey() {
+    return key;
   }
 
 }

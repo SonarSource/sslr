@@ -33,8 +33,10 @@ public interface Symbol {
   Scope getEnclosingScope();
 
   /**
-   * Returns name of this symbol.
+   * Returns key of this symbol.
+   * Key must be unique among symbols of same kind in same scope.
+   * For example it can be variable name or signature of method.
    */
-  String getName();
+  String getKey();
 
 }

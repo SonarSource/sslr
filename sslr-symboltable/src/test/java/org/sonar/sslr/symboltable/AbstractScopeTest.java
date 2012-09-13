@@ -43,18 +43,20 @@ public class AbstractScopeTest {
   @Test
   public void symbols() {
     AbstractScope scope = new FakeScope(null);
-    assertThat(scope.getMembers()).hasSize(0);
+    assertThat(scope.getSymbols()).hasSize(0);
     Symbol foo = mock(Symbol.class);
-    when(foo.getName()).thenReturn("foo");
+    when(foo.getKey()).thenReturn("foo");
     FakeSymbol bar = mock(FakeSymbol.class);
-    when(bar.getName()).thenReturn("bar");
+    when(bar.getKey()).thenReturn("bar");
     scope.addSymbol(foo);
     scope.addSymbol(bar);
-    assertThat(scope.getMembers()).containsExactly(foo, bar);
-    assertThat(scope.lookup(Symbol.class, "foo")).isSameAs(foo);
-    assertThat(scope.lookup(FakeSymbol.class, "foo")).isNull();
-    assertThat(scope.lookup(Symbol.class, "bar")).isSameAs(bar);
-    assertThat(scope.lookup(FakeSymbol.class, "bar")).isSameAs(bar);
+    assertThat(scope.getSymbols()).containsExactly(foo, bar);
+    assertThat(scope.getSymbols(Symbol.class)).containsExactly(foo, bar);
+    assertThat(scope.getSymbols(FakeSymbol.class)).containsExactly(bar);
+    assertThat(scope.getSymbol(Symbol.class, "foo")).isSameAs(foo);
+    assertThat(scope.getSymbol(FakeSymbol.class, "foo")).isNull();
+    assertThat(scope.getSymbol(Symbol.class, "bar")).isSameAs(bar);
+    assertThat(scope.getSymbol(FakeSymbol.class, "bar")).isSameAs(bar);
   }
 
   private static interface FakeSymbol extends Symbol {

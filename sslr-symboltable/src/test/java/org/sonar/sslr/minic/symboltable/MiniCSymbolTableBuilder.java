@@ -91,10 +91,10 @@ public class MiniCSymbolTableBuilder {
     });
   }
 
-  public static <T extends Symbol> T resolve(Scope scope, Class<T> kind, String name) {
+  public static <T extends Symbol> T resolve(Scope scope, Class<T> kind, String key) {
     Symbol symbol = null;
     while (symbol == null && scope != null) {
-      symbol = scope.lookup(kind, name);
+      symbol = scope.getSymbol(kind, key);
       scope = scope.getEnclosingScope();
     }
     return (T) symbol;

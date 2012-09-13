@@ -34,23 +34,28 @@ public interface Scope {
    */
   Scope getEnclosingScope();
 
+  void addNestedScope(Scope nestedScope);
+
   /**
    * Returns all nested scopes.
    */
   List<Scope> getNestedScopes();
 
-  void addNestedScope(Scope nestedScope);
+  void addSymbol(Symbol symbol);
 
   /**
    * Returns all symbols defined in this scope.
    */
-  List<Symbol> getMembers();
-
-  void addSymbol(Symbol symbol);
+  List<Symbol> getSymbols();
 
   /**
-   * Returns symbol from this scope of a given kind and with given name.
+   * Returns all symbols from this scope of a given kind.
    */
-  <T extends Symbol> T lookup(Class<T> kind, String name);
+  <T extends Symbol> List<T> getSymbols(Class<T> kind);
+
+  /**
+   * Returns symbol from this scope of a given kind and with given key.
+   */
+  <T extends Symbol> T getSymbol(Class<T> kind, String key);
 
 }

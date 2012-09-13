@@ -19,8 +19,6 @@
  */
 package org.sonar.sslr.minic.symboltable;
 
-import com.google.common.base.Predicates;
-import com.google.common.collect.Collections2;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
@@ -28,7 +26,6 @@ import com.sonar.sslr.test.miniC.MiniCParser;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.sonar.sslr.symboltable.SemanticModel;
-import org.sonar.sslr.symboltable.Symbol;
 
 import java.io.File;
 import java.util.Collection;
@@ -47,11 +44,10 @@ public class UnusedLocalVariableTest {
     int unusedLocalVariablesCount = 0;
     Collection<LocalScope> scopes = semanticModel.getScopes(LocalScope.class);
     for (LocalScope scope : scopes) {
-      Collection<Symbol> symbols = Collections2.filter(scope.getMembers(), Predicates.instanceOf(VariableSymbol.class));
-      for (Symbol symbol : symbols) {
+      Collection<VariableSymbol> symbols = scope.getSymbols(VariableSymbol.class);
+      for (VariableSymbol symbol : symbols) {
         if (semanticModel.getReferences(symbol).isEmpty()) {
-          // TODO Godin: I don't like typecast in next line
-          System.out.println("Unused variable '" + symbol.getName() + "' at line " + ((VariableSymbol) symbol).getLine());
+          System.out.println("Unused variable '" + symbol.getKey() + "' at line " + symbol.getLine());
           unusedLocalVariablesCount++;
         }
       }

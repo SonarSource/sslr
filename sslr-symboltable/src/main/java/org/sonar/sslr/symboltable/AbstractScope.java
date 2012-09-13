@@ -53,13 +53,23 @@ public abstract class AbstractScope implements Scope {
     members.add(symbol);
   }
 
-  public List<Symbol> getMembers() {
+  public List<Symbol> getSymbols() {
     return members;
   }
 
-  public <T extends Symbol> T lookup(Class<T> kind, String name) {
-    for (Symbol symbol : getMembers()) {
-      if (kind.isInstance(symbol) && name.equals(symbol.getName())) {
+  public <T extends Symbol> List<T> getSymbols(Class<T> kind) {
+    List<T> result = Lists.newArrayList();
+    for (Symbol symbol : getSymbols()) {
+      if (kind.isInstance(symbol)) {
+        result.add((T) symbol);
+      }
+    }
+    return result;
+  }
+
+  public <T extends Symbol> T getSymbol(Class<T> kind, String key) {
+    for (Symbol symbol : getSymbols()) {
+      if (kind.isInstance(symbol) && key.equals(symbol.getKey())) {
         return (T) symbol;
       }
     }

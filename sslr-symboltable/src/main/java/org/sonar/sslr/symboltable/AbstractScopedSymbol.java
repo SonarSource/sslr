@@ -21,15 +21,15 @@ package org.sonar.sslr.symboltable;
 
 public abstract class AbstractScopedSymbol extends AbstractScope implements Symbol {
 
-  private final String name;
+  private final String key;
 
-  public AbstractScopedSymbol(Scope enclosingScope, String name) {
+  public AbstractScopedSymbol(Scope enclosingScope, String key) {
     super(enclosingScope);
-    this.name = name;
+    this.key = key;
   }
 
-  public String getName() {
-    return name;
+  public String getKey() {
+    return key;
   }
 
 }

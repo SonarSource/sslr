@@ -46,12 +46,12 @@ public class ParameterAssignmentTest {
     int parameterAssignmentsCount = 0;
     Collection<FunctionSymbol> functions = semanticModel.getSymbols(FunctionSymbol.class);
     for (FunctionSymbol function : functions) {
-      for (Symbol parameter : function.getMembers()) {
+      for (Symbol parameter : function.getSymbols()) {
         Collection<AstNode> references = semanticModel.getReferences(parameter);
         for (AstNode reference : references) {
           assertThat(reference.is(grammar.binVariableReference));
           if (reference.nextAstNode().is(MiniCLexer.Punctuators.EQ)) {
-            System.out.println("Assignment to parameter '" + parameter.getName() + "' at line " + reference.getTokenLine());
+            System.out.println("Assignment to parameter '" + parameter.getKey() + "' at line " + reference.getTokenLine());
             parameterAssignmentsCount++;
           }
         }

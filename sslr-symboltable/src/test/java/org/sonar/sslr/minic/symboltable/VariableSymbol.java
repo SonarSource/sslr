@@ -19,17 +19,16 @@
  */
 package org.sonar.sslr.minic.symboltable;
 
+import com.sonar.sslr.api.AstNode;
 import org.sonar.sslr.symboltable.AbstractSymbol;
 import org.sonar.sslr.symboltable.Scope;
-
-import com.sonar.sslr.api.AstNode;
 
 public class VariableSymbol extends AbstractSymbol {
 
   private final int line;
 
-  public VariableSymbol(Scope scope, String name, AstNode astNode) {
-    super(scope, name);
+  public VariableSymbol(Scope scope, String key, AstNode astNode) {
+    super(scope, key);
     this.line = astNode.getTokenLine();
   }
 
@@ -39,7 +38,7 @@ public class VariableSymbol extends AbstractSymbol {
 
   @Override
   public String toString() {
-    return "Variable{" + getName() + "}";
+    return "Variable{" + getKey() + "}";
   }
 
 }

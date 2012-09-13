@@ -26,7 +26,6 @@ import com.sonar.sslr.test.miniC.MiniCParser;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.sonar.sslr.symboltable.SemanticModel;
-import org.sonar.sslr.symboltable.Symbol;
 
 import java.io.File;
 import java.util.Collection;
@@ -48,10 +47,9 @@ public class UnusedParameterTest {
     int unusedParametersCount = 0;
     Collection<FunctionSymbol> functions = semanticModel.getSymbols(FunctionSymbol.class);
     for (FunctionSymbol function : functions) {
-      for (Symbol parameter : function.getMembers()) {
+      for (VariableSymbol parameter : function.getSymbols(VariableSymbol.class)) {
         if (semanticModel.getReferences(parameter).isEmpty()) {
-          // TODO Godin: I don't like typecast in next line
-          System.out.println("Unused parameter '" + parameter.getName() + "' at line " + ((VariableSymbol) parameter).getLine() + " in function '" + function.getName() + "'");
+          System.out.println("Unused parameter '" + parameter.getKey() + "' at line " + parameter.getLine() + " in function '" + function.getKey() + "'");
           unusedParametersCount++;
         }
       }
