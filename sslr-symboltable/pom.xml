@@ -12,6 +12,10 @@
 
   <name>SonarSource :: Language Recognizer :: Symbol Table</name>
 
+  <properties>
+    <sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
