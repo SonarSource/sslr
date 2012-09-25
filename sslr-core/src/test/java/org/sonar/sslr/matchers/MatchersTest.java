@@ -1,0 +1,56 @@
+/*
+ * SonarSource Language Recognizer
+ * Copyright (C) 2010 SonarSource
+ * dev@sonar.codehaus.org
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ */
+package org.sonar.sslr.matchers;
+
+import org.junit.Test;
+import org.sonar.sslr.internal.matchers.*;
+
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
+public class MatchersTest {
+
+  @Test
+  public void test() {
+    Matcher subMatcher = mock(Matcher.class);
+    assertThat(Matchers.sequence(subMatcher)).isSameAs(subMatcher);
+    assertThat(Matchers.sequence(subMatcher, subMatcher)).isInstanceOf(SequenceMatcher.class);
+    assertThat(Matchers.sequence("foo")).isInstanceOf(StringMatcher.class);
+    assertThat(Matchers.sequence('f')).isInstanceOf(StringMatcher.class);
+
+    assertThat(Matchers.firstOf(subMatcher)).isSameAs(subMatcher);
+    assertThat(Matchers.firstOf(subMatcher, subMatcher)).isInstanceOf(FirstOfMatcher.class);
+
+    assertThat(Matchers.optional(subMatcher)).isInstanceOf(OptionalMatcher.class);
+
+    assertThat(Matchers.oneOrMore(subMatcher)).isInstanceOf(OneOrMoreMatcher.class);
+
+    assertThat(Matchers.zeroOrMore(subMatcher)).isInstanceOf(ZeroOrMoreMatcher.class);
+
+    assertThat(Matchers.test(subMatcher)).isInstanceOf(TestMatcher.class);
+
+    assertThat(Matchers.testNot(subMatcher)).isInstanceOf(TestNotMatcher.class);
+
+    assertThat(Matchers.regexp("foo")).isInstanceOf(PatternMatcher.class);
+
+    assertThat(Matchers.endOfInput()).isInstanceOf(EndOfInputMatcher.class);
+  }
+
+}

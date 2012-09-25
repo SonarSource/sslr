@@ -74,7 +74,7 @@ public abstract class Grammar {
     return ruleFields;
   }
 
-  private void instanciateRuleFields() {
+  protected void instanciateRuleFields() {
     for (Field ruleField : getAllRuleFields(this.getClass())) {
       String ruleName = ruleField.getName();
       try {
