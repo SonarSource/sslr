@@ -20,6 +20,7 @@
 package org.sonar.sslr.internal.matchers;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -62,6 +63,7 @@ public class PatternMatcherTest {
     verify(context, never()).advanceIndex(anyInt());
   }
 
+  @Ignore("depends on environment")
   @Test
   public void should_catch_StackOverflowError() {
     matcher = new PatternMatcher("([a-fA-F]|\\d)+");
