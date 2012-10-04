@@ -65,7 +65,7 @@ public class PatternMatcherTest {
   @Test
   public void should_catch_StackOverflowError() {
     matcher = new PatternMatcher("([a-fA-F]|\\d)+");
-    when(context.length()).thenReturn(10000);
+    when(context.length()).thenReturn(8000);
     when(context.charAt(Mockito.anyInt())).thenReturn('a');
     thrown.expect(RuntimeException.class);
     thrown.expectMessage("The regular expression '([a-fA-F]|\\d)+' has led to a stack overflow error."
