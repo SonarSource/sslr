@@ -12,6 +12,11 @@
 
   <name>SonarSource :: Language Recognizer :: Tests</name>
 
+  <properties>
+    <jacoco.destFile>../sslr-core/target/jacoco.exec</jacoco.destFile>
+    <jacoco.append>true</jacoco.append>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>

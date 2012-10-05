@@ -72,7 +72,7 @@
     <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
 
     <sonar.version>2.11</sonar.version>
-    <sonar.jacoco.reportPath>../sslr-tests/target/jacoco.exec</sonar.jacoco.reportPath>
+    <sonar.jacoco.reportPath>../sslr-core/target/jacoco.exec</sonar.jacoco.reportPath>
     <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
   </properties>
 
@@ -222,9 +222,6 @@
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>0.5.10.201208310627</version>
-        <configuration>
-          <destFile>target/jacoco.exec</destFile>
-        </configuration>
         <executions>
           <execution>
             <goals>
