@@ -45,20 +45,22 @@ public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPoli
     if (firstDefinition != null) {
       throw new IllegalStateException("'" + name + "' has been already defined\nat " + firstDefinition);
     }
-    firstDefinition = new Throwable().getStackTrace()[1];
-    subMatcher = Matchers.sequence(elements);
+    setSubMatchers(elements);
     return this;
   }
 
   public GrammarElementMatcher override(Object... elements) {
-    firstDefinition = new Throwable().getStackTrace()[1];
-    subMatcher = Matchers.sequence(elements);
+    setSubMatchers(elements);
     return this;
   }
 
   public void mock() {
-    firstDefinition = new Throwable().getStackTrace()[1];
-    subMatcher = Matchers.sequence(getName(), Matchers.firstOf(Matchers.regexp("\\s++"), Matchers.endOfInput()));
+    setSubMatchers(getName(), Matchers.firstOf(Matchers.regexp("\\s++"), Matchers.endOfInput()));
+  }
+
+  private void setSubMatchers(Object... elements) {
+    firstDefinition = new Throwable().getStackTrace()[2];
+    subMatcher = Matchers.sequence(elements);
   }
 
   public String getName() {

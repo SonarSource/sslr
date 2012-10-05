@@ -31,7 +31,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class GrammarElementDefinitionTest {
+public class GrammarElementMatcherTest {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
