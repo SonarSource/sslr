@@ -32,7 +32,6 @@ import org.sonar.sslr.matchers.Matchers;
 public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPolicy {
 
   private final String name;
-  private StackTraceElement firstDefinition;
   private Matcher subMatcher;
   private TokenType tokenType;
   private AstNodeSkippingPolicy astNodeSkippingPolicy = new NeverSkipFromAst();
@@ -42,24 +41,23 @@ public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPoli
   }
 
   public GrammarElementMatcher is(Object... elements) {
-    if (firstDefinition != null) {
-      throw new GrammarException("'" + name + "' has been already defined\nat " + firstDefinition);
+    if (subMatcher != null) {
+      throw new IllegalStateException("The rule '" + name + "' has already been defined somewhere in the grammar.");
     }
-    setSubMatchers(elements);
+    setSubMatcher(elements);
     return this;
   }
 
   public GrammarElementMatcher override(Object... elements) {
-    setSubMatchers(elements);
+    setSubMatcher(elements);
     return this;
   }
 
   public void mock() {
-    setSubMatchers(getName(), Matchers.firstOf(Matchers.regexp("\\s++"), Matchers.endOfInput()));
+    setSubMatcher(getName(), Matchers.firstOf(Matchers.regexp("\\s++"), Matchers.endOfInput()));
   }
 
-  private void setSubMatchers(Object... elements) {
-    firstDefinition = new Throwable().getStackTrace()[2];
+  private void setSubMatcher(Object... elements) {
     subMatcher = Matchers.sequence(elements);
   }
 

@@ -54,36 +54,28 @@ public class GrammarElementMatcherTest {
    */
   @Test
   public void redefinition() {
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("'foo' has been already defined\nat " + expectedStackTraceElement(new Throwable().getStackTrace()[0]));
     matcher.is(subMatcher);
+    thrown.expect(IllegalStateException.class);
+    thrown.expectMessage("The rule 'foo' has already been defined somewhere in the grammar.");
     matcher.is(subMatcher);
   }
 
   @Test
   public void should_override() {
     matcher.is(subMatcher);
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("'foo' has been already defined\nat " + expectedStackTraceElement(new Throwable().getStackTrace()[0]));
     matcher.override(subMatcher);
+    thrown.expect(IllegalStateException.class);
+    thrown.expectMessage("The rule 'foo' has already been defined somewhere in the grammar.");
     matcher.is(subMatcher);
   }
 
   @Test
   public void should_mock() {
     matcher.is(subMatcher);
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("'foo' has been already defined\nat " + expectedStackTraceElement(new Throwable().getStackTrace()[0]));
     matcher.mock();
+    thrown.expect(IllegalStateException.class);
+    thrown.expectMessage("The rule 'foo' has already been defined somewhere in the grammar.");
     matcher.is(subMatcher);
-  }
-
-  private static StackTraceElement expectedStackTraceElement(StackTraceElement stackTraceElement) {
-    return new StackTraceElement(
-        stackTraceElement.getClassName(),
-        stackTraceElement.getMethodName(),
-        stackTraceElement.getFileName(),
-        stackTraceElement.getLineNumber() + 1);
   }
 
   @Test
