@@ -95,10 +95,7 @@ public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPoli
   }
 
   public boolean hasToBeSkippedFromAst(AstNode node) {
-    if (AstNodeSkippingPolicy.class.isAssignableFrom(astNodeSkippingPolicy.getClass())) {
-      return ((AstNodeSkippingPolicy) astNodeSkippingPolicy).hasToBeSkippedFromAst(node);
-    }
-    return false;
+    return astNodeSkippingPolicy.hasToBeSkippedFromAst(node);
   }
 
 }

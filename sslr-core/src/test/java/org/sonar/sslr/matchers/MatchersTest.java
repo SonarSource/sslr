@@ -19,13 +19,18 @@
  */
 package org.sonar.sslr.matchers;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.sonar.sslr.internal.matchers.*;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class MatchersTest {
+
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void test() {
@@ -51,6 +56,13 @@ public class MatchersTest {
     assertThat(Matchers.regexp("foo")).isInstanceOf(PatternMatcher.class);
 
     assertThat(Matchers.endOfInput()).isInstanceOf(EndOfInputMatcher.class);
+  }
+
+  @Test
+  public void illegal_argument() {
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("java.lang.Object");
+    Matchers.sequence(new Object());
   }
 
 }

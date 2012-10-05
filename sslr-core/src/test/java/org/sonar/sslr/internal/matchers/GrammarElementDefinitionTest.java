@@ -19,6 +19,8 @@
  */
 package org.sonar.sslr.internal.matchers;
 
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.AstNodeSkippingPolicy;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -104,6 +106,31 @@ public class GrammarElementDefinitionTest {
   public void recoveryRule_unsupported() {
     thrown.expect(UnsupportedOperationException.class);
     matcher.recoveryRule();
+  }
+
+  @Test
+  public void test_skip() {
+    matcher.skip();
+    AstNode astNode = mock(AstNode.class);
+    assertThat(matcher.hasToBeSkippedFromAst(astNode)).isTrue();
+  }
+
+  @Test
+  public void test_skipIfOneChild() {
+    matcher.skipIfOneChild();
+    AstNode astNode = mock(AstNode.class);
+    when(astNode.getNumberOfChildren()).thenReturn(1, 2);
+    assertThat(matcher.hasToBeSkippedFromAst(astNode)).isTrue();
+    assertThat(matcher.hasToBeSkippedFromAst(astNode)).isFalse();
+  }
+
+  @Test
+  public void test_skipIf() {
+    AstNodeSkippingPolicy policy = mock(AstNodeSkippingPolicy.class);
+    AstNode astNode = mock(AstNode.class);
+    matcher.skipIf(policy);
+    assertThat(matcher.hasToBeSkippedFromAst(astNode)).isFalse();
+    verify(policy).hasToBeSkippedFromAst(astNode);
   }
 
 }
