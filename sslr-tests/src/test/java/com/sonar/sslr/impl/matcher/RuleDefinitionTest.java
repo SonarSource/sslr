@@ -21,23 +21,33 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.sonar.sslr.internal.matchers.GrammarException;
 
 import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class RuleDefinitionTest {
 
-  @Test(expected = IllegalStateException.class)
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
+
+  @Test
   public void testEmptyIs() {
     RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
+    thrown.expect(IllegalStateException.class);
+    thrown.expectMessage("The rule 'JavaClassDefinition' should at least contains one matcher.");
     javaClassDefinition.is();
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testMoreThanOneDefinitionForASigleRuleWithIs() {
     RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
     javaClassDefinition.is("option1");
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The rule 'JavaClassDefinition' has already been defined\nat " + expectedStackTraceElement(-2));
     javaClassDefinition.is("option2");
   }
 
@@ -55,6 +65,18 @@ public class RuleDefinitionTest {
     assertThat(MatcherTreePrinter.print(myRule.getRule())).isEqualTo("MyRule.is(\"option1\")");
     myRule.override("option2");
     assertThat(MatcherTreePrinter.print(myRule.getRule())).isEqualTo("MyRule.is(\"option2\")");
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The rule 'MyRule' has already been defined\nat " + expectedStackTraceElement(-3));
+    myRule.is("option3");
+  }
+
+  private static StackTraceElement expectedStackTraceElement(int lineDelta) {
+    StackTraceElement stackTraceElement = new Throwable().getStackTrace()[1];
+    return new StackTraceElement(
+        stackTraceElement.getClassName(),
+        stackTraceElement.getMethodName(),
+        stackTraceElement.getFileName(),
+        stackTraceElement.getLineNumber() + lineDelta);
   }
 
   @Test
@@ -82,4 +104,5 @@ public class RuleDefinitionTest {
     assertThat(ruleBuilder.hasToBeSkippedFromAst(child2)).isFalse();
     assertThat(ruleBuilder.hasToBeSkippedFromAst(child1)).isTrue();
   }
+
 }

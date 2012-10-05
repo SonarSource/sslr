@@ -26,6 +26,8 @@ import org.sonar.sslr.internal.matchers.GrammarException;
 
 import java.lang.reflect.Field;
 
+// TODO Godin: extends class Grammar in order to ease migration (e.g. AST visitors),
+// but maybe would be better to have a way to distinguish lexerless grammar from previous
 public abstract class LexerlessGrammar extends Grammar {
 
   @Override
