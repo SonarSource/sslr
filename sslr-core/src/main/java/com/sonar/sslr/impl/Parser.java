@@ -104,9 +104,6 @@ public final class Parser<GRAMMAR extends Grammar> {
       return rootRule.getRule().match(parsingState);
     } catch (BacktrackingEvent e) {
       throw extendedStackTrace == null ? new RecognitionException(parsingState, true) : new RecognitionException(extendedStackTrace, true);
-    } catch (StackOverflowError e) {
-      throw new RecognitionException("The grammar seems to contain a left recursion which is not compatible with LL(*) parser.",
-          parsingState, true, e);
     } finally {
       fireEndParseEvent();
     }
