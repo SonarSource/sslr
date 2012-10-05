@@ -17,49 +17,27 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.api;
+package org.sonar.sslr.matchers;
 
+import com.sonar.sslr.api.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 import org.sonar.sslr.internal.matchers.GrammarException;
-
-import java.lang.reflect.Field;
-import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-public class GrammarTest {
+public class LexerlessGrammarTest {
 
   @org.junit.Rule
   public ExpectedException thrown = ExpectedException.none();
 
-  private final MyGrammar grammar = new MyGrammar();
-
   @Test
-  public void testGetRuleFields() {
-    List<Field> ruleFields = Grammar.getRuleFields(MyGrammar.class);
-    assertThat(ruleFields.size()).isEqualTo(1);
-  }
-
-  @Test
-  public void testGetAllRuleFields() {
-    List<Field> ruleFields = Grammar.getAllRuleFields(MyGrammar.class);
-    assertThat(ruleFields.size()).isEqualTo(5);
-  }
-
-  @Test
-  public void shouldAutomaticallyInstanciateDirectRules() {
-    assertThat(grammar.rootRule).isNotNull();
-  }
-
-  @Test
-  public void shouldAutomaticallyInstanciateInheritedRules() throws IllegalAccessException {
-    List<Field> ruleFields = Grammar.getAllRuleFields(MyGrammar.class);
-    for (Field ruleField : ruleFields) {
-      ruleField.setAccessible(true);
-      assertThat(ruleField.get(grammar)).as("Current rule name = " + ruleField.getName()).isNotNull();
-    }
+  public void should_instanciate_rule_fields() {
+    TestGrammar grammar = new TestGrammar();
+    assertThat(grammar.getRootRule()).isInstanceOf(GrammarElementMatcher.class);
+    assertThat(((GrammarElementMatcher) grammar.getRootRule()).getName()).isEqualTo("rootRule");
   }
 
   @Test
@@ -69,19 +47,8 @@ public class GrammarTest {
     new IllegalGrammar();
   }
 
-  public static abstract class MyBaseGrammar extends Grammar {
-    Rule basePackageRule;
-    public Rule basePublicRule;
-    @SuppressWarnings("unused")
-    private Rule basePrivateRule;
-    protected Rule baseProtectedRule;
-  }
-
-  public static class MyGrammar extends MyBaseGrammar {
-    @SuppressWarnings("unused")
-    private int junkIntField;
-    public Object junkObjectField;
-    public Rule rootRule;
+  private static class TestGrammar extends LexerlessGrammar {
+    private Rule rootRule;
 
     @Override
     public Rule getRootRule() {
@@ -89,7 +56,7 @@ public class GrammarTest {
     }
   }
 
-  private static class IllegalGrammar extends Grammar {
+  private static class IllegalGrammar extends LexerlessGrammar {
     private static final Rule rootRule = mock(Rule.class);
 
     @Override

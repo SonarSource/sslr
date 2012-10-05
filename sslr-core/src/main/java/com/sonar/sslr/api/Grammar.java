@@ -20,6 +20,7 @@
 package com.sonar.sslr.api;
 
 import com.sonar.sslr.impl.matcher.RuleDefinition;
+import org.sonar.sslr.internal.matchers.GrammarException;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public abstract class Grammar {
         ruleField.setAccessible(true);
         ruleField.set(this, rule);
       } catch (Exception e) {
-        throw new RuntimeException("Unable to instanciate the rule '" + ruleName + "'", e);
+        throw new GrammarException(e, "Unable to instanciate the rule '" + ruleName + "'");
       }
     }
   }
