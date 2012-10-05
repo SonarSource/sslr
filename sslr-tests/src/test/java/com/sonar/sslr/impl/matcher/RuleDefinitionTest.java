@@ -21,23 +21,32 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class RuleDefinitionTest {
 
-  @Test(expected = IllegalStateException.class)
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
+
+  @Test
   public void testEmptyIs() {
     RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
+    thrown.expect(IllegalStateException.class);
+    thrown.expectMessage("The rule 'JavaClassDefinition' should at least contains one matcher.");
     javaClassDefinition.is();
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testMoreThanOneDefinitionForASigleRuleWithIs() {
     RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
     javaClassDefinition.is("option1");
+    thrown.expect(IllegalStateException.class);
+    thrown.expectMessage("The rule 'JavaClassDefinition' has already been defined somewhere in the grammar.");
     javaClassDefinition.is("option2");
   }
 
@@ -55,6 +64,20 @@ public class RuleDefinitionTest {
     assertThat(MatcherTreePrinter.print(myRule.getRule())).isEqualTo("MyRule.is(\"option1\")");
     myRule.override("option2");
     assertThat(MatcherTreePrinter.print(myRule.getRule())).isEqualTo("MyRule.is(\"option2\")");
+    thrown.expect(IllegalStateException.class);
+    thrown.expectMessage("The rule 'MyRule' has already been defined somewhere in the grammar.");
+    myRule.is("option3");
+  }
+
+  @Test
+  public void testMock() {
+    RuleDefinition myRule = RuleDefinition.newRuleBuilder("foo");
+    myRule.is("foo");
+    myRule.mock();
+    assertThat(MatcherTreePrinter.print(myRule.getRule())).isEqualTo("foo.is(or(\"foo\", \"FOO\"))");
+    thrown.expect(IllegalStateException.class);
+    thrown.expectMessage("The rule 'foo' has already been defined somewhere in the grammar.");
+    myRule.is("bar");
   }
 
   @Test
