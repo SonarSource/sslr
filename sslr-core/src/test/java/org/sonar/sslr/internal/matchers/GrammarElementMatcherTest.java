@@ -54,7 +54,7 @@ public class GrammarElementMatcherTest {
    */
   @Test
   public void redefinition() {
-    thrown.expect(IllegalStateException.class);
+    thrown.expect(GrammarException.class);
     thrown.expectMessage("'foo' has been already defined\nat " + expectedStackTraceElement(new Throwable().getStackTrace()[0]));
     matcher.is(subMatcher);
     matcher.is(subMatcher);
@@ -63,7 +63,7 @@ public class GrammarElementMatcherTest {
   @Test
   public void should_override() {
     matcher.is(subMatcher);
-    thrown.expect(IllegalStateException.class);
+    thrown.expect(GrammarException.class);
     thrown.expectMessage("'foo' has been already defined\nat " + expectedStackTraceElement(new Throwable().getStackTrace()[0]));
     matcher.override(subMatcher);
     matcher.is(subMatcher);
@@ -72,7 +72,7 @@ public class GrammarElementMatcherTest {
   @Test
   public void should_mock() {
     matcher.is(subMatcher);
-    thrown.expect(IllegalStateException.class);
+    thrown.expect(GrammarException.class);
     thrown.expectMessage("'foo' has been already defined\nat " + expectedStackTraceElement(new Throwable().getStackTrace()[0]));
     matcher.mock();
     matcher.is(subMatcher);

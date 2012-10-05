@@ -33,7 +33,7 @@ public class ZeroOrMoreMatcher implements Matcher {
       int currentIndex = context.getCurrentIndex();
       if (currentIndex == previousIndex) {
         // TODO Godin: improve message
-        throw new IllegalStateException();
+        throw new GrammarException("");
       }
       previousIndex = currentIndex;
     }

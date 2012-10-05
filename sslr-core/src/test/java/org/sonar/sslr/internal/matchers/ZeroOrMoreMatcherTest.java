@@ -67,7 +67,7 @@ public class ZeroOrMoreMatcherTest {
   public void should_check_that_moves_forward() {
     when(subContext.runMatcher()).thenReturn(true, true, false);
     when(context.getCurrentIndex()).thenReturn(1, 1, 1);
-    thrown.expect(IllegalStateException.class);
+    thrown.expect(GrammarException.class);
     matcher.match(context);
   }
 

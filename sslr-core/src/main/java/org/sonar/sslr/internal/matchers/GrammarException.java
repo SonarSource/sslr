@@ -17,29 +17,16 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.matchers;
+package org.sonar.sslr.internal.matchers;
 
-import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.api.Rule;
-import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
-import org.sonar.sslr.internal.matchers.GrammarException;
+public class GrammarException extends RuntimeException {
 
-import java.lang.reflect.Field;
+  public GrammarException(String message) {
+    super(message);
+  }
 
-public abstract class LexerlessGrammar extends Grammar {
-
-  @Override
-  protected void instanciateRuleFields() {
-    for (Field ruleField : getAllRuleFields(this.getClass())) {
-      String ruleName = ruleField.getName();
-      try {
-        Rule rule = new GrammarElementMatcher(ruleName);
-        ruleField.setAccessible(true);
-        ruleField.set(this, rule);
-      } catch (Exception e) {
-        throw new GrammarException(e, "Unable to instanciate the rule '" + ruleName + "'");
-      }
-    }
+  public GrammarException(Throwable cause, String message) {
+    super(message, cause);
   }
 
 }

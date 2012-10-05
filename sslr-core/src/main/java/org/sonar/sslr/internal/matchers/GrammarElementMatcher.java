@@ -43,7 +43,7 @@ public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPoli
 
   public GrammarElementMatcher is(Object... elements) {
     if (firstDefinition != null) {
-      throw new IllegalStateException("'" + name + "' has been already defined\nat " + firstDefinition);
+      throw new GrammarException("'" + name + "' has been already defined\nat " + firstDefinition);
     }
     setSubMatchers(elements);
     return this;
