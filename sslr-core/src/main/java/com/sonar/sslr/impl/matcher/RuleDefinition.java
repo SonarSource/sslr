@@ -27,13 +27,11 @@ import com.sonar.sslr.impl.ast.AlwaysSkipFromAst;
 import com.sonar.sslr.impl.ast.NeverSkipFromAst;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 import com.sonar.sslr.impl.matcher.GrammarFunctions.Standard;
-import org.sonar.sslr.internal.matchers.GrammarException;
 
 public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
 
   private RuleMatcher ruleMatcher;
   private AstNodeType astNodeSkippingPolicy = new NeverSkipFromAst();
-  private StackTraceElement firstDefinition;
 
   private RuleDefinition() {
   }
@@ -60,7 +58,7 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
   }
 
   public RuleDefinition is(Object... matchers) {
-    throwExceptionIfRuleAlreadyDefined("The rule '" + ruleMatcher + "' has already been defined\nat " + firstDefinition);
+    throwExceptionIfRuleAlreadyDefined("The rule '" + ruleMatcher + "' has already been defined somewhere in the grammar.");
     throwExceptionIfEmptyListOfMatchers(matchers);
     setMatcher(GrammarFunctions.Standard.and(matchers));
     return this;
@@ -81,9 +79,6 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
   }
 
   protected void setMatcher(Matcher matcher) {
-    // Record place where this rule has been defined
-    firstDefinition = new Throwable().getStackTrace()[2];
-
     ruleMatcher.children = new Matcher[] {matcher};
   }
 
@@ -97,7 +92,7 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
 
   private void throwExceptionIfRuleAlreadyDefined(String exceptionMessage) {
     if (ruleMatcher.children.length != 0) {
-      throw new GrammarException(exceptionMessage);
+      throw new IllegalStateException(exceptionMessage);
     }
   }
 

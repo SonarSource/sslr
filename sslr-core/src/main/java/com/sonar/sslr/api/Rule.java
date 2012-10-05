@@ -29,13 +29,12 @@ public interface Rule extends AstNodeType {
   /**
    * This method allows to provide the definition of a context-free grammar rule. <br>
    * <br>
-   * <b>Note:</b> this method can be called only once for a rule. If it is called more than once, a GrammarException will be thrown.
+   * <b>Note:</b> this method can be called only once for a rule. If it is called more than once, an IllegalStateException will be thrown.
    * If the rule definition really needs to be redefine, then the {@link Rule#override(Object...)} method must be used.
    *
    * @param matchers
    *          the matchers that define the rule
    * @return this rule
-   * @throws org.sonar.sslr.internal.matchers.GrammarException on attempt to call this method twice
    */
   Rule is(Object... matchers);
 

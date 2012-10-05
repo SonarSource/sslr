@@ -59,9 +59,7 @@ public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPoli
   }
 
   private void setSubMatchers(Object... elements) {
-    // Record place where this rule has been defined
     firstDefinition = new Throwable().getStackTrace()[2];
-
     subMatcher = Matchers.sequence(elements);
   }
 
