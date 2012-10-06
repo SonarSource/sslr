@@ -32,7 +32,7 @@ import org.sonar.sslr.matchers.Matchers;
 public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPolicy {
 
   private final String name;
-  private Matcher subMatcher;
+  private Matcher[] subMatchers;
   private TokenType tokenType;
   private AstNodeSkippingPolicy astNodeSkippingPolicy = new NeverSkipFromAst();
 
@@ -41,24 +41,29 @@ public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPoli
   }
 
   public GrammarElementMatcher is(Object... elements) {
-    if (subMatcher != null) {
+    if (subMatchers != null) {
       throw new IllegalStateException("The rule '" + name + "' has already been defined somewhere in the grammar.");
     }
-    setSubMatcher(elements);
+    setSubMatchers(elements);
     return this;
   }
 
   public GrammarElementMatcher override(Object... elements) {
-    setSubMatcher(elements);
+    setSubMatchers(elements);
     return this;
   }
 
   public void mock() {
-    setSubMatcher(getName(), Matchers.firstOf(Matchers.regexp("\\s++"), Matchers.endOfInput()));
+    setSubMatchers(getName(), Matchers.firstOf(Matchers.regexp("\\s++"), Matchers.endOfInput()));
   }
 
-  private void setSubMatcher(Object... elements) {
-    subMatcher = Matchers.sequence(elements);
+  private void setSubMatchers(Object... elements) {
+    Matcher subMatcher = Matchers.sequence(elements);
+    if (subMatcher instanceof SequenceMatcher) {
+      subMatchers = ((SequenceMatcher) subMatcher).getSubMatchers();
+    } else {
+      subMatchers = new Matcher[] {subMatcher};
+    }
   }
 
   public String getName() {
@@ -66,7 +71,12 @@ public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPoli
   }
 
   public boolean match(MatcherContext context) {
-    return context.getSubContext(subMatcher).runMatcher();
+    for (Matcher subMatcher : subMatchers) {
+      if (!context.getSubContext(subMatcher).runMatcher()) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public GrammarElementMatcher setTokenType(TokenType tokenType) {

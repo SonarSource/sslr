@@ -36,4 +36,8 @@ public class SequenceMatcher implements Matcher {
     return true;
   }
 
+  public Matcher[] getSubMatchers() {
+    return subMatchers;
+  }
+
 }
