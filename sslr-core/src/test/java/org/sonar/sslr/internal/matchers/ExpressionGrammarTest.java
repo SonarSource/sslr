@@ -19,17 +19,27 @@
  */
 package org.sonar.sslr.internal.matchers;
 
+import org.sonar.sslr.matchers.ParseRunner;
+
+import org.junit.Before;
 import org.junit.Test;
+import org.sonar.sslr.matchers.ParsingResult;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 public class ExpressionGrammarTest {
 
+  private ExpressionGrammar grammar;
+
+  @Before
+  public void setUp() {
+    grammar = new ExpressionGrammar();
+  }
+
   @Test
-  public void test() {
+  public void match() {
     String inputString = "20 * ( 2 + 2 ) - var";
     char[] input = inputString.toCharArray();
-    ExpressionGrammar grammar = new ExpressionGrammar();
     MatcherContext matcherContext = new BasicMatcherContext(input, (Matcher) grammar.root);
     assertThat(matcherContext.runMatcher()).isTrue();
     ParseTreePrinter.print(matcherContext.getNode(), input);
@@ -38,10 +48,18 @@ public class ExpressionGrammarTest {
   }
 
   @Test
+  public void mismatch() {
+    String inputString = "term +";
+    char[] input = inputString.toCharArray();
+    ParseRunner parseRunner = new ParseRunner(grammar.expression);
+    ParsingResult result = parseRunner.parse(input);
+    assertThat(result.isMatched()).isFalse();
+  }
+
+  @Test
   public void should_mock() {
     String inputString = "term + term";
     char[] input = inputString.toCharArray();
-    ExpressionGrammar grammar = new ExpressionGrammar();
     grammar.term.mock();
     MatcherContext matcherContext = new BasicMatcherContext(input, (Matcher) grammar.expression);
     assertThat(matcherContext.runMatcher()).isTrue();
