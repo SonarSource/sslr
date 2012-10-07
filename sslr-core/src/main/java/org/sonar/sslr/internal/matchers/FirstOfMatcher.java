@@ -30,6 +30,7 @@ public class FirstOfMatcher implements Matcher {
   public boolean match(MatcherContext context) {
     for (Matcher subMatcher : subMatchers) {
       if (context.getSubContext(subMatcher).runMatcher()) {
+        context.skipNode();
         return true;
       }
     }

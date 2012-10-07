@@ -33,6 +33,7 @@ public class SequenceMatcher implements Matcher {
         return false;
       }
     }
+    context.skipNode();
     return true;
   }
 

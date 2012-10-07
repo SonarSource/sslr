@@ -29,6 +29,7 @@ public class OptionalMatcher implements Matcher {
 
   public boolean match(MatcherContext context) {
     context.getSubContext(subMatcher).runMatcher();
+    context.skipNode();
     return true;
   }
 

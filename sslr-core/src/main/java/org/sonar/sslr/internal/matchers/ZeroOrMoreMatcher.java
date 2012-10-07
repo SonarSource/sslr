@@ -37,6 +37,7 @@ public class ZeroOrMoreMatcher implements Matcher {
       }
       previousIndex = currentIndex;
     }
+    context.skipNode();
     return true;
   }
 

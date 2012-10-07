@@ -76,6 +76,7 @@ public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPoli
         return false;
       }
     }
+    context.createNode();
     return true;
   }
 

@@ -65,7 +65,6 @@ public class BasicMatcherContext extends MatcherContext {
 
   public boolean runMatcher() {
     if (matcher.match(this)) {
-      createNode();
       if (parent != null) {
         parent.currentIndex = currentIndex;
       }
@@ -76,17 +75,17 @@ public class BasicMatcherContext extends MatcherContext {
     return false;
   }
 
-  private void createNode() {
-    if (matcher instanceof GrammarElementMatcher) {
-      // new node for parse tree
-      node = new ParseNode(startIndex, currentIndex, subNodes, matcher);
-      if (parent != null) {
-        parent.subNodes.add(node);
-      }
-    } else {
-      // node skipped - contribute all children to parent
-      parent.subNodes.addAll(subNodes);
+  public void createNode() {
+    // new node for parse tree
+    node = new ParseNode(startIndex, currentIndex, subNodes, matcher);
+    if (parent != null) {
+      parent.subNodes.add(node);
     }
+  }
+
+  public void skipNode() {
+    // node skipped - contribute all children to parent
+    parent.subNodes.addAll(subNodes);
   }
 
   public ParseNode getNode() {

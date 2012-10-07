@@ -40,6 +40,7 @@ public class OneOrMoreMatcher implements Matcher {
       }
       previousIndex = currentIndex;
     }
+    context.skipNode();
     return true;
   }
 

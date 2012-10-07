@@ -32,6 +32,10 @@ public abstract class MatcherContext implements CharSequence {
 
   public abstract MatcherContext getSubContext(Matcher matcher);
 
+  public abstract void createNode();
+
+  public abstract void skipNode();
+
   public void retire() {
     this.matcher = null;
   }
