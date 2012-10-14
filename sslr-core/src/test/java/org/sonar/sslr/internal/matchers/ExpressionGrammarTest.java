@@ -19,13 +19,14 @@
  */
 package org.sonar.sslr.internal.matchers;
 
-import org.sonar.sslr.matchers.ParseRunner;
-
+import com.sonar.sslr.api.Rule;
 import org.junit.Before;
 import org.junit.Test;
+import org.sonar.sslr.matchers.ParseRunner;
 import org.sonar.sslr.matchers.ParsingResult;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.sonar.sslr.matchers.Matchers.endOfInput;
 
 public class ExpressionGrammarTest {
 
@@ -51,9 +52,18 @@ public class ExpressionGrammarTest {
   public void mismatch() {
     String inputString = "term +";
     char[] input = inputString.toCharArray();
-    ParseRunner parseRunner = new ParseRunner(grammar.expression);
+    ParseRunner parseRunner = new ParseRunner(fullMatch(grammar.expression));
     ParsingResult result = parseRunner.parse(input);
     assertThat(result.isMatched()).isFalse();
+  }
+
+  @Test
+  public void prefix_match() {
+    String inputString = "term +";
+    char[] input = inputString.toCharArray();
+    ParseRunner parseRunner = new ParseRunner(grammar.expression);
+    ParsingResult result = parseRunner.parse(input);
+    assertThat(result.isMatched()).isTrue();
   }
 
   @Test
@@ -61,11 +71,15 @@ public class ExpressionGrammarTest {
     String inputString = "term + term";
     char[] input = inputString.toCharArray();
     grammar.term.mock();
-    MatcherContext matcherContext = new BasicMatcherContext(input, (Matcher) grammar.expression);
+    MatcherContext matcherContext = new BasicMatcherContext(input, (Matcher) fullMatch(grammar.expression));
     assertThat(matcherContext.runMatcher()).isTrue();
     ParseTreePrinter.print(matcherContext.getNode(), input);
     assertThat(matcherContext.getCurrentIndex()).isEqualTo(input.length);
     assertThat(ParseTreePrinter.leafsToString(matcherContext.getNode(), input)).as("full-fidelity").isEqualTo(inputString);
+  }
+
+  private static Rule fullMatch(Object object) {
+    return new GrammarElementMatcher("root").is(object, endOfInput());
   }
 
 }
