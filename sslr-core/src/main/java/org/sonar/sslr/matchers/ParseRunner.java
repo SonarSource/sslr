@@ -37,7 +37,7 @@ public class ParseRunner {
 
   public ParsingResult parse(char[] input) {
     MatcherContext matcherContext = new BasicMatcherContext(input, rootMatcher);
-    return new ParsingResult(matcherContext.runMatcher());
+    return new ParsingResult(matcherContext.runMatcher(), matcherContext.getNode());
   }
 
 }

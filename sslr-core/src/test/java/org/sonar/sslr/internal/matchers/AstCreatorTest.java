@@ -19,11 +19,14 @@
  */
 package org.sonar.sslr.internal.matchers;
 
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import org.junit.Test;
+import org.sonar.sslr.matchers.ParseRunner;
+import org.sonar.sslr.matchers.ParsingResult;
 
 import java.io.File;
 import java.net.URI;
@@ -37,11 +40,11 @@ public class AstCreatorTest {
     String inputString = "20 * 2 + 2 - var";
     ExpressionGrammar grammar = new ExpressionGrammar();
     char[] input = inputString.toCharArray();
-    MatcherContext matcherContext = new BasicMatcherContext(input, (Matcher) grammar.root);
-    matcherContext.runMatcher();
+    ParseRunner parseRunner = new ParseRunner(grammar.root);
+    ParsingResult result = parseRunner.parse(input);
 
     URI uri = new File("/tmp/test.txt").toURI();
-    AstNode astNode = AstCreator.create(uri, input, matcherContext.getNode());
+    AstNode astNode = AstCreator.create(uri, input, result.getParseTreeRoot());
     System.out.println(AstXmlPrinter.print(astNode));
 
     Token tokenWithTrivia = astNode.findFirstChild(GenericTokenType.LITERAL).getToken();

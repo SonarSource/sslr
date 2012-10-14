@@ -19,19 +19,29 @@
  */
 package org.sonar.sslr.matchers;
 
+import com.google.common.annotations.VisibleForTesting;
+import org.sonar.sslr.internal.matchers.ParseNode;
+
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
 public class ParsingResult {
 
   private final boolean matched;
+  private final ParseNode parseTreeRoot;
 
-  public ParsingResult(boolean matched) {
+  public ParsingResult(boolean matched, ParseNode parseTreeRoot) {
     this.matched = matched;
+    this.parseTreeRoot = parseTreeRoot;
   }
 
   public boolean isMatched() {
     return matched;
+  }
+
+  @VisibleForTesting
+  public ParseNode getParseTreeRoot() {
+    return parseTreeRoot;
   }
 
 }

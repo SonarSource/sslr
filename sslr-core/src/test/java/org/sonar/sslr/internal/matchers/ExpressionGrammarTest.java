@@ -19,6 +19,8 @@
  */
 package org.sonar.sslr.internal.matchers;
 
+import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
+
 import com.sonar.sslr.api.Rule;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,11 +43,11 @@ public class ExpressionGrammarTest {
   public void match() {
     String inputString = "20 * ( 2 + 2 ) - var";
     char[] input = inputString.toCharArray();
-    MatcherContext matcherContext = new BasicMatcherContext(input, (Matcher) grammar.root);
-    assertThat(matcherContext.runMatcher()).isTrue();
-    ParseTreePrinter.print(matcherContext.getNode(), input);
-    assertThat(matcherContext.getCurrentIndex()).isEqualTo(input.length);
-    assertThat(ParseTreePrinter.leafsToString(matcherContext.getNode(), input)).as("full-fidelity").isEqualTo(inputString);
+    ParseRunner parseRunner = new ParseRunner(grammar.root);
+    ParsingResult result = parseRunner.parse(input);
+    assertThat(result.isMatched()).isTrue();
+    ParseTreePrinter.print(result.getParseTreeRoot(), input);
+    assertThat(ParseTreePrinter.leafsToString(result.getParseTreeRoot(), input)).as("full-fidelity").isEqualTo(inputString);
   }
 
   @Test
@@ -71,11 +73,11 @@ public class ExpressionGrammarTest {
     String inputString = "term + term";
     char[] input = inputString.toCharArray();
     grammar.term.mock();
-    MatcherContext matcherContext = new BasicMatcherContext(input, (Matcher) fullMatch(grammar.expression));
-    assertThat(matcherContext.runMatcher()).isTrue();
-    ParseTreePrinter.print(matcherContext.getNode(), input);
-    assertThat(matcherContext.getCurrentIndex()).isEqualTo(input.length);
-    assertThat(ParseTreePrinter.leafsToString(matcherContext.getNode(), input)).as("full-fidelity").isEqualTo(inputString);
+    ParseRunner parseRunner = new ParseRunner(fullMatch(grammar.expression));
+    ParsingResult result = parseRunner.parse(input);
+    assertThat(result.isMatched()).isTrue();
+    ParseTreePrinter.print(result.getParseTreeRoot(), input);
+    assertThat(ParseTreePrinter.leafsToString(result.getParseTreeRoot(), input)).as("full-fidelity").isEqualTo(inputString);
   }
 
   private static Rule fullMatch(Object object) {
