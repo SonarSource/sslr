@@ -64,15 +64,24 @@ public class BasicMatcherContext extends MatcherContext {
   }
 
   public boolean runMatcher() {
-    if (matcher.match(this)) {
-      if (parent != null) {
-        parent.currentIndex = currentIndex;
+    try {
+      if (matcher.match(this)) {
+        if (parent != null) {
+          parent.currentIndex = currentIndex;
+        }
+        retire();
+        return true;
       }
       retire();
-      return true;
+      return false;
+    } catch (ParserRuntimeException e) {
+      // propagate as-is
+      throw e;
+    } catch (Throwable e) {
+      // TODO Godin: here we know context, where exception occurred,
+      // and it can be attached to exception in order to improve exception handling
+      throw new ParserRuntimeException(e);
     }
-    retire();
-    return false;
   }
 
   public void createNode() {

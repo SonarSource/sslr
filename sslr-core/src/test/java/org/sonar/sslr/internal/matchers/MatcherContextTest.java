@@ -25,18 +25,21 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Fail.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class MatcherContextTest {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
+  private Matcher matcher;
   private MatcherContext context;
 
   @Before
   public void setUp() {
-    Matcher matcher = mock(Matcher.class);
+    matcher = mock(Matcher.class);
     context = new BasicMatcherContext("bar".toCharArray(), mock(MatchHandler.class), matcher);
   }
 
@@ -79,10 +82,10 @@ public class MatcherContextTest {
 
   @Test
   public void should_provide_subContext() {
-    Matcher matcher = mock(Matcher.class);
+    Matcher subMatcher = mock(Matcher.class);
     context.advanceIndex(1);
-    MatcherContext subContext = context.getSubContext(matcher);
-    assertThat(context.getSubContext(matcher)).isSameAs(subContext);
+    MatcherContext subContext = context.getSubContext(subMatcher);
+    assertThat(context.getSubContext(subMatcher)).isSameAs(subContext);
     context.resetIndex();
     assertThat(context.getCurrentIndex()).isEqualTo(0);
     assertThat(subContext.getCurrentIndex()).isEqualTo(1);
@@ -92,6 +95,31 @@ public class MatcherContextTest {
     subContext.resetIndex();
     assertThat(context.getCurrentIndex()).isEqualTo(0);
     assertThat(subContext.getCurrentIndex()).isEqualTo(1);
+  }
+
+  @Test
+  public void should_wrap_Exception() {
+    Matcher subMatcher = mock(Matcher.class);
+    MatcherContext subContext = context.getSubContext(subMatcher);
+    RuntimeException cause = new RuntimeException();
+    when(subMatcher.match(subContext)).thenThrow(cause);
+    try {
+      subContext.runMatcher();
+      fail();
+    } catch (ParserRuntimeException e) {
+      assertThat(e.getCause()).isSameAs(cause);
+    }
+  }
+
+  @Test
+  public void should_propagate_ParserRuntimeException() {
+    ParserRuntimeException exception = new ParserRuntimeException(null);
+    when(matcher.match(context)).thenThrow(exception);
+    try {
+      context.runMatcher();
+    } catch (ParserRuntimeException e) {
+      assertThat(e).isSameAs(exception);
+    }
   }
 
 }
