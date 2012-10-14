@@ -53,6 +53,13 @@ public class MatcherContextTest {
   }
 
   @Test
+  public void should_set_index() {
+    assertThat(context.getCurrentIndex()).isEqualTo(0);
+    context.setIndex(42);
+    assertThat(context.getCurrentIndex()).isEqualTo(42);
+  }
+
+  @Test
   public void should_return_remaining_length() {
     assertThat(context.length()).isEqualTo(3);
     context.advanceIndex(2);

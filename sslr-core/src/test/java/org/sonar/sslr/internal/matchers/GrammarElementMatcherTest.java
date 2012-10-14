@@ -28,6 +28,7 @@ import org.junit.rules.ExpectedException;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,6 +39,7 @@ public class GrammarElementMatcherTest {
 
   private Matcher subMatcher;
   private MatcherContext context, subContext;
+  private MatchHandler matchHandler;
   private GrammarElementMatcher matcher;
 
   @Before
@@ -45,7 +47,8 @@ public class GrammarElementMatcherTest {
     subMatcher = mock(Matcher.class);
     subContext = mock(MatcherContext.class);
     context = mock(MatcherContext.class);
-    when(context.getMatchHandler()).thenReturn(mock(MatchHandler.class));
+    matchHandler = mock(MatchHandler.class);
+    when(context.getMatchHandler()).thenReturn(matchHandler);
     when(context.getSubContext(subMatcher)).thenReturn(subContext);
     matcher = new GrammarElementMatcher("foo");
   }
@@ -84,7 +87,11 @@ public class GrammarElementMatcherTest {
     matcher.is(subMatcher);
     when(subContext.runMatcher()).thenReturn(true);
     assertThat(matcher.match(context)).isTrue();
+    verify(context).createNode();
     verify(subContext).runMatcher();
+    verify(matchHandler).match(context);
+    verify(matchHandler).onMatch(context);
+    verify(matchHandler, never()).onMissmatch(context);
   }
 
   @Test
@@ -92,7 +99,22 @@ public class GrammarElementMatcherTest {
     matcher.is(subMatcher);
     when(subContext.runMatcher()).thenReturn(false);
     assertThat(matcher.match(context)).isFalse();
+    verify(context, never()).createNode();
     verify(subContext).runMatcher();
+    verify(matchHandler).match(context);
+    verify(matchHandler).onMissmatch(context);
+    verify(matchHandler, never()).onMatch(context);
+  }
+
+  @Test
+  public void should_match_because_of_handler() {
+    matcher.is(subMatcher);
+    when(matchHandler.match(context)).thenReturn(true);
+    assertThat(matcher.match(context)).isTrue();
+    verify(context, never()).createNode();
+    verify(subContext, never()).runMatcher();
+    verify(matchHandler, never()).onMissmatch(context);
+    verify(matchHandler, never()).onMatch(context);
   }
 
   @Test

@@ -30,7 +30,7 @@ public class Memoizer implements MatchHandler {
   public boolean match(MatcherContext context) {
     ParseNode memo = memos[context.getCurrentIndex()];
     if (memo != null && memo.getMatcher() == context.getMatcher()) {
-      context.currentIndex = memo.getEndIndex();
+      context.setIndex(memo.getEndIndex());
       context.createNode(memo);
       return true;
     }

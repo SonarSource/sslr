@@ -71,6 +71,10 @@ public abstract class MatcherContext implements CharSequence {
     currentIndex = startIndex;
   }
 
+  public void setIndex(int index) {
+    currentIndex = index;
+  }
+
   public abstract ParseNode getNode();
 
   /*
