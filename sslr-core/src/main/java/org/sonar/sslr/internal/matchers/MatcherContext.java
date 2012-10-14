@@ -37,6 +37,8 @@ public abstract class MatcherContext implements CharSequence {
 
   public abstract void createNode();
 
+  public abstract void createNode(ParseNode parseNode);
+
   public abstract void skipNode();
 
   public MatchHandler getMatchHandler() {
@@ -52,6 +54,10 @@ public abstract class MatcherContext implements CharSequence {
   }
 
   public abstract boolean runMatcher();
+
+  public int getStartIndex() {
+    return startIndex;
+  }
 
   public int getCurrentIndex() {
     return currentIndex;

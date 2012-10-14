@@ -37,7 +37,8 @@ public class ParseRunner {
   }
 
   public ParsingResult parse(char[] input) {
-    ErrorLocatingHandler errorLocatingHandler = new ErrorLocatingHandler();
+    Memoizer memoizer = new Memoizer(input.length);
+    ErrorLocatingHandler errorLocatingHandler = new ErrorLocatingHandler(memoizer);
     MatcherContext matcherContext = new BasicMatcherContext(input, errorLocatingHandler, rootMatcher);
     boolean matched = matcherContext.runMatcher();
     if (matched) {
@@ -56,8 +57,21 @@ public class ParseRunner {
   // One to locate error position and another one to construct report.
   private static class ErrorLocatingHandler implements MatchHandler {
 
+    private final MatchHandler delegate;
     private int errorIndex = -1;
     private final List<Matcher> failedMatchers = Lists.newArrayList();
+
+    public ErrorLocatingHandler(MatchHandler delegate) {
+      this.delegate = delegate;
+    }
+
+    public boolean match(MatcherContext context) {
+      return delegate.match(context);
+    }
+
+    public void onMatch(MatcherContext context) {
+      delegate.onMatch(context);
+    }
 
     public void onMissmatch(MatcherContext context) {
       // We are interested in errors, which occur only on terminals:

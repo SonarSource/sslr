@@ -19,12 +19,30 @@
  */
 package org.sonar.sslr.internal.matchers;
 
-public interface MatchHandler {
+public class Memoizer implements MatchHandler {
 
-  boolean match(MatcherContext context);
+  private final ParseNode[] memos;
 
-  void onMatch(MatcherContext context);
+  public Memoizer(int length) {
+    memos = new ParseNode[length + 1];
+  }
 
-  void onMissmatch(MatcherContext context);
+  public boolean match(MatcherContext context) {
+    ParseNode memo = memos[context.getCurrentIndex()];
+    if (memo != null && memo.getMatcher() == context.getMatcher()) {
+      context.currentIndex = memo.getEndIndex();
+      context.createNode(memo);
+      return true;
+    }
+    return false;
+  }
+
+  public void onMatch(MatcherContext context) {
+    memos[context.getStartIndex()] = context.getNode();
+  }
+
+  public void onMissmatch(MatcherContext context) {
+    // nop
+  }
 
 }

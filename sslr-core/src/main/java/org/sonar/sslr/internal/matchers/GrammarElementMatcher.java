@@ -71,6 +71,9 @@ public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPoli
   }
 
   public boolean match(MatcherContext context) {
+    if (context.getMatchHandler().match(context)) {
+      return true;
+    }
     for (Matcher subMatcher : subMatchers) {
       if (!context.getSubContext(subMatcher).runMatcher()) {
         context.getMatchHandler().onMissmatch(context);
@@ -78,6 +81,7 @@ public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPoli
       }
     }
     context.createNode();
+    context.getMatchHandler().onMatch(context);
     return true;
   }
 

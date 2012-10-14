@@ -83,6 +83,14 @@ public class BasicMatcherContext extends MatcherContext {
     }
   }
 
+  @Override
+  public void createNode(ParseNode node) {
+    this.node = node;
+    if (parent != null) {
+      parent.subNodes.add(node);
+    }
+  }
+
   public void skipNode() {
     // node skipped - contribute all children to parent
     parent.subNodes.addAll(subNodes);
