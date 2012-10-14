@@ -31,14 +31,14 @@ public class BasicMatcherContext extends MatcherContext {
   private ParseNode node;
   private final List<ParseNode> subNodes = Lists.newArrayList();
 
-  public BasicMatcherContext(char[] input, Matcher matcher) {
-    super(input);
+  public BasicMatcherContext(char[] input, MatchHandler matchHandler, Matcher matcher) {
+    super(input, matchHandler);
     this.parent = null;
     this.matcher = matcher;
   }
 
   public BasicMatcherContext(BasicMatcherContext parent) {
-    super(parent.input);
+    super(parent.input, parent.getMatchHandler());
     this.parent = parent;
   }
 

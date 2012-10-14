@@ -19,37 +19,33 @@
  */
 package org.sonar.sslr.matchers;
 
-import com.google.common.annotations.VisibleForTesting;
-import org.sonar.sslr.internal.matchers.ParseNode;
-
-import javax.annotation.Nullable;
+import org.sonar.sslr.internal.matchers.InputBuffer;
 
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
-public class ParsingResult {
+public class ParseError {
 
-  private final boolean matched;
-  private final ParseNode parseTreeRoot;
-  private final ParseError parseError;
+  private final InputBuffer inputBuffer;
+  private final int errorIndex;
+  private final String message;
 
-  public ParsingResult(boolean matched, @Nullable ParseNode parseTreeRoot, @Nullable ParseError parseError) {
-    this.matched = matched;
-    this.parseTreeRoot = parseTreeRoot;
-    this.parseError = parseError;
+  public ParseError(InputBuffer inputBuffer, int errorIndex, String message) {
+    this.inputBuffer = inputBuffer;
+    this.errorIndex = errorIndex;
+    this.message = message;
   }
 
-  public boolean isMatched() {
-    return matched;
+  public InputBuffer getInputBuffer() {
+    return inputBuffer;
   }
 
-  public ParseError getParseError() {
-    return parseError;
+  public int getErrorIndex() {
+    return errorIndex;
   }
 
-  @VisibleForTesting
-  public ParseNode getParseTreeRoot() {
-    return parseTreeRoot;
+  public String getMessage() {
+    return message;
   }
 
 }

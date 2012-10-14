@@ -73,6 +73,7 @@ public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPoli
   public boolean match(MatcherContext context) {
     for (Matcher subMatcher : subMatchers) {
       if (!context.getSubContext(subMatcher).runMatcher()) {
+        context.getMatchHandler().onMissmatch(context);
         return false;
       }
     }

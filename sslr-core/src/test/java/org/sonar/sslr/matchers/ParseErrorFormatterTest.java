@@ -19,37 +19,20 @@
  */
 package org.sonar.sslr.matchers;
 
-import com.google.common.annotations.VisibleForTesting;
-import org.sonar.sslr.internal.matchers.ParseNode;
+import org.junit.Test;
+import org.sonar.sslr.internal.matchers.InputBuffer;
 
-import javax.annotation.Nullable;
+import static org.fest.assertions.Assertions.assertThat;
 
-/**
- * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
- */
-public class ParsingResult {
+public class ParseErrorFormatterTest {
 
-  private final boolean matched;
-  private final ParseNode parseTreeRoot;
-  private final ParseError parseError;
-
-  public ParsingResult(boolean matched, @Nullable ParseNode parseTreeRoot, @Nullable ParseError parseError) {
-    this.matched = matched;
-    this.parseTreeRoot = parseTreeRoot;
-    this.parseError = parseError;
-  }
-
-  public boolean isMatched() {
-    return matched;
-  }
-
-  public ParseError getParseError() {
-    return parseError;
-  }
-
-  @VisibleForTesting
-  public ParseNode getParseTreeRoot() {
-    return parseTreeRoot;
+  @Test
+  public void test() {
+    InputBuffer inputBuffer = new InputBuffer("foo\nbar\nbaz".toCharArray());
+    ParseErrorFormatter formatter = new ParseErrorFormatter();
+    String result = formatter.format(new ParseError(inputBuffer, 5, "expected: IDENTIFIER"));
+    System.out.println(result);
+    assertThat(result).isEqualTo("At line 2 column 2 expected: IDENTIFIER\nbar\n ^\n");
   }
 
 }

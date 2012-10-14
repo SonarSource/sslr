@@ -26,8 +26,11 @@ public abstract class MatcherContext implements CharSequence {
   protected int currentIndex;
   protected Matcher matcher;
 
-  public MatcherContext(char[] input) {
+  private final MatchHandler matchHandler;
+
+  public MatcherContext(char[] input, MatchHandler matchHandler) {
     this.input = input;
+    this.matchHandler = matchHandler;
   }
 
   public abstract MatcherContext getSubContext(Matcher matcher);
@@ -35,6 +38,14 @@ public abstract class MatcherContext implements CharSequence {
   public abstract void createNode();
 
   public abstract void skipNode();
+
+  public MatchHandler getMatchHandler() {
+    return matchHandler;
+  }
+
+  public Matcher getMatcher() {
+    return matcher;
+  }
 
   public void retire() {
     this.matcher = null;

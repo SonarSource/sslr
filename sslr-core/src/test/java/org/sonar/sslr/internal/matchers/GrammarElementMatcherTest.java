@@ -89,6 +89,7 @@ public class GrammarElementMatcherTest {
   @Test
   public void should_not_match() {
     matcher.is(subMatcher);
+    when(context.getMatchHandler()).thenReturn(mock(MatchHandler.class));
     when(subContext.runMatcher()).thenReturn(false);
     assertThat(matcher.match(context)).isFalse();
     verify(subContext).runMatcher();

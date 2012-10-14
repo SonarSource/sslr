@@ -19,37 +19,25 @@
  */
 package org.sonar.sslr.matchers;
 
-import com.google.common.annotations.VisibleForTesting;
-import org.sonar.sslr.internal.matchers.ParseNode;
+import org.sonar.sslr.internal.matchers.InputBuffer;
 
-import javax.annotation.Nullable;
+public class ParseErrorFormatter {
 
-/**
- * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
- */
-public class ParsingResult {
+  public String format(ParseError parseError) {
+    InputBuffer inputBuffer = parseError.getInputBuffer();
+    InputBuffer.Position position = inputBuffer.getPosition(parseError.getErrorIndex());
 
-  private final boolean matched;
-  private final ParseNode parseTreeRoot;
-  private final ParseError parseError;
+    StringBuilder sb = new StringBuilder();
+    sb.append("At line ").append(position.getLine())
+        .append(" column ").append(position.getColumn())
+        .append(' ').append(parseError.getMessage()).append('\n');
+    sb.append(inputBuffer.extractLine(position.getLine()));
+    for (int i = 1; i < position.getColumn(); i++) {
+      sb.append(' ');
+    }
+    sb.append("^\n");
 
-  public ParsingResult(boolean matched, @Nullable ParseNode parseTreeRoot, @Nullable ParseError parseError) {
-    this.matched = matched;
-    this.parseTreeRoot = parseTreeRoot;
-    this.parseError = parseError;
-  }
-
-  public boolean isMatched() {
-    return matched;
-  }
-
-  public ParseError getParseError() {
-    return parseError;
-  }
-
-  @VisibleForTesting
-  public ParseNode getParseTreeRoot() {
-    return parseTreeRoot;
+    return sb.toString();
   }
 
 }

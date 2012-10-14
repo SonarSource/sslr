@@ -19,11 +19,10 @@
  */
 package org.sonar.sslr.internal.matchers;
 
-import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
-
 import com.sonar.sslr.api.Rule;
 import org.junit.Before;
 import org.junit.Test;
+import org.sonar.sslr.matchers.ParseError;
 import org.sonar.sslr.matchers.ParseRunner;
 import org.sonar.sslr.matchers.ParsingResult;
 
@@ -57,6 +56,9 @@ public class ExpressionGrammarTest {
     ParseRunner parseRunner = new ParseRunner(fullMatch(grammar.expression));
     ParsingResult result = parseRunner.parse(input);
     assertThat(result.isMatched()).isFalse();
+    ParseError parseError = result.getParseError();
+    assertThat(parseError.getErrorIndex()).isEqualTo(6);
+    assertThat(parseError.getMessage()).isEqualTo("expected one of: CONSTANT LITERAL IDENTIFIER");
   }
 
   @Test
