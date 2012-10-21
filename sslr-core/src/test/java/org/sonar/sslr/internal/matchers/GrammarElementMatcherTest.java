@@ -53,9 +53,6 @@ public class GrammarElementMatcherTest {
     matcher = new GrammarElementMatcher("foo");
   }
 
-  /**
-   * SSLR-214
-   */
   @Test
   public void redefinition() {
     matcher.is(subMatcher);
@@ -115,6 +112,13 @@ public class GrammarElementMatcherTest {
     verify(subContext, never()).runMatcher();
     verify(matchHandler, never()).onMissmatch(context);
     verify(matchHandler, never()).onMatch(context);
+  }
+
+  @Test
+  public void undefined() {
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The rule 'foo' hasn't beed defined.");
+    matcher.match(context);
   }
 
   @Test

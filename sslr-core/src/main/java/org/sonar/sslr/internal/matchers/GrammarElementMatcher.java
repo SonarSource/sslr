@@ -71,6 +71,9 @@ public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPoli
   }
 
   public boolean match(MatcherContext context) {
+    if (subMatchers == null) {
+      throw new GrammarException("The rule '" + name + "' hasn't beed defined.");
+    }
     if (context.getMatchHandler().match(context)) {
       return true;
     }
