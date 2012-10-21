@@ -31,17 +31,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class Parser<GRAMMAR extends Grammar> {
+public final class Parser<G extends Grammar> {
 
   private RuleDefinition rootRule;
   private ParsingState parsingState;
   private final Lexer lexer;
-  private final GRAMMAR grammar;
+  private final G grammar;
   private Set<RecognitionExceptionListener> listeners = new HashSet<RecognitionExceptionListener>();
   private ParsingEventListener[] parsingEventListeners;
   private final ExtendedStackTrace extendedStackTrace;
 
-  private Parser(Builder<GRAMMAR> builder) {
+  private Parser(Builder<G> builder) {
     this.lexer = builder.lexer;
     this.grammar = builder.grammar;
     this.listeners = builder.listeners;
@@ -145,7 +145,7 @@ public final class Parser<GRAMMAR extends Grammar> {
     return parsingState;
   }
 
-  public GRAMMAR getGrammar() {
+  public G getGrammar() {
     return grammar;
   }
 
@@ -157,27 +157,27 @@ public final class Parser<GRAMMAR extends Grammar> {
     this.rootRule = (RuleDefinition) rootRule;
   }
 
-  public static <GRAMMAR extends Grammar> Builder<GRAMMAR> builder(GRAMMAR grammar) {
-    return new Builder<GRAMMAR>(grammar);
+  public static <G extends Grammar> Builder<G> builder(G grammar) {
+    return new Builder<G>(grammar);
   }
 
-  public static <GRAMMAR extends Grammar> Builder<GRAMMAR> builder(Parser<GRAMMAR> parser) {
-    return new Builder<GRAMMAR>(parser);
+  public static <G extends Grammar> Builder<G> builder(Parser<G> parser) {
+    return new Builder<G>(parser);
   }
 
-  public static final class Builder<GRAMMAR extends Grammar> {
+  public static final class Builder<G extends Grammar> {
 
     private Lexer lexer;
-    private final GRAMMAR grammar;
+    private final G grammar;
     private final Set<ParsingEventListener> parsingEventListeners = new HashSet<ParsingEventListener>();
     private final Set<RecognitionExceptionListener> listeners = new HashSet<RecognitionExceptionListener>();
     private ExtendedStackTrace extendedStackTrace;
 
-    private Builder(GRAMMAR grammar) {
+    private Builder(G grammar) {
       this.grammar = grammar;
     }
 
-    private Builder(Parser<GRAMMAR> parser) {
+    private Builder(Parser<G> parser) {
       this.lexer = parser.lexer;
       this.grammar = parser.grammar;
       setParsingEventListeners(parser.parsingEventListeners);
@@ -185,42 +185,42 @@ public final class Parser<GRAMMAR extends Grammar> {
       this.extendedStackTrace = parser.extendedStackTrace;
     }
 
-    public Parser<GRAMMAR> build() {
-      return new Parser<GRAMMAR>(this);
+    public Parser<G> build() {
+      return new Parser<G>(this);
     }
 
-    public Builder<GRAMMAR> withLexer(Lexer lexer) {
+    public Builder<G> withLexer(Lexer lexer) {
       this.lexer = lexer;
       return this;
     }
 
-    public Builder<GRAMMAR> setParsingEventListeners(ParsingEventListener... parsingEventListeners) {
+    public Builder<G> setParsingEventListeners(ParsingEventListener... parsingEventListeners) {
       this.parsingEventListeners.clear();
       addParsingEventListeners(parsingEventListeners);
       return this;
     }
 
-    public Builder<GRAMMAR> addParsingEventListeners(ParsingEventListener... parsingEventListeners) {
+    public Builder<G> addParsingEventListeners(ParsingEventListener... parsingEventListeners) {
       for (ParsingEventListener parsingEventListener : parsingEventListeners) {
         this.parsingEventListeners.add(parsingEventListener);
       }
       return this;
     }
 
-    public Builder<GRAMMAR> setRecognictionExceptionListener(RecognitionExceptionListener... listeners) {
+    public Builder<G> setRecognictionExceptionListener(RecognitionExceptionListener... listeners) {
       this.listeners.clear();
       addRecognictionExceptionListeners(listeners);
       return this;
     }
 
-    public Builder<GRAMMAR> addRecognictionExceptionListeners(RecognitionExceptionListener... listeners) {
+    public Builder<G> addRecognictionExceptionListeners(RecognitionExceptionListener... listeners) {
       for (RecognitionExceptionListener listener : listeners) {
         this.listeners.add(listener);
       }
       return this;
     }
 
-    public Builder<GRAMMAR> setExtendedStackTrace(ExtendedStackTrace extendedStackTrace) {
+    public Builder<G> setExtendedStackTrace(ExtendedStackTrace extendedStackTrace) {
       this.extendedStackTrace = extendedStackTrace;
       return this;
     }

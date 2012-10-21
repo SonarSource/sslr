@@ -26,7 +26,7 @@ import org.jaxen.JaxenException;
 
 import java.util.List;
 
-public final class AstNodeXPathQuery<TYPE> {
+public final class AstNodeXPathQuery<T> {
 
   private final AstNodeNavigator astNodeNavigator = new AstNodeNavigator();
   private final BaseXPath expression;
@@ -56,10 +56,10 @@ public final class AstNodeXPathQuery<TYPE> {
    *          The AstNode on which to evaluate the query against to.
    * @return The first result or null if there was no result.
    */
-  public TYPE selectSingleNode(AstNode astNode) {
+  public T selectSingleNode(AstNode astNode) {
     try {
       astNodeNavigator.reset();
-      return (TYPE) expression.selectSingleNode(astNode);
+      return (T) expression.selectSingleNode(astNode);
     } catch (JaxenException e) {
       throw new RuntimeException(e);
     }
@@ -82,7 +82,7 @@ public final class AstNodeXPathQuery<TYPE> {
    *          The AstNode on which to evaluate the query against to.
    * @return The list of resulting elements, empty when no result available.
    */
-  public List<TYPE> selectNodes(AstNode astNode) {
+  public List<T> selectNodes(AstNode astNode) {
     try {
       astNodeNavigator.reset();
       return expression.selectNodes(astNode);

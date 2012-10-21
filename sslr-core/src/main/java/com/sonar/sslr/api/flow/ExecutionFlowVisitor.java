@@ -19,12 +19,12 @@
  */
 package com.sonar.sslr.api.flow;
 
-public abstract class ExecutionFlowVisitor<STATEMENT extends Statement> {
+public abstract class ExecutionFlowVisitor<S extends Statement> {
 
   public void start() {
   }
 
-  public void visitStatement(STATEMENT stmt, Branch branch) {
+  public void visitStatement(S stmt, Branch branch) {
   }
 
   public void visitMandatoryBranches() {
@@ -44,4 +44,5 @@ public abstract class ExecutionFlowVisitor<STATEMENT extends Statement> {
 
   public void stop() {
   }
+
 }
