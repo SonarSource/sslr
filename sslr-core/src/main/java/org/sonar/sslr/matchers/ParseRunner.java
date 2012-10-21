@@ -44,7 +44,11 @@ public class ParseRunner {
     if (matched) {
       return new ParsingResult(matched, matcherContext.getNode(), null);
     } else {
-      StringBuilder sb = new StringBuilder("expected one of:");
+      StringBuilder sb = new StringBuilder("expected");
+      if (errorLocatingHandler.failedMatchers.size() > 1) {
+        sb.append(" one of");
+      }
+      sb.append(':');
       for (Matcher failedMatcher : errorLocatingHandler.failedMatchers) {
         sb.append(' ').append(((GrammarElementMatcher) failedMatcher).getName());
       }
