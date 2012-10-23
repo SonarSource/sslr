@@ -24,6 +24,8 @@ import com.sonar.sslr.impl.ParsingState;
 
 /**
  * A {@link Matcher} trying all of its submatchers in sequence and succeeding when the first submatcher succeeds.
+ *
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
 public final class OrMatcher extends StandardMatcher {
 

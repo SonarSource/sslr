@@ -28,6 +28,8 @@ import java.util.Arrays;
 /**
  * This class allows to remove usage of {@link BacktrackingEvent} from {@link Matcher}s.
  *
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ *
  * @since 1.14
  */
 public class StandardMatcher extends MemoizedMatcher {

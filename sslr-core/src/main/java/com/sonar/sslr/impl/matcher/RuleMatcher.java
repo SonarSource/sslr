@@ -24,6 +24,9 @@ import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.ParsingState;
 
+/**
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ */
 public final class RuleMatcher extends StandardMatcher {
 
   private final String name;

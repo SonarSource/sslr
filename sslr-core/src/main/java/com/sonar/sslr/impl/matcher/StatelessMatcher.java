@@ -21,6 +21,9 @@ package com.sonar.sslr.impl.matcher;
 
 import java.util.Arrays;
 
+/**
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ */
 public abstract class StatelessMatcher extends MemoizedMatcher {
 
   protected StatelessMatcher(Matcher... children) {

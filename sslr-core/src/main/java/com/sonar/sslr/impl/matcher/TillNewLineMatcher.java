@@ -19,12 +19,15 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
 
+import static com.sonar.sslr.api.GenericTokenType.EOF;
+
+/**
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ */
 public final class TillNewLineMatcher extends StatelessMatcher {
 
   protected TillNewLineMatcher() {

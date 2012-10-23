@@ -26,6 +26,9 @@ import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 
+/**
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ */
 public final class BridgeMatcher extends MemoizedMatcher {
 
   private final TokenType from;

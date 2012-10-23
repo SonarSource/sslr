@@ -25,6 +25,8 @@ import com.sonar.sslr.impl.ParsingState;
 /**
  * A {@link Matcher} that repeatedly tries its submatcher against the input.
  * Succeeds if its submatcher succeeds at least once.
+ *
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
 public final class OneToNMatcher extends StandardMatcher {
 

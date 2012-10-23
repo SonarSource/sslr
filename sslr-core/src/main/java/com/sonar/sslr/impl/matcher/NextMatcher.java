@@ -24,6 +24,8 @@ import com.sonar.sslr.impl.ParsingState;
 /**
  * A special {@link Matcher} not actually matching any input but rather trying its submatcher against the current input
  * position. Succeeds if the submatcher would succeed.
+ *
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
 public final class NextMatcher extends StandardMatcher {
 

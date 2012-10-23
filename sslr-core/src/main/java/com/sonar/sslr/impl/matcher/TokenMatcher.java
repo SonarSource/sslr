@@ -23,6 +23,9 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
 
+/**
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ */
 public abstract class TokenMatcher extends StandardMatcher {
 
   private final boolean hasToBeSkippedFromAst;

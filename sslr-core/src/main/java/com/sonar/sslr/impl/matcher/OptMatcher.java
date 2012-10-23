@@ -24,6 +24,8 @@ import com.sonar.sslr.impl.ParsingState;
 
 /**
  * A {@link Matcher} that tries its submatcher once against the input and always succeeds.
+ *
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
 public final class OptMatcher extends StandardMatcher {
 

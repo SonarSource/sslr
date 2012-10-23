@@ -26,6 +26,9 @@ import com.sonar.sslr.api.TokenType;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ */
 public final class TokenTypesMatcher extends TokenMatcher {
 
   private final Set<TokenType> tokenTypes = new HashSet<TokenType>();

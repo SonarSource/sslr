@@ -21,6 +21,9 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.Token;
 
+/**
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ */
 public final class BooleanMatcher extends TokenMatcher {
 
   private final boolean internalState;

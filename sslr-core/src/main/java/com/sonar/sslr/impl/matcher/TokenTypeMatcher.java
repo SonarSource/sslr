@@ -23,6 +23,9 @@ import com.google.common.base.Objects;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 
+/**
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ */
 public final class TokenTypeMatcher extends TokenMatcher {
 
   private final TokenType type;

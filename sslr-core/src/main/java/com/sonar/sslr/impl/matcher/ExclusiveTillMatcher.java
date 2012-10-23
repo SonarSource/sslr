@@ -23,6 +23,9 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
 
+/**
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ */
 public final class ExclusiveTillMatcher extends StatelessMatcher {
 
   protected ExclusiveTillMatcher(Matcher... matchers) {

@@ -26,6 +26,9 @@ import com.sonar.sslr.impl.events.ParsingEventListener;
 
 import javax.annotation.Nullable;
 
+/**
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ */
 public abstract class Matcher {
 
   public Matcher[] children;
