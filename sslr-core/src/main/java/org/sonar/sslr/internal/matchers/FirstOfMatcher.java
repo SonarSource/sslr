@@ -19,6 +19,10 @@
  */
 package org.sonar.sslr.internal.matchers;
 
+/**
+ * A {@link Matcher} trying all of its submatchers in sequence.
+ * Succeeds when the first submatcher succeeds.
+ */
 public class FirstOfMatcher implements Matcher {
 
   private final Matcher[] subMatchers;

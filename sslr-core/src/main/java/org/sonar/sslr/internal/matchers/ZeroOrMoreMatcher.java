@@ -19,6 +19,10 @@
  */
 package org.sonar.sslr.internal.matchers;
 
+/**
+ * A {@link Matcher} that repeatedly tries its submatcher against the input.
+ * Always succeeds.
+ */
 public class ZeroOrMoreMatcher implements Matcher {
 
   private final Matcher subMatcher;
