@@ -20,24 +20,52 @@
 package org.sonar.sslr.matchers;
 
 import org.sonar.sslr.internal.matchers.InputBuffer;
+import org.sonar.sslr.internal.matchers.InputBuffer.Position;
 
 public class ParseErrorFormatter {
 
+  /**
+   * Number of lines in snippet before and after line with error.
+   */
+  private static final int SNIPPET_SIZE = 10;
+
   public String format(ParseError parseError) {
     InputBuffer inputBuffer = parseError.getInputBuffer();
-    InputBuffer.Position position = inputBuffer.getPosition(parseError.getErrorIndex());
-
+    Position position = inputBuffer.getPosition(parseError.getErrorIndex());
     StringBuilder sb = new StringBuilder();
     sb.append("At line ").append(position.getLine())
         .append(" column ").append(position.getColumn())
         .append(' ').append(parseError.getMessage()).append('\n');
-    sb.append(inputBuffer.extractLine(position.getLine()));
-    for (int i = 1; i < position.getColumn(); i++) {
-      sb.append(' ');
-    }
-    sb.append("^\n");
-
+    appendSnipped(sb, inputBuffer, position);
     return sb.toString();
+  }
+
+  private static void appendSnipped(StringBuilder sb, InputBuffer inputBuffer, Position position) {
+    int startLine = Math.max(position.getLine() - SNIPPET_SIZE, 1);
+    int endLine = Math.min(position.getLine() + SNIPPET_SIZE, inputBuffer.getLineCount());
+    int padding = Integer.toString(endLine).length();
+    String lineNumberFormat = "%1$" + padding + "d: ";
+    for (int line = startLine; line <= endLine; line++) {
+      sb.append(String.format(lineNumberFormat, line));
+      sb.append(trimTrailingLineSeparatorFrom(inputBuffer.extractLine(line))).append('\n');
+      if (line == position.getLine()) {
+        for (int i = 1; i < position.getColumn() + padding + 2; i++) {
+          sb.append(' ');
+        }
+        sb.append("^\n");
+      }
+    }
+  }
+
+  // TODO Godin: can be replaced by com.google.common.base.CharMatcher.anyOf("\n\r").trimTrailingFrom(string)
+  private static String trimTrailingLineSeparatorFrom(String string) {
+    int last;
+    for (last = string.length() - 1; last >= 0; last--) {
+      if (string.charAt(last) != '\n' && string.charAt(last) != '\r') {
+        break;
+      }
+    }
+    return string.substring(0, last + 1);
   }
 
 }

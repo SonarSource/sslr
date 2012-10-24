@@ -28,11 +28,18 @@ public class ParseErrorFormatterTest {
 
   @Test
   public void test() {
-    InputBuffer inputBuffer = new InputBuffer("foo\nbar\nbaz".toCharArray());
+    InputBuffer inputBuffer = new InputBuffer("foo\nbar\r\nbaz".toCharArray());
     ParseErrorFormatter formatter = new ParseErrorFormatter();
     String result = formatter.format(new ParseError(inputBuffer, 5, "expected: IDENTIFIER"));
     System.out.println(result);
-    assertThat(result).isEqualTo("At line 2 column 2 expected: IDENTIFIER\nbar\n ^\n");
+    String expected = new StringBuilder()
+        .append("At line 2 column 2 expected: IDENTIFIER\n")
+        .append("1: foo\n")
+        .append("2: bar\n")
+        .append("    ^\n")
+        .append("3: baz\n")
+        .toString();
+    assertThat(result).isEqualTo(expected);
   }
 
 }
