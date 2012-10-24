@@ -20,6 +20,9 @@
 package org.sonar.sslr.matchers;
 
 import org.sonar.sslr.internal.matchers.InputBuffer;
+import org.sonar.sslr.internal.matchers.MatcherPathElement;
+
+import java.util.List;
 
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
@@ -29,11 +32,13 @@ public class ParseError {
   private final InputBuffer inputBuffer;
   private final int errorIndex;
   private final String message;
+  private final List<List<MatcherPathElement>> failedPaths;
 
-  public ParseError(InputBuffer inputBuffer, int errorIndex, String message) {
+  public ParseError(InputBuffer inputBuffer, int errorIndex, String message, List<List<MatcherPathElement>> failedPaths) {
     this.inputBuffer = inputBuffer;
     this.errorIndex = errorIndex;
     this.message = message;
+    this.failedPaths = failedPaths;
   }
 
   public InputBuffer getInputBuffer() {
@@ -46,6 +51,10 @@ public class ParseError {
 
   public String getMessage() {
     return message;
+  }
+
+  public List<List<MatcherPathElement>> getFailedPaths() {
+    return failedPaths;
   }
 
 }

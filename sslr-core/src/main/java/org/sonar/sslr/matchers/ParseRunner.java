@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.matchers;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.Rule;
 import org.sonar.sslr.internal.matchers.*;
@@ -45,14 +46,15 @@ public class ParseRunner {
       return new ParsingResult(matched, matcherContext.getNode(), null);
     } else {
       StringBuilder sb = new StringBuilder("expected");
-      if (errorLocatingHandler.failedMatchers.size() > 1) {
+      if (errorLocatingHandler.failedPaths.size() > 1) {
         sb.append(" one of");
       }
       sb.append(':');
-      for (Matcher failedMatcher : errorLocatingHandler.failedMatchers) {
+      for (List<MatcherPathElement> failedPath : errorLocatingHandler.failedPaths) {
+        Matcher failedMatcher = Iterables.getLast(failedPath).getMatcher();
         sb.append(' ').append(((GrammarElementMatcher) failedMatcher).getName());
       }
-      ParseError parseError = new ParseError(new InputBuffer(input), errorLocatingHandler.errorIndex, sb.toString());
+      ParseError parseError = new ParseError(new InputBuffer(input), errorLocatingHandler.errorIndex, sb.toString(), errorLocatingHandler.failedPaths);
       return new ParsingResult(matched, null, parseError);
     }
   }
@@ -63,7 +65,7 @@ public class ParseRunner {
 
     private final MatchHandler delegate;
     private int errorIndex = -1;
-    private final List<Matcher> failedMatchers = Lists.newArrayList();
+    private final List<List<MatcherPathElement>> failedPaths = Lists.newArrayList();
 
     public ErrorLocatingHandler(MatchHandler delegate) {
       this.delegate = delegate;
@@ -83,10 +85,10 @@ public class ParseRunner {
         // FIXME Godin: for the moment we assume that error cannot occur inside of predicate
         if (errorIndex < context.getCurrentIndex()) {
           errorIndex = context.getCurrentIndex();
-          failedMatchers.clear();
-          failedMatchers.add(context.getMatcher());
+          failedPaths.clear();
+          failedPaths.add(((BasicMatcherContext) context).getMatcherPath());
         } else if (errorIndex == context.getCurrentIndex()) {
-          failedMatchers.add(context.getMatcher());
+          failedPaths.add(((BasicMatcherContext) context).getMatcherPath());
         }
       }
     }

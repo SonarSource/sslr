@@ -19,8 +19,12 @@
  */
 package org.sonar.sslr.matchers;
 
-import org.sonar.sslr.internal.matchers.InputBuffer;
+import org.sonar.sslr.internal.matchers.*;
 import org.sonar.sslr.internal.matchers.InputBuffer.Position;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class ParseErrorFormatter {
 
@@ -37,7 +41,68 @@ public class ParseErrorFormatter {
         .append(" column ").append(position.getColumn())
         .append(' ').append(parseError.getMessage()).append('\n');
     appendSnipped(sb, inputBuffer, position);
+    appendFailedPaths(sb, inputBuffer, parseError);
     return sb.toString();
+  }
+
+  private static void appendFailedPaths(StringBuilder sb, InputBuffer inputBuffer, ParseError parseError) {
+    sb.append("Failed at:\n");
+
+    int splitPoint = findSplitPoint(parseError.getFailedPaths());
+
+    List<List<MatcherPathElement>> paths = parseError.getFailedPaths();
+    Collections.sort(paths, new PathComparator());
+    traverse(sb, paths, 0, splitPoint - 1, paths.size(), "", true);
+
+    for (int i = splitPoint - 2; i >= 0; i--) {
+      MatcherPathElement pathElement = parseError.getFailedPaths().get(0).get(i);
+      sb.append(matcherPathElementToString(pathElement)).append('\n');
+    }
+  }
+
+  private static void traverse(StringBuilder sb, List<List<MatcherPathElement>> lists, int depth, int start, int end, String prefix, boolean isTail) {
+    if (depth >= lists.get(start).size()) {
+      return;
+    }
+
+    boolean tail = true;
+    for (int i = start + 1; i < end; i++) {
+      if (depth + 1 < lists.get(i).size() &&
+          lists.get(i).get(depth + 1) != lists.get(i - 1).get(depth + 1)) {
+        traverse(sb, lists, depth + 1, start, i, prefix + (depth == 0 ? "" : isTail ? "  " : "│ " /* \u2502 */), tail);
+        start = i;
+        tail = false;
+      }
+    }
+    if (start < end) {
+      traverse(sb, lists, depth + 1, start, end, prefix + (depth == 0 ? "" : isTail ? "  " : "│ " /* \u2502 */), tail);
+    }
+
+    if (depth > 0) {
+      sb.append(prefix + (isTail ? "┌─" /* \u250C\u2500 */: "├─" /* \u251C\u2500 */));
+    }
+    sb.append(matcherPathElementToString(lists.get(start).get(depth))).append('\n');
+  }
+
+  private static String matcherPathElementToString(MatcherPathElement pathElement) {
+    return ((GrammarElementMatcher) pathElement.getMatcher()).getName();
+  }
+
+  private static int findSplitPoint(List<List<MatcherPathElement>> paths) {
+    int result = 0;
+    while (true) {
+      if (result == paths.get(0).size()) {
+        return result;
+      }
+      Matcher matcher = paths.get(0).get(result).getMatcher();
+      for (int i = 1; i < paths.size(); i++) {
+        if (result == paths.get(i).size()
+            || !matcher.equals(paths.get(i).get(result).getMatcher())) {
+          return result;
+        }
+      }
+      result++;
+    }
   }
 
   private static void appendSnipped(StringBuilder sb, InputBuffer inputBuffer, Position position) {
@@ -66,6 +131,33 @@ public class ParseErrorFormatter {
       }
     }
     return string.substring(0, last + 1);
+  }
+
+  private static class PathComparator implements Comparator<List<MatcherPathElement>> {
+    public int compare(List<MatcherPathElement> o1, List<MatcherPathElement> o2) {
+      for (int i = 0; i < o1.size(); i++) {
+        if (i < o2.size()) {
+          if (!o1.get(i).getMatcher().equals(o2.get(i))) {
+            // o1: A
+            // o2: B
+            return -1;
+          }
+        } else {
+          // o1: A, B
+          // o2: A
+          return -1;
+        }
+      }
+      if (o1.size() == o2.size()) {
+        // o1: A
+        // o2: A
+        return 0;
+      } else {
+        // o1: A
+        // o2: A, B
+        return 1;
+      }
+    }
   }
 
 }
