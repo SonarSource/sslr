@@ -77,7 +77,7 @@ public class BasicMatcherContext extends MatcherContext {
     } catch (ParserRuntimeException e) {
       // propagate as-is
       throw e;
-    } catch (Throwable e) {
+    } catch (Exception e) {
       // TODO Godin: here we know context, where exception occurred,
       // and it can be attached to exception in order to improve exception handling
       throw new ParserRuntimeException(e);
