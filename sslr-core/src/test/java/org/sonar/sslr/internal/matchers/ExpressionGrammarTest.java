@@ -23,6 +23,7 @@ import com.sonar.sslr.api.Rule;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.sslr.matchers.ParseError;
+import org.sonar.sslr.matchers.ParseErrorFormatter;
 import org.sonar.sslr.matchers.ParseRunner;
 import org.sonar.sslr.matchers.ParsingResult;
 
@@ -59,6 +60,7 @@ public class ExpressionGrammarTest {
     ParseError parseError = result.getParseError();
     assertThat(parseError.getErrorIndex()).isEqualTo(6);
     assertThat(parseError.getMessage()).isEqualTo("expected one of: CONSTANT LITERAL IDENTIFIER");
+    System.out.print(new ParseErrorFormatter().format(parseError));
   }
 
   @Test

@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.matchers;
 
-import com.google.common.collect.Lists;
 import org.sonar.sslr.internal.matchers.*;
 import org.sonar.sslr.internal.matchers.InputBuffer.Position;
 
@@ -34,6 +33,8 @@ public class ParseErrorFormatter {
    */
   private static final int SNIPPET_SIZE = 10;
 
+  private static final int EXCERPT_SIZE = 40;
+
   public String format(ParseError parseError) {
     InputBuffer inputBuffer = parseError.getInputBuffer();
     Position position = inputBuffer.getPosition(parseError.getErrorIndex());
@@ -47,17 +48,7 @@ public class ParseErrorFormatter {
   }
 
   private static void appendFailedPaths(StringBuilder sb, InputBuffer inputBuffer, ParseError parseError) {
-    List<List<MatcherPathElement>> paths = Lists.newArrayList();
-    for (List<MatcherPathElement> path : parseError.getFailedPaths()) {
-      List<MatcherPathElement> filteredPath = Lists.newArrayList();
-      for (MatcherPathElement element : path) {
-        if (element.getMatcher() instanceof GrammarElementMatcher) {
-          filteredPath.add(element);
-        }
-      }
-      paths.add(filteredPath);
-    }
-
+    List<List<MatcherPathElement>> paths = parseError.getFailedPaths();
     sb.append("Failed at:\n");
     if (paths.size() == 1) {
       appendPath(sb, inputBuffer, paths.get(0), paths.get(0).size() - 1);
@@ -106,9 +97,41 @@ public class ParseErrorFormatter {
       sb.append(" matched ")
           .append(inputBuffer.getPosition(pathElement.getStartIndex()).toString())
           .append('-')
-          .append(inputBuffer.getPosition(pathElement.getEndIndex()).toString());
+          .append(inputBuffer.getPosition(pathElement.getEndIndex() - 1).toString())
+          .append(": ");
+      int len = pathElement.getEndIndex() - pathElement.getStartIndex();
+      if (len > EXCERPT_SIZE) {
+        len = EXCERPT_SIZE;
+        sb.append("...");
+      }
+      sb.append('"');
+      for (int i = pathElement.getEndIndex() - len; i < pathElement.getEndIndex(); i++) {
+        sb.append(escape(inputBuffer.charAt(i)));
+      }
+      sb.append('"');
     }
     sb.append('\n');
+  }
+
+  /**
+   * Replaces carriage returns, line feeds, form feeds, tabs and double quotes
+   * with their respective escape sequences.
+   */
+  private static String escape(char ch) {
+    switch (ch) {
+      case '\r':
+        return "\\r";
+      case '\n':
+        return "\\n";
+      case '\f':
+        return "\\f";
+      case '\t':
+        return "\\t";
+      case '"':
+        return "\\\"";
+      default:
+        return String.valueOf(ch);
+    }
   }
 
   private static int findSplitPoint(List<List<MatcherPathElement>> paths) {

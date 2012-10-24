@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.matchers;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.Rule;
@@ -89,14 +90,27 @@ public class ParseRunner {
     public void onMissmatch(MatcherContext context) {
       // We are interested in errors, which occur only on terminals:
       if (errorIndex == context.getCurrentIndex() && isTerminal(context.getMatcher())) {
-        failedPaths.add(((BasicMatcherContext) context).getMatcherPath());
+        failedPaths.add(getPath((BasicMatcherContext) context));
       }
     }
 
-  }
+    private static boolean isTerminal(Matcher matcher) {
+      return ((GrammarElementMatcher) matcher).getTokenType() != null;
+    }
 
-  private static boolean isTerminal(Matcher matcher) {
-    return ((GrammarElementMatcher) matcher).getTokenType() != null;
+    private static List<MatcherPathElement> getPath(BasicMatcherContext context) {
+      List<MatcherPathElement> list = Lists.newArrayList();
+      int endIndex = context.getCurrentIndex();
+      while (context != null) {
+        if (context.getMatcher() instanceof GrammarElementMatcher) {
+          list.add(new MatcherPathElement(context.getMatcher(), context.getStartIndex(), endIndex));
+          endIndex = context.getStartIndex();
+        }
+        context = context.getParent();
+      }
+      return ImmutableList.copyOf(Iterables.reverse(list));
+    }
+
   }
 
   private static class ErrorLocatingHandler implements MatchHandler {

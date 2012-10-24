@@ -19,8 +19,6 @@
  */
 package org.sonar.sslr.internal.matchers;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -111,14 +109,8 @@ public class BasicMatcherContext extends MatcherContext {
     return node;
   }
 
-  public List<MatcherPathElement> getMatcherPath() {
-    BasicMatcherContext context = this;
-    List<MatcherPathElement> list = Lists.newArrayList();
-    while (context != null) {
-      list.add(new MatcherPathElement(context));
-      context = context.parent;
-    }
-    return ImmutableList.copyOf(Iterables.reverse(list));
+  public BasicMatcherContext getParent() {
+    return parent;
   }
 
 }

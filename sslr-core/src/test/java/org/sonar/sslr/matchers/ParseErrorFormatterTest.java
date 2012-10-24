@@ -33,28 +33,36 @@ public class ParseErrorFormatterTest {
 
   @Test
   public void test() {
-    InputBuffer inputBuffer = new InputBuffer("foo\nbar\r\nbaz".toCharArray());
+    InputBuffer inputBuffer = new InputBuffer(" 2+4*10-0*\n".toCharArray());
     ParseErrorFormatter formatter = new ParseErrorFormatter();
-    GrammarElementMatcher rule1 = new GrammarElementMatcher("rule1");
-    GrammarElementMatcher rule2 = new GrammarElementMatcher("rule2");
-    GrammarElementMatcher rule3 = new GrammarElementMatcher("rule3");
-    GrammarElementMatcher root = new GrammarElementMatcher("root");
+    MatcherPathElement root = new MatcherPathElement(new GrammarElementMatcher("root"), 0, 1);
+    MatcherPathElement expression = new MatcherPathElement(new GrammarElementMatcher("expression"), 1, 8);
+    MatcherPathElement term = new MatcherPathElement(new GrammarElementMatcher("term"), 8, 10);
+    MatcherPathElement factor = new MatcherPathElement(new GrammarElementMatcher("factor"), 10, 10);
+    MatcherPathElement number = new MatcherPathElement(new GrammarElementMatcher("number"), 10, 10);
+    MatcherPathElement parens = new MatcherPathElement(new GrammarElementMatcher("parens"), 10, 10);
+    MatcherPathElement lpar = new MatcherPathElement(new GrammarElementMatcher("lpar"), 10, 10);
+    MatcherPathElement variable = new MatcherPathElement(new GrammarElementMatcher("variable"), 10, 10);
     List<List<MatcherPathElement>> failedPaths = Arrays.asList(
-        Arrays.asList(new MatcherPathElement(root, 0, 1), new MatcherPathElement(rule1, 1, 1)),
-        Arrays.asList(new MatcherPathElement(root, 0, 1), new MatcherPathElement(rule2, 1, 1), new MatcherPathElement(rule3, 1, 1)));
-    String result = formatter.format(new ParseError(inputBuffer, 5, "expected: IDENTIFIER", failedPaths));
+        Arrays.asList(root, expression, term, factor, number),
+        Arrays.asList(root, expression, term, factor, parens, lpar),
+        Arrays.asList(root, expression, term, factor, variable));
+    String result = formatter.format(new ParseError(inputBuffer, 10, "expected: IDENTIFIER", failedPaths));
     System.out.print(result);
     String expected = new StringBuilder()
-        .append("At line 2 column 2 expected: IDENTIFIER\n")
-        .append("1: foo\n")
-        .append("2: bar\n")
-        .append("    ^\n")
-        .append("3: baz\n")
+        .append("At line 1 column 11 expected: IDENTIFIER\n")
+        .append("1:  2+4*10-0*\n")
+        .append("             ^\n")
+        .append("2: \n")
         .append("Failed at:\n")
-        .append("┌─rule1\n")
-        .append("│ ┌─rule3\n")
-        .append("├─rule2\n")
-        .append("root matched (1, 1)-(1, 2)\n")
+        .append("  ┌─number\n")
+        .append("  │ ┌─lpar\n")
+        .append("  ├─parens\n")
+        .append("  ├─variable\n")
+        .append("┌─factor\n")
+        .append("term matched (1, 9)-(1, 10): \"0*\"\n")
+        .append("expression matched (1, 2)-(1, 8): \"2+4*10-\"\n")
+        .append("root matched (1, 1)-(1, 1): \" \"\n")
         .toString();
     assertThat(result).isEqualTo(expected);
   }

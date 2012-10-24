@@ -31,10 +31,6 @@ public class MatcherPathElement {
     this.endIndex = endIndex;
   }
 
-  public MatcherPathElement(BasicMatcherContext context) {
-    this(context.getMatcher(), context.getStartIndex(), context.getCurrentIndex());
-  }
-
   public Matcher getMatcher() {
     return matcher;
   }

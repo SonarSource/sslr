@@ -55,6 +55,10 @@ public class InputBuffer {
     }
   }
 
+  public char charAt(int i) {
+    return buffer[i];
+  }
+
   /**
    * A line is considered to be terminated by any one of
    * a line feed ({@code '\n'}), a carriage return ({@code '\r'}),
