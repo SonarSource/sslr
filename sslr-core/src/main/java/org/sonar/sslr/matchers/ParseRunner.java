@@ -45,27 +45,64 @@ public class ParseRunner {
     if (matched) {
       return new ParsingResult(matched, matcherContext.getNode(), null);
     } else {
+      // Perform second run in order to collect information for error report
+
+      // TODO Godin: Looks like memoized nodes should be removed for correct error reporting,
+      // but maybe we can remove only some of them
+      memoizer = new Memoizer(input.length);
+      ErrorReportingHandler errorReportingHandler = new ErrorReportingHandler(memoizer, errorLocatingHandler.errorIndex);
+      new BasicMatcherContext(input, errorReportingHandler, rootMatcher).runMatcher();
+
       StringBuilder sb = new StringBuilder("expected");
-      if (errorLocatingHandler.failedPaths.size() > 1) {
+      if (errorReportingHandler.failedPaths.size() > 1) {
         sb.append(" one of");
       }
       sb.append(':');
-      for (List<MatcherPathElement> failedPath : errorLocatingHandler.failedPaths) {
+      for (List<MatcherPathElement> failedPath : errorReportingHandler.failedPaths) {
         Matcher failedMatcher = Iterables.getLast(failedPath).getMatcher();
         sb.append(' ').append(((GrammarElementMatcher) failedMatcher).getName());
       }
-      ParseError parseError = new ParseError(new InputBuffer(input), errorLocatingHandler.errorIndex, sb.toString(), errorLocatingHandler.failedPaths);
+      ParseError parseError = new ParseError(new InputBuffer(input), errorReportingHandler.errorIndex, sb.toString(), errorReportingHandler.failedPaths);
       return new ParsingResult(matched, null, parseError);
     }
   }
 
-  // TODO Godin: To increase performance we might use two runs in case of error.
-  // One to locate error position and another one to construct report.
+  private static class ErrorReportingHandler implements MatchHandler {
+
+    private final MatchHandler delegate;
+    private final int errorIndex;
+    private final List<List<MatcherPathElement>> failedPaths = Lists.newArrayList();
+
+    public ErrorReportingHandler(MatchHandler delegate, int errorIndex) {
+      this.delegate = delegate;
+      this.errorIndex = errorIndex;
+    }
+
+    public boolean match(MatcherContext context) {
+      return delegate.match(context);
+    }
+
+    public void onMatch(MatcherContext context) {
+      delegate.onMatch(context);
+    }
+
+    public void onMissmatch(MatcherContext context) {
+      // We are interested in errors, which occur only on terminals:
+      if (errorIndex == context.getCurrentIndex() && isTerminal(context.getMatcher())) {
+        failedPaths.add(((BasicMatcherContext) context).getMatcherPath());
+      }
+    }
+
+  }
+
+  private static boolean isTerminal(Matcher matcher) {
+    return ((GrammarElementMatcher) matcher).getTokenType() != null;
+  }
+
   private static class ErrorLocatingHandler implements MatchHandler {
 
     private final MatchHandler delegate;
     private int errorIndex = -1;
-    private final List<List<MatcherPathElement>> failedPaths = Lists.newArrayList();
 
     public ErrorLocatingHandler(MatchHandler delegate) {
       this.delegate = delegate;
@@ -81,15 +118,9 @@ public class ParseRunner {
 
     public void onMissmatch(MatcherContext context) {
       // We are interested in errors, which occur only on terminals:
-      if (((GrammarElementMatcher) context.getMatcher()).getTokenType() != null) {
-        // FIXME Godin: for the moment we assume that error cannot occur inside of predicate
-        if (errorIndex < context.getCurrentIndex()) {
-          errorIndex = context.getCurrentIndex();
-          failedPaths.clear();
-          failedPaths.add(((BasicMatcherContext) context).getMatcherPath());
-        } else if (errorIndex == context.getCurrentIndex()) {
-          failedPaths.add(((BasicMatcherContext) context).getMatcherPath());
-        }
+      // FIXME Godin: for the moment we assume that error cannot occur inside of predicate or inside of terminal
+      if (errorIndex < context.getCurrentIndex()) {
+        errorIndex = context.getCurrentIndex();
       }
     }
 
