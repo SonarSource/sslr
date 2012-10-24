@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.matchers;
 
+import com.google.common.collect.Lists;
 import org.sonar.sslr.internal.matchers.*;
 import org.sonar.sslr.internal.matchers.InputBuffer.Position;
 
@@ -46,21 +47,36 @@ public class ParseErrorFormatter {
   }
 
   private static void appendFailedPaths(StringBuilder sb, InputBuffer inputBuffer, ParseError parseError) {
+    List<List<MatcherPathElement>> paths = Lists.newArrayList();
+    for (List<MatcherPathElement> path : parseError.getFailedPaths()) {
+      List<MatcherPathElement> filteredPath = Lists.newArrayList();
+      for (MatcherPathElement element : path) {
+        if (element.getMatcher() instanceof GrammarElementMatcher) {
+          filteredPath.add(element);
+        }
+      }
+      paths.add(filteredPath);
+    }
+
     sb.append("Failed at:\n");
+    if (paths.size() == 1) {
+      appendPath(sb, paths.get(0), paths.get(0).size() - 1);
+    } else {
+      int splitPoint = findSplitPoint(paths);
+      Collections.sort(paths, new PathComparator());
+      appendTree(sb, paths, splitPoint - 1, 0, paths.size(), "", true);
+      appendPath(sb, paths.get(0), splitPoint - 2);
+    }
+  }
 
-    int splitPoint = findSplitPoint(parseError.getFailedPaths());
-
-    List<List<MatcherPathElement>> paths = parseError.getFailedPaths();
-    Collections.sort(paths, new PathComparator());
-    traverse(sb, paths, 0, splitPoint - 1, paths.size(), "", true);
-
-    for (int i = splitPoint - 2; i >= 0; i--) {
-      MatcherPathElement pathElement = parseError.getFailedPaths().get(0).get(i);
+  private static void appendPath(StringBuilder sb, List<MatcherPathElement> path, int from) {
+    for (int i = from; i >= 0; i--) {
+      MatcherPathElement pathElement = path.get(i);
       sb.append(matcherPathElementToString(pathElement)).append('\n');
     }
   }
 
-  private static void traverse(StringBuilder sb, List<List<MatcherPathElement>> lists, int depth, int start, int end, String prefix, boolean isTail) {
+  private static void appendTree(StringBuilder sb, List<List<MatcherPathElement>> lists, int depth, int start, int end, String prefix, boolean isTail) {
     if (depth >= lists.get(start).size()) {
       return;
     }
@@ -69,13 +85,13 @@ public class ParseErrorFormatter {
     for (int i = start + 1; i < end; i++) {
       if (depth + 1 < lists.get(i).size() &&
           lists.get(i).get(depth + 1) != lists.get(i - 1).get(depth + 1)) {
-        traverse(sb, lists, depth + 1, start, i, prefix + (depth == 0 ? "" : isTail ? "  " : "│ " /* \u2502 */), tail);
+        appendTree(sb, lists, depth + 1, start, i, prefix + (depth == 0 ? "" : isTail ? "  " : "│ " /* \u2502 */), tail);
         start = i;
         tail = false;
       }
     }
     if (start < end) {
-      traverse(sb, lists, depth + 1, start, end, prefix + (depth == 0 ? "" : isTail ? "  " : "│ " /* \u2502 */), tail);
+      appendTree(sb, lists, depth + 1, start, end, prefix + (depth == 0 ? "" : isTail ? "  " : "│ " /* \u2502 */), tail);
     }
 
     if (depth > 0) {
