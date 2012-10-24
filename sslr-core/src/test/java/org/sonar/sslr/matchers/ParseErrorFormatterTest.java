@@ -40,8 +40,8 @@ public class ParseErrorFormatterTest {
     GrammarElementMatcher rule3 = new GrammarElementMatcher("rule3");
     GrammarElementMatcher root = new GrammarElementMatcher("root");
     List<List<MatcherPathElement>> failedPaths = Arrays.asList(
-        Arrays.asList(new MatcherPathElement(root, 0, 0), new MatcherPathElement(rule1, 0, 0)),
-        Arrays.asList(new MatcherPathElement(root, 0, 0), new MatcherPathElement(rule2, 0, 0), new MatcherPathElement(rule3, 0, 0)));
+        Arrays.asList(new MatcherPathElement(root, 0, 1), new MatcherPathElement(rule1, 1, 1)),
+        Arrays.asList(new MatcherPathElement(root, 0, 1), new MatcherPathElement(rule2, 1, 1), new MatcherPathElement(rule3, 1, 1)));
     String result = formatter.format(new ParseError(inputBuffer, 5, "expected: IDENTIFIER", failedPaths));
     System.out.print(result);
     String expected = new StringBuilder()
@@ -54,8 +54,9 @@ public class ParseErrorFormatterTest {
         .append("┌─rule1\n")
         .append("│ ┌─rule3\n")
         .append("├─rule2\n")
-        .append("root\n")
+        .append("root matched (1, 1)-(1, 2)\n")
         .toString();
     assertThat(result).isEqualTo(expected);
   }
+
 }

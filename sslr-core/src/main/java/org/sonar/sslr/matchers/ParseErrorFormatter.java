@@ -60,23 +60,23 @@ public class ParseErrorFormatter {
 
     sb.append("Failed at:\n");
     if (paths.size() == 1) {
-      appendPath(sb, paths.get(0), paths.get(0).size() - 1);
+      appendPath(sb, inputBuffer, paths.get(0), paths.get(0).size() - 1);
     } else {
       int splitPoint = findSplitPoint(paths);
       Collections.sort(paths, new PathComparator());
-      appendTree(sb, paths, splitPoint - 1, 0, paths.size(), "", true);
-      appendPath(sb, paths.get(0), splitPoint - 2);
+      appendTree(sb, inputBuffer, paths, splitPoint - 1, 0, paths.size(), "", true);
+      appendPath(sb, inputBuffer, paths.get(0), splitPoint - 2);
     }
   }
 
-  private static void appendPath(StringBuilder sb, List<MatcherPathElement> path, int from) {
+  private static void appendPath(StringBuilder sb, InputBuffer inputBuffer, List<MatcherPathElement> path, int from) {
     for (int i = from; i >= 0; i--) {
       MatcherPathElement pathElement = path.get(i);
-      sb.append(matcherPathElementToString(pathElement)).append('\n');
+      appendPathElement(sb, inputBuffer, pathElement);
     }
   }
 
-  private static void appendTree(StringBuilder sb, List<List<MatcherPathElement>> lists, int depth, int start, int end, String prefix, boolean isTail) {
+  private static void appendTree(StringBuilder sb, InputBuffer inputBuffer, List<List<MatcherPathElement>> lists, int depth, int start, int end, String prefix, boolean isTail) {
     if (depth >= lists.get(start).size()) {
       return;
     }
@@ -85,23 +85,30 @@ public class ParseErrorFormatter {
     for (int i = start + 1; i < end; i++) {
       if (depth + 1 < lists.get(i).size() &&
           lists.get(i).get(depth + 1) != lists.get(i - 1).get(depth + 1)) {
-        appendTree(sb, lists, depth + 1, start, i, prefix + (depth == 0 ? "" : isTail ? "  " : "│ " /* \u2502 */), tail);
+        appendTree(sb, inputBuffer, lists, depth + 1, start, i, prefix + (depth == 0 ? "" : isTail ? "  " : "│ " /* \u2502 */), tail);
         start = i;
         tail = false;
       }
     }
     if (start < end) {
-      appendTree(sb, lists, depth + 1, start, end, prefix + (depth == 0 ? "" : isTail ? "  " : "│ " /* \u2502 */), tail);
+      appendTree(sb, inputBuffer, lists, depth + 1, start, end, prefix + (depth == 0 ? "" : isTail ? "  " : "│ " /* \u2502 */), tail);
     }
 
     if (depth > 0) {
       sb.append(prefix + (isTail ? "┌─" /* \u250C\u2500 */: "├─" /* \u251C\u2500 */));
     }
-    sb.append(matcherPathElementToString(lists.get(start).get(depth))).append('\n');
+    appendPathElement(sb, inputBuffer, lists.get(start).get(depth));
   }
 
-  private static String matcherPathElementToString(MatcherPathElement pathElement) {
-    return ((GrammarElementMatcher) pathElement.getMatcher()).getName();
+  private static void appendPathElement(StringBuilder sb, InputBuffer inputBuffer, MatcherPathElement pathElement) {
+    sb.append(((GrammarElementMatcher) pathElement.getMatcher()).getName());
+    if (pathElement.getStartIndex() != pathElement.getEndIndex()) {
+      sb.append(" matched ")
+          .append(inputBuffer.getPosition(pathElement.getStartIndex()).toString())
+          .append('-')
+          .append(inputBuffer.getPosition(pathElement.getEndIndex()).toString());
+    }
+    sb.append('\n');
   }
 
   private static int findSplitPoint(List<List<MatcherPathElement>> paths) {
