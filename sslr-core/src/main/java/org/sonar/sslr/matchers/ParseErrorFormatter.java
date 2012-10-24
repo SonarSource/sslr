@@ -43,21 +43,17 @@ public class ParseErrorFormatter {
         .append(" column ").append(position.getColumn())
         .append(' ').append(parseError.getMessage()).append('\n');
     appendSnipped(sb, inputBuffer, position);
-    appendFailedPaths(sb, inputBuffer, parseError);
-    return sb.toString();
-  }
-
-  private static void appendFailedPaths(StringBuilder sb, InputBuffer inputBuffer, ParseError parseError) {
-    List<List<MatcherPathElement>> paths = parseError.getFailedPaths();
     sb.append("Failed at:\n");
+    List<List<MatcherPathElement>> paths = parseError.getFailedPaths();
     if (paths.size() == 1) {
       appendPath(sb, inputBuffer, paths.get(0), paths.get(0).size() - 1);
     } else {
       int splitPoint = findSplitPoint(paths);
       Collections.sort(paths, new PathComparator());
-      appendTree(sb, inputBuffer, paths, splitPoint - 1, 0, paths.size(), "", true);
+      appendTree(sb, inputBuffer, paths, splitPoint - 1);
       appendPath(sb, inputBuffer, paths.get(0), splitPoint - 2);
     }
+    return sb.toString();
   }
 
   private static void appendPath(StringBuilder sb, InputBuffer inputBuffer, List<MatcherPathElement> path, int from) {
@@ -67,28 +63,46 @@ public class ParseErrorFormatter {
     }
   }
 
-  private static void appendTree(StringBuilder sb, InputBuffer inputBuffer, List<List<MatcherPathElement>> lists, int depth, int start, int end, String prefix, boolean isTail) {
-    if (depth >= lists.get(start).size()) {
-      return;
+  private static void appendTree(StringBuilder sb, InputBuffer inputBuffer, List<List<MatcherPathElement>> paths, int depth) {
+    new ErrorTreeFormatter(sb, inputBuffer, paths).format(depth, 0, paths.size(), "", true);
+  }
+
+  private static class ErrorTreeFormatter {
+
+    private final StringBuilder sb;
+    private final InputBuffer inputBuffer;
+    private final List<List<MatcherPathElement>> lists;
+
+    public ErrorTreeFormatter(StringBuilder sb, InputBuffer inputBuffer, List<List<MatcherPathElement>> paths) {
+      this.sb = sb;
+      this.inputBuffer = inputBuffer;
+      this.lists = paths;
     }
 
-    boolean tail = true;
-    for (int i = start + 1; i < end; i++) {
-      if (depth + 1 < lists.get(i).size() &&
-          lists.get(i).get(depth + 1) != lists.get(i - 1).get(depth + 1)) {
-        appendTree(sb, inputBuffer, lists, depth + 1, start, i, prefix + (depth == 0 ? "" : isTail ? "  " : "│ " /* \u2502 */), tail);
-        start = i;
-        tail = false;
+    public void format(int depth, int start, int end, String prefix, boolean isTail) {
+      if (depth >= lists.get(start).size()) {
+        return;
       }
-    }
-    if (start < end) {
-      appendTree(sb, inputBuffer, lists, depth + 1, start, end, prefix + (depth == 0 ? "" : isTail ? "  " : "│ " /* \u2502 */), tail);
+
+      boolean tail = true;
+      for (int i = start + 1; i < end; i++) {
+        if (depth + 1 < lists.get(i).size() &&
+            lists.get(i).get(depth + 1) != lists.get(i - 1).get(depth + 1)) {
+          format(depth + 1, start, i, prefix + (depth == 0 ? "" : isTail ? "  " : "│ " /* \u2502 */), tail);
+          start = i;
+          tail = false;
+        }
+      }
+      if (start < end) {
+        format(depth + 1, start, end, prefix + (depth == 0 ? "" : isTail ? "  " : "│ " /* \u2502 */), tail);
+      }
+
+      if (depth > 0) {
+        sb.append(prefix + (isTail ? "┌─" /* \u250C\u2500 */: "├─" /* \u251C\u2500 */));
+      }
+      appendPathElement(sb, inputBuffer, lists.get(start).get(depth));
     }
 
-    if (depth > 0) {
-      sb.append(prefix + (isTail ? "┌─" /* \u250C\u2500 */: "├─" /* \u251C\u2500 */));
-    }
-    appendPathElement(sb, inputBuffer, lists.get(start).get(depth));
   }
 
   private static void appendPathElement(StringBuilder sb, InputBuffer inputBuffer, MatcherPathElement pathElement) {
