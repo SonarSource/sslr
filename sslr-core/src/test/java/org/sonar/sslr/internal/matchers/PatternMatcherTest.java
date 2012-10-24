@@ -20,11 +20,9 @@
 package org.sonar.sslr.internal.matchers;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockito.Mockito;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.anyInt;
@@ -61,18 +59,6 @@ public class PatternMatcherTest {
   public void should_not_match() {
     assertThat(matcher.match(context)).isFalse();
     verify(context, never()).advanceIndex(anyInt());
-  }
-
-  @Ignore("depends on environment")
-  @Test
-  public void should_catch_StackOverflowError() {
-    matcher = new PatternMatcher("([a-fA-F]|\\d)+");
-    when(context.length()).thenReturn(8000);
-    when(context.charAt(Mockito.anyInt())).thenReturn('a');
-    thrown.expect(RuntimeException.class);
-    thrown.expectMessage("The regular expression '([a-fA-F]|\\d)+' has led to a stack overflow error."
-        + " This error is certainly due to an inefficient use of alternations. See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5050507");
-    matcher.match(context);
   }
 
 }
