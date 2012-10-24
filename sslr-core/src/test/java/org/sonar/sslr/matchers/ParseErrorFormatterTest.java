@@ -31,7 +31,7 @@ public class ParseErrorFormatterTest {
     InputBuffer inputBuffer = new InputBuffer("foo\nbar\r\nbaz".toCharArray());
     ParseErrorFormatter formatter = new ParseErrorFormatter();
     String result = formatter.format(new ParseError(inputBuffer, 5, "expected: IDENTIFIER"));
-    System.out.println(result);
+    System.out.print(result);
     String expected = new StringBuilder()
         .append("At line 2 column 2 expected: IDENTIFIER\n")
         .append("1: foo\n")

@@ -41,16 +41,10 @@ public class InputBuffer {
 
     List<Integer> newlines = Lists.newArrayList();
     int i = 0;
-    int column = 0;
+    newlines.add(0);
     while (i < buffer.length) {
-      // was taken from sonar-channel CodeBuffer:
-      if (buffer[i] == LF || (buffer[i] == CR && (i + 1 < buffer.length) && buffer[i + 1] != LF)) {
-        column = 0;
-      } else {
-        column++;
-      }
-      if (column == 1) {
-        newlines.add(i);
+      if (isEndOfLine(buffer, i)) {
+        newlines.add(i + 1);
       }
       i++;
     }
@@ -61,12 +55,31 @@ public class InputBuffer {
     }
   }
 
+  /**
+   * A line is considered to be terminated by any one of
+   * a line feed ({@code '\n'}), a carriage return ({@code '\r'}),
+   * or a carriage return followed immediately by a line feed ({@code "\r\n"}).
+   */
+  private static boolean isEndOfLine(char[] buffer, int i) {
+    return buffer[i] == LF ||
+        (buffer[i] == CR && (((i + 1 < buffer.length) && buffer[i + 1] != LF) || i + 1 == buffer.length));
+  }
+
+  /**
+   * Returns content of a line for a given line number.
+   * Numbering of lines starts from 1.
+   */
   public String extractLine(int lineNumber) {
     int start = lines[lineNumber - 1];
     int end = lines[lineNumber];
     return new String(buffer, start, end - start);
   }
 
+  /**
+   * Returns number of lines, which is always equal to number of line terminators plus 1.
+   *
+   * @see #isEndOfLine(char[], int)
+   */
   public int getLineCount() {
     return lines.length - 1;
   }

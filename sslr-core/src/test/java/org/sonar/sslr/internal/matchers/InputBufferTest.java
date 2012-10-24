@@ -30,12 +30,13 @@ public class InputBufferTest {
   public void test() {
     InputBuffer inputBuffer = new InputBuffer("foo\r\nbar\nbaz\rqux\r".toCharArray());
 
-    assertThat(inputBuffer.getLineCount()).isEqualTo(4);
+    assertThat(inputBuffer.getLineCount()).isEqualTo(5);
 
     assertThat(inputBuffer.extractLine(1)).isEqualTo("foo\r\n");
     assertThat(inputBuffer.extractLine(2)).isEqualTo("bar\n");
     assertThat(inputBuffer.extractLine(3)).isEqualTo("baz\r");
     assertThat(inputBuffer.extractLine(4)).isEqualTo("qux\r");
+    assertThat(inputBuffer.extractLine(5)).isEqualTo("");
 
     assertThat(inputBuffer.getPosition(0)).isEqualTo(new Position(1, 1));
     assertThat(inputBuffer.getPosition(4)).isEqualTo(new Position(1, 5));
@@ -46,6 +47,61 @@ public class InputBufferTest {
     assertThat(inputBuffer.getPosition(13)).isEqualTo(new Position(4, 1));
     assertThat(inputBuffer.getPosition(16)).isEqualTo(new Position(4, 4));
     assertThat(inputBuffer.getPosition(17)).isEqualTo(new Position(5, 1));
+  }
+
+  @Test
+  public void test_empty() {
+    InputBuffer inputBuffer = new InputBuffer("".toCharArray());
+
+    assertThat(inputBuffer.getLineCount()).isEqualTo(1);
+
+    assertThat(inputBuffer.extractLine(1)).isEqualTo("");
+
+    assertThat(inputBuffer.getPosition(0)).isEqualTo(new Position(1, 1));
+  }
+
+  @Test
+  public void test_empty_lines_with_LF() {
+    InputBuffer inputBuffer = new InputBuffer("\n\n".toCharArray());
+
+    assertThat(inputBuffer.getLineCount()).isEqualTo(3);
+
+    assertThat(inputBuffer.extractLine(1)).isEqualTo("\n");
+    assertThat(inputBuffer.extractLine(2)).isEqualTo("\n");
+    assertThat(inputBuffer.extractLine(3)).isEqualTo("");
+
+    assertThat(inputBuffer.getPosition(0)).isEqualTo(new Position(1, 1));
+    assertThat(inputBuffer.getPosition(1)).isEqualTo(new Position(2, 1));
+  }
+
+  @Test
+  public void test_empty_lines_with_CR() {
+    InputBuffer inputBuffer = new InputBuffer("\r\r".toCharArray());
+
+    assertThat(inputBuffer.getLineCount()).isEqualTo(3);
+
+    assertThat(inputBuffer.extractLine(1)).isEqualTo("\r");
+    assertThat(inputBuffer.extractLine(2)).isEqualTo("\r");
+    assertThat(inputBuffer.extractLine(3)).isEqualTo("");
+
+    assertThat(inputBuffer.getPosition(0)).isEqualTo(new Position(1, 1));
+    assertThat(inputBuffer.getPosition(1)).isEqualTo(new Position(2, 1));
+  }
+
+  @Test
+  public void test_empty_lines_with_CRLF() {
+    InputBuffer inputBuffer = new InputBuffer("\r\n\r\n".toCharArray());
+
+    assertThat(inputBuffer.getLineCount()).isEqualTo(3);
+
+    assertThat(inputBuffer.extractLine(1)).isEqualTo("\r\n");
+    assertThat(inputBuffer.extractLine(2)).isEqualTo("\r\n");
+    assertThat(inputBuffer.extractLine(3)).isEqualTo("");
+
+    assertThat(inputBuffer.getPosition(0)).isEqualTo(new Position(1, 1));
+    assertThat(inputBuffer.getPosition(1)).isEqualTo(new Position(1, 2));
+    assertThat(inputBuffer.getPosition(2)).isEqualTo(new Position(2, 1));
+    assertThat(inputBuffer.getPosition(3)).isEqualTo(new Position(2, 2));
   }
 
 }
