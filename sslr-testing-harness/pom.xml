@@ -22,6 +22,10 @@
       <artifactId>sslr-toolkit</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.easytesting</groupId>
+      <artifactId>fest-assert</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-all</artifactId>
     </dependency>
