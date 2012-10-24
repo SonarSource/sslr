@@ -123,8 +123,15 @@ public final class GrammarFunctions {
      *    ----element n---
      * }
      * </pre>
+     *
+     * @deprecated in 2.0, use {@link GrammarFunctions.Standard#firstOf(Object...)} instead
      */
+    @Deprecated
     public static Matcher or(Object... elements) {
+      return firstOf(elements);
+    }
+
+    public static Matcher firstOf(Object... elements) {
       if (elements == null || elements.length == 0) {
         throw new IllegalStateException(AT_LEAST_ONE_MATCHER_MESSAGE);
       } else if (elements.length == 1) {
