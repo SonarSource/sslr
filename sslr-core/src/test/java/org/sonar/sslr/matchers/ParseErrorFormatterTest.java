@@ -56,7 +56,7 @@ public class ParseErrorFormatterTest {
         .append("             ^\n")
         .append("2: \n")
         .append('\n')
-        .append("Failed at:\n")
+        .append("Failed at rules:\n")
         .append("  ┌─number\n")
         .append("  │ ┌─lpar\n")
         .append("  ├─parens\n")

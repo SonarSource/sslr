@@ -45,7 +45,7 @@ public class ParseErrorFormatter {
     sb.append('\n');
     appendSnipped(sb, inputBuffer, position);
     sb.append('\n');
-    sb.append("Failed at:\n");
+    sb.append("Failed at rules:\n");
     List<List<MatcherPathElement>> paths = parseError.getFailedPaths();
     if (paths.size() == 1) {
       appendPath(sb, inputBuffer, paths.get(0), paths.get(0).size() - 1);
