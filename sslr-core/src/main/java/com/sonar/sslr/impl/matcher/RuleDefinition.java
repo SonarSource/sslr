@@ -71,7 +71,7 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
   }
 
   public void mock() {
-    setMatcher(Standard.or(ruleMatcher.getName(), ruleMatcher.getName().toUpperCase()));
+    setMatcher(Standard.firstOf(ruleMatcher.getName(), ruleMatcher.getName().toUpperCase()));
   }
 
   public void skip() {

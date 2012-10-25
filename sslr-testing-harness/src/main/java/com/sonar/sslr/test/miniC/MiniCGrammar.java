@@ -24,10 +24,40 @@ import com.sonar.sslr.api.Rule;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.*;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.firstOf;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.BREAK;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.CONTINUE;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.ELSE;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.IF;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.INT;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.RETURN;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.STRUCT;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.VOID;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.WHILE;
 import static com.sonar.sslr.test.miniC.MiniCLexer.Literals.INTEGER;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.*;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.ADD;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.BRACE_L;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.BRACE_R;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.COMMA;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.DEC;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.DIV;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.EQ;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.EQEQ;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.GT;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.GTE;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.INC;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.LT;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.LTE;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.MUL;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.NE;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.PAREN_L;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.PAREN_R;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.SEMICOLON;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.SUB;
 
 public class MiniCGrammar extends Grammar {
 
@@ -78,7 +108,7 @@ public class MiniCGrammar extends Grammar {
   public MiniCGrammar() {
     // Bins
 
-    binType.is(or(
+    binType.is(firstOf(
         INT,
         VOID
         ));
@@ -97,7 +127,7 @@ public class MiniCGrammar extends Grammar {
 
     compilationUnit.is(o2n(definition), EOF);
 
-    definition.is(or(
+    definition.is(firstOf(
         structDefinition,
         functionDefinition,
         variableDefinition
@@ -123,7 +153,7 @@ public class MiniCGrammar extends Grammar {
 
     // Statements
 
-    statement.is(or(
+    statement.is(firstOf(
         expressionStatement,
         compoundStatement,
         returnStatement,
@@ -160,7 +190,7 @@ public class MiniCGrammar extends Grammar {
 
     relationalExpression.is(additiveExpression, opt(relationalOperator, relationalExpression)).skipIfOneChild();
 
-    relationalOperator.is(or(
+    relationalOperator.is(firstOf(
         EQEQ,
         NE,
         LT,
@@ -171,40 +201,40 @@ public class MiniCGrammar extends Grammar {
 
     additiveExpression.is(multiplicativeExpression, opt(additiveOperator, additiveExpression)).skipIfOneChild();
 
-    additiveOperator.is(or(
+    additiveOperator.is(firstOf(
         ADD,
         SUB
         ));
 
     multiplicativeExpression.is(unaryExpression, opt(multiplicativeOperator, multiplicativeExpression)).skipIfOneChild();
 
-    multiplicativeOperator.is(or(
+    multiplicativeOperator.is(firstOf(
         MUL,
         DIV
         ));
 
-    unaryExpression.is(or(
+    unaryExpression.is(firstOf(
         and(unaryOperator, primaryExpression),
         postfixExpression
         )).skipIfOneChild();
 
-    unaryOperator.is(or(
+    unaryOperator.is(firstOf(
         INC,
         DEC
         ));
 
-    postfixExpression.is(or(
+    postfixExpression.is(firstOf(
         and(primaryExpression, postfixOperator),
         and(binFunctionReference, PAREN_L, opt(argumentExpressionList), PAREN_R),
         primaryExpression
         )).skipIfOneChild();
 
-    postfixOperator.is(or(
+    postfixOperator.is(firstOf(
         INC,
         DEC
         ));
 
-    primaryExpression.is(or(
+    primaryExpression.is(firstOf(
         INTEGER,
         binVariableReference,
         and(PAREN_L, expression, PAREN_R)
