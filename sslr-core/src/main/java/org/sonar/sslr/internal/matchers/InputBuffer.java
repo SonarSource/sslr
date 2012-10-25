@@ -90,7 +90,7 @@ public class InputBuffer {
 
   private int getLineNumber(int index) {
     int i = Arrays.binarySearch(lines, index);
-    return i >= 0 ? i + 1 : -(i + 1);
+    return Math.min(i >= 0 ? i + 1 : -(i + 1), getLineCount());
   }
 
   public Position getPosition(int index) {
@@ -126,8 +126,8 @@ public class InputBuffer {
         return false;
       }
       Position other = (Position) obj;
-      return this.column == other.column
-          && this.line == other.line;
+      return this.line == other.line
+          && this.column == other.column;
     }
 
     @Override

@@ -50,6 +50,20 @@ public class InputBufferTest {
   }
 
   @Test
+  public void test_single_line() {
+    InputBuffer inputBuffer = new InputBuffer("foo".toCharArray());
+
+    assertThat(inputBuffer.getLineCount()).isEqualTo(1);
+
+    assertThat(inputBuffer.extractLine(1)).isEqualTo("foo");
+
+    assertThat(inputBuffer.getPosition(0)).isEqualTo(new Position(1, 1));
+    assertThat(inputBuffer.getPosition(1)).isEqualTo(new Position(1, 2));
+    assertThat(inputBuffer.getPosition(2)).isEqualTo(new Position(1, 3));
+    assertThat(inputBuffer.getPosition(3)).isEqualTo(new Position(1, 4));
+  }
+
+  @Test
   public void test_empty() {
     InputBuffer inputBuffer = new InputBuffer("".toCharArray());
 
@@ -58,6 +72,7 @@ public class InputBufferTest {
     assertThat(inputBuffer.extractLine(1)).isEqualTo("");
 
     assertThat(inputBuffer.getPosition(0)).isEqualTo(new Position(1, 1));
+    assertThat(inputBuffer.getPosition(1)).isEqualTo(new Position(1, 2));
   }
 
   @Test
@@ -72,6 +87,7 @@ public class InputBufferTest {
 
     assertThat(inputBuffer.getPosition(0)).isEqualTo(new Position(1, 1));
     assertThat(inputBuffer.getPosition(1)).isEqualTo(new Position(2, 1));
+    assertThat(inputBuffer.getPosition(2)).isEqualTo(new Position(3, 1));
   }
 
   @Test
@@ -86,6 +102,7 @@ public class InputBufferTest {
 
     assertThat(inputBuffer.getPosition(0)).isEqualTo(new Position(1, 1));
     assertThat(inputBuffer.getPosition(1)).isEqualTo(new Position(2, 1));
+    assertThat(inputBuffer.getPosition(2)).isEqualTo(new Position(3, 1));
   }
 
   @Test
@@ -102,6 +119,18 @@ public class InputBufferTest {
     assertThat(inputBuffer.getPosition(1)).isEqualTo(new Position(1, 2));
     assertThat(inputBuffer.getPosition(2)).isEqualTo(new Position(2, 1));
     assertThat(inputBuffer.getPosition(3)).isEqualTo(new Position(2, 2));
+    assertThat(inputBuffer.getPosition(4)).isEqualTo(new Position(3, 1));
+  }
+
+  @Test
+  public void test_equality_and_hash_code_of_positions() {
+    Position position = new Position(0, 0);
+    assertThat(position).isEqualTo(position);
+    assertThat(position).isEqualTo(new Position(0, 0));
+    assertThat(position.hashCode()).isEqualTo(new Position(0, 0).hashCode());
+    assertThat(position).isNotEqualTo(new Position(0, 1));
+    assertThat(position).isNotEqualTo(new Position(1, 1));
+    assertThat(position).isNotEqualTo(new Object());
   }
 
 }
