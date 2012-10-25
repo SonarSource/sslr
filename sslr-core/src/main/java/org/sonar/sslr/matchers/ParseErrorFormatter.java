@@ -39,10 +39,12 @@ public class ParseErrorFormatter {
     InputBuffer inputBuffer = parseError.getInputBuffer();
     Position position = inputBuffer.getPosition(parseError.getErrorIndex());
     StringBuilder sb = new StringBuilder();
-    sb.append("At line ").append(position.getLine())
+    sb.append("Parse error at line ").append(position.getLine())
         .append(" column ").append(position.getColumn())
         .append(' ').append(parseError.getMessage()).append('\n');
+    sb.append('\n');
     appendSnipped(sb, inputBuffer, position);
+    sb.append('\n');
     sb.append("Failed at:\n");
     List<List<MatcherPathElement>> paths = parseError.getFailedPaths();
     if (paths.size() == 1) {
@@ -108,9 +110,9 @@ public class ParseErrorFormatter {
   private static void appendPathElement(StringBuilder sb, InputBuffer inputBuffer, MatcherPathElement pathElement) {
     sb.append(((GrammarElementMatcher) pathElement.getMatcher()).getName());
     if (pathElement.getStartIndex() != pathElement.getEndIndex()) {
-      sb.append(" matched ")
+      sb.append(" consumed from ")
           .append(inputBuffer.getPosition(pathElement.getStartIndex()).toString())
-          .append('-')
+          .append(" to ")
           .append(inputBuffer.getPosition(pathElement.getEndIndex() - 1).toString())
           .append(": ");
       int len = pathElement.getEndIndex() - pathElement.getStartIndex();

@@ -50,19 +50,21 @@ public class ParseErrorFormatterTest {
     String result = formatter.format(new ParseError(inputBuffer, 10, "expected: IDENTIFIER", failedPaths));
     System.out.print(result);
     String expected = new StringBuilder()
-        .append("At line 1 column 11 expected: IDENTIFIER\n")
+        .append("Parse error at line 1 column 11 expected: IDENTIFIER\n")
+        .append('\n')
         .append("1:  2+4*10-0*\n")
         .append("             ^\n")
         .append("2: \n")
+        .append('\n')
         .append("Failed at:\n")
         .append("  ┌─number\n")
         .append("  │ ┌─lpar\n")
         .append("  ├─parens\n")
         .append("  ├─variable\n")
         .append("┌─factor\n")
-        .append("term matched (1, 9)-(1, 10): \"0*\"\n")
-        .append("expression matched (1, 2)-(1, 8): \"2+4*10-\"\n")
-        .append("root matched (1, 1)-(1, 1): \" \"\n")
+        .append("term consumed from (1, 9) to (1, 10): \"0*\"\n")
+        .append("expression consumed from (1, 2) to (1, 8): \"2+4*10-\"\n")
+        .append("root consumed from (1, 1) to (1, 1): \" \"\n")
         .toString();
     assertThat(result).isEqualTo(expected);
   }
