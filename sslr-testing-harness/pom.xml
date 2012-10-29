@@ -13,7 +13,8 @@
   <name>SonarSource :: Language Recognizer :: Testing Harness</name>
 
   <properties>
-    <sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath>
+    <jacoco.destFile>../sslr-core/target/jacoco.exec</jacoco.destFile>
+    <jacoco.append>true</jacoco.append>
   </properties>
 
   <dependencies>
