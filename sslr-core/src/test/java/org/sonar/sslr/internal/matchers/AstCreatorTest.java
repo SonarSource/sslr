@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.matchers;
 
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
@@ -47,8 +46,18 @@ public class AstCreatorTest {
     AstNode astNode = AstCreator.create(uri, input, result.getParseTreeRoot());
     System.out.println(AstXmlPrinter.print(astNode));
 
+    Token firstToken = astNode.getToken();
+    assertThat(firstToken.getLine()).isEqualTo(1);
+    assertThat(firstToken.getColumn()).isEqualTo(0);
+    assertThat(firstToken.getValue()).isEqualTo("20");
+    assertThat(firstToken.getOriginalValue()).isEqualTo("20");
+
     Token tokenWithTrivia = astNode.findFirstChild(GenericTokenType.LITERAL).getToken();
+    assertThat(tokenWithTrivia.getLine()).isEqualTo(1);
+    assertThat(tokenWithTrivia.getColumn()).isEqualTo(3);
     assertThat(tokenWithTrivia.getTrivia()).hasSize(1);
+    assertThat(tokenWithTrivia.getValue()).isEqualTo("*");
+    assertThat(tokenWithTrivia.getOriginalValue()).isEqualTo("*");
   }
 
 }

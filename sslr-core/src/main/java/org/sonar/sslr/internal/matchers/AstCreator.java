@@ -24,6 +24,7 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
+import org.sonar.sslr.internal.matchers.InputBuffer.Position;
 
 import java.net.URI;
 import java.util.Collections;
@@ -31,15 +32,9 @@ import java.util.List;
 
 public final class AstCreator {
 
-  private static final char LF = '\n';
-  private static final char CR = '\r';
-
-  private final Token.Builder tokenBuilder = Token.builder();
-
   private final char[] input;
-  private int column = 0;
-  private int line = 1;
-
+  private final InputBuffer inputBuffer;
+  private final Token.Builder tokenBuilder = Token.builder();
   private final List<Trivia> trivias = Lists.newArrayList();
 
   public static AstNode create(URI uri, char[] input, ParseNode node) {
@@ -47,8 +42,9 @@ public final class AstCreator {
   }
 
   private AstCreator(URI uri, char[] input) {
-    tokenBuilder.setURI(uri);
     this.input = input;
+    this.inputBuffer = new InputBuffer(input);
+    tokenBuilder.setURI(uri);
   }
 
   private AstNode visit(ParseNode node) {
@@ -61,12 +57,17 @@ public final class AstCreator {
 
   private AstNode visitTerminal(ParseNode node) {
     GrammarElementMatcher ruleMatcher = (GrammarElementMatcher) node.getMatcher();
-    tokenBuilder.setLine(line);
-    tokenBuilder.setColumn(column);
-    String value = consume(node);
+
     if (ruleMatcher.getTokenType() == null) {
       return null;
     }
+
+    Position position = inputBuffer.getPosition(node.getStartIndex());
+    tokenBuilder.setLine(position.getLine());
+    tokenBuilder.setColumn(position.getColumn() - 1);
+
+    String value = getValue(node);
+
     tokenBuilder.setValueAndOriginalValue(value).setType(ruleMatcher.getTokenType());
     if (ruleMatcher.getTokenType() == GenericTokenType.COMMENT) {
       tokenBuilder.setTrivia(Collections.EMPTY_LIST);
@@ -103,17 +104,10 @@ public final class AstCreator {
     return astNode;
   }
 
-  private String consume(ParseNode node) {
+  private String getValue(ParseNode node) {
     StringBuilder result = new StringBuilder();
     for (int i = node.getStartIndex(); i < Math.min(node.getEndIndex(), input.length); i++) {
-      // was taken from sonar-channel CodeBuffer:
-      if (input[i] == LF || (input[i] == CR && (i + 1 < input.length) && input[i + 1] != LF)) {
-        line++;
-        column = 0;
-      } else {
-        column++;
-      }
-      result.append(input[i]);
+      result.append(inputBuffer.charAt(i));
     }
     return result.toString();
   }
