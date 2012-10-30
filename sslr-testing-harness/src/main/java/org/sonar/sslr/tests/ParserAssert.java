@@ -24,9 +24,6 @@ import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.Parser;
 import org.fest.assertions.GenericAssert;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
 /**
  * To create a new instance of this class invoke <code>{@link Assertions#assertThat(Parser)}</code>.
  *
@@ -49,13 +46,7 @@ public class ParserAssert extends GenericAssert<ParserAssert, Parser> {
     try {
       parser.parse(input);
     } catch (RecognitionException e) {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      parser.printStackTrace(new PrintStream(baos));
-      String message = baos.toString();
-      if (message.length() == 0) {
-        message = e.getMessage();
-      }
-      throw new AssertionError("Rule '" + getRuleName() + "' should match:\n" + input + "\n" + message);
+      throw new AssertionError("Rule '" + getRuleName() + "' should match:\n" + input + "\n" + e.getMessage());
     }
     if (!isAllTokensConsumed(parser)) {
       throw new AssertionError("Rule '" + getRuleName() + "' should match:\n" + input);

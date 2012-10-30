@@ -25,9 +25,6 @@ import com.sonar.sslr.impl.Parser;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
 class ParseMatcher extends BaseMatcher<Parser> {
 
   private final String sourceCode;
@@ -48,14 +45,7 @@ class ParseMatcher extends BaseMatcher<Parser> {
     try {
       parser.parse(sourceCode);
     } catch (RecognitionException e) {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      parser.printStackTrace(new PrintStream(baos));
-      String message = baos.toString();
-
-      if (message.length() == 0) {
-        message = e.getMessage();
-      }
-      throw new AssertionError(message);
+      throw new AssertionError(e.getMessage());
     }
     return !parser.getParsingState().hasNextToken()
       || parser.getParsingState().readToken(parser.getParsingState().lexerIndex).getType() == GenericTokenType.EOF;

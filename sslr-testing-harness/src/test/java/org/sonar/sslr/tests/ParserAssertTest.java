@@ -24,6 +24,7 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.Lexer;
 import com.sonar.sslr.impl.Parser;
+import com.sonar.sslr.impl.channel.BlackHoleChannel;
 import com.sonar.sslr.impl.channel.RegexpChannel;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.junit.Before;
@@ -41,7 +42,11 @@ public class ParserAssertTest {
 
   @Before
   public void setUp() {
-    Lexer lexer = Lexer.builder().withChannel(new RegexpChannel(GenericTokenType.IDENTIFIER, "foo")).build();
+    Lexer lexer = Lexer.builder()
+        .withFailIfNoChannelToConsumeOneCharacter(true)
+        .withChannel(new RegexpChannel(GenericTokenType.IDENTIFIER, "[a-z]++"))
+        .withChannel(new BlackHoleChannel(" "))
+        .build();
     Grammar grammar = new Grammar() {
       @Override
       public Rule getRootRule() {
@@ -96,6 +101,18 @@ public class ParserAssertTest {
     thrown.expectMessage("Root rule of the parser should not be null");
     parser.setRootRule(null);
     assertThat(parser).matches("");
+  }
+
+  @Test
+  public void test_lexer_failure() {
+    thrown.expect(AssertionError.class);
+    String expectedMessage = new StringBuilder()
+        .append("Rule 'ruleName' should match:\n")
+        .append("_\n")
+        .append("Lexer error: Unable to lex")
+        .toString();
+    thrown.expectMessage(expectedMessage);
+    assertThat(parser).matches("_");
   }
 
 }
