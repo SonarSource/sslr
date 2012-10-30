@@ -45,11 +45,11 @@ public final class OldMatchers {
   }
 
   public static Object next(Object... elements) {
-    return Matchers.test(elements);
+    return Matchers.next(elements);
   }
 
   public static Object not(Object... elements) {
-    return Matchers.testNot(elements);
+    return Matchers.not(elements);
   }
 
 }

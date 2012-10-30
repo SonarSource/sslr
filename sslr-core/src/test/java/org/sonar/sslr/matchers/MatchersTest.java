@@ -49,9 +49,9 @@ public class MatchersTest {
 
     assertThat(Matchers.zeroOrMore(subMatcher)).isInstanceOf(ZeroOrMoreMatcher.class);
 
-    assertThat(Matchers.test(subMatcher)).isInstanceOf(TestMatcher.class);
+    assertThat(Matchers.next(subMatcher)).isInstanceOf(TestMatcher.class);
 
-    assertThat(Matchers.testNot(subMatcher)).isInstanceOf(TestNotMatcher.class);
+    assertThat(Matchers.not(subMatcher)).isInstanceOf(TestNotMatcher.class);
 
     assertThat(Matchers.regexp("foo")).isInstanceOf(PatternMatcher.class);
 

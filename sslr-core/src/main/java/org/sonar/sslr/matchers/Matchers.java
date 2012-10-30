@@ -54,11 +54,11 @@ public final class Matchers {
     return new ZeroOrMoreMatcher(sequence(elements));
   }
 
-  public static Matcher test(Object... elements) {
+  public static Matcher next(Object... elements) {
     return new TestMatcher(sequence(elements));
   }
 
-  public static Matcher testNot(Object... elements) {
+  public static Matcher not(Object... elements) {
     return new TestNotMatcher(sequence(elements));
   }
 
