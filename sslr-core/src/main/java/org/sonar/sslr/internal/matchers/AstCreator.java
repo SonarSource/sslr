@@ -88,13 +88,15 @@ public final class AstCreator {
     for (ParseNode child : node.getChildren()) {
       AstNode astNode = visit(child);
       if (astNode != null) {
-        astNodes.add(astNode);
+        if (astNode.hasToBeSkippedFromAst()) {
+          astNodes.addAll(astNode.getChildren());
+        } else {
+          astNodes.add(astNode);
+        }
       }
     }
-    if (astNodes.isEmpty()) {
-      return null;
-    }
-    Token token = astNodes.get(0).getToken();
+
+    Token token = astNodes.isEmpty() ? null : astNodes.get(0).getToken();
     AstNode astNode = new AstNode(ruleMatcher, ruleMatcher.getName(), token);
     for (AstNode child : astNodes) {
       astNode.addChild(child);

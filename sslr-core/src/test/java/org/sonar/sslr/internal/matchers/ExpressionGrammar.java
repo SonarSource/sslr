@@ -49,7 +49,7 @@ public class ExpressionGrammar extends LexerlessGrammar {
   Rule parens;
 
   public ExpressionGrammar() {
-    whitespace.is(token(GenericTokenType.COMMENT, regexp("\\s*+")));
+    whitespace.is(token(GenericTokenType.COMMENT, regexp("\\s*+"))).skip();
 
     plus.is(token(GenericTokenType.LITERAL, '+'), whitespace);
     minus.is(token(GenericTokenType.LITERAL, '-'), whitespace);

@@ -58,9 +58,9 @@ public class ExpressionGrammarTest {
     ParsingResult result = parseRunner.parse(input);
     assertThat(result.isMatched()).isFalse();
     ParseError parseError = result.getParseError();
+    System.out.print(new ParseErrorFormatter().format(parseError));
     assertThat(parseError.getErrorIndex()).isEqualTo(6);
     assertThat(parseError.getMessage()).isEqualTo("expected one of: CONSTANT LITERAL IDENTIFIER");
-    System.out.print(new ParseErrorFormatter().format(parseError));
   }
 
   @Test

@@ -19,6 +19,8 @@
  */
 package com.sonar.sslr.api;
 
+import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +47,7 @@ public class AstNode {
     this(token.getType(), token.getType().getName(), token);
   }
 
-  public AstNode(AstNodeType type, String name, Token token) {
+  public AstNode(AstNodeType type, String name, @Nullable Token token) {
     this.type = type;
     this.token = token;
     this.name = name;

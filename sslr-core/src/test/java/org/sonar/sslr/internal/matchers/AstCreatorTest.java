@@ -44,7 +44,10 @@ public class AstCreatorTest {
 
     URI uri = new File("/tmp/test.txt").toURI();
     AstNode astNode = AstCreator.create(uri, input, result.getParseTreeRoot());
+    System.out.println(astNode.getTokens());
     System.out.println(AstXmlPrinter.print(astNode));
+
+    assertThat(astNode.getTokens()).hasSize(8);
 
     Token firstToken = astNode.getToken();
     assertThat(firstToken.getLine()).isEqualTo(1);
