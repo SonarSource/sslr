@@ -22,6 +22,7 @@ package org.sonar.sslr.tests;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.Parser;
+import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import org.fest.assertions.GenericAssert;
 
 /**
@@ -42,7 +43,8 @@ public class ParserAssert extends GenericAssert<ParserAssert, Parser> {
    */
   public ParserAssert matches(String input) {
     hasRootRule();
-    Parser parser = actual;
+    Parser parser = Parser.builder(actual).setExtendedStackTrace(new ExtendedStackTrace()).build();
+    parser.setRootRule(actual.getRootRule());
     try {
       parser.parse(input);
     } catch (RecognitionException e) {

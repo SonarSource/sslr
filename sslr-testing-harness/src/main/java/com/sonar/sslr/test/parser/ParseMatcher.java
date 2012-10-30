@@ -22,6 +22,7 @@ package com.sonar.sslr.test.parser;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.Parser;
+import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
@@ -37,11 +38,13 @@ class ParseMatcher extends BaseMatcher<Parser> {
     if (!(obj instanceof Parser)) {
       return false;
     }
-    Parser parser = (Parser) obj;
-    if (parser.getRootRule() == null) {
+    Parser actual = (Parser) obj;
+    if (actual.getRootRule() == null) {
       throw new IllegalStateException("The root rule of the parser is null. No grammar decorator seems to be activated.");
     }
 
+    Parser parser = Parser.builder(actual).setExtendedStackTrace(new ExtendedStackTrace()).build();
+    parser.setRootRule(actual.getRootRule());
     try {
       parser.parse(sourceCode);
     } catch (RecognitionException e) {
