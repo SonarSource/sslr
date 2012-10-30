@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.internal.matchers;
 
+import com.sonar.sslr.api.TokenType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,37 +29,37 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class TestNotMatcherTest {
+public class TokenMatcherTest {
 
   private Matcher subMatcher;
   private MatcherContext context, subContext;
-  private TestNotMatcher matcher;
+  private TokenMatcher matcher;
 
   @Before
   public void setUp() {
     subMatcher = mock(Matcher.class);
     subContext = mock(MatcherContext.class);
-    matcher = new TestNotMatcher(subMatcher);
+    matcher = new TokenMatcher(mock(TokenType.class), subMatcher);
     context = mock(MatcherContext.class);
     when(context.getSubContext(subMatcher)).thenReturn(subContext);
   }
 
   @Test
   public void should_match() {
-    when(subContext.runMatcher()).thenReturn(false);
+    when(subContext.runMatcher()).thenReturn(true);
     assertThat(matcher.match(context)).isTrue();
-    verify(subContext).runMatcher();
     verify(context).ignoreErrors();
-    verify(context, never()).resetIndex();
+    verify(context).createNode();
+    verify(subContext).runMatcher();
   }
 
   @Test
   public void should_not_match() {
-    when(subContext.runMatcher()).thenReturn(true);
+    when(subContext.runMatcher()).thenReturn(false);
     assertThat(matcher.match(context)).isFalse();
-    verify(subContext).runMatcher();
     verify(context).ignoreErrors();
-    verify(context, never()).resetIndex();
+    verify(context, never()).createNode();
+    verify(subContext).runMatcher();
   }
 
 }

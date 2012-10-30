@@ -55,9 +55,9 @@ public class ParseRunner {
       // failure should be permanent, otherwise something generally wrong
       Preconditions.checkState(!matched);
 
-      StringBuilder sb = new StringBuilder("expected");
+      StringBuilder sb = new StringBuilder("failed to match");
       if (errorReportingHandler.getFailedPaths().size() > 1) {
-        sb.append(" one of");
+        sb.append(" none of");
       }
       sb.append(':');
       for (List<MatcherPathElement> failedPath : errorReportingHandler.getFailedPaths()) {

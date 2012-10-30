@@ -25,6 +25,7 @@ public abstract class MatcherContext implements CharSequence {
   protected int startIndex;
   protected int currentIndex;
   protected Matcher matcher;
+  protected boolean ignoreErrors = false;
 
   private final MatchHandler matchHandler;
 
@@ -51,6 +52,14 @@ public abstract class MatcherContext implements CharSequence {
 
   public void retire() {
     this.matcher = null;
+  }
+
+  public void ignoreErrors() {
+    this.ignoreErrors = true;
+  }
+
+  public boolean isIgnoreErrors() {
+    return ignoreErrors;
   }
 
   public abstract boolean runMatcher();

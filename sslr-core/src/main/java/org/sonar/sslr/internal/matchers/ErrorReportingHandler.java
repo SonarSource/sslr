@@ -46,14 +46,12 @@ public class ErrorReportingHandler implements MatchHandler {
 
   public void onMissmatch(MatcherContext context) {
     delegate.onMissmatch(context);
-    // We are interested in errors, which occur only on terminals:
-    if (errorIndex == context.getCurrentIndex() && isTerminal(context.getMatcher())) {
-      failedPaths.add(getPath((BasicMatcherContext) context));
+    if (errorIndex == context.getCurrentIndex() && !context.isIgnoreErrors()) {
+      List<MatcherPathElement> path = getPath((BasicMatcherContext) context);
+      if (isNewPath(path)) {
+        failedPaths.add(path);
+      }
     }
-  }
-
-  private static boolean isTerminal(Matcher matcher) {
-    return ((GrammarElementMatcher) matcher).getTokenType() != null;
   }
 
   private static List<MatcherPathElement> getPath(BasicMatcherContext context) {
@@ -67,6 +65,31 @@ public class ErrorReportingHandler implements MatchHandler {
       context = context.getParent();
     }
     return ImmutableList.copyOf(Iterables.reverse(list));
+  }
+
+  private boolean isNewPath(List<MatcherPathElement> path) {
+    for (List<MatcherPathElement> old : Iterables.reverse(failedPaths)) {
+      if (isPrefix(path, old)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private static boolean isPrefix(List<MatcherPathElement> first, List<MatcherPathElement> second) {
+    if (first.size() > second.size()) {
+      return false;
+    }
+    for (int i = 0; i < first.size(); i++) {
+      MatcherPathElement e1 = first.get(i);
+      MatcherPathElement e2 = second.get(i);
+      if (!(e1.getMatcher().equals(e2.getMatcher())
+          && e1.getStartIndex() == e2.getStartIndex()
+          && e1.getEndIndex() == e2.getEndIndex())) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public List<List<MatcherPathElement>> getFailedPaths() {

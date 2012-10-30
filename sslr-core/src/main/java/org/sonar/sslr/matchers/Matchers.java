@@ -75,9 +75,7 @@ public final class Matchers {
   }
 
   public static Matcher token(TokenType tokenType, Object element) {
-    return new GrammarElementMatcher(tokenType.getName())
-        .setTokenType(tokenType)
-        .is(convertToMatcher(element));
+    return new TokenMatcher(tokenType, convertToMatcher(element));
   }
 
   private static Matcher[] convertToMatchers(Object... elements) {

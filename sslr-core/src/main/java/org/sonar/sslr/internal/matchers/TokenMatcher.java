@@ -19,24 +19,29 @@
  */
 package org.sonar.sslr.internal.matchers;
 
-/**
- * A {@link Matcher} that tries its submatcher against the input.
- * Succeeds if submatcher fails.
- */
-public class TestNotMatcher implements Matcher {
+import com.sonar.sslr.api.TokenType;
 
+public class TokenMatcher implements Matcher {
+
+  private final TokenType tokenType;
   private final Matcher subMatcher;
 
-  public TestNotMatcher(Matcher subMatcher) {
+  public TokenMatcher(TokenType tokenType, Matcher subMatcher) {
+    this.tokenType = tokenType;
     this.subMatcher = subMatcher;
   }
 
   public boolean match(MatcherContext context) {
     context.ignoreErrors();
     if (context.getSubContext(subMatcher).runMatcher()) {
-      return false;
+      context.createNode();
+      return true;
     }
-    return true;
+    return false;
+  }
+
+  public TokenType getTokenType() {
+    return tokenType;
   }
 
 }

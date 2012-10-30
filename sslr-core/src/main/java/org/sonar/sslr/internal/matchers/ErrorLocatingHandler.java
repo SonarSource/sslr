@@ -38,8 +38,7 @@ public class ErrorLocatingHandler implements MatchHandler {
 
   public void onMissmatch(MatcherContext context) {
     delegate.onMissmatch(context);
-    // FIXME Godin: for the moment we assume that error cannot occur inside of predicate or inside of terminal
-    if (errorIndex < context.getCurrentIndex()) {
+    if (errorIndex < context.getCurrentIndex() && !context.isIgnoreErrors()) {
       errorIndex = context.getCurrentIndex();
     }
   }

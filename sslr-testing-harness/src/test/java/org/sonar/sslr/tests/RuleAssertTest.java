@@ -19,13 +19,11 @@
  */
 package org.sonar.sslr.tests;
 
-import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Rule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
-import org.sonar.sslr.matchers.Matchers;
 
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
@@ -38,8 +36,7 @@ public class RuleAssertTest {
 
   @Before
   public void setUp() {
-    // FIXME Godin: we should be able to get rid of TokenType below:
-    rule = new GrammarElementMatcher("ruleName").is(Matchers.token(GenericTokenType.LITERAL, "foo"));
+    rule = new GrammarElementMatcher("ruleName").is("foo");
   }
 
   @Test

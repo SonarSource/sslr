@@ -32,6 +32,7 @@ import static org.sonar.sslr.matchers.Matchers.zeroOrMore;
 public class ExpressionGrammar extends LexerlessGrammar {
 
   Rule whitespace;
+  Rule endOfInput;
 
   Rule plus;
   Rule minus;
@@ -59,13 +60,14 @@ public class ExpressionGrammar extends LexerlessGrammar {
     variable.is(token(GenericTokenType.IDENTIFIER, regexp("\\p{javaJavaIdentifierStart}++\\p{javaJavaIdentifierPart}*+")), whitespace);
     lpar.is(token(GenericTokenType.LITERAL, '('), whitespace);
     rpar.is(token(GenericTokenType.LITERAL, ')'), whitespace);
+    endOfInput.is(token(GenericTokenType.EOF, endOfInput()));
 
     // If in part of grammar below we will replace
     // plus, minus, div, mul, lpar and rpar by punctuators '+', '-', '/', '*', '(' and ')' respectively,
     // number by GenericTokenType.CONSTANT, variable by GenericTokenType.IDENTIFIER
     // and remove space
     // then it will look exactly as it was with lexer:
-    root.is(whitespace, expression, token(GenericTokenType.EOF, endOfInput()));
+    root.is(whitespace, expression, endOfInput);
     expression.is(term, zeroOrMore(firstOf(plus, minus), term));
     term.is(factor, zeroOrMore(firstOf(div, mul), factor));
     factor.is(firstOf(number, parens, variable));

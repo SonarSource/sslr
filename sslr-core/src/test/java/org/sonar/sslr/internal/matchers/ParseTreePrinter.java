@@ -64,6 +64,8 @@ public class ParseTreePrinter {
   private static String matcherToString(Matcher matcher) {
     if (matcher instanceof GrammarElementMatcher) {
       return ((GrammarElementMatcher) matcher).getName();
+    } else if (matcher instanceof TokenMatcher) {
+      return ((TokenMatcher) matcher).getTokenType().getName();
     } else {
       return matcher.toString();
     }

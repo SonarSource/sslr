@@ -40,8 +40,10 @@ public class RuleAssert extends GenericAssert<RuleAssert, Rule> {
 
   private ParseRunner createParseRunner() {
     isNotNull();
+    GrammarElementMatcher endOfInput = new GrammarElementMatcher("end of input")
+        .is(Matchers.endOfInput());
     GrammarElementMatcher matcher = new GrammarElementMatcher(getRuleName() + " with end of input")
-        .is(actual, Matchers.endOfInput());
+        .is(actual, endOfInput);
     return new ParseRunner(matcher);
   }
 

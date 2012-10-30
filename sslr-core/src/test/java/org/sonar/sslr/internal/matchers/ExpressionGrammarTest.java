@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.matchers;
 
-import com.sonar.sslr.api.Rule;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.sslr.matchers.ParseError;
@@ -28,7 +27,6 @@ import org.sonar.sslr.matchers.ParseRunner;
 import org.sonar.sslr.matchers.ParsingResult;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.sonar.sslr.matchers.Matchers.endOfInput;
 
 public class ExpressionGrammarTest {
 
@@ -54,13 +52,13 @@ public class ExpressionGrammarTest {
   public void mismatch() {
     String inputString = "term +";
     char[] input = inputString.toCharArray();
-    ParseRunner parseRunner = new ParseRunner(fullMatch(grammar.expression));
+    ParseRunner parseRunner = new ParseRunner(grammar.root);
     ParsingResult result = parseRunner.parse(input);
     assertThat(result.isMatched()).isFalse();
     ParseError parseError = result.getParseError();
     System.out.print(new ParseErrorFormatter().format(parseError));
     assertThat(parseError.getErrorIndex()).isEqualTo(6);
-    assertThat(parseError.getMessage()).isEqualTo("expected one of: CONSTANT LITERAL IDENTIFIER");
+    assertThat(parseError.getMessage()).isEqualTo("failed to match none of: number lpar variable");
   }
 
   @Test
@@ -74,18 +72,15 @@ public class ExpressionGrammarTest {
 
   @Test
   public void should_mock() {
-    String inputString = "term + term";
+    String inputString = "term plus term";
     char[] input = inputString.toCharArray();
     grammar.term.mock();
-    ParseRunner parseRunner = new ParseRunner(fullMatch(grammar.expression));
+    grammar.plus.mock();
+    ParseRunner parseRunner = new ParseRunner(grammar.root);
     ParsingResult result = parseRunner.parse(input);
     assertThat(result.isMatched()).isTrue();
     ParseTreePrinter.print(result.getParseTreeRoot(), input);
     assertThat(ParseTreePrinter.leafsToString(result.getParseTreeRoot(), input)).as("full-fidelity").isEqualTo(inputString);
-  }
-
-  private static Rule fullMatch(Object object) {
-    return new GrammarElementMatcher("root").is(object, endOfInput());
   }
 
 }

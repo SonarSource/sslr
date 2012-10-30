@@ -56,11 +56,10 @@ public final class AstCreator {
   }
 
   private AstNode visitTerminal(ParseNode node) {
-    GrammarElementMatcher ruleMatcher = (GrammarElementMatcher) node.getMatcher();
-
-    if (ruleMatcher.getTokenType() == null) {
+    if (!(node.getMatcher() instanceof TokenMatcher)) {
       return null;
     }
+    TokenMatcher ruleMatcher = (TokenMatcher) node.getMatcher();
 
     Position position = inputBuffer.getPosition(node.getStartIndex());
     tokenBuilder.setLine(position.getLine());

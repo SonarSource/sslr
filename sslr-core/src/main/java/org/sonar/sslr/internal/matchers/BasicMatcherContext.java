@@ -52,6 +52,7 @@ public class BasicMatcherContext extends MatcherContext {
     subContext.startIndex = currentIndex;
     subContext.currentIndex = currentIndex;
     subContext.node = null;
+    subContext.ignoreErrors = ignoreErrors;
     return subContext;
   }
 
