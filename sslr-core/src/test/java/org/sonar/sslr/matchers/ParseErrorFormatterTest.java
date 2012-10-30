@@ -47,10 +47,10 @@ public class ParseErrorFormatterTest {
         Arrays.asList(root, expression, term, factor, number),
         Arrays.asList(root, expression, term, factor, parens, lpar),
         Arrays.asList(root, expression, term, factor, variable));
-    String result = formatter.format(new ParseError(inputBuffer, 10, "expected: IDENTIFIER", failedPaths));
+    String result = formatter.format(new ParseError(inputBuffer, 10, "expected one of: number lpar variable", failedPaths));
     System.out.print(result);
     String expected = new StringBuilder()
-        .append("Parse error at line 1 column 11 expected: IDENTIFIER\n")
+        .append("Parse error at line 1 column 11 expected one of: number lpar variable\n")
         .append('\n')
         .append("1:  2+4*10-0*\n")
         .append("             ^\n")

@@ -19,9 +19,8 @@
  */
 package org.sonar.sslr.matchers;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.sonar.sslr.api.Rule;
 import org.sonar.sslr.internal.matchers.*;
 
@@ -51,93 +50,23 @@ public class ParseRunner {
       // TODO Godin: Looks like memoized nodes should be removed for correct error reporting,
       // but maybe we can remove only some of them
       memoizer = new Memoizer(input.length);
-      ErrorReportingHandler errorReportingHandler = new ErrorReportingHandler(memoizer, errorLocatingHandler.errorIndex);
-      new BasicMatcherContext(input, errorReportingHandler, rootMatcher).runMatcher();
+      ErrorReportingHandler errorReportingHandler = new ErrorReportingHandler(memoizer, errorLocatingHandler.getErrorIndex());
+      matched = new BasicMatcherContext(input, errorReportingHandler, rootMatcher).runMatcher();
+      // failure should be permanent, otherwise something generally wrong
+      Preconditions.checkState(!matched);
 
       StringBuilder sb = new StringBuilder("expected");
-      if (errorReportingHandler.failedPaths.size() > 1) {
+      if (errorReportingHandler.getFailedPaths().size() > 1) {
         sb.append(" one of");
       }
       sb.append(':');
-      for (List<MatcherPathElement> failedPath : errorReportingHandler.failedPaths) {
+      for (List<MatcherPathElement> failedPath : errorReportingHandler.getFailedPaths()) {
         Matcher failedMatcher = Iterables.getLast(failedPath).getMatcher();
         sb.append(' ').append(((GrammarElementMatcher) failedMatcher).getName());
       }
-      ParseError parseError = new ParseError(new InputBuffer(input), errorReportingHandler.errorIndex, sb.toString(), errorReportingHandler.failedPaths);
+      ParseError parseError = new ParseError(new InputBuffer(input), errorLocatingHandler.getErrorIndex(), sb.toString(), errorReportingHandler.getFailedPaths());
       return new ParsingResult(matched, null, parseError);
     }
-  }
-
-  private static class ErrorReportingHandler implements MatchHandler {
-
-    private final MatchHandler delegate;
-    private final int errorIndex;
-    private final List<List<MatcherPathElement>> failedPaths = Lists.newArrayList();
-
-    public ErrorReportingHandler(MatchHandler delegate, int errorIndex) {
-      this.delegate = delegate;
-      this.errorIndex = errorIndex;
-    }
-
-    public boolean match(MatcherContext context) {
-      return delegate.match(context);
-    }
-
-    public void onMatch(MatcherContext context) {
-      delegate.onMatch(context);
-    }
-
-    public void onMissmatch(MatcherContext context) {
-      // We are interested in errors, which occur only on terminals:
-      if (errorIndex == context.getCurrentIndex() && isTerminal(context.getMatcher())) {
-        failedPaths.add(getPath((BasicMatcherContext) context));
-      }
-    }
-
-    private static boolean isTerminal(Matcher matcher) {
-      return ((GrammarElementMatcher) matcher).getTokenType() != null;
-    }
-
-    private static List<MatcherPathElement> getPath(BasicMatcherContext context) {
-      List<MatcherPathElement> list = Lists.newArrayList();
-      int endIndex = context.getCurrentIndex();
-      while (context != null) {
-        if (context.getMatcher() instanceof GrammarElementMatcher) {
-          list.add(new MatcherPathElement(context.getMatcher(), context.getStartIndex(), endIndex));
-          endIndex = context.getStartIndex();
-        }
-        context = context.getParent();
-      }
-      return ImmutableList.copyOf(Iterables.reverse(list));
-    }
-
-  }
-
-  private static class ErrorLocatingHandler implements MatchHandler {
-
-    private final MatchHandler delegate;
-    private int errorIndex = -1;
-
-    public ErrorLocatingHandler(MatchHandler delegate) {
-      this.delegate = delegate;
-    }
-
-    public boolean match(MatcherContext context) {
-      return delegate.match(context);
-    }
-
-    public void onMatch(MatcherContext context) {
-      delegate.onMatch(context);
-    }
-
-    public void onMissmatch(MatcherContext context) {
-      // We are interested in errors, which occur only on terminals:
-      // FIXME Godin: for the moment we assume that error cannot occur inside of predicate or inside of terminal
-      if (errorIndex < context.getCurrentIndex()) {
-        errorIndex = context.getCurrentIndex();
-      }
-    }
-
   }
 
 }
