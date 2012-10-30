@@ -28,6 +28,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 /**
+ * To create a new instance of this class invoke <code>{@link Assertions#assertThat(Parser)}</code>.
+ *
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
 public class ParserAssert extends GenericAssert<ParserAssert, Parser> {

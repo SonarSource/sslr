@@ -29,6 +29,8 @@ import org.sonar.sslr.matchers.ParseRunner;
 import org.sonar.sslr.matchers.ParsingResult;
 
 /**
+ * To create a new instance of this class invoke <code>{@link Assertions#assertThat(Rule)}</code>.
+ *
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
 public class RuleAssert extends GenericAssert<RuleAssert, Rule> {
