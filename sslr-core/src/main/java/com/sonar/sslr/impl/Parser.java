@@ -31,15 +31,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class Parser<G extends Grammar> {
+public class Parser<G extends Grammar> {
 
   private RuleDefinition rootRule;
   private ParsingState parsingState;
-  private final Lexer lexer;
-  private final G grammar;
+  private Lexer lexer;
+  protected G grammar;
   private Set<RecognitionExceptionListener> listeners = new HashSet<RecognitionExceptionListener>();
   private ParsingEventListener[] parsingEventListeners;
-  private final ExtendedStackTrace extendedStackTrace;
+  private ExtendedStackTrace extendedStackTrace;
+
+  protected Parser() {
+  }
 
   private Parser(Builder<G> builder) {
     this.lexer = builder.lexer;

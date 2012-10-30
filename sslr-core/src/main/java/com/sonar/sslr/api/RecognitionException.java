@@ -63,8 +63,28 @@ public class RecognitionException extends RuntimeException {
   }
 
   /**
+   * @since 2.0
+   */
+  public RecognitionException(int line, String message) {
+    super(message);
+    this.line = line;
+    this.isToRetryWithExtendStackTrace = false;
+    this.isFatal = true;
+  }
+
+  /**
+   * @since 2.0
+   */
+  public RecognitionException(int line, String message, Throwable cause) {
+    super(message, cause);
+    this.line = line;
+    this.isToRetryWithExtendStackTrace = false;
+    this.isFatal = true;
+  }
+
+  /**
    * Line where the parsing error has occurred.
-   * 
+   *
    * @return line
    */
   public int getLine() {
