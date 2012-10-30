@@ -21,7 +21,6 @@ package org.sonar.sslr.tests;
 
 import com.sonar.sslr.api.Rule;
 import org.fest.assertions.GenericAssert;
-import org.junit.ComparisonFailure;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 import org.sonar.sslr.matchers.Matchers;
 import org.sonar.sslr.matchers.ParseErrorFormatter;
@@ -56,13 +55,7 @@ public class RuleAssert extends GenericAssert<RuleAssert, Rule> {
     if (!parsingResult.isMatched()) {
       String expected = "Rule '" + getRuleName() + "' should match:\n" + input;
       String actual = new ParseErrorFormatter().format(parsingResult.getParseError());
-      final String message = expected + '\n' + actual;
-      throw new ComparisonFailure(message, expected, actual) {
-        @Override
-        public String getMessage() {
-          return message;
-        }
-      };
+      throw new ParsingResultComparisonFailure(expected, actual);
     }
     return this;
   }

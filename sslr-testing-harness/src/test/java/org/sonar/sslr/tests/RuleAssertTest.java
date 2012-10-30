@@ -22,7 +22,6 @@ package org.sonar.sslr.tests;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Rule;
 import org.junit.Before;
-import org.junit.ComparisonFailure;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
@@ -52,7 +51,7 @@ public class RuleAssertTest {
 
   @Test
   public void test_matches_failure() {
-    thrown.expect(ComparisonFailure.class);
+    thrown.expect(ParsingResultComparisonFailure.class);
     thrown.expectMessage("Rule 'ruleName' should match:\nbar");
     assertThat(rule)
         .matches("bar");

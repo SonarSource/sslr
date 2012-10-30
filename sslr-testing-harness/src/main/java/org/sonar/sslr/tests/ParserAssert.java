@@ -45,13 +45,16 @@ public class ParserAssert extends GenericAssert<ParserAssert, Parser> {
     hasRootRule();
     Parser parser = Parser.builder(actual).setExtendedStackTrace(new ExtendedStackTrace()).build();
     parser.setRootRule(actual.getRootRule());
+    String expected = "Rule '" + getRuleName() + "' should match:\n" + input;
     try {
       parser.parse(input);
     } catch (RecognitionException e) {
-      throw new AssertionError("Rule '" + getRuleName() + "' should match:\n" + input + "\n" + e.getMessage());
+      String actual = e.getMessage();
+      throw new ParsingResultComparisonFailure(expected, actual);
     }
     if (!isAllTokensConsumed(parser)) {
-      throw new AssertionError("Rule '" + getRuleName() + "' should match:\n" + input);
+      String actual = "Not all tokens have been consumed";
+      throw new ParsingResultComparisonFailure(expected, actual);
     }
     return this;
   }

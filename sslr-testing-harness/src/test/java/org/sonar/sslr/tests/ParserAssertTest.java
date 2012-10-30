@@ -66,7 +66,7 @@ public class ParserAssertTest {
 
   @Test
   public void test_matches_failure() {
-    thrown.expect(AssertionError.class);
+    thrown.expect(ParsingResultComparisonFailure.class);
     thrown.expectMessage("Rule 'ruleName' should match:\nbar");
     assertThat(parser)
         .matches("bar");
@@ -74,7 +74,7 @@ public class ParserAssertTest {
 
   @Test
   public void test2_matches_failure() {
-    thrown.expect(AssertionError.class);
+    thrown.expect(ParsingResultComparisonFailure.class);
     thrown.expectMessage("Rule 'ruleName' should match:\nfoo foo");
     assertThat(parser)
         .matches("foo foo");
@@ -105,7 +105,7 @@ public class ParserAssertTest {
 
   @Test
   public void test_lexer_failure() {
-    thrown.expect(AssertionError.class);
+    thrown.expect(ParsingResultComparisonFailure.class);
     String expectedMessage = new StringBuilder()
         .append("Rule 'ruleName' should match:\n")
         .append("_\n")

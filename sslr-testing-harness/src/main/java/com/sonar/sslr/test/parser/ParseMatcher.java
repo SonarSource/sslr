@@ -25,6 +25,7 @@ import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+import org.sonar.sslr.tests.ParsingResultComparisonFailure;
 
 class ParseMatcher extends BaseMatcher<Parser> {
 
@@ -45,16 +46,21 @@ class ParseMatcher extends BaseMatcher<Parser> {
 
     Parser parser = Parser.builder(actual).setExtendedStackTrace(new ExtendedStackTrace()).build();
     parser.setRootRule(actual.getRootRule());
+    String expected = "Rule '" + actual.getRootRule().getRule().getName() + "' should match:\n" + sourceCode;
     try {
       parser.parse(sourceCode);
     } catch (RecognitionException e) {
-      throw new AssertionError(e.getMessage());
+      throw new ParsingResultComparisonFailure(expected, e.getMessage());
     }
-    return !parser.getParsingState().hasNextToken()
-      || parser.getParsingState().readToken(parser.getParsingState().lexerIndex).getType() == GenericTokenType.EOF;
+    if (parser.getParsingState().hasNextToken()
+        && parser.getParsingState().readToken(parser.getParsingState().lexerIndex).getType() != GenericTokenType.EOF) {
+      throw new ParsingResultComparisonFailure(expected, "Not all tokens have been consumed");
+    }
+    return true;
   }
 
   public void describeTo(Description desc) {
     desc.appendText("Tokens haven't been all consumed '" + sourceCode + "'");
   }
+
 }
