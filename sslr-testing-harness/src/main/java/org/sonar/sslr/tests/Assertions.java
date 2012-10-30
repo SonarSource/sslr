@@ -20,6 +20,7 @@
 package org.sonar.sslr.tests;
 
 import com.sonar.sslr.api.Rule;
+import com.sonar.sslr.impl.Parser;
 
 public class Assertions extends org.fest.assertions.Assertions {
 
@@ -30,6 +31,15 @@ public class Assertions extends org.fest.assertions.Assertions {
    */
   public static RuleAssert assertThat(Rule actual) {
     return new RuleAssert(actual);
+  }
+
+  /**
+   * Creates a new instance of <code>{@link ParserAssert}</code>.
+   * @param actual the value to be the target of the assertions methods.
+   * @return the created assertion object.
+   */
+  public static ParserAssert assertThat(Parser actual) {
+    return new ParserAssert(actual);
   }
 
 }

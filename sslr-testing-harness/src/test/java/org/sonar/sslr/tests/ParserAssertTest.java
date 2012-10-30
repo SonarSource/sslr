@@ -20,49 +20,66 @@
 package org.sonar.sslr.tests;
 
 import com.sonar.sslr.api.GenericTokenType;
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
+import com.sonar.sslr.impl.Lexer;
+import com.sonar.sslr.impl.Parser;
+import com.sonar.sslr.impl.channel.RegexpChannel;
+import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.junit.Before;
-import org.junit.ComparisonFailure;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
-import org.sonar.sslr.matchers.Matchers;
 
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
-public class RuleAssertTest {
+public class ParserAssertTest {
 
   @org.junit.Rule
   public ExpectedException thrown = ExpectedException.none();
 
-  private Rule rule;
+  private Parser parser;
 
   @Before
   public void setUp() {
-    // FIXME Godin: we should be able to get rid of TokenType below:
-    rule = new GrammarElementMatcher("ruleName").is(Matchers.token(GenericTokenType.LITERAL, "foo"));
+    Lexer lexer = Lexer.builder().withChannel(new RegexpChannel(GenericTokenType.IDENTIFIER, "foo")).build();
+    Grammar grammar = new Grammar() {
+      @Override
+      public Rule getRootRule() {
+        return RuleDefinition.newRuleBuilder("ruleName").is("foo");
+      }
+    };
+    parser = Parser.builder(grammar).withLexer(lexer).build();
   }
 
   @Test
   public void ok() {
-    assertThat(rule)
+    assertThat(parser)
         .matches("foo")
-        .notMatches("bar");
+        .notMatches("bar")
+        .notMatches("foo foo");
   }
 
   @Test
   public void test_matches_failure() {
-    thrown.expect(ComparisonFailure.class);
+    thrown.expect(AssertionError.class);
     thrown.expectMessage("Rule 'ruleName' should match:\nbar");
-    assertThat(rule)
+    assertThat(parser)
         .matches("bar");
+  }
+
+  @Test
+  public void test2_matches_failure() {
+    thrown.expect(AssertionError.class);
+    thrown.expectMessage("Rule 'ruleName' should match:\nfoo foo");
+    assertThat(parser)
+        .matches("foo foo");
   }
 
   @Test
   public void test_notMatches_failure() {
     thrown.expect(AssertionError.class);
     thrown.expectMessage("Rule 'ruleName' should not match:\nfoo");
-    assertThat(rule)
+    assertThat(parser)
         .notMatches("foo");
   }
 
@@ -70,13 +87,15 @@ public class RuleAssertTest {
   public void should_not_accept_null() {
     thrown.expect(AssertionError.class);
     thrown.expectMessage("expecting actual value not to be null");
-    assertThat((Rule) null).matches("");
+    assertThat((Parser) null);
   }
 
   @Test
-  public void should_not_allow_prefix_match() {
-    assertThat(rule)
-        .notMatches("foo bar");
+  public void should_not_accept_null_root_rule() {
+    thrown.expect(AssertionError.class);
+    thrown.expectMessage("Root rule of the parser should not be null");
+    parser.setRootRule(null);
+    assertThat(parser).matches("");
   }
 
 }

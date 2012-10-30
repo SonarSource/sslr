@@ -33,14 +33,15 @@ import org.sonar.sslr.matchers.ParsingResult;
  */
 public class RuleAssert extends GenericAssert<RuleAssert, Rule> {
 
-  private final ParseRunner parseRunner;
-
   public RuleAssert(Rule actual) {
     super(RuleAssert.class, actual);
+  }
+
+  private ParseRunner createParseRunner() {
     isNotNull();
     GrammarElementMatcher matcher = new GrammarElementMatcher(getRuleName() + " with end of input")
         .is(actual, Matchers.endOfInput());
-    this.parseRunner = new ParseRunner(matcher);
+    return new ParseRunner(matcher);
   }
 
   /**
@@ -48,6 +49,7 @@ public class RuleAssert extends GenericAssert<RuleAssert, Rule> {
    * @return this assertion object.
    */
   public RuleAssert matches(String input) {
+    ParseRunner parseRunner = createParseRunner();
     ParsingResult parsingResult = parseRunner.parse(input.toCharArray());
     if (!parsingResult.isMatched()) {
       String expected = "Rule '" + getRuleName() + "' should match:\n" + input;
@@ -68,6 +70,7 @@ public class RuleAssert extends GenericAssert<RuleAssert, Rule> {
    * @return this assertion object.
    */
   public RuleAssert notMatches(String input) {
+    ParseRunner parseRunner = createParseRunner();
     ParsingResult parsingResult = parseRunner.parse(input.toCharArray());
     if (parsingResult.isMatched()) {
       throw new AssertionError("Rule '" + getRuleName() + "' should not match:\n" + input);

@@ -19,11 +19,13 @@
  */
 package com.sonar.sslr.test.miniC.rules;
 
-import static com.sonar.sslr.test.parser.ParserMatchers.*;
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import static com.sonar.sslr.test.parser.ParserMatchers.notParse;
+import static com.sonar.sslr.test.parser.ParserMatchers.parse;
+import static org.junit.Assert.assertThat;
+import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ExpressionTest extends RuleTest {
 
@@ -35,6 +37,23 @@ public class ExpressionTest extends RuleTest {
 
   @Test
   public void reallife() {
+    assertThat(p)
+        .matches("1")
+        .matches("1 + 1")
+        .matches("1 + 1 * 1")
+        .matches("(1)")
+        .matches("myVariable")
+        .matches("myVariable = 0")
+        .notMatches("myVariable = myVariable2 = 0")
+        .matches("myFunction()")
+        .matches("myFunction(arg1, arg2, 1*3)")
+        .matches("myVariable++")
+        .matches("++myVariable")
+        .notMatches("++++myVariable")
+        .matches("myVariable = i++")
+        .matches("myVariable = myFunction(1, 3)*2")
+        .matches("++((myVariable))");
+
     assertThat(p, parse("1"));
     assertThat(p, parse("1 + 1"));
     assertThat(p, parse("1 + 1 * 1"));

@@ -19,10 +19,9 @@
  */
 package com.sonar.sslr.test.parser;
 
-import org.hamcrest.Matcher;
-
 import com.sonar.sslr.impl.Lexer;
 import com.sonar.sslr.impl.Parser;
+import org.hamcrest.Matcher;
 
 public final class ParserMatchers {
 
@@ -33,10 +32,18 @@ public final class ParserMatchers {
     return new MatchMatcher(sourceCode, lexer);
   }
 
+  /**
+   * @deprecated in 2.0, use {@link org.sonar.sslr.tests.ParserAssert#matches(String)} instead
+   */
+  @Deprecated
   public static Matcher<Parser> parse(String sourceCode) {
     return new ParseMatcher(sourceCode);
   }
 
+  /**
+   * @deprecated in 2.0, use {@link org.sonar.sslr.tests.ParserAssert#notMatches(String)} instead
+   */
+  @Deprecated
   public static Matcher<Parser> notParse(String sourceCode) {
     return new NotParseMatcher(sourceCode);
   }
