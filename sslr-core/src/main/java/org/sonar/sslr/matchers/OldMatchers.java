@@ -49,7 +49,7 @@ public final class OldMatchers {
   }
 
   public static Object not(Object... elements) {
-    return Matchers.not(elements);
+    return Matchers.nextNot(elements);
   }
 
 }

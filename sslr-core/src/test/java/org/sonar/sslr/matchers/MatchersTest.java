@@ -51,7 +51,7 @@ public class MatchersTest {
 
     assertThat(Matchers.next(subMatcher)).isInstanceOf(TestMatcher.class);
 
-    assertThat(Matchers.not(subMatcher)).isInstanceOf(TestNotMatcher.class);
+    assertThat(Matchers.nextNot(subMatcher)).isInstanceOf(TestNotMatcher.class);
 
     assertThat(Matchers.regexp("foo")).isInstanceOf(PatternMatcher.class);
 

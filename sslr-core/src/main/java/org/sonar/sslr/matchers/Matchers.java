@@ -58,7 +58,7 @@ public final class Matchers {
     return new TestMatcher(sequence(elements));
   }
 
-  public static Matcher not(Object... elements) {
+  public static Matcher nextNot(Object... elements) {
     return new TestNotMatcher(sequence(elements));
   }
 
