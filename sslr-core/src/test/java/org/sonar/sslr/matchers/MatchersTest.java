@@ -56,6 +56,8 @@ public class MatchersTest {
     assertThat(Matchers.regexp("foo")).isInstanceOf(PatternMatcher.class);
 
     assertThat(Matchers.endOfInput()).isInstanceOf(EndOfInputMatcher.class);
+
+    assertThat(Matchers.nothing()).isInstanceOf(NothingMatcher.class);
   }
 
   @Test

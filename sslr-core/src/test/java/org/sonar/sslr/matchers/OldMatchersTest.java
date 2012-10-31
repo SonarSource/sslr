@@ -47,6 +47,8 @@ public class OldMatchersTest {
     assertThat(OldMatchers.next(subMatcher)).isInstanceOf(TestMatcher.class);
 
     assertThat(OldMatchers.not(subMatcher)).isInstanceOf(TestNotMatcher.class);
+
+    assertThat(OldMatchers.isFalse()).isInstanceOf(NothingMatcher.class);
   }
 
 }

@@ -17,43 +17,30 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.matchers;
+package org.sonar.sslr.internal.matchers;
 
-public final class OldMatchers {
+import org.junit.Before;
+import org.junit.Test;
 
-  private OldMatchers() {
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyZeroInteractions;
+
+public class NothingMatcherTest {
+
+  private MatcherContext context;
+  private NothingMatcher matcher;
+
+  @Before
+  public void setUp() {
+    matcher = new NothingMatcher();
+    context = mock(MatcherContext.class);
   }
 
-  public static Object and(Object... elements) {
-    return Matchers.sequence(elements);
-  }
-
-  public static Object or(Object... elements) {
-    return Matchers.firstOf(elements);
-  }
-
-  public static Object opt(Object... elements) {
-    return Matchers.optional(elements);
-  }
-
-  public static Object one2n(Object... elements) {
-    return Matchers.oneOrMore(elements);
-  }
-
-  public static Object o2n(Object... elements) {
-    return Matchers.zeroOrMore(elements);
-  }
-
-  public static Object next(Object... elements) {
-    return Matchers.next(elements);
-  }
-
-  public static Object not(Object... elements) {
-    return Matchers.nextNot(elements);
-  }
-
-  public static Object isFalse() {
-    return Matchers.nothing();
+  @Test
+  public void should_not_match() {
+    assertThat(matcher.match(context)).isFalse();
+    verifyZeroInteractions(context);
   }
 
 }

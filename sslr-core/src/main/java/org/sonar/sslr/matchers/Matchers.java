@@ -70,6 +70,10 @@ public final class Matchers {
     return new EndOfInputMatcher();
   }
 
+  public static Matcher nothing() {
+    return new NothingMatcher();
+  }
+
   public static Matcher token(TokenType tokenType, Object element) {
     return new GrammarElementMatcher(tokenType.getName())
         .setTokenType(tokenType)
