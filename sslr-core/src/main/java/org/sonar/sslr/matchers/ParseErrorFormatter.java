@@ -22,6 +22,7 @@ package org.sonar.sslr.matchers;
 import org.sonar.sslr.internal.matchers.*;
 import org.sonar.sslr.internal.matchers.InputBuffer.Position;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -172,7 +173,9 @@ public class ParseErrorFormatter {
     }
   }
 
-  private static final class PathComparator implements Comparator<List<MatcherPathElement>> {
+  private static final class PathComparator implements Comparator<List<MatcherPathElement>>, Serializable {
+    private static final long serialVersionUID = 1L;
+
     public int compare(List<MatcherPathElement> o1, List<MatcherPathElement> o2) {
       for (int i = 0; i < o1.size(); i++) {
         if (i < o2.size()) {
