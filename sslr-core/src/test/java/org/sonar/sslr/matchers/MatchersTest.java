@@ -19,10 +19,13 @@
  */
 package org.sonar.sslr.matchers;
 
+import com.sonar.sslr.api.TokenType;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.sonar.sslr.internal.matchers.*;
+
+import java.lang.reflect.Constructor;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -58,6 +61,8 @@ public class MatchersTest {
     assertThat(Matchers.endOfInput()).isInstanceOf(EndOfInputMatcher.class);
 
     assertThat(Matchers.nothing()).isInstanceOf(NothingMatcher.class);
+
+    assertThat(Matchers.token(mock(TokenType.class), subMatcher)).isInstanceOf(TokenMatcher.class);
   }
 
   @Test
@@ -65,6 +70,14 @@ public class MatchersTest {
     thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage("java.lang.Object");
     Matchers.sequence(new Object());
+  }
+
+  @Test
+  public void private_constructor() throws Exception {
+    Constructor constructor = Matchers.class.getDeclaredConstructor();
+    assertThat(constructor.isAccessible()).isFalse();
+    constructor.setAccessible(true);
+    constructor.newInstance();
   }
 
 }

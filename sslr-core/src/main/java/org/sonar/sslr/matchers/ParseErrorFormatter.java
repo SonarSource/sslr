@@ -122,32 +122,11 @@ public class ParseErrorFormatter {
       }
       sb.append('"');
       for (int i = pathElement.getEndIndex() - len; i < pathElement.getEndIndex(); i++) {
-        sb.append(escape(inputBuffer.charAt(i)));
+        sb.append(TextUtils.escape(inputBuffer.charAt(i)));
       }
       sb.append('"');
     }
     sb.append('\n');
-  }
-
-  /**
-   * Replaces carriage returns, line feeds, form feeds, tabs and double quotes
-   * with their respective escape sequences.
-   */
-  private static String escape(char ch) {
-    switch (ch) {
-      case '\r':
-        return "\\r";
-      case '\n':
-        return "\\n";
-      case '\f':
-        return "\\f";
-      case '\t':
-        return "\\t";
-      case '"':
-        return "\\\"";
-      default:
-        return String.valueOf(ch);
-    }
   }
 
   private static int findSplitPoint(List<List<MatcherPathElement>> paths) {
@@ -174,7 +153,7 @@ public class ParseErrorFormatter {
     String lineNumberFormat = "%1$" + padding + "d: ";
     for (int line = startLine; line <= endLine; line++) {
       sb.append(String.format(lineNumberFormat, line));
-      sb.append(trimTrailingLineSeparatorFrom(inputBuffer.extractLine(line))).append('\n');
+      sb.append(TextUtils.trimTrailingLineSeparatorFrom(inputBuffer.extractLine(line))).append('\n');
       if (line == position.getLine()) {
         for (int i = 1; i < position.getColumn() + padding + 2; i++) {
           sb.append(' ');
@@ -182,17 +161,6 @@ public class ParseErrorFormatter {
         sb.append("^\n");
       }
     }
-  }
-
-  // TODO Godin: can be replaced by com.google.common.base.CharMatcher.anyOf("\n\r").trimTrailingFrom(string)
-  private static String trimTrailingLineSeparatorFrom(String string) {
-    int last;
-    for (last = string.length() - 1; last >= 0; last--) {
-      if (string.charAt(last) != '\n' && string.charAt(last) != '\r') {
-        break;
-      }
-    }
-    return string.substring(0, last + 1);
   }
 
   private static class PathComparator implements Comparator<List<MatcherPathElement>> {

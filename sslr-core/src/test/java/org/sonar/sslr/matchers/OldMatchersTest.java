@@ -22,6 +22,8 @@ package org.sonar.sslr.matchers;
 import org.junit.Test;
 import org.sonar.sslr.internal.matchers.*;
 
+import java.lang.reflect.Constructor;
+
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -49,6 +51,14 @@ public class OldMatchersTest {
     assertThat(OldMatchers.not(subMatcher)).isInstanceOf(TestNotMatcher.class);
 
     assertThat(OldMatchers.isFalse()).isInstanceOf(NothingMatcher.class);
+  }
+
+  @Test
+  public void private_constructor() throws Exception {
+    Constructor constructor = OldMatchers.class.getDeclaredConstructor();
+    assertThat(constructor.isAccessible()).isFalse();
+    constructor.setAccessible(true);
+    constructor.newInstance();
   }
 
 }
