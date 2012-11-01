@@ -38,6 +38,7 @@ public class ParserAssertTest {
   @org.junit.Rule
   public ExpectedException thrown = ExpectedException.none();
 
+  private Rule rule;
   private Parser parser;
 
   @Before
@@ -47,10 +48,11 @@ public class ParserAssertTest {
         .withChannel(new RegexpChannel(GenericTokenType.IDENTIFIER, "[a-z]++"))
         .withChannel(new BlackHoleChannel(" "))
         .build();
+    rule = RuleDefinition.newRuleBuilder("ruleName").is("foo");
     Grammar grammar = new Grammar() {
       @Override
       public Rule getRootRule() {
-        return RuleDefinition.newRuleBuilder("ruleName").is("foo");
+        return rule;
       }
     };
     parser = Parser.builder(grammar).withLexer(lexer).build();
@@ -75,7 +77,7 @@ public class ParserAssertTest {
   @Test
   public void test2_matches_failure() {
     thrown.expect(ParsingResultComparisonFailure.class);
-    thrown.expectMessage("Rule 'ruleName' should match:\nfoo foo");
+    thrown.expectMessage("Rule 'ruleName' should match:\nfoo foo\nNot all tokens have been consumed");
     assertThat(parser)
         .matches("foo foo");
   }
@@ -86,6 +88,14 @@ public class ParserAssertTest {
     thrown.expectMessage("Rule 'ruleName' should not match:\nfoo");
     assertThat(parser)
         .notMatches("foo");
+  }
+
+  @Test
+  public void test_notMatches_failure2() {
+    thrown.expect(AssertionError.class);
+    thrown.expectMessage("Rule 'ruleName' should not match:\nfoo");
+    rule.override("foo", GenericTokenType.EOF);
+    assertThat(parser).notMatches("foo");
   }
 
   @Test

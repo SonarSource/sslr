@@ -22,11 +22,19 @@ package org.sonar.sslr.matchers;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.mockito.Mockito;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
+import org.sonar.sslr.internal.matchers.MatcherContext;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ParseRunnerTest {
+
+  @org.junit.Rule
+  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void should_report_error_at_rule_level() {
@@ -110,6 +118,14 @@ public class ParseRunnerTest {
     assertThat(parseError.getErrorIndex()).isEqualTo(0);
     assertThat(parseError.getMessage()).isEqualTo("failed to match none of: subRule1 subRule2");
     assertThat(parseError.getFailedPaths()).hasSize(2);
+  }
+
+  @Test
+  public void should_fail_if_result_of_parse_depends_not_only_from_input() {
+    GrammarElementMatcher rule = mock(GrammarElementMatcher.class);
+    when(rule.match(Mockito.any(MatcherContext.class))).thenReturn(false).thenReturn(true);
+    thrown.expect(IllegalStateException.class);
+    new ParseRunner(rule).parse("baz".toCharArray());
   }
 
 }
