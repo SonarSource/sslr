@@ -25,8 +25,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 
-import static org.sonar.sslr.tests.Assertions.assertThat;
-
 public class RuleAssertTest {
 
   @org.junit.Rule
@@ -41,7 +39,7 @@ public class RuleAssertTest {
 
   @Test
   public void ok() {
-    assertThat(rule)
+    new RuleAssert(rule)
         .matches("foo")
         .notMatches("bar");
   }
@@ -50,7 +48,7 @@ public class RuleAssertTest {
   public void test_matches_failure() {
     thrown.expect(ParsingResultComparisonFailure.class);
     thrown.expectMessage("Rule 'ruleName' should match:\nbar");
-    assertThat(rule)
+    new RuleAssert(rule)
         .matches("bar");
   }
 
@@ -58,7 +56,7 @@ public class RuleAssertTest {
   public void test_notMatches_failure() {
     thrown.expect(AssertionError.class);
     thrown.expectMessage("Rule 'ruleName' should not match:\nfoo");
-    assertThat(rule)
+    new RuleAssert(rule)
         .notMatches("foo");
   }
 
@@ -66,12 +64,12 @@ public class RuleAssertTest {
   public void should_not_accept_null() {
     thrown.expect(AssertionError.class);
     thrown.expectMessage("expecting actual value not to be null");
-    assertThat((Rule) null).matches("");
+    new RuleAssert((Rule) null).matches("");
   }
 
   @Test
   public void should_not_allow_prefix_match() {
-    assertThat(rule)
+    new RuleAssert(rule)
         .notMatches("foo bar");
   }
 

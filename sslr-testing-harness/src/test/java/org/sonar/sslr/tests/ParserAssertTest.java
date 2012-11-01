@@ -31,8 +31,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static org.sonar.sslr.tests.Assertions.assertThat;
-
 public class ParserAssertTest {
 
   @org.junit.Rule
@@ -60,7 +58,7 @@ public class ParserAssertTest {
 
   @Test
   public void ok() {
-    assertThat(parser)
+    new ParserAssert(parser)
         .matches("foo")
         .notMatches("bar")
         .notMatches("foo foo");
@@ -70,7 +68,7 @@ public class ParserAssertTest {
   public void test_matches_failure() {
     thrown.expect(ParsingResultComparisonFailure.class);
     thrown.expectMessage("Rule 'ruleName' should match:\nbar");
-    assertThat(parser)
+    new ParserAssert(parser)
         .matches("bar");
   }
 
@@ -78,7 +76,7 @@ public class ParserAssertTest {
   public void test2_matches_failure() {
     thrown.expect(ParsingResultComparisonFailure.class);
     thrown.expectMessage("Rule 'ruleName' should match:\nfoo foo\nNot all tokens have been consumed");
-    assertThat(parser)
+    new ParserAssert(parser)
         .matches("foo foo");
   }
 
@@ -86,7 +84,7 @@ public class ParserAssertTest {
   public void test_notMatches_failure() {
     thrown.expect(AssertionError.class);
     thrown.expectMessage("Rule 'ruleName' should not match:\nfoo");
-    assertThat(parser)
+    new ParserAssert(parser)
         .notMatches("foo");
   }
 
@@ -95,14 +93,14 @@ public class ParserAssertTest {
     thrown.expect(AssertionError.class);
     thrown.expectMessage("Rule 'ruleName' should not match:\nfoo");
     rule.override("foo", GenericTokenType.EOF);
-    assertThat(parser).notMatches("foo");
+    new ParserAssert(parser).notMatches("foo");
   }
 
   @Test
   public void should_not_accept_null() {
     thrown.expect(AssertionError.class);
     thrown.expectMessage("expecting actual value not to be null");
-    assertThat((Parser) null);
+    new ParserAssert((Parser) null).matches("");
   }
 
   @Test
@@ -110,7 +108,7 @@ public class ParserAssertTest {
     thrown.expect(AssertionError.class);
     thrown.expectMessage("Root rule of the parser should not be null");
     parser.setRootRule(null);
-    assertThat(parser).matches("");
+    new ParserAssert(parser).matches("");
   }
 
   @Test
@@ -122,7 +120,7 @@ public class ParserAssertTest {
         .append("Lexer error: Unable to lex")
         .toString();
     thrown.expectMessage(expectedMessage);
-    assertThat(parser).matches("_");
+    new ParserAssert(parser).matches("_");
   }
 
 }

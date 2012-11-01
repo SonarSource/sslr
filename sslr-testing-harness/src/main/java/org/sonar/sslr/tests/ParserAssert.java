@@ -34,7 +34,6 @@ public class ParserAssert extends GenericAssert<ParserAssert, Parser> {
 
   public ParserAssert(Parser actual) {
     super(ParserAssert.class, actual);
-    isNotNull();
   }
 
   /**
@@ -42,6 +41,7 @@ public class ParserAssert extends GenericAssert<ParserAssert, Parser> {
    * @return this assertion object.
    */
   public ParserAssert matches(String input) {
+    isNotNull();
     hasRootRule();
     Parser parser = Parser.builder(actual).setExtendedStackTrace(new ExtendedStackTrace()).build();
     parser.setRootRule(actual.getRootRule());
@@ -64,6 +64,7 @@ public class ParserAssert extends GenericAssert<ParserAssert, Parser> {
    * @return this assertion object.
    */
   public ParserAssert notMatches(String input) {
+    isNotNull();
     hasRootRule();
     Parser parser = actual;
     try {
