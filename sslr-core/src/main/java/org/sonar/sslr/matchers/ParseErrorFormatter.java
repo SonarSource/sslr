@@ -32,6 +32,8 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
+ * Formats {@link ParseError} to readable form.
+ *
  * <p>This class is not intended to be sub-classed by clients.</p>
  *
  * @since 2.0

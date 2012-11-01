@@ -25,6 +25,9 @@ import org.sonar.sslr.internal.matchers.MatcherPathElement;
 import java.util.List;
 
 /**
+ * Describes an error, which is occurred during parse.
+ * Use {@link ParseErrorFormatter} to convert instances of this class to readable format.
+ *
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  *
  * @since 2.0

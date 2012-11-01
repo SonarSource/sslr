@@ -26,6 +26,8 @@ import org.sonar.sslr.internal.matchers.ParseNode;
 import javax.annotation.Nullable;
 
 /**
+ * Parsing result.
+ *
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  *
  * @since 2.0
