@@ -68,6 +68,7 @@ public class OneOrMoreMatcherTest {
     when(subContext.runMatcher()).thenReturn(true, true, false);
     when(context.getCurrentIndex()).thenReturn(1, 1, 1);
     thrown.expect(GrammarException.class);
+    thrown.expectMessage("The inner part of OneOrMore must not allow empty matches");
     matcher.match(context);
   }
 

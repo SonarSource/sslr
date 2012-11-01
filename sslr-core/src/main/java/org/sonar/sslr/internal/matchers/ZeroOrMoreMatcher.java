@@ -36,8 +36,7 @@ public class ZeroOrMoreMatcher implements Matcher {
     while (context.getSubContext(subMatcher).runMatcher()) {
       int currentIndex = context.getCurrentIndex();
       if (currentIndex == previousIndex) {
-        // TODO Godin: improve message
-        throw new GrammarException("");
+        throw new GrammarException("The inner part of ZeroOrMore must not allow empty matches");
       }
       previousIndex = currentIndex;
     }

@@ -39,8 +39,7 @@ public class OneOrMoreMatcher implements Matcher {
     while (context.getSubContext(subMatcher).runMatcher()) {
       int currentIndex = context.getCurrentIndex();
       if (currentIndex == previousIndex) {
-        // TODO Godin: improve message
-        throw new GrammarException("");
+        throw new GrammarException("The inner part of OneOrMore must not allow empty matches");
       }
       previousIndex = currentIndex;
     }
