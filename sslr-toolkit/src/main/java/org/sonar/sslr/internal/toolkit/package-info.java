@@ -18,11 +18,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
 
-/**
- * Symbol Table.
- *
- * @since 1.15
- */
 @javax.annotation.ParametersAreNonnullByDefault
-package org.sonar.sslr.symboltable;
+package org.sonar.sslr.internal.toolkit;
 
