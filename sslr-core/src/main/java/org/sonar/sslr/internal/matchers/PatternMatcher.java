@@ -35,8 +35,8 @@ public class PatternMatcher implements Matcher {
     try {
       result = matcher.lookingAt();
     } catch (StackOverflowError e) {
-      throw new RuntimeException("The regular expression '" + matcher.pattern().pattern() + "' has led to a stack overflow error."
-          + " This error is certainly due to an inefficient use of alternations. See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5050507", e);
+      throw new GrammarException(e, "The regular expression '" + matcher.pattern().pattern() + "' has led to a stack overflow error."
+          + " This error is certainly due to an inefficient use of alternations. See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5050507");
     }
     if (result) {
       context.advanceIndex(matcher.end());

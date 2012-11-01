@@ -20,7 +20,9 @@
 package com.sonar.sslr.api;
 
 import com.sonar.sslr.impl.matcher.RuleDefinition;
+import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 import org.sonar.sslr.internal.matchers.GrammarException;
+import org.sonar.sslr.matchers.LexerlessGrammar;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -75,11 +77,16 @@ public abstract class Grammar {
     return ruleFields;
   }
 
-  protected void instanciateRuleFields() {
+  private void instanciateRuleFields() {
     for (Field ruleField : getAllRuleFields(this.getClass())) {
       String ruleName = ruleField.getName();
       try {
-        Rule rule = RuleDefinition.newRuleBuilder(ruleName);
+        Rule rule;
+        if (this instanceof LexerlessGrammar) {
+          rule = new GrammarElementMatcher(ruleName);
+        } else {
+          rule = RuleDefinition.newRuleBuilder(ruleName);
+        }
 
         ruleField.setAccessible(true);
         ruleField.set(this, rule);

@@ -33,7 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
+import static com.sonar.sslr.api.GenericTokenType.LITERAL;
 
 public final class AutoCompleter extends ParsingEventListener {
 
@@ -61,17 +61,20 @@ public final class AutoCompleter extends ParsingEventListener {
   }
 
   private Token createToken(TokenType type, String value) {
+    URI uri;
     try {
-      return Token.builder()
-          .setType(type)
-          .setValueAndOriginalValue(value)
-          .setURI(new URI("autocompleter://autocompleter"))
-          .setLine(1)
-          .setColumn(1)
-          .build();
+      uri = new URI("autocompleter://autocompleter");
     } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
+      // Can't happen
+      throw new IllegalStateException(e);
     }
+    return Token.builder()
+        .setType(type)
+        .setValueAndOriginalValue(value)
+        .setURI(uri)
+        .setLine(1)
+        .setColumn(1)
+        .build();
   }
 
   @Override

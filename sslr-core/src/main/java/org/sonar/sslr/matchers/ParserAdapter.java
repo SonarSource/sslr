@@ -57,7 +57,8 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
     try {
       uri = new URI("tests://unittest");
     } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
+      // Can't happen
+      throw new IllegalStateException(e);
     }
     return parse(uri, source.toCharArray());
   }

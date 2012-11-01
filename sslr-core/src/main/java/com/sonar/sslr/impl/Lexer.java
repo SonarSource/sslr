@@ -69,7 +69,8 @@ public final class Lexer {
     try {
       this.uri = new URI("tests://unittest");
     } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
+      // Can't happen
+      throw new IllegalStateException(e);
     }
   }
 
