@@ -28,54 +28,58 @@ public final class Matchers {
   private Matchers() {
   }
 
-  public static Matcher sequence(Object... elements) {
-    if (elements.length == 1) {
-      return convertToMatcher(elements[0]);
-    }
-    return new SequenceMatcher(convertToMatchers(elements));
+  public static Object sequence(Object... elements) {
+    return convertToSequenceMatcher(elements);
   }
 
-  public static Matcher firstOf(Object... elements) {
+  public static Object firstOf(Object... elements) {
     if (elements.length == 1) {
       return convertToMatcher(elements[0]);
     }
     return new FirstOfMatcher(convertToMatchers(elements));
   }
 
-  public static Matcher optional(Object... elements) {
-    return new OptionalMatcher(sequence(elements));
+  public static Object optional(Object... elements) {
+    return new OptionalMatcher(convertToSequenceMatcher(elements));
   }
 
-  public static Matcher oneOrMore(Object... elements) {
-    return new OneOrMoreMatcher(sequence(elements));
+  public static Object oneOrMore(Object... elements) {
+    return new OneOrMoreMatcher(convertToSequenceMatcher(elements));
   }
 
-  public static Matcher zeroOrMore(Object... elements) {
-    return new ZeroOrMoreMatcher(sequence(elements));
+  public static Object zeroOrMore(Object... elements) {
+    return new ZeroOrMoreMatcher(convertToSequenceMatcher(elements));
   }
 
-  public static Matcher next(Object... elements) {
-    return new TestMatcher(sequence(elements));
+  public static Object next(Object... elements) {
+    return new TestMatcher(convertToSequenceMatcher(elements));
   }
 
-  public static Matcher nextNot(Object... elements) {
-    return new TestNotMatcher(sequence(elements));
+  public static Object nextNot(Object... elements) {
+    return new TestNotMatcher(convertToSequenceMatcher(elements));
   }
 
-  public static Matcher regexp(String regexp) {
+  public static Object regexp(String regexp) {
     return new PatternMatcher(regexp);
   }
 
-  public static Matcher endOfInput() {
+  public static Object endOfInput() {
     return new EndOfInputMatcher();
   }
 
-  public static Matcher nothing() {
+  public static Object nothing() {
     return new NothingMatcher();
   }
 
-  public static Matcher token(TokenType tokenType, Object element) {
+  public static Object token(TokenType tokenType, Object element) {
     return new TokenMatcher(tokenType, convertToMatcher(element));
+  }
+
+  private static Matcher convertToSequenceMatcher(Object... elements) {
+    if (elements.length == 1) {
+      return convertToMatcher(elements[0]);
+    }
+    return new SequenceMatcher(convertToMatchers(elements));
   }
 
   private static Matcher[] convertToMatchers(Object... elements) {
