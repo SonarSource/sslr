@@ -43,7 +43,7 @@ public class LexerlessGrammarTest {
   @Test
   public void should_throw_exception() {
     thrown.expect(GrammarException.class);
-    thrown.expectMessage("Unable to instanciate the rule 'rootRule'");
+    thrown.expectMessage("Unable to instanciate the rule 'rootRule': Field is final");
     new IllegalGrammar();
   }
 

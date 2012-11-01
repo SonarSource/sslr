@@ -73,4 +73,13 @@ public class SequenceMatcherTest {
     verify(subContext2).runMatcher();
   }
 
+  @Test
+  public void should_return_subMatchers() {
+    Matcher[] subMatchers = new Matcher[] {subMatcher1, subMatcher2};
+    SequenceMatcher matcher = new SequenceMatcher(subMatchers);
+    assertThat(matcher.getSubMatchers())
+        .isNotSameAs(subMatchers)
+        .isEqualTo(subMatchers);
+  }
+
 }

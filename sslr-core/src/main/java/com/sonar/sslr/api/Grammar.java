@@ -91,7 +91,7 @@ public abstract class Grammar {
         ruleField.setAccessible(true);
         ruleField.set(this, rule);
       } catch (Exception e) {
-        throw new GrammarException(e, "Unable to instanciate the rule '" + ruleName + "'");
+        throw new GrammarException(e, "Unable to instanciate the rule '" + ruleName + "': " + e.getMessage());
       }
     }
   }

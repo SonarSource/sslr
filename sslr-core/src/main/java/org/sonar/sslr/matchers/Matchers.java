@@ -29,34 +29,34 @@ public final class Matchers {
   }
 
   public static Object sequence(Object... elements) {
-    return convertToSequenceMatcher(elements);
+    return MatchersUtils.convertToSingleMatcher(elements);
   }
 
   public static Object firstOf(Object... elements) {
     if (elements.length == 1) {
-      return convertToMatcher(elements[0]);
+      return MatchersUtils.convertToMatcher(elements[0]);
     }
-    return new FirstOfMatcher(convertToMatchers(elements));
+    return new FirstOfMatcher(MatchersUtils.convertToMatchers(elements));
   }
 
   public static Object optional(Object... elements) {
-    return new OptionalMatcher(convertToSequenceMatcher(elements));
+    return new OptionalMatcher(MatchersUtils.convertToSingleMatcher(elements));
   }
 
   public static Object oneOrMore(Object... elements) {
-    return new OneOrMoreMatcher(convertToSequenceMatcher(elements));
+    return new OneOrMoreMatcher(MatchersUtils.convertToSingleMatcher(elements));
   }
 
   public static Object zeroOrMore(Object... elements) {
-    return new ZeroOrMoreMatcher(convertToSequenceMatcher(elements));
+    return new ZeroOrMoreMatcher(MatchersUtils.convertToSingleMatcher(elements));
   }
 
   public static Object next(Object... elements) {
-    return new TestMatcher(convertToSequenceMatcher(elements));
+    return new TestMatcher(MatchersUtils.convertToSingleMatcher(elements));
   }
 
   public static Object nextNot(Object... elements) {
-    return new TestNotMatcher(convertToSequenceMatcher(elements));
+    return new TestNotMatcher(MatchersUtils.convertToSingleMatcher(elements));
   }
 
   public static Object regexp(String regexp) {
@@ -72,35 +72,7 @@ public final class Matchers {
   }
 
   public static Object token(TokenType tokenType, Object element) {
-    return new TokenMatcher(tokenType, convertToMatcher(element));
-  }
-
-  private static Matcher convertToSequenceMatcher(Object... elements) {
-    if (elements.length == 1) {
-      return convertToMatcher(elements[0]);
-    }
-    return new SequenceMatcher(convertToMatchers(elements));
-  }
-
-  private static Matcher[] convertToMatchers(Object... elements) {
-    Matcher[] matchers = new Matcher[elements.length];
-    for (int i = 0; i < matchers.length; i++) {
-      matchers[i] = convertToMatcher(elements[i]);
-    }
-    return matchers;
-  }
-
-  private static Matcher convertToMatcher(Object element) {
-    if (element instanceof Matcher) {
-      return (Matcher) element;
-    } else if (element instanceof String) {
-      return new StringMatcher((String) element);
-    } else if (element instanceof Character) {
-      return new StringMatcher(Character.toString((Character) element));
-    } else {
-      // TODO Godin: improve message
-      throw new IllegalArgumentException(element.getClass().getName());
-    }
+    return new TokenMatcher(tokenType, MatchersUtils.convertToMatcher(element));
   }
 
 }

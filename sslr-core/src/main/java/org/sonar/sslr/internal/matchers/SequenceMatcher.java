@@ -42,7 +42,9 @@ public class SequenceMatcher implements Matcher {
   }
 
   public Matcher[] getSubMatchers() {
-    return subMatchers;
+    Matcher[] result = new Matcher[subMatchers.length];
+    System.arraycopy(subMatchers, 0, result, 0, subMatchers.length);
+    return result;
   }
 
 }

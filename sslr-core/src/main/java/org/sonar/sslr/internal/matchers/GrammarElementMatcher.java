@@ -56,12 +56,7 @@ public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPoli
   }
 
   private void setSubMatchers(Object... elements) {
-    Matcher subMatcher = (Matcher) Matchers.sequence(elements);
-    if (subMatcher instanceof SequenceMatcher) {
-      subMatchers = ((SequenceMatcher) subMatcher).getSubMatchers();
-    } else {
-      subMatchers = new Matcher[] {subMatcher};
-    }
+    subMatchers = MatchersUtils.convertToMatchers(elements);
   }
 
   public String getName() {
