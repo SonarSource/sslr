@@ -95,19 +95,23 @@ public class ParseErrorFormatter {
       for (int i = start + 1; i < end; i++) {
         if (depth + 1 < lists.get(i).size() &&
             lists.get(i).get(depth + 1) != lists.get(i - 1).get(depth + 1)) {
-          format(depth + 1, start, i, prefix + (depth == 0 ? "" : isTail ? "  " : "│ " /* \u2502 */), tail);
+          format(depth + 1, start, i, prefix + formatPrefix(depth, isTail), tail);
           start = i;
           tail = false;
         }
       }
       if (start < end) {
-        format(depth + 1, start, end, prefix + (depth == 0 ? "" : isTail ? "  " : "│ " /* \u2502 */), tail);
+        format(depth + 1, start, end, prefix + formatPrefix(depth, isTail), tail);
       }
 
       if (depth > 0) {
         sb.append(prefix + (isTail ? "┌─" /* \u250C\u2500 */: "├─" /* \u251C\u2500 */));
       }
       appendPathElement(sb, inputBuffer, lists.get(start).get(depth));
+    }
+
+    private String formatPrefix(int depth, boolean isTail) {
+      return depth == 0 ? "" : isTail ? "  " : "│ " /* \u2502 */;
     }
 
   }
@@ -168,7 +172,7 @@ public class ParseErrorFormatter {
     }
   }
 
-  private static class PathComparator implements Comparator<List<MatcherPathElement>> {
+  private static final class PathComparator implements Comparator<List<MatcherPathElement>> {
     public int compare(List<MatcherPathElement> o1, List<MatcherPathElement> o2) {
       for (int i = 0; i < o1.size(); i++) {
         if (i < o2.size()) {
