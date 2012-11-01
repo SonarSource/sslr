@@ -19,6 +19,9 @@
  */
 package org.sonar.sslr.symboltable;
 
+/**
+ * @since 1.15
+ */
 public abstract class AbstractScopedSymbol extends AbstractScope implements Symbol {
 
   private final String key;

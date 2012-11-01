@@ -23,6 +23,9 @@ import com.sonar.sslr.api.AstNode;
 
 import java.util.Collection;
 
+/**
+ * @since 1.15
+ */
 // TODO Godin: maybe split on mutable and immutable?
 public interface SemanticModel {
 

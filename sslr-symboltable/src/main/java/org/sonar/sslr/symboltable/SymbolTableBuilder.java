@@ -38,6 +38,8 @@ import java.util.List;
  * In languages where forward references are not allowed, those two phases can be easily
  * merged in a single one.
  * </p>
+ *
+ * @since 1.15
  */
 public class SymbolTableBuilder {
 

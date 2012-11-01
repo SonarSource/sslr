@@ -24,6 +24,7 @@ package org.sonar.sslr.symboltable;
  *
  * @see AbstractSymbol
  * @see AbstractScopedSymbol
+ * @since 1.15
  */
 public interface Symbol {
 

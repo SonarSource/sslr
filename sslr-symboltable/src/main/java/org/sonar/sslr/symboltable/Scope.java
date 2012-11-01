@@ -26,6 +26,7 @@ import java.util.List;
  *
  * @see AbstractScope
  * @see AbstractScopedSymbol
+ * @since 1.15
  */
 public interface Scope {
 

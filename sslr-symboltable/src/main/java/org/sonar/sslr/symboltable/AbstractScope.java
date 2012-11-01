@@ -26,6 +26,8 @@ import java.util.List;
 /**
  * This class provides a skeletal implementation of the {@link Scope}
  * interface to minimize the effort required to implement this interface.
+ *
+ * @since 1.15
  */
 public abstract class AbstractScope implements Scope {
 

@@ -31,6 +31,8 @@ import java.util.Map;
 
 /**
  * Default implementation of {@link SemanticModel}.
+ *
+ * @since 1.15
  */
 public class DefaultSemanticModel implements SemanticModel {
 

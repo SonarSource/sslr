@@ -25,6 +25,9 @@ import com.sonar.sslr.api.AstNodeType;
 
 import java.util.List;
 
+/**
+ * @since 1.15
+ */
 public abstract class SymbolTableBuilderVisitor {
 
   private final List<AstNodeType> nodeTypes;

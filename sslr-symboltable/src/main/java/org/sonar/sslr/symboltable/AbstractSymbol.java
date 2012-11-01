@@ -22,6 +22,8 @@ package org.sonar.sslr.symboltable;
 /**
  * This class provides a skeletal implementation of the {@link Symbol}
  * interface to minimize the effort required to implement this interface.
+ *
+ * @since 1.15
  */
 public abstract class AbstractSymbol implements Symbol {
 
