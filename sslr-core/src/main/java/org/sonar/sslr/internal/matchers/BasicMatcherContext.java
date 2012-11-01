@@ -103,7 +103,9 @@ public class BasicMatcherContext extends MatcherContext {
 
   public void skipNode() {
     // node skipped - contribute all children to parent
-    parent.subNodes.addAll(subNodes);
+    if (!subNodes.isEmpty()) {
+      parent.subNodes.addAll(subNodes);
+    }
   }
 
   public ParseNode getNode() {
