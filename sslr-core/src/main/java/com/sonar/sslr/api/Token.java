@@ -33,7 +33,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * By definition, comments and preprocessing directives should not be seen by the parser that's why such Trivia, when they exist, are
  * attached to the next token.
  */
-public final class Token {
+public class Token {
 
   private final TokenType type;
   private final String value;
