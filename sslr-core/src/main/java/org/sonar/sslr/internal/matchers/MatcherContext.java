@@ -19,9 +19,11 @@
  */
 package org.sonar.sslr.internal.matchers;
 
+import org.sonar.sslr.matchers.InputBuffer;
+
 public abstract class MatcherContext implements CharSequence {
 
-  protected char[] input;
+  protected InputBuffer inputBuffer;
   protected int startIndex;
   protected int currentIndex;
   protected Matcher matcher;
@@ -29,8 +31,8 @@ public abstract class MatcherContext implements CharSequence {
 
   private final MatchHandler matchHandler;
 
-  public MatcherContext(char[] input, MatchHandler matchHandler) {
-    this.input = input;
+  public MatcherContext(InputBuffer inputBuffer, MatchHandler matchHandler) {
+    this.inputBuffer = inputBuffer;
     this.matchHandler = matchHandler;
   }
 
@@ -91,11 +93,11 @@ public abstract class MatcherContext implements CharSequence {
    */
 
   public int length() {
-    return input.length - currentIndex;
+    return inputBuffer.length() - currentIndex;
   }
 
   public char charAt(int index) {
-    return input[currentIndex + index];
+    return inputBuffer.charAt(currentIndex + index);
   }
 
   public CharSequence subSequence(int start, int end) {

@@ -20,7 +20,6 @@
 package org.sonar.sslr.matchers;
 
 import com.google.common.base.Preconditions;
-import org.sonar.sslr.internal.matchers.InputBuffer;
 import org.sonar.sslr.internal.matchers.MatcherPathElement;
 
 import java.util.List;

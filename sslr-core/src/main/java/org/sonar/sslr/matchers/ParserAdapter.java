@@ -28,7 +28,6 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.apache.commons.io.IOUtils;
 import org.sonar.sslr.internal.matchers.AstCreator;
-import org.sonar.sslr.internal.matchers.InputBuffer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -96,7 +95,7 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
   private AstNode parse(URI uri, char[] input) {
     ParsingResult result = parseRunner.parse(input);
     if (result.isMatched()) {
-      return AstCreator.create(uri, input, result.getParseTreeRoot());
+      return AstCreator.create(uri, result);
     } else {
       ParseError parseError = result.getParseError();
       InputBuffer inputBuffer = parseError.getInputBuffer();

@@ -20,8 +20,11 @@
 package org.sonar.sslr.matchers;
 
 import com.google.common.base.Preconditions;
-import org.sonar.sslr.internal.matchers.*;
-import org.sonar.sslr.internal.matchers.InputBuffer.Position;
+import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
+import org.sonar.sslr.internal.matchers.Matcher;
+import org.sonar.sslr.internal.matchers.MatcherPathElement;
+import org.sonar.sslr.internal.matchers.TextUtils;
+import org.sonar.sslr.matchers.InputBuffer.Position;
 
 import java.io.Serializable;
 import java.util.Collections;

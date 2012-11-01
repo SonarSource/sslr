@@ -40,12 +40,13 @@ public class ParseRunner {
   }
 
   public ParsingResult parse(char[] input) {
+    InputBuffer inputBuffer = new ImmutableInputBuffer(input);
     Memoizer memoizer = new Memoizer(input.length);
     ErrorLocatingHandler errorLocatingHandler = new ErrorLocatingHandler(memoizer);
-    MatcherContext matcherContext = new BasicMatcherContext(input, errorLocatingHandler, rootMatcher);
+    MatcherContext matcherContext = new BasicMatcherContext(inputBuffer, errorLocatingHandler, rootMatcher);
     boolean matched = matcherContext.runMatcher();
     if (matched) {
-      return new ParsingResult(matched, matcherContext.getNode(), null);
+      return new ParsingResult(inputBuffer, matched, matcherContext.getNode(), null);
     } else {
       // Perform second run in order to collect information for error report
 
@@ -53,7 +54,7 @@ public class ParseRunner {
       // but maybe we can remove only some of them
       memoizer = new Memoizer(input.length);
       ErrorReportingHandler errorReportingHandler = new ErrorReportingHandler(memoizer, errorLocatingHandler.getErrorIndex());
-      matched = new BasicMatcherContext(input, errorReportingHandler, rootMatcher).runMatcher();
+      matched = new BasicMatcherContext(inputBuffer, errorReportingHandler, rootMatcher).runMatcher();
       // failure should be permanent, otherwise something generally wrong
       Preconditions.checkState(!matched);
 
@@ -66,8 +67,8 @@ public class ParseRunner {
         Matcher failedMatcher = Iterables.getLast(failedPath).getMatcher();
         sb.append(' ').append(((GrammarElementMatcher) failedMatcher).getName());
       }
-      ParseError parseError = new ParseError(new InputBuffer(input), errorLocatingHandler.getErrorIndex(), sb.toString(), errorReportingHandler.getFailedPaths());
-      return new ParsingResult(matched, null, parseError);
+      ParseError parseError = new ParseError(inputBuffer, errorLocatingHandler.getErrorIndex(), sb.toString(), errorReportingHandler.getFailedPaths());
+      return new ParsingResult(inputBuffer, matched, null, parseError);
     }
   }
 

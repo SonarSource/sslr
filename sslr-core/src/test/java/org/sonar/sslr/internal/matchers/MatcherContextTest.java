@@ -40,7 +40,7 @@ public class MatcherContextTest {
   @Before
   public void setUp() {
     matcher = mock(Matcher.class);
-    context = new BasicMatcherContext("bar".toCharArray(), mock(MatchHandler.class), matcher);
+    context = new BasicMatcherContext(new ImmutableInputBuffer("bar".toCharArray()), mock(MatchHandler.class), matcher);
   }
 
   @Test

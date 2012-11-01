@@ -20,11 +20,12 @@
 package org.sonar.sslr.internal.matchers;
 
 import com.google.common.collect.Lists;
+import org.sonar.sslr.matchers.InputBuffer;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class InputBuffer {
+public class ImmutableInputBuffer implements InputBuffer {
 
   private static final char CR = '\r';
   private static final char LF = '\n';
@@ -36,7 +37,7 @@ public class InputBuffer {
    */
   private final int[] lines;
 
-  public InputBuffer(char[] buffer) {
+  public ImmutableInputBuffer(char[] buffer) {
     this.buffer = buffer;
 
     List<Integer> newlines = Lists.newArrayList();
@@ -55,6 +56,10 @@ public class InputBuffer {
     }
   }
 
+  public int length() {
+    return buffer.length;
+  }
+
   public char charAt(int i) {
     return buffer[i];
   }
@@ -69,21 +74,12 @@ public class InputBuffer {
         (buffer[i] == CR && (((i + 1 < buffer.length) && buffer[i + 1] != LF) || i + 1 == buffer.length));
   }
 
-  /**
-   * Returns content of a line for a given line number.
-   * Numbering of lines starts from 1.
-   */
   public String extractLine(int lineNumber) {
     int start = lines[lineNumber - 1];
     int end = lines[lineNumber];
     return new String(buffer, start, end - start);
   }
 
-  /**
-   * Returns number of lines, which is always equal to number of line terminators plus 1.
-   *
-   * @see #isEndOfLine(char[], int)
-   */
   public int getLineCount() {
     return lines.length - 1;
   }
@@ -97,49 +93,6 @@ public class InputBuffer {
     int line = getLineNumber(index);
     int column = index - lines[line - 1] + 1;
     return new Position(line, column);
-  }
-
-  public static class Position {
-
-    private final int line;
-    private final int column;
-
-    public Position(int line, int column) {
-      this.line = line;
-      this.column = column;
-    }
-
-    public int getLine() {
-      return line;
-    }
-
-    public int getColumn() {
-      return column;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (this == obj) {
-        return true;
-      }
-      if (!(obj instanceof Position)) {
-        return false;
-      }
-      Position other = (Position) obj;
-      return this.line == other.line
-          && this.column == other.column;
-    }
-
-    @Override
-    public int hashCode() {
-      return 31 * line + column;
-    }
-
-    @Override
-    public String toString() {
-      return "(" + line + ", " + column + ")";
-    }
-
   }
 
 }

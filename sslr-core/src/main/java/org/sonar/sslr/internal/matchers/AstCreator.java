@@ -24,7 +24,9 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
-import org.sonar.sslr.internal.matchers.InputBuffer.Position;
+import org.sonar.sslr.matchers.InputBuffer;
+import org.sonar.sslr.matchers.InputBuffer.Position;
+import org.sonar.sslr.matchers.ParsingResult;
 
 import java.net.URI;
 import java.util.Collections;
@@ -32,18 +34,16 @@ import java.util.List;
 
 public final class AstCreator {
 
-  private final char[] input;
   private final InputBuffer inputBuffer;
   private final Token.Builder tokenBuilder = Token.builder();
   private final List<Trivia> trivias = Lists.newArrayList();
 
-  public static AstNode create(URI uri, char[] input, ParseNode node) {
-    return new AstCreator(uri, input).visit(node);
+  public static AstNode create(URI uri, ParsingResult parsingResult) {
+    return new AstCreator(uri, parsingResult.getInputBuffer()).visit(parsingResult.getParseTreeRoot());
   }
 
-  private AstCreator(URI uri, char[] input) {
-    this.input = input;
-    this.inputBuffer = new InputBuffer(input);
+  private AstCreator(URI uri, InputBuffer inputBuffer) {
+    this.inputBuffer = inputBuffer;
     tokenBuilder.setURI(uri);
   }
 
@@ -104,7 +104,7 @@ public final class AstCreator {
 
   private String getValue(ParseNode node) {
     StringBuilder result = new StringBuilder();
-    for (int i = node.getStartIndex(); i < Math.min(node.getEndIndex(), input.length); i++) {
+    for (int i = node.getStartIndex(); i < Math.min(node.getEndIndex(), inputBuffer.length()); i++) {
       result.append(inputBuffer.charAt(i));
     }
     return result.toString();

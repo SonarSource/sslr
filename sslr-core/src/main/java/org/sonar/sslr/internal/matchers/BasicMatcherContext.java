@@ -20,6 +20,7 @@
 package org.sonar.sslr.internal.matchers;
 
 import com.google.common.collect.Lists;
+import org.sonar.sslr.matchers.InputBuffer;
 
 import java.util.List;
 
@@ -31,14 +32,14 @@ public class BasicMatcherContext extends MatcherContext {
   private ParseNode node;
   private final List<ParseNode> subNodes = Lists.newArrayList();
 
-  public BasicMatcherContext(char[] input, MatchHandler matchHandler, Matcher matcher) {
-    super(input, matchHandler);
+  public BasicMatcherContext(InputBuffer inputBuffer, MatchHandler matchHandler, Matcher matcher) {
+    super(inputBuffer, matchHandler);
     this.parent = null;
     this.matcher = matcher;
   }
 
   public BasicMatcherContext(BasicMatcherContext parent) {
-    super(parent.input, parent.getMatchHandler());
+    super(parent.inputBuffer, parent.getMatchHandler());
     this.parent = parent;
   }
 
@@ -47,7 +48,7 @@ public class BasicMatcherContext extends MatcherContext {
     if (subContext == null) {
       subContext = new BasicMatcherContext(this);
     }
-    subContext.input = input;
+    subContext.inputBuffer = inputBuffer;
     subContext.matcher = matcher;
     subContext.startIndex = currentIndex;
     subContext.currentIndex = currentIndex;

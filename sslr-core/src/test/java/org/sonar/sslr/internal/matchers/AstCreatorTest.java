@@ -25,6 +25,8 @@ import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.sonar.sslr.matchers.InputBuffer;
+import org.sonar.sslr.matchers.ParsingResult;
 
 import java.net.URI;
 import java.util.Collections;
@@ -54,7 +56,10 @@ public class AstCreatorTest {
     ParseNode tokenNode = new ParseNode(4, 7, Collections.EMPTY_LIST, tokenMatcher);
     ParseNode parseTreeRoot = new ParseNode(0, 7, ImmutableList.of(triviaNode, tokenNode), ruleMatcher);
 
-    AstNode astNode = AstCreator.create(uri, input, parseTreeRoot);
+    InputBuffer inputBuffer = new ImmutableInputBuffer(input);
+    ParsingResult parsingResult = new ParsingResult(inputBuffer, true, parseTreeRoot, null);
+
+    AstNode astNode = AstCreator.create(uri, parsingResult);
     System.out.println(AstXmlPrinter.print(astNode));
 
     assertThat(astNode.getType()).isSameAs(ruleMatcher);
@@ -89,7 +94,10 @@ public class AstCreatorTest {
     ParseNode node = new ParseNode(0, 3, Collections.EMPTY_LIST, ruleMatcher1);
     ParseNode parseTreeRoot = new ParseNode(0, 3, ImmutableList.of(node), ruleMatcher2);
 
-    AstNode astNode = AstCreator.create(uri, input, parseTreeRoot);
+    InputBuffer inputBuffer = new ImmutableInputBuffer(input);
+    ParsingResult parsingResult = new ParsingResult(inputBuffer, true, parseTreeRoot, null);
+
+    AstNode astNode = AstCreator.create(uri, parsingResult);
     System.out.println(AstXmlPrinter.print(astNode));
 
     assertThat(astNode.getType()).isSameAs(ruleMatcher2);

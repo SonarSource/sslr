@@ -20,6 +20,7 @@
 package org.sonar.sslr.matchers;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import org.sonar.sslr.internal.matchers.ParseNode;
 
 import javax.annotation.Nullable;
@@ -33,12 +34,18 @@ public class ParsingResult {
 
   private final boolean matched;
   private final ParseNode parseTreeRoot;
+  private final InputBuffer inputBuffer;
   private final ParseError parseError;
 
-  public ParsingResult(boolean matched, @Nullable ParseNode parseTreeRoot, @Nullable ParseError parseError) {
+  public ParsingResult(InputBuffer inputBuffer, boolean matched, @Nullable ParseNode parseTreeRoot, @Nullable ParseError parseError) {
+    this.inputBuffer = Preconditions.checkNotNull(inputBuffer, "inputBuffer");
     this.matched = matched;
     this.parseTreeRoot = parseTreeRoot;
     this.parseError = parseError;
+  }
+
+  public InputBuffer getInputBuffer() {
+    return inputBuffer;
   }
 
   public boolean isMatched() {

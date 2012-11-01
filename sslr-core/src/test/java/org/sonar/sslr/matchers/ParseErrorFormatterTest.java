@@ -21,7 +21,7 @@ package org.sonar.sslr.matchers;
 
 import org.junit.Test;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
-import org.sonar.sslr.internal.matchers.InputBuffer;
+import org.sonar.sslr.internal.matchers.ImmutableInputBuffer;
 import org.sonar.sslr.internal.matchers.MatcherPathElement;
 
 import java.util.Arrays;
@@ -33,7 +33,7 @@ public class ParseErrorFormatterTest {
 
   @Test
   public void test() {
-    InputBuffer inputBuffer = new InputBuffer(" 2+4*10-0*\n".toCharArray());
+    InputBuffer inputBuffer = new ImmutableInputBuffer(" 2+4*10-0*\n".toCharArray());
     ParseErrorFormatter formatter = new ParseErrorFormatter();
     MatcherPathElement root = new MatcherPathElement(new GrammarElementMatcher("root"), 0, 1);
     MatcherPathElement expression = new MatcherPathElement(new GrammarElementMatcher("expression"), 1, 8);

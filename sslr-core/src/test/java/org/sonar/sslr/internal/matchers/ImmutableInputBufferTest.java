@@ -20,15 +20,16 @@
 package org.sonar.sslr.internal.matchers;
 
 import org.junit.Test;
-import org.sonar.sslr.internal.matchers.InputBuffer.Position;
+import org.sonar.sslr.matchers.InputBuffer;
+import org.sonar.sslr.matchers.InputBuffer.Position;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class InputBufferTest {
+public class ImmutableInputBufferTest {
 
   @Test
   public void test() {
-    InputBuffer inputBuffer = new InputBuffer("foo\r\nbar\nbaz\rqux\r".toCharArray());
+    InputBuffer inputBuffer = new ImmutableInputBuffer("foo\r\nbar\nbaz\rqux\r".toCharArray());
 
     assertThat(inputBuffer.getLineCount()).isEqualTo(5);
 
@@ -51,7 +52,7 @@ public class InputBufferTest {
 
   @Test
   public void test_single_line() {
-    InputBuffer inputBuffer = new InputBuffer("foo".toCharArray());
+    InputBuffer inputBuffer = new ImmutableInputBuffer("foo".toCharArray());
 
     assertThat(inputBuffer.getLineCount()).isEqualTo(1);
 
@@ -65,7 +66,7 @@ public class InputBufferTest {
 
   @Test
   public void test_empty() {
-    InputBuffer inputBuffer = new InputBuffer("".toCharArray());
+    InputBuffer inputBuffer = new ImmutableInputBuffer("".toCharArray());
 
     assertThat(inputBuffer.getLineCount()).isEqualTo(1);
 
@@ -77,7 +78,7 @@ public class InputBufferTest {
 
   @Test
   public void test_empty_lines_with_LF() {
-    InputBuffer inputBuffer = new InputBuffer("\n\n".toCharArray());
+    InputBuffer inputBuffer = new ImmutableInputBuffer("\n\n".toCharArray());
 
     assertThat(inputBuffer.getLineCount()).isEqualTo(3);
 
@@ -92,7 +93,7 @@ public class InputBufferTest {
 
   @Test
   public void test_empty_lines_with_CR() {
-    InputBuffer inputBuffer = new InputBuffer("\r\r".toCharArray());
+    InputBuffer inputBuffer = new ImmutableInputBuffer("\r\r".toCharArray());
 
     assertThat(inputBuffer.getLineCount()).isEqualTo(3);
 
@@ -107,7 +108,7 @@ public class InputBufferTest {
 
   @Test
   public void test_empty_lines_with_CRLF() {
-    InputBuffer inputBuffer = new InputBuffer("\r\n\r\n".toCharArray());
+    InputBuffer inputBuffer = new ImmutableInputBuffer("\r\n\r\n".toCharArray());
 
     assertThat(inputBuffer.getLineCount()).isEqualTo(3);
 

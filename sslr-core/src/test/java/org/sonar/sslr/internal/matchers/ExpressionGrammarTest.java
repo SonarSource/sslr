@@ -98,7 +98,7 @@ public class ExpressionGrammarTest {
     ParsingResult result = parseRunner.parse(input);
 
     URI uri = new URI("tests://unittest");
-    AstNode astNode = AstCreator.create(uri, input, result.getParseTreeRoot());
+    AstNode astNode = AstCreator.create(uri, result);
     System.out.println(astNode.getTokens());
     System.out.println(AstXmlPrinter.print(astNode));
 
