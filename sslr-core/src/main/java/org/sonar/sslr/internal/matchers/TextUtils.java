@@ -24,8 +24,8 @@ public final class TextUtils {
   private TextUtils() {
   }
 
-  private static char[] ESCAPE = {'\r', '\n', '\f', '\t', '"'};
-  private static String[] ESCAPED = {"\\r", "\\n", "\\f", "\\t", "\\\""};
+  private static final char[] ESCAPE = {'\r', '\n', '\f', '\t', '"'};
+  private static final String[] ESCAPED = {"\\r", "\\n", "\\f", "\\t", "\\\""};
 
   /**
    * Replaces carriage returns, line feeds, form feeds, tabs and double quotes
