@@ -19,48 +19,93 @@
  */
 package org.sonar.sslr.internal.matchers;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.GenericTokenType;
-import com.sonar.sslr.api.Token;
+import com.google.common.collect.ImmutableList;
+import com.sonar.sslr.api.*;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;
+import org.junit.Before;
 import org.junit.Test;
-import org.sonar.sslr.matchers.ParseRunner;
-import org.sonar.sslr.matchers.ParsingResult;
+import org.mockito.Mockito;
 
-import java.io.File;
 import java.net.URI;
+import java.util.Collections;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class AstCreatorTest {
 
-  @Test
-  public void test() throws Exception {
-    String inputString = "20 * 2 + 2 - var";
-    ExpressionGrammar grammar = new ExpressionGrammar();
-    char[] input = inputString.toCharArray();
-    ParseRunner parseRunner = new ParseRunner(grammar.root);
-    ParsingResult result = parseRunner.parse(input);
+  private URI uri;
 
-    URI uri = new File("/tmp/test.txt").toURI();
-    AstNode astNode = AstCreator.create(uri, input, result.getParseTreeRoot());
-    System.out.println(astNode.getTokens());
+  @Before
+  public void setUp() throws Exception {
+    uri = new URI("tests://unittest");
+  }
+
+  @Test
+  public void should_create_tokens_and_trivias() {
+    char[] input = "foo bar".toCharArray();
+
+    TokenMatcher tokenMatcher = mockTokenMatcher(GenericTokenType.IDENTIFIER);
+    TokenMatcher triviaMatcher = mockTokenMatcher(GenericTokenType.COMMENT);
+    GrammarElementMatcher ruleMatcher = mockRuleMatcher("rule");
+
+    ParseNode triviaNode = new ParseNode(0, 4, Collections.EMPTY_LIST, triviaMatcher);
+    ParseNode tokenNode = new ParseNode(4, 7, Collections.EMPTY_LIST, tokenMatcher);
+    ParseNode parseTreeRoot = new ParseNode(0, 7, ImmutableList.of(triviaNode, tokenNode), ruleMatcher);
+
+    AstNode astNode = AstCreator.create(uri, input, parseTreeRoot);
     System.out.println(AstXmlPrinter.print(astNode));
 
-    assertThat(astNode.getTokens()).hasSize(8);
+    assertThat(astNode.getType()).isSameAs(ruleMatcher);
+    assertThat(astNode.getName()).isEqualTo("rule");
+    assertThat(astNode.getFromIndex()).isEqualTo(0);
+    assertThat(astNode.getToIndex()).isEqualTo(7);
+    assertThat(astNode.hasChildren()).isTrue();
 
-    Token firstToken = astNode.getToken();
-    assertThat(firstToken.getLine()).isEqualTo(1);
-    assertThat(firstToken.getColumn()).isEqualTo(0);
-    assertThat(firstToken.getValue()).isEqualTo("20");
-    assertThat(firstToken.getOriginalValue()).isEqualTo("20");
+    assertThat(astNode.getTokens()).hasSize(1);
+    Token token = astNode.getToken();
+    assertThat(token.getValue()).isEqualTo("bar");
+    assertThat(token.getOriginalValue()).isEqualTo("bar");
+    assertThat(token.getLine()).isEqualTo(1);
+    assertThat(token.getColumn()).isEqualTo(4);
 
-    Token tokenWithTrivia = astNode.findFirstChild(GenericTokenType.LITERAL).getToken();
-    assertThat(tokenWithTrivia.getLine()).isEqualTo(1);
-    assertThat(tokenWithTrivia.getColumn()).isEqualTo(3);
-    assertThat(tokenWithTrivia.getTrivia()).hasSize(1);
-    assertThat(tokenWithTrivia.getValue()).isEqualTo("*");
-    assertThat(tokenWithTrivia.getOriginalValue()).isEqualTo("*");
+    assertThat(token.getTrivia()).hasSize(1);
+    Trivia trivia = token.getTrivia().get(0);
+    Token triviaToken = trivia.getToken();
+    assertThat(triviaToken.getValue()).isEqualTo("foo ");
+    assertThat(triviaToken.getOriginalValue()).isEqualTo("foo ");
+    assertThat(triviaToken.getLine()).isEqualTo(1);
+    assertThat(triviaToken.getColumn()).isEqualTo(0);
+  }
+
+  @Test
+  public void should_skip_nodes() {
+    char[] input = "foo".toCharArray();
+
+    GrammarElementMatcher ruleMatcher1 = mockRuleMatcher("rule1");
+    when(ruleMatcher1.hasToBeSkippedFromAst(Mockito.any(AstNode.class))).thenReturn(true);
+    GrammarElementMatcher ruleMatcher2 = mockRuleMatcher("rule2");
+    ParseNode node = new ParseNode(0, 3, Collections.EMPTY_LIST, ruleMatcher1);
+    ParseNode parseTreeRoot = new ParseNode(0, 3, ImmutableList.of(node), ruleMatcher2);
+
+    AstNode astNode = AstCreator.create(uri, input, parseTreeRoot);
+    System.out.println(AstXmlPrinter.print(astNode));
+
+    assertThat(astNode.getType()).isSameAs(ruleMatcher2);
+    assertThat(astNode.getName()).isEqualTo("rule2");
+    assertThat(astNode.getFromIndex()).isEqualTo(0);
+    assertThat(astNode.getToIndex()).isEqualTo(3);
+    assertThat(astNode.hasChildren()).isFalse();
+    assertThat(astNode.getToken()).isNull();
+  }
+
+  private static GrammarElementMatcher mockRuleMatcher(String name) {
+    return when(mock(GrammarElementMatcher.class).getName()).thenReturn(name).getMock();
+  }
+
+  private static TokenMatcher mockTokenMatcher(TokenType tokenType) {
+    return when(mock(TokenMatcher.class).getTokenType()).thenReturn(tokenType).getMock();
   }
 
 }

@@ -48,7 +48,7 @@ public final class AstCreator {
   }
 
   private AstNode visit(ParseNode node) {
-    if (node.getChildren().isEmpty()) {
+    if (node.getMatcher() instanceof TokenMatcher) {
       return visitTerminal(node);
     } else {
       return visitNonTerminal(node);
@@ -56,9 +56,6 @@ public final class AstCreator {
   }
 
   private AstNode visitTerminal(ParseNode node) {
-    if (!(node.getMatcher() instanceof TokenMatcher)) {
-      return null;
-    }
     TokenMatcher ruleMatcher = (TokenMatcher) node.getMatcher();
 
     Position position = inputBuffer.getPosition(node.getStartIndex());

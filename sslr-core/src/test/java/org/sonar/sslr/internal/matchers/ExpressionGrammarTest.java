@@ -19,12 +19,18 @@
  */
 package org.sonar.sslr.internal.matchers;
 
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.GenericTokenType;
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.sslr.matchers.ParseError;
 import org.sonar.sslr.matchers.ParseErrorFormatter;
 import org.sonar.sslr.matchers.ParseRunner;
 import org.sonar.sslr.matchers.ParsingResult;
+
+import java.net.URI;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -81,6 +87,35 @@ public class ExpressionGrammarTest {
     assertThat(result.isMatched()).isTrue();
     ParseTreePrinter.print(result.getParseTreeRoot(), input);
     assertThat(ParseTreePrinter.leafsToString(result.getParseTreeRoot(), input)).as("full-fidelity").isEqualTo(inputString);
+  }
+
+  @Test
+  public void should_create_ast() throws Exception {
+    String inputString = "20 * 2 + 2 - var";
+    ExpressionGrammar grammar = new ExpressionGrammar();
+    char[] input = inputString.toCharArray();
+    ParseRunner parseRunner = new ParseRunner(grammar.root);
+    ParsingResult result = parseRunner.parse(input);
+
+    URI uri = new URI("tests://unittest");
+    AstNode astNode = AstCreator.create(uri, input, result.getParseTreeRoot());
+    System.out.println(astNode.getTokens());
+    System.out.println(AstXmlPrinter.print(astNode));
+
+    assertThat(astNode.getTokens()).hasSize(8);
+
+    Token firstToken = astNode.getToken();
+    assertThat(firstToken.getLine()).isEqualTo(1);
+    assertThat(firstToken.getColumn()).isEqualTo(0);
+    assertThat(firstToken.getValue()).isEqualTo("20");
+    assertThat(firstToken.getOriginalValue()).isEqualTo("20");
+
+    Token tokenWithTrivia = astNode.findFirstChild(GenericTokenType.LITERAL).getToken();
+    assertThat(tokenWithTrivia.getLine()).isEqualTo(1);
+    assertThat(tokenWithTrivia.getColumn()).isEqualTo(3);
+    assertThat(tokenWithTrivia.getTrivia()).hasSize(1);
+    assertThat(tokenWithTrivia.getValue()).isEqualTo("*");
+    assertThat(tokenWithTrivia.getOriginalValue()).isEqualTo("*");
   }
 
 }
