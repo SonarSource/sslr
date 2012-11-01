@@ -25,7 +25,6 @@ import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.ast.AlwaysSkipFromAst;
 import com.sonar.sslr.impl.ast.NeverSkipFromAst;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
-import org.sonar.sslr.matchers.Matchers;
 
 // TODO Godin: Retrofit methods with varargs (SSLR-215)
 public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPolicy {
@@ -52,7 +51,7 @@ public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPoli
   }
 
   public void mock() {
-    setSubMatchers(getName(), Matchers.firstOf(Matchers.regexp("\\s++"), Matchers.endOfInput()));
+    setSubMatchers(getName(), new FirstOfMatcher(new PatternMatcher("\\s++"), new EndOfInputMatcher()));
   }
 
   private void setSubMatchers(Object... elements) {

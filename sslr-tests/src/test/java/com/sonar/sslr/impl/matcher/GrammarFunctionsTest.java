@@ -61,15 +61,15 @@ public class GrammarFunctionsTest {
 
   @Test
   public void convertToMatcher_should_check_type() {
-    thrown.expect(IllegalStateException.class);
+    thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage("The matcher object can't be anything else than a Rule, Matcher, String, TokenType or Class. Object = 1");
     GrammarFunctions.convertToMatcher(Integer.valueOf(1));
   }
 
   @Test
   public void convertToMatcher_should_not_accept_null() {
-    thrown.expect(IllegalStateException.class);
-    thrown.expectMessage("Null is not a valid matcher.");
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("The matcher object can't be anything else than a Rule, Matcher, String, TokenType or Class. Object = null");
     GrammarFunctions.convertToMatcher(null);
   }
 

@@ -69,7 +69,7 @@ public class MatchersUtilsTest {
   @Test
   public void illegal_argument() {
     thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("java.lang.Object");
+    thrown.expectMessage("Incorrect type of parsing expression: java.lang.Object");
     MatchersUtils.convertToMatcher(new Object());
   }
 

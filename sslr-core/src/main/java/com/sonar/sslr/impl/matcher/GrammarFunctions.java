@@ -133,7 +133,7 @@ public final class GrammarFunctions {
 
     public static Matcher firstOf(Object... elements) {
       if (elements == null || elements.length == 0) {
-        throw new IllegalStateException(AT_LEAST_ONE_MATCHER_MESSAGE);
+        throw new IllegalArgumentException(AT_LEAST_ONE_MATCHER_MESSAGE);
       } else if (elements.length == 1) {
         return convertToMatcher(elements[0]);
       } else {
@@ -152,7 +152,7 @@ public final class GrammarFunctions {
      */
     public static Matcher and(Object... elements) {
       if (elements == null || elements.length == 0) {
-        throw new IllegalStateException(AT_LEAST_ONE_MATCHER_MESSAGE);
+        throw new IllegalArgumentException(AT_LEAST_ONE_MATCHER_MESSAGE);
       } else if (elements.length == 1) {
         return convertToMatcher(elements[0]);
       } else {
@@ -215,7 +215,7 @@ public final class GrammarFunctions {
      */
     public static Matcher isOneOfThem(TokenType... types) {
       if (types == null || types.length == 0) {
-        throw new IllegalStateException(AT_LEAST_ONE_MATCHER_MESSAGE);
+        throw new IllegalArgumentException(AT_LEAST_ONE_MATCHER_MESSAGE);
       } else {
         return getCachedMatcher(new TokenTypesMatcher(types));
       }
@@ -344,7 +344,7 @@ public final class GrammarFunctions {
 
   protected static Matcher[] convertToMatchers(Object[] objects) {
     if (objects == null || objects.length == 0) {
-      throw new IllegalStateException(AT_LEAST_ONE_MATCHER_MESSAGE);
+      throw new IllegalArgumentException(AT_LEAST_ONE_MATCHER_MESSAGE);
     }
 
     Matcher[] matchers = new Matcher[objects.length];
@@ -356,9 +356,6 @@ public final class GrammarFunctions {
 
   @SuppressWarnings("rawtypes")
   protected static Matcher convertToMatcher(Object object) {
-    if (object == null) {
-      throw new IllegalStateException("Null is not a valid matcher.");
-    }
     final Matcher matcher;
     if (object instanceof String) {
       matcher = getCachedMatcher(new TokenValueMatcher((String) object));
@@ -372,7 +369,7 @@ public final class GrammarFunctions {
     } else if (object instanceof Matcher) {
       matcher = (Matcher) object;
     } else {
-      throw new IllegalStateException("The matcher object can't be anything else than a Rule, Matcher, String, TokenType or Class. Object = " + object);
+      throw new IllegalArgumentException("The matcher object can't be anything else than a Rule, Matcher, String, TokenType or Class. Object = " + object);
     }
     return matcher;
   }

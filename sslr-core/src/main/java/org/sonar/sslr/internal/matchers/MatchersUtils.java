@@ -51,8 +51,7 @@ public final class MatchersUtils {
     } else if (element instanceof Character) {
       return new StringMatcher(Character.toString((Character) element));
     } else {
-      // TODO Godin: improve message
-      throw new IllegalArgumentException(element.getClass().getName());
+      throw new IllegalArgumentException("Incorrect type of parsing expression: " + element.getClass().getName());
     }
   }
 
