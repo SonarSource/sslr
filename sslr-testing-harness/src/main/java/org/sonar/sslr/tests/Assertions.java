@@ -22,7 +22,7 @@ package org.sonar.sslr.tests;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.Parser;
 
-public class Assertions extends org.fest.assertions.Assertions {
+public class Assertions {
 
   /**
    * Creates a new instance of <code>{@link RuleAssert}</code>.
