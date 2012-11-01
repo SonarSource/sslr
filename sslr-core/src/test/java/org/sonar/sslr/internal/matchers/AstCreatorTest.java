@@ -19,6 +19,8 @@
  */
 package org.sonar.sslr.internal.matchers;
 
+import org.sonar.sslr.internal.text.ImmutableInputBuffer;
+
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.*;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;

@@ -23,7 +23,7 @@ import com.google.common.base.Preconditions;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 import org.sonar.sslr.internal.matchers.Matcher;
 import org.sonar.sslr.internal.matchers.MatcherPathElement;
-import org.sonar.sslr.internal.matchers.TextUtils;
+import org.sonar.sslr.internal.text.TextUtils;
 import org.sonar.sslr.matchers.InputBuffer.Position;
 
 import java.io.Serializable;

@@ -19,6 +19,8 @@
  */
 package org.sonar.sslr.internal.matchers;
 
+import org.sonar.sslr.internal.text.ImmutableInputBuffer;
+
 import org.junit.Test;
 import org.sonar.sslr.matchers.InputBuffer;
 import org.sonar.sslr.matchers.InputBuffer.Position;

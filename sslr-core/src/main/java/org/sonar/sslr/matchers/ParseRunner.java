@@ -23,6 +23,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.sonar.sslr.api.Rule;
 import org.sonar.sslr.internal.matchers.*;
+import org.sonar.sslr.internal.text.ImmutableInputBuffer;
 
 import java.util.List;
 

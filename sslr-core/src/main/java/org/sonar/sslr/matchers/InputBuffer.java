@@ -45,7 +45,7 @@ public interface InputBuffer {
 
   Position getPosition(int index);
 
-  public static class Position {
+  class Position {
 
     private final int line;
     private final int column;

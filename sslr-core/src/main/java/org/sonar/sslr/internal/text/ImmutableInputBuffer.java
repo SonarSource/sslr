@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.internal.matchers;
+package org.sonar.sslr.internal.text;
 
 import com.google.common.collect.Lists;
 import org.sonar.sslr.matchers.InputBuffer;
@@ -26,9 +26,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ImmutableInputBuffer implements InputBuffer {
-
-  private static final char CR = '\r';
-  private static final char LF = '\n';
 
   private final char[] buffer;
 
@@ -70,8 +67,8 @@ public class ImmutableInputBuffer implements InputBuffer {
    * or a carriage return followed immediately by a line feed ({@code "\r\n"}).
    */
   private static boolean isEndOfLine(char[] buffer, int i) {
-    return buffer[i] == LF ||
-        (buffer[i] == CR && (((i + 1 < buffer.length) && buffer[i + 1] != LF) || i + 1 == buffer.length));
+    return buffer[i] == TextUtils.LF ||
+        (buffer[i] == TextUtils.CR && (((i + 1 < buffer.length) && buffer[i + 1] != TextUtils.LF) || i + 1 == buffer.length));
   }
 
   public String extractLine(int lineNumber) {

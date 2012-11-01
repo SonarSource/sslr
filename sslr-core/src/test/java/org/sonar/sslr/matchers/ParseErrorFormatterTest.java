@@ -19,9 +19,10 @@
  */
 package org.sonar.sslr.matchers;
 
+import org.sonar.sslr.internal.text.ImmutableInputBuffer;
+
 import org.junit.Test;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
-import org.sonar.sslr.internal.matchers.ImmutableInputBuffer;
 import org.sonar.sslr.internal.matchers.MatcherPathElement;
 
 import java.util.Arrays;

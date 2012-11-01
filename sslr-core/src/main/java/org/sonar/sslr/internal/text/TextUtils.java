@@ -17,12 +17,15 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.internal.matchers;
+package org.sonar.sslr.internal.text;
 
 public final class TextUtils {
 
   private TextUtils() {
   }
+
+  public static final char CR = '\r';
+  public static final char LF = '\n';
 
   private static final char[] ESCAPE = {'\r', '\n', '\f', '\t', '"'};
   private static final String[] ESCAPED = {"\\r", "\\n", "\\f", "\\t", "\\\""};
@@ -44,7 +47,7 @@ public final class TextUtils {
   public static String trimTrailingLineSeparatorFrom(String string) {
     int last;
     for (last = string.length() - 1; last >= 0; last--) {
-      if (string.charAt(last) != '\n' && string.charAt(last) != '\r') {
+      if (string.charAt(last) != LF && string.charAt(last) != CR) {
         break;
       }
     }

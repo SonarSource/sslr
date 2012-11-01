@@ -19,5 +19,5 @@
  */
 
 @javax.annotation.ParametersAreNonnullByDefault
-package org.sonar.sslr.internal.matchers;
+package org.sonar.sslr.internal.text;
 

@@ -19,6 +19,8 @@
  */
 package org.sonar.sslr.internal.matchers;
 
+import org.sonar.sslr.internal.text.ImmutableInputBuffer;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
