@@ -19,39 +19,77 @@
  */
 package org.sonar.sslr.matchers;
 
+/**
+ * Provides methods to simplify migration from {@link com.sonar.sslr.impl.matcher.GrammarFunctions}
+ * to {@link Matchers}.
+ *
+ * @since 2.0
+ */
 public final class OldMatchers {
 
   private OldMatchers() {
   }
 
+  /**
+   * @deprecated use {@link Matchers#sequence(Object...)} instead
+   */
+  @Deprecated
   public static Object and(Object... elements) {
     return Matchers.sequence(elements);
   }
 
+  /**
+   * @deprecated use {@link Matchers#firstOf(Object...)} instead
+   */
+  @Deprecated
   public static Object or(Object... elements) {
     return Matchers.firstOf(elements);
   }
 
+  /**
+   * @deprecated use {@link Matchers#optional(Object...)} instead
+   */
+  @Deprecated
   public static Object opt(Object... elements) {
     return Matchers.optional(elements);
   }
 
+  /**
+   * @deprecated use {@link Matchers#oneOrMore(Object...)} instead
+   */
+  @Deprecated
   public static Object one2n(Object... elements) {
     return Matchers.oneOrMore(elements);
   }
 
+  /**
+   * @deprecated use {@link Matchers#zeroOrMore(Object...)} instead
+   */
+  @Deprecated
   public static Object o2n(Object... elements) {
     return Matchers.zeroOrMore(elements);
   }
 
+  /**
+   * @deprecated use {@link Matchers#next(Object...)} instead
+   */
+  @Deprecated
   public static Object next(Object... elements) {
     return Matchers.next(elements);
   }
 
+  /**
+   * @deprecated use {@link Matchers#nextNot(Object...)} instead
+   */
+  @Deprecated
   public static Object not(Object... elements) {
     return Matchers.nextNot(elements);
   }
 
+  /**
+   * @deprecated use {@link Matchers#nothing()} instead
+   */
+  @Deprecated
   public static Object isFalse() {
     return Matchers.nothing();
   }

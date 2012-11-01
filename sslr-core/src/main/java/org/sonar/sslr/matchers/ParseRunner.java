@@ -28,6 +28,8 @@ import java.util.List;
 
 /**
  * <p>This class is not intended to be subclassed by clients.</p>
+ *
+ * @since 2.0
  */
 public class ParseRunner {
 

@@ -22,6 +22,11 @@ package org.sonar.sslr.matchers;
 import com.sonar.sslr.api.TokenType;
 import org.sonar.sslr.internal.matchers.*;
 
+/**
+ * Provides methods to define rules for {@link LexerlessGrammar}.
+ *
+ * @since 2.0
+ */
 // TODO Godin: Retrofit methods with varargs (SSLR-215)
 public final class Matchers {
 

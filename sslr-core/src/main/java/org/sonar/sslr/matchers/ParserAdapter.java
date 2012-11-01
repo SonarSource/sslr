@@ -41,6 +41,8 @@ import java.util.List;
  * Adapts {@link ParseRunner} to be used as {@link Parser}.
  *
  * <p>This class is not intended to be sub-classed by clients.</p>
+ *
+ * @since 2.0
  */
 public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
 
@@ -53,6 +55,10 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
     this.parseRunner = new ParseRunner(grammar.getRootRule());
   }
 
+  /**
+   * @return constructed AST
+   * @throws RecognitionException if unable to parse
+   */
   @Override
   public AstNode parse(String source) {
     URI uri;
@@ -65,6 +71,10 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
     return parse(uri, source.toCharArray());
   }
 
+  /**
+   * @return constructed AST
+   * @throws RecognitionException if unable to parse
+   */
   @Override
   public AstNode parse(File file) {
     return parse(file.toURI(), fileToCharArray(file, charset));

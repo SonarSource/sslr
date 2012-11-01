@@ -18,7 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
 
-@ParametersAreNonnullByDefault
+/**
+ * @since 2.0
+ */
+@javax.annotation.ParametersAreNonnullByDefault
 package org.sonar.sslr.tests;
-
-import javax.annotation.ParametersAreNonnullByDefault;

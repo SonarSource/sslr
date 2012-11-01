@@ -22,6 +22,9 @@ package org.sonar.sslr.tests;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.Parser;
 
+/**
+ * @since 2.0
+ */
 public final class Assertions {
 
   private Assertions() {

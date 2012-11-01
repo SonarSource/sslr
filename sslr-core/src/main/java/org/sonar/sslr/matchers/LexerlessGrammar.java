@@ -21,6 +21,11 @@ package org.sonar.sslr.matchers;
 
 import com.sonar.sslr.api.Grammar;
 
+/**
+ * <a href="http://en.wikipedia.org/wiki/Parsing_expression_grammar">Parsing Expression Grammar</a>.
+ *
+ * @since 2.0
+ */
 public abstract class LexerlessGrammar extends Grammar {
 
 }

@@ -26,6 +26,8 @@ import java.util.List;
 
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ *
+ * @since 2.0
  */
 public class ParseError {
 
