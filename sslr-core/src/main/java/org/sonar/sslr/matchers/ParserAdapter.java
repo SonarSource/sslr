@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.matchers;
 
+import com.google.common.base.Preconditions;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Token;
@@ -50,8 +51,8 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
   private final ParseRunner parseRunner;
 
   public ParserAdapter(Charset charset, G grammar) {
-    super(grammar);
-    this.charset = charset;
+    super(Preconditions.checkNotNull(grammar, "grammar"));
+    this.charset = Preconditions.checkNotNull(charset, "charset");
     this.parseRunner = new ParseRunner(grammar.getRootRule());
   }
 

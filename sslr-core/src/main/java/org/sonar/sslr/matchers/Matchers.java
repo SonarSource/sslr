@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.matchers;
 
+import com.google.common.base.Preconditions;
 import com.sonar.sslr.api.TokenType;
 import org.sonar.sslr.internal.matchers.*;
 
@@ -38,6 +39,8 @@ public final class Matchers {
   }
 
   public static Object firstOf(Object... elements) {
+    Preconditions.checkNotNull(elements);
+
     if (elements.length == 1) {
       return MatchersUtils.convertToMatcher(elements[0]);
     }

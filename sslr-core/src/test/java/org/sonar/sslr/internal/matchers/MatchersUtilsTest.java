@@ -59,6 +59,18 @@ public class MatchersUtilsTest {
   }
 
   @Test
+  public void should_not_convert_null_to_matchers() {
+    thrown.expect(NullPointerException.class);
+    MatchersUtils.convertToMatchers((Object[]) null);
+  }
+
+  @Test
+  public void should_not_convert_empty_array_to_matchers() {
+    thrown.expect(IllegalArgumentException.class);
+    MatchersUtils.convertToMatchers(new Object[] {});
+  }
+
+  @Test
   public void should_convert_to_single_matcher() {
     Matcher matcher1 = mock(Matcher.class);
     Matcher matcher2 = mock(Matcher.class);
@@ -67,10 +79,28 @@ public class MatchersUtilsTest {
   }
 
   @Test
-  public void illegal_argument() {
+  public void should_not_convert_null_to_single_matcher() {
+    thrown.expect(NullPointerException.class);
+    MatchersUtils.convertToSingleMatcher((Object[]) null);
+  }
+
+  @Test
+  public void should_not_convert_empty_array_to_single_matcher() {
+    thrown.expect(IllegalArgumentException.class);
+    MatchersUtils.convertToSingleMatcher(new Object[] {});
+  }
+
+  @Test
+  public void should_not_convert_to_matcher() {
     thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage("Incorrect type of parsing expression: java.lang.Object");
     MatchersUtils.convertToMatcher(new Object());
+  }
+
+  @Test
+  public void should_not_convert_null_to_matcher() {
+    thrown.expect(NullPointerException.class);
+    MatchersUtils.convertToMatcher(null);
   }
 
   @Test

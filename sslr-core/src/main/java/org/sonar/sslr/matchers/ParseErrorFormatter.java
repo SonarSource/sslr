@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.matchers;
 
+import com.google.common.base.Preconditions;
 import org.sonar.sslr.internal.matchers.*;
 import org.sonar.sslr.internal.matchers.InputBuffer.Position;
 
@@ -42,6 +43,8 @@ public class ParseErrorFormatter {
   private static final int EXCERPT_SIZE = 40;
 
   public String format(ParseError parseError) {
+    Preconditions.checkNotNull(parseError);
+
     InputBuffer inputBuffer = parseError.getInputBuffer();
     Position position = inputBuffer.getPosition(parseError.getErrorIndex());
     StringBuilder sb = new StringBuilder();

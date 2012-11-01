@@ -19,12 +19,16 @@
  */
 package org.sonar.sslr.internal.matchers;
 
+import com.google.common.base.Preconditions;
+
 public final class MatchersUtils {
 
   private MatchersUtils() {
   }
 
   public static Matcher convertToSingleMatcher(Object... elements) {
+    Preconditions.checkNotNull(elements);
+
     if (elements.length == 1) {
       return MatchersUtils.convertToMatcher(elements[0]);
     }
@@ -32,6 +36,9 @@ public final class MatchersUtils {
   }
 
   public static Matcher[] convertToMatchers(Object... elements) {
+    Preconditions.checkNotNull(elements);
+    Preconditions.checkArgument(elements.length > 0);
+
     if (elements.length == 1 && elements[0] instanceof SequenceMatcher) {
       return ((SequenceMatcher) elements[0]).getSubMatchers();
     }
@@ -44,6 +51,8 @@ public final class MatchersUtils {
   }
 
   public static Matcher convertToMatcher(Object element) {
+    Preconditions.checkNotNull(element);
+
     if (element instanceof Matcher) {
       return (Matcher) element;
     } else if (element instanceof String) {

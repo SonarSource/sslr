@@ -37,6 +37,12 @@ public class ParseRunnerTest {
   public ExpectedException thrown = ExpectedException.none();
 
   @Test
+  public void should_not_accept_null() {
+    thrown.expect(NullPointerException.class);
+    new ParseRunner(null);
+  }
+
+  @Test
   public void should_report_error_at_rule_level() {
     Rule rule = new GrammarElementMatcher("rule").is("foo", "bar");
     ParseRunner runner = new ParseRunner(rule);

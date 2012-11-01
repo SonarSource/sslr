@@ -36,7 +36,7 @@ public class ParseRunner {
   private final Matcher rootMatcher;
 
   public ParseRunner(Rule rule) {
-    this.rootMatcher = (Matcher) rule;
+    this.rootMatcher = (Matcher) Preconditions.checkNotNull(rule, "rule");
   }
 
   public ParsingResult parse(char[] input) {

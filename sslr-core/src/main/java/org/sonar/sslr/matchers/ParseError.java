@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.matchers;
 
+import com.google.common.base.Preconditions;
 import org.sonar.sslr.internal.matchers.InputBuffer;
 import org.sonar.sslr.internal.matchers.MatcherPathElement;
 
@@ -37,10 +38,10 @@ public class ParseError {
   private final List<List<MatcherPathElement>> failedPaths;
 
   public ParseError(InputBuffer inputBuffer, int errorIndex, String message, List<List<MatcherPathElement>> failedPaths) {
-    this.inputBuffer = inputBuffer;
+    this.inputBuffer = Preconditions.checkNotNull(inputBuffer, "inputBuffer");
     this.errorIndex = errorIndex;
-    this.message = message;
-    this.failedPaths = failedPaths;
+    this.message = Preconditions.checkNotNull(message, "message");
+    this.failedPaths = Preconditions.checkNotNull(failedPaths, "failedPaths");
   }
 
   public InputBuffer getInputBuffer() {
