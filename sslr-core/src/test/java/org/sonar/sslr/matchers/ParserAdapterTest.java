@@ -22,6 +22,7 @@ package org.sonar.sslr.matchers;
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Token;
+import com.sonar.sslr.impl.Parser;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
@@ -82,6 +83,11 @@ public class ParserAdapterTest {
     thrown.expect(RecognitionException.class);
     File file = new File("notfound");
     parser.parse(file);
+  }
+
+  @Test
+  public void builder_should_not_create_new_instance_from_adapter() {
+    assertThat(Parser.builder(parser).build()).isSameAs(parser);
   }
 
   @Test

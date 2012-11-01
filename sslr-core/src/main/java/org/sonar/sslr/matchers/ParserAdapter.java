@@ -39,6 +39,8 @@ import java.util.List;
 
 /**
  * Adapts {@link ParseRunner} to be used as {@link Parser}.
+ *
+ * <p>This class is not intended to be sub-classed by clients.</p>
  */
 public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
 
@@ -46,8 +48,8 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
   private final ParseRunner parseRunner;
 
   public ParserAdapter(Charset charset, G grammar) {
+    super(grammar);
     this.charset = charset;
-    this.grammar = grammar;
     this.parseRunner = new ParseRunner(grammar.getRootRule());
   }
 

@@ -19,11 +19,13 @@
  */
 package com.sonar.sslr.impl;
 
+import com.google.common.collect.ImmutableSet;
 import com.sonar.sslr.api.*;
 import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import com.sonar.sslr.impl.events.ParsingEventListener;
 import com.sonar.sslr.impl.matcher.GrammarFunctions;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
+import org.sonar.sslr.matchers.ParserAdapter;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -31,17 +33,30 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * To create a new instance of this class use <code>{@link Parser#builder(Grammar)}</code>.
+ *
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ */
 public class Parser<G extends Grammar> {
 
   private RuleDefinition rootRule;
   private ParsingState parsingState;
-  private Lexer lexer;
-  protected G grammar;
-  private Set<RecognitionExceptionListener> listeners = new HashSet<RecognitionExceptionListener>();
-  private ParsingEventListener[] parsingEventListeners;
-  private ExtendedStackTrace extendedStackTrace;
+  private final Lexer lexer;
+  private final G grammar;
+  private final Set<RecognitionExceptionListener> listeners;
+  private final ParsingEventListener[] parsingEventListeners;
+  private final ExtendedStackTrace extendedStackTrace;
 
-  protected Parser() {
+  /**
+   * @since 2.0
+   */
+  protected Parser(G grammar) {
+    this.grammar = grammar;
+    lexer = null;
+    listeners = ImmutableSet.of();
+    parsingEventListeners = new ParsingEventListener[0];
+    extendedStackTrace = null;
   }
 
   private Parser(Builder<G> builder) {
@@ -170,6 +185,7 @@ public class Parser<G extends Grammar> {
 
   public static final class Builder<G extends Grammar> {
 
+    private Parser<G> baseParser;
     private Lexer lexer;
     private final G grammar;
     private final Set<ParsingEventListener> parsingEventListeners = new HashSet<ParsingEventListener>();
@@ -181,6 +197,7 @@ public class Parser<G extends Grammar> {
     }
 
     private Builder(Parser<G> parser) {
+      this.baseParser = parser;
       this.lexer = parser.lexer;
       this.grammar = parser.grammar;
       setParsingEventListeners(parser.parsingEventListeners);
@@ -189,6 +206,9 @@ public class Parser<G extends Grammar> {
     }
 
     public Parser<G> build() {
+      if (baseParser instanceof ParserAdapter) {
+        return baseParser;
+      }
       return new Parser<G>(this);
     }
 
