@@ -17,81 +17,81 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.matchers;
+package org.sonar.sslr.parser;
 
 /**
  * Provides methods to simplify migration from {@link com.sonar.sslr.impl.matcher.GrammarFunctions}
- * to {@link Matchers}.
+ * to {@link GrammarOperators}.
  *
  * @since 2.0
  */
-public final class OldMatchers {
+public final class GrammarFunctionsMigrator {
 
-  private OldMatchers() {
+  private GrammarFunctionsMigrator() {
   }
 
   /**
-   * @deprecated use {@link Matchers#sequence(Object...)} instead
+   * @deprecated use {@link GrammarOperators#sequence(Object...)} instead
    */
   @Deprecated
   public static Object and(Object... elements) {
-    return Matchers.sequence(elements);
+    return GrammarOperators.sequence(elements);
   }
 
   /**
-   * @deprecated use {@link Matchers#firstOf(Object...)} instead
+   * @deprecated use {@link GrammarOperators#firstOf(Object...)} instead
    */
   @Deprecated
   public static Object or(Object... elements) {
-    return Matchers.firstOf(elements);
+    return GrammarOperators.firstOf(elements);
   }
 
   /**
-   * @deprecated use {@link Matchers#optional(Object...)} instead
+   * @deprecated use {@link GrammarOperators#optional(Object...)} instead
    */
   @Deprecated
   public static Object opt(Object... elements) {
-    return Matchers.optional(elements);
+    return GrammarOperators.optional(elements);
   }
 
   /**
-   * @deprecated use {@link Matchers#oneOrMore(Object...)} instead
+   * @deprecated use {@link GrammarOperators#oneOrMore(Object...)} instead
    */
   @Deprecated
   public static Object one2n(Object... elements) {
-    return Matchers.oneOrMore(elements);
+    return GrammarOperators.oneOrMore(elements);
   }
 
   /**
-   * @deprecated use {@link Matchers#zeroOrMore(Object...)} instead
+   * @deprecated use {@link GrammarOperators#zeroOrMore(Object...)} instead
    */
   @Deprecated
   public static Object o2n(Object... elements) {
-    return Matchers.zeroOrMore(elements);
+    return GrammarOperators.zeroOrMore(elements);
   }
 
   /**
-   * @deprecated use {@link Matchers#next(Object...)} instead
+   * @deprecated use {@link GrammarOperators#next(Object...)} instead
    */
   @Deprecated
   public static Object next(Object... elements) {
-    return Matchers.next(elements);
+    return GrammarOperators.next(elements);
   }
 
   /**
-   * @deprecated use {@link Matchers#nextNot(Object...)} instead
+   * @deprecated use {@link GrammarOperators#nextNot(Object...)} instead
    */
   @Deprecated
   public static Object not(Object... elements) {
-    return Matchers.nextNot(elements);
+    return GrammarOperators.nextNot(elements);
   }
 
   /**
-   * @deprecated use {@link Matchers#nothing()} instead
+   * @deprecated use {@link GrammarOperators#nothing()} instead
    */
   @Deprecated
   public static Object isFalse() {
-    return Matchers.nothing();
+    return GrammarOperators.nothing();
   }
 
 }

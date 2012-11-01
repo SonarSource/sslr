@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.matchers;
+package org.sonar.sslr.parser;
 
 import com.google.common.base.Preconditions;
 import com.sonar.sslr.api.AstNode;
@@ -28,6 +28,7 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.apache.commons.io.IOUtils;
 import org.sonar.sslr.internal.matchers.AstCreator;
+import org.sonar.sslr.internal.matchers.InputBuffer;
 
 import java.io.File;
 import java.io.FileInputStream;

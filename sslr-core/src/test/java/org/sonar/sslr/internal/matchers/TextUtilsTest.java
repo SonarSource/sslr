@@ -19,8 +19,6 @@
  */
 package org.sonar.sslr.internal.matchers;
 
-import org.sonar.sslr.internal.text.TextUtils;
-
 import org.junit.Test;
 
 import java.lang.reflect.Constructor;

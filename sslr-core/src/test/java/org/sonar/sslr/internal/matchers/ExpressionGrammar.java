@@ -21,13 +21,14 @@ package org.sonar.sslr.internal.matchers;
 
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Rule;
-import org.sonar.sslr.matchers.LexerlessGrammar;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
-import static org.sonar.sslr.matchers.Matchers.endOfInput;
-import static org.sonar.sslr.matchers.Matchers.firstOf;
-import static org.sonar.sslr.matchers.Matchers.regexp;
-import static org.sonar.sslr.matchers.Matchers.token;
-import static org.sonar.sslr.matchers.Matchers.zeroOrMore;
+import static org.sonar.sslr.parser.GrammarOperators.endOfInput;
+import static org.sonar.sslr.parser.GrammarOperators.firstOf;
+import static org.sonar.sslr.parser.GrammarOperators.regexp;
+import static org.sonar.sslr.parser.GrammarOperators.token;
+import static org.sonar.sslr.parser.GrammarOperators.zeroOrMore;
+
 
 public class ExpressionGrammar extends LexerlessGrammar {
 

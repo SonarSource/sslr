@@ -25,10 +25,10 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import org.junit.Before;
 import org.junit.Test;
-import org.sonar.sslr.matchers.ParseError;
-import org.sonar.sslr.matchers.ParseErrorFormatter;
-import org.sonar.sslr.matchers.ParseRunner;
-import org.sonar.sslr.matchers.ParsingResult;
+import org.sonar.sslr.parser.ParseError;
+import org.sonar.sslr.parser.ParseErrorFormatter;
+import org.sonar.sslr.parser.ParseRunner;
+import org.sonar.sslr.parser.ParsingResult;
 
 import java.net.URI;
 

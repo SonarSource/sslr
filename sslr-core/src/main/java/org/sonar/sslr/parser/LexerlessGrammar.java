@@ -17,7 +17,15 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
+package org.sonar.sslr.parser;
 
-@javax.annotation.ParametersAreNonnullByDefault
-package org.sonar.sslr.internal.text;
+import com.sonar.sslr.api.Grammar;
 
+/**
+ * <a href="http://en.wikipedia.org/wiki/Parsing_expression_grammar">Parsing Expression Grammar</a>.
+ *
+ * @since 2.0
+ */
+public abstract class LexerlessGrammar extends Grammar {
+
+}

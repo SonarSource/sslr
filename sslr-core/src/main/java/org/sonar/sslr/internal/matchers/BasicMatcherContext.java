@@ -20,7 +20,6 @@
 package org.sonar.sslr.internal.matchers;
 
 import com.google.common.collect.Lists;
-import org.sonar.sslr.matchers.InputBuffer;
 
 import java.util.List;
 

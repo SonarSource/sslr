@@ -22,5 +22,5 @@
  * @since 2.0
  */
 @javax.annotation.ParametersAreNonnullByDefault
-package org.sonar.sslr.matchers;
+package org.sonar.sslr.parser;
 

@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.matchers;
+package org.sonar.sslr.parser;
 
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Rule;
@@ -57,7 +57,7 @@ public class ParseRunnerTest {
 
   @Test
   public void should_report_error_at_end_of_input() {
-    Rule endOfInput = new GrammarElementMatcher("endOfInput").is(Matchers.endOfInput());
+    Rule endOfInput = new GrammarElementMatcher("endOfInput").is(GrammarOperators.endOfInput());
     Rule rule = new GrammarElementMatcher("rule").is("foo", endOfInput);
     ParseRunner runner = new ParseRunner(rule);
     ParsingResult result = runner.parse("foo bar".toCharArray());
@@ -72,7 +72,7 @@ public class ParseRunnerTest {
   @Test
   public void should_not_report_error_inside_of_predicate_not() {
     Rule subRule = new GrammarElementMatcher("subRule").is("foo");
-    Rule rule = new GrammarElementMatcher("rule").is(Matchers.nextNot(subRule), "bar");
+    Rule rule = new GrammarElementMatcher("rule").is(GrammarOperators.nextNot(subRule), "bar");
     ParseRunner runner = new ParseRunner(rule);
     ParsingResult result = runner.parse("baz".toCharArray());
     assertThat(result.isMatched()).isFalse();
@@ -86,7 +86,7 @@ public class ParseRunnerTest {
   @Test
   public void should_report_error_inside_of_predicate_next() {
     Rule subRule = new GrammarElementMatcher("subRule").is("foo");
-    Rule rule = new GrammarElementMatcher("rule").is(Matchers.next(subRule), "bar");
+    Rule rule = new GrammarElementMatcher("rule").is(GrammarOperators.next(subRule), "bar");
     ParseRunner runner = new ParseRunner(rule);
     ParsingResult result = runner.parse("baz".toCharArray());
     assertThat(result.isMatched()).isFalse();
@@ -100,7 +100,7 @@ public class ParseRunnerTest {
   @Test
   public void should_not_report_error_inside_of_token() {
     Rule subRule = new GrammarElementMatcher("subRule").is("foo");
-    Rule rule = new GrammarElementMatcher("rule").is(Matchers.token(GenericTokenType.IDENTIFIER, subRule), "bar");
+    Rule rule = new GrammarElementMatcher("rule").is(GrammarOperators.token(GenericTokenType.IDENTIFIER, subRule), "bar");
     ParseRunner runner = new ParseRunner(rule);
     ParsingResult result = runner.parse("baz".toCharArray());
     assertThat(result.isMatched()).isFalse();
@@ -115,7 +115,7 @@ public class ParseRunnerTest {
   public void should_report_error_at_several_paths() {
     Rule subRule1 = new GrammarElementMatcher("subRule1").is("foo");
     Rule subRule2 = new GrammarElementMatcher("subRule2").is("bar");
-    Rule rule = new GrammarElementMatcher("rule").is(Matchers.firstOf(subRule1, subRule2));
+    Rule rule = new GrammarElementMatcher("rule").is(GrammarOperators.firstOf(subRule1, subRule2));
     ParseRunner runner = new ParseRunner(rule);
     ParsingResult result = runner.parse("baz".toCharArray());
     assertThat(result.isMatched()).isFalse();

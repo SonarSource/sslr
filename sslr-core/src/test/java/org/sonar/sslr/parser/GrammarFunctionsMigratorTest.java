@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.matchers;
+package org.sonar.sslr.parser;
 
 import org.junit.Test;
 import org.sonar.sslr.internal.matchers.*;
@@ -27,35 +27,35 @@ import java.lang.reflect.Constructor;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-public class OldMatchersTest {
+public class GrammarFunctionsMigratorTest {
 
   @Test
   public void test() {
     Matcher subMatcher = mock(Matcher.class);
-    assertThat(OldMatchers.and(subMatcher)).isSameAs(subMatcher);
-    assertThat(OldMatchers.and(subMatcher, subMatcher)).isInstanceOf(SequenceMatcher.class);
-    assertThat(OldMatchers.and("foo")).isInstanceOf(StringMatcher.class);
-    assertThat(OldMatchers.and('f')).isInstanceOf(StringMatcher.class);
+    assertThat(GrammarFunctionsMigrator.and(subMatcher)).isSameAs(subMatcher);
+    assertThat(GrammarFunctionsMigrator.and(subMatcher, subMatcher)).isInstanceOf(SequenceMatcher.class);
+    assertThat(GrammarFunctionsMigrator.and("foo")).isInstanceOf(StringMatcher.class);
+    assertThat(GrammarFunctionsMigrator.and('f')).isInstanceOf(StringMatcher.class);
 
-    assertThat(OldMatchers.or(subMatcher)).isSameAs(subMatcher);
-    assertThat(OldMatchers.or(subMatcher, subMatcher)).isInstanceOf(FirstOfMatcher.class);
+    assertThat(GrammarFunctionsMigrator.or(subMatcher)).isSameAs(subMatcher);
+    assertThat(GrammarFunctionsMigrator.or(subMatcher, subMatcher)).isInstanceOf(FirstOfMatcher.class);
 
-    assertThat(OldMatchers.opt(subMatcher)).isInstanceOf(OptionalMatcher.class);
+    assertThat(GrammarFunctionsMigrator.opt(subMatcher)).isInstanceOf(OptionalMatcher.class);
 
-    assertThat(OldMatchers.one2n(subMatcher)).isInstanceOf(OneOrMoreMatcher.class);
+    assertThat(GrammarFunctionsMigrator.one2n(subMatcher)).isInstanceOf(OneOrMoreMatcher.class);
 
-    assertThat(OldMatchers.o2n(subMatcher)).isInstanceOf(ZeroOrMoreMatcher.class);
+    assertThat(GrammarFunctionsMigrator.o2n(subMatcher)).isInstanceOf(ZeroOrMoreMatcher.class);
 
-    assertThat(OldMatchers.next(subMatcher)).isInstanceOf(TestMatcher.class);
+    assertThat(GrammarFunctionsMigrator.next(subMatcher)).isInstanceOf(TestMatcher.class);
 
-    assertThat(OldMatchers.not(subMatcher)).isInstanceOf(TestNotMatcher.class);
+    assertThat(GrammarFunctionsMigrator.not(subMatcher)).isInstanceOf(TestNotMatcher.class);
 
-    assertThat(OldMatchers.isFalse()).isInstanceOf(NothingMatcher.class);
+    assertThat(GrammarFunctionsMigrator.isFalse()).isInstanceOf(NothingMatcher.class);
   }
 
   @Test
   public void private_constructor() throws Exception {
-    Constructor constructor = OldMatchers.class.getDeclaredConstructor();
+    Constructor constructor = GrammarFunctionsMigrator.class.getDeclaredConstructor();
     assertThat(constructor.isAccessible()).isFalse();
     constructor.setAccessible(true);
     constructor.newInstance();

@@ -17,50 +17,50 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.matchers;
+package org.sonar.sslr.parser;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import org.sonar.sslr.internal.matchers.ParseNode;
+import org.sonar.sslr.internal.matchers.InputBuffer;
+import org.sonar.sslr.internal.matchers.MatcherPathElement;
 
-import javax.annotation.Nullable;
+import java.util.List;
 
 /**
- * Parsing result.
+ * Describes an error, which is occurred during parse.
+ * Use {@link ParseErrorFormatter} to convert instances of this class to readable format.
  *
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  *
  * @since 2.0
  */
-public class ParsingResult {
+public class ParseError {
 
-  private final boolean matched;
-  private final ParseNode parseTreeRoot;
   private final InputBuffer inputBuffer;
-  private final ParseError parseError;
+  private final int errorIndex;
+  private final String message;
+  private final List<List<MatcherPathElement>> failedPaths;
 
-  public ParsingResult(InputBuffer inputBuffer, boolean matched, @Nullable ParseNode parseTreeRoot, @Nullable ParseError parseError) {
+  public ParseError(InputBuffer inputBuffer, int errorIndex, String message, List<List<MatcherPathElement>> failedPaths) {
     this.inputBuffer = Preconditions.checkNotNull(inputBuffer, "inputBuffer");
-    this.matched = matched;
-    this.parseTreeRoot = parseTreeRoot;
-    this.parseError = parseError;
+    this.errorIndex = errorIndex;
+    this.message = Preconditions.checkNotNull(message, "message");
+    this.failedPaths = Preconditions.checkNotNull(failedPaths, "failedPaths");
   }
 
   public InputBuffer getInputBuffer() {
     return inputBuffer;
   }
 
-  public boolean isMatched() {
-    return matched;
+  public int getErrorIndex() {
+    return errorIndex;
   }
 
-  public ParseError getParseError() {
-    return parseError;
+  public String getMessage() {
+    return message;
   }
 
-  @VisibleForTesting
-  public ParseNode getParseTreeRoot() {
-    return parseTreeRoot;
+  public List<List<MatcherPathElement>> getFailedPaths() {
+    return failedPaths;
   }
 
 }

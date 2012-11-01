@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.matchers;
+package org.sonar.sslr.parser;
 
 import com.sonar.sslr.api.TokenType;
 import org.junit.Rule;
@@ -30,7 +30,7 @@ import java.lang.reflect.Constructor;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-public class MatchersTest {
+public class GrammarOperatorsTest {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
@@ -38,43 +38,43 @@ public class MatchersTest {
   @Test
   public void test() {
     Matcher subMatcher = mock(Matcher.class);
-    assertThat(Matchers.sequence(subMatcher)).isSameAs(subMatcher);
-    assertThat(Matchers.sequence(subMatcher, subMatcher)).isInstanceOf(SequenceMatcher.class);
-    assertThat(Matchers.sequence("foo")).isInstanceOf(StringMatcher.class);
-    assertThat(Matchers.sequence('f')).isInstanceOf(StringMatcher.class);
+    assertThat(GrammarOperators.sequence(subMatcher)).isSameAs(subMatcher);
+    assertThat(GrammarOperators.sequence(subMatcher, subMatcher)).isInstanceOf(SequenceMatcher.class);
+    assertThat(GrammarOperators.sequence("foo")).isInstanceOf(StringMatcher.class);
+    assertThat(GrammarOperators.sequence('f')).isInstanceOf(StringMatcher.class);
 
-    assertThat(Matchers.firstOf(subMatcher)).isSameAs(subMatcher);
-    assertThat(Matchers.firstOf(subMatcher, subMatcher)).isInstanceOf(FirstOfMatcher.class);
+    assertThat(GrammarOperators.firstOf(subMatcher)).isSameAs(subMatcher);
+    assertThat(GrammarOperators.firstOf(subMatcher, subMatcher)).isInstanceOf(FirstOfMatcher.class);
 
-    assertThat(Matchers.optional(subMatcher)).isInstanceOf(OptionalMatcher.class);
+    assertThat(GrammarOperators.optional(subMatcher)).isInstanceOf(OptionalMatcher.class);
 
-    assertThat(Matchers.oneOrMore(subMatcher)).isInstanceOf(OneOrMoreMatcher.class);
+    assertThat(GrammarOperators.oneOrMore(subMatcher)).isInstanceOf(OneOrMoreMatcher.class);
 
-    assertThat(Matchers.zeroOrMore(subMatcher)).isInstanceOf(ZeroOrMoreMatcher.class);
+    assertThat(GrammarOperators.zeroOrMore(subMatcher)).isInstanceOf(ZeroOrMoreMatcher.class);
 
-    assertThat(Matchers.next(subMatcher)).isInstanceOf(TestMatcher.class);
+    assertThat(GrammarOperators.next(subMatcher)).isInstanceOf(TestMatcher.class);
 
-    assertThat(Matchers.nextNot(subMatcher)).isInstanceOf(TestNotMatcher.class);
+    assertThat(GrammarOperators.nextNot(subMatcher)).isInstanceOf(TestNotMatcher.class);
 
-    assertThat(Matchers.regexp("foo")).isInstanceOf(PatternMatcher.class);
+    assertThat(GrammarOperators.regexp("foo")).isInstanceOf(PatternMatcher.class);
 
-    assertThat(Matchers.endOfInput()).isInstanceOf(EndOfInputMatcher.class);
+    assertThat(GrammarOperators.endOfInput()).isInstanceOf(EndOfInputMatcher.class);
 
-    assertThat(Matchers.nothing()).isInstanceOf(NothingMatcher.class);
+    assertThat(GrammarOperators.nothing()).isInstanceOf(NothingMatcher.class);
 
-    assertThat(Matchers.token(mock(TokenType.class), subMatcher)).isInstanceOf(TokenMatcher.class);
+    assertThat(GrammarOperators.token(mock(TokenType.class), subMatcher)).isInstanceOf(TokenMatcher.class);
   }
 
   @Test
   public void illegal_argument() {
     thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage("java.lang.Object");
-    Matchers.sequence(new Object());
+    GrammarOperators.sequence(new Object());
   }
 
   @Test
   public void private_constructor() throws Exception {
-    Constructor constructor = Matchers.class.getDeclaredConstructor();
+    Constructor constructor = GrammarOperators.class.getDeclaredConstructor();
     assertThat(constructor.isAccessible()).isFalse();
     constructor.setAccessible(true);
     constructor.newInstance();

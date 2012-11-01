@@ -22,7 +22,7 @@ package com.sonar.sslr.api;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 import org.sonar.sslr.internal.matchers.GrammarException;
-import org.sonar.sslr.matchers.LexerlessGrammar;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

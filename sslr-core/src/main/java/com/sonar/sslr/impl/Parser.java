@@ -25,7 +25,7 @@ import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import com.sonar.sslr.impl.events.ParsingEventListener;
 import com.sonar.sslr.impl.matcher.GrammarFunctions;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
-import org.sonar.sslr.matchers.ParserAdapter;
+import org.sonar.sslr.parser.ParserAdapter;
 
 import java.io.File;
 import java.io.PrintStream;

@@ -24,9 +24,8 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
-import org.sonar.sslr.matchers.InputBuffer;
-import org.sonar.sslr.matchers.InputBuffer.Position;
-import org.sonar.sslr.matchers.ParsingResult;
+import org.sonar.sslr.internal.matchers.InputBuffer.Position;
+import org.sonar.sslr.parser.ParsingResult;
 
 import java.net.URI;
 import java.util.Collections;

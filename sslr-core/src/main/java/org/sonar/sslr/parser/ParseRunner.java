@@ -17,13 +17,12 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.matchers;
+package org.sonar.sslr.parser;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.sonar.sslr.api.Rule;
 import org.sonar.sslr.internal.matchers.*;
-import org.sonar.sslr.internal.text.ImmutableInputBuffer;
 
 import java.util.List;
 

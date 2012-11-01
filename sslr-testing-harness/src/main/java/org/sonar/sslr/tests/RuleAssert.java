@@ -22,10 +22,10 @@ package org.sonar.sslr.tests;
 import com.sonar.sslr.api.Rule;
 import org.fest.assertions.GenericAssert;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
-import org.sonar.sslr.matchers.Matchers;
-import org.sonar.sslr.matchers.ParseErrorFormatter;
-import org.sonar.sslr.matchers.ParseRunner;
-import org.sonar.sslr.matchers.ParsingResult;
+import org.sonar.sslr.parser.GrammarOperators;
+import org.sonar.sslr.parser.ParseErrorFormatter;
+import org.sonar.sslr.parser.ParseRunner;
+import org.sonar.sslr.parser.ParsingResult;
 
 /**
  * To create a new instance of this class invoke <code>{@link Assertions#assertThat(Rule)}</code>.
@@ -43,7 +43,7 @@ public class RuleAssert extends GenericAssert<RuleAssert, Rule> {
   private ParseRunner createParseRunner() {
     isNotNull();
     GrammarElementMatcher endOfInput = new GrammarElementMatcher("end of input")
-        .is(Matchers.endOfInput());
+        .is(GrammarOperators.endOfInput());
     GrammarElementMatcher matcher = new GrammarElementMatcher(getRuleName() + " with end of input")
         .is(actual, endOfInput);
     return new ParseRunner(matcher);
