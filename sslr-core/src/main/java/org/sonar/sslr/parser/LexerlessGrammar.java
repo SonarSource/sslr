@@ -24,7 +24,7 @@ import com.sonar.sslr.api.Grammar;
 /**
  * <a href="http://en.wikipedia.org/wiki/Parsing_expression_grammar">Parsing Expression Grammar</a>.
  *
- * @since 2.0
+ * @since 1.16
  */
 public abstract class LexerlessGrammar extends Grammar {
 

@@ -32,7 +32,7 @@ import org.sonar.sslr.parser.ParsingResult;
  *
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  *
- * @since 2.0
+ * @since 1.16
  */
 public class RuleAssert extends GenericAssert<RuleAssert, Rule> {
 

@@ -23,7 +23,7 @@ package org.sonar.sslr.parser;
  * Provides methods to simplify migration from {@link com.sonar.sslr.impl.matcher.GrammarFunctions}
  * to {@link GrammarOperators}.
  *
- * @since 2.0
+ * @since 1.16
  */
 public final class GrammarFunctionsMigrator {
 

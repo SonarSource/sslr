@@ -26,7 +26,7 @@ import org.sonar.sslr.internal.matchers.*;
 /**
  * Provides methods to define rules for {@link LexerlessGrammar}.
  *
- * @since 2.0
+ * @since 1.16
  */
 // TODO Godin: Retrofit methods with varargs (SSLR-215)
 public final class GrammarOperators {

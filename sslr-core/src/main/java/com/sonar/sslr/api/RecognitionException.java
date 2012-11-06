@@ -63,7 +63,7 @@ public class RecognitionException extends RuntimeException {
   }
 
   /**
-   * @since 2.0
+   * @since 1.16
    */
   public RecognitionException(int line, String message) {
     super(message);
@@ -73,7 +73,7 @@ public class RecognitionException extends RuntimeException {
   }
 
   /**
-   * @since 2.0
+   * @since 1.16
    */
   public RecognitionException(int line, String message, Throwable cause) {
     super(message, cause);

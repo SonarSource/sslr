@@ -33,7 +33,7 @@ public final class ParserMatchers {
   }
 
   /**
-   * @deprecated in 2.0, use {@link org.sonar.sslr.tests.ParserAssert#matches(String)} instead
+   * @deprecated in 1.16, use {@link org.sonar.sslr.tests.ParserAssert#matches(String)} instead
    */
   @Deprecated
   public static Matcher<Parser> parse(String sourceCode) {
@@ -41,7 +41,7 @@ public final class ParserMatchers {
   }
 
   /**
-   * @deprecated in 2.0, use {@link org.sonar.sslr.tests.ParserAssert#notMatches(String)} instead
+   * @deprecated in 1.16, use {@link org.sonar.sslr.tests.ParserAssert#notMatches(String)} instead
    */
   @Deprecated
   public static Matcher<Parser> notParse(String sourceCode) {

@@ -49,7 +49,7 @@ public class Parser<G extends Grammar> {
   private final ExtendedStackTrace extendedStackTrace;
 
   /**
-   * @since 2.0
+   * @since 1.16
    */
   protected Parser(G grammar) {
     this.grammar = grammar;

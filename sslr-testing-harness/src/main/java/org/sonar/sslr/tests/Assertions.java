@@ -23,7 +23,7 @@ import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.Parser;
 
 /**
- * @since 2.0
+ * @since 1.16
  */
 public final class Assertions {
 

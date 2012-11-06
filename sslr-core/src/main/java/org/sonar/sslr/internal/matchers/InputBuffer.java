@@ -24,7 +24,7 @@ package org.sonar.sslr.internal.matchers;
  *
  * <p>This interface is not intended to be implemented by clients.</p>
  *
- * @since 2.0
+ * @since 1.16
  */
 public interface InputBuffer {
 

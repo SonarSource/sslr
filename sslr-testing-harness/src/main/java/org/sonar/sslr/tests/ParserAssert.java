@@ -30,7 +30,7 @@ import org.fest.assertions.GenericAssert;
  *
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  *
- * @since 2.0
+ * @since 1.16
  */
 public class ParserAssert extends GenericAssert<ParserAssert, Parser> {
 

@@ -124,7 +124,7 @@ public final class GrammarFunctions {
      * }
      * </pre>
      *
-     * @deprecated in 2.0, use {@link GrammarFunctions.Standard#firstOf(Object...)} instead
+     * @deprecated in 1.16, use {@link GrammarFunctions.Standard#firstOf(Object...)} instead
      */
     @Deprecated
     public static Matcher or(Object... elements) {

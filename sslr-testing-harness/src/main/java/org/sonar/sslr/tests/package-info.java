@@ -19,7 +19,7 @@
  */
 
 /**
- * @since 2.0
+ * @since 1.16
  */
 @javax.annotation.ParametersAreNonnullByDefault
 package org.sonar.sslr.tests;
