@@ -64,7 +64,7 @@ public class ExpressionGrammarTest {
     ParseError parseError = result.getParseError();
     System.out.print(new ParseErrorFormatter().format(parseError));
     assertThat(parseError.getErrorIndex()).isEqualTo(6);
-    assertThat(parseError.getMessage()).isEqualTo("failed to match none of: number lpar variable");
+    assertThat(parseError.getMessage()).isEqualTo("failed to match all of: number lpar variable");
   }
 
   @Test

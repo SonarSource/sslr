@@ -122,7 +122,7 @@ public class ParseRunnerTest {
     ParseError parseError = result.getParseError();
     System.out.println(new ParseErrorFormatter().format(parseError));
     assertThat(parseError.getErrorIndex()).isEqualTo(0);
-    assertThat(parseError.getMessage()).isEqualTo("failed to match none of: subRule1 subRule2");
+    assertThat(parseError.getMessage()).isEqualTo("failed to match all of: subRule1 subRule2");
     assertThat(parseError.getFailedPaths()).hasSize(2);
   }
 

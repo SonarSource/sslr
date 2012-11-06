@@ -62,7 +62,7 @@ public class ParseRunner {
 
       StringBuilder sb = new StringBuilder("failed to match");
       if (errorReportingHandler.getFailedPaths().size() > 1) {
-        sb.append(" none of");
+        sb.append(" all of");
       }
       sb.append(':');
       for (List<MatcherPathElement> failedPath : errorReportingHandler.getFailedPaths()) {
