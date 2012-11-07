@@ -10,7 +10,7 @@
 
   <groupId>org.codehaus.sonar.sslr</groupId>
   <artifactId>sslr</artifactId>
-  <version>1.16</version>
+  <version>1.17-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>SonarSource :: Language Recognizer</name>
@@ -48,7 +48,7 @@
     <connection>scm:git:git@github.com:SonarSource/sslr.git</connection>
     <developerConnection>scm:git:git@github.com:SonarSource/sslr.git</developerConnection>
     <url>https://github.com/SonarSource/sslr</url>
-    <tag>1.16</tag>
+    <tag>HEAD</tag>
   </scm>
   <issueManagement>
     <system>Jira</system>
