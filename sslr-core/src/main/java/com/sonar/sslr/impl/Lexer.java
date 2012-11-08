@@ -19,8 +19,17 @@
  */
 package com.sonar.sslr.impl;
 
-import static com.google.common.base.Preconditions.*;
-import static com.sonar.sslr.api.GenericTokenType.*;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
+import com.sonar.sslr.api.Preprocessor;
+import com.sonar.sslr.api.PreprocessorAction;
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.Trivia;
+import org.apache.commons.io.IOUtils;
+import org.sonar.channel.Channel;
+import org.sonar.channel.ChannelDispatcher;
+import org.sonar.channel.CodeReader;
+import org.sonar.channel.CodeReaderConfiguration;
 
 import java.io.File;
 import java.io.InputStreamReader;
@@ -31,22 +40,17 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-import org.sonar.channel.Channel;
-import org.sonar.channel.ChannelDispatcher;
-import org.sonar.channel.CodeReader;
-import org.sonar.channel.CodeReaderConfiguration;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.sonar.sslr.api.GenericTokenType.EOF;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
-import com.sonar.sslr.api.Preprocessor;
-import com.sonar.sslr.api.PreprocessorAction;
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.Trivia;
-
-public final class Lexer {
+public class Lexer {
 
   private static final int DEFAULT_CODE_BUFFER_CAPACITY = 80000; // The default 8'000 buffer capacity is extended to 80'000 to be able to
                                                                  // consume big comment

@@ -26,7 +26,7 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-public final class Trivia {
+public class Trivia {
 
   public enum TriviaKind {
     COMMENT,
