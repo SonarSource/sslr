@@ -19,8 +19,8 @@
  */
 package org.sonar.sslr.internal.toolkit;
 
-import org.sonar.sslr.internal.guava.Files;
-
+import com.google.common.base.Throwables;
+import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;
@@ -29,6 +29,7 @@ import org.sonar.colorizer.HtmlRenderer;
 import org.sonar.colorizer.Tokenizer;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -54,7 +55,12 @@ public class SourceCodeModel {
 
   public void setSourceCode(File source, Charset charset) {
     this.astNode = parser.parse(source);
-    this.sourceCode = Files.toString(source, charset);
+
+    try {
+      this.sourceCode = Files.toString(source, charset);
+    } catch (IOException e) {
+      Throwables.propagate(e);
+    }
   }
 
   public void setSourceCode(String sourceCode) {
