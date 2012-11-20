@@ -19,6 +19,8 @@
  */
 package org.sonar.sslr.internal.toolkit;
 
+import org.sonar.sslr.toolkit.ConfigurationModel;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;

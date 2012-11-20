@@ -19,6 +19,8 @@
  */
 package org.sonar.sslr.internal.toolkit;
 
+import org.sonar.sslr.toolkit.ConfigurationModel;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;

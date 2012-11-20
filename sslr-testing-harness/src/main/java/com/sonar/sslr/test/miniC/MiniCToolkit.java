@@ -23,11 +23,14 @@ import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
 import org.sonar.colorizer.Tokenizer;
-import org.sonar.sslr.toolkit.ConfigurationCallback;
+import org.sonar.sslr.toolkit.AbstractConfigurationModel;
 import org.sonar.sslr.toolkit.ConfigurationProperty;
 import org.sonar.sslr.toolkit.Toolkit;
 import org.sonar.sslr.toolkit.ValidationCallback;
 
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 
 public final class MiniCToolkit {
@@ -36,30 +39,48 @@ public final class MiniCToolkit {
   }
 
   public static void main(String[] args) {
-    ConfigurationCallback configurationCallback = new ConfigurationCallback() {
-
-      public List<Tokenizer> getTokenizers(List<ConfigurationProperty> configurationProperties) {
-        return MiniCColorizer.getTokenizers();
-      }
-
-      public Parser<? extends Grammar> getParser(List<ConfigurationProperty> configurationProperties) {
-        return MiniCParser.create();
-      }
-    };
-
-    List<ConfigurationProperty> configurationProperties = ImmutableList.of(
-        new ConfigurationProperty("foo", "bar", "def foo"),
-        new ConfigurationProperty("toto", "huuuhuuu", ""),
-        new ConfigurationProperty("hmm", "hoho", "", new ValidationCallback() {
-
-          public String validate(String newValueCandidate) {
-            return newValueCandidate.length() <= 3 ? "" : "Length (" + newValueCandidate.length() + ") too long, max allowed is 3.";
-          }
-
-        }));
-
-    Toolkit toolkit = new Toolkit("SonarSource : MiniC : Toolkit", configurationProperties, configurationCallback);
+    Toolkit toolkit = new Toolkit("SonarSource : MiniC : Toolkit", new MiniCConfigurationModel());
     toolkit.run();
+  }
+
+  static class MiniCConfigurationModel extends AbstractConfigurationModel {
+
+    private final ConfigurationProperty charsetProperty = new ConfigurationProperty("Charset", "Charset used when opening files.", "UTF-8", new ValidationCallback() {
+
+      public String validate(String newValueCandidate) {
+        try {
+          Charset.forName(newValueCandidate);
+          return "";
+        } catch (IllegalCharsetNameException e) {
+          return "Illegal charset name: " + newValueCandidate;
+        } catch (UnsupportedCharsetException e) {
+          return "Unsupported charset: " + newValueCandidate;
+        }
+      }
+
+    });
+
+    @Override
+    public List<ConfigurationProperty> getProperties() {
+      return ImmutableList.of(charsetProperty);
+    }
+
+    @Override
+    public Parser<? extends Grammar> doGetParser() {
+      updateConfiguration();
+      return MiniCParser.create();
+    }
+
+    @Override
+    public List<Tokenizer> doGetTokenizers() {
+      updateConfiguration();
+      return MiniCColorizer.getTokenizers();
+    }
+
+    private void updateConfiguration() {
+      /* Construct a parser configuration object from the properties */
+    }
+
   }
 
 }

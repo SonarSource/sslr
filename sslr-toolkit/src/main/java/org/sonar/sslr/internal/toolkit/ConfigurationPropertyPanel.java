@@ -45,7 +45,7 @@ public class ConfigurationPropertyPanel {
     constraints.weightx = 1;
     constraints.gridx = 0;
     constraints.anchor = GridBagConstraints.NORTH;
-    constraints.insets = new Insets(0, 10, 0, 10);
+    constraints.insets = new Insets(3, 10, 3, 10);
 
     panel.setBorder(BorderFactory.createTitledBorder(name));
 

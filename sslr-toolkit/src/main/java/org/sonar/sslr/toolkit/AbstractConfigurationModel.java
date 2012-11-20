@@ -17,33 +17,24 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.internal.toolkit;
+package org.sonar.sslr.toolkit;
 
-import com.google.common.base.Preconditions;
+
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
 import org.sonar.colorizer.Tokenizer;
-import org.sonar.sslr.toolkit.ConfigurationCallback;
-import org.sonar.sslr.toolkit.ConfigurationProperty;
 
 import java.util.List;
 
-public class ConfigurationModel {
+public abstract class AbstractConfigurationModel implements ConfigurationModel {
 
   private boolean updatedFlag;
-  private final List<ConfigurationProperty> configurationProperties;
-  private final ConfigurationCallback configurationCallback;
 
   private Parser<? extends Grammar> parser;
   private List<Tokenizer> tokenizers;
 
-  public ConfigurationModel(List<ConfigurationProperty> configurationProperties, ConfigurationCallback configurationCallback) {
-    Preconditions.checkNotNull(configurationProperties);
-    Preconditions.checkNotNull(configurationCallback);
-
+  public AbstractConfigurationModel() {
     this.updatedFlag = true;
-    this.configurationProperties = configurationProperties;
-    this.configurationCallback = configurationCallback;
   }
 
   public void setUpdatedFlag() {
@@ -52,8 +43,8 @@ public class ConfigurationModel {
 
   private void ensureUpToDate() {
     if (updatedFlag) {
-      parser = configurationCallback.getParser(configurationProperties);
-      tokenizers = configurationCallback.getTokenizers(configurationProperties);
+      parser = doGetParser();
+      tokenizers = doGetTokenizers();
     }
 
     updatedFlag = false;
@@ -69,8 +60,10 @@ public class ConfigurationModel {
     return tokenizers;
   }
 
-  public List<ConfigurationProperty> getProperties() {
-    return configurationProperties;
-  }
+  public abstract List<ConfigurationProperty> getProperties();
+
+  public abstract Parser<? extends Grammar> doGetParser();
+
+  public abstract List<Tokenizer> doGetTokenizers();
 
 }

@@ -25,20 +25,14 @@ import org.sonar.colorizer.Tokenizer;
 
 import java.util.List;
 
-public interface ConfigurationCallback {
+public interface ConfigurationModel {
 
-  /**
-   * Get a parser for the current configuration properties
-   *
-   * @return The parser
-   */
+  List<ConfigurationProperty> getProperties();
+
+  void setUpdatedFlag();
+
   Parser<? extends Grammar> getParser();
 
-  /**
-   * Get the tokenizers for the current configuration properties
-   *
-   * @return The list (possibly empty) of tokenizers
-   */
   List<Tokenizer> getTokenizers();
 
 }

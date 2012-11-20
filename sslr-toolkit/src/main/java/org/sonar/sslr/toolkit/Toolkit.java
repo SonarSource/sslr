@@ -20,35 +20,27 @@
 package org.sonar.sslr.toolkit;
 
 import com.google.common.base.Preconditions;
-import org.sonar.sslr.internal.toolkit.ConfigurationModel;
 import org.sonar.sslr.internal.toolkit.SourceCodeModel;
 import org.sonar.sslr.internal.toolkit.ToolkitPresenter;
 import org.sonar.sslr.internal.toolkit.ToolkitViewImpl;
 
 import javax.swing.SwingUtilities;
 
-import java.util.List;
-
 public class Toolkit {
 
   private final String title;
-  private final List<ConfigurationProperty> configurationProperties;
-  private final ConfigurationCallback configurationCallback;
+  private final ConfigurationModel configurationModel;
 
-  public Toolkit(String title, List<ConfigurationProperty> configurationProperties, ConfigurationCallback configurationCallback) {
+  public Toolkit(String title, ConfigurationModel configurationModel) {
     Preconditions.checkNotNull(title);
-    Preconditions.checkNotNull(configurationProperties);
-    Preconditions.checkNotNull(configurationCallback);
 
     this.title = title;
-    this.configurationProperties = configurationProperties;
-    this.configurationCallback = configurationCallback;
+    this.configurationModel = configurationModel;
   }
 
   public void run() {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
-        ConfigurationModel configurationModel = new ConfigurationModel(configurationProperties, configurationCallback);
         SourceCodeModel model = new SourceCodeModel(configurationModel);
         ToolkitPresenter presenter = new ToolkitPresenter(configurationModel, model);
         presenter.setView(new ToolkitViewImpl(presenter));
