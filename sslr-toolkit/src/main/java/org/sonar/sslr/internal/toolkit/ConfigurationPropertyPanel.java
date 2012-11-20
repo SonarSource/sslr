@@ -33,7 +33,6 @@ import java.awt.Insets;
 public class ConfigurationPropertyPanel {
 
   private final JPanel panel;
-  private final JLabel descriptionLabel;
   private final JTextField valueTextField;
   private final JLabel errorMessageLabel;
 
@@ -49,7 +48,7 @@ public class ConfigurationPropertyPanel {
 
     panel.setBorder(BorderFactory.createTitledBorder(name));
 
-    descriptionLabel = new JLabel(description);
+    JLabel descriptionLabel = new JLabel(description);
     panel.add(descriptionLabel, constraints);
 
     valueTextField = new JTextField();
