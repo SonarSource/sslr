@@ -32,19 +32,18 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.nio.charset.Charset;
-import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 public class ToolkitPresenter {
 
-  private final List<ConfigurationProperty> configurationProperties;
+  private final ConfigurationModel configurationModel;
   private final SourceCodeModel model;
   private ToolkitView view = null;
 
-  public ToolkitPresenter(List<ConfigurationProperty> configurationProperties, SourceCodeModel model) {
-    this.configurationProperties = configurationProperties;
+  public ToolkitPresenter(ConfigurationModel configurationModel, SourceCodeModel model) {
+    this.configurationModel = configurationModel;
     this.model = model;
   }
 
@@ -74,7 +73,7 @@ public class ToolkitPresenter {
 
   @VisibleForTesting
   void initConfigurationTab() {
-    for (ConfigurationProperty configurationProperty : configurationProperties) {
+    for (ConfigurationProperty configurationProperty : configurationModel.getProperties()) {
       view.addConfigurationProperty(configurationProperty.getName(), configurationProperty.getDescription());
       view.setConfigurationPropertyValue(configurationProperty.getName(), configurationProperty.getValue());
     }
@@ -192,11 +191,12 @@ public class ToolkitPresenter {
 
     if ("".equals(errorMessage)) {
       configurationProperty.setValue(newValueCandidate);
+      configurationModel.setUpdatedFlag();
     }
   }
 
   private ConfigurationProperty getConfigurationPropertyByName(String name) {
-    for (ConfigurationProperty configurationProperty : configurationProperties) {
+    for (ConfigurationProperty configurationProperty : configurationModel.getProperties()) {
       if (name.equals(configurationProperty.getName())) {
         return configurationProperty;
       }

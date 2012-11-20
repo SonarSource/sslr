@@ -26,34 +26,28 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import org.sonar.colorizer.HtmlOptions;
 import org.sonar.colorizer.HtmlRenderer;
-import org.sonar.sslr.toolkit.ConfigurationCallback;
-import org.sonar.sslr.toolkit.ConfigurationProperty;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.Charset;
-import java.util.List;
 
 public class SourceCodeModel {
 
-  private final List<ConfigurationProperty> configurationProperties;
-  private final ConfigurationCallback configurationCallback;
+  private final ConfigurationModel configurationModel;
   private final HtmlRenderer htmlRenderer = new HtmlRenderer(new HtmlOptions(false, null, false));
 
   private String sourceCode;
   private AstNode astNode;
 
-  public SourceCodeModel(List<ConfigurationProperty> configurationProperties, ConfigurationCallback configurationCallback) {
-    Preconditions.checkNotNull(configurationProperties);
-    Preconditions.checkNotNull(configurationCallback);
+  public SourceCodeModel(ConfigurationModel configurationModel) {
+    Preconditions.checkNotNull(configurationModel);
 
-    this.configurationProperties = configurationProperties;
-    this.configurationCallback = configurationCallback;
+    this.configurationModel = configurationModel;
   }
 
   public void setSourceCode(File source, Charset charset) {
-    this.astNode = configurationCallback.getParser(configurationProperties).parse(source);
+    this.astNode = configurationModel.getParser().parse(source);
 
     try {
       this.sourceCode = Files.toString(source, charset);
@@ -63,12 +57,12 @@ public class SourceCodeModel {
   }
 
   public void setSourceCode(String sourceCode) {
-    this.astNode = configurationCallback.getParser(configurationProperties).parse(sourceCode);
+    this.astNode = configurationModel.getParser().parse(sourceCode);
     this.sourceCode = sourceCode;
   }
 
   public String getHighlightedSourceCode() {
-    return htmlRenderer.render(new StringReader(sourceCode), configurationCallback.getTokenizers(configurationProperties));
+    return htmlRenderer.render(new StringReader(sourceCode), configurationModel.getTokenizers());
   }
 
   public String getXml() {

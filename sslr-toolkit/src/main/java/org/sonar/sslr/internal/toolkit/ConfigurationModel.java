@@ -17,44 +17,60 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.toolkit;
+package org.sonar.sslr.internal.toolkit;
 
 import com.google.common.base.Preconditions;
-import org.sonar.sslr.internal.toolkit.ConfigurationModel;
-import org.sonar.sslr.internal.toolkit.SourceCodeModel;
-import org.sonar.sslr.internal.toolkit.ToolkitPresenter;
-import org.sonar.sslr.internal.toolkit.ToolkitViewImpl;
-
-import javax.swing.SwingUtilities;
+import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.impl.Parser;
+import org.sonar.colorizer.Tokenizer;
+import org.sonar.sslr.toolkit.ConfigurationCallback;
+import org.sonar.sslr.toolkit.ConfigurationProperty;
 
 import java.util.List;
 
-public class Toolkit {
+public class ConfigurationModel {
 
-  private final String title;
+  private boolean updatedFlag;
   private final List<ConfigurationProperty> configurationProperties;
   private final ConfigurationCallback configurationCallback;
 
-  public Toolkit(String title, List<ConfigurationProperty> configurationProperties, ConfigurationCallback configurationCallback) {
-    Preconditions.checkNotNull(title);
+  private Parser<? extends Grammar> parser;
+  private List<Tokenizer> tokenizers;
+
+  public ConfigurationModel(List<ConfigurationProperty> configurationProperties, ConfigurationCallback configurationCallback) {
     Preconditions.checkNotNull(configurationProperties);
     Preconditions.checkNotNull(configurationCallback);
 
-    this.title = title;
+    this.updatedFlag = true;
     this.configurationProperties = configurationProperties;
     this.configurationCallback = configurationCallback;
   }
 
-  public void run() {
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        ConfigurationModel configurationModel = new ConfigurationModel(configurationProperties, configurationCallback);
-        SourceCodeModel model = new SourceCodeModel(configurationModel);
-        ToolkitPresenter presenter = new ToolkitPresenter(configurationModel, model);
-        presenter.setView(new ToolkitViewImpl(presenter));
-        presenter.run(title);
-      }
-    });
+  public void setUpdatedFlag() {
+    updatedFlag = true;
+  }
+
+  private void ensureUpToDate() {
+    if (updatedFlag) {
+      parser = configurationCallback.getParser(configurationProperties);
+      tokenizers = configurationCallback.getTokenizers(configurationProperties);
+    }
+
+    updatedFlag = false;
+  }
+
+  public Parser<? extends Grammar> getParser() {
+    ensureUpToDate();
+    return parser;
+  }
+
+  public List<Tokenizer> getTokenizers() {
+    ensureUpToDate();
+    return tokenizers;
+  }
+
+  public List<ConfigurationProperty> getProperties() {
+    return configurationProperties;
   }
 
 }
