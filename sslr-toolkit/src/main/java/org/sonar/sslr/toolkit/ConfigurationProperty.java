@@ -44,10 +44,13 @@ public class ConfigurationProperty {
     Preconditions.checkNotNull(defaultValue);
     Preconditions.checkNotNull(validationCallback);
 
+    String errorMessage = validationCallback.validate(defaultValue);
+    Preconditions.checkArgument("".equals(errorMessage), "The default value \"" + errorMessage + "\" did not pass validation: " + errorMessage);
+
     this.name = name;
     this.description = description;
     this.validationCallback = validationCallback;
-    setValueImpl(defaultValue);
+    this.value = defaultValue;
   }
 
   public String getName() {
@@ -63,10 +66,6 @@ public class ConfigurationProperty {
   }
 
   public void setValue(String value) {
-    setValueImpl(value);
-  }
-
-  private final void setValueImpl(String value) {
     String errorMessage = validate(value);
     Preconditions.checkArgument("".equals(errorMessage), "The value \"" + value + "\" did not pass validation: " + errorMessage);
 

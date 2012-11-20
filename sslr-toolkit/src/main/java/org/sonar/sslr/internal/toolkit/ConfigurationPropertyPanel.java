@@ -29,9 +29,11 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.io.Serializable;
 
-public class ConfigurationPropertyPanel {
+public class ConfigurationPropertyPanel implements Serializable {
 
+  private static final long serialVersionUID = 1L;
   private final JPanel panel;
   private final JTextField valueTextField;
   private final JLabel errorMessageLabel;
