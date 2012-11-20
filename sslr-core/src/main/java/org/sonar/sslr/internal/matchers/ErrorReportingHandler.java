@@ -20,7 +20,6 @@
 package org.sonar.sslr.internal.matchers;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -64,11 +63,11 @@ public class ErrorReportingHandler implements MatchHandler {
       }
       context = context.getParent();
     }
-    return ImmutableList.copyOf(Iterables.reverse(list));
+    return ImmutableList.copyOf(Lists.reverse(list));
   }
 
   private boolean isNewPath(List<MatcherPathElement> path) {
-    for (List<MatcherPathElement> old : Iterables.reverse(failedPaths)) {
+    for (List<MatcherPathElement> old : Lists.reverse(failedPaths)) {
       if (isPrefix(path, old)) {
         return false;
       }
@@ -84,8 +83,8 @@ public class ErrorReportingHandler implements MatchHandler {
       MatcherPathElement e1 = first.get(i);
       MatcherPathElement e2 = second.get(i);
       if (!(e1.getMatcher().equals(e2.getMatcher())
-          && e1.getStartIndex() == e2.getStartIndex()
-          && e1.getEndIndex() == e2.getEndIndex())) {
+        && e1.getStartIndex() == e2.getStartIndex()
+        && e1.getEndIndex() == e2.getEndIndex())) {
         return false;
       }
     }

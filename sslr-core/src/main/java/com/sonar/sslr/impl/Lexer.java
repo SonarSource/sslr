@@ -52,8 +52,10 @@ import static com.sonar.sslr.api.GenericTokenType.EOF;
 
 public class Lexer {
 
-  private static final int DEFAULT_CODE_BUFFER_CAPACITY = 80000; // The default 8'000 buffer capacity is extended to 80'000 to be able to
-                                                                 // consume big comment
+  /*
+   * The default 8'000 buffer capacity is extended to 80'000 to be able to consume big comment
+   */
+  private static final int DEFAULT_CODE_BUFFER_CAPACITY = 80000;
 
   private final Charset charset;
   private final CodeReaderConfiguration configuration;

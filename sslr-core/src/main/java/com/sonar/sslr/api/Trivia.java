@@ -45,7 +45,7 @@ public class Trivia {
   private Trivia(TriviaKind kind, PreprocessingDirective preprocessingDirective, Token... tokens) {
     this.kind = kind;
     this.preprocessingDirective = preprocessingDirective;
-    this.tokens = ImmutableList.of(tokens);
+    this.tokens = ImmutableList.copyOf(tokens);
   }
 
   public Token getToken() {

@@ -125,7 +125,8 @@ public class GrammarAnalyser {
 
   private void detectIssues(RuleMatcher rule) {
     try {
-      first(rule); // Cause the LeftRecursionExceptions
+      // Causes the LeftRecursionException
+      first(rule);
 
       EmptyRepetitionVisitor emptyRepetitionVisitor = new EmptyRepetitionVisitor();
       emptyRepetitionVisitor.visit(rule);

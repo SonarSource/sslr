@@ -19,10 +19,10 @@
  */
 package com.sonar.sslr.impl.events;
 
-import java.util.Stack;
-
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
+
+import java.util.Stack;
 
 public final class FastStackMatcherAndPosition {
 
@@ -59,7 +59,7 @@ public final class FastStackMatcherAndPosition {
     result.i = i;
 
     while (i < oldSize) {
-      result.matchers[i] = null; // Allow the Garbage Collector to do its job
+      result.matchers[i] = null;
       i++;
     }
   }
@@ -86,7 +86,7 @@ public final class FastStackMatcherAndPosition {
 
   public void pop() {
     i--;
-    matchers[i] = null; // Allow the Garbage Collector to do its job
+    matchers[i] = null;
   }
 
   public Matcher getMatcher(int i) {
@@ -135,7 +135,7 @@ public final class FastStackMatcherAndPosition {
 
   public void clear() {
     while (--i >= 0) {
-      matchers[i] = null; // Allow the Garbage Collector to do its job
+      matchers[i] = null;
     }
     i = 0;
   }

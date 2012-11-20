@@ -33,7 +33,7 @@ public abstract class SymbolTableBuilderVisitor {
   private final List<AstNodeType> nodeTypes;
 
   public SymbolTableBuilderVisitor(AstNodeType... nodeTypes) {
-    this.nodeTypes = ImmutableList.of(nodeTypes);
+    this.nodeTypes = ImmutableList.copyOf(nodeTypes);
   }
 
   public List<AstNodeType> getNodeTypes() {

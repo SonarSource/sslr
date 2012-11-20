@@ -19,15 +19,23 @@
  */
 package com.sonar.sslr.test.miniC;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.*;
+import com.google.common.collect.Lists;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.api.Preprocessor;
+import com.sonar.sslr.api.PreprocessorAction;
+import com.sonar.sslr.api.RecognitionException;
+import com.sonar.sslr.api.Rule;
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.Trivia;
+import com.sonar.sslr.impl.Parser;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-import com.sonar.sslr.api.*;
-import com.sonar.sslr.impl.Parser;
+import static com.sonar.sslr.api.GenericTokenType.EOF;
+import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
+import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.HASH;
 
 public class MiniCPreprocessor extends Preprocessor {
 
@@ -80,11 +88,11 @@ public class MiniCPreprocessor extends Preprocessor {
   public PreprocessorAction process(List<Token> tokens) {
     List<Trivia> triviaToInject = new LinkedList<Trivia>();
 
-    if ( !buffer.isEmpty() && (tokens.get(0).getType() == EOF || tokens.get(0).getLine() != buffer.get(0).getLine())) {
+    if (!buffer.isEmpty() && (tokens.get(0).getType() == EOF || tokens.get(0).getLine() != buffer.get(0).getLine())) {
       if (isBufferValid()) {
         triviaToInject.add(preprocessBuffer());
       } else {
-        throw new IllegalStateException("FIXME Pushback would be required!"); /* FIXME */
+        throw new IllegalStateException("FIXME Pushback would be required!");
       }
       buffer.clear();
     }
