@@ -21,7 +21,11 @@ package org.sonar.sslr.internal.matchers;
 
 
 import com.google.common.collect.ImmutableList;
-import com.sonar.sslr.api.*;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.GenericTokenType;
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.TokenType;
+import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,11 +73,13 @@ public class AstCreatorTest {
     assertThat(astNode.hasChildren()).isTrue();
 
     assertThat(astNode.getTokens()).hasSize(1);
-    Token token = astNode.getToken();
+    Token token = astNode.getTokens().get(0);
+    assertThat(astNode.getToken()).isSameAs(token);
     assertThat(token.getValue()).isEqualTo("bar");
     assertThat(token.getOriginalValue()).isEqualTo("bar");
     assertThat(token.getLine()).isEqualTo(1);
     assertThat(token.getColumn()).isEqualTo(4);
+    assertThat(token.getType()).isEqualTo(GenericTokenType.IDENTIFIER);
 
     assertThat(token.getTrivia()).hasSize(1);
     Trivia trivia = token.getTrivia().get(0);
@@ -82,6 +88,45 @@ public class AstCreatorTest {
     assertThat(triviaToken.getOriginalValue()).isEqualTo("foo ");
     assertThat(triviaToken.getLine()).isEqualTo(1);
     assertThat(triviaToken.getColumn()).isEqualTo(0);
+    assertThat(triviaToken.getType()).isEqualTo(GenericTokenType.COMMENT);
+  }
+
+  @Test
+  public void should_create_tokens_without_TokenMatcher() {
+    char[] input = "foobar".toCharArray();
+
+    ParseNode firstTerminal = new ParseNode(0, 3, Collections.EMPTY_LIST, null);
+    ParseNode secondTerminal = new ParseNode(3, 6, Collections.EMPTY_LIST, null);
+    GrammarElementMatcher ruleMatcher = mockRuleMatcher("rule");
+    ParseNode parseTreeRoot = new ParseNode(0, 6, ImmutableList.of(firstTerminal, secondTerminal), ruleMatcher);
+
+    InputBuffer inputBuffer = new ImmutableInputBuffer(input);
+    ParsingResult parsingResult = new ParsingResult(inputBuffer, true, parseTreeRoot, null);
+
+    AstNode astNode = AstCreator.create(uri, parsingResult);
+    System.out.println(AstXmlPrinter.print(astNode));
+
+    assertThat(astNode.getType()).isSameAs(ruleMatcher);
+    assertThat(astNode.getName()).isEqualTo("rule");
+    assertThat(astNode.getFromIndex()).isEqualTo(0);
+    assertThat(astNode.getToIndex()).isEqualTo(6);
+    assertThat(astNode.hasChildren()).isTrue();
+
+    assertThat(astNode.getTokens()).hasSize(2);
+    Token token = astNode.getTokens().get(0);
+    assertThat(astNode.getToken()).isSameAs(token);
+    assertThat(token.getValue()).isEqualTo("foo");
+    assertThat(token.getOriginalValue()).isEqualTo("foo");
+    assertThat(token.getLine()).isEqualTo(1);
+    assertThat(token.getColumn()).isEqualTo(0);
+    assertThat(token.getType()).isSameAs(AstCreator.UNDEFINED_TOKEN_TYPE);
+
+    token = astNode.getTokens().get(1);
+    assertThat(token.getValue()).isEqualTo("bar");
+    assertThat(token.getOriginalValue()).isEqualTo("bar");
+    assertThat(token.getLine()).isEqualTo(1);
+    assertThat(token.getColumn()).isEqualTo(3);
+    assertThat(token.getType()).isSameAs(AstCreator.UNDEFINED_TOKEN_TYPE);
   }
 
   @Test

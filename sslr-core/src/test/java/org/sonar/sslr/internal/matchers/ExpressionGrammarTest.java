@@ -20,7 +20,6 @@
 package org.sonar.sslr.internal.matchers;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import org.junit.Before;
@@ -110,7 +109,7 @@ public class ExpressionGrammarTest {
     assertThat(firstToken.getValue()).isEqualTo("20");
     assertThat(firstToken.getOriginalValue()).isEqualTo("20");
 
-    Token tokenWithTrivia = astNode.findFirstChild(GenericTokenType.LITERAL).getToken();
+    Token tokenWithTrivia = astNode.findFirstChild(grammar.mul).getToken();
     assertThat(tokenWithTrivia.getLine()).isEqualTo(1);
     assertThat(tokenWithTrivia.getColumn()).isEqualTo(3);
     assertThat(tokenWithTrivia.getTrivia()).hasSize(1);

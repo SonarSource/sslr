@@ -19,10 +19,12 @@
  */
 package org.sonar.sslr.internal.matchers;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.api.Trivia;
 import org.sonar.sslr.internal.matchers.InputBuffer.Position;
 import org.sonar.sslr.parser.ParsingResult;
@@ -47,27 +49,30 @@ public final class AstCreator {
   }
 
   private AstNode visit(ParseNode node) {
-    if (node.getMatcher() instanceof TokenMatcher) {
-      return visitTerminal(node);
-    } else {
+    if (node.getMatcher() instanceof GrammarElementMatcher) {
       return visitNonTerminal(node);
+    } else {
+      return visitTerminal(node);
     }
   }
 
   private AstNode visitTerminal(ParseNode node) {
-    TokenMatcher ruleMatcher = (TokenMatcher) node.getMatcher();
-
     Position position = inputBuffer.getPosition(node.getStartIndex());
     tokenBuilder.setLine(position.getLine());
     tokenBuilder.setColumn(position.getColumn() - 1);
 
     String value = getValue(node);
-
-    tokenBuilder.setValueAndOriginalValue(value).setType(ruleMatcher.getTokenType());
-    if (ruleMatcher.getTokenType() == GenericTokenType.COMMENT) {
-      tokenBuilder.setTrivia(Collections.EMPTY_LIST);
-      trivias.add(Trivia.createComment(tokenBuilder.build()));
-      return null;
+    tokenBuilder.setValueAndOriginalValue(value);
+    if (node.getMatcher() instanceof TokenMatcher) {
+      TokenMatcher ruleMatcher = (TokenMatcher) node.getMatcher();
+      tokenBuilder.setType(ruleMatcher.getTokenType());
+      if (ruleMatcher.getTokenType() == GenericTokenType.COMMENT) {
+        tokenBuilder.setTrivia(Collections.EMPTY_LIST);
+        trivias.add(Trivia.createComment(tokenBuilder.build()));
+        return null;
+      }
+    } else {
+      tokenBuilder.setType(UNDEFINED_TOKEN_TYPE);
     }
     Token token = tokenBuilder.setTrivia(trivias).build();
     trivias.clear();
@@ -108,5 +113,20 @@ public final class AstCreator {
     }
     return result.toString();
   }
+
+  @VisibleForTesting
+  static TokenType UNDEFINED_TOKEN_TYPE = new TokenType() {
+    public String getName() {
+      return "UNDEFINED";
+    }
+
+    public String getValue() {
+      return getName();
+    }
+
+    public boolean hasToBeSkippedFromAst(AstNode node) {
+      return false;
+    }
+  };
 
 }

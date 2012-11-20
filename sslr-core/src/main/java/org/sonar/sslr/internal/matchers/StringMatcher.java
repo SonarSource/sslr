@@ -37,6 +37,7 @@ public class StringMatcher implements Matcher {
       }
     }
     context.advanceIndex(string.length());
+    context.createNode();
     return true;
   }
 

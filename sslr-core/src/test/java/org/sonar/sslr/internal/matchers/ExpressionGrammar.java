@@ -53,15 +53,15 @@ public class ExpressionGrammar extends LexerlessGrammar {
   public ExpressionGrammar() {
     whitespace.is(token(GenericTokenType.COMMENT, regexp("\\s*+"))).skip();
 
-    plus.is(token(GenericTokenType.LITERAL, '+'), whitespace);
-    minus.is(token(GenericTokenType.LITERAL, '-'), whitespace);
-    div.is(token(GenericTokenType.LITERAL, '/'), whitespace);
-    mul.is(token(GenericTokenType.LITERAL, '*'), whitespace);
-    number.is(token(GenericTokenType.CONSTANT, regexp("[0-9]++")), whitespace);
-    variable.is(token(GenericTokenType.IDENTIFIER, regexp("\\p{javaJavaIdentifierStart}++\\p{javaJavaIdentifierPart}*+")), whitespace);
-    lpar.is(token(GenericTokenType.LITERAL, '('), whitespace);
-    rpar.is(token(GenericTokenType.LITERAL, ')'), whitespace);
-    endOfInput.is(token(GenericTokenType.EOF, endOfInput()));
+    plus.is('+', whitespace);
+    minus.is('-', whitespace);
+    div.is('/', whitespace);
+    mul.is('*', whitespace);
+    number.is(regexp("[0-9]++"), whitespace);
+    variable.is(regexp("\\p{javaJavaIdentifierStart}++\\p{javaJavaIdentifierPart}*+"), whitespace);
+    lpar.is('(', whitespace);
+    rpar.is(')', whitespace);
+    endOfInput.is(endOfInput());
 
     // If in part of grammar below we will replace
     // plus, minus, div, mul, lpar and rpar by punctuators '+', '-', '/', '*', '(' and ')' respectively,

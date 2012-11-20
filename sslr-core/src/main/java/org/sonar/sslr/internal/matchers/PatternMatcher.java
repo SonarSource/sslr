@@ -40,6 +40,7 @@ public class PatternMatcher implements Matcher {
     }
     if (result) {
       context.advanceIndex(matcher.end());
+      context.createNode();
     }
     return result;
   }
