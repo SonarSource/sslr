@@ -19,6 +19,7 @@
  */
 package com.sonar.sslr.impl.analysis;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.sonar.sslr.api.Grammar;
@@ -119,7 +120,7 @@ public class GrammarAnalyser {
 
       return ruleMatchers;
     } catch (IllegalAccessException e) {
-      throw new RuntimeException(e);
+      throw Throwables.propagate(e);
     }
   }
 

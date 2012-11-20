@@ -19,6 +19,7 @@
  */
 package com.sonar.sslr.test.lexer;
 
+import com.google.common.base.Throwables;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
@@ -28,8 +29,12 @@ import com.sonar.sslr.impl.Lexer;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
+import static com.sonar.sslr.api.GenericTokenType.LITERAL;
 
+/**
+ * @deprecated in 1.17 All classes can now be mocked since none of them are final anymore, hence this helper is useless.
+ */
+@Deprecated
 public final class MockHelper {
 
   private MockHelper() {
@@ -52,7 +57,7 @@ public final class MockHelper {
           .setLine(1)
           .setColumn(1);
     } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
+      throw Throwables.propagate(e);
     }
   }
 

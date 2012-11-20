@@ -19,11 +19,12 @@
  */
 package com.sonar.sslr.impl.ast;
 
+import com.google.common.base.Throwables;
+import com.sonar.sslr.api.AstNode;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-
-import com.sonar.sslr.api.AstNode;
 
 public final class AstXmlPrinter {
 
@@ -50,7 +51,7 @@ public final class AstXmlPrinter {
     try {
       printNode(0, rootNode);
     } catch (IOException e) {
-      throw new RuntimeException("A problem occured when generating an XML stream from the AST.", e);
+      throw Throwables.propagate(e);
     }
   }
 

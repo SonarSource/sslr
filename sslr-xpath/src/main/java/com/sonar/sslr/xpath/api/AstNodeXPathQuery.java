@@ -19,6 +19,7 @@
  */
 package com.sonar.sslr.xpath.api;
 
+import com.google.common.base.Throwables;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.xpath.AstNodeNavigator;
 import org.jaxen.BaseXPath;
@@ -35,7 +36,7 @@ public final class AstNodeXPathQuery<T> {
     try {
       expression = new BaseXPath(xpath, astNodeNavigator);
     } catch (JaxenException e) {
-      throw new RuntimeException(e);
+      throw Throwables.propagate(e);
     }
   }
 
@@ -61,7 +62,7 @@ public final class AstNodeXPathQuery<T> {
       astNodeNavigator.reset();
       return (T) expression.selectSingleNode(astNode);
     } catch (JaxenException e) {
-      throw new RuntimeException(e);
+      throw Throwables.propagate(e);
     }
   }
 
@@ -87,7 +88,7 @@ public final class AstNodeXPathQuery<T> {
       astNodeNavigator.reset();
       return expression.selectNodes(astNode);
     } catch (JaxenException e) {
-      throw new RuntimeException(e);
+      throw Throwables.propagate(e);
     }
   }
 
