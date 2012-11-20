@@ -20,8 +20,10 @@
 package org.sonar.sslr.internal.toolkit;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
+import org.sonar.sslr.toolkit.ConfigurationProperty;
 
 import java.awt.Point;
 import java.io.File;
@@ -30,16 +32,19 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.nio.charset.Charset;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 public class ToolkitPresenter {
 
-  public final SourceCodeModel model;
-  public ToolkitView view = null;
+  private final List<ConfigurationProperty> configurationProperties;
+  private final SourceCodeModel model;
+  private ToolkitView view = null;
 
-  public ToolkitPresenter(SourceCodeModel model) {
+  public ToolkitPresenter(List<ConfigurationProperty> configurationProperties, SourceCodeModel model) {
+    this.configurationProperties = configurationProperties;
     this.model = model;
   }
 
@@ -67,6 +72,14 @@ public class ToolkitPresenter {
     });
   }
 
+  @VisibleForTesting
+  void initConfigurationTab() {
+    for (ConfigurationProperty configurationProperty : configurationProperties) {
+      view.addConfigurationProperty(configurationProperty.getName(), configurationProperty.getDescription());
+      view.setConfigurationPropertyValue(configurationProperty.getName(), configurationProperty.getValue());
+    }
+  }
+
   public void run(String title) {
     checkInitialized();
 
@@ -77,6 +90,9 @@ public class ToolkitPresenter {
     view.displayAst(null);
     view.displayXml("");
     view.disableXPathEvaluateButton();
+
+    initConfigurationTab();
+
     view.run();
   }
 
@@ -163,6 +179,30 @@ public class ToolkitPresenter {
     }
 
     view.scrollSourceCodeTo(firstAstNode);
+  }
+
+  public void onConfigurationPropertyFocusLost(String name) {
+    ConfigurationProperty configurationProperty = getConfigurationPropertyByName(name);
+    Preconditions.checkArgument(configurationProperty != null, "No such configuration property: " + name);
+
+    String newValueCandidate = view.getConfigurationPropertyValue(name);
+    String errorMessage = configurationProperty.validate(newValueCandidate);
+
+    view.setConfigurationPropertyErrorMessage(configurationProperty.getName(), errorMessage);
+
+    if ("".equals(errorMessage)) {
+      configurationProperty.setValue(newValueCandidate);
+    }
+  }
+
+  private ConfigurationProperty getConfigurationPropertyByName(String name) {
+    for (ConfigurationProperty configurationProperty : configurationProperties) {
+      if (name.equals(configurationProperty.getName())) {
+        return configurationProperty;
+      }
+    }
+
+    return null;
   }
 
 }

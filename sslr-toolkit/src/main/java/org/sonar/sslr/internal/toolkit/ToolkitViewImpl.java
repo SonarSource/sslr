@@ -20,12 +20,14 @@
 package org.sonar.sslr.internal.toolkit;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
 
 import javax.annotation.Nullable;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
@@ -59,11 +61,14 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -84,6 +89,10 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
 
   private final JTextArea consoleTextArea = new JTextArea();
   private final JScrollPane consoleScrollPane = new JScrollPane(consoleTextArea);
+
+  private final JPanel configurationPanel = new JPanel();
+  private final JScrollPane configurationScrollPane = new JScrollPane(configurationPanel);
+  private final Map<String, ConfigurationPropertyPanel> configurationPropertiesPanels = Maps.newHashMap();
 
   private final JLabel sourceCodeLabel = new JLabel(" Source Code");
   private final JEditorPane sourceCodeEditorPane = new JEditorPane();
@@ -140,6 +149,9 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     tabbedPane.add("Abstract Syntax Tree", astTreeScrollPane);
     tabbedPane.add("XML", xmlScrollPane);
     tabbedPane.add("Console", consoleScrollPane);
+    tabbedPane.add("Configuration", configurationScrollPane);
+
+    configurationPanel.setLayout(new BoxLayout(configurationPanel, BoxLayout.Y_AXIS));
 
     sourceCodeEditorPane.setContentType("text/html");
     sourceCodeEditorPane.setEditable(true);
@@ -481,6 +493,34 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
 
   public void clearConsole() {
     consoleTextArea.setText("");
+  }
+
+  public void addConfigurationProperty(final String name, String description) {
+    ConfigurationPropertyPanel configurationPropertyPanel = new ConfigurationPropertyPanel(name, description);
+
+    configurationPropertyPanel.getValueTextField().addFocusListener(new FocusAdapter() {
+
+      @Override
+      public void focusLost(FocusEvent e) {
+        presenter.onConfigurationPropertyFocusLost(name);
+      }
+
+    });
+
+    configurationPropertiesPanels.put(name, configurationPropertyPanel);
+    configurationPanel.add(configurationPropertyPanel.getPanel());
+  }
+
+  public String getConfigurationPropertyValue(String name) {
+    return configurationPropertiesPanels.get(name).getValueTextField().getText();
+  }
+
+  public void setConfigurationPropertyValue(String name, String value) {
+    configurationPropertiesPanels.get(name).getValueTextField().setText(value);
+  }
+
+  public void setConfigurationPropertyErrorMessage(String name, String errorMessage) {
+    configurationPropertiesPanels.get(name).getErrorMessageLabel().setText(errorMessage);
   }
 
 }

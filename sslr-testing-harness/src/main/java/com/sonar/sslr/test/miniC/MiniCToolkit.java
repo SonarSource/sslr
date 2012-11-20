@@ -19,7 +19,16 @@
  */
 package com.sonar.sslr.test.miniC;
 
+import com.google.common.collect.ImmutableList;
+import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.impl.Parser;
+import org.sonar.colorizer.Tokenizer;
+import org.sonar.sslr.toolkit.ConfigurationCallback;
+import org.sonar.sslr.toolkit.ConfigurationProperty;
 import org.sonar.sslr.toolkit.Toolkit;
+import org.sonar.sslr.toolkit.ValidationCallback;
+
+import java.util.List;
 
 public final class MiniCToolkit {
 
@@ -27,7 +36,29 @@ public final class MiniCToolkit {
   }
 
   public static void main(String[] args) {
-    Toolkit toolkit = new Toolkit(MiniCParser.create(), MiniCColorizer.getTokenizers(), "SonarSource : MiniC : Toolkit");
+    ConfigurationCallback configurationCallback = new ConfigurationCallback() {
+
+      public List<Tokenizer> getTokenizers(List<ConfigurationProperty> configurationProperties) {
+        return MiniCColorizer.getTokenizers();
+      }
+
+      public Parser<? extends Grammar> getParser(List<ConfigurationProperty> configurationProperties) {
+        return MiniCParser.create();
+      }
+    };
+
+    List<ConfigurationProperty> configurationProperties = ImmutableList.of(
+        new ConfigurationProperty("foo", "bar", "def foo"),
+        new ConfigurationProperty("toto", "huuuhuuu", ""),
+        new ConfigurationProperty("hmm", "hoho", "", new ValidationCallback() {
+
+          public String validate(String newValueCandidate) {
+            return newValueCandidate.length() <= 3 ? "" : "Length (" + newValueCandidate.length() + ") too long, max allowed is 3.";
+          }
+
+        }));
+
+    Toolkit toolkit = new Toolkit("SonarSource : MiniC : Toolkit", configurationProperties, configurationCallback);
     toolkit.run();
   }
 

@@ -19,10 +19,7 @@
  */
 package org.sonar.sslr.internal.toolkit;
 
-import org.sonar.sslr.internal.toolkit.SourceCodeModel;
-import org.sonar.sslr.internal.toolkit.ToolkitPresenter;
-import org.sonar.sslr.internal.toolkit.ToolkitView;
-
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
@@ -30,6 +27,8 @@ import com.sonar.sslr.api.Token;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.Mockito;
+import org.sonar.sslr.toolkit.ConfigurationProperty;
 
 import java.awt.Point;
 import java.io.File;
@@ -37,6 +36,7 @@ import java.io.PrintWriter;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.util.Collections;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -56,13 +56,13 @@ public class ToolkitPresenterTest {
     thrown.expect(IllegalStateException.class);
     thrown.expectMessage("the view must be set before the presenter can be ran");
 
-    ToolkitPresenter presenter = new ToolkitPresenter(mock(SourceCodeModel.class));
+    ToolkitPresenter presenter = new ToolkitPresenter(Collections.EMPTY_LIST, mock(SourceCodeModel.class));
     presenter.checkInitialized();
   }
 
   @Test
   public void checkInitializedGood() {
-    ToolkitPresenter presenter = new ToolkitPresenter(mock(SourceCodeModel.class));
+    ToolkitPresenter presenter = new ToolkitPresenter(Collections.EMPTY_LIST, mock(SourceCodeModel.class));
     presenter.setView(mock(ToolkitView.class));
     presenter.checkInitialized();
   }
@@ -71,7 +71,7 @@ public class ToolkitPresenterTest {
   public void initUncaughtExceptionsHandler() throws InterruptedException {
     ToolkitView view = mock(ToolkitView.class);
 
-    ToolkitPresenter presenter = new ToolkitPresenter(mock(SourceCodeModel.class));
+    ToolkitPresenter presenter = new ToolkitPresenter(Collections.EMPTY_LIST, mock(SourceCodeModel.class));
     presenter.setView(view);
 
     presenter.initUncaughtExceptionsHandler();
@@ -88,10 +88,41 @@ public class ToolkitPresenterTest {
   }
 
   @Test
+  public void initConfigurationTab() {
+    ToolkitView view = mock(ToolkitView.class);
+
+    ToolkitPresenter presenter = new ToolkitPresenter(Collections.EMPTY_LIST, mock(SourceCodeModel.class));
+    presenter.setView(view);
+    presenter.initConfigurationTab();
+
+    verify(view, never()).addConfigurationProperty(Mockito.anyString(), Mockito.anyString());
+    verify(view, never()).setConfigurationPropertyValue(Mockito.anyString(), Mockito.anyString());
+
+    ConfigurationProperty property1 = mock(ConfigurationProperty.class);
+    when(property1.getName()).thenReturn("property1");
+    when(property1.getDescription()).thenReturn("description1");
+    when(property1.getValue()).thenReturn("default1");
+
+    ConfigurationProperty property2 = mock(ConfigurationProperty.class);
+    when(property2.getName()).thenReturn("property2");
+    when(property2.getDescription()).thenReturn("description2");
+    when(property2.getValue()).thenReturn("default2");
+
+    presenter = new ToolkitPresenter(ImmutableList.of(property1, property2), mock(SourceCodeModel.class));
+    presenter.setView(view);
+    presenter.initConfigurationTab();
+
+    verify(view).addConfigurationProperty("property1", "description1");
+    verify(view).setConfigurationPropertyValue("property1", "default1");
+    verify(view).addConfigurationProperty("property2", "description2");
+    verify(view).setConfigurationPropertyValue("property2", "default2");
+  }
+
+  @Test
   public void run() {
     ToolkitView view = mock(ToolkitView.class);
 
-    ToolkitPresenter presenter = new ToolkitPresenter(mock(SourceCodeModel.class));
+    ToolkitPresenter presenter = new ToolkitPresenter(Collections.EMPTY_LIST, mock(SourceCodeModel.class));
     presenter.setView(view);
 
     presenter.run("my_mocked_title");
@@ -106,9 +137,24 @@ public class ToolkitPresenterTest {
   }
 
   @Test
+  public void run_should_call_initConfigurationTab() {
+    ToolkitView view = mock(ToolkitView.class);
+
+    ToolkitPresenter presenter = new ToolkitPresenter(Collections.EMPTY_LIST, mock(SourceCodeModel.class));
+    presenter.setView(view);
+    presenter.run("my_mocked_title");
+    verify(view, never()).addConfigurationProperty(Mockito.anyString(), Mockito.anyString());
+
+    presenter = new ToolkitPresenter(ImmutableList.of(mock(ConfigurationProperty.class)), mock(SourceCodeModel.class));
+    presenter.setView(view);
+    presenter.run("my_mocked_title");
+    verify(view).addConfigurationProperty(Mockito.anyString(), Mockito.anyString());
+  }
+
+  @Test
   public void runFailsWithoutView() {
     thrown.expect(IllegalStateException.class);
-    new ToolkitPresenter(mock(SourceCodeModel.class)).run("foo");
+    new ToolkitPresenter(Collections.EMPTY_LIST, mock(SourceCodeModel.class)).run("foo");
   }
 
   @Test
@@ -122,7 +168,7 @@ public class ToolkitPresenterTest {
     when(model.getAstNode()).thenReturn(astNode);
     when(model.getXml()).thenReturn("my_mocked_xml");
 
-    ToolkitPresenter presenter = new ToolkitPresenter(model);
+    ToolkitPresenter presenter = new ToolkitPresenter(Collections.EMPTY_LIST, model);
     presenter.setView(view);
 
     presenter.onSourceCodeOpenButtonClick();
@@ -146,7 +192,7 @@ public class ToolkitPresenterTest {
 
     SourceCodeModel model = mock(SourceCodeModel.class);
 
-    ToolkitPresenter presenter = new ToolkitPresenter(model);
+    ToolkitPresenter presenter = new ToolkitPresenter(Collections.EMPTY_LIST, model);
     presenter.setView(view);
 
     presenter.onSourceCodeOpenButtonClick();
@@ -174,7 +220,7 @@ public class ToolkitPresenterTest {
     when(model.getAstNode()).thenReturn(astNode);
     when(model.getXml()).thenReturn("my_mocked_xml");
 
-    ToolkitPresenter presenter = new ToolkitPresenter(model);
+    ToolkitPresenter presenter = new ToolkitPresenter(Collections.EMPTY_LIST, model);
     presenter.setView(view);
 
     presenter.onSourceCodeParseButtonClick();
@@ -198,7 +244,7 @@ public class ToolkitPresenterTest {
     AstNode astNode = new AstNode(GenericTokenType.IDENTIFIER, "foo", null);
     when(model.getAstNode()).thenReturn(astNode);
 
-    ToolkitPresenter presenter = new ToolkitPresenter(model);
+    ToolkitPresenter presenter = new ToolkitPresenter(Collections.EMPTY_LIST, model);
     presenter.setView(view);
 
     presenter.onXPathEvaluateButtonClick();
@@ -222,7 +268,7 @@ public class ToolkitPresenterTest {
     astNode.addChild(childAstNode);
     when(model.getAstNode()).thenReturn(astNode);
 
-    ToolkitPresenter presenter = new ToolkitPresenter(model);
+    ToolkitPresenter presenter = new ToolkitPresenter(Collections.EMPTY_LIST, model);
     presenter.setView(view);
 
     presenter.onXPathEvaluateButtonClick();
@@ -249,7 +295,7 @@ public class ToolkitPresenterTest {
     AstNode astNode = new AstNode(GenericTokenType.IDENTIFIER, "foo", token);
     when(model.getAstNode()).thenReturn(astNode);
 
-    ToolkitPresenter presenter = new ToolkitPresenter(model);
+    ToolkitPresenter presenter = new ToolkitPresenter(Collections.EMPTY_LIST, model);
     presenter.setView(view);
 
     presenter.onXPathEvaluateButtonClick();
@@ -271,7 +317,7 @@ public class ToolkitPresenterTest {
   public void onSourceCodeKeyTyped() {
     ToolkitView view = mock(ToolkitView.class);
 
-    ToolkitPresenter presenter = new ToolkitPresenter(mock(SourceCodeModel.class));
+    ToolkitPresenter presenter = new ToolkitPresenter(Collections.EMPTY_LIST, mock(SourceCodeModel.class));
     presenter.setView(view);
 
     presenter.onSourceCodeKeyTyped();
@@ -288,7 +334,7 @@ public class ToolkitPresenterTest {
     AstNode astNode = mock(AstNode.class);
     when(view.getAstNodeFollowingCurrentSourceCodeTextCursorPosition()).thenReturn(astNode);
 
-    ToolkitPresenter presenter = new ToolkitPresenter(mock(SourceCodeModel.class));
+    ToolkitPresenter presenter = new ToolkitPresenter(Collections.EMPTY_LIST, mock(SourceCodeModel.class));
     presenter.setView(view);
 
     presenter.onSourceCodeTextCursorMoved();
@@ -305,7 +351,7 @@ public class ToolkitPresenterTest {
     AstNode secondAstNode = mock(AstNode.class);
     when(view.getSelectedAstNodes()).thenReturn(Lists.newArrayList(firstAstNode, secondAstNode));
 
-    ToolkitPresenter presenter = new ToolkitPresenter(mock(SourceCodeModel.class));
+    ToolkitPresenter presenter = new ToolkitPresenter(Collections.EMPTY_LIST, mock(SourceCodeModel.class));
     presenter.setView(view);
 
     presenter.onAstSelectionChanged();
@@ -318,6 +364,57 @@ public class ToolkitPresenterTest {
     verify(view).scrollSourceCodeTo(firstAstNode);
 
     verify(view, never()).scrollSourceCodeTo(secondAstNode);
+  }
+
+  @Test
+  public void onConfigurationPropertyFocusLost_when_validation_successes() {
+    ToolkitView view = mock(ToolkitView.class);
+
+    ConfigurationProperty property = mock(ConfigurationProperty.class);
+    when(property.getName()).thenReturn("name");
+    when(property.getDescription()).thenReturn("description");
+    when(view.getConfigurationPropertyValue("name")).thenReturn("foo");
+    when(property.validate("foo")).thenReturn("");
+
+    ToolkitPresenter presenter = new ToolkitPresenter(ImmutableList.of(property), mock(SourceCodeModel.class));
+    presenter.setView(view);
+
+    presenter.onConfigurationPropertyFocusLost("name");
+
+    verify(view).setConfigurationPropertyErrorMessage("name", "");
+    verify(property).setValue("foo");
+  }
+
+  @Test
+  public void onConfigurationPropertyFocusLost_when_validation_fails() {
+    ToolkitView view = mock(ToolkitView.class);
+
+    ConfigurationProperty property = mock(ConfigurationProperty.class);
+    when(property.getName()).thenReturn("name");
+    when(property.getDescription()).thenReturn("description");
+    when(view.getConfigurationPropertyValue("name")).thenReturn("foo");
+    when(property.validate("foo")).thenReturn("The value foo is forbidden!");
+
+    ToolkitPresenter presenter = new ToolkitPresenter(ImmutableList.of(property), mock(SourceCodeModel.class));
+    presenter.setView(view);
+
+    presenter.onConfigurationPropertyFocusLost("name");
+
+    verify(view).setConfigurationPropertyErrorMessage("name", "The value foo is forbidden!");
+    verify(property, never()).setValue("foo");
+  }
+
+  @Test
+  public void onConfigurationPropertyFocusLost_with_invalid_name() {
+    ToolkitView view = mock(ToolkitView.class);
+
+    ToolkitPresenter presenter = new ToolkitPresenter(Collections.EMPTY_LIST, mock(SourceCodeModel.class));
+    presenter.setView(view);
+
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("No such configuration property: name");
+
+    presenter.onConfigurationPropertyFocusLost("name");
   }
 
 }

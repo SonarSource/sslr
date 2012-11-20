@@ -19,40 +19,36 @@
  */
 package org.sonar.sslr.toolkit;
 
+import com.google.common.base.Preconditions;
 import org.sonar.sslr.internal.toolkit.SourceCodeModel;
 import org.sonar.sslr.internal.toolkit.ToolkitPresenter;
 import org.sonar.sslr.internal.toolkit.ToolkitViewImpl;
-
-import com.sonar.sslr.impl.Parser;
-import org.sonar.colorizer.Tokenizer;
 
 import javax.swing.SwingUtilities;
 
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class Toolkit {
 
-  private final Parser<?> parser;
-  private final List<Tokenizer> tokenizers;
   private final String title;
+  private final List<ConfigurationProperty> configurationProperties;
+  private final ConfigurationCallback configurationCallback;
 
-  public Toolkit(Parser<?> parser, List<Tokenizer> tokenizers, String title) {
-    checkNotNull(parser);
-    checkNotNull(tokenizers);
-    checkNotNull(title);
+  public Toolkit(String title, List<ConfigurationProperty> configurationProperties, ConfigurationCallback configurationCallback) {
+    Preconditions.checkNotNull(title);
+    Preconditions.checkNotNull(configurationProperties);
+    Preconditions.checkNotNull(configurationCallback);
 
-    this.parser = parser;
-    this.tokenizers = tokenizers;
     this.title = title;
+    this.configurationProperties = configurationProperties;
+    this.configurationCallback = configurationCallback;
   }
 
   public void run() {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
-        SourceCodeModel model = new SourceCodeModel(parser, tokenizers);
-        ToolkitPresenter presenter = new ToolkitPresenter(model);
+        SourceCodeModel model = new SourceCodeModel(configurationProperties, configurationCallback);
+        ToolkitPresenter presenter = new ToolkitPresenter(configurationProperties, model);
         presenter.setView(new ToolkitViewImpl(presenter));
         presenter.run(title);
       }

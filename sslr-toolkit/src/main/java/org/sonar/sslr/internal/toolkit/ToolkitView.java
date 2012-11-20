@@ -190,4 +190,36 @@ public interface ToolkitView {
    */
   void clearConsole();
 
+  /**
+   * Add a new configuration property to the configuration tab.
+   *
+   * @param name
+   * @param description
+   */
+  void addConfigurationProperty(String name, String description);
+
+  /**
+   * Get the value currently entered in the configuration property field identified by the given name.
+   *
+   * @param name The name of the configuration property
+   * @return The current value of the field
+   */
+  String getConfigurationPropertyValue(String name);
+
+  /**
+   * Set the current value of the configuration property field identified by the given name.
+   *
+   * @param name The name of the configuration property
+   * @param value The value to be set
+   */
+  void setConfigurationPropertyValue(String name, String value);
+
+  /**
+   * Set the error message of the configuration property identified by the given name.
+   *
+   * @param name The name of the configuration property
+   * @param errorMessage The error message
+   */
+  void setConfigurationPropertyErrorMessage(String name, String errorMessage);
+
 }

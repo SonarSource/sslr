@@ -19,14 +19,15 @@
  */
 package org.sonar.sslr.internal.toolkit;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import org.sonar.colorizer.HtmlOptions;
 import org.sonar.colorizer.HtmlRenderer;
-import org.sonar.colorizer.Tokenizer;
+import org.sonar.sslr.toolkit.ConfigurationCallback;
+import org.sonar.sslr.toolkit.ConfigurationProperty;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,27 +35,25 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class SourceCodeModel {
 
-  private final Parser<?> parser;
-  private final List<Tokenizer> tokenizers;
+  private final List<ConfigurationProperty> configurationProperties;
+  private final ConfigurationCallback configurationCallback;
   private final HtmlRenderer htmlRenderer = new HtmlRenderer(new HtmlOptions(false, null, false));
 
   private String sourceCode;
   private AstNode astNode;
 
-  public SourceCodeModel(Parser<?> parser, List<Tokenizer> tokenizers) {
-    checkNotNull(parser);
-    checkNotNull(tokenizers);
+  public SourceCodeModel(List<ConfigurationProperty> configurationProperties, ConfigurationCallback configurationCallback) {
+    Preconditions.checkNotNull(configurationProperties);
+    Preconditions.checkNotNull(configurationCallback);
 
-    this.parser = parser;
-    this.tokenizers = tokenizers;
+    this.configurationProperties = configurationProperties;
+    this.configurationCallback = configurationCallback;
   }
 
   public void setSourceCode(File source, Charset charset) {
-    this.astNode = parser.parse(source);
+    this.astNode = configurationCallback.getParser(configurationProperties).parse(source);
 
     try {
       this.sourceCode = Files.toString(source, charset);
@@ -64,12 +63,12 @@ public class SourceCodeModel {
   }
 
   public void setSourceCode(String sourceCode) {
-    this.astNode = parser.parse(sourceCode);
+    this.astNode = configurationCallback.getParser(configurationProperties).parse(sourceCode);
     this.sourceCode = sourceCode;
   }
 
   public String getHighlightedSourceCode() {
-    return htmlRenderer.render(new StringReader(sourceCode), tokenizers);
+    return htmlRenderer.render(new StringReader(sourceCode), configurationCallback.getTokenizers(configurationProperties));
   }
 
   public String getXml() {
