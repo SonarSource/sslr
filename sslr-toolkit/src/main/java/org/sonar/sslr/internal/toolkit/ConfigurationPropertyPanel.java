@@ -20,12 +20,15 @@
 package org.sonar.sslr.internal.toolkit;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import java.awt.Color;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 public class ConfigurationPropertyPanel {
 
@@ -35,18 +38,31 @@ public class ConfigurationPropertyPanel {
   private final JLabel errorMessageLabel;
 
   public ConfigurationPropertyPanel(String name, String description) {
-    panel = new JPanel(new GridLayout(3, 1));
+    panel = new JPanel(new GridBagLayout());
+
+    GridBagConstraints constraints = new GridBagConstraints();
+    constraints.fill = GridBagConstraints.HORIZONTAL;
+    constraints.weightx = 1;
+    constraints.gridx = 0;
+    constraints.anchor = GridBagConstraints.NORTH;
+    constraints.insets = new Insets(0, 10, 0, 10);
+
     panel.setBorder(BorderFactory.createTitledBorder(name));
 
     descriptionLabel = new JLabel(description);
-    panel.add(descriptionLabel);
+    panel.add(descriptionLabel, constraints);
 
     valueTextField = new JTextField();
-    panel.add(valueTextField);
+    panel.add(valueTextField, constraints);
 
     errorMessageLabel = new JLabel();
     errorMessageLabel.setForeground(Color.RED);
-    panel.add(errorMessageLabel);
+    panel.add(errorMessageLabel, constraints);
+
+    GridBagConstraints constraints2 = new GridBagConstraints();
+    constraints2.gridx = 0;
+    constraints2.weighty = 1;
+    panel.add(Box.createGlue(), constraints2);
   }
 
   public JPanel getPanel() {

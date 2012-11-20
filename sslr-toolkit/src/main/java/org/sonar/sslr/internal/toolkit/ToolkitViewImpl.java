@@ -27,7 +27,6 @@ import com.sonar.sslr.api.Trivia;
 
 import javax.annotation.Nullable;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
@@ -58,6 +57,8 @@ import javax.swing.tree.TreeSelectionModel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -90,8 +91,9 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
   private final JTextArea consoleTextArea = new JTextArea();
   private final JScrollPane consoleScrollPane = new JScrollPane(consoleTextArea);
 
-  private final JPanel configurationPanel = new JPanel();
-  private final JScrollPane configurationScrollPane = new JScrollPane(configurationPanel);
+  private final JPanel configurationInnerPanel = new JPanel(new GridBagLayout());
+  private final JPanel configurationOuterPanel = new JPanel(new BorderLayout());
+  private final JScrollPane configurationScrollPane = new JScrollPane(configurationOuterPanel);
   private final Map<String, ConfigurationPropertyPanel> configurationPropertiesPanels = Maps.newHashMap();
 
   private final JLabel sourceCodeLabel = new JLabel(" Source Code");
@@ -151,7 +153,8 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     tabbedPane.add("Console", consoleScrollPane);
     tabbedPane.add("Configuration", configurationScrollPane);
 
-    configurationPanel.setLayout(new BoxLayout(configurationPanel, BoxLayout.Y_AXIS));
+    configurationOuterPanel.add(configurationInnerPanel, BorderLayout.NORTH);
+    configurationOuterPanel.add(Box.createGlue(), BorderLayout.CENTER);
 
     sourceCodeEditorPane.setContentType("text/html");
     sourceCodeEditorPane.setEditable(true);
@@ -508,7 +511,14 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     });
 
     configurationPropertiesPanels.put(name, configurationPropertyPanel);
-    configurationPanel.add(configurationPropertyPanel.getPanel());
+
+    GridBagConstraints constraints = new GridBagConstraints();
+    constraints.fill = GridBagConstraints.HORIZONTAL;
+    constraints.weightx = 1;
+    constraints.gridx = 0;
+    constraints.anchor = GridBagConstraints.NORTH;
+
+    configurationInnerPanel.add(configurationPropertyPanel.getPanel(), constraints);
   }
 
   public String getConfigurationPropertyValue(String name) {
