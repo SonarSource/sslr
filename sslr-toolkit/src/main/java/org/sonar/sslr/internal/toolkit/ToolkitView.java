@@ -222,4 +222,16 @@ public interface ToolkitView {
    */
   void setConfigurationPropertyErrorMessage(String name, String errorMessage);
 
+  /**
+   * Set the focus on the configuration field identified by the given name.
+   *
+   * @param name
+   */
+  void setFocusOnConfigurationPropertyField(String name);
+
+  /**
+   * Set the focus on the configuration view.
+   */
+  void setFocusOnConfigurationView();
+
 }

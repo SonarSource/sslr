@@ -19,8 +19,6 @@
  */
 package org.sonar.sslr.internal.toolkit;
 
-import org.sonar.sslr.toolkit.ConfigurationModel;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
@@ -30,6 +28,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
+import org.sonar.sslr.toolkit.ConfigurationModel;
 import org.sonar.sslr.toolkit.ConfigurationProperty;
 
 import java.awt.Point;
@@ -389,6 +388,8 @@ public class ToolkitPresenterTest {
     presenter.onConfigurationPropertyFocusLost("name");
 
     verify(view).setConfigurationPropertyErrorMessage("name", "");
+    verify(view, never()).setFocusOnConfigurationPropertyField(Mockito.anyString());
+    verify(view, never()).setFocusOnConfigurationView();
     verify(property).setValue("foo");
     verify(configurationModel).setUpdatedFlag();
   }
@@ -411,6 +412,8 @@ public class ToolkitPresenterTest {
     presenter.onConfigurationPropertyFocusLost("name");
 
     verify(view).setConfigurationPropertyErrorMessage("name", "The value foo is forbidden!");
+    verify(view).setFocusOnConfigurationPropertyField("name");
+    verify(view).setFocusOnConfigurationView();
     verify(property, never()).setValue("foo");
     verify(configurationModel, never()).setUpdatedFlag();
   }

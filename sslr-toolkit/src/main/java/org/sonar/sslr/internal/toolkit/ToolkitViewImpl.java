@@ -533,4 +533,12 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     configurationPropertiesPanels.get(name).getErrorMessageLabel().setText(errorMessage);
   }
 
+  public void setFocusOnConfigurationPropertyField(String name) {
+    configurationPropertiesPanels.get(name).getValueTextField().requestFocus();
+  }
+
+  public void setFocusOnConfigurationView() {
+    tabbedPane.setSelectedComponent(configurationScrollPane);
+  }
+
 }
