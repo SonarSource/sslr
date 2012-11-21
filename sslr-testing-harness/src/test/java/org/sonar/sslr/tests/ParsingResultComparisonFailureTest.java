@@ -27,11 +27,20 @@ import static org.fest.assertions.Assertions.assertThat;
 public class ParsingResultComparisonFailureTest {
 
   @Test
-  public void test() {
+  public void test_implicit_message() {
     ParsingResultComparisonFailure failure = new ParsingResultComparisonFailure("expected", "actual");
     assertThat(failure)
         .isInstanceOf(ComparisonFailure.class)
         .hasMessage("expected\nactual")
+        .hasNoCause();
+  }
+
+  @Test
+  public void test_explicit_message() {
+    ParsingResultComparisonFailure failure = new ParsingResultComparisonFailure("foo", "expected", "actual");
+    assertThat(failure)
+        .isInstanceOf(ComparisonFailure.class)
+        .hasMessage("foo")
         .hasNoCause();
   }
 

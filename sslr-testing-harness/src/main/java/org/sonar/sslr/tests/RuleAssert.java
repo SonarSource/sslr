@@ -40,7 +40,7 @@ public class RuleAssert extends GenericAssert<RuleAssert, Rule> {
     super(RuleAssert.class, actual);
   }
 
-  private ParseRunner createParseRunner() {
+  private ParseRunner createParseRunnerWithEofMatcher() {
     isNotNull();
     GrammarElementMatcher endOfInput = new GrammarElementMatcher("end of input")
         .is(GrammarOperators.endOfInput());
@@ -54,7 +54,7 @@ public class RuleAssert extends GenericAssert<RuleAssert, Rule> {
    * @return this assertion object.
    */
   public RuleAssert matches(String input) {
-    ParseRunner parseRunner = createParseRunner();
+    ParseRunner parseRunner = createParseRunnerWithEofMatcher();
     ParsingResult parsingResult = parseRunner.parse(input.toCharArray());
     if (!parsingResult.isMatched()) {
       String expected = "Rule '" + getRuleName() + "' should match:\n" + input;
@@ -65,15 +65,43 @@ public class RuleAssert extends GenericAssert<RuleAssert, Rule> {
   }
 
   /**
-   * Verifies that the actual <code>{@link Rule}</code> not matches a given input.
+   * Verifies that the actual <code>{@link Rule}</code> does not match a given input.
    * @return this assertion object.
    */
   public RuleAssert notMatches(String input) {
-    ParseRunner parseRunner = createParseRunner();
+    ParseRunner parseRunner = createParseRunnerWithEofMatcher();
     ParsingResult parsingResult = parseRunner.parse(input.toCharArray());
     if (parsingResult.isMatched()) {
       throw new AssertionError("Rule '" + getRuleName() + "' should not match:\n" + input);
     }
+    return this;
+  }
+
+  private ParseRunner createParseRunnerWithoutEofMatcher() {
+    isNotNull();
+    return new ParseRunner(actual);
+  }
+
+  /**
+   * Verifies that the actual <code>{@link Rule}</code> partially matches a given input.
+   * @param prefixToBeMatched the prefix that must be fully matched
+   * @param remainingInput the remainder of the input, which is not to be matched
+   * @return this assertion object.
+   */
+  public RuleAssert matchesPrefix(String prefixToBeMatched, String remainingInput) {
+    if (remainingInput.length() == 0) {
+      matches(prefixToBeMatched);
+    } else {
+      ParseRunner parseRunner = createParseRunnerWithoutEofMatcher();
+      String input = prefixToBeMatched + remainingInput;
+      ParsingResult parsingResult = parseRunner.parse(input.toCharArray());
+      if (!parsingResult.isMatched() || prefixToBeMatched.length() != parsingResult.getParseTreeRoot().getEndIndex()) {
+        String actualMatchedPrefix = parsingResult.isMatched() ? input.substring(0, parsingResult.getParseTreeRoot().getEndIndex()) : "";
+        String message = "Rule '" + getRuleName() + "' should match:\n" + prefixToBeMatched + "\nwhen followed by:\n" + remainingInput + "\nbut matched:\n" + actualMatchedPrefix;
+        throw new ParsingResultComparisonFailure(message, prefixToBeMatched, actualMatchedPrefix);
+      }
+    }
+
     return this;
   }
 

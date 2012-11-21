@@ -28,13 +28,20 @@ import org.junit.ComparisonFailure;
  */
 public class ParsingResultComparisonFailure extends ComparisonFailure {
 
+  private final String message;
+
   public ParsingResultComparisonFailure(String expected, String actual) {
-    super(expected + '\n' + actual, expected, actual);
+    this(expected + '\n' + actual, expected, actual);
+  }
+
+  public ParsingResultComparisonFailure(String message, String expected, String actual) {
+    super(message, expected, actual);
+    this.message = message;
   }
 
   @Override
   public String getMessage() {
-    return getExpected() + '\n' + getActual();
+    return message;
   }
 
 }

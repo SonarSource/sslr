@@ -68,9 +68,45 @@ public class RuleAssertTest {
   }
 
   @Test
-  public void should_not_allow_prefix_match() {
+  public void notMatches_should_not_accept_prefix_match() {
     new RuleAssert(rule)
         .notMatches("foo bar");
+  }
+
+  @Test
+  public void matchesPrefix_with_empty_remaining_input_ok() {
+    new RuleAssert(rule)
+        .matchesPrefix("foo", "");
+  }
+
+  @Test
+  public void matchesPrefix_with_empty_remaining_input_failure() {
+    thrown.expect(ParsingResultComparisonFailure.class);
+    thrown.expectMessage("Rule 'ruleName' should match:\nbar");
+    new RuleAssert(rule)
+        .matchesPrefix("bar", "");
+  }
+
+  @Test
+  public void matchesPrefix_ok() {
+    new RuleAssert(rule)
+        .matchesPrefix("foo", " bar");
+  }
+
+  @Test
+  public void matchesPrefix_with_remaining_input_failure_because_of_mistmatch() {
+    thrown.expect(ParsingResultComparisonFailure.class);
+    thrown.expectMessage("Rule 'ruleName' should match:\nbar\nwhen followed by:\n baz\nbut matched:\n");
+    new RuleAssert(rule)
+        .matchesPrefix("bar", " baz");
+  }
+
+  @Test
+  public void matchesPrefix_with_remaining_input_failure_because_of_wrong_prefix() {
+    thrown.expect(ParsingResultComparisonFailure.class);
+    thrown.expectMessage("Rule 'ruleName' should match:\nfoo bar\nwhen followed by:\n baz\nbut matched:\nfoo");
+    new RuleAssert(rule)
+        .matchesPrefix("foo bar", " baz");
   }
 
 }
