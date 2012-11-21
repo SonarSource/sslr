@@ -50,7 +50,7 @@ public class ParseErrorFormatterTest {
         Arrays.asList(root, expression, term, factor, variable));
     String result = formatter.format(new ParseError(inputBuffer, 10, "expected one of: number lpar variable", failedPaths));
     System.out.print(result);
-    String expectedOne = new StringBuilder()
+    String expected = new StringBuilder()
         .append("Parse error at line 1 column 11 expected one of: number lpar variable\n")
         .append('\n')
         .append("1:  2+4*10-0*\n")
@@ -67,25 +67,8 @@ public class ParseErrorFormatterTest {
         .append("expression consumed from (1, 2) to (1, 8): \"2+4*10-\"\n")
         .append("root consumed from (1, 1) to (1, 1): \" \"\n")
         .toString();
-    String expectedTwo = new StringBuilder()
-        .append("Parse error at line 1 column 11 expected one of: number lpar variable\n")
-        .append('\n')
-        .append("1:  2+4*10-0*\n")
-        .append("             ^\n")
-        .append("2: \n")
-        .append('\n')
-        .append("Failed at rules:\n")
-        .append("  ┌─variable\n")
-        .append("  │ ┌─lpar\n")
-        .append("  ├─parens\n")
-        .append("  ├─number\n")
-        .append("┌─factor\n")
-        .append("term consumed from (1, 9) to (1, 10): \"0*\"\n")
-        .append("expression consumed from (1, 2) to (1, 8): \"2+4*10-\"\n")
-        .append("root consumed from (1, 1) to (1, 1): \" \"\n")
-        .toString();
 
-    assertThat(result).isIn(expectedOne, expectedTwo); // FIXME There should be no dependency on JDK version
+    assertThat(result).isEqualTo(expected);
   }
 
 }

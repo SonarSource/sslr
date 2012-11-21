@@ -20,8 +20,12 @@
 package org.sonar.sslr.parser;
 
 import com.google.common.base.Preconditions;
-import org.sonar.sslr.internal.matchers.*;
+import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
+import org.sonar.sslr.internal.matchers.InputBuffer;
 import org.sonar.sslr.internal.matchers.InputBuffer.Position;
+import org.sonar.sslr.internal.matchers.Matcher;
+import org.sonar.sslr.internal.matchers.MatcherPathElement;
+import org.sonar.sslr.internal.matchers.TextUtils;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -54,7 +58,7 @@ public class ParseErrorFormatter {
         .append(" column ").append(position.getColumn())
         .append(' ').append(parseError.getMessage()).append('\n');
     sb.append('\n');
-    appendSnipped(sb, inputBuffer, position);
+    appendSnippet(sb, inputBuffer, position);
     sb.append('\n');
     sb.append("Failed at rules:\n");
     List<List<MatcherPathElement>> paths = parseError.getFailedPaths();
@@ -100,7 +104,7 @@ public class ParseErrorFormatter {
       boolean tail = true;
       for (int i = start + 1; i < end; i++) {
         if (depth + 1 < lists.get(i).size() &&
-            lists.get(i).get(depth + 1) != lists.get(i - 1).get(depth + 1)) {
+          lists.get(i).get(depth + 1) != lists.get(i - 1).get(depth + 1)) {
           format(depth + 1, start, i, prefix + formatPrefix(depth, isTail), tail);
           start = i;
           tail = false;
@@ -153,7 +157,7 @@ public class ParseErrorFormatter {
       Matcher matcher = paths.get(0).get(result).getMatcher();
       for (int i = 1; i < paths.size(); i++) {
         if (result == paths.get(i).size()
-            || !matcher.equals(paths.get(i).get(result).getMatcher())) {
+          || !matcher.equals(paths.get(i).get(result).getMatcher())) {
           return result;
         }
       }
@@ -161,7 +165,7 @@ public class ParseErrorFormatter {
     }
   }
 
-  private static void appendSnipped(StringBuilder sb, InputBuffer inputBuffer, Position position) {
+  private static void appendSnippet(StringBuilder sb, InputBuffer inputBuffer, Position position) {
     int startLine = Math.max(position.getLine() - SNIPPET_SIZE, 1);
     int endLine = Math.min(position.getLine() + SNIPPET_SIZE, inputBuffer.getLineCount());
     int padding = Integer.toString(endLine).length();
@@ -178,7 +182,7 @@ public class ParseErrorFormatter {
     }
   }
 
-  private static final class PathComparator implements Comparator<List<MatcherPathElement>>, Serializable {
+  public static final class PathComparator implements Comparator<List<MatcherPathElement>>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public int compare(List<MatcherPathElement> o1, List<MatcherPathElement> o2) {
@@ -187,7 +191,7 @@ public class ParseErrorFormatter {
           if (!o1.get(i).getMatcher().equals(o2.get(i))) {
             // o1: A
             // o2: B
-            return -1;
+            return 0;
           }
         } else {
           // o1: A, B

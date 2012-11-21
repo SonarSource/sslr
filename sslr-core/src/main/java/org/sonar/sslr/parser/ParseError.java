@@ -44,7 +44,10 @@ public class ParseError {
     this.inputBuffer = Preconditions.checkNotNull(inputBuffer, "inputBuffer");
     this.errorIndex = errorIndex;
     this.message = Preconditions.checkNotNull(message, "message");
-    this.failedPaths = Preconditions.checkNotNull(failedPaths, "failedPaths");
+
+    Preconditions.checkNotNull(failedPaths, "failedPaths");
+    Preconditions.checkArgument(failedPaths.size() >= 1, "failedPaths must contain at least one element");
+    this.failedPaths = failedPaths;
   }
 
   public InputBuffer getInputBuffer() {
