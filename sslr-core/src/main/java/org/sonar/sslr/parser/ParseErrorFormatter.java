@@ -182,7 +182,7 @@ public class ParseErrorFormatter {
     }
   }
 
-  public static final class PathComparator implements Comparator<List<MatcherPathElement>>, Serializable {
+  private static final class PathComparator implements Comparator<List<MatcherPathElement>>, Serializable {
     private static final long serialVersionUID = 1L;
 
     public int compare(List<MatcherPathElement> o1, List<MatcherPathElement> o2) {
