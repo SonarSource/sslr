@@ -89,17 +89,17 @@ public class RuleAssert extends GenericAssert<RuleAssert, Rule> {
    * @return this assertion object.
    */
   public RuleAssert matchesPrefix(String prefixToBeMatched, String remainingInput) {
-    if (remainingInput.length() == 0) {
-      matches(prefixToBeMatched);
-    } else {
-      ParseRunner parseRunner = createParseRunnerWithoutEofMatcher();
-      String input = prefixToBeMatched + remainingInput;
-      ParsingResult parsingResult = parseRunner.parse(input.toCharArray());
-      if (!parsingResult.isMatched() || prefixToBeMatched.length() != parsingResult.getParseTreeRoot().getEndIndex()) {
-        String actualMatchedPrefix = parsingResult.isMatched() ? input.substring(0, parsingResult.getParseTreeRoot().getEndIndex()) : "";
-        String message = "Rule '" + getRuleName() + "' should match:\n" + prefixToBeMatched + "\nwhen followed by:\n" + remainingInput + "\nbut matched:\n" + actualMatchedPrefix;
-        throw new ParsingResultComparisonFailure(message, prefixToBeMatched, actualMatchedPrefix);
-      }
+    ParseRunner parseRunner = createParseRunnerWithoutEofMatcher();
+    String input = prefixToBeMatched + remainingInput;
+    ParsingResult parsingResult = parseRunner.parse(input.toCharArray());
+    if (!parsingResult.isMatched()) {
+      String expected = "Rule '" + getRuleName() + "' should match:\n" + prefixToBeMatched + "\nwhen followed by:\n" + remainingInput;
+      String actual = new ParseErrorFormatter().format(parsingResult.getParseError());
+      throw new ParsingResultComparisonFailure(expected, actual);
+    } else if (prefixToBeMatched.length() != parsingResult.getParseTreeRoot().getEndIndex()) {
+      String actualMatchedPrefix = input.substring(0, parsingResult.getParseTreeRoot().getEndIndex());
+      String message = "Rule '" + getRuleName() + "' should match:\n" + prefixToBeMatched + "\nwhen followed by:\n" + remainingInput + "\nbut matched:\n" + actualMatchedPrefix;
+      throw new ParsingResultComparisonFailure(message, prefixToBeMatched, actualMatchedPrefix);
     }
 
     return this;
