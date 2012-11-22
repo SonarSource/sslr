@@ -19,16 +19,14 @@
  */
 package org.sonar.sslr.internal.matchers;
 
-import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Rule;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
+import static org.sonar.sslr.parser.GrammarOperators.commentTrivia;
 import static org.sonar.sslr.parser.GrammarOperators.endOfInput;
 import static org.sonar.sslr.parser.GrammarOperators.firstOf;
 import static org.sonar.sslr.parser.GrammarOperators.regexp;
-import static org.sonar.sslr.parser.GrammarOperators.token;
 import static org.sonar.sslr.parser.GrammarOperators.zeroOrMore;
-
 
 public class ExpressionGrammar extends LexerlessGrammar {
 
@@ -51,7 +49,7 @@ public class ExpressionGrammar extends LexerlessGrammar {
   Rule parens;
 
   public ExpressionGrammar() {
-    whitespace.is(token(GenericTokenType.COMMENT, regexp("\\s*+"))).skip();
+    whitespace.is(commentTrivia(regexp("\\s*+"))).skip();
 
     plus.is('+', whitespace);
     minus.is('-', whitespace);

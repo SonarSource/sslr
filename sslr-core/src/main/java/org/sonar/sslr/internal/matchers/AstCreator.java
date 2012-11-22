@@ -21,11 +21,8 @@ package org.sonar.sslr.internal.matchers;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.GenericTokenType;
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.TokenType;
-import com.sonar.sslr.api.Trivia;
+import com.sonar.sslr.api.*;
+import com.sonar.sslr.api.Trivia.TriviaKind;
 import org.sonar.sslr.internal.matchers.InputBuffer.Position;
 import org.sonar.sslr.parser.ParsingResult;
 
@@ -63,7 +60,19 @@ public final class AstCreator {
 
     String value = getValue(node);
     tokenBuilder.setValueAndOriginalValue(value);
-    if (node.getMatcher() instanceof TokenMatcher) {
+    if (node.getMatcher() instanceof TriviaMatcher) {
+      TriviaMatcher ruleMatcher = (TriviaMatcher) node.getMatcher();
+      if (ruleMatcher.getTriviaKind() == TriviaKind.SKIPPED_TEXT) {
+        return null;
+      } else if (ruleMatcher.getTriviaKind() == TriviaKind.COMMENT) {
+        tokenBuilder.setTrivia(Collections.EMPTY_LIST);
+        tokenBuilder.setType(GenericTokenType.COMMENT);
+        trivias.add(Trivia.createComment(tokenBuilder.build()));
+        return null;
+      } else {
+        throw new IllegalStateException("Unexpected trivia kind: " + ruleMatcher.getTriviaKind());
+      }
+    } else if (node.getMatcher() instanceof TokenMatcher) {
       TokenMatcher ruleMatcher = (TokenMatcher) node.getMatcher();
       tokenBuilder.setType(ruleMatcher.getTokenType());
       if (ruleMatcher.getTokenType() == GenericTokenType.COMMENT) {

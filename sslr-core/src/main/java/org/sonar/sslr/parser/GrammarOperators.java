@@ -21,6 +21,7 @@ package org.sonar.sslr.parser;
 
 import com.google.common.base.Preconditions;
 import com.sonar.sslr.api.TokenType;
+import com.sonar.sslr.api.Trivia.TriviaKind;
 import org.sonar.sslr.internal.matchers.*;
 
 /**
@@ -81,6 +82,20 @@ public final class GrammarOperators {
 
   public static Object token(TokenType tokenType, Object element) {
     return new TokenMatcher(tokenType, MatchersUtils.convertToMatcher(element));
+  }
+
+  /**
+   * @since 1.17
+   */
+  public static Object commentTrivia(Object element) {
+    return new TriviaMatcher(TriviaKind.COMMENT, MatchersUtils.convertToMatcher(element));
+  }
+
+  /**
+   * @since 1.17
+   */
+  public static Object skippedTrivia(Object element) {
+    return new TriviaMatcher(TriviaKind.SKIPPED_TEXT, MatchersUtils.convertToMatcher(element));
   }
 
 }
