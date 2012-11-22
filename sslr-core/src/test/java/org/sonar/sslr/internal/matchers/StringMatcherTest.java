@@ -48,6 +48,7 @@ public class StringMatcherTest {
     when(context.charAt(2)).thenReturn('r');
     assertThat(matcher.match(context)).isTrue();
     verify(context).advanceIndex(3);
+    verify(context).createNode();
   }
 
   @Test
@@ -56,6 +57,7 @@ public class StringMatcherTest {
     when(context.length()).thenReturn(3);
     assertThat(matcher.match(context)).isFalse();
     verify(context, never()).advanceIndex(anyInt());
+    verify(context, never()).createNode();
   }
 
 }

@@ -53,12 +53,14 @@ public class PatternMatcherTest {
     when(context.charAt(2)).thenReturn('b');
     assertThat(matcher.match(context)).isTrue();
     verify(context).advanceIndex(3);
+    verify(context).createNode();
   }
 
   @Test
   public void should_not_match() {
     assertThat(matcher.match(context)).isFalse();
     verify(context, never()).advanceIndex(anyInt());
+    verify(context, never()).createNode();
   }
 
 }
