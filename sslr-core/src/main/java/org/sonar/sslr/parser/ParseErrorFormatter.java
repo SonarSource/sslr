@@ -20,12 +20,8 @@
 package org.sonar.sslr.parser;
 
 import com.google.common.base.Preconditions;
-import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
-import org.sonar.sslr.internal.matchers.InputBuffer;
+import org.sonar.sslr.internal.matchers.*;
 import org.sonar.sslr.internal.matchers.InputBuffer.Position;
-import org.sonar.sslr.internal.matchers.Matcher;
-import org.sonar.sslr.internal.matchers.MatcherPathElement;
-import org.sonar.sslr.internal.matchers.TextUtils;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -115,13 +111,13 @@ public class ParseErrorFormatter {
       }
 
       if (depth > 0) {
-        sb.append(prefix + (isTail ? "┌─" /* \u250C\u2500 */: "├─" /* \u251C\u2500 */));
+        sb.append(prefix + (isTail ? "/-" : "+-"));
       }
       appendPathElement(sb, inputBuffer, lists.get(start).get(depth));
     }
 
     private String formatPrefix(int depth, boolean isTail) {
-      return depth == 0 ? "" : isTail ? "  " : "│ " /* \u2502 */;
+      return depth == 0 ? "" : isTail ? "  " : "| ";
     }
 
   }
