@@ -124,7 +124,7 @@ public final class AstCreator {
   }
 
   @VisibleForTesting
-  static TokenType UNDEFINED_TOKEN_TYPE = new TokenType() {
+  static final TokenType UNDEFINED_TOKEN_TYPE = new TokenType() {
     public String getName() {
       return "TOKEN";
     }

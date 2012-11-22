@@ -21,11 +21,7 @@ package org.sonar.sslr.internal.matchers;
 
 
 import com.google.common.collect.ImmutableList;
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.GenericTokenType;
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.TokenType;
-import com.sonar.sslr.api.Trivia;
+import com.sonar.sslr.api.*;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import org.junit.Before;
 import org.junit.Test;
@@ -120,6 +116,7 @@ public class AstCreatorTest {
     assertThat(token.getLine()).isEqualTo(1);
     assertThat(token.getColumn()).isEqualTo(0);
     assertThat(token.getType()).isSameAs(AstCreator.UNDEFINED_TOKEN_TYPE);
+    assertThat(token.getType().getName()).isEqualTo("TOKEN");
 
     token = astNode.getTokens().get(1);
     assertThat(token.getValue()).isEqualTo("bar");
