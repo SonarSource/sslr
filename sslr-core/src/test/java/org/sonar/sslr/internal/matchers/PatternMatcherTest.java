@@ -57,6 +57,14 @@ public class PatternMatcherTest {
   }
 
   @Test
+  public void should_not_create_node_for_empty_match() {
+    matcher = new PatternMatcher("a*+");
+    assertThat(matcher.match(context)).isTrue();
+    verify(context, never()).advanceIndex(anyInt());
+    verify(context, never()).createNode();
+  }
+
+  @Test
   public void should_not_match() {
     assertThat(matcher.match(context)).isFalse();
     verify(context, never()).advanceIndex(anyInt());

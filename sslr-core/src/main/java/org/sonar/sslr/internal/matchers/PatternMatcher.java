@@ -38,7 +38,7 @@ public class PatternMatcher implements Matcher {
       throw new GrammarException(e, "The regular expression '" + matcher.pattern().pattern() + "' has led to a stack overflow error."
           + " This error is certainly due to an inefficient use of alternations. See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5050507");
     }
-    if (result) {
+    if (result && matcher.end() != 0) {
       context.advanceIndex(matcher.end());
       context.createNode();
     }
