@@ -44,14 +44,14 @@ public class AstNodeBrowser {
 
   public AstNodeBrowser findChildren(AstNodeType nodeType) {
     if (node != null) {
-      nodes = node.findChildren(nodeType);
+      nodes = node.findDescendants(nodeType);
     }
     return this;
   }
 
   public AstNodeBrowser findFirstChild(AstNodeType... nodeTypes) {
     if (node != null) {
-      node = node.findFirstChild(nodeTypes);
+      node = node.findFirstDescendant(nodeTypes);
     }
     return this;
   }
