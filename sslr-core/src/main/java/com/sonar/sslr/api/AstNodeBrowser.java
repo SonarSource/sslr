@@ -37,28 +37,28 @@ public class AstNodeBrowser {
 
   public AstNodeBrowser findFirstDirectChild(AstNodeType... nodeTypes) {
     if (node != null) {
-      node = node.findFirstDirectChild(nodeTypes);
+      node = node.getFirstDirectChild(nodeTypes);
     }
     return this;
   }
 
   public AstNodeBrowser findChildren(AstNodeType nodeType) {
     if (node != null) {
-      nodes = node.findDescendants(nodeType);
+      nodes = node.getDescendants(nodeType);
     }
     return this;
   }
 
   public AstNodeBrowser findFirstChild(AstNodeType... nodeTypes) {
     if (node != null) {
-      node = node.findFirstDescendant(nodeTypes);
+      node = node.getFirstDescendant(nodeTypes);
     }
     return this;
   }
 
   public AstNodeBrowser findFirstDirectChild(AstNodeType nodeType, String tokenValue) {
     if (node != null) {
-      List<AstNode> words = node.findDirectChildren(nodeType);
+      List<AstNode> words = node.getDirectChildren(nodeType);
       for (AstNode word : words) {
         if (word.getTokenValue().equals(tokenValue)) {
           node = word;
@@ -84,4 +84,5 @@ public class AstNodeBrowser {
     }
     return new ArrayList<AstNode>();
   }
+
 }

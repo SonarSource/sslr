@@ -121,39 +121,68 @@ public class AstNode {
   }
 
   /**
-   * Get the next sibling AstNode in the tree and if this node doesn't exist try to get the next AST Node of the parent.
+   * @deprecated in 1.17, use {@link #getNextAstNode()} instead
    */
+  @Deprecated
   public AstNode nextAstNode() {
-    AstNode nextSibling = nextSibling();
+    return getNextAstNode();
+  }
+
+  /**
+   * Get the next sibling AstNode in the tree and if this node doesn't exist try to get the next AST Node of the parent.
+   *
+   * @since 1.17
+   */
+  public AstNode getNextAstNode() {
+    AstNode nextSibling = getNextSibling();
     if (nextSibling != null) {
       return nextSibling;
     }
     if (parent != null) {
-      return parent.nextAstNode();
+      return parent.getNextAstNode();
     }
     return null;
   }
 
   /**
-   * Get the previous sibling AstNode in the tree and if this node doesn't exist try to get the next AST Node of the parent.
+   * @deprecated in 1.17, use {@link #getPreviousAstNode()} instead
    */
+  @Deprecated
   public AstNode previousAstNode() {
-    AstNode previousSibling = previousSibling();
+    return getPreviousAstNode();
+  }
+
+  /**
+   * Get the previous sibling AstNode in the tree and if this node doesn't exist try to get the next AST Node of the parent.
+   *
+   * @since 1.17
+   */
+  public AstNode getPreviousAstNode() {
+    AstNode previousSibling = getPreviousSibling();
     if (previousSibling != null) {
       return previousSibling;
     }
     if (parent != null) {
-      return parent.previousAstNode();
+      return parent.getPreviousAstNode();
     }
     return null;
+  }
+
+  /**
+   * @deprecated in 1.17, use {@link #getNextSibling()} instead
+   */
+  @Deprecated
+  public AstNode nextSibling() {
+    return getNextSibling();
   }
 
   /**
    * Get the next sibling AstNode if exists in the tree.
    *
-   * @return next sibling AstNode
+   * @return next sibling, or null if not exists
+   * @since 1.17
    */
-  public AstNode nextSibling() {
+  public AstNode getNextSibling() {
     if (parent == null) {
       return null;
     }
@@ -164,11 +193,20 @@ public class AstNode {
   }
 
   /**
+   * @deprecated in 1.17, use {@link #getPreviousSibling()}
+   */
+  @Deprecated
+  public AstNode previousSibling() {
+    return getPreviousSibling();
+  }
+
+  /**
    * Get the previous sibling AstNode if exists in the tree.
    *
-   * @return previous sibling AstNode
+   * @return previous sibling, or null if not exists
+   * @since 1.17
    */
-  public AstNode previousSibling() {
+  public AstNode getPreviousSibling() {
     if (parent == null) {
       return null;
     }
@@ -267,9 +305,17 @@ public class AstNode {
   }
 
   /**
+   * @deprecated in 1.17, use {@link #getFirstDirectChild(AstNodeType...)} instead
+   */
+  @Deprecated
+  public AstNode findFirstDirectChild(AstNodeType... nodeTypes) {
+    return getFirstDirectChild(nodeTypes);
+  }
+
+  /**
    * Returns first child of one of specified types.
    * <p>
-   * In the following case, {@code findFirstDirectChild("B")} would return "B2":
+   * In the following case, {@code getFirstDirectChild("B")} would return "B2":
    * <pre>
    * A1
    *  |__ C1
@@ -279,8 +325,9 @@ public class AstNode {
    * </pre>
    *
    * @return first child of one of specified types, or null if not found
+   * @since 1.17
    */
-  public AstNode findFirstDirectChild(AstNodeType... nodeTypes) {
+  public AstNode getFirstDirectChild(AstNodeType... nodeTypes) {
     for (AstNode child : children) {
       for (AstNodeType nodeType : nodeTypes) {
         if (child.type == nodeType) {
@@ -292,17 +339,17 @@ public class AstNode {
   }
 
   /**
-   * @deprecated in 1.17, use {@link #findFirstDescendant(AstNodeType...)} instead
+   * @deprecated in 1.17, use {@link #getFirstDescendant(AstNodeType...)} instead
    */
   @Deprecated
   public AstNode findFirstChild(AstNodeType... nodeTypes) {
-    return findFirstDescendant(nodeTypes);
+    return getFirstDescendant(nodeTypes);
   }
 
   /**
    * Returns first descendant of one of specified types.
    * <p>
-   * In the following case, {@code findFirstChild("B")} would return "B1":
+   * In the following case, {@code getFirstDescendant("B")} would return "B1":
    * <pre>
    * A1
    *  |__ C1
@@ -314,13 +361,13 @@ public class AstNode {
    * @return first descendant of one of specified types, or null if not found
    * @since 1.17
    */
-  public AstNode findFirstDescendant(AstNodeType... nodeTypes) {
+  public AstNode getFirstDescendant(AstNodeType... nodeTypes) {
     for (AstNode child : children) {
       for (AstNodeType nodeType : nodeTypes) {
         if (child.type == nodeType) {
           return child;
         }
-        AstNode node = child.findFirstDescendant(nodeTypes);
+        AstNode node = child.getFirstDescendant(nodeTypes);
         if (node != null) {
           return node;
         }
@@ -339,8 +386,16 @@ public class AstNode {
   }
 
   /**
+   * @deprecated in 1.17, use {@link #getDirectChildren(AstNodeType...)} instead
+   */
+  @Deprecated
+  public List<AstNode> findDirectChildren(AstNodeType... nodeTypes) {
+    return getDirectChildren(nodeTypes);
+  }
+
+  /**
    * Returns children of specified types.
-   * In the following case, {@code findDirectChildren("B")} would return "B2" and "B3":
+   * In the following case, {@code getDirectChildren("B")} would return "B2" and "B3":
    * <p>
    * <pre>
    * A1
@@ -352,7 +407,7 @@ public class AstNode {
    *
    * @return children of specified types, never null
    */
-  public List<AstNode> findDirectChildren(AstNodeType... nodeTypes) {
+  public List<AstNode> getDirectChildren(AstNodeType... nodeTypes) {
     List<AstNode> result = new ArrayList<AstNode>();
     for (AstNode child : children) {
       for (AstNodeType nodeType : nodeTypes) {
@@ -365,18 +420,18 @@ public class AstNode {
   }
 
   /**
-   * @deprecated in 1.17, use {@link #findDescendants(AstNodeType...)} instead
+   * @deprecated in 1.17, use {@link #getDescendants(AstNodeType...)} instead
    */
   @Deprecated
   public List<AstNode> findChildren(AstNodeType... nodeTypes) {
-    return findDescendants(nodeTypes);
+    return getDescendants(nodeTypes);
   }
 
   /**
    * Returns descendants of specified types.
-   * Be careful, this method searches among all descendants whatever is their depth, so favor {@link #findDirectChildren(AstNodeType...)} when possible.
+   * Be careful, this method searches among all descendants whatever is their depth, so favor {@link #getDirectChildren(AstNodeType...)} when possible.
    * <p>
-   * In the following case, {@code findDescendants("B", "C")} would return "C1", "B1", "B2" and "B3":
+   * In the following case, {@code getDescendants("B", "C")} would return "C1", "B1", "B2" and "B3":
    * <pre>
    * A1
    *  |__ C1
@@ -389,13 +444,13 @@ public class AstNode {
    * @return descendants of specified types, never null
    * @since 1.17
    */
-  public List<AstNode> findDescendants(AstNodeType... nodeTypes) {
+  public List<AstNode> getDescendants(AstNodeType... nodeTypes) {
     List<AstNode> result = new ArrayList<AstNode>();
-    findDescendants(result, nodeTypes);
+    getDescendants(result, nodeTypes);
     return result;
   }
 
-  private void findDescendants(List<AstNode> result, AstNodeType... nodeTypes) {
+  private void getDescendants(List<AstNode> result, AstNodeType... nodeTypes) {
     for (AstNodeType nodeType : nodeTypes) {
       if (is(nodeType)) {
         result.add(this);
@@ -403,7 +458,7 @@ public class AstNode {
     }
     if (hasChildren()) {
       for (AstNode child : children) {
-        child.findDescendants(result, nodeTypes);
+        child.getDescendants(result, nodeTypes);
       }
     }
   }
@@ -437,7 +492,7 @@ public class AstNode {
    * @since 1.17
    */
   public boolean hasDescendant(AstNodeType... nodeTypes) {
-    return findFirstDescendant(nodeTypes) != null;
+    return getFirstDescendant(nodeTypes) != null;
   }
 
   /**
@@ -453,28 +508,28 @@ public class AstNode {
    * @since 1.17
    */
   public boolean hasAncestor(AstNodeType nodeType) {
-    return findFirstAncestor(nodeType) != null;
+    return getFirstAncestor(nodeType) != null;
   }
 
   /**
-   * @deprecated in 1.17, use {@link #findFirstAncestor(AstNodeType)} instead
+   * @deprecated in 1.17, use {@link #getFirstAncestor(AstNodeType)} instead
    */
   @Deprecated
   public AstNode findFirstParent(AstNodeType nodeType) {
-    return findFirstAncestor(nodeType);
+    return getFirstAncestor(nodeType);
   }
 
   /**
    * @return first ancestor of the specified type, or null if not found
    * @since 1.17
    */
-  public AstNode findFirstAncestor(AstNodeType nodeType) {
+  public AstNode getFirstAncestor(AstNodeType nodeType) {
     if (parent == null) {
       return null;
     } else if (parent.type == nodeType) {
       return parent;
     }
-    return parent.findFirstAncestor(nodeType);
+    return parent.getFirstAncestor(nodeType);
   }
 
   public boolean isCopyBookOrGeneratedNode() {

@@ -109,7 +109,7 @@ public class ExpressionGrammarTest {
     assertThat(firstToken.getValue()).isEqualTo("20");
     assertThat(firstToken.getOriginalValue()).isEqualTo("20");
 
-    Token tokenWithTrivia = astNode.findFirstDescendant(grammar.mul).getToken();
+    Token tokenWithTrivia = astNode.getFirstDescendant(grammar.mul).getToken();
     assertThat(tokenWithTrivia.getLine()).isEqualTo(1);
     assertThat(tokenWithTrivia.getColumn()).isEqualTo(3);
     assertThat(tokenWithTrivia.getTrivia()).hasSize(1);
