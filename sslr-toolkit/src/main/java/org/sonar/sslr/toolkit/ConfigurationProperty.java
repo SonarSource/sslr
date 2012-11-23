@@ -45,7 +45,7 @@ public class ConfigurationProperty {
     Preconditions.checkNotNull(validationCallback);
 
     String errorMessage = validationCallback.validate(defaultValue);
-    Preconditions.checkArgument("".equals(errorMessage), "The default value \"" + errorMessage + "\" did not pass validation: " + errorMessage);
+    Preconditions.checkArgument("".equals(errorMessage), "The default value \"" + defaultValue + "\" did not pass validation: " + errorMessage);
 
     this.name = name;
     this.description = description;
