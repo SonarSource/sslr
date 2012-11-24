@@ -54,17 +54,12 @@ public final class AstCreator {
   }
 
   private AstNode visitTerminal(ParseNode node) {
-    Position position = inputBuffer.getPosition(node.getStartIndex());
-    tokenBuilder.setLine(position.getLine());
-    tokenBuilder.setColumn(position.getColumn() - 1);
-
-    String value = getValue(node);
-    tokenBuilder.setValueAndOriginalValue(value);
     if (node.getMatcher() instanceof TriviaMatcher) {
       TriviaMatcher ruleMatcher = (TriviaMatcher) node.getMatcher();
       if (ruleMatcher.getTriviaKind() == TriviaKind.SKIPPED_TEXT) {
         return null;
       } else if (ruleMatcher.getTriviaKind() == TriviaKind.COMMENT) {
+        updateTokenPositionAndValue(node);
         tokenBuilder.setTrivia(Collections.EMPTY_LIST);
         tokenBuilder.setType(GenericTokenType.COMMENT);
         trivias.add(Trivia.createComment(tokenBuilder.build()));
@@ -73,6 +68,7 @@ public final class AstCreator {
         throw new IllegalStateException("Unexpected trivia kind: " + ruleMatcher.getTriviaKind());
       }
     } else if (node.getMatcher() instanceof TokenMatcher) {
+      updateTokenPositionAndValue(node);
       TokenMatcher ruleMatcher = (TokenMatcher) node.getMatcher();
       tokenBuilder.setType(ruleMatcher.getTokenType());
       if (ruleMatcher.getTokenType() == GenericTokenType.COMMENT) {
@@ -81,6 +77,7 @@ public final class AstCreator {
         return null;
       }
     } else {
+      updateTokenPositionAndValue(node);
       tokenBuilder.setType(UNDEFINED_TOKEN_TYPE);
     }
     Token token = tokenBuilder.setTrivia(trivias).build();
@@ -89,6 +86,15 @@ public final class AstCreator {
     astNode.setFromIndex(node.getStartIndex());
     astNode.setToIndex(node.getEndIndex());
     return astNode;
+  }
+
+  private void updateTokenPositionAndValue(ParseNode node) {
+    Position position = inputBuffer.getPosition(node.getStartIndex());
+    tokenBuilder.setLine(position.getLine());
+    tokenBuilder.setColumn(position.getColumn() - 1);
+
+    String value = getValue(node);
+    tokenBuilder.setValueAndOriginalValue(value);
   }
 
   private AstNode visitNonTerminal(ParseNode node) {
