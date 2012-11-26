@@ -19,9 +19,10 @@
  */
 package com.sonar.sslr.api;
 
+import com.google.common.collect.Lists;
+
 import javax.annotation.Nullable;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -65,7 +66,7 @@ public class AstNode {
   public void addChild(AstNode child) {
     if (child != null) {
       if (children.isEmpty()) {
-        children = new ArrayList<AstNode>();
+        children = Lists.newArrayList();
       }
       if (child.hasToBeSkippedFromAst()) {
         if (child.hasChildren()) {
@@ -408,7 +409,7 @@ public class AstNode {
    * @return children of specified types, never null
    */
   public List<AstNode> getDirectChildren(AstNodeType... nodeTypes) {
-    List<AstNode> result = new ArrayList<AstNode>();
+    List<AstNode> result = Lists.newArrayList();
     for (AstNode child : children) {
       for (AstNodeType nodeType : nodeTypes) {
         if (child.type == nodeType) {
@@ -424,7 +425,7 @@ public class AstNode {
    */
   @Deprecated
   public List<AstNode> findChildren(AstNodeType... nodeTypes) {
-    List<AstNode> result = new ArrayList<AstNode>();
+    List<AstNode> result = Lists.newArrayList();
     getDescendants(result, nodeTypes);
     return result;
   }
@@ -447,7 +448,7 @@ public class AstNode {
    * @since 1.17
    */
   public List<AstNode> getDescendants(AstNodeType... nodeTypes) {
-    List<AstNode> result = new ArrayList<AstNode>();
+    List<AstNode> result = Lists.newArrayList();
     if (hasChildren()) {
       for (AstNode child : children) {
         child.getDescendants(result, nodeTypes);
@@ -482,7 +483,7 @@ public class AstNode {
    * @return true if this node has some direct children with the requested node types
    */
   public boolean hasDirectChildren(AstNodeType... nodeTypes) {
-    return findFirstDirectChild(nodeTypes) != null;
+    return getFirstDirectChild(nodeTypes) != null;
   }
 
   /**
@@ -550,7 +551,7 @@ public class AstNode {
    * Return all tokens contained in this tree node. Those tokens can be directly or indirectly attached to this node.
    */
   public List<Token> getTokens() {
-    List<Token> tokens = new ArrayList<Token>();
+    List<Token> tokens = Lists.newArrayList();
     getTokens(tokens);
     return tokens;
   }
