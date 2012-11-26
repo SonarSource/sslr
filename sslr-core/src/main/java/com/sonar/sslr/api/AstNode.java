@@ -420,11 +420,13 @@ public class AstNode {
   }
 
   /**
-   * @deprecated in 1.17, use {@link #getDescendants(AstNodeType...)} instead
+   * @deprecated in 1.17, use {@link #getDescendants(AstNodeType...)} instead, but don't forget that those methods behave differently due to bug SSLR-249
    */
   @Deprecated
   public List<AstNode> findChildren(AstNodeType... nodeTypes) {
-    return getDescendants(nodeTypes);
+    List<AstNode> result = new ArrayList<AstNode>();
+    getDescendants(result, nodeTypes);
+    return result;
   }
 
   /**
@@ -446,7 +448,11 @@ public class AstNode {
    */
   public List<AstNode> getDescendants(AstNodeType... nodeTypes) {
     List<AstNode> result = new ArrayList<AstNode>();
-    getDescendants(result, nodeTypes);
+    if (hasChildren()) {
+      for (AstNode child : children) {
+        child.getDescendants(result, nodeTypes);
+      }
+    }
     return result;
   }
 

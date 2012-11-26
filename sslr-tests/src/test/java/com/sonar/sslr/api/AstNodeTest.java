@@ -262,6 +262,46 @@ public class AstNodeTest {
     assertThat(statement.getLastChild()).isSameAs(expr2);
   }
 
+  /**
+   * <pre>
+   * A1
+   *  |__ C1
+   *  |    |__ B1
+   *  |__ B2
+   *  |__ D1
+   *  |__ B3
+   * </pre>
+   */
+  @Test
+  public void test_getDescendants() {
+    NodeType a = new NodeType();
+    NodeType b = new NodeType();
+    NodeType c = new NodeType();
+    NodeType d = new NodeType();
+    NodeType e = new NodeType();
+    AstNode a1 = new AstNode(a, "a1", null);
+    AstNode c1 = new AstNode(c, "c1", null);
+    AstNode b1 = new AstNode(b, "b1", null);
+    AstNode b2 = new AstNode(b, "b2", null);
+    AstNode d1 = new AstNode(d, "d1", null);
+    AstNode b3 = new AstNode(b, "b3", null);
+    a1.addChild(c1);
+    c1.addChild(b1);
+    a1.addChild(b2);
+    a1.addChild(d1);
+    a1.addChild(b3);
+
+    assertThat(a1.findChildren(b, c)).containsExactly(c1, b1, b2, b3);
+    assertThat(a1.findChildren(b)).containsExactly(b1, b2, b3);
+    assertThat(a1.findChildren(e)).isEmpty();
+    assertThat(a1.findChildren(a)).as("SSLR-249").containsExactly(a1);
+
+    assertThat(a1.getDescendants(b, c)).containsExactly(c1, b1, b2, b3);
+    assertThat(a1.getDescendants(b)).containsExactly(b1, b2, b3);
+    assertThat(a1.getDescendants(e)).isEmpty();
+    assertThat(a1.getDescendants(a)).as("SSLR-249").isEmpty();
+  }
+
   private class NodeType implements AstNodeSkippingPolicy {
 
     private boolean skippedFromAst = false;
