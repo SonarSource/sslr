@@ -481,14 +481,16 @@ public class AstNode {
   }
 
   /**
-   * @return true if this node has some direct children with the requested node types
+   * @return true if this node has some children with the requested node types
    */
   public boolean hasDirectChildren(AstNodeType... nodeTypes) {
     return getFirstChild(nodeTypes) != null;
   }
 
   /**
-   * @deprecated in 1.17, use {@link #hasDescendant(AstNodeType...)} instead
+   * @deprecated in 1.17, use {@link #hasDescendant(AstNodeType...)} instead. 
+   * Be careful the name of this method is misleading as the check is done on descendant nodes 
+   * and not only on child nodes. 
    */
   @Deprecated
   public boolean hasChildren(AstNodeType... nodeTypes) {
