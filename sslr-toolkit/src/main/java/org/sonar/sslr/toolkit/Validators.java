@@ -73,28 +73,7 @@ public class Validators {
         int value = Integer.parseInt(newValueCandidate);
 
         if (value < lowerBound || value > upperBound) {
-          if (lowerBound == upperBound) {
-            return "Must be equal to " + lowerBound + ": " + newValueCandidate;
-          }
-          else if (upperBound == Integer.MAX_VALUE) {
-            if (lowerBound == 0) {
-              return "Must be positive or 0: " + value;
-            } else if (lowerBound == 1) {
-              return "Must be strictly positive: " + value;
-            } else {
-              return "Must be greater or equal to " + lowerBound + ": " + value;
-            }
-          } else if (lowerBound == Integer.MIN_VALUE) {
-            if (upperBound == 0) {
-              return "Must be negative or 0: " + value;
-            } else if (upperBound == -1) {
-              return "Must be strictly negative: " + value;
-            } else {
-              return "Must be lower or equal to " + upperBound + ": " + value;
-            }
-          } else {
-            return "Must be between " + lowerBound + " and " + upperBound + ": " + value;
-          }
+          return getErrorMessage(value);
         } else {
           return "";
         }
@@ -103,6 +82,34 @@ public class Validators {
       }
     }
 
+    private String getErrorMessage(int value) {
+      String errorMessage;
+
+      if (lowerBound == upperBound) {
+        errorMessage = "Must be equal to " + lowerBound + ": " + value;
+      }
+      else if (upperBound == Integer.MAX_VALUE) {
+        if (lowerBound == 0) {
+          errorMessage = "Must be positive or 0: " + value;
+        } else if (lowerBound == 1) {
+          errorMessage = "Must be strictly positive: " + value;
+        } else {
+          errorMessage = "Must be greater or equal to " + lowerBound + ": " + value;
+        }
+      } else if (lowerBound == Integer.MIN_VALUE) {
+        if (upperBound == 0) {
+          errorMessage = "Must be negative or 0: " + value;
+        } else if (upperBound == -1) {
+          errorMessage = "Must be strictly negative: " + value;
+        } else {
+          errorMessage = "Must be lower or equal to " + upperBound + ": " + value;
+        }
+      } else {
+        errorMessage = "Must be between " + lowerBound + " and " + upperBound + ": " + value;
+      }
+
+      return errorMessage;
+    }
   }
 
   public static ValidationCallback booleanValidator() {
