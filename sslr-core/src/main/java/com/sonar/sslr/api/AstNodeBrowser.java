@@ -37,7 +37,7 @@ public class AstNodeBrowser {
 
   public AstNodeBrowser findFirstDirectChild(AstNodeType... nodeTypes) {
     if (node != null) {
-      node = node.getFirstDirectChild(nodeTypes);
+      node = node.getFirstChild(nodeTypes);
     }
     return this;
   }

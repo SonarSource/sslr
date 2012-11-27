@@ -306,11 +306,11 @@ public class AstNode {
   }
 
   /**
-   * @deprecated in 1.17, use {@link #getFirstDirectChild(AstNodeType...)} instead
+   * @deprecated in 1.17, use {@link #getFirstChild(AstNodeType...)} instead
    */
   @Deprecated
   public AstNode findFirstDirectChild(AstNodeType... nodeTypes) {
-    return getFirstDirectChild(nodeTypes);
+    return getFirstChild(nodeTypes);
   }
 
   /**
@@ -328,7 +328,7 @@ public class AstNode {
    * @return first child of one of specified types, or null if not found
    * @since 1.17
    */
-  public AstNode getFirstDirectChild(AstNodeType... nodeTypes) {
+  public AstNode getFirstChild(AstNodeType... nodeTypes) {
     for (AstNode child : children) {
       for (AstNodeType nodeType : nodeTypes) {
         if (child.type == nodeType) {
@@ -484,7 +484,7 @@ public class AstNode {
    * @return true if this node has some direct children with the requested node types
    */
   public boolean hasDirectChildren(AstNodeType... nodeTypes) {
-    return getFirstDirectChild(nodeTypes) != null;
+    return getFirstChild(nodeTypes) != null;
   }
 
   /**
