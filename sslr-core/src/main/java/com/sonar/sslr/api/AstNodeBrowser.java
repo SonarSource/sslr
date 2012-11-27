@@ -58,7 +58,7 @@ public class AstNodeBrowser {
 
   public AstNodeBrowser findFirstDirectChild(AstNodeType nodeType, String tokenValue) {
     if (node != null) {
-      List<AstNode> words = node.getDirectChildren(nodeType);
+      List<AstNode> words = node.getChildren(nodeType);
       for (AstNode word : words) {
         if (word.getTokenValue().equals(tokenValue)) {
           node = word;

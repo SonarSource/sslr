@@ -387,16 +387,16 @@ public class AstNode {
   }
 
   /**
-   * @deprecated in 1.17, use {@link #getDirectChildren(AstNodeType...)} instead
+   * @deprecated in 1.17, use {@link #getChildren(AstNodeType...)} instead
    */
   @Deprecated
   public List<AstNode> findDirectChildren(AstNodeType... nodeTypes) {
-    return getDirectChildren(nodeTypes);
+    return getChildren(nodeTypes);
   }
 
   /**
    * Returns children of specified types.
-   * In the following case, {@code getDirectChildren("B")} would return "B2" and "B3":
+   * In the following case, {@code getChildren("B")} would return "B2" and "B3":
    * <p>
    * <pre>
    * A1
@@ -407,8 +407,9 @@ public class AstNode {
    * </pre>
    *
    * @return children of specified types, never null
+   * @since 1.17
    */
-  public List<AstNode> getDirectChildren(AstNodeType... nodeTypes) {
+  public List<AstNode> getChildren(AstNodeType... nodeTypes) {
     List<AstNode> result = Lists.newArrayList();
     for (AstNode child : children) {
       for (AstNodeType nodeType : nodeTypes) {
@@ -432,7 +433,7 @@ public class AstNode {
 
   /**
    * Returns descendants of specified types.
-   * Be careful, this method searches among all descendants whatever is their depth, so favor {@link #getDirectChildren(AstNodeType...)} when possible.
+   * Be careful, this method searches among all descendants whatever is their depth, so favor {@link #getChildren(AstNodeType...)} when possible.
    * <p>
    * In the following case, {@code getDescendants("B", "C")} would return "C1", "B1", "B2" and "B3":
    * <pre>
