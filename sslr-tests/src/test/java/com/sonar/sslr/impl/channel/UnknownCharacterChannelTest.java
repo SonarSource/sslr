@@ -49,12 +49,6 @@ public class UnknownCharacterChannelTest {
     assertThat(channel.consume(new CodeReader(""), null)).isFalse();
   }
 
-  @Test
-  public void shouldConsumeBomCharacter() {
-    assertThat(channel.consume(new CodeReader("\uFEFF"), lexer)).isTrue();
-    assertThat(lexer.getTokens().size()).isEqualTo(0);
-  }
-
   private void check(String input, Channel<Lexer> channel, TokenType expectedTokenType, String expectedTokenValue, Lexer lexer) {
     CodeReader code = new CodeReader(new StringReader(input));
 

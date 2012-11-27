@@ -31,13 +31,12 @@ import static com.sonar.sslr.api.GenericTokenType.UNKNOWN_CHAR;
 /**
  * Creates token with type {@link #UNKNOWN_CHAR} for any character, which is not {@link #BOM_CHAR}.
  * This channel, if present, should be the last one.
+ *
+ * @since 1.2
  */
 public class UnknownCharacterChannel extends Channel<Lexer> {
 
   private static final Logger LOG = LoggerFactory.getLogger(UnknownCharacterChannel.class);
-
-  // Byte Order Mark that can be found in some Unicode files
-  public static final char BOM_CHAR = '\uFEFF';
 
   private boolean shouldLogWarning = false;
   private final Token.Builder tokenBuilder = Token.builder();
@@ -53,9 +52,6 @@ public class UnknownCharacterChannel extends Channel<Lexer> {
   public boolean consume(CodeReader code, Lexer lexer) {
     if (code.peek() != -1) {
       char unknownChar = (char) code.pop();
-      if (unknownChar == BOM_CHAR) {
-        return true;
-      }
       if (shouldLogWarning) {
         LOG.warn("Unknown char: \"" + unknownChar + "\" (" + lexer.getURI() + ":" + code.getLinePosition() + ":"
             + code.getColumnPosition() + ")");
@@ -75,4 +71,5 @@ public class UnknownCharacterChannel extends Channel<Lexer> {
     }
     return false;
   }
+
 }
