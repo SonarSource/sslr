@@ -60,7 +60,6 @@ public final class MiniCToolkit {
 
     });
 
-    @Override
     public List<ConfigurationProperty> getProperties() {
       return ImmutableList.of(charsetProperty);
     }
