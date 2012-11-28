@@ -20,16 +20,47 @@
 package org.sonar.sslr.toolkit;
 
 import com.google.common.base.Preconditions;
+import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.impl.Parser;
+import org.sonar.colorizer.Tokenizer;
 import org.sonar.sslr.internal.toolkit.SourceCodeModel;
 import org.sonar.sslr.internal.toolkit.ToolkitPresenter;
 import org.sonar.sslr.internal.toolkit.ToolkitViewImpl;
 
 import javax.swing.SwingUtilities;
 
+import java.util.Collections;
+import java.util.List;
+
 public class Toolkit {
 
   private final String title;
   private final ConfigurationModel configurationModel;
+
+  /**
+   * @deprecated in 1.16, use {@link #Toolkit(String, ConfigurationModel)} instead.
+   */
+  @Deprecated
+  public Toolkit(final Parser<?> parser, final List<Tokenizer> tokenizers, String title) {
+    this(title, new AbstractConfigurationModel() {
+
+      @Override
+      public List<ConfigurationProperty> getProperties() {
+        return Collections.EMPTY_LIST;
+      }
+
+      @Override
+      public List<Tokenizer> doGetTokenizers() {
+        return tokenizers;
+      }
+
+      @Override
+      public Parser<? extends Grammar> doGetParser() {
+        return parser;
+      }
+
+    });
+  }
 
   public Toolkit(String title, ConfigurationModel configurationModel) {
     Preconditions.checkNotNull(title);
