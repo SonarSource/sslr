@@ -36,4 +36,10 @@ public class BomCharacterChannelTest {
     assertThat(lexer.getTokens().size()).isEqualTo(0);
   }
 
+  @Test
+  public void shouldNotConsumeOtherCharacters() {
+    assertThat(channel.consume(new CodeReader(" "), lexer)).isFalse();
+    assertThat(lexer.getTokens().size()).isEqualTo(0);
+  }
+
 }
