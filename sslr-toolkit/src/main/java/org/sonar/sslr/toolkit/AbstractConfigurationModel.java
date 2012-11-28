@@ -19,13 +19,20 @@
  */
 package org.sonar.sslr.toolkit;
 
-
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
 import org.sonar.colorizer.Tokenizer;
 
 import java.util.List;
 
+/**
+ * This class provides an default optimized implementation of the {@link ConfigurationModel} interface.
+ *
+ * It will call the {@link #doGetParser()} and {@link #doGetTokenizers()} methods only when a change
+ * to the configuration has been made.
+ *
+ * @since 1.17
+ */
 public abstract class AbstractConfigurationModel implements ConfigurationModel {
 
   private boolean updatedFlag;
@@ -60,10 +67,20 @@ public abstract class AbstractConfigurationModel implements ConfigurationModel {
     return tokenizers;
   }
 
-  public abstract List<ConfigurationProperty> getProperties();
-
+  /**
+   * Gets a parser instance reflecting the current configuration state.
+   * This method will not be called twice in a row without a change in the configuration state.
+   *
+   * @return A parser for the current configuration
+   */
   public abstract Parser<? extends Grammar> doGetParser();
 
+  /**
+   * Gets tokenizers reflecting the current configuration state.
+   * This method will not be called twice in a row without a change in the configuration state.
+   *
+   * @return Tokenizers for the current configuration
+   */
   public abstract List<Tokenizer> doGetTokenizers();
 
 }

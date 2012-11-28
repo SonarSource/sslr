@@ -25,6 +25,11 @@ import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 
+/**
+ * Provides a few handy configuration property validators out-of-the-box.
+ *
+ * @since 1.17
+ */
 public class Validators {
 
   private static final CharsetValidator CHARSET_VALIDATOR = new CharsetValidator();
@@ -33,6 +38,11 @@ public class Validators {
   private Validators() {
   }
 
+  /**
+   * Validates that the property holds a valid {@link Charset} name.
+   *
+   * @return A charset validator
+   */
   public static ValidationCallback charsetValidator() {
     return CHARSET_VALIDATOR;
   }
@@ -52,6 +62,13 @@ public class Validators {
 
   }
 
+  /**
+   * Validates that the property holds an integer within the given lower and upper bounds.
+   *
+   * @param lowerBound
+   * @param upperBound
+   * @return An integer range validator
+   */
   public static ValidationCallback integerRangeValidator(int lowerBound, int upperBound) {
     return new IntegerRangeValidator(lowerBound, upperBound);
   }
@@ -112,6 +129,11 @@ public class Validators {
     }
   }
 
+  /**
+   * Validates that the property holds a boolean value, i.e. either "true" or "false".
+   *
+   * @return A boolean validator
+   */
   public static ValidationCallback booleanValidator() {
     return BOOLEAN_VALIDATOR;
   }

@@ -21,6 +21,12 @@ package org.sonar.sslr.toolkit;
 
 import com.google.common.base.Preconditions;
 
+/**
+ * This class represents a configuration property, which is made of a name, a description (which may be empty),
+ * a default value, and optionnally a validation callback.
+ *
+ * @since 1.17
+ */
 public class ConfigurationProperty {
 
   private static final ValidationCallback NO_VALIDATION = new ValidationCallback() {
@@ -38,6 +44,13 @@ public class ConfigurationProperty {
     this(name, description, defaultValue, NO_VALIDATION);
   }
 
+  /**
+   *
+   * @param name
+   * @param description
+   * @param defaultValue
+   * @param validationCallback The validation callback. Note that handy ones are available out-of-the-box by the {@link Validators} class.
+   */
   public ConfigurationProperty(String name, String description, String defaultValue, ValidationCallback validationCallback) {
     Preconditions.checkNotNull(name);
     Preconditions.checkNotNull(description);

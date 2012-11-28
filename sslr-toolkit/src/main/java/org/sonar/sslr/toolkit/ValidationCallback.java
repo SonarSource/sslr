@@ -19,6 +19,13 @@
  */
 package org.sonar.sslr.toolkit;
 
+/**
+ * This interface is used to validate values that are to be assigned to configuration properties.
+ *
+ * The {@link Validators} class provides out-of-the-box handy validators.
+ *
+ * @since 1.17
+ */
 public interface ValidationCallback {
 
   /**

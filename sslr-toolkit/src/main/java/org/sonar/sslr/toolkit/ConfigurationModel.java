@@ -25,14 +25,42 @@ import org.sonar.colorizer.Tokenizer;
 
 import java.util.List;
 
+/**
+ * This interface is used to pass configuration properties to the Toolkit.
+ *
+ * The parser and tokenizer may depend on the configuration.
+ * For example, a parser could depend on a charset configuration property.
+ *
+ * End-users should extend {@link AbstractConfigurationModel} instead of implementing this interface.
+ *
+ * @since 1.17
+ */
 public interface ConfigurationModel {
 
+  /**
+   * Gets the properties to be shown, in the same order, in the Configuration tab.
+   *
+   * @return The list of configuration properties
+   */
   List<ConfigurationProperty> getProperties();
 
+  /**
+   * This method is called each time a configuration property's value is changed.
+   */
   void setUpdatedFlag();
 
+  /**
+   * Gets a parser instance reflecting the current configuration state.
+   *
+   * @return A parser for the current configuration
+   */
   Parser<? extends Grammar> getParser();
 
+  /**
+   * Gets tokenizers reflecting the current configuration state.
+   *
+   * @return Tokenizers for the current configuration
+   */
   List<Tokenizer> getTokenizers();
 
 }

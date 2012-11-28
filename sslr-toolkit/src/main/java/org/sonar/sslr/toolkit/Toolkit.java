@@ -38,13 +38,18 @@ public class Toolkit {
   private final ConfigurationModel configurationModel;
 
   /**
+   * Create a Toolkit with a title, a static parser and static tokenizers.
+   *
+   * @param parser
+   * @param tokenizers
+   * @param title
+   *
    * @deprecated in 1.17, use {@link #Toolkit(String, ConfigurationModel)} instead.
    */
   @Deprecated
   public Toolkit(final Parser<?> parser, final List<Tokenizer> tokenizers, String title) {
     this(title, new AbstractConfigurationModel() {
 
-      @Override
       public List<ConfigurationProperty> getProperties() {
         return Collections.EMPTY_LIST;
       }
@@ -62,6 +67,14 @@ public class Toolkit {
     });
   }
 
+  /**
+   * Creates a Toolkit with a title, and the given {@link ConfigurationModel}.
+   *
+   * @param title
+   * @param configurationModel
+   *
+   * @since 1.17
+   */
   public Toolkit(String title, ConfigurationModel configurationModel) {
     Preconditions.checkNotNull(title);
 
