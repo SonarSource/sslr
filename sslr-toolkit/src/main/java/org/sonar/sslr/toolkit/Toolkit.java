@@ -38,7 +38,7 @@ public class Toolkit {
   private final ConfigurationModel configurationModel;
 
   /**
-   * @deprecated in 1.16, use {@link #Toolkit(String, ConfigurationModel)} instead.
+   * @deprecated in 1.17, use {@link #Toolkit(String, ConfigurationModel)} instead.
    */
   @Deprecated
   public Toolkit(final Parser<?> parser, final List<Tokenizer> tokenizers, String title) {
