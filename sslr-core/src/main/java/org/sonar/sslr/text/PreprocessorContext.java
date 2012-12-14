@@ -49,9 +49,8 @@ public class PreprocessorContext {
     return new TextImpl(string);
   }
 
-  public Text createTextFromFile(File file) {
-    // FIXME
-    return null;
+  public Text createTextFromFile(String contents, File file) {
+    return new TextImpl(contents.toCharArray(), file);
   }
 
 }

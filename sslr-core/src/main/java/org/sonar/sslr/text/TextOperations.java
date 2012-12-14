@@ -26,6 +26,7 @@ package org.sonar.sslr.text;
  *
  * @since 1.17
  */
+// FIXME Remove this interface
 public interface TextOperations extends CharSequence {
 
   Text subSequence(int start, int end);

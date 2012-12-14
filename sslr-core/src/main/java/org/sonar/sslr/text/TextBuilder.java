@@ -28,4 +28,10 @@ public interface TextBuilder {
 
   TextBuilder append(Text text);
 
+  TextBuilder append(TextBuilder textBuilder);
+
+  TextBuilder appendStartMarker(TextMarker textMarker);
+
+  TextBuilder appendEndMarker(TextMarker textMarker);
+
 }

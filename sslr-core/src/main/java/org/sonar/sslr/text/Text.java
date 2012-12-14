@@ -19,6 +19,8 @@
  */
 package org.sonar.sslr.text;
 
+import java.util.List;
+
 /**
  * <p>This interface is not intended to be implemented by clients.</p>
  *
@@ -49,5 +51,12 @@ public interface Text extends TextOperations {
    * or a carriage return followed immediately by a line feed ({@code "\r\n"}).
    */
   Iterable<TextLine> lines();
+
+  /**
+   * Provides the list of {@link TextMarker}, from the most recent to the least recent one.
+   *
+   * @return the {@link TextMarker} instances attached to the character at {@code index}
+   */
+  List<TextMarker> getTextMarkers(int index);
 
 }

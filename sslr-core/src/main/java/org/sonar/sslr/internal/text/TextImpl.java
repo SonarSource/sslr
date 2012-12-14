@@ -20,14 +20,18 @@
 package org.sonar.sslr.internal.text;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import org.sonar.sslr.text.Position;
 import org.sonar.sslr.text.Text;
 import org.sonar.sslr.text.TextBuilder;
 import org.sonar.sslr.text.TextCursor;
 import org.sonar.sslr.text.TextLine;
+import org.sonar.sslr.text.TextMarker;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @since 1.17
@@ -37,6 +41,8 @@ public class TextImpl extends AbstractTextOperations implements Text {
   private final char[] buffer;
   private final Position[] positions;
   private final Position[] originalPositions;
+  private final int[] textMarkersOffsets;
+  private final TextMarker[][] textMarkers;
 
   /**
    * Used for creating generated texts.
@@ -54,6 +60,8 @@ public class TextImpl extends AbstractTextOperations implements Text {
 
     this.positions = TextUtils.getPositions(this.buffer);
     this.originalPositions = TextUtils.getPositionsWithFile(this.positions, originalFile);
+    this.textMarkersOffsets = new int[] {0};
+    this.textMarkers = new TextMarker[][] {new TextMarker[0]};
   }
 
   /**
@@ -63,19 +71,40 @@ public class TextImpl extends AbstractTextOperations implements Text {
     TextBuilderImpl textBuilderImpl = (TextBuilderImpl) textBuilder;
 
     int totalLength = 0;
+    int totalNumberOfTextMarkerOffsets = 0;
     for (Text fragment : textBuilderImpl.getFragments()) {
-      totalLength += fragment.length();
+      TextImpl fragmentImpl = (TextImpl) fragment;
+
+      totalLength += fragmentImpl.length();
+      totalNumberOfTextMarkerOffsets += fragmentImpl.textMarkersOffsets.length;
     }
 
     this.buffer = new char[totalLength];
     this.originalPositions = new Position[totalLength];
+    this.textMarkersOffsets = new int[totalNumberOfTextMarkerOffsets];
+    this.textMarkers = new TextMarker[totalNumberOfTextMarkerOffsets][];
 
     int currentLength = 0;
+    int currentTextMarkerIndex = 0;
     for (Text fragment : textBuilderImpl.getFragments()) {
       TextImpl fragmentImpl = (TextImpl) fragment;
 
       System.arraycopy(fragmentImpl.buffer, 0, this.buffer, currentLength, fragmentImpl.length());
       System.arraycopy(fragmentImpl.originalPositions, 0, this.originalPositions, currentLength, fragmentImpl.length());
+
+      List<TextMarker> newTextMarkersList = textBuilderImpl.getTextEndMarkers(fragmentImpl);
+      TextMarker[] newTextMarkers = newTextMarkersList.toArray(new TextMarker[newTextMarkersList.size()]);
+
+      for (int i = 0; i < fragmentImpl.textMarkersOffsets.length; i++) {
+        this.textMarkersOffsets[currentTextMarkerIndex] = currentLength + fragmentImpl.textMarkersOffsets[i];
+
+        TextMarker[] existingTextMarkers = fragmentImpl.textMarkers[i];
+        this.textMarkers[currentTextMarkerIndex] = new TextMarker[newTextMarkers.length + existingTextMarkers.length];
+        System.arraycopy(newTextMarkers, 0, this.textMarkers[currentTextMarkerIndex], 0, newTextMarkers.length);
+        System.arraycopy(existingTextMarkers, 0, this.textMarkers[currentTextMarkerIndex], newTextMarkers.length, existingTextMarkers.length);
+
+        currentTextMarkerIndex++;
+      }
 
       currentLength += fragment.length();
     }
@@ -97,6 +126,22 @@ public class TextImpl extends AbstractTextOperations implements Text {
     System.arraycopy(text.originalPositions, start, this.originalPositions, 0, newLength);
 
     this.positions = TextUtils.getPositions(this.buffer);
+
+    int firstTextMarkerIndex = text.getTextMarkerIndex(start);
+    int lastTextMarkerIndex = text.getTextMarkerIndex(end);
+    int textMarkersLength = lastTextMarkerIndex - firstTextMarkerIndex + 1;
+
+    this.textMarkersOffsets = new int[textMarkersLength];
+    this.textMarkers = new TextMarker[textMarkersLength][];
+    for (int i = firstTextMarkerIndex; i <= lastTextMarkerIndex; i++) {
+      int previousOffset = text.textMarkersOffsets[i];
+      int newOffset = Math.max(0, previousOffset - start);
+      int newI = i - firstTextMarkerIndex;
+
+      this.textMarkersOffsets[newI] = newOffset;
+      this.textMarkers[newI] = new TextMarker[text.textMarkers[i].length];
+      System.arraycopy(text.textMarkers[i], 0, this.textMarkers[newI], 0, text.textMarkers[i].length);
+    }
   }
 
   public int length() {
@@ -132,6 +177,20 @@ public class TextImpl extends AbstractTextOperations implements Text {
         return new TextLineCursorImpl(text);
       }
     };
+  }
+
+  public List<TextMarker> getTextMarkers(int index) {
+    return ImmutableList.copyOf(textMarkers[getTextMarkerIndex(index)]);
+  }
+
+  private int getTextMarkerIndex(int index) {
+    int textMarkerIndex = Arrays.binarySearch(textMarkersOffsets, index);
+    if (textMarkerIndex < 0) {
+      int insertionPoint = -textMarkerIndex - 1;
+      textMarkerIndex = insertionPoint - 1;
+    }
+
+    return textMarkerIndex;
   }
 
 }

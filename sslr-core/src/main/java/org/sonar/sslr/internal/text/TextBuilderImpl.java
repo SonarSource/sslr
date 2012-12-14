@@ -19,11 +19,19 @@
  */
 package org.sonar.sslr.internal.text;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.sonar.sslr.text.Text;
 import org.sonar.sslr.text.TextBuilder;
+import org.sonar.sslr.text.TextMarker;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 
 /**
  * @since 1.17
@@ -31,18 +39,56 @@ import java.util.List;
 public class TextBuilderImpl implements TextBuilder {
 
   private final List<Text> fragments;
+  private final Stack<TextMarker> pendingTextStartMarkers;
+  private final Map<Text, Set<TextMarker>> textStartMarkersByText;
+  private final LinkedListMultimap<Text, TextMarker> textMarkersByText;
 
   public TextBuilderImpl() {
     this.fragments = Lists.newLinkedList();
+    this.pendingTextStartMarkers = new Stack<TextMarker>();
+    this.textStartMarkersByText = Maps.newHashMap();
+    this.textMarkersByText = LinkedListMultimap.create();
   }
 
-  public TextBuilderImpl append(Text text) {
-    fragments.add(text);
+  public TextBuilderImpl append(Text fragment) {
+    fragments.add(fragment);
+    textStartMarkersByText.put(fragment, ImmutableSet.copyOf(pendingTextStartMarkers));
+    return this;
+  }
+
+  public TextBuilderImpl append(TextBuilder textBuilder) {
+    for (Text fragment : ((TextBuilderImpl) textBuilder).getFragments()) {
+      append(fragment);
+    }
     return this;
   }
 
   public List<Text> getFragments() {
     return fragments;
+  }
+
+  public TextBuilderImpl appendStartMarker(TextMarker textMarker) {
+    pendingTextStartMarkers.push(textMarker);
+    return this;
+  }
+
+  public TextBuilderImpl appendEndMarker(TextMarker textMarker) {
+    Preconditions.checkState(!pendingTextStartMarkers.isEmpty(), "Cannot append end markers before start ones");
+    Preconditions.checkArgument(pendingTextStartMarkers.peek().equals(textMarker), "The end marker must match the last started one");
+
+    pendingTextStartMarkers.pop();
+
+    for (Text fragment : getFragments()) {
+      if (textStartMarkersByText.get(fragment).contains(textMarker)) {
+        textMarkersByText.put(fragment, textMarker);
+      }
+    }
+
+    return this;
+  }
+
+  public List<TextMarker> getTextEndMarkers(Text fragment) {
+    return textMarkersByText.get(fragment);
   }
 
 }
