@@ -57,7 +57,11 @@ public class TextBuilderImpl implements TextBuilder {
   }
 
   public TextBuilderImpl append(TextBuilder textBuilder) {
-    for (Text fragment : ((TextBuilderImpl) textBuilder).getFragments()) {
+    TextBuilderImpl textBuilderImpl = (TextBuilderImpl) textBuilder;
+    Preconditions.checkArgument(textBuilderImpl.pendingTextStartMarkers.isEmpty(), "Cannot append a text builder with pending start markers");
+
+    for (Text fragment : textBuilderImpl.getFragments()) {
+      textMarkersByText.putAll(fragment, textBuilderImpl.getTextEndMarkers(fragment));
       append(fragment);
     }
     return this;

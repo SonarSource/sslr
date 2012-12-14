@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.text;
 
-import com.google.common.collect.Lists;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -28,7 +27,6 @@ import org.sonar.sslr.text.TextMarker;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class TextBuilderImplTest {
 
@@ -63,10 +61,11 @@ public class TextBuilderImplTest {
 
   @Test
   public void should_append_text_builders() {
-    TextBuilderImpl appendedTextBuilder = mock(TextBuilderImpl.class);
     Text t1 = mock(Text.class);
     Text t2 = mock(Text.class);
-    when(appendedTextBuilder.getFragments()).thenReturn(Lists.newArrayList(t1, t2));
+    TextBuilderImpl appendedTextBuilder = new TextBuilderImpl();
+    appendedTextBuilder.append(t1);
+    appendedTextBuilder.append(t2);
 
     TextBuilderImpl textBuilder = new TextBuilderImpl();
 
@@ -78,7 +77,7 @@ public class TextBuilderImplTest {
   public void should_return_same_instance_for_chaning_of_append_text_builders() {
     TextBuilderImpl textBuilder = new TextBuilderImpl();
 
-    assertThat(textBuilder.append(mock(TextBuilderImpl.class))).isSameAs(textBuilder);
+    assertThat(textBuilder.append(new TextBuilderImpl())).isSameAs(textBuilder);
   }
 
   @Test
@@ -179,6 +178,40 @@ public class TextBuilderImplTest {
     TextBuilderImpl textBuilder = new TextBuilderImpl();
     textBuilder.appendStartMarker(marker1);
     textBuilder.appendEndMarker(marker2);
+  }
+
+  @Test
+  public void should_not_loose_initial_markers_when_appending_a_text_builder() {
+    TextMarker initialMarker1 = mock(TextMarker.class);
+    TextMarker initialMarker2 = mock(TextMarker.class);
+    Text initialText = mock(Text.class);
+
+    TextBuilderImpl initialTextBuilder = new TextBuilderImpl();
+    initialTextBuilder.appendStartMarker(initialMarker2);
+    initialTextBuilder.appendStartMarker(initialMarker1);
+    initialTextBuilder.append(initialText);
+    initialTextBuilder.appendEndMarker(initialMarker1);
+    initialTextBuilder.appendEndMarker(initialMarker2);
+
+    TextMarker newMarker = mock(TextMarker.class);
+    TextBuilderImpl newTextBuilder = new TextBuilderImpl();
+    newTextBuilder.appendStartMarker(newMarker);
+    newTextBuilder.append(initialTextBuilder);
+    newTextBuilder.appendEndMarker(newMarker);
+
+    assertThat(newTextBuilder.getTextEndMarkers(initialText)).containsExactly(initialMarker1, initialMarker2, newMarker);
+  }
+
+  @Test
+  public void should_fail_to_append_text_builder_with_pending_start_markers() {
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("Cannot append a text builder with pending start markers");
+
+    TextMarker marker = mock(TextMarker.class);
+    TextBuilderImpl initialTextBuilder = new TextBuilderImpl();
+    initialTextBuilder.appendStartMarker(marker);
+
+    new TextBuilderImpl().append(initialTextBuilder);
   }
 
 }
