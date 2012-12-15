@@ -307,26 +307,26 @@ public class TextImplTest {
 
     TextBuilderImpl textBuilderImpl = mock(TextBuilderImpl.class);
     when(textBuilderImpl.getFragments()).thenReturn((List) Lists.newArrayList(fragment1));
-    when(textBuilderImpl.getTextEndMarkers(fragment1)).thenReturn(Lists.newArrayList(marker2, marker1));
+    when(textBuilderImpl.getTextEndMarkers(fragment1)).thenReturn(Lists.newArrayList(marker1, marker2));
 
     TextImpl fragment2 = new TextImpl(textBuilderImpl);
 
-    assertThat(fragment2.getTextMarkers(0)).isEqualTo(Lists.newArrayList(marker2, marker1));
-    assertThat(fragment2.getTextMarkers(1)).isEqualTo(Lists.newArrayList(marker2, marker1));
-    assertThat(fragment2.getTextMarkers(2)).isEqualTo(Lists.newArrayList(marker2, marker1));
+    assertThat(fragment2.getTextMarkers(0)).isEqualTo(Lists.newArrayList(marker1, marker2));
+    assertThat(fragment2.getTextMarkers(1)).isEqualTo(Lists.newArrayList(marker1, marker2));
+    assertThat(fragment2.getTextMarkers(2)).isEqualTo(Lists.newArrayList(marker1, marker2));
 
     TextMarker marker3 = mock(TextMarker.class);
     TextMarker marker4 = mock(TextMarker.class);
 
     textBuilderImpl = mock(TextBuilderImpl.class);
     when(textBuilderImpl.getFragments()).thenReturn((List) Lists.newArrayList(fragment2));
-    when(textBuilderImpl.getTextEndMarkers(fragment2)).thenReturn(Lists.newArrayList(marker4, marker3));
+    when(textBuilderImpl.getTextEndMarkers(fragment2)).thenReturn(Lists.newArrayList(marker3, marker4));
 
     TextImpl text = new TextImpl(textBuilderImpl);
 
-    assertThat(text.getTextMarkers(0)).isEqualTo(Lists.newArrayList(marker4, marker3, marker2, marker1));
-    assertThat(text.getTextMarkers(1)).isEqualTo(Lists.newArrayList(marker4, marker3, marker2, marker1));
-    assertThat(text.getTextMarkers(2)).isEqualTo(Lists.newArrayList(marker4, marker3, marker2, marker1));
+    assertThat(text.getTextMarkers(0)).isEqualTo(Lists.newArrayList(marker1, marker2, marker3, marker4));
+    assertThat(text.getTextMarkers(1)).isEqualTo(Lists.newArrayList(marker1, marker2, marker3, marker4));
+    assertThat(text.getTextMarkers(2)).isEqualTo(Lists.newArrayList(marker1, marker2, marker3, marker4));
   }
 
   @Test

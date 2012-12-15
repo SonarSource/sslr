@@ -53,7 +53,7 @@ public interface Text extends TextOperations {
   Iterable<TextLine> lines();
 
   /**
-   * Provides the list of {@link TextMarker}, from the most recent to the least recent one.
+   * Provides the list of {@link TextMarker}, most inner one first.
    *
    * @return the {@link TextMarker} instances attached to the character at {@code index}
    */

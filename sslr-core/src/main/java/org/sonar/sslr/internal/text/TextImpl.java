@@ -99,9 +99,9 @@ public class TextImpl extends AbstractTextOperations implements Text {
         this.textMarkersOffsets[currentTextMarkerIndex] = currentLength + fragmentImpl.textMarkersOffsets[i];
 
         TextMarker[] existingTextMarkers = fragmentImpl.textMarkers[i];
-        this.textMarkers[currentTextMarkerIndex] = new TextMarker[newTextMarkers.length + existingTextMarkers.length];
-        System.arraycopy(newTextMarkers, 0, this.textMarkers[currentTextMarkerIndex], 0, newTextMarkers.length);
-        System.arraycopy(existingTextMarkers, 0, this.textMarkers[currentTextMarkerIndex], newTextMarkers.length, existingTextMarkers.length);
+        this.textMarkers[currentTextMarkerIndex] = new TextMarker[existingTextMarkers.length + newTextMarkers.length];
+        System.arraycopy(existingTextMarkers, 0, this.textMarkers[currentTextMarkerIndex], 0, existingTextMarkers.length);
+        System.arraycopy(newTextMarkers, 0, this.textMarkers[currentTextMarkerIndex], existingTextMarkers.length, newTextMarkers.length);
 
         currentTextMarkerIndex++;
       }
