@@ -17,11 +17,22 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.text;
+package org.sonar.sslr.internal.text;
+
+import org.sonar.sslr.text.Text;
 
 /**
- * @since 1.17
+ * Base class for all implementations of {@link Text}.
  */
-public interface TextMarker {
+public abstract class AbstractText implements Text {
+
+  protected abstract int getTransformationDepth();
+
+  protected abstract char[] toChars();
+
+  @Override
+  public String toString() {
+    return new String(toChars());
+  }
 
 }

@@ -19,33 +19,32 @@
  */
 package org.sonar.sslr.text;
 
+import org.sonar.sslr.internal.text.FileText;
+import org.sonar.sslr.internal.text.PlainText;
+
+import java.io.File;
+
 /**
- * <p>This interface is not intended to be implemented by clients.</p>
- *
  * @since 1.17
- * @see Text#lines()
  */
-public interface TextLine extends TextOperations {
+public class Texts {
 
-  Text subSequence(int start, int end);
+  private Texts() {
+  }
 
-  boolean startsWith(CharSequence charSequence); // FIXME
+  public static final char LF = '\n';
+  public static final char CR = '\r';
 
-  boolean isEmpty();
+  public static Text create(String str) {
+    return new PlainText(str.toCharArray());
+  }
 
-  /**
-   * @return the line's number
-   */
-  int getLineNumber();
+  public static Text create(File fromFile, String fileContent) {
+    return new FileText(fromFile, fileContent.toCharArray());
+  }
 
-  /**
-   * @return index of the line's first character
-   */
-  int getIndex();
-
-  /**
-   * @return the line's terminator, or an empty @{link Text} for the last line
-   */
-  Text getLineTerminator();
+  public static Text create(File fromFile, char[] fileContent) {
+    return new FileText(fromFile, fileContent);
+  }
 
 }

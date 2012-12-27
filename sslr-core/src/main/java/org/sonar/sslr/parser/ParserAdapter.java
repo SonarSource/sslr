@@ -29,11 +29,6 @@ import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.apache.commons.io.IOUtils;
 import org.sonar.sslr.internal.matchers.AstCreator;
 import org.sonar.sslr.internal.matchers.InputBuffer;
-import org.sonar.sslr.internal.text.TextImpl;
-import org.sonar.sslr.text.PreprocessorsChain;
-import org.sonar.sslr.text.Text;
-
-import javax.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -54,20 +49,11 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
 
   private final Charset charset;
   private final ParseRunner parseRunner;
-  private final PreprocessorsChain preprocessorChain;
 
   public ParserAdapter(Charset charset, G grammar) {
-    this(charset, grammar, null);
-  }
-
-  /**
-   * @since 1.17
-   */
-  public ParserAdapter(Charset charset, G grammar, @Nullable PreprocessorsChain preprocessorChain) {
     super(Preconditions.checkNotNull(grammar, "grammar"));
     this.charset = Preconditions.checkNotNull(charset, "charset");
     this.parseRunner = new ParseRunner(grammar.getRootRule());
-    this.preprocessorChain = preprocessorChain;
   }
 
   /**
@@ -83,7 +69,7 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
       // Can't happen
       throw new IllegalStateException(e);
     }
-    return preprocessAndParse(uri, new TextImpl(source));
+    return parse(uri, source.toCharArray());
   }
 
   /**
@@ -92,7 +78,7 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
    */
   @Override
   public AstNode parse(File file) {
-    return preprocessAndParse(file.toURI(), new TextImpl(fileToCharArray(file, charset), file));
+    return parse(file.toURI(), fileToCharArray(file, charset));
   }
 
   private static char[] fileToCharArray(File file, Charset charset) {
@@ -107,12 +93,8 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
     }
   }
 
-  private AstNode preprocessAndParse(URI uri, Text input) {
-    if (preprocessorChain != null) {
-      input = new TextImpl(preprocessorChain.process(input));
-    }
-
-    ParsingResult result = parseRunner.parse(textToCharArray(input));
+  private AstNode parse(URI uri, char[] input) {
+    ParsingResult result = parseRunner.parse(input);
     if (result.isMatched()) {
       return AstCreator.create(uri, result);
     } else {
@@ -122,14 +104,6 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
       String message = new ParseErrorFormatter().format(parseError);
       throw new RecognitionException(line, message);
     }
-  }
-
-  private char[] textToCharArray(Text text) {
-    char[] result = new char[text.length()];
-    for (int i = 0; i < text.length(); i++) {
-      result[i] = text.charAt(i);
-    }
-    return result;
   }
 
   @Override

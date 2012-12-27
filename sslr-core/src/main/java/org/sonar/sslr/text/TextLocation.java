@@ -21,8 +21,6 @@ package org.sonar.sslr.text;
 
 import com.google.common.base.Objects;
 
-import javax.annotation.Nullable;
-
 import java.io.File;
 
 /**
@@ -30,23 +28,18 @@ import java.io.File;
  *
  * @since 1.17
  */
-public class Position {
+public class TextLocation {
 
   private final File file;
   private final int line;
   private final int column;
 
-  public Position(int line, int column) {
-    this(null, line, column);
-  }
-
-  public Position(@Nullable File file, int line, int column) {
+  public TextLocation(File file, int line, int column) {
     this.file = file;
     this.line = line;
     this.column = column;
   }
 
-  @Nullable
   public File getFile() {
     return file;
   }
@@ -60,22 +53,22 @@ public class Position {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof Position)) {
-      return false;
-    }
-    Position other = (Position) obj;
-    return this.file == other.file
-      && this.line == other.line
-      && this.column == other.column;
+  public int hashCode() {
+    return Objects.hashCode(file, line, column);
   }
 
   @Override
-  public int hashCode() {
-    return 31 * line + column;
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    }
+    if (obj instanceof TextLocation) {
+      TextLocation other = (TextLocation) obj;
+      return Objects.equal(this.file, other.file)
+        && this.line == other.line
+        && this.column == other.column;
+    }
+    return false;
   }
 
   @Override

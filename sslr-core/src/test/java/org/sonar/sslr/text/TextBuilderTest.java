@@ -19,20 +19,33 @@
  */
 package org.sonar.sslr.text;
 
-/**
- * Common text operations to the {@link Text}, {@link TextCursor} and {@link TextLine} interfaces.
- *
- * <p>This interface is not intended to be implemented by clients.</p>
- *
- * @since 1.17
- */
-// FIXME Remove this interface
-public interface TextOperations extends CharSequence {
+import org.junit.Test;
+import org.sonar.sslr.internal.text.AbstractText;
+import org.sonar.sslr.internal.text.CompositeText;
 
-  Text subSequence(int start, int end);
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
-  boolean startsWith(CharSequence charSequence);
+public class TextBuilderTest {
 
-  boolean isEmpty();
+  @Test
+  public void should_not_build_CompositeText() {
+    AbstractText text = mock(AbstractText.class);
+    Text result = TextBuilder.create()
+        .append(text)
+        .build();
+    assertThat(result).isSameAs(text);
+  }
+
+  @Test
+  public void should_build_CompositeText() {
+    AbstractText text1 = mock(AbstractText.class);
+    AbstractText text2 = mock(AbstractText.class);
+    Text result = TextBuilder.create()
+        .append(text1)
+        .append(text2)
+        .build();
+    assertThat(result).isInstanceOf(CompositeText.class);
+  }
 
 }

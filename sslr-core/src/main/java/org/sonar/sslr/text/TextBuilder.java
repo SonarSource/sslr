@@ -19,19 +19,48 @@
  */
 package org.sonar.sslr.text;
 
+import com.google.common.collect.Lists;
+import org.sonar.sslr.internal.text.AbstractText;
+import org.sonar.sslr.internal.text.CompositeText;
+import org.sonar.sslr.internal.text.TransformedText;
+
+import java.util.List;
+
 /**
- * <p>This interface is not intended to be implemented by clients.</p>
+ * <p>This class is not intended to be sub-classed by clients.</p>
  *
  * @since 1.17
  */
-public interface TextBuilder {
+public class TextBuilder {
 
-  TextBuilder append(Text text);
+  private final List<AbstractText> texts = Lists.newArrayList();
 
-  TextBuilder append(TextBuilder textBuilder);
+  public static TextBuilder create() {
+    return new TextBuilder();
+  }
 
-  TextBuilder appendStartMarker(TextMarker textMarker);
+  private TextBuilder() {
+  }
 
-  TextBuilder appendEndMarker(TextMarker textMarker);
+  public TextBuilder append(Text text) {
+    texts.add(cast(text));
+    return this;
+  }
+
+  public TextBuilder appendTransformation(Text from, Text to) {
+    return append(new TransformedText(cast(from), cast(to)));
+  }
+
+  private AbstractText cast(Text text) {
+    // This cast is safe, even if not checked - AbstractText is a base implementation of interface Text
+    return (AbstractText) text;
+  }
+
+  public Text build() {
+    if (texts.size() == 1) {
+      return texts.get(0);
+    }
+    return new CompositeText(texts);
+  }
 
 }

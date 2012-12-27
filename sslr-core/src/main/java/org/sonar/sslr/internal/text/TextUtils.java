@@ -19,96 +19,45 @@
  */
 package org.sonar.sslr.internal.text;
 
-import org.sonar.sslr.text.Position;
+import com.google.common.collect.Lists;
+import org.sonar.sslr.text.Texts;
 
-import java.io.File;
+import java.util.List;
 
 public final class TextUtils {
 
-  private TextUtils()
-  {
+  private TextUtils() {
   }
 
-  // Array of characters
+  private static final int[] EMPTY_INT_ARRAY = new int[0];
 
-  public static boolean isCrLf(char[] buffer, int index) {
-    if (index + 1 >= buffer.length) {
-      return false;
-    }
-
-    return isCr(buffer, index) && isLf(buffer, index + 1);
-  }
-
-  public static boolean isCrOrLf(char[] buffer, int index) {
-    return isCr(buffer, index) || isLf(buffer, index);
-  }
-
-  public static boolean isCr(char[] buffer, int index) {
-    return buffer[index] == '\r';
-  }
-
-  public static boolean isLf(char[] buffer, int index) {
-    return buffer[index] == '\n';
-  }
-
-  // CharSequence
-
-  public static boolean isCrLf(CharSequence buffer, int index) {
-    if (index + 1 >= buffer.length()) {
-      return false;
-    }
-
-    return isCr(buffer, index) && isLf(buffer, index + 1);
-  }
-
-  public static boolean isCrOrLf(CharSequence buffer, int index) {
-    return isCr(buffer, index) || isLf(buffer, index);
-  }
-
-  public static boolean isCr(CharSequence buffer, int index) {
-    return buffer.charAt(index) == '\r';
-  }
-
-  public static boolean isLf(CharSequence buffer, int index) {
-    return buffer.charAt(index) == '\n';
-  }
-
-  // Positions
-
-  public static Position[] getPositions(char[] buffer) {
-    int currentLine = 1;
-    int currentColumn = 1;
-
-    Position[] result = new Position[buffer.length];
-    for (int i = 0; i < buffer.length; i++) {
-      result[i] = new Position(currentLine, currentColumn);
-
-      if (TextUtils.isCrOrLf(buffer, i)) {
-        if (TextUtils.isCrLf(buffer, i)) {
-          // Move from the \r to the \n
-          i++;
-          result[i] = new Position(currentLine, currentColumn + 1);
-        }
-
-        currentLine++;
-        currentColumn = 1;
-      } else {
-        currentColumn++;
+  public static int[] computeLines(char[] chars) {
+    List<Integer> newlines = Lists.newArrayList();
+    int i = 0;
+    while (i < chars.length) {
+      if (isEndOfLine(chars, i)) {
+        newlines.add(i + 1);
       }
+      i++;
     }
-
-    return result;
+    if (newlines.isEmpty()) {
+      return EMPTY_INT_ARRAY;
+    }
+    int[] lines = new int[newlines.size()];
+    for (i = 0; i < newlines.size(); i++) {
+      lines[i] = newlines.get(i);
+    }
+    return lines;
   }
 
-  public static Position[] getPositionsWithFile(Position[] positions, File originalFile) {
-    Position[] result = new Position[positions.length];
-
-    for (int i = 0; i < positions.length; i++) {
-      Position position = positions[i];
-      result[i] = new Position(originalFile, position.getLine(), position.getColumn());
-    }
-
-    return result;
+  /**
+   * A line is considered to be terminated by any one of
+   * a line feed ({@code '\n'}), a carriage return ({@code '\r'}),
+   * or a carriage return followed immediately by a line feed ({@code "\r\n"}).
+   */
+  private static boolean isEndOfLine(char[] buffer, int i) {
+    return buffer[i] == Texts.LF ||
+      buffer[i] == Texts.CR && (i + 1 < buffer.length && buffer[i + 1] != Texts.LF || i + 1 == buffer.length);
   }
 
 }

@@ -17,13 +17,32 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.text;
+package org.sonar.sslr.internal.text;
 
-/**
- * @since 1.17
- */
-public interface Preprocessor {
+import org.junit.Before;
+import org.junit.Test;
+import org.sonar.sslr.text.TextLocation;
 
-  TextBuilder process(PreprocessorContext context);
+import java.io.File;
+
+import static org.fest.assertions.Assertions.assertThat;
+
+public class FileTextTest {
+
+  private File file;
+  private FileText text;
+
+  @Before
+  public void setUp() {
+    file = new File("foo");
+    text = new FileText(file, "foo\nbar".toCharArray());
+  }
+
+  @Test
+  public void test_cursor_getLocation() {
+    assertThat(text.getLocation(1)).isEqualTo(new TextLocation(file, 1, 2));
+    assertThat(text.getLocation(4)).isEqualTo(new TextLocation(file, 2, 1));
+    assertThat(text.getLocation(5)).isEqualTo(new TextLocation(file, 2, 2));
+  }
 
 }

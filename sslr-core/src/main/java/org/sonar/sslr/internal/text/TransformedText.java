@@ -17,32 +17,41 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.text;
+package org.sonar.sslr.internal.text;
 
-import org.sonar.sslr.internal.text.TextBuilderImpl;
-import org.sonar.sslr.internal.text.TextImpl;
+import org.sonar.sslr.text.Text;
+import org.sonar.sslr.text.TextCursor;
 
-import java.util.List;
+public class TransformedText extends AbstractText {
 
-/**
- * <p>This class is not intended to be sub-classed by clients.</p>
- *
- * @since 1.17
- */
-public class PreprocessorsChain {
+  private final AbstractText fromText;
+  private final AbstractText toText;
 
-  private final List<Preprocessor> preprocessors;
-
-  public PreprocessorsChain(List<Preprocessor> preprocessors) {
-    this.preprocessors = preprocessors;
+  public TransformedText(AbstractText fromText, AbstractText toText) {
+    this.fromText = fromText;
+    this.toText = toText;
   }
 
-  public TextBuilder process(Text input) {
-    TextBuilder result = new TextBuilderImpl().append(input);
-    for (Preprocessor preprocessor : preprocessors) {
-      result = preprocessor.process(new PreprocessorContext(new TextImpl(result)));
-    }
-    return result;
+  public int length() {
+    return toText.length();
+  }
+
+  public TextCursor cursor() {
+    return toText.cursor();
+  }
+
+  @Override
+  protected int getTransformationDepth() {
+    return fromText.getTransformationDepth() + 1;
+  }
+
+  protected Text getTransformedText() {
+    return fromText;
+  }
+
+  @Override
+  protected char[] toChars() {
+    return toText.toChars();
   }
 
 }

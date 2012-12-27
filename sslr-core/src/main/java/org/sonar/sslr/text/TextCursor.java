@@ -22,25 +22,23 @@ package org.sonar.sslr.text;
 /**
  * <p>This interface is not intended to be implemented by clients.</p>
  *
- * @since 1.17
  * @see Text#cursor()
+ * @since 1.17
  */
-public interface TextCursor extends TextOperations {
+public interface TextCursor extends CharSequence {
 
-  Text subSequence(int start, int end);
+  int length();
 
-  boolean startsWith(CharSequence charSequence);
+  char charAt(int index);
 
-  boolean isEmpty();
+  TextCursor subSequence(int from, int to);
 
-  Position getPosition();
-
-  Position getOriginalPosition();
-
-  void moveForward(int offset);
-
-  int getIndex();
+  String toString();
 
   Text getText();
+
+  Text subText(int from, int to);
+
+  TextLocation getLocation(int index);
 
 }

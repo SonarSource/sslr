@@ -19,38 +19,28 @@
  */
 package org.sonar.sslr.text;
 
-import org.sonar.sslr.internal.text.TextBuilderImpl;
-import org.sonar.sslr.internal.text.TextImpl;
+import org.junit.Test;
 
 import java.io.File;
 
-/**
- * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
- *
- * @since 1.17
- */
-public class PreprocessorContext {
+import static org.fest.assertions.Assertions.assertThat;
 
-  private final Text input;
+public class TextLocationTest {
 
-  public PreprocessorContext(Text input) {
-    this.input = input;
-  }
-
-  public Text getInput() {
-    return input;
-  }
-
-  public TextBuilder createEmptyTextBuilder() {
-    return new TextBuilderImpl();
-  }
-
-  public Text createGeneratedTextFrom(String string) {
-    return new TextImpl(string);
-  }
-
-  public Text createTextFromFile(String contents, File file) {
-    return new TextImpl(contents.toCharArray(), file);
+  @Test
+  public void test() {
+    File file = new File("foo");
+    TextLocation location = new TextLocation(file, 1, 1);
+    assertThat(location.getFile()).isSameAs(file);
+    assertThat(location.getLine()).isEqualTo(1);
+    assertThat(location.getColumn()).isEqualTo(1);
+    assertThat(location.equals(location)).isTrue();
+    assertThat(location.equals(new Object())).isFalse();
+    assertThat(location.equals(new TextLocation(file, 1, 1))).isTrue();
+    assertThat(location.equals(new TextLocation(file, 1, 2))).isFalse();
+    assertThat(location.equals(new TextLocation(file, 2, 1))).isFalse();
+    assertThat(location.equals(new TextLocation(new File("bar"), 1, 1))).isFalse();
+    assertThat(location.toString()).isEqualTo("TextLocation{file=foo, line=1, column=1}");
   }
 
 }

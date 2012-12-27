@@ -19,44 +19,21 @@
  */
 package org.sonar.sslr.text;
 
-import java.util.List;
-
 /**
  * <p>This interface is not intended to be implemented by clients.</p>
  *
  * @since 1.17
  */
-public interface Text extends TextOperations {
+public interface Text {
 
-  Text subSequence(int start, int end);
-
-  boolean startsWith(CharSequence charSequence); // FIXME remove
-
-  boolean isEmpty();
-
-  Position getPosition(int index);
-
-  Position getOriginalPosition(int index);
+  /**
+   * @return the number of characters in this text
+   */
+  int length();
 
   /**
    * Provides sequential access to characters.
    */
   TextCursor cursor();
-
-  /**
-   * Provides sequential access to lines.
-   * Number of lines always equal to number of line terminators plus 1.
-   * A line is considered to be terminated by any one of
-   * a line feed ({@code '\n'}), a carriage return ({@code '\r'}),
-   * or a carriage return followed immediately by a line feed ({@code "\r\n"}).
-   */
-  Iterable<TextLine> lines();
-
-  /**
-   * Provides the list of {@link TextMarker}, most inner one first.
-   *
-   * @return the {@link TextMarker} instances attached to the character at {@code index}
-   */
-  List<TextMarker> getTextMarkers(int index);
 
 }

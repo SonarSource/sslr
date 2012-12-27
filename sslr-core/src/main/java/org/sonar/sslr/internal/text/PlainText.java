@@ -19,26 +19,54 @@
  */
 package org.sonar.sslr.internal.text;
 
-import org.sonar.sslr.text.TextOperations;
+import org.sonar.sslr.text.Text;
+import org.sonar.sslr.text.TextCursor;
+import org.sonar.sslr.text.TextLocation;
 
-public abstract class AbstractTextOperations implements TextOperations {
+public class PlainText extends AbstractText implements TextCursor {
 
-  public boolean startsWith(CharSequence charSequence) {
-    if (charSequence.length() > length()) {
-      return false;
-    }
+  private final char[] chars;
 
-    for (int i = 0; i < charSequence.length(); i++) {
-      if (charSequence.charAt(i) != charAt(i)) {
-        return false;
-      }
-    }
-
-    return true;
+  public PlainText(char[] chars) {
+    this.chars = chars;
   }
 
-  public boolean isEmpty() {
-    return length() == 0;
+  public Text subText(int from, int to) {
+    return new SubText(this, from, to);
+  }
+
+  @Override
+  protected int getTransformationDepth() {
+    return 0;
+  }
+
+  public Text getText() {
+    return this;
+  }
+
+  public int length() {
+    return chars.length;
+  }
+
+  @Override
+  protected char[] toChars() {
+    return chars;
+  }
+
+  public TextCursor cursor() {
+    return this;
+  }
+
+  public char charAt(int index) {
+    return chars[index];
+  }
+
+  public TextCursor subSequence(int from, int to) {
+    return subText(from, to).cursor();
+  }
+
+  public TextLocation getLocation(int index) {
+    return null;
   }
 
 }
