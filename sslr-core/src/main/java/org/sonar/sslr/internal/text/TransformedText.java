@@ -50,7 +50,7 @@ public class TransformedText extends AbstractText {
   }
 
   @Override
-  protected char[] toChars() {
+  public char[] toChars() {
     return toText.toChars();
   }
 

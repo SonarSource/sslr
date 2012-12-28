@@ -19,29 +19,26 @@
  */
 package org.sonar.sslr.text;
 
+import java.util.List;
+
 /**
- * <p>This interface is not intended to be implemented by clients.</p>
+ * <p>This class is not intended to be sub-classed by clients.</p>
  *
- * @see Text#cursor()
  * @since 1.17
  */
-public interface TextCursor extends CharSequence {
+public class PreprocessorsChain {
 
-  int length();
+  private final List<Preprocessor> preprocessors;
 
-  char charAt(int index);
+  public PreprocessorsChain(List<Preprocessor> preprocessors) {
+    this.preprocessors = preprocessors;
+  }
 
-  TextCursor subSequence(int from, int to);
-
-  /**
-   * @return a string containing the characters in this sequence in the same order as this sequence
-   */
-  String toString();
-
-  Text getText();
-
-  Text subText(int from, int to);
-
-  TextLocation getLocation(int index);
+  public Text process(Text input) {
+    for (Preprocessor preprocessor : preprocessors) {
+      input = preprocessor.process(new PreprocessorContext(input));
+    }
+    return input;
+  }
 
 }

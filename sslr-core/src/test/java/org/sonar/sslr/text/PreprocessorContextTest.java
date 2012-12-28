@@ -19,29 +19,18 @@
  */
 package org.sonar.sslr.text;
 
-/**
- * <p>This interface is not intended to be implemented by clients.</p>
- *
- * @see Text#cursor()
- * @since 1.17
- */
-public interface TextCursor extends CharSequence {
+import org.junit.Test;
 
-  int length();
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
-  char charAt(int index);
+public class PreprocessorContextTest {
 
-  TextCursor subSequence(int from, int to);
-
-  /**
-   * @return a string containing the characters in this sequence in the same order as this sequence
-   */
-  String toString();
-
-  Text getText();
-
-  Text subText(int from, int to);
-
-  TextLocation getLocation(int index);
+  @Test
+  public void test() {
+    Text input = mock(Text.class);
+    PreprocessorContext preprocessorContext = new PreprocessorContext(input);
+    assertThat(preprocessorContext.getInput()).isSameAs(input);
+  }
 
 }

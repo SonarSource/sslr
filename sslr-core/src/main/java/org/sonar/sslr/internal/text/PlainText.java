@@ -49,7 +49,7 @@ public class PlainText extends AbstractText implements TextCursor {
   }
 
   @Override
-  protected char[] toChars() {
+  public char[] toChars() {
     return chars;
   }
 

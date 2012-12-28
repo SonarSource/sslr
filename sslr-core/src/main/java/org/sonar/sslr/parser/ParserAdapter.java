@@ -29,6 +29,12 @@ import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.apache.commons.io.IOUtils;
 import org.sonar.sslr.internal.matchers.AstCreator;
 import org.sonar.sslr.internal.matchers.InputBuffer;
+import org.sonar.sslr.internal.text.AbstractText;
+import org.sonar.sslr.internal.text.PlainText;
+import org.sonar.sslr.text.PreprocessorsChain;
+import org.sonar.sslr.text.Text;
+
+import javax.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,11 +55,20 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
 
   private final Charset charset;
   private final ParseRunner parseRunner;
+  private PreprocessorsChain preprocessorsChain;
 
   public ParserAdapter(Charset charset, G grammar) {
+    this(charset, grammar, null);
+  }
+
+  /**
+   * @since 1.17
+   */
+  public ParserAdapter(Charset charset, G grammar, @Nullable PreprocessorsChain preprocessorsChain) {
     super(Preconditions.checkNotNull(grammar, "grammar"));
     this.charset = Preconditions.checkNotNull(charset, "charset");
     this.parseRunner = new ParseRunner(grammar.getRootRule());
+    this.preprocessorsChain = preprocessorsChain;
   }
 
   /**
@@ -69,7 +84,7 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
       // Can't happen
       throw new IllegalStateException(e);
     }
-    return parse(uri, source.toCharArray());
+    return parse(uri, new PlainText(source.toCharArray()));
   }
 
   /**
@@ -78,7 +93,7 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
    */
   @Override
   public AstNode parse(File file) {
-    return parse(file.toURI(), fileToCharArray(file, charset));
+    return parse(file.toURI(), new PlainText(fileToCharArray(file, charset)));
   }
 
   private static char[] fileToCharArray(File file, Charset charset) {
@@ -93,8 +108,14 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
     }
   }
 
-  private AstNode parse(URI uri, char[] input) {
-    ParsingResult result = parseRunner.parse(input);
+  private AstNode parse(URI uri, Text input) {
+    if (preprocessorsChain != null) {
+      input = preprocessorsChain.process(input);
+    }
+    // This cast is safe, even if not checked - AbstractText is a base implementation of interface Text
+    // TODO Godin: however would be better to get rid of it
+    char[] chars = ((AbstractText) input).toChars();
+    ParsingResult result = parseRunner.parse(chars);
     if (result.isMatched()) {
       return AstCreator.create(uri, result);
     } else {

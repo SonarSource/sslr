@@ -90,6 +90,7 @@ public class SubText extends AbstractText {
 
     @Override
     public String toString() {
+      // contract of CharSequence
       return getText().toString();
     }
 

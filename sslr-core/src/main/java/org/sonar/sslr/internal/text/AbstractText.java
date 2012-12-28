@@ -28,7 +28,7 @@ public abstract class AbstractText implements Text {
 
   protected abstract int getTransformationDepth();
 
-  protected abstract char[] toChars();
+  public abstract char[] toChars();
 
   @Override
   public String toString() {

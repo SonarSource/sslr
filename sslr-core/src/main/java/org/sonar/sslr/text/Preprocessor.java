@@ -20,28 +20,10 @@
 package org.sonar.sslr.text;
 
 /**
- * <p>This interface is not intended to be implemented by clients.</p>
- *
- * @see Text#cursor()
  * @since 1.17
  */
-public interface TextCursor extends CharSequence {
+public interface Preprocessor {
 
-  int length();
-
-  char charAt(int index);
-
-  TextCursor subSequence(int from, int to);
-
-  /**
-   * @return a string containing the characters in this sequence in the same order as this sequence
-   */
-  String toString();
-
-  Text getText();
-
-  Text subText(int from, int to);
-
-  TextLocation getLocation(int index);
+  Text process(PreprocessorContext context);
 
 }

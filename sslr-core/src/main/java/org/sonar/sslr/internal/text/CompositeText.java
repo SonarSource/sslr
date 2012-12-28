@@ -33,21 +33,21 @@ public class CompositeText extends AbstractText {
 
   public CompositeText(List<AbstractText> texts) {
     this.texts = texts.toArray(new AbstractText[texts.size()]);
-    int length = 0;
-    int transformationDepth = 0;
+    int len = 0;
+    int depth = 0;
     for (AbstractText text : this.texts) {
-      length += text.length();
-      transformationDepth = Math.max(transformationDepth, text.getTransformationDepth());
+      len += text.length();
+      depth = Math.max(depth, text.getTransformationDepth());
     }
-    this.length = length;
-    this.transformationDepth = transformationDepth;
+    this.length = len;
+    this.transformationDepth = depth;
   }
 
   public int length() {
     return length;
   }
 
-  protected char[] toChars() {
+  public char[] toChars() {
     int len = 0;
     char[] result = new char[length];
     for (int i = 0; i < texts.length; i++) {
@@ -68,14 +68,10 @@ public class CompositeText extends AbstractText {
 
   private class CompositeTextCursor implements TextCursor {
 
-    private int skipped;
-    private int index;
-    private int textIndex;
-    private TextCursor innerCursor;
-
-    public CompositeTextCursor() {
-      innerCursor = texts[textIndex].cursor();
-    }
+    private int skipped = 0;
+    private int index = 0;
+    private int textIndex = 0;
+    private TextCursor innerCursor = texts[textIndex].cursor();
 
     public Text getText() {
       return CompositeText.this;
@@ -131,6 +127,7 @@ public class CompositeText extends AbstractText {
 
     @Override
     public String toString() {
+      // contract of CharSequence
       return getText().toString();
     }
 

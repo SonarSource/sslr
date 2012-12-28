@@ -17,31 +17,18 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.text;
+package org.sonar.sslr.internal.text;
 
-/**
- * <p>This interface is not intended to be implemented by clients.</p>
- *
- * @see Text#cursor()
- * @since 1.17
- */
-public interface TextCursor extends CharSequence {
+import org.junit.Test;
 
-  int length();
+import static org.fest.assertions.Assertions.assertThat;
 
-  char charAt(int index);
+public class TextUtilsTest {
 
-  TextCursor subSequence(int from, int to);
-
-  /**
-   * @return a string containing the characters in this sequence in the same order as this sequence
-   */
-  String toString();
-
-  Text getText();
-
-  Text subText(int from, int to);
-
-  TextLocation getLocation(int index);
+  @Test
+  public void test_computeLines() {
+    assertThat(TextUtils.computeLines("foo".toCharArray())).isEqualTo(new int[] {});
+    assertThat(TextUtils.computeLines("foo\nbar\r\nbaz\rqux\r".toCharArray())).isEqualTo(new int[] {4, 9, 13, 17});
+  }
 
 }
