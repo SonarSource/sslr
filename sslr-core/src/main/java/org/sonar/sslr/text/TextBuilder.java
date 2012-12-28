@@ -22,6 +22,7 @@ package org.sonar.sslr.text;
 import com.google.common.collect.Lists;
 import org.sonar.sslr.internal.text.AbstractText;
 import org.sonar.sslr.internal.text.CompositeText;
+import org.sonar.sslr.internal.text.PlainText;
 import org.sonar.sslr.internal.text.TransformedText;
 
 import java.util.List;
@@ -33,6 +34,8 @@ import java.util.List;
  */
 public class TextBuilder {
 
+  private static final Text EMPTY = new PlainText(new char[0]);
+
   private final List<AbstractText> texts = Lists.newArrayList();
 
   public static TextBuilder create() {
@@ -43,7 +46,9 @@ public class TextBuilder {
   }
 
   public TextBuilder append(Text text) {
-    texts.add(cast(text));
+    if (text.length() != 0) {
+      texts.add(cast(text));
+    }
     return this;
   }
 
@@ -57,7 +62,9 @@ public class TextBuilder {
   }
 
   public Text build() {
-    if (texts.size() == 1) {
+    if (texts.isEmpty()) {
+      return EMPTY;
+    } else if (texts.size() == 1) {
       return texts.get(0);
     }
     return new CompositeText(texts);

@@ -31,7 +31,11 @@ public interface TextCursor extends CharSequence {
 
   char charAt(int index);
 
-  TextCursor subSequence(int from, int to);
+  /**
+   * @param start the start index, inclusive
+   * @param end the end index, exclusive
+   */
+  TextCursor subSequence(int start, int end);
 
   /**
    * @return a string containing the characters in this sequence in the same order as this sequence
@@ -40,7 +44,11 @@ public interface TextCursor extends CharSequence {
 
   Text getText();
 
-  Text subText(int from, int to);
+  /**
+   * @param start the start index, inclusive
+   * @param end the end index, exclusive
+   */
+  Text subText(int start, int end);
 
   TextLocation getLocation(int index);
 

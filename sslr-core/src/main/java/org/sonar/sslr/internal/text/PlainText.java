@@ -31,8 +31,8 @@ public class PlainText extends AbstractText implements TextCursor {
     this.chars = chars;
   }
 
-  public Text subText(int from, int to) {
-    return new SubText(this, from, to);
+  public Text subText(int start, int end) {
+    return new SubText(this, start, end);
   }
 
   @Override

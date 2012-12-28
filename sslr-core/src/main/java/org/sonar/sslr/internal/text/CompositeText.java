@@ -90,13 +90,13 @@ public class CompositeText extends AbstractText {
       return innerCursor.charAt(getInnerIndex(index));
     }
 
-    public TextCursor subSequence(int from, int to) {
-      return subText(from, to).cursor();
+    public TextCursor subSequence(int start, int end) {
+      return subText(start, end).cursor();
     }
 
-    public Text subText(int startOffset, int endOffset) {
+    public Text subText(int start, int end) {
       // TODO can be optimized for regions, which does not span multiple texts
-      return new SubText(CompositeText.this, index + startOffset, index + endOffset);
+      return new SubText(CompositeText.this, start, end);
     }
 
     public TextLocation getLocation(int index) {

@@ -25,12 +25,13 @@ import org.sonar.sslr.internal.text.CompositeText;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TextBuilderTest {
 
   @Test
   public void should_not_build_CompositeText() {
-    AbstractText text = mock(AbstractText.class);
+    Text text = when(mock(AbstractText.class).length()).thenReturn(1).getMock();
     Text result = TextBuilder.create()
         .append(text)
         .build();
@@ -39,13 +40,31 @@ public class TextBuilderTest {
 
   @Test
   public void should_build_CompositeText() {
-    AbstractText text1 = mock(AbstractText.class);
-    AbstractText text2 = mock(AbstractText.class);
+    Text text1 = when(mock(AbstractText.class).length()).thenReturn(1).getMock();
+    Text text2 = when(mock(AbstractText.class).length()).thenReturn(1).getMock();
     Text result = TextBuilder.create()
         .append(text1)
         .append(text2)
         .build();
     assertThat(result).isInstanceOf(CompositeText.class);
+  }
+
+  @Test
+  public void should_build_empty_text() {
+    Text result = TextBuilder.create()
+        .build();
+    assertThat(result.length()).isEqualTo(0);
+  }
+
+  @Test
+  public void should_not_append_empty_text() {
+    Text text1 = when(mock(AbstractText.class).length()).thenReturn(1).getMock();
+    Text text2 = when(mock(AbstractText.class).length()).thenReturn(0).getMock();
+    Text result = TextBuilder.create()
+        .append(text1)
+        .append(text2)
+        .build();
+    assertThat(result).isSameAs(text1);
   }
 
 }

@@ -69,19 +69,20 @@ public class SubText extends AbstractText {
     public int length() {
       return length;
     }
+
     public char charAt(int index) {
       return innerCursor.charAt(getOriginalIndex(index));
     }
 
-    public TextCursor subSequence(int from, int to) {
-      return subText(from, to).cursor();
+    public TextCursor subSequence(int start, int end) {
+      return subText(start, end).cursor();
     }
 
-    public Text subText(int from, int to) {
-      if (from == 0 && to == length) {
+    public Text subText(int start, int end) {
+      if (start == 0 && end == length) {
         return SubText.this;
       }
-      return innerCursor.subText(getOriginalIndex(from), getOriginalIndex(to));
+      return innerCursor.subText(getOriginalIndex(start), getOriginalIndex(end));
     }
 
     public TextLocation getLocation(int index) {
