@@ -20,6 +20,7 @@
 package org.sonar.sslr.parser;
 
 import com.sonar.sslr.api.TokenType;
+import com.sonar.sslr.api.Trivia.TriviaKind;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -63,6 +64,22 @@ public class GrammarOperatorsTest {
     assertThat(GrammarOperators.nothing()).isInstanceOf(NothingMatcher.class);
 
     assertThat(GrammarOperators.token(mock(TokenType.class), subMatcher)).isInstanceOf(TokenMatcher.class);
+  }
+
+  @Test
+  public void test_commentTrivia() {
+    Matcher subMatcher = mock(Matcher.class);
+    Object matcher = GrammarOperators.commentTrivia(subMatcher);
+    assertThat(matcher).isInstanceOf(TriviaMatcher.class);
+    assertThat(((TriviaMatcher) matcher).getTriviaKind()).isEqualTo(TriviaKind.COMMENT);
+  }
+
+  @Test
+  public void test_skippedTrivia() {
+    Matcher subMatcher = mock(Matcher.class);
+    Object matcher = GrammarOperators.skippedTrivia(subMatcher);
+    assertThat(matcher).isInstanceOf(TriviaMatcher.class);
+    assertThat(((TriviaMatcher) matcher).getTriviaKind()).isEqualTo(TriviaKind.SKIPPED_TEXT);
   }
 
   @Test
