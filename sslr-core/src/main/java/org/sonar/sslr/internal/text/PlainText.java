@@ -49,8 +49,8 @@ public class PlainText extends AbstractText implements TextCursor {
   }
 
   @Override
-  public char[] toChars() {
-    return chars;
+  public void toCharArray(int srcPos, char[] dest, int destPos, int length) {
+    System.arraycopy(chars, srcPos, dest, destPos, length);
   }
 
   public TextCursor cursor() {

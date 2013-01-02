@@ -77,6 +77,13 @@ public class SubTextTest {
   }
 
   @Test
+  public void test_cursor_toString() {
+    originalText = new PlainText(new char[] {'b', 'a', 'r'});
+    text = new SubText(originalText, 1, 2);
+    assertThat(text.cursor().toString()).isEqualTo("a");
+  }
+
+  @Test
   public void test_getTransformationDepth() {
     when(originalText.getTransformationDepth()).thenReturn(42);
     assertThat(text.getTransformationDepth()).isEqualTo(42);

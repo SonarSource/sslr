@@ -28,7 +28,13 @@ public abstract class AbstractText implements Text {
 
   protected abstract int getTransformationDepth();
 
-  public abstract char[] toChars();
+  public char[] toChars() {
+    char[] chars = new char[length()];
+    toCharArray(0, chars, 0, chars.length);
+    return chars;
+  }
+
+  public abstract void toCharArray(int srcPos, char[] dest, int destPos, int length);
 
   @Override
   public String toString() {

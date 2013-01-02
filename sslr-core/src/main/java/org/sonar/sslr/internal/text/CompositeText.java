@@ -47,14 +47,37 @@ public class CompositeText extends AbstractText {
     return length;
   }
 
-  public char[] toChars() {
-    int len = 0;
-    char[] result = new char[length];
-    for (int i = 0; i < texts.length; i++) {
-      System.arraycopy(texts[i].toChars(), 0, result, len, texts[i].length());
-      len += texts[i].length();
+  @Override
+  public void toCharArray(int srcPos, char[] dest, int destPos, int length) {
+    CompositeTextCursor cursor = (CompositeTextCursor) cursor();
+    cursor.moveTo(srcPos);
+
+    int skipped = cursor.skipped;
+    final int fromText = cursor.textIndex;
+    final int toText;
+    if (srcPos + length < this.length) {
+      cursor.moveTo(srcPos + length);
+      toText = cursor.textIndex;
+    } else {
+      toText = texts.length - 1;
     }
-    return result;
+
+    if (fromText == toText) {
+      texts[toText].toCharArray(srcPos - skipped, dest, destPos, length);
+    } else {
+      int startPos = srcPos - skipped;
+      texts[fromText].toCharArray(startPos, dest, destPos, texts[fromText].length() - startPos);
+      destPos += texts[fromText].length() - startPos;
+      skipped += texts[fromText].length();
+
+      for (int i = fromText + 1; i <= toText - 1; i++) {
+        texts[i].toCharArray(0, dest, destPos, texts[i].length());
+        destPos += texts[i].length();
+        skipped += texts[i].length();
+      }
+
+      texts[toText].toCharArray(0, dest, destPos, srcPos + length - skipped);
+    }
   }
 
   @Override

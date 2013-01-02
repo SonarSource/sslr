@@ -39,10 +39,9 @@ public class SubText extends AbstractText {
     return length;
   }
 
-  public char[] toChars() {
-    char[] chars = new char[length];
-    System.arraycopy(text.toChars(), start, chars, 0, length);
-    return chars;
+  @Override
+  public void toCharArray(int srcPos, char[] dest, int destPos, int length) {
+    text.toCharArray(getOriginalIndex(srcPos), dest, destPos, length);
   }
 
   @Override

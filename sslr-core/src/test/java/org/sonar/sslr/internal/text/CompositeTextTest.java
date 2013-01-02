@@ -34,6 +34,7 @@ public class CompositeTextTest {
 
   private File file1;
   private File file2;
+  private File file3;
   private CompositeText text;
 
   @Before
@@ -42,13 +43,15 @@ public class CompositeTextTest {
     AbstractText t1 = new FileText(file1, "foo".toCharArray());
     file2 = new File("bar");
     AbstractText t2 = new FileText(file2, "bar".toCharArray());
-    text = new CompositeText(Arrays.asList(t1, t2));
+    file3 = new File("baz");
+    AbstractText t3 = new FileText(file3, "baz".toCharArray());
+    text = new CompositeText(Arrays.asList(t1, t2, t3));
   }
 
   @Test
   public void test_length() {
-    assertThat(text.length()).isEqualTo(6);
-    assertThat(text.cursor().length()).isEqualTo(6);
+    assertThat(text.length()).isEqualTo(9);
+    assertThat(text.cursor().length()).isEqualTo(9);
   }
 
   @Test
@@ -77,8 +80,30 @@ public class CompositeTextTest {
   }
 
   @Test
+  public void test_cursor_toString() {
+    assertThat(text.cursor().toString()).isEqualTo("foobarbaz");
+  }
+
+  @Test
   public void test_pattern() {
-    assertThat(Pattern.matches("f.*r", text.cursor())).isTrue();
+    assertThat(Pattern.matches("f.*z", text.cursor())).isTrue();
+  }
+
+  @Test
+  public void test_toCharArray() {
+    char[] dest;
+
+    dest = new char[1];
+    text.toCharArray(1, dest, 0, 1);
+    assertThat(dest).isEqualTo(new char[] {'o'});
+
+    dest = new char[4];
+    text.toCharArray(3, dest, 0, 4);
+    assertThat(dest).isEqualTo(new char[] {'b', 'a', 'r', 'b'});
+
+    dest = new char[7];
+    text.toCharArray(2, dest, 0, 7);
+    assertThat(dest).isEqualTo(new char[] {'o', 'b', 'a', 'r', 'b', 'a', 'z'});
   }
 
 }

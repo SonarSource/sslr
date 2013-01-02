@@ -114,7 +114,8 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
     }
     // This cast is safe, even if not checked - AbstractText is a base implementation of interface Text
     // TODO Godin: however would be better to get rid of it
-    char[] chars = ((AbstractText) input).toChars();
+    char[] chars = new char[input.length()];
+    ((AbstractText) input).toCharArray(0, chars, 0, input.length());
     ParsingResult result = parseRunner.parse(chars);
     if (result.isMatched()) {
       return AstCreator.create(uri, result);

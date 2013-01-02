@@ -53,13 +53,6 @@ public class TransformedTextTest {
   }
 
   @Test
-  public void test_toChars() {
-    char[] chars = "foo".toCharArray();
-    when(toText.toChars()).thenReturn(chars);
-    assertThat(text.toChars()).isSameAs(chars);
-  }
-
-  @Test
   public void test_getTransformationDepth() {
     when(fromText.getTransformationDepth()).thenReturn(42);
     assertThat(text.getTransformationDepth()).isEqualTo(43);

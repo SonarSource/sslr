@@ -50,8 +50,8 @@ public class TransformedText extends AbstractText {
   }
 
   @Override
-  public char[] toChars() {
-    return toText.toChars();
+  public void toCharArray(int srcPos, char[] dest, int destPos, int length) {
+    toText.toCharArray(srcPos, dest, destPos, length);
   }
 
 }
