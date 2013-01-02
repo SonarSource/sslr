@@ -34,7 +34,7 @@ public class ParseErrorFormatterTest {
 
   @Test
   public void test() {
-    InputBuffer inputBuffer = new ImmutableInputBuffer(" 2+4*10-0*\n".toCharArray());
+    InputBuffer inputBuffer = new ImmutableInputBuffer("\t2+4*10-0*\n".toCharArray());
     ParseErrorFormatter formatter = new ParseErrorFormatter();
     MatcherPathElement root = new MatcherPathElement(new GrammarElementMatcher("root"), 0, 1);
     MatcherPathElement expression = new MatcherPathElement(new GrammarElementMatcher("expression"), 1, 8);
@@ -65,7 +65,7 @@ public class ParseErrorFormatterTest {
         .append("/-factor\n")
         .append("term consumed from (1, 9) to (1, 10): \"0*\"\n")
         .append("expression consumed from (1, 2) to (1, 8): \"2+4*10-\"\n")
-        .append("root consumed from (1, 1) to (1, 1): \" \"\n")
+        .append("root consumed from (1, 1) to (1, 1): \"\\t\"\n")
         .toString();
 
     assertThat(result).isEqualTo(expected);

@@ -168,7 +168,7 @@ public class ParseErrorFormatter {
     String lineNumberFormat = "%1$" + padding + "d: ";
     for (int line = startLine; line <= endLine; line++) {
       sb.append(String.format(lineNumberFormat, line));
-      sb.append(TextUtils.trimTrailingLineSeparatorFrom(inputBuffer.extractLine(line))).append('\n');
+      sb.append(TextUtils.trimTrailingLineSeparatorFrom(inputBuffer.extractLine(line)).replace("\t", " ")).append('\n');
       if (line == position.getLine()) {
         for (int i = 1; i < position.getColumn() + padding + 2; i++) {
           sb.append(' ');
