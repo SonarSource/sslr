@@ -34,12 +34,26 @@ public class TextLocationTest {
     assertThat(location.getFile()).isSameAs(file);
     assertThat(location.getLine()).isEqualTo(1);
     assertThat(location.getColumn()).isEqualTo(1);
+
     assertThat(location.equals(location)).isTrue();
     assertThat(location.equals(new Object())).isFalse();
-    assertThat(location.equals(new TextLocation(file, 1, 1))).isTrue();
-    assertThat(location.equals(new TextLocation(file, 1, 2))).isFalse();
-    assertThat(location.equals(new TextLocation(file, 2, 1))).isFalse();
-    assertThat(location.equals(new TextLocation(new File("bar"), 1, 1))).isFalse();
+
+    TextLocation other = new TextLocation(file, 1, 1);
+    assertThat(location.equals(other)).isTrue();
+    assertThat(location.hashCode()).isEqualTo(other.hashCode());
+
+    other = new TextLocation(file, 1, 2);
+    assertThat(location.equals(other)).isFalse();
+    assertThat(location.hashCode()).isNotEqualTo(other.hashCode());
+
+    other = new TextLocation(file, 2, 1);
+    assertThat(location.equals(other)).isFalse();
+    assertThat(location.hashCode()).isNotEqualTo(other.hashCode());
+
+    other = new TextLocation(new File("bar"), 1, 1);
+    assertThat(location.equals(other)).isFalse();
+    assertThat(location.hashCode()).isNotEqualTo(other.hashCode());
+
     assertThat(location.toString()).isEqualTo("TextLocation{file=foo, line=1, column=1}");
   }
 
