@@ -21,27 +21,43 @@ package org.sonar.sslr.text;
 
 import com.google.common.base.Objects;
 
+import javax.annotation.Nullable;
+
 import java.io.File;
+import java.net.URI;
 
 /**
- * <p>This class is not intended to be sub-classed by clients.</p>
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  *
  * @since 1.17
  */
 public class TextLocation {
 
   private final File file;
+  private final URI uri;
   private final int line;
   private final int column;
 
-  public TextLocation(File file, int line, int column) {
+  public TextLocation(@Nullable File file, int line, int column) {
+    this(file, file == null ? null : file.toURI(), line, column);
+  }
+
+  public TextLocation(@Nullable File file, @Nullable URI uri, int line, int column) {
     this.file = file;
+    this.uri = uri;
     this.line = line;
     this.column = column;
   }
 
   public File getFile() {
     return file;
+  }
+
+  /**
+   * For internal use only.
+   */
+  public URI getFileURI() {
+    return uri;
   }
 
   public int getLine() {

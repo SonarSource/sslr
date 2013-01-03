@@ -25,11 +25,13 @@ import org.sonar.sslr.text.TextLocation;
 import javax.annotation.Nullable;
 
 import java.io.File;
+import java.net.URI;
 import java.util.Arrays;
 
 public class FileText extends PlainText {
 
   private final File file;
+  private final URI uri;
 
   /**
    * Indices of lines.
@@ -40,6 +42,7 @@ public class FileText extends PlainText {
   public FileText(@Nullable File file, char[] chars) {
     super(chars);
     this.file = file;
+    this.uri = file == null ? null : file.toURI();
     this.lines = TextUtils.computeLines(chars);
   }
 
@@ -47,7 +50,7 @@ public class FileText extends PlainText {
     Preconditions.checkPositionIndex(index, length());
     int line = getLineNumber(index);
     int column = index - getLineStart(line) + 1;
-    return new TextLocation(file, line, column);
+    return new TextLocation(file, uri, line, column);
   }
 
   private int getLineNumber(int index) {
