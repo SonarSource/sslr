@@ -191,7 +191,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.6.0.201210061924</version>
+        <version>0.6.1.201212231917</version>
         <executions>
           <execution>
             <goals>
