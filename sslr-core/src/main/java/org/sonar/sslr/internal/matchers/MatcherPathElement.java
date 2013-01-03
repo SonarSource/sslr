@@ -43,4 +43,18 @@ public class MatcherPathElement {
     return endIndex;
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    }
+    if (obj instanceof MatcherPathElement) {
+      MatcherPathElement other = (MatcherPathElement) obj;
+      return this.matcher.equals(other.matcher)
+        && this.startIndex == other.startIndex
+        && this.endIndex == other.endIndex;
+    }
+    return false;
+  }
+
 }

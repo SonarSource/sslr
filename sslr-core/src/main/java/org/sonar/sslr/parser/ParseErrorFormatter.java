@@ -20,12 +20,13 @@
 package org.sonar.sslr.parser;
 
 import com.google.common.base.Preconditions;
-import org.sonar.sslr.internal.matchers.*;
+import com.google.common.collect.Lists;
+import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
+import org.sonar.sslr.internal.matchers.InputBuffer;
 import org.sonar.sslr.internal.matchers.InputBuffer.Position;
+import org.sonar.sslr.internal.matchers.MatcherPathElement;
+import org.sonar.sslr.internal.matchers.TextUtils;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -57,69 +58,69 @@ public class ParseErrorFormatter {
     appendSnippet(sb, inputBuffer, position);
     sb.append('\n');
     sb.append("Failed at rules:\n");
-    List<List<MatcherPathElement>> paths = parseError.getFailedPaths();
-    if (paths.size() == 1) {
-      appendPath(sb, inputBuffer, paths.get(0), paths.get(0).size() - 1);
-    } else {
-      int splitPoint = findSplitPoint(paths);
-      Collections.sort(paths, new PathComparator());
-      appendTree(sb, inputBuffer, paths, splitPoint - 1);
-      appendPath(sb, inputBuffer, paths.get(0), splitPoint - 2);
-    }
+    ErrorTreeNode tree = buildTree(parseError.getFailedPaths());
+    appendTree(sb, inputBuffer, tree);
     return sb.toString();
   }
 
-  private static void appendPath(StringBuilder sb, InputBuffer inputBuffer, List<MatcherPathElement> path, int from) {
-    for (int i = from; i >= 0; i--) {
-      MatcherPathElement pathElement = path.get(i);
-      appendPathElement(sb, inputBuffer, pathElement);
+  private static class ErrorTreeNode {
+    MatcherPathElement pathElement;
+    List<ErrorTreeNode> children = Lists.newArrayList();
+  }
+
+  private void appendTree(StringBuilder sb, InputBuffer inputBuffer, ErrorTreeNode node) {
+    List<ErrorTreeNode> nodes = Lists.newArrayList();
+    while (node.children.size() == 1) {
+      nodes.add(node);
+      node = node.children.get(0);
+    }
+    appendTree(sb, inputBuffer, node, "", true);
+    for (int i = nodes.size() - 1; i >= 0; i--) {
+      appendPathElement(sb, inputBuffer, nodes.get(i).pathElement);
     }
   }
 
-  private static void appendTree(StringBuilder sb, InputBuffer inputBuffer, List<List<MatcherPathElement>> paths, int depth) {
-    new ErrorTreeFormatter(sb, inputBuffer, paths).format(depth, 0, paths.size(), "", true);
+  private void appendTree(StringBuilder sb, InputBuffer inputBuffer, ErrorTreeNode node, String prefix, boolean isTail) {
+    boolean tail = true;
+    for (int i = 0; i < node.children.size(); i++) {
+      appendTree(sb, inputBuffer, node.children.get(i), prefix + (isTail ? "  " : "| "), tail);
+      tail = false;
+    }
+    sb.append(prefix + (isTail ? "/-" : "+-"));
+    appendPathElement(sb, inputBuffer, node.pathElement);
   }
 
-  private static class ErrorTreeFormatter {
-
-    private final StringBuilder sb;
-    private final InputBuffer inputBuffer;
-    private final List<List<MatcherPathElement>> lists;
-
-    public ErrorTreeFormatter(StringBuilder sb, InputBuffer inputBuffer, List<List<MatcherPathElement>> paths) {
-      this.sb = sb;
-      this.inputBuffer = inputBuffer;
-      this.lists = paths;
+  private ErrorTreeNode buildTree(List<List<MatcherPathElement>> paths) {
+    ErrorTreeNode root = new ErrorTreeNode();
+    root.pathElement = paths.get(0).get(0);
+    for (List<MatcherPathElement> path : paths) {
+      addToTree(root, path);
     }
+    return root;
+  }
 
-    public void format(int depth, int start, int end, String prefix, boolean isTail) {
-      if (depth >= lists.get(start).size()) {
-        return;
-      }
-
-      boolean tail = true;
-      for (int i = start + 1; i < end; i++) {
-        if (depth + 1 < lists.get(i).size() &&
-          lists.get(i).get(depth + 1) != lists.get(i - 1).get(depth + 1)) {
-          format(depth + 1, start, i, prefix + formatPrefix(depth, isTail), tail);
-          start = i;
-          tail = false;
+  private static void addToTree(ErrorTreeNode root, List<MatcherPathElement> path) {
+    ErrorTreeNode current = root;
+    int i = 1;
+    boolean found = true;
+    while (found && i < path.size()) {
+      found = false;
+      for (ErrorTreeNode child : current.children) {
+        if (child.pathElement.equals(path.get(i))) {
+          current = child;
+          i++;
+          found = true;
+          break;
         }
       }
-      if (start < end) {
-        format(depth + 1, start, end, prefix + formatPrefix(depth, isTail), tail);
-      }
-
-      if (depth > 0) {
-        sb.append(prefix + (isTail ? "/-" : "+-"));
-      }
-      appendPathElement(sb, inputBuffer, lists.get(start).get(depth));
     }
-
-    private String formatPrefix(int depth, boolean isTail) {
-      return depth == 0 ? "" : isTail ? "  " : "| ";
+    while (i < path.size()) {
+      ErrorTreeNode child = new ErrorTreeNode();
+      child.pathElement = path.get(i);
+      current.children.add(child);
+      current = child;
+      i++;
     }
-
   }
 
   private static void appendPathElement(StringBuilder sb, InputBuffer inputBuffer, MatcherPathElement pathElement) {
@@ -144,23 +145,6 @@ public class ParseErrorFormatter {
     sb.append('\n');
   }
 
-  private static int findSplitPoint(List<List<MatcherPathElement>> paths) {
-    int result = 0;
-    while (true) {
-      if (result == paths.get(0).size()) {
-        return result;
-      }
-      Matcher matcher = paths.get(0).get(result).getMatcher();
-      for (int i = 1; i < paths.size(); i++) {
-        if (result == paths.get(i).size()
-          || !matcher.equals(paths.get(i).get(result).getMatcher())) {
-          return result;
-        }
-      }
-      result++;
-    }
-  }
-
   private static void appendSnippet(StringBuilder sb, InputBuffer inputBuffer, Position position) {
     int startLine = Math.max(position.getLine() - SNIPPET_SIZE, 1);
     int endLine = Math.min(position.getLine() + SNIPPET_SIZE, inputBuffer.getLineCount());
@@ -174,35 +158,6 @@ public class ParseErrorFormatter {
           sb.append(' ');
         }
         sb.append("^\n");
-      }
-    }
-  }
-
-  private static final class PathComparator implements Comparator<List<MatcherPathElement>>, Serializable {
-    private static final long serialVersionUID = 1L;
-
-    public int compare(List<MatcherPathElement> o1, List<MatcherPathElement> o2) {
-      for (int i = 0; i < o1.size(); i++) {
-        if (i < o2.size()) {
-          if (!o1.get(i).getMatcher().equals(o2.get(i))) {
-            // o1: A
-            // o2: B
-            return 0;
-          }
-        } else {
-          // o1: A, B
-          // o2: A
-          return -1;
-        }
-      }
-      if (o1.size() == o2.size()) {
-        // o1: A
-        // o2: A
-        return 0;
-      } else {
-        // o1: A
-        // o2: A, B
-        return 1;
       }
     }
   }

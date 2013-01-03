@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.parser;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 import org.sonar.sslr.internal.matchers.ImmutableInputBuffer;
@@ -32,10 +33,16 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class ParseErrorFormatterTest {
 
+  private ParseErrorFormatter formatter;
+
+  @Before
+  public void setUp() {
+    formatter = new ParseErrorFormatter();
+  }
+
   @Test
   public void test() {
     InputBuffer inputBuffer = new ImmutableInputBuffer("\t2+4*10-0*\n".toCharArray());
-    ParseErrorFormatter formatter = new ParseErrorFormatter();
     MatcherPathElement root = new MatcherPathElement(new GrammarElementMatcher("root"), 0, 1);
     MatcherPathElement expression = new MatcherPathElement(new GrammarElementMatcher("expression"), 1, 8);
     MatcherPathElement term = new MatcherPathElement(new GrammarElementMatcher("term"), 8, 10);
@@ -68,6 +75,28 @@ public class ParseErrorFormatterTest {
         .append("root consumed from (1, 1) to (1, 1): \"\\t\"\n")
         .toString();
 
+    assertThat(result).isEqualTo(expected);
+  }
+
+  @Test
+  public void single_path() {
+    InputBuffer inputBuffer = new ImmutableInputBuffer("".toCharArray());
+    MatcherPathElement root = new MatcherPathElement(new GrammarElementMatcher("root"), 0, 0);
+    MatcherPathElement expression = new MatcherPathElement(new GrammarElementMatcher("expression"), 0, 0);
+    List<List<MatcherPathElement>> failedPaths = Arrays.asList(
+        Arrays.asList(root, expression));
+    String result = formatter.format(new ParseError(inputBuffer, 0, "expected: expression", failedPaths));
+    System.out.print(result);
+    String expected = new StringBuilder()
+        .append("Parse error at line 1 column 1 expected: expression\n")
+        .append('\n')
+        .append("1: \n")
+        .append("   ^\n")
+        .append('\n')
+        .append("Failed at rules:\n")
+        .append("/-expression\n")
+        .append("root\n")
+        .toString();
     assertThat(result).isEqualTo(expected);
   }
 

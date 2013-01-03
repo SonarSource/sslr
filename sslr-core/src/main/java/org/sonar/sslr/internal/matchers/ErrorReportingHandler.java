@@ -80,11 +80,7 @@ public class ErrorReportingHandler implements MatchHandler {
       return false;
     }
     for (int i = 0; i < first.size(); i++) {
-      MatcherPathElement e1 = first.get(i);
-      MatcherPathElement e2 = second.get(i);
-      if (!(e1.getMatcher().equals(e2.getMatcher())
-        && e1.getStartIndex() == e2.getStartIndex()
-        && e1.getEndIndex() == e2.getEndIndex())) {
+      if (!first.get(i).equals(second.get(i))) {
         return false;
       }
     }
