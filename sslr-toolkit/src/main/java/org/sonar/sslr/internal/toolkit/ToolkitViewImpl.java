@@ -58,6 +58,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
@@ -147,6 +148,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     });
 
     consoleTextArea.setEditable(false);
+    consoleTextArea.setFont(Font.decode("Monospaced"));
 
     tabbedPane.setTabPlacement(JTabbedPane.TOP);
     tabbedPane.add("Abstract Syntax Tree", astTreeScrollPane);
