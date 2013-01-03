@@ -110,8 +110,7 @@ public class MiniCGrammar extends Grammar {
 
     binType.is(firstOf(
         INT,
-        VOID
-        ));
+        VOID));
 
     binParameter.is(IDENTIFIER);
 
@@ -130,8 +129,7 @@ public class MiniCGrammar extends Grammar {
     definition.is(firstOf(
         structDefinition,
         functionDefinition,
-        variableDefinition
-        ));
+        variableDefinition));
 
     structDefinition.is(STRUCT, IDENTIFIER, BRACE_L, one2n(structMember, SEMICOLON), BRACE_R);
 
@@ -161,8 +159,7 @@ public class MiniCGrammar extends Grammar {
         breakStatement,
         ifStatement,
         whileStatement,
-        noComplexityStatement
-        ));
+        noComplexityStatement));
 
     expressionStatement.is(expression, SEMICOLON);
 
@@ -196,49 +193,41 @@ public class MiniCGrammar extends Grammar {
         LT,
         LTE,
         GT,
-        GTE
-        ));
+        GTE));
 
     additiveExpression.is(multiplicativeExpression, opt(additiveOperator, additiveExpression)).skipIfOneChild();
 
     additiveOperator.is(firstOf(
         ADD,
-        SUB
-        ));
+        SUB));
 
     multiplicativeExpression.is(unaryExpression, opt(multiplicativeOperator, multiplicativeExpression)).skipIfOneChild();
 
     multiplicativeOperator.is(firstOf(
         MUL,
-        DIV
-        ));
+        DIV));
 
     unaryExpression.is(firstOf(
         and(unaryOperator, primaryExpression),
-        postfixExpression
-        )).skipIfOneChild();
+        postfixExpression)).skipIfOneChild();
 
     unaryOperator.is(firstOf(
         INC,
-        DEC
-        ));
+        DEC));
 
     postfixExpression.is(firstOf(
         and(primaryExpression, postfixOperator),
         and(binFunctionReference, PAREN_L, opt(argumentExpressionList), PAREN_R),
-        primaryExpression
-        )).skipIfOneChild();
+        primaryExpression)).skipIfOneChild();
 
     postfixOperator.is(firstOf(
         INC,
-        DEC
-        ));
+        DEC));
 
     primaryExpression.is(firstOf(
         INTEGER,
         binVariableReference,
-        and(PAREN_L, expression, PAREN_R)
-        ));
+        and(PAREN_L, expression, PAREN_R)));
   }
 
   @Override
