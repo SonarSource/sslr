@@ -22,6 +22,8 @@ package org.sonar.sslr.internal.text;
 import com.google.common.base.Preconditions;
 import org.sonar.sslr.text.TextLocation;
 
+import javax.annotation.Nullable;
+
 import java.io.File;
 import java.util.Arrays;
 
@@ -35,7 +37,7 @@ public class FileText extends PlainText {
    */
   private final int[] lines;
 
-  public FileText(File file, char[] chars) {
+  public FileText(@Nullable File file, char[] chars) {
     super(chars);
     this.file = file;
     this.lines = TextUtils.computeLines(chars);
