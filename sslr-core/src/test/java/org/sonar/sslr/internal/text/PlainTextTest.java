@@ -35,7 +35,7 @@ public class PlainTextTest {
 
   @Test
   public void test_getText() {
-    assertThat(text.cursor().getText()).isSameAs(text);
+    assertThat(text.sequence().getText()).isSameAs(text);
   }
 
   @Test
@@ -62,7 +62,7 @@ public class PlainTextTest {
 
   @Test
   public void test_getCursor() {
-    assertThat(text.cursor()).isSameAs(text);
+    assertThat(text.sequence()).isSameAs(text);
   }
 
   @Test

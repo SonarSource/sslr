@@ -20,7 +20,7 @@
 package org.sonar.sslr.internal.text;
 
 import org.sonar.sslr.text.Text;
-import org.sonar.sslr.text.TextCursor;
+import org.sonar.sslr.text.TextCharSequence;
 
 public class TransformedText extends AbstractText {
 
@@ -36,8 +36,8 @@ public class TransformedText extends AbstractText {
     return toText.length();
   }
 
-  public TextCursor cursor() {
-    return toText.cursor();
+  public TextCharSequence sequence() {
+    return toText.sequence();
   }
 
   @Override

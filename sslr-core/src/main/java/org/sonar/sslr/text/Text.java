@@ -34,6 +34,6 @@ public interface Text {
   /**
    * Provides sequential access to characters.
    */
-  TextCursor cursor();
+  TextCharSequence sequence();
 
 }

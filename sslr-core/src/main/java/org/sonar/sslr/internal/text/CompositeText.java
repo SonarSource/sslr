@@ -20,7 +20,7 @@
 package org.sonar.sslr.internal.text;
 
 import org.sonar.sslr.text.Text;
-import org.sonar.sslr.text.TextCursor;
+import org.sonar.sslr.text.TextCharSequence;
 import org.sonar.sslr.text.TextLocation;
 
 import java.util.List;
@@ -49,15 +49,15 @@ public class CompositeText extends AbstractText {
 
   @Override
   public void toCharArray(int srcPos, char[] dest, int destPos, int length) {
-    CompositeTextCursor cursor = (CompositeTextCursor) cursor();
-    cursor.moveTo(srcPos);
+    CompositeTextCharSequence sequence = (CompositeTextCharSequence) sequence();
+    sequence.moveTo(srcPos);
 
-    int skipped = cursor.skipped;
-    final int fromText = cursor.textIndex;
+    int skipped = sequence.skipped;
+    final int fromText = sequence.textIndex;
     final int toText;
     if (srcPos + length < this.length) {
-      cursor.moveTo(srcPos + length);
-      toText = cursor.textIndex;
+      sequence.moveTo(srcPos + length);
+      toText = sequence.textIndex;
     } else {
       toText = texts.length - 1;
     }
@@ -85,16 +85,16 @@ public class CompositeText extends AbstractText {
     return transformationDepth;
   }
 
-  public TextCursor cursor() {
-    return new CompositeTextCursor();
+  public TextCharSequence sequence() {
+    return new CompositeTextCharSequence();
   }
 
-  public class CompositeTextCursor implements TextCursor {
+  public class CompositeTextCharSequence implements TextCharSequence {
 
     private int skipped = 0;
     private int index = 0;
     private int textIndex = 0;
-    private TextCursor innerCursor = texts[textIndex].cursor();
+    private TextCharSequence innerSequence = texts[textIndex].sequence();
 
     public Text getText() {
       return CompositeText.this;
@@ -110,11 +110,11 @@ public class CompositeText extends AbstractText {
 
     public char charAt(int index) {
       moveTo(index);
-      return innerCursor.charAt(getInnerIndex(index));
+      return innerSequence.charAt(getInnerIndex(index));
     }
 
-    public TextCursor subSequence(int start, int end) {
-      return subText(start, end).cursor();
+    public TextCharSequence subSequence(int start, int end) {
+      return subText(start, end).sequence();
     }
 
     public Text subText(int start, int end) {
@@ -124,7 +124,7 @@ public class CompositeText extends AbstractText {
 
     public TextLocation getLocation(int index) {
       moveTo(index);
-      return innerCursor.getLocation(getInnerIndex(index));
+      return innerSequence.getLocation(getInnerIndex(index));
     }
 
     private void moveTo(int index) {
@@ -147,7 +147,7 @@ public class CompositeText extends AbstractText {
             textIndex--;
           }
         }
-        innerCursor = texts[textIndex].cursor();
+        innerSequence = texts[textIndex].sequence();
       }
       this.index = index;
     }
@@ -155,7 +155,7 @@ public class CompositeText extends AbstractText {
     public TextLocation getCopyLocation(int index) {
       moveTo(index);
       return texts[textIndex] instanceof TransformedText
-          ? ((TransformedText) texts[textIndex]).getTransformedText().cursor().getLocation(0)
+          ? ((TransformedText) texts[textIndex]).getTransformedText().sequence().getLocation(0)
           : null;
     }
 

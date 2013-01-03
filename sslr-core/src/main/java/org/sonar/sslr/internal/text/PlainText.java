@@ -20,10 +20,10 @@
 package org.sonar.sslr.internal.text;
 
 import org.sonar.sslr.text.Text;
-import org.sonar.sslr.text.TextCursor;
+import org.sonar.sslr.text.TextCharSequence;
 import org.sonar.sslr.text.TextLocation;
 
-public class PlainText extends AbstractText implements TextCursor {
+public class PlainText extends AbstractText implements TextCharSequence {
 
   private final char[] chars;
 
@@ -53,7 +53,7 @@ public class PlainText extends AbstractText implements TextCursor {
     System.arraycopy(chars, srcPos, dest, destPos, length);
   }
 
-  public TextCursor cursor() {
+  public TextCharSequence sequence() {
     return this;
   }
 
@@ -61,8 +61,8 @@ public class PlainText extends AbstractText implements TextCursor {
     return chars[index];
   }
 
-  public TextCursor subSequence(int from, int to) {
-    return subText(from, to).cursor();
+  public TextCharSequence subSequence(int from, int to) {
+    return subText(from, to).sequence();
   }
 
   public TextLocation getLocation(int index) {

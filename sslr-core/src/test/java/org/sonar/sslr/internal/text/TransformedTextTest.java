@@ -21,7 +21,7 @@ package org.sonar.sslr.internal.text;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.sonar.sslr.text.TextCursor;
+import org.sonar.sslr.text.TextCharSequence;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -46,10 +46,10 @@ public class TransformedTextTest {
   }
 
   @Test
-  public void test_cursor() {
-    TextCursor cursor = mock(TextCursor.class);
-    when(toText.cursor()).thenReturn(cursor);
-    assertThat(text.cursor()).isSameAs(cursor);
+  public void test_sequence() {
+    TextCharSequence sequence = mock(TextCharSequence.class);
+    when(toText.sequence()).thenReturn(sequence);
+    assertThat(text.sequence()).isSameAs(sequence);
   }
 
   @Test

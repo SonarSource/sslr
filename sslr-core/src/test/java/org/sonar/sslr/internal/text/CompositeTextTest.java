@@ -21,7 +21,7 @@ package org.sonar.sslr.internal.text;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.sonar.sslr.text.TextCursor;
+import org.sonar.sslr.text.TextCharSequence;
 import org.sonar.sslr.text.TextLocation;
 
 import java.io.File;
@@ -51,47 +51,47 @@ public class CompositeTextTest {
   @Test
   public void test_length() {
     assertThat(text.length()).isEqualTo(9);
-    assertThat(text.cursor().length()).isEqualTo(9);
+    assertThat(text.sequence().length()).isEqualTo(9);
   }
 
   @Test
-  public void test_cursor_getText() {
-    assertThat(text.cursor().getText()).isSameAs(text);
+  public void test_sequence_getText() {
+    assertThat(text.sequence().getText()).isSameAs(text);
   }
 
   @Test
-  public void test_cursor_charAt() {
-    TextCursor cursor = text.cursor();
-    assertThat(cursor.charAt(3)).isEqualTo('b');
-    assertThat(cursor.charAt(0)).isEqualTo('f');
+  public void test_sequence_charAt() {
+    TextCharSequence sequence = text.sequence();
+    assertThat(sequence.charAt(3)).isEqualTo('b');
+    assertThat(sequence.charAt(0)).isEqualTo('f');
   }
 
   @Test
-  public void test_cursor_subText() {
-    assertThat(text.cursor().subText(0, 3)).isInstanceOf(SubText.class);
-    assertThat(text.cursor().subText(0, 3).toString()).isEqualTo("foo");
-    assertThat(text.cursor().subText(2, 4).toString()).isEqualTo("ob");
+  public void test_sequence_subText() {
+    assertThat(text.sequence().subText(0, 3)).isInstanceOf(SubText.class);
+    assertThat(text.sequence().subText(0, 3).toString()).isEqualTo("foo");
+    assertThat(text.sequence().subText(2, 4).toString()).isEqualTo("ob");
   }
 
   @Test
-  public void test_cursor_getLocation() {
-    assertThat(text.cursor().getLocation(0)).isEqualTo(new TextLocation(file1, 1, 1));
-    assertThat(text.cursor().getLocation(2)).isEqualTo(new TextLocation(file1, 1, 3));
-    assertThat(text.cursor().getLocation(3)).isEqualTo(new TextLocation(file2, 1, 1));
-    assertThat(text.cursor().getLocation(5)).isEqualTo(new TextLocation(file2, 1, 3));
-    assertThat(text.cursor().getLocation(6)).isEqualTo(new TextLocation(file3, 1, 1));
-    assertThat(text.cursor().getLocation(8)).isEqualTo(new TextLocation(file3, 1, 3));
-    assertThat(text.cursor().getLocation(9)).isEqualTo(new TextLocation(file3, 1, 4));
+  public void test_sequence_getLocation() {
+    assertThat(text.sequence().getLocation(0)).isEqualTo(new TextLocation(file1, 1, 1));
+    assertThat(text.sequence().getLocation(2)).isEqualTo(new TextLocation(file1, 1, 3));
+    assertThat(text.sequence().getLocation(3)).isEqualTo(new TextLocation(file2, 1, 1));
+    assertThat(text.sequence().getLocation(5)).isEqualTo(new TextLocation(file2, 1, 3));
+    assertThat(text.sequence().getLocation(6)).isEqualTo(new TextLocation(file3, 1, 1));
+    assertThat(text.sequence().getLocation(8)).isEqualTo(new TextLocation(file3, 1, 3));
+    assertThat(text.sequence().getLocation(9)).isEqualTo(new TextLocation(file3, 1, 4));
   }
 
   @Test
-  public void test_cursor_toString() {
-    assertThat(text.cursor().toString()).isEqualTo("foobarbaz");
+  public void test_sequence_toString() {
+    assertThat(text.sequence().toString()).isEqualTo("foobarbaz");
   }
 
   @Test
   public void test_pattern() {
-    assertThat(Pattern.matches("f.*z", text.cursor())).isTrue();
+    assertThat(Pattern.matches("f.*z", text.sequence())).isTrue();
   }
 
   @Test

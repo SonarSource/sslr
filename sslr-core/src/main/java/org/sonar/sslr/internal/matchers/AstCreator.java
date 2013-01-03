@@ -27,10 +27,10 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.api.Trivia.TriviaKind;
-import org.sonar.sslr.internal.text.CompositeText.CompositeTextCursor;
+import org.sonar.sslr.internal.text.CompositeText.CompositeTextCharSequence;
 import org.sonar.sslr.parser.ParsingResult;
 import org.sonar.sslr.text.Text;
-import org.sonar.sslr.text.TextCursor;
+import org.sonar.sslr.text.TextCharSequence;
 import org.sonar.sslr.text.TextLocation;
 
 import java.net.URI;
@@ -51,7 +51,7 @@ public final class AstCreator {
     }
   }
 
-  private final TextCursor input;
+  private final TextCharSequence input;
   private final Token.Builder tokenBuilder = Token.builder();
   private final List<Trivia> trivias = Lists.newArrayList();
 
@@ -60,7 +60,7 @@ public final class AstCreator {
   }
 
   private AstCreator(Text input) {
-    this.input = input.cursor();
+    this.input = input.sequence();
   }
 
   private AstNode visit(ParseNode node) {
@@ -120,8 +120,8 @@ public final class AstCreator {
       tokenBuilder.setColumn(location.getColumn() - 1);
       tokenBuilder.setURI(location.getFileURI() == null ? FAKE_URI : location.getFileURI());
 
-      TextLocation copyLocation = input instanceof CompositeTextCursor
-          ? ((CompositeTextCursor) input).getCopyLocation(node.getStartIndex())
+      TextLocation copyLocation = input instanceof CompositeTextCharSequence
+          ? ((CompositeTextCharSequence) input).getCopyLocation(node.getStartIndex())
           : null;
       if (copyLocation == null) {
         tokenBuilder.notCopyBook();

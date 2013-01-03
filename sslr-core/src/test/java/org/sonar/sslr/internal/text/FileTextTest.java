@@ -39,7 +39,7 @@ public class FileTextTest {
   }
 
   @Test
-  public void test_cursor_getLocation() {
+  public void test_sequence_getLocation() {
     assertThat(text.getLocation(1)).isEqualTo(new TextLocation(file, 1, 2));
     assertThat(text.getLocation(4)).isEqualTo(new TextLocation(file, 2, 1));
     assertThat(text.getLocation(5)).isEqualTo(new TextLocation(file, 2, 2));

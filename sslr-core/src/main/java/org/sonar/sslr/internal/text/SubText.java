@@ -20,7 +20,7 @@
 package org.sonar.sslr.internal.text;
 
 import org.sonar.sslr.text.Text;
-import org.sonar.sslr.text.TextCursor;
+import org.sonar.sslr.text.TextCharSequence;
 import org.sonar.sslr.text.TextLocation;
 
 public class SubText extends AbstractText {
@@ -49,17 +49,17 @@ public class SubText extends AbstractText {
     return text.getTransformationDepth();
   }
 
-  public TextCursor cursor() {
-    return new SubTextCursor();
+  public TextCharSequence sequence() {
+    return new SubTextCharSequence();
   }
 
   private int getOriginalIndex(int index) {
     return start + index;
   }
 
-  private class SubTextCursor implements TextCursor {
+  private class SubTextCharSequence implements TextCharSequence {
 
-    private TextCursor innerCursor = text.cursor();
+    private TextCharSequence innerCursor = text.sequence();
 
     public Text getText() {
       return SubText.this;
@@ -73,8 +73,8 @@ public class SubText extends AbstractText {
       return innerCursor.charAt(getOriginalIndex(index));
     }
 
-    public TextCursor subSequence(int start, int end) {
-      return subText(start, end).cursor();
+    public TextCharSequence subSequence(int start, int end) {
+      return subText(start, end).sequence();
     }
 
     public Text subText(int start, int end) {

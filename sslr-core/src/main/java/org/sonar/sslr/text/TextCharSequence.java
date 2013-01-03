@@ -22,10 +22,10 @@ package org.sonar.sslr.text;
 /**
  * <p>This interface is not intended to be implemented by clients.</p>
  *
- * @see Text#cursor()
+ * @see Text#sequence()
  * @since 1.17
  */
-public interface TextCursor extends CharSequence {
+public interface TextCharSequence extends CharSequence {
 
   int length();
 
@@ -35,7 +35,7 @@ public interface TextCursor extends CharSequence {
    * @param start the start index, inclusive
    * @param end the end index, exclusive
    */
-  TextCursor subSequence(int start, int end);
+  TextCharSequence subSequence(int start, int end);
 
   /**
    * @return a string containing the characters in this sequence in the same order as this sequence
