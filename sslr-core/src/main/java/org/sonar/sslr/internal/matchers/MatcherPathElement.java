@@ -19,6 +19,8 @@
  */
 package org.sonar.sslr.internal.matchers;
 
+import com.google.common.base.Objects;
+
 public class MatcherPathElement {
 
   private final Matcher matcher;
@@ -41,6 +43,11 @@ public class MatcherPathElement {
 
   public int getEndIndex() {
     return endIndex;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(matcher, startIndex, endIndex);
   }
 
   @Override
