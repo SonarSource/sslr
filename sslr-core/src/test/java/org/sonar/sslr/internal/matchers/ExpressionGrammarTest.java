@@ -24,12 +24,11 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import org.junit.Before;
 import org.junit.Test;
+import org.sonar.sslr.internal.text.FileText;
 import org.sonar.sslr.parser.ParseError;
 import org.sonar.sslr.parser.ParseErrorFormatter;
 import org.sonar.sslr.parser.ParseRunner;
 import org.sonar.sslr.parser.ParsingResult;
-
-import java.net.URI;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -96,8 +95,7 @@ public class ExpressionGrammarTest {
     ParseRunner parseRunner = new ParseRunner(grammar.root);
     ParsingResult result = parseRunner.parse(input);
 
-    URI uri = new URI("tests://unittest");
-    AstNode astNode = AstCreator.create(uri, result);
+    AstNode astNode = AstCreator.create(result, new FileText(null, inputString.toCharArray()));
     System.out.println(astNode.getTokens());
     System.out.println(AstXmlPrinter.print(astNode));
 

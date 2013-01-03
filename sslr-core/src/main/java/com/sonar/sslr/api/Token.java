@@ -244,6 +244,16 @@ public class Token {
       return this;
     }
 
+    /**
+     * @since 1.17
+     */
+    public Builder notCopyBook() {
+      this.copyBook = false;
+      this.copyBookOriginalLine = -1;
+      this.copyBookOriginalFileName = "";
+      return this;
+    }
+
     public Builder setCopyBook(String copyBookOriginalFileName, int copyBookOriginalLine) {
       checkNotNull(copyBookOriginalFileName, "copyBookOriginalFileName cannot be null");
 

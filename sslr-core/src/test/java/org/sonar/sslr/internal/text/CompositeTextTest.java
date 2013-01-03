@@ -76,7 +76,12 @@ public class CompositeTextTest {
   @Test
   public void test_cursor_getLocation() {
     assertThat(text.cursor().getLocation(0)).isEqualTo(new TextLocation(file1, 1, 1));
+    assertThat(text.cursor().getLocation(2)).isEqualTo(new TextLocation(file1, 1, 3));
     assertThat(text.cursor().getLocation(3)).isEqualTo(new TextLocation(file2, 1, 1));
+    assertThat(text.cursor().getLocation(5)).isEqualTo(new TextLocation(file2, 1, 3));
+    assertThat(text.cursor().getLocation(6)).isEqualTo(new TextLocation(file3, 1, 1));
+    assertThat(text.cursor().getLocation(8)).isEqualTo(new TextLocation(file3, 1, 3));
+    assertThat(text.cursor().getLocation(9)).isEqualTo(new TextLocation(file3, 1, 4));
   }
 
   @Test

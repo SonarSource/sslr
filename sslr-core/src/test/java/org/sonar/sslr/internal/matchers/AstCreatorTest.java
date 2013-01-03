@@ -23,12 +23,11 @@ package org.sonar.sslr.internal.matchers;
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.*;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.sonar.sslr.internal.text.FileText;
 import org.sonar.sslr.parser.ParsingResult;
 
-import java.net.URI;
 import java.util.Collections;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -36,13 +35,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class AstCreatorTest {
-
-  private URI uri;
-
-  @Before
-  public void setUp() throws Exception {
-    uri = new URI("tests://unittest");
-  }
 
   @Test
   public void should_create_tokens_and_trivias() {
@@ -59,7 +51,7 @@ public class AstCreatorTest {
     InputBuffer inputBuffer = new ImmutableInputBuffer(input);
     ParsingResult parsingResult = new ParsingResult(inputBuffer, true, parseTreeRoot, null);
 
-    AstNode astNode = AstCreator.create(uri, parsingResult);
+    AstNode astNode = AstCreator.create(parsingResult, new FileText(null, input));
     System.out.println(AstXmlPrinter.print(astNode));
 
     assertThat(astNode.getType()).isSameAs(ruleMatcher);
@@ -99,7 +91,7 @@ public class AstCreatorTest {
     InputBuffer inputBuffer = new ImmutableInputBuffer(input);
     ParsingResult parsingResult = new ParsingResult(inputBuffer, true, parseTreeRoot, null);
 
-    AstNode astNode = AstCreator.create(uri, parsingResult);
+    AstNode astNode = AstCreator.create(parsingResult, new FileText(null, input));
     System.out.println(AstXmlPrinter.print(astNode));
 
     assertThat(astNode.getType()).isSameAs(ruleMatcher);
@@ -139,7 +131,7 @@ public class AstCreatorTest {
     InputBuffer inputBuffer = new ImmutableInputBuffer(input);
     ParsingResult parsingResult = new ParsingResult(inputBuffer, true, parseTreeRoot, null);
 
-    AstNode astNode = AstCreator.create(uri, parsingResult);
+    AstNode astNode = AstCreator.create(parsingResult, new FileText(null, input));
     System.out.println(AstXmlPrinter.print(astNode));
 
     assertThat(astNode.getType()).isSameAs(ruleMatcher2);

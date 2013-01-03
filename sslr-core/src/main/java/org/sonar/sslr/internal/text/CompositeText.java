@@ -89,7 +89,7 @@ public class CompositeText extends AbstractText {
     return new CompositeTextCursor();
   }
 
-  private class CompositeTextCursor implements TextCursor {
+  public class CompositeTextCursor implements TextCursor {
 
     private int skipped = 0;
     private int index = 0;
@@ -132,7 +132,11 @@ public class CompositeText extends AbstractText {
         return;
       }
       if (!(skipped <= index && index < skipped + texts[textIndex].length())) {
-        if (index > this.index) {
+        if (index == length) {
+          // Special case - end of input
+          textIndex = texts.length - 1;
+          skipped = length - texts[textIndex].length();
+        } else if (index > this.index) {
           while (skipped + texts[textIndex].length() <= index) {
             skipped += texts[textIndex].length();
             textIndex++;
@@ -146,6 +150,13 @@ public class CompositeText extends AbstractText {
         innerCursor = texts[textIndex].cursor();
       }
       this.index = index;
+    }
+
+    public TextLocation getCopyLocation(int index) {
+      moveTo(index);
+      return texts[textIndex] instanceof TransformedText
+          ? ((TransformedText) texts[textIndex]).getTransformedText().cursor().getLocation(0)
+          : null;
     }
 
     @Override

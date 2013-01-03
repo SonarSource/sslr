@@ -43,6 +43,8 @@ public class FileTextTest {
     assertThat(text.getLocation(1)).isEqualTo(new TextLocation(file, 1, 2));
     assertThat(text.getLocation(4)).isEqualTo(new TextLocation(file, 2, 1));
     assertThat(text.getLocation(5)).isEqualTo(new TextLocation(file, 2, 2));
+    assertThat(text.getLocation(6)).isEqualTo(new TextLocation(file, 2, 3));
+    assertThat(text.getLocation(7)).isEqualTo(new TextLocation(file, 2, 4));
   }
 
 }

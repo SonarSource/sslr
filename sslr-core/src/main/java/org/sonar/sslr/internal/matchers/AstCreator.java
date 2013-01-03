@@ -23,26 +23,40 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.*;
 import com.sonar.sslr.api.Trivia.TriviaKind;
-import org.sonar.sslr.internal.matchers.InputBuffer.Position;
+import org.sonar.sslr.internal.text.CompositeText.CompositeTextCursor;
 import org.sonar.sslr.parser.ParsingResult;
+import org.sonar.sslr.text.Text;
+import org.sonar.sslr.text.TextCursor;
+import org.sonar.sslr.text.TextLocation;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 
 public final class AstCreator {
 
-  private final InputBuffer inputBuffer;
+  private static final URI FAKE_URI;
+
+  static {
+    try {
+      FAKE_URI = new URI("tests://unittest");
+    } catch (URISyntaxException e) {
+      // Can't happen
+      throw new IllegalStateException(e);
+    }
+  }
+
+  private final TextCursor input;
   private final Token.Builder tokenBuilder = Token.builder();
   private final List<Trivia> trivias = Lists.newArrayList();
 
-  public static AstNode create(URI uri, ParsingResult parsingResult) {
-    return new AstCreator(uri, parsingResult.getInputBuffer()).visit(parsingResult.getParseTreeRoot());
+  public static AstNode create(ParsingResult parsingResult, Text input) {
+    return new AstCreator(input).visit(parsingResult.getParseTreeRoot());
   }
 
-  private AstCreator(URI uri, InputBuffer inputBuffer) {
-    this.inputBuffer = inputBuffer;
-    tokenBuilder.setURI(uri);
+  private AstCreator(Text input) {
+    this.input = input.cursor();
   }
 
   private AstNode visit(ParseNode node) {
@@ -89,9 +103,28 @@ public final class AstCreator {
   }
 
   private void updateTokenPositionAndValue(ParseNode node) {
-    Position position = inputBuffer.getPosition(node.getStartIndex());
-    tokenBuilder.setLine(position.getLine());
-    tokenBuilder.setColumn(position.getColumn() - 1);
+    TextLocation location = input.getLocation(node.getStartIndex());
+    if (location == null) {
+      tokenBuilder.setGeneratedCode(true);
+      // Godin: line, column and uri has no value for generated code, but we should bypass checks in TokenBuilder
+      tokenBuilder.setLine(1);
+      tokenBuilder.setColumn(0);
+      tokenBuilder.setURI(FAKE_URI);
+    } else {
+      tokenBuilder.setGeneratedCode(false);
+      tokenBuilder.setLine(location.getLine());
+      tokenBuilder.setColumn(location.getColumn() - 1);
+      tokenBuilder.setURI(location.getFile() == null ? FAKE_URI : location.getFile().toURI());
+
+      TextLocation copyLocation = input instanceof CompositeTextCursor
+          ? ((CompositeTextCursor) input).getCopyLocation(node.getStartIndex())
+          : null;
+      if (copyLocation == null) {
+        tokenBuilder.notCopyBook();
+      } else {
+        tokenBuilder.setCopyBook(copyLocation.getFile().getAbsolutePath(), copyLocation.getLine());
+      }
+    }
 
     String value = getValue(node);
     tokenBuilder.setValueAndOriginalValue(value);
@@ -123,8 +156,8 @@ public final class AstCreator {
 
   private String getValue(ParseNode node) {
     StringBuilder result = new StringBuilder();
-    for (int i = node.getStartIndex(); i < Math.min(node.getEndIndex(), inputBuffer.length()); i++) {
-      result.append(inputBuffer.charAt(i));
+    for (int i = node.getStartIndex(); i < Math.min(node.getEndIndex(), input.length()); i++) {
+      result.append(input.charAt(i));
     }
     return result.toString();
   }

@@ -30,7 +30,7 @@ import org.apache.commons.io.IOUtils;
 import org.sonar.sslr.internal.matchers.AstCreator;
 import org.sonar.sslr.internal.matchers.InputBuffer;
 import org.sonar.sslr.internal.text.AbstractText;
-import org.sonar.sslr.internal.text.PlainText;
+import org.sonar.sslr.internal.text.FileText;
 import org.sonar.sslr.text.PreprocessorsChain;
 import org.sonar.sslr.text.Text;
 
@@ -39,8 +39,6 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -77,14 +75,10 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
    */
   @Override
   public AstNode parse(String source) {
-    URI uri;
-    try {
-      uri = new URI("tests://unittest");
-    } catch (URISyntaxException e) {
-      // Can't happen
-      throw new IllegalStateException(e);
-    }
-    return parse(uri, new PlainText(source.toCharArray()));
+    // FileText is used in order to be able to retrieve TextLocation
+    // TODO Godin: probably it should be renamed into LocatedText
+    Text text = new FileText(null, source.toCharArray());
+    return parse(text);
   }
 
   /**
@@ -93,7 +87,8 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
    */
   @Override
   public AstNode parse(File file) {
-    return parse(file.toURI(), new PlainText(fileToCharArray(file, charset)));
+    Text text = new FileText(file, fileToCharArray(file, charset));
+    return parse(text);
   }
 
   private static char[] fileToCharArray(File file, Charset charset) {
@@ -108,17 +103,16 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
     }
   }
 
-  private AstNode parse(URI uri, Text input) {
+  private AstNode parse(Text input) {
     if (preprocessorsChain != null) {
       input = preprocessorsChain.process(input);
     }
     // This cast is safe, even if not checked - AbstractText is a base implementation of interface Text
     // TODO Godin: however would be better to get rid of it
-    char[] chars = new char[input.length()];
-    ((AbstractText) input).toCharArray(0, chars, 0, input.length());
+    char[] chars = ((AbstractText) input).toChars();
     ParsingResult result = parseRunner.parse(chars);
     if (result.isMatched()) {
-      return AstCreator.create(uri, result);
+      return AstCreator.create(result, input);
     } else {
       ParseError parseError = result.getParseError();
       InputBuffer inputBuffer = parseError.getInputBuffer();
