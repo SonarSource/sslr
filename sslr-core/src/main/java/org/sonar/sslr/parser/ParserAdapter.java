@@ -30,7 +30,7 @@ import org.apache.commons.io.IOUtils;
 import org.sonar.sslr.internal.matchers.AstCreator;
 import org.sonar.sslr.internal.matchers.InputBuffer;
 import org.sonar.sslr.internal.text.AbstractText;
-import org.sonar.sslr.internal.text.FileText;
+import org.sonar.sslr.internal.text.LocatedText;
 import org.sonar.sslr.text.PreprocessorsChain;
 import org.sonar.sslr.text.Text;
 
@@ -75,9 +75,8 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
    */
   @Override
   public AstNode parse(String source) {
-    // FileText is used in order to be able to retrieve TextLocation
-    // TODO Godin: probably it should be renamed into LocatedText
-    Text text = new FileText(null, source.toCharArray());
+    // LocatedText is used in order to be able to retrieve TextLocation
+    Text text = new LocatedText(null, source.toCharArray());
     return parse(text);
   }
 
@@ -87,7 +86,7 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
    */
   @Override
   public AstNode parse(File file) {
-    Text text = new FileText(file, fileToCharArray(file, charset));
+    Text text = new LocatedText(file, fileToCharArray(file, charset));
     return parse(text);
   }
 

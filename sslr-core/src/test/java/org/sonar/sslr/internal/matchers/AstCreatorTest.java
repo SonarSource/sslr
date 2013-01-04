@@ -25,7 +25,7 @@ import com.sonar.sslr.api.*;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.sonar.sslr.internal.text.FileText;
+import org.sonar.sslr.internal.text.LocatedText;
 import org.sonar.sslr.parser.ParsingResult;
 
 import java.util.Collections;
@@ -51,7 +51,7 @@ public class AstCreatorTest {
     InputBuffer inputBuffer = new ImmutableInputBuffer(input);
     ParsingResult parsingResult = new ParsingResult(inputBuffer, true, parseTreeRoot, null);
 
-    AstNode astNode = AstCreator.create(parsingResult, new FileText(null, input));
+    AstNode astNode = AstCreator.create(parsingResult, new LocatedText(null, input));
     System.out.println(AstXmlPrinter.print(astNode));
 
     assertThat(astNode.getType()).isSameAs(ruleMatcher);
@@ -91,7 +91,7 @@ public class AstCreatorTest {
     InputBuffer inputBuffer = new ImmutableInputBuffer(input);
     ParsingResult parsingResult = new ParsingResult(inputBuffer, true, parseTreeRoot, null);
 
-    AstNode astNode = AstCreator.create(parsingResult, new FileText(null, input));
+    AstNode astNode = AstCreator.create(parsingResult, new LocatedText(null, input));
     System.out.println(AstXmlPrinter.print(astNode));
 
     assertThat(astNode.getType()).isSameAs(ruleMatcher);
@@ -131,7 +131,7 @@ public class AstCreatorTest {
     InputBuffer inputBuffer = new ImmutableInputBuffer(input);
     ParsingResult parsingResult = new ParsingResult(inputBuffer, true, parseTreeRoot, null);
 
-    AstNode astNode = AstCreator.create(parsingResult, new FileText(null, input));
+    AstNode astNode = AstCreator.create(parsingResult, new LocatedText(null, input));
     System.out.println(AstXmlPrinter.print(astNode));
 
     assertThat(astNode.getType()).isSameAs(ruleMatcher2);

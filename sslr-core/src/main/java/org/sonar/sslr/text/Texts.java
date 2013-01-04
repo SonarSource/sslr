@@ -19,7 +19,7 @@
  */
 package org.sonar.sslr.text;
 
-import org.sonar.sslr.internal.text.FileText;
+import org.sonar.sslr.internal.text.LocatedText;
 import org.sonar.sslr.internal.text.PlainText;
 
 import java.io.File;
@@ -40,11 +40,11 @@ public class Texts {
   }
 
   public static Text create(File fromFile, String fileContent) {
-    return new FileText(fromFile, fileContent.toCharArray());
+    return new LocatedText(fromFile, fileContent.toCharArray());
   }
 
   public static Text create(File fromFile, char[] fileContent) {
-    return new FileText(fromFile, fileContent);
+    return new LocatedText(fromFile, fileContent);
   }
 
 }

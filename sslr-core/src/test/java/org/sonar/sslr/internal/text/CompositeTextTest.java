@@ -40,11 +40,11 @@ public class CompositeTextTest {
   @Before
   public void setUp() {
     file1 = new File("foo");
-    AbstractText t1 = new FileText(file1, "foo".toCharArray());
+    AbstractText t1 = new LocatedText(file1, "foo".toCharArray());
     file2 = new File("bar");
-    AbstractText t2 = new FileText(file2, "bar".toCharArray());
+    AbstractText t2 = new LocatedText(file2, "bar".toCharArray());
     file3 = new File("baz");
-    AbstractText t3 = new FileText(file3, "baz".toCharArray());
+    AbstractText t3 = new LocatedText(file3, "baz".toCharArray());
     text = new CompositeText(Arrays.asList(t1, t2, t3));
   }
 

@@ -27,15 +27,15 @@ import java.io.File;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class FileTextTest {
+public class LocatedTextTest {
 
   private File file;
-  private FileText text;
+  private LocatedText text;
 
   @Before
   public void setUp() {
     file = new File("foo");
-    text = new FileText(file, "foo\nbar".toCharArray());
+    text = new LocatedText(file, "foo\nbar".toCharArray());
   }
 
   @Test

@@ -28,7 +28,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.Arrays;
 
-public class FileText extends PlainText {
+public class LocatedText extends PlainText {
 
   private final File file;
   private final URI uri;
@@ -39,7 +39,7 @@ public class FileText extends PlainText {
    */
   private final int[] lines;
 
-  public FileText(@Nullable File file, char[] chars) {
+  public LocatedText(@Nullable File file, char[] chars) {
     super(chars);
     this.file = file;
     this.uri = file == null ? null : file.toURI();

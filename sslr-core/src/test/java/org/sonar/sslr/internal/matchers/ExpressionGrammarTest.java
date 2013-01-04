@@ -24,7 +24,7 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import org.junit.Before;
 import org.junit.Test;
-import org.sonar.sslr.internal.text.FileText;
+import org.sonar.sslr.internal.text.LocatedText;
 import org.sonar.sslr.parser.ParseError;
 import org.sonar.sslr.parser.ParseErrorFormatter;
 import org.sonar.sslr.parser.ParseRunner;
@@ -95,7 +95,7 @@ public class ExpressionGrammarTest {
     ParseRunner parseRunner = new ParseRunner(grammar.root);
     ParsingResult result = parseRunner.parse(input);
 
-    AstNode astNode = AstCreator.create(result, new FileText(null, inputString.toCharArray()));
+    AstNode astNode = AstCreator.create(result, new LocatedText(null, inputString.toCharArray()));
     System.out.println(astNode.getTokens());
     System.out.println(AstXmlPrinter.print(astNode));
 
