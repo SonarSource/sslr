@@ -316,7 +316,7 @@ public class AstNode {
   /**
    * Returns first child of one of specified types.
    * <p>
-   * In the following case, {@code getFirstDirectChild("B")} would return "B2":
+   * In the following case, {@code getFirstChild("B")} would return "B2":
    * <pre>
    * A1
    *  |__ C1
