@@ -164,7 +164,7 @@ public class ToolkitPresenterTest {
   @Test
   public void onSourceCodeOpenButtonClick() {
     ToolkitView view = mock(ToolkitView.class);
-    File file = mock(File.class);
+    File file = new File("src/test/resources/parse_error.txt");
     when(view.pickFileToParse()).thenReturn(file);
     SourceCodeModel model = mock(SourceCodeModel.class);
     AstNode astNode = mock(AstNode.class);
