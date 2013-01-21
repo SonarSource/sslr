@@ -180,8 +180,8 @@ public class ToolkitPresenterTest {
     verify(view).pickFileToParse();
 
     verify(view).clearConsole();
-    verify(model).setSourceCode(file, Charset.defaultCharset());
     verify(view).displayHighlightedSourceCode("my_mocked_highlighted_source_code");
+    verify(model).setSourceCode(file, Charset.defaultCharset());
     verify(view).displayAst(astNode);
     verify(view).displayXml("my_mocked_xml");
     verify(view).scrollSourceCodeTo(new Point(0, 0));
@@ -190,7 +190,27 @@ public class ToolkitPresenterTest {
   }
 
   @Test
-  public void onSourceCodeOpenButtonClickNoOperationWhenNoFile() {
+  public void onSourceCodeOpenButtonClick_with_parse_error_should_clear_console_and_display_code() {
+    ToolkitView view = mock(ToolkitView.class);
+    File file = new File("src/test/resources/parse_error.txt");
+    when(view.pickFileToParse()).thenReturn(file);
+    SourceCodeModel model = mock(SourceCodeModel.class);
+    Mockito.doThrow(new RuntimeException("Parse error")).when(model).setSourceCode(Mockito.any(File.class), Mockito.any(Charset.class));
+
+    ToolkitPresenter presenter = new ToolkitPresenter(mock(ConfigurationModel.class), model);
+    presenter.setView(view);
+
+    try {
+      presenter.onSourceCodeOpenButtonClick();
+      throw new AssertionError("Expected an exception");
+    } catch (RuntimeException e) {
+      verify(view).clearConsole();
+      verify(view).displayHighlightedSourceCode("parse_error.txt");
+    }
+  }
+
+  @Test
+  public void onSourceCodeOpenButtonClick_should_no_operation_when_no_file() {
     ToolkitView view = mock(ToolkitView.class);
     when(view.pickFileToParse()).thenReturn(null);
 

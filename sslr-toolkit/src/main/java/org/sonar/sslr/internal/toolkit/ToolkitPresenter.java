@@ -21,6 +21,8 @@ package org.sonar.sslr.internal.toolkit;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
+import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
 import org.sonar.sslr.toolkit.ConfigurationModel;
@@ -28,6 +30,7 @@ import org.sonar.sslr.toolkit.ConfigurationProperty;
 
 import java.awt.Point;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -100,7 +103,12 @@ public class ToolkitPresenter {
     File fileToParse = view.pickFileToParse();
     if (fileToParse != null) {
       view.clearConsole();
-      model.setSourceCode(fileToParse, Charset.defaultCharset());
+      try {
+        view.displayHighlightedSourceCode(Files.toString(fileToParse, Charset.defaultCharset())); // SSLR-259
+      } catch (IOException e) {
+        Throwables.propagate(e);
+      }
+      model.setSourceCode(fileToParse, Charset.defaultCharset()); // SSLR-259
       view.displayHighlightedSourceCode(model.getHighlightedSourceCode());
       view.displayAst(model.getAstNode());
       view.displayXml(model.getXml());
