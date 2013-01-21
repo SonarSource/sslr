@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.internal.toolkit;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
@@ -172,7 +173,7 @@ public class ToolkitPresenterTest {
     when(model.getAstNode()).thenReturn(astNode);
     when(model.getXml()).thenReturn("my_mocked_xml");
 
-    ToolkitPresenter presenter = new ToolkitPresenter(mock(ConfigurationModel.class), model);
+    ToolkitPresenter presenter = new ToolkitPresenter((ConfigurationModel) when(mock(ConfigurationModel.class).getCharset()).thenReturn(Charsets.UTF_8).getMock(), model);
     presenter.setView(view);
 
     presenter.onSourceCodeOpenButtonClick();
@@ -181,7 +182,7 @@ public class ToolkitPresenterTest {
 
     verify(view).clearConsole();
     verify(view).displayHighlightedSourceCode("my_mocked_highlighted_source_code");
-    verify(model).setSourceCode(file, Charset.defaultCharset());
+    verify(model).setSourceCode(file, Charsets.UTF_8);
     verify(view).displayAst(astNode);
     verify(view).displayXml("my_mocked_xml");
     verify(view).scrollSourceCodeTo(new Point(0, 0));
@@ -197,7 +198,7 @@ public class ToolkitPresenterTest {
     SourceCodeModel model = mock(SourceCodeModel.class);
     Mockito.doThrow(new RuntimeException("Parse error")).when(model).setSourceCode(Mockito.any(File.class), Mockito.any(Charset.class));
 
-    ToolkitPresenter presenter = new ToolkitPresenter(mock(ConfigurationModel.class), model);
+    ToolkitPresenter presenter = new ToolkitPresenter((ConfigurationModel) when(mock(ConfigurationModel.class).getCharset()).thenReturn(Charsets.UTF_8).getMock(), model);
     presenter.setView(view);
 
     try {

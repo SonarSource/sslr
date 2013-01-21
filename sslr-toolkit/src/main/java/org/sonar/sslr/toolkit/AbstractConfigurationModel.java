@@ -23,6 +23,7 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
 import org.sonar.colorizer.Tokenizer;
 
+import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -55,6 +56,16 @@ public abstract class AbstractConfigurationModel implements ConfigurationModel {
     }
 
     updatedFlag = false;
+  }
+
+  /**
+   * Gets the charset reflecting the current configuration state.
+   *
+   * @return Charset for the current configuration
+   */
+  public Charset getCharset() {
+    System.out.println("AbstractConfigurationModel: The method doGetCharset() should be overriden!");
+    return Charset.defaultCharset();
   }
 
   public Parser<? extends Grammar> getParser() {

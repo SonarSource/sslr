@@ -65,6 +65,11 @@ public final class MiniCToolkit {
     }
 
     @Override
+    public Charset getCharset() {
+      return Charset.forName(charsetProperty.getValue());
+    }
+
+    @Override
     public Parser<? extends Grammar> doGetParser() {
       updateConfiguration();
       return MiniCParser.create();

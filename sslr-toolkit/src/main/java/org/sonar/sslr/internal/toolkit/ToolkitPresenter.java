@@ -35,7 +35,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.nio.charset.Charset;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -104,11 +103,11 @@ public class ToolkitPresenter {
     if (fileToParse != null) {
       view.clearConsole();
       try {
-        view.displayHighlightedSourceCode(Files.toString(fileToParse, Charset.defaultCharset())); // SSLR-259
+        view.displayHighlightedSourceCode(Files.toString(fileToParse, configurationModel.getCharset()));
       } catch (IOException e) {
         Throwables.propagate(e);
       }
-      model.setSourceCode(fileToParse, Charset.defaultCharset()); // SSLR-259
+      model.setSourceCode(fileToParse, configurationModel.getCharset());
       view.displayHighlightedSourceCode(model.getHighlightedSourceCode());
       view.displayAst(model.getAstNode());
       view.displayXml(model.getXml());

@@ -23,6 +23,7 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
 import org.sonar.colorizer.Tokenizer;
 
+import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -48,6 +49,15 @@ public interface ConfigurationModel {
    * This method is called each time a configuration property's value is changed.
    */
   void setUpdatedFlag();
+
+  /**
+   * Gets the character set reflecting the current configuration state.
+   *
+   * @return Charset for the current configuration
+   *
+   * @since 1.18
+   */
+  Charset getCharset();
 
   /**
    * Gets a parser instance reflecting the current configuration state.
