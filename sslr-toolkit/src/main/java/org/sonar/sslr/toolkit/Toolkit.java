@@ -20,6 +20,7 @@
 package org.sonar.sslr.toolkit;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
 import org.sonar.colorizer.Tokenizer;
@@ -28,6 +29,7 @@ import org.sonar.sslr.internal.toolkit.ToolkitPresenter;
 import org.sonar.sslr.internal.toolkit.ToolkitViewImpl;
 
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import java.util.Collections;
 import java.util.List;
@@ -85,6 +87,12 @@ public class Toolkit {
   public void run() {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
+        try {
+          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+          Throwables.propagate(e);
+        }
+
         SourceCodeModel model = new SourceCodeModel(configurationModel);
         ToolkitPresenter presenter = new ToolkitPresenter(configurationModel, model);
         presenter.setView(new ToolkitViewImpl(presenter));
