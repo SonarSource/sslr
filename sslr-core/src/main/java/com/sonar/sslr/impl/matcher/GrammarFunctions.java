@@ -292,25 +292,6 @@ public final class GrammarFunctions {
     }
 
     /**
-     * Match the longest alternative within the elements exactly once
-     *
-     * <pre>
-     * {@code
-     * >------element 1----->
-     *    |               |
-     *    ----element 2---
-     *    |               |
-     *    ----   ...   ---
-     *    |               |
-     *    ----element n---
-     * }
-     * </pre>
-     */
-    public static Matcher longestOne(Object... elements) {
-      return getCachedMatcher(new LongestOneMatcher(convertToMatchers(elements)));
-    }
-
-    /**
      * @since 1.14
      */
     public static Matcher memoizeMatches(Object element) {

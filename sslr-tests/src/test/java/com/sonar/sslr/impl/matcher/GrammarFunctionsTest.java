@@ -38,11 +38,11 @@ import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.exclusiveTil
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isFalse;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isOneOfThem;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.isTrue;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.till;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.tillNewLine;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.next;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.firstOf;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
@@ -82,9 +82,9 @@ public class GrammarFunctionsTest {
     assertThat(
         and(or("hehe", "huhu", and("haha", opt("hoho"))), IDENTIFIER,
             next("hehe", com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not(and("hmmm"))), GenericTokenType.class,
-            longestOne("one", "two", "three")) == and(or("hehe", "huhu", and("haha", opt("hoho"))),
+            firstOf("one", "two", "three")) == and(or("hehe", "huhu", and("haha", opt("hoho"))),
             IDENTIFIER, next("hehe", com.sonar.sslr.impl.matcher.GrammarFunctions.Predicate.not(and("hmmm"))), GenericTokenType.class,
-            longestOne("one", "two", "three")), is(true));
+            firstOf("one", "two", "three")), is(true));
   }
 
   @Test
@@ -94,17 +94,17 @@ public class GrammarFunctionsTest {
 
     assertThat(and("a", "a") == and("a", "a")).isTrue();
     assertThat(and("a", "a") == and("a", "b")).isFalse();
-    assertThat(and("a", "a") == longestOne("a", "a")).isFalse();
+    assertThat(and("a", "a") == firstOf("a", "a")).isFalse();
   }
 
   @Test
-  public void test_or() {
-    assertThat(or("(").toString()).isEqualTo("\"(\"");
-    assertThat(or("(", ")").toString()).isEqualTo("or");
+  public void test_firstOf() {
+    assertThat(firstOf("(").toString()).isEqualTo("\"(\"");
+    assertThat(firstOf("(", ")").toString()).isEqualTo("or");
 
-    assertThat(or("a", "a") == or("a", "a")).isTrue();
-    assertThat(or("a", "a") == or("a", "b")).isFalse();
-    assertThat(or("a", "a") == longestOne("a", "a")).isFalse();
+    assertThat(firstOf("a", "a") == firstOf("a", "a")).isTrue();
+    assertThat(firstOf("a", "a") == firstOf("a", "b")).isFalse();
+    assertThat(firstOf("a", "a") == and("a", "a")).isFalse();
   }
 
   @Test
@@ -113,7 +113,7 @@ public class GrammarFunctionsTest {
 
     assertThat(one2n("a", "a") == one2n("a", "a")).isTrue();
     assertThat(one2n("a", "a") == one2n("a", "b")).isFalse();
-    assertThat(one2n("a", "a") == longestOne("a", "a")).isFalse();
+    assertThat(one2n("a", "a") == firstOf("a", "a")).isFalse();
   }
 
   @Test
@@ -122,7 +122,7 @@ public class GrammarFunctionsTest {
 
     assertThat(opt("a", "a") == opt("a", "a")).isTrue();
     assertThat(opt("a", "a") == opt("a", "b")).isFalse();
-    assertThat(opt("a", "a") == longestOne("a", "a")).isFalse();
+    assertThat(opt("a", "a") == firstOf("a", "a")).isFalse();
   }
 
   @Test
@@ -233,15 +233,6 @@ public class GrammarFunctionsTest {
     assertThat(isOneOfThem(IDENTIFIER, EOF, COMMENT) == isOneOfThem(EOF, COMMENT, IDENTIFIER)).isTrue();
     assertThat(isOneOfThem(IDENTIFIER, EOF) == isOneOfThem(IDENTIFIER, LITERAL)).isFalse();
     assertThat(isOneOfThem(IDENTIFIER, EOF) == and(IDENTIFIER, EOF)).isFalse();
-  }
-
-  @Test
-  public void test_longestOne() {
-    assertThat(longestOne("(").toString()).isEqualTo("longestOne");
-
-    assertThat(longestOne("a", "a") == longestOne("a", "a")).isTrue();
-    assertThat(longestOne("a", "a") == longestOne("a", "b")).isFalse();
-    assertThat(longestOne("a", "a") == and("a", "a")).isFalse();
   }
 
   @Test

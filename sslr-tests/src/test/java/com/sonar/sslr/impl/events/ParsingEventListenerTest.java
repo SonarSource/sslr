@@ -34,8 +34,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.firstOf;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class ParsingEventListenerTest {
@@ -97,7 +97,7 @@ public class ParsingEventListenerTest {
   private class MyTestGrammarDecorator extends MyTestGrammar {
 
     public MyTestGrammarDecorator() {
-      root.is("bonjour", longestOne(rule1, rule2), and("olaa", "uhu"), EOF);
+      root.is("bonjour", firstOf(rule2, rule1), and("olaa", "uhu"), EOF);
       rule1.is("hehe");
       rule2.is(GrammarFunctions.Advanced.memoizeMatches(and("hehe", "huhu")));
     }
@@ -114,14 +114,10 @@ public class ParsingEventListenerTest {
     ByteArrayOutputStream baosExpected = new ByteArrayOutputStream();
     PrintStream expected = new PrintStream(baosExpected);
     expected.println("Entered rule root at index 0");
-    expected.println("Entered matcher and(\"bonjour\", longestOne(rule1, rule2), and(\"olaa\", \"uhu\"), EOF) at index 0");
+    expected.println("Entered matcher and(\"bonjour\", or(rule2, rule1), and(\"olaa\", \"uhu\"), EOF) at index 0");
     expected.println("Entered matcher \"bonjour\" at index 0");
     expected.println("Exit matcher \"bonjour\" with match until index 1");
-    expected.println("Entered matcher longestOne(rule1, rule2) at index 1");
-    expected.println("Entered rule rule1 at index 1");
-    expected.println("Entered matcher \"hehe\" at index 1");
-    expected.println("Exit matcher \"hehe\" with match until index 2");
-    expected.println("Exit rule rule1 with match until index 2");
+    expected.println("Entered matcher or(rule2, rule1) at index 1");
     expected.println("Entered rule rule2 at index 1");
     expected.println("Entered matcher and(\"hehe\", \"huhu\") at index 1");
     expected.println("Entered matcher \"hehe\" at index 1");
@@ -130,13 +126,7 @@ public class ParsingEventListenerTest {
     expected.println("Exit matcher \"huhu\" with match until index 3");
     expected.println("Exit matcher and(\"hehe\", \"huhu\") with match until index 3");
     expected.println("Exit rule rule2 with match until index 3");
-    expected.println("Entered rule rule2 at index 1");
-
-    expected.println("Entered matcher and(\"hehe\", \"huhu\") at index 1");
-    expected.println("Exit matcher and(\"hehe\", \"huhu\") with match until index 3");
-
-    expected.println("Exit rule rule2 with match until index 3");
-    expected.println("Exit matcher longestOne(rule1, rule2) with match until index 3");
+    expected.println("Exit matcher or(rule2, rule1) with match until index 3");
     expected.println("Entered matcher and(\"olaa\", \"uhu\") at index 3");
     expected.println("Entered matcher \"olaa\" at index 3");
     expected.println("Exit matcher \"olaa\" with match until index 4");
@@ -145,7 +135,7 @@ public class ParsingEventListenerTest {
     expected.println("Exit matcher and(\"olaa\", \"uhu\") with match until index 5");
     expected.println("Entered matcher EOF at index 5");
     expected.println("Exit matcher EOF with match until index 6");
-    expected.println("Exit matcher and(\"bonjour\", longestOne(rule1, rule2), and(\"olaa\", \"uhu\"), EOF) with match until index 6");
+    expected.println("Exit matcher and(\"bonjour\", or(rule2, rule1), and(\"olaa\", \"uhu\"), EOF) with match until index 6");
     expected.println("Exit rule root with match until index 6");
 
     assertThat(baos.toString()).isEqualTo(baosExpected.toString());

@@ -29,9 +29,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.longestOne;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Advanced.till;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.firstOf;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class ExtendedStackTraceTest {
@@ -52,7 +52,7 @@ public class ExtendedStackTraceTest {
   private class MyTestGrammarDecoratorV1 extends MyTestGrammar {
 
     public MyTestGrammarDecoratorV1() {
-      root.is("bonjour", longestOne(rule1, rule2), and("olaa", "uhu"), EOF);
+      root.is("bonjour", firstOf(rule2, rule1), and("olaa", "uhu"), EOF);
       rule1.is("hehe");
       rule2.is("hehe", "huhu");
     }
@@ -61,7 +61,7 @@ public class ExtendedStackTraceTest {
   private class MyTestGrammarDecoratorV2 extends MyTestGrammar {
 
     public MyTestGrammarDecoratorV2() {
-      root.is("bonjour", longestOne(rule1, rule2), and("olaa", "uhu"), EOF);
+      root.is("bonjour", firstOf(rule2, rule1), and("olaa", "uhu"), EOF);
       rule1.is("hehe");
       rule2.is("hehe", "huhu", "wtf");
     }
