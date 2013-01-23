@@ -19,23 +19,26 @@
  */
 package org.sonar.sslr.internal.ast.query;
 
+import com.google.common.collect.ImmutableSet;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
-public class OfTypeAstQuery extends AstQuery {
+public class OfMultipleTypesAstQuery extends AstQuery {
 
-  private final AstNodeType type;
+  private final Set<AstNodeType> types;
 
-  public OfTypeAstQuery(AstNodeType type) {
-    this(null, type);
+  public OfMultipleTypesAstQuery(AstNodeType type1, AstNodeType type2, AstNodeType... remainingTypes) {
+    this(null, type1, type2, remainingTypes);
   }
 
-  public OfTypeAstQuery(AstQuery parent, AstNodeType type) {
+  public OfMultipleTypesAstQuery(AstQuery parent, AstNodeType type1, AstNodeType type2, AstNodeType... remainingTypes) {
     super(parent);
-    this.type = type;
+    this.types = (Set) ImmutableSet.builder().add(type1).add(type2).addAll(Arrays.asList(remainingTypes)).build();
   }
 
   @Override
@@ -65,7 +68,7 @@ public class OfTypeAstQuery extends AstQuery {
         while (input.hasNext()) {
           AstNode element = input.next();
 
-          if (type == element.getType()) {
+          if (types.contains(element.getType())) {
             return element;
           }
         }

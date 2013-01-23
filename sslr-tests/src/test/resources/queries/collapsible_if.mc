@@ -55,4 +55,10 @@ int foo()
       /* ... */
     }
   }
+
+  /* Compliant */
+  if (a > 0)
+  {
+    int foo;
+  }
 }

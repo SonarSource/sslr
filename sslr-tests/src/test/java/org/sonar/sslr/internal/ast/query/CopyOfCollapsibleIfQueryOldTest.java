@@ -28,7 +28,7 @@ import org.junit.Test;
 import java.io.File;
 import java.util.List;
 
-public class CollapsibleIfQueryTest {
+public class CopyOfCollapsibleIfQueryOldTest {
 
   Parser<MiniCGrammar> p = MiniCParser.create();
   MiniCGrammar g = p.getGrammar();
@@ -41,7 +41,7 @@ public class CollapsibleIfQueryTest {
     init();
 
     for (AstNode node : ifStatements) {
-      if (visitHelpers(node)) {
+      if (visit(node)) {
         System.out.println("Collapsible if statement at line " + node.getTokenLine());
       }
     }
@@ -49,8 +49,6 @@ public class CollapsibleIfQueryTest {
 
   AstQuery hasIfStatementWithoutElseQuery;
   AstQuery compoundStatementQuery;
-  AstQuery hasElseChildQuery; // inline
-  AstQuery childrenQuery; // inline
 
   private void init() {
     hasIfStatementWithoutElseQuery = new AstQuery()
@@ -61,51 +59,39 @@ public class CollapsibleIfQueryTest {
     compoundStatementQuery = new AstQuery()
         .children(g.statement)
         .children(g.compoundStatement);
-
-    hasElseChildQuery = new AstQuery().children(g.elseClause);
-    childrenQuery = new AstQuery().children();
   }
 
-  /* New, compact version */
+  /* Old with helpers */
 
-  boolean visitCompact(AstNode node) {
-    if (node.select(new AstQuery().children(g.elseClause)).isEmpty()) { // TODO use compact
-      AstResultSet compoundStatement = node.select(compoundStatementQuery);
-
-      if (!node.select(hasIfStatementWithoutElseQuery).isEmpty() ||
-        compoundStatement.select(new AstQuery().children()).hasSize(3) && // TODO use compact
-        !compoundStatement.select(hasIfStatementWithoutElseQuery).isEmpty()) {
-
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  /* New with helpers */
-
-  boolean visitHelpers(AstNode node) {
+  private boolean visit(AstNode node) {
     return !hasElseClause(node) && hasCollapsibleIfStatement(node);
   }
 
   private boolean hasElseClause(AstNode node) {
-    return !node.select(hasElseChildQuery).isEmpty(); // TODO use compact
+    return node.hasDirectChildren(g.elseClause);
   }
 
   private boolean hasCollapsibleIfStatement(AstNode node) {
-    return hasCollapsibleInnerIfStatement(node) || hasCollapsibleIfStatementInCompoundStatement(node);
+    AstNode statementNode = node.getFirstChild(g.statement).getChild(0);
+    return isCollapsibleInnerIfStatement(statementNode) || isCollapsibleIfStatementInCompoundStatement(statementNode);
   }
 
-  private boolean hasCollapsibleInnerIfStatement(AstNode node) {
-    return !node.select(hasIfStatementWithoutElseQuery).isEmpty();
+  private boolean isCollapsibleInnerIfStatement(AstNode node) {
+    return node.is(g.ifStatement) && !hasElseClause(node);
   }
 
-  private boolean hasCollapsibleIfStatementInCompoundStatement(AstNode node) {
-    AstResultSet compoundStatement = node.select(compoundStatementQuery);
+  private boolean isCollapsibleIfStatementInCompoundStatement(AstNode node) {
+    if (!node.is(g.compoundStatement) || node.getNumberOfChildren() != 3) {
+      return false;
+    }
 
-    return compoundStatement.select(childrenQuery).hasSize(3) && // TODO use compact
-      !compoundStatement.select(hasIfStatementWithoutElseQuery).isEmpty();
+    AstNode statementNode = node.getFirstChild(g.statement);
+    if (statementNode == null) {
+      // Null check was initially forgotten, did not led to a NPE because the unit test did not cover that case yet!
+      return false;
+    }
+
+    return isCollapsibleInnerIfStatement(statementNode.getChild(0));
   }
 
 }

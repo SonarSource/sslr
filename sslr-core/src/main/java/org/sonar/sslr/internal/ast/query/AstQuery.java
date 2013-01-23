@@ -40,12 +40,20 @@ public class AstQuery {
     return new ChildrenAstQuery(this);
   }
 
-  public AstQuery children(AstNodeType type1, AstNodeType... remainingTypes) {
-    return children().ofType(type1, remainingTypes);
+  public AstQuery children(AstNodeType type) {
+    return children().ofType(type);
   }
 
-  private AstQuery ofType(AstNodeType type1, AstNodeType... remainingTypes) {
-    return new OfTypeAstQuery(this, type1, remainingTypes);
+  public AstQuery children(AstNodeType type1, AstNodeType type2, AstNodeType... remainingTypes) {
+    return children().ofType(type1, type2, remainingTypes);
+  }
+
+  public AstQuery ofType(AstNodeType type) {
+    return new OfTypeAstQuery(this, type);
+  }
+
+  private AstQuery ofType(AstNodeType type1, AstNodeType type2, AstNodeType... remainingTypes) {
+    return new OfMultipleTypesAstQuery(this, type1, type2, remainingTypes);
   }
 
   public AstQuery having(AstQuery subQuery) {
@@ -54,13 +62,6 @@ public class AstQuery {
 
   public AstQuery notHaving(AstQuery subQuery) {
     return new NotExistsAstQuery(this, subQuery);
-  }
-
-  public AstNode next(AstNode node) {
-    if (parent == null) {
-      return node;
-    }
-    return parent.next(node);
   }
 
   public Iterator<AstNode> execute(Iterator<AstNode> nodes) {
