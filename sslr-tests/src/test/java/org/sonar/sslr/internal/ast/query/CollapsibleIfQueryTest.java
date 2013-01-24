@@ -28,6 +28,8 @@ import org.junit.Test;
 import java.io.File;
 import java.util.List;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 public class CollapsibleIfQueryTest {
 
   Parser<MiniCGrammar> p = MiniCParser.create();
@@ -40,11 +42,13 @@ public class CollapsibleIfQueryTest {
 
     init();
 
+    int violations = 0;
     for (AstNode node : ifStatements) {
       if (visitHelpers(node)) {
-        System.out.println("Collapsible if statement at line " + node.getTokenLine());
+        violations++;
       }
     }
+    assertThat(violations).isEqualTo(2);
   }
 
   AstQuery hasIfStatementWithoutElseQuery;
@@ -79,7 +83,6 @@ public class CollapsibleIfQueryTest {
         return true;
       }
     }
-
     return false;
   }
 

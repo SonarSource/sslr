@@ -23,6 +23,8 @@ import com.google.common.collect.Lists;
 import org.sonar.sslr.internal.ast.query.AstQuery;
 import org.sonar.sslr.internal.ast.query.AstResultSet;
 import org.sonar.sslr.internal.ast.query.NonEmptyAstResultSet;
+import org.sonar.sslr.internal.ast.select.AstSelect;
+import org.sonar.sslr.internal.ast.select.AstSelectFactory;
 
 import javax.annotation.Nullable;
 
@@ -591,6 +593,13 @@ public class AstNode {
       lastAstNode = lastAstNode.getLastChild();
     }
     return lastAstNode.getToken();
+  }
+
+  /**
+   * @since 1.18
+   */
+  public AstSelect select() {
+    return AstSelectFactory.select(this);
   }
 
   /**
