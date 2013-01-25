@@ -32,10 +32,6 @@ public class LexerlessGrammarAdapter extends LexerlessGrammar {
     this.root = root;
   }
 
-  public Grammar getGrammar() {
-    return grammar;
-  }
-
   public Rule rule(GrammarRule rule) {
     return grammar.rule(rule);
   }

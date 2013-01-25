@@ -20,8 +20,8 @@
 package org.sonar.sslr.grammar;
 
 import com.google.common.base.Preconditions;
-import org.sonar.sslr.impl.grammar.MatcherBuilder;
-import org.sonar.sslr.impl.grammar.MatcherBuilderUtils;
+import org.sonar.sslr.internal.grammar.MatcherBuilder;
+import org.sonar.sslr.internal.grammar.MatcherBuilderUtils;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 
 public class GrammarRuleDefinition {
@@ -83,7 +83,7 @@ public class GrammarRuleDefinition {
 
     GrammarElementMatcher ruleMatcher = g.rule(rule);
     Preconditions.checkState(ruleMatcher != null, "foo");
-    ruleMatcher.is(MatcherBuilderUtils.convertToMatchers(g, matcherBuilders));
+    ruleMatcher.is((Object[]) MatcherBuilderUtils.convertToMatchers(g, matcherBuilders));
 
     switch (skipState) {
       case ALWAYS_SKIP:

@@ -22,18 +22,19 @@ package org.sonar.sslr.grammar;
 import com.google.common.collect.Maps;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.api.Trivia.TriviaKind;
-import org.sonar.sslr.impl.grammar.EndOfInputMatcherBuilder;
-import org.sonar.sslr.impl.grammar.FirstOfBuilder;
-import org.sonar.sslr.impl.grammar.MatcherBuilderUtils;
-import org.sonar.sslr.impl.grammar.NextMatcherBuilder;
-import org.sonar.sslr.impl.grammar.NextNotMatcherBuilder;
-import org.sonar.sslr.impl.grammar.NothingMatcherBuilder;
-import org.sonar.sslr.impl.grammar.OneOrMoreMatcherBuilder;
-import org.sonar.sslr.impl.grammar.OptionalMatcherBuilder;
-import org.sonar.sslr.impl.grammar.PatternMatcherBuilder;
-import org.sonar.sslr.impl.grammar.TokenMatcherBuilder;
-import org.sonar.sslr.impl.grammar.TriviaMatcherBuilder;
-import org.sonar.sslr.impl.grammar.ZeroOrMoreMatcherBuilder;
+import org.sonar.sslr.internal.grammar.MatcherBuilderUtils;
+import org.sonar.sslr.internal.grammar.ReflexiveMatcherBuilder;
+import org.sonar.sslr.internal.matchers.EndOfInputMatcher;
+import org.sonar.sslr.internal.matchers.FirstOfMatcher;
+import org.sonar.sslr.internal.matchers.NothingMatcher;
+import org.sonar.sslr.internal.matchers.OneOrMoreMatcher;
+import org.sonar.sslr.internal.matchers.OptionalMatcher;
+import org.sonar.sslr.internal.matchers.PatternMatcher;
+import org.sonar.sslr.internal.matchers.TestMatcher;
+import org.sonar.sslr.internal.matchers.TestNotMatcher;
+import org.sonar.sslr.internal.matchers.TokenMatcher;
+import org.sonar.sslr.internal.matchers.TriviaMatcher;
+import org.sonar.sslr.internal.matchers.ZeroOrMoreMatcher;
 
 import java.util.Collection;
 import java.util.Map;
@@ -73,72 +74,66 @@ public class GrammarBuilder {
     elements[0] = e1;
     elements[1] = e2;
     System.arraycopy(others, 0, elements, 2, others.length);
-    return new FirstOfBuilder(MatcherBuilderUtils.convertToMatcherBuilders(elements));
+    return new ReflexiveMatcherBuilder(FirstOfMatcher.class, MatcherBuilderUtils.convertToMatcherBuilders(elements));
   }
 
   public Object optional(Object e1, Object... others) {
     Object[] elements = new Object[1 + others.length];
     elements[0] = e1;
     System.arraycopy(others, 0, elements, 1, others.length);
-    return new OptionalMatcherBuilder(MatcherBuilderUtils.convertToSingleMatcherBuilder(elements));
+    return new ReflexiveMatcherBuilder(OptionalMatcher.class, new Object[] {MatcherBuilderUtils.convertToSingleMatcherBuilder(elements)});
   }
 
   public Object oneOrMore(Object e1, Object... others) {
     Object[] elements = new Object[1 + others.length];
     elements[0] = e1;
     System.arraycopy(others, 0, elements, 1, others.length);
-    return new OneOrMoreMatcherBuilder(MatcherBuilderUtils.convertToSingleMatcherBuilder(elements));
+    return new ReflexiveMatcherBuilder(OneOrMoreMatcher.class, new Object[] {MatcherBuilderUtils.convertToSingleMatcherBuilder(elements)});
   }
 
   public Object zeroOrMore(Object e1, Object... others) {
     Object[] elements = new Object[1 + others.length];
     elements[0] = e1;
     System.arraycopy(others, 0, elements, 1, others.length);
-    return new ZeroOrMoreMatcherBuilder(MatcherBuilderUtils.convertToSingleMatcherBuilder(elements));
+    return new ReflexiveMatcherBuilder(ZeroOrMoreMatcher.class, new Object[] {MatcherBuilderUtils.convertToSingleMatcherBuilder(elements)});
   }
 
   public Object next(Object e1, Object... others) {
     Object[] elements = new Object[1 + others.length];
     elements[0] = e1;
     System.arraycopy(others, 0, elements, 1, others.length);
-    return new NextMatcherBuilder(MatcherBuilderUtils.convertToSingleMatcherBuilder(elements));
+    return new ReflexiveMatcherBuilder(TestMatcher.class, new Object[] {MatcherBuilderUtils.convertToSingleMatcherBuilder(elements)});
   }
 
   public Object nextNot(Object e1, Object... others) {
     Object[] elements = new Object[1 + others.length];
     elements[0] = e1;
     System.arraycopy(others, 0, elements, 1, others.length);
-    return new NextNotMatcherBuilder(MatcherBuilderUtils.convertToSingleMatcherBuilder(elements));
+    return new ReflexiveMatcherBuilder(TestNotMatcher.class, new Object[] {MatcherBuilderUtils.convertToSingleMatcherBuilder(elements)});
   }
 
-  // lexerless
   public Object regexp(String regexp) {
-    return new PatternMatcherBuilder(regexp);
+    return new ReflexiveMatcherBuilder(PatternMatcher.class, new Object[] {regexp});
   }
 
-  // lexerless
   public Object endOfInput() {
-    return new EndOfInputMatcherBuilder();
+    return new ReflexiveMatcherBuilder(EndOfInputMatcher.class, new Object[0]);
   }
 
-  // lexerless
   public Object nothing(String regexp) {
-    return new NothingMatcherBuilder();
+    return new ReflexiveMatcherBuilder(NothingMatcher.class, new Object[0]);
   }
 
-  // lexerless
   public Object token(TokenType tokenType, Object element) {
-    return new TokenMatcherBuilder(tokenType, MatcherBuilderUtils.convertToMatcherBuilder(element));
+    return new ReflexiveMatcherBuilder(TokenMatcher.class, new Object[] {tokenType, MatcherBuilderUtils.convertToMatcherBuilder(element)});
   }
 
-  // lexerless
   public Object commentTrivia(Object element) {
-    return new TriviaMatcherBuilder(TriviaKind.COMMENT, MatcherBuilderUtils.convertToMatcherBuilder(element));
+    return new ReflexiveMatcherBuilder(TriviaMatcher.class, new Object[] {TriviaKind.COMMENT, MatcherBuilderUtils.convertToMatcherBuilder(element)});
   }
 
-  // lexerless
   public Object skippedTrivia(Object element) {
-    return new TriviaMatcherBuilder(TriviaKind.SKIPPED_TEXT, MatcherBuilderUtils.convertToMatcherBuilder(element));
+    return new ReflexiveMatcherBuilder(TriviaMatcher.class, new Object[] {TriviaKind.SKIPPED_TEXT, MatcherBuilderUtils.convertToMatcherBuilder(element)});
   }
 
 }

@@ -17,12 +17,14 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.impl.grammar;
+package org.sonar.sslr.internal.grammar;
 
 import com.google.common.base.Preconditions;
 import org.sonar.sslr.grammar.Grammar;
 import org.sonar.sslr.grammar.GrammarRule;
 import org.sonar.sslr.internal.matchers.Matcher;
+import org.sonar.sslr.internal.matchers.SequenceMatcher;
+import org.sonar.sslr.internal.matchers.StringMatcher;
 
 public class MatcherBuilderUtils {
 
@@ -31,11 +33,11 @@ public class MatcherBuilderUtils {
       return MatcherBuilderUtils.convertToMatcherBuilder(elements[0]);
     }
 
-    return new SequenceMatcherBuilder(MatcherBuilderUtils.convertToMatcherBuilders(elements));
+    return new ReflexiveMatcherBuilder(SequenceMatcher.class, MatcherBuilderUtils.convertToMatcherBuilders(elements));
   }
 
   public static MatcherBuilder[] convertToMatcherBuilders(Object[] elements) {
-    MatcherBuilder matcherBuilders[] = new MatcherBuilder[elements.length];
+    MatcherBuilder[] matcherBuilders = new MatcherBuilder[elements.length];
     for (int i = 0; i < matcherBuilders.length; i++) {
       matcherBuilders[i] = convertToMatcherBuilder(elements[i]);
     }
@@ -50,15 +52,15 @@ public class MatcherBuilderUtils {
     } else if (element instanceof GrammarRule) {
       return new RuleMatcherBuilder((GrammarRule) element);
     } else if (element instanceof String) {
-      return new StringMatcherBuilder((String) element);
+      return new ReflexiveMatcherBuilder(StringMatcher.class, new Object[] {element});
     } else if (element instanceof Character) {
-      return new StringMatcherBuilder(Character.toString((Character) element));
+      return new ReflexiveMatcherBuilder(StringMatcher.class, new Object[] {Character.toString((Character) element)});
     } else {
       throw new IllegalArgumentException("Incorrect type of parsing expression: " + element.getClass().getName());
     }
   }
 
-  public static Matcher[] convertToMatchers(Grammar g, MatcherBuilder... elements) {
+  public static Matcher[] convertToMatchers(Grammar g, MatcherBuilder[] elements) {
     Matcher[] matchers = new Matcher[elements.length];
     for (int i = 0; i < matchers.length; i++) {
       matchers[i] = elements[i].build(g);

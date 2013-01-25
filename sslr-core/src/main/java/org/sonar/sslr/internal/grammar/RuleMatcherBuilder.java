@@ -17,22 +17,22 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.impl.grammar;
+package org.sonar.sslr.internal.grammar;
 
 import org.sonar.sslr.grammar.Grammar;
-import org.sonar.sslr.internal.matchers.FirstOfMatcher;
+import org.sonar.sslr.grammar.GrammarRule;
 import org.sonar.sslr.internal.matchers.Matcher;
 
-public class FirstOfBuilder implements MatcherBuilder {
+public class RuleMatcherBuilder implements MatcherBuilder {
 
-  private final MatcherBuilder[] subMatcherBuilders;
+  private final GrammarRule rule;
 
-  public FirstOfBuilder(MatcherBuilder... subMatcherBuilders) {
-    this.subMatcherBuilders = subMatcherBuilders;
+  public RuleMatcherBuilder(GrammarRule rule) {
+    this.rule = rule;
   }
 
   public Matcher build(Grammar g) {
-    return new FirstOfMatcher(MatcherBuilderUtils.convertToMatchers(g, subMatcherBuilders));
+    return g.rule(rule);
   }
 
 }

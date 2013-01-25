@@ -17,22 +17,13 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.impl.grammar;
+package org.sonar.sslr.internal.grammar;
 
 import org.sonar.sslr.grammar.Grammar;
 import org.sonar.sslr.internal.matchers.Matcher;
-import org.sonar.sslr.internal.matchers.StringMatcher;
 
-public class StringMatcherBuilder implements MatcherBuilder {
+public interface MatcherBuilder {
 
-  private final String string;
-
-  public StringMatcherBuilder(String string) {
-    this.string = string;
-  }
-
-  public Matcher build(Grammar g) {
-    return new StringMatcher(string);
-  }
+  Matcher build(Grammar g);
 
 }
