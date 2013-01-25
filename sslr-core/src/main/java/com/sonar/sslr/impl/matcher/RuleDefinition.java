@@ -117,4 +117,5 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
     }
     return false;
   }
+
 }
