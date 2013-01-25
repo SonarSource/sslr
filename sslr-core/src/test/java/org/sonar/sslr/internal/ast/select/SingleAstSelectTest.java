@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.internal.ast.select;
 
+import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import org.junit.Before;
@@ -28,6 +29,7 @@ import org.junit.rules.ExpectedException;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class SingleAstSelectTest {
 
@@ -44,10 +46,81 @@ public class SingleAstSelectTest {
   }
 
   @Test
-  public void test_children() {
+  public void test_children_when_no_children() {
     assertThat((Object) select.children()).isSameAs(AstSelectFactory.empty());
     assertThat((Object) select.children(mock(AstNodeType.class))).isSameAs(AstSelectFactory.empty());
     assertThat((Object) select.children(mock(AstNodeType.class), mock(AstNodeType.class))).isSameAs(AstSelectFactory.empty());
+  }
+
+  @Test
+  public void test_children_when_one_child() {
+    AstNodeType type1 = mock(AstNodeType.class);
+    AstNodeType type2 = mock(AstNodeType.class);
+    AstNode child = mock(AstNode.class);
+    when(node.getNumberOfChildren()).thenReturn(1);
+
+    when(node.getFirstChild()).thenReturn(child);
+    AstSelect children = select.children();
+    assertThat((Object) children).isInstanceOf(SingleAstSelect.class);
+    assertThat(children).containsOnly(child);
+
+    when(node.getChildren()).thenReturn(ImmutableList.of(child));
+
+    children = select.children(type1);
+    assertThat((Object) children).isSameAs(AstSelectFactory.empty());
+
+    when(child.getType()).thenReturn(type1);
+    children = select.children(type1);
+    assertThat((Object) children).isInstanceOf(SingleAstSelect.class);
+    assertThat(children).containsOnly(child);
+
+    children = select.children(type1, type2);
+    assertThat((Object) children).isSameAs(AstSelectFactory.empty());
+
+    when(child.is(type1, type2)).thenReturn(true);
+    children = select.children(type1, type2);
+    assertThat((Object) children).isInstanceOf(SingleAstSelect.class);
+    assertThat(children).containsOnly(child);
+  }
+
+  @Test
+  public void test_chilren_when_more_than_one_child() {
+    AstNodeType type1 = mock(AstNodeType.class);
+    AstNodeType type2 = mock(AstNodeType.class);
+    AstNode child1 = mock(AstNode.class);
+    AstNode child2 = mock(AstNode.class);
+    when(node.getNumberOfChildren()).thenReturn(2);
+    when(node.getChildren()).thenReturn(ImmutableList.of(child1, child2));
+
+    AstSelect children = select.children();
+    assertThat((Object) children).isInstanceOf(ListAstSelect.class);
+    assertThat(children).containsOnly(child1, child2);
+
+    children = select.children(type1);
+    assertThat((Object) children).isSameAs(AstSelectFactory.empty());
+
+    when(child1.getType()).thenReturn(type1);
+    children = select.children(type1);
+    assertThat((Object) children).isInstanceOf(SingleAstSelect.class);
+    assertThat(children).containsOnly(child1);
+
+    when(child2.getType()).thenReturn(type1);
+    children = select.children(type1);
+    assertThat((Object) children).isInstanceOf(ListAstSelect.class);
+    assertThat(children).containsOnly(child1, child2);
+
+    children = select.children(type1, type2);
+    assertThat((Object) children).isSameAs(AstSelectFactory.empty());
+
+    when(child1.is(type1, type2)).thenReturn(true);
+    children = select.children(type1, type2);
+    assertThat((Object) children).isInstanceOf(SingleAstSelect.class);
+    assertThat(children).containsOnly(child1);
+
+    when(child2.is(type1, type2)).thenReturn(true);
+    children = select.children(type1, type2);
+    assertThat((Object) children).isInstanceOf(ListAstSelect.class);
+    assertThat(children).containsOnly(child1, child2);
   }
 
   @Test
