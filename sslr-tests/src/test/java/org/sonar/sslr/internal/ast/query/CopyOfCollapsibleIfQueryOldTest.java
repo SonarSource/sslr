@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.internal.ast.query;
 
+import com.google.common.collect.Sets;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
@@ -27,41 +28,28 @@ import org.junit.Test;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 public class CopyOfCollapsibleIfQueryOldTest {
 
-  Parser<MiniCGrammar> p = MiniCParser.create();
-  MiniCGrammar g = p.getGrammar();
+  private Parser<MiniCGrammar> p = MiniCParser.create();
+  private MiniCGrammar g = p.getGrammar();
 
   @Test
   public void test() {
     AstNode fileNode = p.parse(new File("src/test/resources/queries/collapsible_if.mc"));
     List<AstNode> ifStatements = fileNode.getDescendants(g.ifStatement);
 
-    init();
-
+    Set<Integer> violations = Sets.newHashSet();
     for (AstNode node : ifStatements) {
       if (visit(node)) {
-        System.out.println("Collapsible if statement at line " + node.getTokenLine());
+        violations.add(node.getTokenLine());
       }
     }
+    assertThat(violations).containsOnly(7, 16);
   }
-
-  AstQuery hasIfStatementWithoutElseQuery;
-  AstQuery compoundStatementQuery;
-
-  private void init() {
-    hasIfStatementWithoutElseQuery = new AstQuery()
-        .children(g.statement)
-        .children(g.ifStatement)
-        .notHaving(new AstQuery().children(g.elseClause));
-
-    compoundStatementQuery = new AstQuery()
-        .children(g.statement)
-        .children(g.compoundStatement);
-  }
-
-  /* Old with helpers */
 
   private boolean visit(AstNode node) {
     return !hasElseClause(node) && hasCollapsibleIfStatement(node);
@@ -73,25 +61,23 @@ public class CopyOfCollapsibleIfQueryOldTest {
 
   private boolean hasCollapsibleIfStatement(AstNode node) {
     AstNode statementNode = node.getFirstChild(g.statement).getChild(0);
-    return isCollapsibleInnerIfStatement(statementNode) || isCollapsibleIfStatementInCompoundStatement(statementNode);
+    return isIfStatementWithoutElse(statementNode) || isIfStatementWithoutElseInCompoundStatement(statementNode);
   }
 
-  private boolean isCollapsibleInnerIfStatement(AstNode node) {
+  private boolean isIfStatementWithoutElse(AstNode node) {
     return node.is(g.ifStatement) && !hasElseClause(node);
   }
 
-  private boolean isCollapsibleIfStatementInCompoundStatement(AstNode node) {
+  private boolean isIfStatementWithoutElseInCompoundStatement(AstNode node) {
     if (!node.is(g.compoundStatement) || node.getNumberOfChildren() != 3) {
       return false;
     }
-
     AstNode statementNode = node.getFirstChild(g.statement);
     if (statementNode == null) {
       // Null check was initially forgotten, did not led to a NPE because the unit test did not cover that case yet!
       return false;
     }
-
-    return isCollapsibleInnerIfStatement(statementNode.getChild(0));
+    return isIfStatementWithoutElse(statementNode.getChild(0));
   }
 
 }

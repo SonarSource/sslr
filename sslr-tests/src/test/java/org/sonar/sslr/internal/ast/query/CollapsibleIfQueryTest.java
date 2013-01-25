@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.internal.ast.query;
 
+import com.google.common.collect.Sets;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
@@ -27,6 +28,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -42,13 +44,13 @@ public class CollapsibleIfQueryTest {
 
     init();
 
-    int violations = 0;
+    Set<Integer> violations = Sets.newHashSet();
     for (AstNode node : ifStatements) {
       if (visitHelpers(node)) {
-        violations++;
+        violations.add(node.getTokenLine());
       }
     }
-    assertThat(violations).isEqualTo(2);
+    assertThat(violations).containsOnly(7, 16);
   }
 
   AstQuery hasIfStatementWithoutElseQuery;

@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.internal.ast.query;
 
+import com.google.common.collect.Sets;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
@@ -29,6 +30,7 @@ import org.sonar.sslr.internal.ast.select.AstSelectFactory;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -42,48 +44,35 @@ public class CollapsibleIfSelectTest {
     AstNode fileNode = p.parse(new File("src/test/resources/queries/collapsible_if.mc"));
     List<AstNode> ifStatements = fileNode.getDescendants(g.ifStatement);
 
-    int violations = 0;
+    Set<Integer> violations = Sets.newHashSet();
     for (AstNode node : ifStatements) {
       if (visit(node)) {
-        violations++;
+        violations.add(node.getTokenLine());
       }
     }
-    assertThat(violations).isEqualTo(2);
+    assertThat(violations).containsOnly(7, 16);
   }
 
   private boolean visit(AstNode node) {
     AstSelect select = AstSelectFactory.select(node);
-    return !hasElseClause(select)
-      && hasCollapsibleIfStatement(select);
+    return hasNoElseClause(select) && (hasIfStatementWithoutElse(select) || hasIfStatementWithoutElseInCompoundStatement(select));
   }
 
-  private boolean hasElseClause(AstSelect select) {
-    return select.children(g.elseClause).size() != 0;
+  private boolean hasNoElseClause(AstSelect select) {
+    return select.children(g.elseClause).isEmpty();
   }
 
-  private boolean hasCollapsibleIfStatement(AstSelect select) {
-    return hasCollapsibleInnerIfStatement(select)
-      || hasCollapsibleIfStatementInCompoundStatement(select);
-  }
-
-  private boolean hasCollapsibleInnerIfStatement(AstSelect select) {
-    return !hasIfStatementWithoutElse(select);
-  }
-
-  private boolean hasCollapsibleIfStatementInCompoundStatement(AstSelect select) {
-    AstSelect compoundStatement = select
+  private boolean hasIfStatementWithoutElseInCompoundStatement(AstSelect select) {
+    select = select
         .children(g.statement)
         .children(g.compoundStatement);
-    return compoundStatement.children().size() == 3
-      && !hasIfStatementWithoutElse(compoundStatement);
+    return select.children().size() == 3
+      && hasIfStatementWithoutElse(select);
   }
 
   private boolean hasIfStatementWithoutElse(AstSelect select) {
-    return select
-        .children(g.statement)
-        .children(g.ifStatement)
-        .children(g.elseClause)
-        .isEmpty();
+    select = select.children(g.statement).children(g.ifStatement);
+    return select.isNotEmpty() && hasNoElseClause(select);
   }
 
 }
