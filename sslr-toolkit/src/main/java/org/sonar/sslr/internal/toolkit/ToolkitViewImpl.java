@@ -42,6 +42,8 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.BadLocationException;
@@ -66,8 +68,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Enumeration;
 import java.util.List;
@@ -162,9 +162,16 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     sourceCodeEditorPane.setContentType("text/html");
     sourceCodeEditorPane.setEditable(true);
     ((DefaultCaret) sourceCodeEditorPane.getCaret()).setUpdatePolicy(DefaultCaret.UPDATE_WHEN_ON_EDT);
-    sourceCodeEditorPane.addKeyListener(new KeyAdapter() {
-      @Override
-      public void keyTyped(KeyEvent e) {
+    sourceCodeEditorPane.getDocument().addDocumentListener(new DocumentListener() {
+      public void removeUpdate(DocumentEvent e) {
+        presenter.onSourceCodeKeyTyped();
+      }
+
+      public void insertUpdate(DocumentEvent e) {
+        presenter.onSourceCodeKeyTyped();
+      }
+
+      public void changedUpdate(DocumentEvent e) {
         presenter.onSourceCodeKeyTyped();
       }
     });
