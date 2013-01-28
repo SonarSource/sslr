@@ -32,6 +32,7 @@ public class AstSelectFactoryTest {
 
   @Test
   public void test_select() {
+    assertThat((Object) AstSelectFactory.select(null)).isInstanceOf(EmptyAstSelect.class);
     assertThat((Object) AstSelectFactory.select(mock(AstNode.class))).isInstanceOf(SingleAstSelect.class);
   }
 

@@ -128,6 +128,71 @@ public class ListAstSelectTest {
   }
 
   @Test
+  public void test_nextSibling() {
+    assertThat((Object) select.nextSibling()).isSameAs(AstSelectFactory.empty());
+
+    AstNode sibling1 = mock(AstNode.class);
+    when(node1.getNextSibling()).thenReturn(sibling1);
+    assertThat((Object) select.nextSibling()).isInstanceOf(SingleAstSelect.class);
+    assertThat(select.nextSibling()).containsOnly(sibling1);
+
+    AstNode sibling2 = mock(AstNode.class);
+    when(node2.getNextSibling()).thenReturn(sibling2);
+    assertThat((Object) select.nextSibling()).isInstanceOf(ListAstSelect.class);
+    assertThat(select.nextSibling()).containsOnly(sibling1, sibling2);
+  }
+
+  @Test
+  public void test_previousSibling() {
+    assertThat((Object) select.previousSibling()).isSameAs(AstSelectFactory.empty());
+
+    AstNode sibling1 = mock(AstNode.class);
+    when(node1.getPreviousSibling()).thenReturn(sibling1);
+    assertThat((Object) select.previousSibling()).isInstanceOf(SingleAstSelect.class);
+    assertThat(select.previousSibling()).containsOnly(sibling1);
+
+    AstNode sibling2 = mock(AstNode.class);
+    when(node2.getPreviousSibling()).thenReturn(sibling2);
+    assertThat((Object) select.previousSibling()).isInstanceOf(ListAstSelect.class);
+    assertThat(select.previousSibling()).containsOnly(sibling1, sibling2);
+  }
+
+  @Test
+  public void test_parent() {
+    assertThat((Object) select.parent()).isSameAs(AstSelectFactory.empty());
+
+    AstNode parent1 = mock(AstNode.class);
+    when(node1.getParent()).thenReturn(parent1);
+    assertThat((Object) select.parent()).isInstanceOf(SingleAstSelect.class);
+    assertThat(select.parent()).containsOnly(parent1);
+
+    AstNode parent2 = mock(AstNode.class);
+    when(node2.getParent()).thenReturn(parent2);
+    assertThat((Object) select.parent()).isInstanceOf(ListAstSelect.class);
+    assertThat(select.parent()).containsOnly(parent1, parent2);
+  }
+
+  @Test
+  public void test_firstAncestor() {
+    assertThat((Object) select.firstAncestor(mock(AstNodeType.class))).isSameAs(AstSelectFactory.empty());
+
+    AstNode parent = mock(AstNode.class);
+    when(node1.getParent()).thenReturn(parent);
+    AstNode ancestor1 = mock(AstNode.class);
+    AstNodeType type = mock(AstNodeType.class);
+    when(ancestor1.getType()).thenReturn(type);
+    when(parent.getParent()).thenReturn(ancestor1);
+    assertThat((Object) select.firstAncestor(type)).isInstanceOf(SingleAstSelect.class);
+    assertThat(select.firstAncestor(type)).containsOnly(ancestor1);
+
+    AstNode ancestor2 = mock(AstNode.class);
+    when(ancestor2.getType()).thenReturn(type);
+    when(node2.getParent()).thenReturn(ancestor2);
+    assertThat((Object) select.firstAncestor(type)).isInstanceOf(ListAstSelect.class);
+    assertThat(select.firstAncestor(type)).containsOnly(ancestor1, ancestor2);
+  }
+
+  @Test
   public void test_descendants() {
     assertThat((Object) select.descendants(mock(AstNodeType.class))).isSameAs(AstSelectFactory.empty());
     assertThat((Object) select.descendants(mock(AstNodeType.class), mock(AstNodeType.class))).isSameAs(AstSelectFactory.empty());

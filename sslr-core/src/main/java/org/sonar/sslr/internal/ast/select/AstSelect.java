@@ -64,6 +64,50 @@ public interface AstSelect extends Iterable<AstNode> {
   AstSelect children(AstNodeType... types);
 
   /**
+   * Returns new selection, which contains next sibling for each node from this selection.
+   * <p>
+   * In the following case, for selection "B1" {@code nextSibling()} would return "B2":
+   * <pre>
+   * A1
+   *  |__ B1
+   *  |    |__ C1
+   *  |__ B2
+   * </pre>
+   */
+  AstSelect nextSibling();
+
+  /**
+   * Returns new selection, which contains previous sibling for each node from this selection.
+   * <p>
+   * In the following case, for selection "B2" {@code previousSibling()} would return "B1":
+   * <pre>
+   * A1
+   *  |__ B1
+   *  |    |__ C1
+   *  |__ B2
+   * </pre>
+   */
+  AstSelect previousSibling();
+
+  /**
+   * Returns new selection, which contains parent for each node from this selection.
+   */
+  AstSelect parent();
+
+  /**
+   * Returns new selection, which contains first ancestor of a given type for each node from this selection.
+   * <p>
+   * In the following case, for selection "B2" {@code firstAncestor("A")} would return "A2":
+   * <pre>
+   * A1
+   *  |__ A2
+   *       |__ B1
+   *       |__ B2
+   * </pre>
+   */
+  AstSelect firstAncestor(AstNodeType type);
+
+  /**
    * Returns new selection, which contains descendants of a given type of this selection.
    * Be careful, this method searches among all descendants whatever is their depth, so favor {@link #children(AstNodeType)} when possible.
    * <p>

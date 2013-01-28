@@ -125,6 +125,50 @@ public class SingleAstSelectTest {
   }
 
   @Test
+  public void test_nextSibling() {
+    assertThat((Object) select.nextSibling()).isSameAs(AstSelectFactory.empty());
+
+    AstNode sibling = mock(AstNode.class);
+    when(node.getNextSibling()).thenReturn(sibling);
+    assertThat((Object) select.nextSibling()).isInstanceOf(SingleAstSelect.class);
+    assertThat(select.nextSibling()).containsOnly(sibling);
+  }
+
+  @Test
+  public void test_previousSibling() {
+    assertThat((Object) select.previousSibling()).isSameAs(AstSelectFactory.empty());
+
+    AstNode sibling = mock(AstNode.class);
+    when(node.getPreviousSibling()).thenReturn(sibling);
+    assertThat((Object) select.previousSibling()).isInstanceOf(SingleAstSelect.class);
+    assertThat(select.previousSibling()).containsOnly(sibling);
+  }
+
+  @Test
+  public void test_parent() {
+    assertThat((Object) select.parent()).isSameAs(AstSelectFactory.empty());
+
+    AstNode parent = mock(AstNode.class);
+    when(node.getParent()).thenReturn(parent);
+    assertThat((Object) select.parent()).isInstanceOf(SingleAstSelect.class);
+    assertThat(select.parent()).containsOnly(parent);
+  }
+
+  @Test
+  public void test_firstAncestor() {
+    assertThat((Object) select.firstAncestor(mock(AstNodeType.class))).isSameAs(AstSelectFactory.empty());
+
+    AstNode parent = mock(AstNode.class);
+    when(node.getParent()).thenReturn(parent);
+    AstNode ancestor = mock(AstNode.class);
+    AstNodeType type = mock(AstNodeType.class);
+    when(ancestor.getType()).thenReturn(type);
+    when(parent.getParent()).thenReturn(ancestor);
+    assertThat((Object) select.firstAncestor(type)).isInstanceOf(SingleAstSelect.class);
+    assertThat(select.firstAncestor(type)).containsOnly(ancestor);
+  }
+
+  @Test
   public void test_descendants() {
     assertThat((Object) select.descendants(mock(AstNodeType.class))).isSameAs(AstSelectFactory.empty());
     assertThat((Object) select.descendants(mock(AstNodeType.class), mock(AstNodeType.class))).isSameAs(AstSelectFactory.empty());

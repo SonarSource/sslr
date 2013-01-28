@@ -73,6 +73,53 @@ public class ListAstSelect implements AstSelect {
     return AstSelectFactory.create(result);
   }
 
+  public AstSelect nextSibling() {
+    List<AstNode> result = Lists.newArrayList();
+    for (AstNode node : list) {
+      node = node.getNextSibling();
+      if (node != null) {
+        result.add(node);
+      }
+    }
+    return AstSelectFactory.create(result);
+  }
+
+  public AstSelect previousSibling() {
+    List<AstNode> result = Lists.newArrayList();
+    for (AstNode node : list) {
+      node = node.getPreviousSibling();
+      if (node != null) {
+        result.add(node);
+      }
+    }
+    return AstSelectFactory.create(result);
+  }
+
+  public AstSelect parent() {
+    List<AstNode> result = Lists.newArrayList();
+    for (AstNode node : list) {
+      node = node.getParent();
+      if (node != null) {
+        result.add(node);
+      }
+    }
+    return AstSelectFactory.create(result);
+  }
+
+  public AstSelect firstAncestor(AstNodeType type) {
+    List<AstNode> result = Lists.newArrayList();
+    for (AstNode node : list) {
+      node = node.getParent();
+      while (node != null && node.getType() != type) {
+        node = node.getParent();
+      }
+      if (node != null) {
+        result.add(node);
+      }
+    }
+    return AstSelectFactory.create(result);
+  }
+
   public AstSelect descendants(AstNodeType type) {
     List<AstNode> result = Lists.newArrayList();
     for (AstNode node : list) {

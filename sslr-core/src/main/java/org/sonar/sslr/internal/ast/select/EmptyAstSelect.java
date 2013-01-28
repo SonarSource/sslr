@@ -43,6 +43,22 @@ public class EmptyAstSelect implements AstSelect {
     return this;
   }
 
+  public AstSelect nextSibling() {
+    return this;
+  }
+
+  public AstSelect previousSibling() {
+    return this;
+  }
+
+  public AstSelect parent() {
+    return this;
+  }
+
+  public AstSelect firstAncestor(AstNodeType type) {
+    return this;
+  }
+
   public AstSelect descendants(AstNodeType type) {
     return this;
   }

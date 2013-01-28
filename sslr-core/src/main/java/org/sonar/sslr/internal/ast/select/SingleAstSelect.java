@@ -92,6 +92,26 @@ public class SingleAstSelect implements AstSelect {
     }
   }
 
+  public AstSelect nextSibling() {
+    return AstSelectFactory.select(node.getNextSibling());
+  }
+
+  public AstSelect previousSibling() {
+    return AstSelectFactory.select(node.getPreviousSibling());
+  }
+
+  public AstSelect parent() {
+    return AstSelectFactory.select(node.getParent());
+  }
+
+  public AstSelect firstAncestor(AstNodeType type) {
+    AstNode result = node.getParent();
+    while (result != null && result.getType() != type) {
+      result = result.getParent();
+    }
+    return AstSelectFactory.select(result);
+  }
+
   public AstSelect descendants(AstNodeType type) {
     return AstSelectFactory.create(node.getDescendants(type));
   }

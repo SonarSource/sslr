@@ -21,6 +21,8 @@ package org.sonar.sslr.internal.ast.select;
 
 import com.sonar.sslr.api.AstNode;
 
+import javax.annotation.Nullable;
+
 import java.util.List;
 
 public final class AstSelectFactory {
@@ -30,8 +32,8 @@ public final class AstSelectFactory {
   private AstSelectFactory() {
   }
 
-  public static AstSelect select(AstNode node) {
-    return new SingleAstSelect(node);
+  public static AstSelect select(@Nullable AstNode node) {
+    return node == null ? EMPTY : new SingleAstSelect(node);
   }
 
   public static AstSelect create(List<AstNode> list) {
