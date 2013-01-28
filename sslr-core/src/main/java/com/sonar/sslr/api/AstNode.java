@@ -20,9 +20,6 @@
 package com.sonar.sslr.api;
 
 import com.google.common.collect.Lists;
-import org.sonar.sslr.internal.ast.query.AstQuery;
-import org.sonar.sslr.internal.ast.query.AstResultSet;
-import org.sonar.sslr.internal.ast.query.NonEmptyAstResultSet;
 import org.sonar.sslr.internal.ast.select.AstSelect;
 import org.sonar.sslr.internal.ast.select.AstSelectFactory;
 
@@ -600,17 +597,6 @@ public class AstNode {
    */
   public AstSelect select() {
     return AstSelectFactory.select(this);
-  }
-
-  /**
-   *
-   * @since 1.18
-   * @param query
-   * @return
-   */
-  // TODO Javadoc
-  public AstResultSet select(AstQuery query) {
-    return new NonEmptyAstResultSet(this, query);
   }
 
 }

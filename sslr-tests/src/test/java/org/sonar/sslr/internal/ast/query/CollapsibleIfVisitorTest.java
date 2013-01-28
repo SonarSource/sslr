@@ -32,7 +32,7 @@ import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class CopyOfCollapsibleIfQueryOldTest {
+public class CollapsibleIfVisitorTest {
 
   private Parser<MiniCGrammar> p = MiniCParser.create();
   private MiniCGrammar g = p.getGrammar();
