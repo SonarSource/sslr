@@ -20,31 +20,35 @@
 package org.sonar.sslr.internal.grammar;
 
 import com.google.common.base.Preconditions;
+import com.sonar.sslr.api.TokenType;
+import com.sonar.sslr.impl.matcher.AndMatcher;
+import com.sonar.sslr.impl.matcher.TokenTypeClassMatcher;
+import com.sonar.sslr.impl.matcher.TokenTypeMatcher;
+import com.sonar.sslr.impl.matcher.TokenValueMatcher;
 import org.sonar.sslr.grammar.Grammar;
 import org.sonar.sslr.grammar.GrammarRule;
-import org.sonar.sslr.internal.matchers.Matcher;
 import org.sonar.sslr.internal.matchers.SequenceMatcher;
 import org.sonar.sslr.internal.matchers.StringMatcher;
 
 public class MatcherBuilderUtils {
 
-  public static MatcherBuilder convertToSingleMatcherBuilder(Object[] elements) {
+  public static MatcherBuilder lexerlessToSingleMatcherBuilder(Object[] elements) {
     if (elements.length == 1) {
-      return MatcherBuilderUtils.convertToMatcherBuilder(elements[0]);
+      return MatcherBuilderUtils.lexerlessToMatcherBuilder(elements[0]);
     }
 
-    return new ReflexiveMatcherBuilder(SequenceMatcher.class, MatcherBuilderUtils.convertToMatcherBuilders(elements));
+    return new ReflexiveMatcherBuilder(SequenceMatcher.class, MatcherBuilderUtils.lexerlessToMatcherBuilders(elements));
   }
 
-  public static MatcherBuilder[] convertToMatcherBuilders(Object[] elements) {
+  public static MatcherBuilder[] lexerlessToMatcherBuilders(Object[] elements) {
     MatcherBuilder[] matcherBuilders = new MatcherBuilder[elements.length];
     for (int i = 0; i < matcherBuilders.length; i++) {
-      matcherBuilders[i] = convertToMatcherBuilder(elements[i]);
+      matcherBuilders[i] = lexerlessToMatcherBuilder(elements[i]);
     }
     return matcherBuilders;
   }
 
-  public static MatcherBuilder convertToMatcherBuilder(Object element) {
+  public static MatcherBuilder lexerlessToMatcherBuilder(Object element) {
     Preconditions.checkNotNull(element, "Incorrect parsing expression: null");
 
     if (element instanceof MatcherBuilder) {
@@ -60,8 +64,43 @@ public class MatcherBuilderUtils {
     }
   }
 
-  public static Matcher[] convertToMatchers(Grammar g, MatcherBuilder[] elements) {
-    Matcher[] matchers = new Matcher[elements.length];
+  public static MatcherBuilder lexerfulToSingleMatcherBuilder(Object[] elements) {
+    if (elements.length == 1) {
+      return MatcherBuilderUtils.lexerfulToMatcherBuilder(elements[0]);
+    }
+
+    return new ReflexiveMatcherBuilder(AndMatcher.class, MatcherBuilderUtils.lexerfulToMatcherBuilders(elements));
+  }
+
+  public static MatcherBuilder[] lexerfulToMatcherBuilders(Object[] elements) {
+    MatcherBuilder[] matcherBuilders = new MatcherBuilder[elements.length];
+    for (int i = 0; i < matcherBuilders.length; i++) {
+      matcherBuilders[i] = lexerfulToMatcherBuilder(elements[i]);
+    }
+    return matcherBuilders;
+  }
+
+  public static MatcherBuilder lexerfulToMatcherBuilder(Object element) {
+    Preconditions.checkNotNull(element, "Incorrect parsing expression: null");
+
+    if (element instanceof MatcherBuilder) {
+      return (MatcherBuilder) element;
+    } else if (element instanceof GrammarRule) {
+      return new RuleMatcherBuilder((GrammarRule) element);
+    } else if (element instanceof String) {
+      return new ReflexiveMatcherBuilder(TokenValueMatcher.class, new Object[] {element, false});
+    } else if (element instanceof TokenType) {
+      TokenType tokenType = (TokenType) element;
+      return new ReflexiveMatcherBuilder(TokenTypeMatcher.class, new Object[] {tokenType, tokenType.hasToBeSkippedFromAst(null)});
+    } else if (element instanceof Class) {
+      return new ReflexiveMatcherBuilder(TokenTypeClassMatcher.class, new Object[] {element});
+    } else {
+      throw new IllegalArgumentException("Incorrect type of parsing expression: " + element.getClass().getName());
+    }
+  }
+
+  public static Object[] build(Grammar g, MatcherBuilder[] elements) {
+    Object[] matchers = new Object[elements.length];
     for (int i = 0; i < matchers.length; i++) {
       matchers[i] = elements[i].build(g);
     }

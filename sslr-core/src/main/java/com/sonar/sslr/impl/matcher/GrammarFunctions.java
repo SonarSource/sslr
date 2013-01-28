@@ -339,7 +339,7 @@ public final class GrammarFunctions {
   protected static Matcher convertToMatcher(Object object) {
     final Matcher matcher;
     if (object instanceof String) {
-      matcher = getCachedMatcher(new TokenValueMatcher((String) object));
+      matcher = getCachedMatcher(new TokenValueMatcher((String) object, false));
     } else if (object instanceof TokenType) {
       TokenType tokenType = (TokenType) object;
       matcher = getCachedMatcher(new TokenTypeMatcher(tokenType, tokenType.hasToBeSkippedFromAst(null)));

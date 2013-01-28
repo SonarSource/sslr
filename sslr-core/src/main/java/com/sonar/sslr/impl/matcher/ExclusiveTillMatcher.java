@@ -28,7 +28,7 @@ import com.sonar.sslr.impl.ParsingState;
  */
 public final class ExclusiveTillMatcher extends StatelessMatcher {
 
-  protected ExclusiveTillMatcher(Matcher... matchers) {
+  public ExclusiveTillMatcher(Matcher... matchers) {
     super(matchers);
   }
 

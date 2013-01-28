@@ -27,7 +27,7 @@ import com.sonar.sslr.impl.ParsingState;
  */
 public final class AnyTokenButNotMatcher extends StandardMatcher {
 
-  protected AnyTokenButNotMatcher(Matcher matcher) {
+  public AnyTokenButNotMatcher(Matcher matcher) {
     super(matcher);
   }
 

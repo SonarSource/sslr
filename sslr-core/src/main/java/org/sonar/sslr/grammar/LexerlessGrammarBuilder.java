@@ -22,6 +22,7 @@ package org.sonar.sslr.grammar;
 import com.google.common.collect.Maps;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.api.Trivia.TriviaKind;
+import org.sonar.sslr.internal.grammar.LexerlessGrammar;
 import org.sonar.sslr.internal.grammar.MatcherBuilderUtils;
 import org.sonar.sslr.internal.grammar.ReflexiveMatcherBuilder;
 import org.sonar.sslr.internal.matchers.EndOfInputMatcher;
@@ -39,26 +40,31 @@ import org.sonar.sslr.internal.matchers.ZeroOrMoreMatcher;
 import java.util.Collection;
 import java.util.Map;
 
-public class GrammarBuilder {
+public class LexerlessGrammarBuilder {
 
-  private final Map<GrammarRule, GrammarRuleDefinition> definitions = Maps.newHashMap();
+  private final Map<GrammarRule, LexerlessGrammarRuleDefinition> definitions = Maps.newHashMap();
 
-  public GrammarRuleDefinition rule(GrammarRule rule) {
-    GrammarRuleDefinition definition = definitions.get(rule);
+  public LexerlessGrammarBuilder basedOn(LexerlessGrammarBuilder otherGrammar) {
+    this.definitions.putAll(otherGrammar.definitions);
+    return this;
+  }
+
+  public LexerlessGrammarRuleDefinition rule(GrammarRule rule) {
+    LexerlessGrammarRuleDefinition definition = definitions.get(rule);
     if (definition == null) {
-      definition = new GrammarRuleDefinition(rule);
+      definition = new LexerlessGrammarRuleDefinition(rule);
       definitions.put(rule, definition);
     }
 
     return definition;
   }
 
-  public Collection<GrammarRuleDefinition> rules() {
+  public Collection<LexerlessGrammarRuleDefinition> rules() {
     return definitions.values();
   }
 
   public Grammar build() {
-    return new Grammar(this);
+    return new LexerlessGrammar(this);
   }
 
   public Object sequence(Object e1, Object e2, Object... others) {
@@ -66,7 +72,7 @@ public class GrammarBuilder {
     elements[0] = e1;
     elements[1] = e2;
     System.arraycopy(others, 0, elements, 2, others.length);
-    return MatcherBuilderUtils.convertToSingleMatcherBuilder(elements);
+    return MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(elements);
   }
 
   public Object firstOf(Object e1, Object e2, Object... others) {
@@ -74,42 +80,42 @@ public class GrammarBuilder {
     elements[0] = e1;
     elements[1] = e2;
     System.arraycopy(others, 0, elements, 2, others.length);
-    return new ReflexiveMatcherBuilder(FirstOfMatcher.class, MatcherBuilderUtils.convertToMatcherBuilders(elements));
+    return new ReflexiveMatcherBuilder(FirstOfMatcher.class, MatcherBuilderUtils.lexerlessToMatcherBuilders(elements));
   }
 
   public Object optional(Object e1, Object... others) {
     Object[] elements = new Object[1 + others.length];
     elements[0] = e1;
     System.arraycopy(others, 0, elements, 1, others.length);
-    return new ReflexiveMatcherBuilder(OptionalMatcher.class, new Object[] {MatcherBuilderUtils.convertToSingleMatcherBuilder(elements)});
+    return new ReflexiveMatcherBuilder(OptionalMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(elements)});
   }
 
   public Object oneOrMore(Object e1, Object... others) {
     Object[] elements = new Object[1 + others.length];
     elements[0] = e1;
     System.arraycopy(others, 0, elements, 1, others.length);
-    return new ReflexiveMatcherBuilder(OneOrMoreMatcher.class, new Object[] {MatcherBuilderUtils.convertToSingleMatcherBuilder(elements)});
+    return new ReflexiveMatcherBuilder(OneOrMoreMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(elements)});
   }
 
   public Object zeroOrMore(Object e1, Object... others) {
     Object[] elements = new Object[1 + others.length];
     elements[0] = e1;
     System.arraycopy(others, 0, elements, 1, others.length);
-    return new ReflexiveMatcherBuilder(ZeroOrMoreMatcher.class, new Object[] {MatcherBuilderUtils.convertToSingleMatcherBuilder(elements)});
+    return new ReflexiveMatcherBuilder(ZeroOrMoreMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(elements)});
   }
 
   public Object next(Object e1, Object... others) {
     Object[] elements = new Object[1 + others.length];
     elements[0] = e1;
     System.arraycopy(others, 0, elements, 1, others.length);
-    return new ReflexiveMatcherBuilder(TestMatcher.class, new Object[] {MatcherBuilderUtils.convertToSingleMatcherBuilder(elements)});
+    return new ReflexiveMatcherBuilder(TestMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(elements)});
   }
 
   public Object nextNot(Object e1, Object... others) {
     Object[] elements = new Object[1 + others.length];
     elements[0] = e1;
     System.arraycopy(others, 0, elements, 1, others.length);
-    return new ReflexiveMatcherBuilder(TestNotMatcher.class, new Object[] {MatcherBuilderUtils.convertToSingleMatcherBuilder(elements)});
+    return new ReflexiveMatcherBuilder(TestNotMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(elements)});
   }
 
   public Object regexp(String regexp) {
@@ -125,15 +131,15 @@ public class GrammarBuilder {
   }
 
   public Object token(TokenType tokenType, Object element) {
-    return new ReflexiveMatcherBuilder(TokenMatcher.class, new Object[] {tokenType, MatcherBuilderUtils.convertToMatcherBuilder(element)});
+    return new ReflexiveMatcherBuilder(TokenMatcher.class, new Object[] {tokenType, MatcherBuilderUtils.lexerlessToMatcherBuilder(element)});
   }
 
   public Object commentTrivia(Object element) {
-    return new ReflexiveMatcherBuilder(TriviaMatcher.class, new Object[] {TriviaKind.COMMENT, MatcherBuilderUtils.convertToMatcherBuilder(element)});
+    return new ReflexiveMatcherBuilder(TriviaMatcher.class, new Object[] {TriviaKind.COMMENT, MatcherBuilderUtils.lexerlessToMatcherBuilder(element)});
   }
 
   public Object skippedTrivia(Object element) {
-    return new ReflexiveMatcherBuilder(TriviaMatcher.class, new Object[] {TriviaKind.SKIPPED_TEXT, MatcherBuilderUtils.convertToMatcherBuilder(element)});
+    return new ReflexiveMatcherBuilder(TriviaMatcher.class, new Object[] {TriviaKind.SKIPPED_TEXT, MatcherBuilderUtils.lexerlessToMatcherBuilder(element)});
   }
 
 }

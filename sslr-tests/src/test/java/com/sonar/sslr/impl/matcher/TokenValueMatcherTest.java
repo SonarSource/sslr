@@ -30,7 +30,7 @@ public class TokenValueMatcherTest {
 
   @Test
   public void ok() {
-    TokenValueMatcher matcher = new TokenValueMatcher("print");
+    TokenValueMatcher matcher = new TokenValueMatcher("print", false);
     AstNode node = matcher.match(new ParsingState(lex("print screen")));
 
     assertThat(node.getTokenValue()).isEqualTo("print");
@@ -38,22 +38,22 @@ public class TokenValueMatcherTest {
 
   @Test
   public void test_toString() {
-    assertThat(new TokenValueMatcher("print").toString()).isEqualTo("\"print\"");
+    assertThat(new TokenValueMatcher("print", false).toString()).isEqualTo("\"print\"");
   }
 
   @Test
   public void test_equals_and_hashCode() {
-    Matcher first = new TokenValueMatcher("foo");
+    Matcher first = new TokenValueMatcher("foo", false);
     assertThat(first.equals(first)).isTrue();
     assertThat(first.equals(null)).isFalse();
     // different matcher
     assertThat(first.equals(MockedMatchers.mockTrue())).isFalse();
     // same value
-    Matcher second = new TokenValueMatcher("foo");
+    Matcher second = new TokenValueMatcher("foo", false);
     assertThat(first.equals(second)).isTrue();
     assertThat(first.hashCode() == second.hashCode()).isTrue();
     // different value
-    Matcher third = new TokenValueMatcher("bar");
+    Matcher third = new TokenValueMatcher("bar", false);
     assertThat(first.equals(third)).isFalse();
   }
 

@@ -28,7 +28,7 @@ public final class BooleanMatcher extends TokenMatcher {
 
   private final boolean internalState;
 
-  protected BooleanMatcher(boolean internalState) {
+  public BooleanMatcher(boolean internalState) {
     super(false);
 
     this.internalState = internalState;

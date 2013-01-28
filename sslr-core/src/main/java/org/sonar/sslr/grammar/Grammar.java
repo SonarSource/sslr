@@ -19,30 +19,10 @@
  */
 package org.sonar.sslr.grammar;
 
-import com.google.common.collect.ImmutableMap;
-import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
+import com.sonar.sslr.api.Rule;
 
-import java.util.Map;
+public interface Grammar {
 
-public class Grammar {
-
-  private final Map<GrammarRule, GrammarElementMatcher> ruleMatchers;
-
-  public Grammar(GrammarBuilder builder) {
-    ImmutableMap.Builder<GrammarRule, GrammarElementMatcher> b = ImmutableMap.builder();
-
-    for (GrammarRuleDefinition definition : builder.rules()) {
-      b.put(definition.getRule(), new GrammarElementMatcher(definition.getName()));
-    }
-    this.ruleMatchers = b.build();
-
-    for (GrammarRuleDefinition definition : builder.rules()) {
-      definition.build(this);
-    }
-  }
-
-  public GrammarElementMatcher rule(GrammarRule rule) {
-    return ruleMatchers.get(rule);
-  }
+  Rule rule(GrammarRule rule);
 
 }

@@ -29,11 +29,7 @@ public final class TokenValueMatcher extends TokenMatcher {
 
   private final String tokenValue;
 
-  protected TokenValueMatcher(String tokenValue) {
-    this(tokenValue, false);
-  }
-
-  protected TokenValueMatcher(String tokenValue, boolean hasToBeSkippedFromAst) {
+  public TokenValueMatcher(String tokenValue, boolean hasToBeSkippedFromAst) {
     super(hasToBeSkippedFromAst);
     this.tokenValue = tokenValue;
   }
@@ -45,7 +41,7 @@ public final class TokenValueMatcher extends TokenMatcher {
   @Override
   protected boolean isExpectedToken(Token token) {
     return tokenValue.hashCode() == token.getValue().hashCode()
-        && tokenValue.equals(token.getValue());
+      && tokenValue.equals(token.getValue());
   }
 
   @Override

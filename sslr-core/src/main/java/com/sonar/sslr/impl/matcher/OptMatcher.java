@@ -29,7 +29,7 @@ import com.sonar.sslr.impl.ParsingState;
  */
 public final class OptMatcher extends StandardMatcher {
 
-  protected OptMatcher(Matcher matcher) {
+  public OptMatcher(Matcher matcher) {
     super(matcher);
   }
 

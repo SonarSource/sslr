@@ -19,20 +19,36 @@
  */
 package org.sonar.sslr.internal.grammar;
 
-import com.sonar.sslr.api.Rule;
 import org.sonar.sslr.grammar.Grammar;
+
+import com.google.common.collect.ImmutableMap;
+import com.sonar.sslr.api.Rule;
 import org.sonar.sslr.grammar.GrammarRule;
+import org.sonar.sslr.grammar.LexerlessGrammarRuleDefinition;
+import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
+import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 
-public class RuleMatcherBuilder implements MatcherBuilder {
+import java.util.Map;
 
-  private final GrammarRule rule;
+public class LexerlessGrammar implements Grammar {
 
-  public RuleMatcherBuilder(GrammarRule rule) {
-    this.rule = rule;
+  private final Map<GrammarRule, GrammarElementMatcher> ruleMatchers;
+
+  public LexerlessGrammar(LexerlessGrammarBuilder builder) {
+    ImmutableMap.Builder<GrammarRule, GrammarElementMatcher> b = ImmutableMap.builder();
+
+    for (LexerlessGrammarRuleDefinition definition : builder.rules()) {
+      b.put(definition.getRule(), new GrammarElementMatcher(definition.getName()));
+    }
+    this.ruleMatchers = b.build();
+
+    for (LexerlessGrammarRuleDefinition definition : builder.rules()) {
+      definition.build(this);
+    }
   }
 
-  public Rule build(Grammar g) {
-    return g.rule(rule);
+  public Rule rule(GrammarRule rule) {
+    return ruleMatchers.get(rule);
   }
 
 }

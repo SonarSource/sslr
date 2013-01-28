@@ -21,46 +21,57 @@ package org.sonar.sslr.internal.grammar;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
+import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.sonar.sslr.grammar.Grammar;
-import org.sonar.sslr.internal.matchers.Matcher;
 
 import java.lang.reflect.Constructor;
 
 public class ReflexiveMatcherBuilder implements MatcherBuilder {
 
-  private final Class<? extends Matcher> matcherClass;
+  private final Class<?> matcherClass;
   private final Object[] arguments;
 
-  public ReflexiveMatcherBuilder(Class<? extends Matcher> matcherClass, Object[] params) {
+  public ReflexiveMatcherBuilder(Class<?> matcherClass, Object[] params) {
     this.matcherClass = matcherClass;
     this.arguments = params;
   }
 
-  public Matcher build(Grammar g) {
+  public Object build(Grammar g) {
     try {
       Constructor[] constructors = matcherClass.getConstructors();
       Preconditions.checkState(constructors.length == 1, "The matcher class has " + constructors.length + " constructors, but 1 expected: " + matcherClass.getName());
       Constructor constructor = constructors[0];
 
-      if (hasOneArrayOfMatcherParameter(constructor)) {
+      if (isLexerlessArrayOfMatchers(constructor)) {
         Object[] actualArguments = getActualArguments(g, arguments);
-        Matcher[] actualMatcherArguments = new Matcher[actualArguments.length];
+        org.sonar.sslr.internal.matchers.Matcher[] actualMatcherArguments = new org.sonar.sslr.internal.matchers.Matcher[actualArguments.length];
         System.arraycopy(actualArguments, 0, actualMatcherArguments, 0, actualMatcherArguments.length);
         Object actualMatcherArgument = actualMatcherArguments;
 
-        return (Matcher) constructor.newInstance(actualMatcherArgument);
+        return constructor.newInstance(actualMatcherArgument);
+      } else if (isLexerfulArrayOfMatchers(constructor)) {
+        Object[] actualArguments = getActualArguments(g, arguments);
+        com.sonar.sslr.impl.matcher.Matcher[] actualMatcherArguments = new com.sonar.sslr.impl.matcher.Matcher[actualArguments.length];
+        System.arraycopy(actualArguments, 0, actualMatcherArguments, 0, actualMatcherArguments.length);
+        Object actualMatcherArgument = actualMatcherArguments;
+
+        return constructor.newInstance(actualMatcherArgument);
       } else {
-        return (Matcher) constructor.newInstance(getActualArguments(g, arguments));
+        return constructor.newInstance(getActualArguments(g, arguments));
       }
     } catch (Exception e) {
       throw Throwables.propagate(e);
     }
   }
 
-  private boolean hasOneArrayOfMatcherParameter(Constructor constructor) {
+  private boolean isLexerlessArrayOfMatchers(Constructor constructor) {
     Class[] parameters = constructor.getParameterTypes();
+    return parameters.length == 1 && parameters[0].equals(org.sonar.sslr.internal.matchers.Matcher[].class);
+  }
 
-    return parameters.length == 1 && parameters[0].equals(Matcher[].class);
+  private boolean isLexerfulArrayOfMatchers(Constructor constructor) {
+    Class[] parameters = constructor.getParameterTypes();
+    return parameters.length == 1 && parameters[0].equals(com.sonar.sslr.impl.matcher.Matcher[].class);
   }
 
   private Object[] getActualArguments(Grammar g, Object[] arguments) {
@@ -73,7 +84,8 @@ public class ReflexiveMatcherBuilder implements MatcherBuilder {
 
   public Object getActualArgument(Grammar g, Object argument) {
     if (argument instanceof MatcherBuilder) {
-      return ((MatcherBuilder) argument).build(g);
+      Object o = ((MatcherBuilder) argument).build(g);
+      return o instanceof RuleDefinition ? ((RuleDefinition) o).getRule() : o;
     } else {
       return argument;
     }

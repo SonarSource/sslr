@@ -20,11 +20,11 @@
 package org.sonar.sslr.grammar;
 
 import com.google.common.base.Preconditions;
+import com.sonar.sslr.api.Rule;
 import org.sonar.sslr.internal.grammar.MatcherBuilder;
 import org.sonar.sslr.internal.grammar.MatcherBuilderUtils;
-import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 
-public class GrammarRuleDefinition {
+public class LexerfulGrammarRuleDefinition {
 
   private final GrammarRule rule;
   private MatcherBuilder[] matcherBuilders;
@@ -37,10 +37,13 @@ public class GrammarRuleDefinition {
 
   private SkipState skipState;
 
-  public GrammarRuleDefinition(GrammarRule rule) {
+  private boolean isRecoveryRule;
+
+  public LexerfulGrammarRuleDefinition(GrammarRule rule) {
     this.rule = rule;
     this.matcherBuilders = null;
     this.skipState = SkipState.DO_NOT_SKIP;
+    this.isRecoveryRule = false;
   }
 
   public String getName() {
@@ -51,14 +54,14 @@ public class GrammarRuleDefinition {
     return rule;
   }
 
-  public GrammarRuleDefinition is(Object e1, Object... others) {
+  public LexerfulGrammarRuleDefinition is(Object e1, Object... others) {
     Preconditions.checkState(matcherBuilders == null, "The rule '" + getName() + "' has already been defined somewhere in the grammar.");
 
     setMatcherBuilders(e1, others);
     return this;
   }
 
-  public GrammarRuleDefinition override(Object e1, Object... others) {
+  public LexerfulGrammarRuleDefinition override(Object e1, Object... others) {
     setMatcherBuilders(e1, others);
     return this;
   }
@@ -67,23 +70,26 @@ public class GrammarRuleDefinition {
     Object[] elements = new Object[1 + others.length];
     elements[0] = e1;
     System.arraycopy(others, 0, elements, 1, others.length);
-    this.matcherBuilders = MatcherBuilderUtils.convertToMatcherBuilders(elements);
+    this.matcherBuilders = MatcherBuilderUtils.lexerfulToMatcherBuilders(elements);
   }
 
   public void skip() {
-    skipState = SkipState.ALWAYS_SKIP;
+    this.skipState = SkipState.ALWAYS_SKIP;
   }
 
   public void skipIfOneChild() {
-    skipState = SkipState.SKIP_IF_ONE_CHILD;
+    this.skipState = SkipState.SKIP_IF_ONE_CHILD;
+  }
+
+  public void recoveryRule() {
+    this.isRecoveryRule = true;
   }
 
   public void build(Grammar g) {
     Preconditions.checkState(matcherBuilders != null, "The rule '" + getName() + "' hasn't beed defined.");
 
-    GrammarElementMatcher ruleMatcher = g.rule(rule);
-    Preconditions.checkState(ruleMatcher != null, "foo");
-    ruleMatcher.is((Object[]) MatcherBuilderUtils.convertToMatchers(g, matcherBuilders));
+    Rule ruleMatcher = g.rule(rule);
+    ruleMatcher.is((Object[]) MatcherBuilderUtils.build(g, matcherBuilders));
 
     switch (skipState) {
       case ALWAYS_SKIP:
@@ -92,6 +98,10 @@ public class GrammarRuleDefinition {
       case SKIP_IF_ONE_CHILD:
         ruleMatcher.skipIfOneChild();
         break;
+    }
+
+    if (isRecoveryRule) {
+      ruleMatcher.recoveryRule();
     }
   }
 

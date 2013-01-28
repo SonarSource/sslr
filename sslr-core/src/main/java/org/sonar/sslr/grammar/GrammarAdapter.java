@@ -19,24 +19,27 @@
  */
 package org.sonar.sslr.grammar;
 
-import org.junit.Test;
 
-public class CobolGrammar {
+import com.sonar.sslr.api.Rule;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
-  public enum CobolGrammarRules implements GrammarRule {
+public class GrammarAdapter extends LexerlessGrammar {
 
-    PROGRAM, PARAGRAPH;
+  private final Grammar grammar;
+  private final GrammarRule root;
 
+  public GrammarAdapter(Grammar grammar, GrammarRule root) {
+    this.grammar = grammar;
+    this.root = root;
   }
 
-  @Test
-  public Grammar getGrammar() {
+  public Rule rule(GrammarRule rule) {
+    return grammar.rule(rule);
+  }
 
-    GrammarBuilder b = new GrammarBuilder();
-    b.rule(CobolGrammarRules.PROGRAM).is("foo", b.firstOf(CobolGrammarRules.PROGRAM, CobolGrammarRules.PROGRAM)).skip();
-
-    return b.build();
-
+  @Override
+  public Rule getRootRule() {
+    return grammar.rule(root);
   }
 
 }

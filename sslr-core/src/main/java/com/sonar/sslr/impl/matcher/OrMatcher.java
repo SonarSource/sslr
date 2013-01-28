@@ -29,7 +29,7 @@ import com.sonar.sslr.impl.ParsingState;
  */
 public final class OrMatcher extends StandardMatcher {
 
-  protected OrMatcher(Matcher... matchers) {
+  public OrMatcher(Matcher... matchers) {
     super(matchers);
   }
 

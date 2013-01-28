@@ -33,7 +33,7 @@ public final class TokenTypesMatcher extends TokenMatcher {
 
   private final Set<TokenType> tokenTypes = new HashSet<TokenType>();
 
-  protected TokenTypesMatcher(TokenType... types) {
+  public TokenTypesMatcher(TokenType... types) {
     super(false);
     for (TokenType keyword : types) {
       this.tokenTypes.add(keyword);

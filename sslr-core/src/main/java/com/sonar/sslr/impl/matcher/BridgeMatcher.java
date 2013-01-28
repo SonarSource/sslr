@@ -34,7 +34,7 @@ public final class BridgeMatcher extends MemoizedMatcher {
   private final TokenType from;
   private final TokenType to;
 
-  protected BridgeMatcher(TokenType from, TokenType to) {
+  public BridgeMatcher(TokenType from, TokenType to) {
     super();
 
     this.from = from;
@@ -84,7 +84,7 @@ public final class BridgeMatcher extends MemoizedMatcher {
     }
     BridgeMatcher other = (BridgeMatcher) obj;
     return Objects.equal(this.from, other.from)
-        && Objects.equal(this.to, other.to);
+      && Objects.equal(this.to, other.to);
   }
 
 }

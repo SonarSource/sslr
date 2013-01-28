@@ -29,7 +29,7 @@ public final class TokenTypeClassMatcher extends TokenMatcher {
 
   private final Class typeClass;
 
-  protected TokenTypeClassMatcher(Class typeClass) {
+  public TokenTypeClassMatcher(Class typeClass) {
     super(false);
     this.typeClass = typeClass;
   }

@@ -34,7 +34,7 @@ public class TokenTypeMatcherTest {
 
   @Test
   public void ok() {
-    TokenTypeMatcher matcher = new TokenTypeMatcher(IDENTIFIER);
+    TokenTypeMatcher matcher = new TokenTypeMatcher(IDENTIFIER, false);
     AstNode node = matcher.match(new ParsingState(lex("print screen")));
 
     assertThat(node.is(IDENTIFIER)).isTrue();
@@ -44,23 +44,23 @@ public class TokenTypeMatcherTest {
   public void test_toString() {
     TokenType tokenType = mock(TokenType.class);
     when(tokenType.getName()).thenReturn("foo");
-    assertThat(new TokenTypeMatcher(tokenType).toString()).isEqualTo("foo");
+    assertThat(new TokenTypeMatcher(tokenType, false).toString()).isEqualTo("foo");
   }
 
   @Test
   public void test_equals_and_hashCode() {
     TokenType tokenType = mock(TokenType.class);
-    Matcher first = new TokenTypeMatcher(tokenType);
+    Matcher first = new TokenTypeMatcher(tokenType, false);
     assertThat(first.equals(first)).isTrue();
     assertThat(first.equals(null)).isFalse();
     // different matcher
     assertThat(first.equals(MockedMatchers.mockTrue())).isFalse();
     // same type
-    Matcher second = new TokenTypeMatcher(tokenType);
+    Matcher second = new TokenTypeMatcher(tokenType, false);
     assertThat(first.equals(second)).isTrue();
     assertThat(first.hashCode() == second.hashCode()).isTrue();
     // different type
-    Matcher third = new TokenTypeMatcher(mock(TokenType.class));
+    Matcher third = new TokenTypeMatcher(mock(TokenType.class), false);
     assertThat(first.equals(third)).isFalse();
   }
 

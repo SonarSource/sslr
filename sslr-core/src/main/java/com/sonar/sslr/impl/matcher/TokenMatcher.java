@@ -30,7 +30,7 @@ public abstract class TokenMatcher extends StandardMatcher {
 
   private final boolean hasToBeSkippedFromAst;
 
-  protected TokenMatcher(boolean hasToBeSkippedFromAst) {
+  public TokenMatcher(boolean hasToBeSkippedFromAst) {
     this.hasToBeSkippedFromAst = hasToBeSkippedFromAst;
   }
 

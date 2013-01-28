@@ -28,7 +28,7 @@ import com.sonar.sslr.impl.ParsingState;
  */
 public final class AdjacentMatcher extends StandardMatcher {
 
-  protected AdjacentMatcher(Matcher matcher) {
+  public AdjacentMatcher(Matcher matcher) {
     super(matcher);
   }
 

@@ -30,7 +30,7 @@ import static com.sonar.sslr.api.GenericTokenType.EOF;
  */
 public final class TillNewLineMatcher extends StatelessMatcher {
 
-  protected TillNewLineMatcher() {
+  public TillNewLineMatcher() {
     super();
   }
 
@@ -40,7 +40,7 @@ public final class TillNewLineMatcher extends StatelessMatcher {
 
     AstNode astNode = new AstNode(null, "tillNewLine", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
     for (int i = parsingState.lexerIndex; i < parsingState.lexerSize && parsingState.peekToken(this).getLine() == currentLine
-        && parsingState.peekToken(this).getType() != EOF; i++) {
+      && parsingState.peekToken(this).getType() != EOF; i++) {
       Token token = parsingState.popToken(this);
       astNode.addChild(new AstNode(token));
     }

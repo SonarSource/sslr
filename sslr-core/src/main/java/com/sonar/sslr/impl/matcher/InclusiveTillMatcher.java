@@ -28,7 +28,7 @@ import com.sonar.sslr.impl.ParsingState;
  */
 public final class InclusiveTillMatcher extends StatelessMatcher {
 
-  protected InclusiveTillMatcher(Matcher matcher) {
+  public InclusiveTillMatcher(Matcher matcher) {
     super(matcher);
   }
 
@@ -36,7 +36,7 @@ public final class InclusiveTillMatcher extends StatelessMatcher {
   protected AstNode matchWorker(ParsingState parsingState) {
     AstNode astNode = new AstNode(null, "till", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
 
-    while ( !super.children[0].isMatching(parsingState)) {
+    while (!super.children[0].isMatching(parsingState)) {
       Token token = parsingState.popToken(this);
       astNode.addChild(new AstNode(token));
     }

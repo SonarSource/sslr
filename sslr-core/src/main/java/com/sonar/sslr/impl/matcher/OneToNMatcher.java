@@ -30,7 +30,7 @@ import com.sonar.sslr.impl.ParsingState;
  */
 public final class OneToNMatcher extends StandardMatcher {
 
-  protected OneToNMatcher(Matcher matcher) {
+  public OneToNMatcher(Matcher matcher) {
     super(matcher);
   }
 

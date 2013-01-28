@@ -30,11 +30,7 @@ public final class TokenTypeMatcher extends TokenMatcher {
 
   private final TokenType type;
 
-  protected TokenTypeMatcher(TokenType type) {
-    this(type, false);
-  }
-
-  protected TokenTypeMatcher(TokenType type, boolean hasToBeSkippedFromAst) {
+  public TokenTypeMatcher(TokenType type, boolean hasToBeSkippedFromAst) {
     super(hasToBeSkippedFromAst);
     this.type = type;
   }

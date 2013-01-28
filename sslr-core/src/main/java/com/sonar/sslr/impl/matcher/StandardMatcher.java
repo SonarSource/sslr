@@ -49,6 +49,7 @@ public class StandardMatcher extends MemoizedMatcher {
     }
   }
 
+  @Override
   protected MatchResult doMatch(ParsingState parsingState) {
     // To be sure that this method implemented for all subclasses
     throw new IllegalStateException("Should be implemented in " + getClass().getName());

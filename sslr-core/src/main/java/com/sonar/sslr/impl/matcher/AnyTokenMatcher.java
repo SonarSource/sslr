@@ -26,7 +26,7 @@ import com.sonar.sslr.api.Token;
  */
 public final class AnyTokenMatcher extends TokenMatcher {
 
-  protected AnyTokenMatcher() {
+  public AnyTokenMatcher() {
     super(false);
   }
 

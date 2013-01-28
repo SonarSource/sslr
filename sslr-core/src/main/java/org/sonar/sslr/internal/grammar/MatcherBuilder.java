@@ -20,10 +20,10 @@
 package org.sonar.sslr.internal.grammar;
 
 import org.sonar.sslr.grammar.Grammar;
-import org.sonar.sslr.internal.matchers.Matcher;
+
 
 public interface MatcherBuilder {
 
-  Matcher build(Grammar g);
+  Object build(Grammar g);
 
 }
