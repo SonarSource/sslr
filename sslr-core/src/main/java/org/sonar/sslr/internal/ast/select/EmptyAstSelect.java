@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.internal.ast.select;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
@@ -56,6 +57,10 @@ public class EmptyAstSelect implements AstSelect {
 
   public boolean isNotEmpty() {
     return false;
+  }
+
+  public AstSelect filter(Predicate<AstNode> predicate) {
+    return this;
   }
 
   public int size() {

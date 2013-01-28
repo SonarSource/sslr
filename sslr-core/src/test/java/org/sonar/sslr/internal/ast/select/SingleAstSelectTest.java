@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.internal.ast.select;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
@@ -37,7 +38,7 @@ public class SingleAstSelectTest {
   public ExpectedException thrown = ExpectedException.none();
 
   private AstNode node;
-  private AstSelect select;
+  private SingleAstSelect select;
 
   @Before
   public void init() {
@@ -137,6 +138,14 @@ public class SingleAstSelectTest {
   @Test
   public void test_isNotEmpty() {
     assertThat(select.isNotEmpty()).isTrue();
+  }
+
+  @Test
+  public void test_filter() {
+    Predicate<AstNode> predicate = mock(Predicate.class);
+    assertThat((Object) select.filter(predicate)).isSameAs(AstSelectFactory.empty());
+    when(predicate.apply(node)).thenReturn(true);
+    assertThat((Object) select.filter(predicate)).isSameAs(select);
   }
 
   @Test

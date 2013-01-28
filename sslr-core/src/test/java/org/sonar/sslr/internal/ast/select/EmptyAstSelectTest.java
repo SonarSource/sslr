@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.internal.ast.select;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.sonar.sslr.api.AstNodeType;
 import org.junit.Rule;
@@ -56,6 +57,11 @@ public class EmptyAstSelectTest {
   @Test
   public void test_isNotEmpty() {
     assertThat(select.isNotEmpty()).isFalse();
+  }
+
+  @Test
+  public void test_filter() {
+    assertThat((Object) select.filter(mock(Predicate.class))).isSameAs(select);
   }
 
   @Test

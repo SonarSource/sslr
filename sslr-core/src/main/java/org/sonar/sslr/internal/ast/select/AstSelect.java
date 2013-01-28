@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.internal.ast.select;
 
+import com.google.common.base.Predicate;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 
@@ -98,6 +99,11 @@ public interface AstSelect extends Iterable<AstNode> {
    * @return <tt>true</tt> if this selection contains elements
    */
   boolean isNotEmpty();
+
+  /**
+   * Returns new selection, which contains elements of this selection that satisfy a predicate.
+   */
+  AstSelect filter(Predicate<AstNode> predicate);
 
   /**
    * Returns the number of elements in this selection.
