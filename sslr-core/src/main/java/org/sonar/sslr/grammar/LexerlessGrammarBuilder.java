@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.grammar;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.api.Trivia.TriviaKind;
@@ -68,54 +69,31 @@ public class LexerlessGrammarBuilder {
   }
 
   public Object sequence(Object e1, Object e2, Object... others) {
-    Object[] elements = new Object[2 + others.length];
-    elements[0] = e1;
-    elements[1] = e2;
-    System.arraycopy(others, 0, elements, 2, others.length);
-    return MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(elements);
+    return MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Lists.asList(e1, e2, others));
   }
 
   public Object firstOf(Object e1, Object e2, Object... others) {
-    Object[] elements = new Object[2 + others.length];
-    elements[0] = e1;
-    elements[1] = e2;
-    System.arraycopy(others, 0, elements, 2, others.length);
-    return new ReflexiveMatcherBuilder(FirstOfMatcher.class, MatcherBuilderUtils.lexerlessToMatcherBuilders(elements));
+    return new ReflexiveMatcherBuilder(FirstOfMatcher.class, MatcherBuilderUtils.lexerlessToMatcherBuilders(Lists.asList(e1, e2, others)));
   }
 
   public Object optional(Object e1, Object... others) {
-    Object[] elements = new Object[1 + others.length];
-    elements[0] = e1;
-    System.arraycopy(others, 0, elements, 1, others.length);
-    return new ReflexiveMatcherBuilder(OptionalMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(elements)});
+    return new ReflexiveMatcherBuilder(OptionalMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Lists.asList(e1, others))});
   }
 
   public Object oneOrMore(Object e1, Object... others) {
-    Object[] elements = new Object[1 + others.length];
-    elements[0] = e1;
-    System.arraycopy(others, 0, elements, 1, others.length);
-    return new ReflexiveMatcherBuilder(OneOrMoreMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(elements)});
+    return new ReflexiveMatcherBuilder(OneOrMoreMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Lists.asList(e1, others))});
   }
 
   public Object zeroOrMore(Object e1, Object... others) {
-    Object[] elements = new Object[1 + others.length];
-    elements[0] = e1;
-    System.arraycopy(others, 0, elements, 1, others.length);
-    return new ReflexiveMatcherBuilder(ZeroOrMoreMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(elements)});
+    return new ReflexiveMatcherBuilder(ZeroOrMoreMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Lists.asList(e1, others))});
   }
 
   public Object next(Object e1, Object... others) {
-    Object[] elements = new Object[1 + others.length];
-    elements[0] = e1;
-    System.arraycopy(others, 0, elements, 1, others.length);
-    return new ReflexiveMatcherBuilder(TestMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(elements)});
+    return new ReflexiveMatcherBuilder(TestMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Lists.asList(e1, others))});
   }
 
   public Object nextNot(Object e1, Object... others) {
-    Object[] elements = new Object[1 + others.length];
-    elements[0] = e1;
-    System.arraycopy(others, 0, elements, 1, others.length);
-    return new ReflexiveMatcherBuilder(TestNotMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(elements)});
+    return new ReflexiveMatcherBuilder(TestNotMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Lists.asList(e1, others))});
   }
 
   public Object nothing() {

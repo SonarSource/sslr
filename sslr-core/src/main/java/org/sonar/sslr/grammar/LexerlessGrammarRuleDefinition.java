@@ -20,6 +20,7 @@
 package org.sonar.sslr.grammar;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.sonar.sslr.api.Rule;
 import org.sonar.sslr.internal.grammar.MatcherBuilder;
 import org.sonar.sslr.internal.grammar.MatcherBuilderUtils;
@@ -64,10 +65,7 @@ public class LexerlessGrammarRuleDefinition {
   }
 
   private void setMatcherBuilders(Object e1, Object... others) {
-    Object[] elements = new Object[1 + others.length];
-    elements[0] = e1;
-    System.arraycopy(others, 0, elements, 1, others.length);
-    this.matcherBuilders = MatcherBuilderUtils.lexerlessToMatcherBuilders(elements);
+    this.matcherBuilders = MatcherBuilderUtils.lexerlessToMatcherBuilders(Lists.asList(e1, others));
   }
 
   public void skip() {

@@ -30,23 +30,24 @@ import org.sonar.sslr.grammar.GrammarRule;
 import org.sonar.sslr.internal.matchers.SequenceMatcher;
 import org.sonar.sslr.internal.matchers.StringMatcher;
 
+import java.util.List;
+
 public final class MatcherBuilderUtils {
 
   private MatcherBuilderUtils() {
   }
 
-  public static MatcherBuilder lexerlessToSingleMatcherBuilder(Object[] elements) {
-    if (elements.length == 1) {
-      return MatcherBuilderUtils.lexerlessToMatcherBuilder(elements[0]);
+  public static MatcherBuilder lexerlessToSingleMatcherBuilder(List<Object> elements) {
+    if (elements.size() == 1) {
+      return MatcherBuilderUtils.lexerlessToMatcherBuilder(elements.get(0));
     }
-
     return new ReflexiveMatcherBuilder(SequenceMatcher.class, MatcherBuilderUtils.lexerlessToMatcherBuilders(elements));
   }
 
-  public static MatcherBuilder[] lexerlessToMatcherBuilders(Object[] elements) {
-    MatcherBuilder[] matcherBuilders = new MatcherBuilder[elements.length];
+  public static MatcherBuilder[] lexerlessToMatcherBuilders(List<Object> elements) {
+    MatcherBuilder[] matcherBuilders = new MatcherBuilder[elements.size()];
     for (int i = 0; i < matcherBuilders.length; i++) {
-      matcherBuilders[i] = lexerlessToMatcherBuilder(elements[i]);
+      matcherBuilders[i] = lexerlessToMatcherBuilder(elements.get(i));
     }
     return matcherBuilders;
   }
@@ -67,18 +68,17 @@ public final class MatcherBuilderUtils {
     }
   }
 
-  public static MatcherBuilder lexerfulToSingleMatcherBuilder(Object[] elements) {
-    if (elements.length == 1) {
-      return MatcherBuilderUtils.lexerfulToMatcherBuilder(elements[0]);
+  public static MatcherBuilder lexerfulToSingleMatcherBuilder(List<Object> elements) {
+    if (elements.size() == 1) {
+      return MatcherBuilderUtils.lexerfulToMatcherBuilder(elements.get(0));
     }
-
     return new ReflexiveMatcherBuilder(AndMatcher.class, MatcherBuilderUtils.lexerfulToMatcherBuilders(elements));
   }
 
-  public static MatcherBuilder[] lexerfulToMatcherBuilders(Object[] elements) {
-    MatcherBuilder[] matcherBuilders = new MatcherBuilder[elements.length];
+  public static MatcherBuilder[] lexerfulToMatcherBuilders(List<Object> elements) {
+    MatcherBuilder[] matcherBuilders = new MatcherBuilder[elements.size()];
     for (int i = 0; i < matcherBuilders.length; i++) {
-      matcherBuilders[i] = lexerfulToMatcherBuilder(elements[i]);
+      matcherBuilders[i] = lexerfulToMatcherBuilder(elements.get(i));
     }
     return matcherBuilders;
   }
