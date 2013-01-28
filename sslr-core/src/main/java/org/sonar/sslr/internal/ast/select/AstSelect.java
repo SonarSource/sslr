@@ -108,6 +108,13 @@ public interface AstSelect extends Iterable<AstNode> {
   AstSelect firstAncestor(AstNodeType type);
 
   /**
+   * Returns new selection, which contains first ancestor of one of the given types for each node from this selection.
+   *
+   * @see #firstAncestor(AstNodeType)
+   */
+  AstSelect firstAncestor(AstNodeType... types);
+
+  /**
    * Returns new selection, which contains descendants of a given type of this selection.
    * Be careful, this method searches among all descendants whatever is their depth, so favor {@link #children(AstNodeType)} when possible.
    * <p>
@@ -143,6 +150,16 @@ public interface AstSelect extends Iterable<AstNode> {
    * @return <tt>true</tt> if this selection contains elements
    */
   boolean isNotEmpty();
+
+  /**
+   * Returns new selection, which contains elements of this selection that have given type.
+   */
+  AstSelect filter(AstNodeType type);
+
+  /**
+   * Returns new selection, which contains elements of this selection that have any one of the given types.
+   */
+  AstSelect filter(AstNodeType... types);
 
   /**
    * Returns new selection, which contains elements of this selection that satisfy a predicate.

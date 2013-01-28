@@ -59,6 +59,10 @@ public class EmptyAstSelect implements AstSelect {
     return this;
   }
 
+  public AstSelect firstAncestor(AstNodeType... types) {
+    return this;
+  }
+
   public AstSelect descendants(AstNodeType type) {
     return this;
   }
@@ -73,6 +77,14 @@ public class EmptyAstSelect implements AstSelect {
 
   public boolean isNotEmpty() {
     return false;
+  }
+
+  public AstSelect filter(AstNodeType type) {
+    return this;
+  }
+
+  public AstSelect filter(AstNodeType... types) {
+    return this;
   }
 
   public AstSelect filter(Predicate<AstNode> predicate) {

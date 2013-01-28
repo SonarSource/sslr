@@ -120,6 +120,20 @@ public class ListAstSelect implements AstSelect {
     return AstSelectFactory.create(result);
   }
 
+  public AstSelect firstAncestor(AstNodeType... types) {
+    List<AstNode> result = Lists.newArrayList();
+    for (AstNode node : list) {
+      node = node.getParent();
+      while (node != null && !node.is(types)) {
+        node = node.getParent();
+      }
+      if (node != null) {
+        result.add(node);
+      }
+    }
+    return AstSelectFactory.create(result);
+  }
+
   public AstSelect descendants(AstNodeType type) {
     List<AstNode> result = Lists.newArrayList();
     for (AstNode node : list) {
@@ -142,6 +156,26 @@ public class ListAstSelect implements AstSelect {
 
   public boolean isNotEmpty() {
     return true;
+  }
+
+  public AstSelect filter(AstNodeType type) {
+    List<AstNode> result = Lists.newArrayList();
+    for (AstNode node : list) {
+      if (node.getType() == type) {
+        result.add(node);
+      }
+    }
+    return AstSelectFactory.create(result);
+  }
+
+  public AstSelect filter(AstNodeType... types) {
+    List<AstNode> result = Lists.newArrayList();
+    for (AstNode node : list) {
+      if (node.is(types)) {
+        result.add(node);
+      }
+    }
+    return AstSelectFactory.create(result);
   }
 
   public AstSelect filter(Predicate<AstNode> predicate) {

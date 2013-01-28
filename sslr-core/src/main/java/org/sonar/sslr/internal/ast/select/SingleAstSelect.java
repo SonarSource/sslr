@@ -112,6 +112,14 @@ public class SingleAstSelect implements AstSelect {
     return AstSelectFactory.select(result);
   }
 
+  public AstSelect firstAncestor(AstNodeType... types) {
+    AstNode result = node.getParent();
+    while (result != null && !result.is(types)) {
+      result = result.getParent();
+    }
+    return AstSelectFactory.select(result);
+  }
+
   public AstSelect descendants(AstNodeType type) {
     return AstSelectFactory.create(node.getDescendants(type));
   }
@@ -126,6 +134,14 @@ public class SingleAstSelect implements AstSelect {
 
   public boolean isNotEmpty() {
     return true;
+  }
+
+  public AstSelect filter(AstNodeType type) {
+    return node.getType() == type ? this : AstSelectFactory.empty();
+  }
+
+  public AstSelect filter(AstNodeType... types) {
+    return node.is(types) ? this : AstSelectFactory.empty();
   }
 
   public AstSelect filter(Predicate<AstNode> predicate) {

@@ -61,6 +61,7 @@ public class EmptyAstSelectTest {
   @Test
   public void test_firstAncestor() {
     assertThat((Object) select.firstAncestor(mock(AstNodeType.class))).isSameAs(select);
+    assertThat((Object) select.firstAncestor(mock(AstNodeType.class), mock(AstNodeType.class))).isSameAs(select);
   }
 
   @Test
@@ -81,6 +82,8 @@ public class EmptyAstSelectTest {
 
   @Test
   public void test_filter() {
+    assertThat((Object) select.filter(mock(AstNodeType.class))).isSameAs(select);
+    assertThat((Object) select.filter(mock(AstNodeType.class), mock(AstNodeType.class))).isSameAs(select);
     assertThat((Object) select.filter(mock(Predicate.class))).isSameAs(select);
   }
 

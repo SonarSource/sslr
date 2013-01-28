@@ -173,13 +173,13 @@ public class ListAstSelectTest {
   }
 
   @Test
-  public void test_firstAncestor() {
-    assertThat((Object) select.firstAncestor(mock(AstNodeType.class))).isSameAs(AstSelectFactory.empty());
+  public void test_firstAncestor_by_type() {
+    AstNodeType type = mock(AstNodeType.class);
+    assertThat((Object) select.firstAncestor(type)).isSameAs(AstSelectFactory.empty());
 
     AstNode parent = mock(AstNode.class);
     when(node1.getParent()).thenReturn(parent);
     AstNode ancestor1 = mock(AstNode.class);
-    AstNodeType type = mock(AstNodeType.class);
     when(ancestor1.getType()).thenReturn(type);
     when(parent.getParent()).thenReturn(ancestor1);
     assertThat((Object) select.firstAncestor(type)).isInstanceOf(SingleAstSelect.class);
@@ -190,6 +190,27 @@ public class ListAstSelectTest {
     when(node2.getParent()).thenReturn(ancestor2);
     assertThat((Object) select.firstAncestor(type)).isInstanceOf(ListAstSelect.class);
     assertThat(select.firstAncestor(type)).containsOnly(ancestor1, ancestor2);
+  }
+
+  @Test
+  public void test_firstAncestor_by_types() {
+    AstNodeType type1 = mock(AstNodeType.class);
+    AstNodeType type2 = mock(AstNodeType.class);
+    assertThat((Object) select.firstAncestor(type1, type2)).isSameAs(AstSelectFactory.empty());
+
+    AstNode parent = mock(AstNode.class);
+    when(node1.getParent()).thenReturn(parent);
+    AstNode ancestor1 = mock(AstNode.class);
+    when(ancestor1.is(type1, type2)).thenReturn(true);
+    when(parent.getParent()).thenReturn(ancestor1);
+    assertThat((Object) select.firstAncestor(type1, type2)).isInstanceOf(SingleAstSelect.class);
+    assertThat(select.firstAncestor(type1, type2)).containsOnly(ancestor1);
+
+    AstNode ancestor2 = mock(AstNode.class);
+    when(ancestor2.is(type1, type2)).thenReturn(true);
+    when(node2.getParent()).thenReturn(ancestor2);
+    assertThat((Object) select.firstAncestor(type1, type2)).isInstanceOf(ListAstSelect.class);
+    assertThat(select.firstAncestor(type1, type2)).containsOnly(ancestor1, ancestor2);
   }
 
   @Test
@@ -209,20 +230,46 @@ public class ListAstSelectTest {
   }
 
   @Test
+  public void test_filter_by_type() {
+    AstNodeType type = mock(AstNodeType.class);
+    assertThat((Object) select.filter(type)).isSameAs(AstSelectFactory.empty());
+
+    when(node1.getType()).thenReturn(type);
+    assertThat((Object) select.filter(type)).isInstanceOf(SingleAstSelect.class);
+    assertThat(select.filter(type)).containsOnly(node1);
+
+    when(node2.getType()).thenReturn(type);
+    assertThat((Object) select.filter(type)).isInstanceOf(ListAstSelect.class);
+    assertThat(select.filter(type)).containsOnly(node1, node2);
+  }
+
+  @Test
+  public void test_filter_by_types() {
+    AstNodeType type1 = mock(AstNodeType.class);
+    AstNodeType type2 = mock(AstNodeType.class);
+    assertThat((Object) select.filter(type1, type2)).isSameAs(AstSelectFactory.empty());
+
+    when(node1.is(type1, type2)).thenReturn(true);
+    assertThat((Object) select.filter(type1, type2)).isInstanceOf(SingleAstSelect.class);
+    assertThat(select.filter(type1, type2)).containsOnly(node1);
+
+    when(node2.is(type1, type2)).thenReturn(true);
+    assertThat((Object) select.filter(type1, type2)).isInstanceOf(ListAstSelect.class);
+    assertThat(select.filter(type1, type2)).containsOnly(node1, node2);
+  }
+
+  @Test
   public void test_filter() {
     Predicate<AstNode> predicate = mock(Predicate.class);
-    AstSelect filtered = select.filter(predicate);
-    assertThat((Object) filtered).isSameAs(AstSelectFactory.empty());
+    assertThat((Object) select.filter(predicate)).isSameAs(AstSelectFactory.empty());
 
     when(predicate.apply(node1)).thenReturn(true);
-    filtered = select.filter(predicate);
-    assertThat((Object) filtered).isInstanceOf(SingleAstSelect.class);
-    assertThat(filtered).containsOnly(node1);
+    assertThat((Object) select.filter(predicate)).isInstanceOf(SingleAstSelect.class);
+    assertThat(select.filter(predicate)).containsOnly(node1);
 
     when(predicate.apply(node2)).thenReturn(true);
-    filtered = select.filter(predicate);
-    assertThat((Object) filtered).isInstanceOf(ListAstSelect.class);
-    assertThat(filtered).containsOnly(node1, node2);
+    assertThat((Object) select.filter(predicate)).isInstanceOf(ListAstSelect.class);
+    assertThat(select.filter(predicate)).containsOnly(node1, node2);
   }
 
   @Test

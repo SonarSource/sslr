@@ -155,17 +155,32 @@ public class SingleAstSelectTest {
   }
 
   @Test
-  public void test_firstAncestor() {
-    assertThat((Object) select.firstAncestor(mock(AstNodeType.class))).isSameAs(AstSelectFactory.empty());
+  public void test_firstAncestor_by_type() {
+    AstNodeType type = mock(AstNodeType.class);
+    assertThat((Object) select.firstAncestor(type)).isSameAs(AstSelectFactory.empty());
 
     AstNode parent = mock(AstNode.class);
     when(node.getParent()).thenReturn(parent);
     AstNode ancestor = mock(AstNode.class);
-    AstNodeType type = mock(AstNodeType.class);
     when(ancestor.getType()).thenReturn(type);
     when(parent.getParent()).thenReturn(ancestor);
     assertThat((Object) select.firstAncestor(type)).isInstanceOf(SingleAstSelect.class);
     assertThat(select.firstAncestor(type)).containsOnly(ancestor);
+  }
+
+  @Test
+  public void test_firstAncestor_by_types() {
+    AstNodeType type1 = mock(AstNodeType.class);
+    AstNodeType type2 = mock(AstNodeType.class);
+    assertThat((Object) select.firstAncestor(type1, type2)).isSameAs(AstSelectFactory.empty());
+
+    AstNode parent = mock(AstNode.class);
+    when(node.getParent()).thenReturn(parent);
+    AstNode ancestor = mock(AstNode.class);
+    when(ancestor.is(type1, type2)).thenReturn(true);
+    when(parent.getParent()).thenReturn(ancestor);
+    assertThat((Object) select.firstAncestor(type1, type2)).isInstanceOf(SingleAstSelect.class);
+    assertThat(select.firstAncestor(type1, type2)).containsOnly(ancestor);
   }
 
   @Test
@@ -185,9 +200,29 @@ public class SingleAstSelectTest {
   }
 
   @Test
+  public void test_filter_by_type() {
+    AstNodeType type = mock(AstNodeType.class);
+    assertThat((Object) select.filter(type)).isSameAs(AstSelectFactory.empty());
+
+    when(node.getType()).thenReturn(type);
+    assertThat((Object) select.filter(type)).isSameAs(select);
+  }
+
+  @Test
+  public void test_filter_by_types() {
+    AstNodeType type1 = mock(AstNodeType.class);
+    AstNodeType type2 = mock(AstNodeType.class);
+    assertThat((Object) select.filter(type1, type2)).isSameAs(AstSelectFactory.empty());
+
+    when(node.is(type1, type2)).thenReturn(true);
+    assertThat((Object) select.filter(type1, type2)).isSameAs(select);
+  }
+
+  @Test
   public void test_filter() {
     Predicate<AstNode> predicate = mock(Predicate.class);
     assertThat((Object) select.filter(predicate)).isSameAs(AstSelectFactory.empty());
+
     when(predicate.apply(node)).thenReturn(true);
     assertThat((Object) select.filter(predicate)).isSameAs(select);
   }
