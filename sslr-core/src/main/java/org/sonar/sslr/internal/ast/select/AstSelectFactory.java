@@ -39,7 +39,7 @@ public final class AstSelectFactory {
   public static AstSelect create(List<AstNode> list) {
     if (list.size() == 1) {
       return new SingleAstSelect(list.get(0));
-    } else if (list.size() > 0) {
+    } else if (!list.isEmpty()) {
       return new ListAstSelect(list);
     } else {
       return EMPTY;

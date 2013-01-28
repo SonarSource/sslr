@@ -30,7 +30,10 @@ import org.sonar.sslr.grammar.GrammarRule;
 import org.sonar.sslr.internal.matchers.SequenceMatcher;
 import org.sonar.sslr.internal.matchers.StringMatcher;
 
-public class MatcherBuilderUtils {
+public final class MatcherBuilderUtils {
+
+  private MatcherBuilderUtils() {
+  }
 
   public static MatcherBuilder lexerlessToSingleMatcherBuilder(Object[] elements) {
     if (elements.length == 1) {
