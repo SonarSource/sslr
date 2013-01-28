@@ -44,6 +44,12 @@ public class LexerfulGrammar implements Grammar {
     for (LexerfulGrammarRuleDefinition definition : builder.rules()) {
       definition.build(this);
     }
+
+    if (builder.isMemoizationOfMatchedForAllRulesEnabled()) {
+      for (RuleDefinition ruleDefinition : ruleMatchers.values()) {
+        ruleDefinition.getRule().memoizeMatches();
+      }
+    }
   }
 
   public Rule rule(GrammarRule rule) {

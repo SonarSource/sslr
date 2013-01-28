@@ -45,10 +45,20 @@ import java.util.Map;
 public class LexerfulGrammarBuilder {
 
   private final Map<GrammarRule, LexerfulGrammarRuleDefinition> definitions = Maps.newHashMap();
+  private boolean enableMemoizationOfMatchesForAllRules = false;
 
   public LexerfulGrammarBuilder basedOn(LexerfulGrammarBuilder otherGrammar) {
     this.definitions.putAll(otherGrammar.definitions);
     return this;
+  }
+
+  public LexerfulGrammarBuilder enableMemoizationOfMatchesForAllRules() {
+    this.enableMemoizationOfMatchesForAllRules = false;
+    return this;
+  }
+
+  public boolean isMemoizationOfMatchedForAllRulesEnabled() {
+    return enableMemoizationOfMatchesForAllRules;
   }
 
   public LexerfulGrammarRuleDefinition rule(GrammarRule rule) {

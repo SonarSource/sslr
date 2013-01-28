@@ -23,6 +23,7 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.ParsingState;
+import org.sonar.sslr.grammar.LexerfulGrammarBuilder;
 
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
@@ -72,11 +73,12 @@ public final class RuleMatcher extends StandardMatcher {
   }
 
   /**
-   * Should not be used directly, companion of {@link GrammarFunctions#enableMemoizationOfMatchesForAllRules(com.sonar.sslr.api.Grammar)}.
+   * Should not be used directly, companion of {@link GrammarFunctions#enableMemoizationOfMatchesForAllRules(com.sonar.sslr.api.Grammar)}
+   * and {@link LexerfulGrammarBuilder#enableMemoizationOfMatchesForAllRules()}.
    *
    * @since 1.14
    */
-  void memoizeMatches() {
+  public void memoizeMatches() {
     if (this.children.length == 0) {
       // skip empty rule
       return;
