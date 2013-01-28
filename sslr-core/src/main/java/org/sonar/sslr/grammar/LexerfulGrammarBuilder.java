@@ -52,15 +52,6 @@ public class LexerfulGrammarBuilder {
     return this;
   }
 
-  public LexerfulGrammarBuilder enableMemoizationOfMatchesForAllRules() {
-    this.enableMemoizationOfMatchesForAllRules = false;
-    return this;
-  }
-
-  public boolean isMemoizationOfMatchedForAllRulesEnabled() {
-    return enableMemoizationOfMatchesForAllRules;
-  }
-
   public LexerfulGrammarRuleDefinition rule(GrammarRule rule) {
     LexerfulGrammarRuleDefinition definition = definitions.get(rule);
     if (definition == null) {
@@ -73,6 +64,15 @@ public class LexerfulGrammarBuilder {
 
   public Collection<LexerfulGrammarRuleDefinition> rules() {
     return definitions.values();
+  }
+
+  public LexerfulGrammarBuilder enableMemoizationOfMatchesForAllRules() {
+    this.enableMemoizationOfMatchesForAllRules = true;
+    return this;
+  }
+
+  public boolean isMemoizationOfMatchedForAllRulesEnabled() {
+    return enableMemoizationOfMatchesForAllRules;
   }
 
   public Grammar build() {
@@ -145,7 +145,7 @@ public class LexerfulGrammarBuilder {
   public Object isOneOfThem(TokenType t1, TokenType... others) {
     TokenType[] types = new TokenType[1 + others.length];
     types[0] = t1;
-    System.arraycopy(types, 0, others, 1, others.length);
+    System.arraycopy(others, 0, types, 1, others.length);
     return new ReflexiveMatcherBuilder(TokenTypesMatcher.class, new Object[] {types});
   }
 

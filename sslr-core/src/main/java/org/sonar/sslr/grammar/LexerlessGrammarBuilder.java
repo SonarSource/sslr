@@ -118,16 +118,16 @@ public class LexerlessGrammarBuilder {
     return new ReflexiveMatcherBuilder(TestNotMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(elements)});
   }
 
+  public Object nothing() {
+    return new ReflexiveMatcherBuilder(NothingMatcher.class, new Object[0]);
+  }
+
   public Object regexp(String regexp) {
     return new ReflexiveMatcherBuilder(PatternMatcher.class, new Object[] {regexp});
   }
 
   public Object endOfInput() {
     return new ReflexiveMatcherBuilder(EndOfInputMatcher.class, new Object[0]);
-  }
-
-  public Object nothing(String regexp) {
-    return new ReflexiveMatcherBuilder(NothingMatcher.class, new Object[0]);
   }
 
   public Object token(TokenType tokenType, Object element) {

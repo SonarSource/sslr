@@ -82,7 +82,7 @@ public class LexerlessGrammarRuleDefinition {
     Preconditions.checkState(matcherBuilders != null, "The rule '" + getName() + "' hasn't beed defined.");
 
     Rule ruleMatcher = g.rule(rule);
-    ruleMatcher.is((Object[]) MatcherBuilderUtils.build(g, matcherBuilders));
+    ruleMatcher.is(MatcherBuilderUtils.build(g, matcherBuilders));
 
     switch (skipState) {
       case ALWAYS_SKIP:
@@ -90,6 +90,8 @@ public class LexerlessGrammarRuleDefinition {
         break;
       case SKIP_IF_ONE_CHILD:
         ruleMatcher.skipIfOneChild();
+        break;
+      default:
         break;
     }
   }
