@@ -28,13 +28,17 @@ import com.sonar.sslr.impl.matcher.BooleanMatcher;
 import com.sonar.sslr.impl.matcher.BridgeMatcher;
 import com.sonar.sslr.impl.matcher.ExclusiveTillMatcher;
 import com.sonar.sslr.impl.matcher.InclusiveTillMatcher;
+import com.sonar.sslr.impl.matcher.Matcher;
+import com.sonar.sslr.impl.matcher.MemoMatcher;
 import com.sonar.sslr.impl.matcher.NextMatcher;
 import com.sonar.sslr.impl.matcher.NotMatcher;
 import com.sonar.sslr.impl.matcher.OneToNMatcher;
 import com.sonar.sslr.impl.matcher.OptMatcher;
 import com.sonar.sslr.impl.matcher.OrMatcher;
+import com.sonar.sslr.impl.matcher.RuleDefinition;
 import com.sonar.sslr.impl.matcher.TillNewLineMatcher;
 import com.sonar.sslr.impl.matcher.TokenTypesMatcher;
+import com.sonar.sslr.impl.matcher.TokenValueMatcher;
 import org.junit.Test;
 import org.sonar.sslr.internal.grammar.LexerfulGrammar;
 import org.sonar.sslr.internal.grammar.MatcherBuilder;
@@ -84,14 +88,24 @@ public class LexerfulGrammarBuilderTest {
 
   @Test
   public void should_have_memoization_disabled_by_default() {
-    assertThat(new LexerfulGrammarBuilder().isMemoizationOfMatchedForAllRulesEnabled()).isFalse();
+    LexerfulGrammarBuilder _ = new LexerfulGrammarBuilder();
+    GrammarRule rule = mock(GrammarRule.class);
+    _.rule(rule).is("foo");
+    Grammar grammar = _.build();
+    Matcher[] ruleMatchers = ((RuleDefinition) grammar.rule(rule)).getRule().children;
+    assertThat(ruleMatchers).hasSize(1);
+    assertThat(ruleMatchers[0]).isInstanceOf(TokenValueMatcher.class);
   }
 
   @Test
   public void should_enable_memoization() {
     LexerfulGrammarBuilder _ = new LexerfulGrammarBuilder();
-    _.enableMemoizationOfMatchesForAllRules();
-    assertThat(_.isMemoizationOfMatchedForAllRulesEnabled()).isTrue();
+    GrammarRule rule = mock(GrammarRule.class);
+    _.rule(rule).is("foo");
+    Grammar grammar = _.buildWithMemoizationOfMatchesForAllRules();
+    Matcher[] ruleMatchers = ((RuleDefinition) grammar.rule(rule)).getRule().children;
+    assertThat(ruleMatchers).hasSize(1);
+    assertThat(ruleMatchers[0]).isInstanceOf(MemoMatcher.class);
   }
 
   @Test

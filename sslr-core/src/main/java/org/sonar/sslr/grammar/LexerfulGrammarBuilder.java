@@ -46,7 +46,6 @@ import java.util.Map;
 public class LexerfulGrammarBuilder {
 
   private final Map<GrammarRule, LexerfulGrammarRuleDefinition> definitions = Maps.newHashMap();
-  private boolean enableMemoizationOfMatchesForAllRules = false;
 
   public LexerfulGrammarBuilder basedOn(LexerfulGrammarBuilder otherGrammar) {
     this.definitions.putAll(otherGrammar.definitions);
@@ -59,7 +58,6 @@ public class LexerfulGrammarBuilder {
       definition = new LexerfulGrammarRuleDefinition(rule);
       definitions.put(rule, definition);
     }
-
     return definition;
   }
 
@@ -67,17 +65,12 @@ public class LexerfulGrammarBuilder {
     return definitions.values();
   }
 
-  public LexerfulGrammarBuilder enableMemoizationOfMatchesForAllRules() {
-    this.enableMemoizationOfMatchesForAllRules = true;
-    return this;
-  }
-
-  public boolean isMemoizationOfMatchedForAllRulesEnabled() {
-    return enableMemoizationOfMatchesForAllRules;
-  }
-
   public Grammar build() {
-    return new LexerfulGrammar(this);
+    return new LexerfulGrammar(this, false);
+  }
+
+  public Grammar buildWithMemoizationOfMatchesForAllRules() {
+    return new LexerfulGrammar(this, true);
   }
 
   public Object sequence(Object e1, Object e2, Object... others) {

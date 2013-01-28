@@ -33,7 +33,7 @@ public class LexerfulGrammar implements Grammar {
 
   private final Map<GrammarRule, RuleDefinition> ruleMatchers;
 
-  public LexerfulGrammar(LexerfulGrammarBuilder builder) {
+  public LexerfulGrammar(LexerfulGrammarBuilder builder, boolean enableMemoizationOfMathesForAllRules) {
     ImmutableMap.Builder<GrammarRule, RuleDefinition> b = ImmutableMap.builder();
 
     for (LexerfulGrammarRuleDefinition definition : builder.rules()) {
@@ -45,7 +45,7 @@ public class LexerfulGrammar implements Grammar {
       definition.build(this);
     }
 
-    if (builder.isMemoizationOfMatchedForAllRulesEnabled()) {
+    if (enableMemoizationOfMathesForAllRules) {
       for (RuleDefinition ruleDefinition : ruleMatchers.values()) {
         ruleDefinition.getRule().memoizeMatches();
       }
