@@ -84,6 +84,7 @@
     <module>sslr-tests</module>
     <module>sslr-grammar-analyser</module>
     <module>sslr-symboltable</module>
+    <module>sslr-examples</module>
   </modules>
 
   <dependencyManagement>
