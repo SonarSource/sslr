@@ -17,32 +17,33 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.grammar;
+package org.sonar.sslr.internal.grammar;
 
+import com.sonar.sslr.api.Grammar;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
-import org.sonar.sslr.internal.grammar.MatcherBuilder;
+import org.sonar.sslr.grammar.GrammarRule;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class LexerlessGrammarRuleDefinitionTest {
+public class LexerfulGrammarRuleDefinitionTest {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
   private GrammarRule grammarRule;
-  private LexerlessGrammarRuleDefinition definition;
+  private LexerfulGrammarRuleDefinition definition;
 
   @Before
   public void init() {
     grammarRule = mock(GrammarRule.class);
-    definition = new LexerlessGrammarRuleDefinition(grammarRule);
+    definition = new LexerfulGrammarRuleDefinition(grammarRule);
   }
 
   @Test
@@ -99,7 +100,7 @@ public class LexerlessGrammarRuleDefinitionTest {
   }
 
   @Test
-  public void should_not_skip_by_default() {
+  public void should_not_skip_nor_recovery_rule_by_default() {
     definition.is("foo");
 
     com.sonar.sslr.api.Rule ruleMatcher = mock(com.sonar.sslr.api.Rule.class);
@@ -109,6 +110,7 @@ public class LexerlessGrammarRuleDefinitionTest {
     definition.build(g);
     verify(ruleMatcher, Mockito.never()).skip();
     verify(ruleMatcher, Mockito.never()).skipIfOneChild();
+    verify(ruleMatcher, Mockito.never()).recoveryRule();
   }
 
   @Test
@@ -135,6 +137,19 @@ public class LexerlessGrammarRuleDefinitionTest {
 
     definition.build(g);
     verify(ruleMatcher).skipIfOneChild();
+  }
+
+  @Test
+  public void should_recovery_rule() {
+    definition.is("foo");
+    definition.recoveryRule();
+
+    com.sonar.sslr.api.Rule ruleMatcher = mock(com.sonar.sslr.api.Rule.class);
+    Grammar g = mock(Grammar.class);
+    when(g.rule(grammarRule)).thenReturn(ruleMatcher);
+
+    definition.build(g);
+    verify(ruleMatcher).recoveryRule();
   }
 
 }

@@ -20,6 +20,7 @@
 package com.sonar.sslr.api;
 
 import com.sonar.sslr.impl.matcher.RuleDefinition;
+import org.sonar.sslr.grammar.GrammarRule;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 import org.sonar.sslr.internal.matchers.GrammarException;
 import org.sonar.sslr.parser.LexerlessGrammar;
@@ -28,7 +29,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Grammar {
+public abstract class Grammar implements org.sonar.sslr.grammar.Grammar {
 
   public Grammar() {
     instanciateRuleFields();
@@ -94,6 +95,10 @@ public abstract class Grammar {
         throw new GrammarException(e, "Unable to instanciate the rule '" + ruleName + "': " + e.getMessage());
       }
     }
+  }
+
+  public Rule rule(GrammarRule rule) {
+    throw new UnsupportedOperationException();
   }
 
   /**

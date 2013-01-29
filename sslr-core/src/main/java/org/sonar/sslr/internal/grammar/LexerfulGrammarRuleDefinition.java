@@ -17,15 +17,15 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.grammar;
+package org.sonar.sslr.internal.grammar;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.Rule;
-import org.sonar.sslr.internal.grammar.MatcherBuilder;
-import org.sonar.sslr.internal.grammar.MatcherBuilderUtils;
+import org.sonar.sslr.grammar.GrammarRule;
+import org.sonar.sslr.grammar.GrammarRuleBuilder;
 
-public class LexerfulGrammarRuleDefinition {
+public class LexerfulGrammarRuleDefinition implements GrammarRuleBuilder {
 
   private final GrammarRule rule;
   private MatcherBuilder[] matcherBuilders;
@@ -83,7 +83,7 @@ public class LexerfulGrammarRuleDefinition {
     this.isRecoveryRule = true;
   }
 
-  public void build(Grammar g) {
+  public void build(com.sonar.sslr.api.Grammar g) {
     Preconditions.checkState(matcherBuilders != null, "The rule '" + getName() + "' hasn't beed defined.");
 
     Rule ruleMatcher = g.rule(rule);

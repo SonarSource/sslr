@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.examples.expression;
 
-import org.sonar.sslr.grammar.GrammarAdapter;
 import org.sonar.sslr.grammar.GrammarRule;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 import org.sonar.sslr.parser.LexerlessGrammar;
@@ -68,11 +67,13 @@ public enum ExpressionGrammarRules implements GrammarRule {
     b.rule(FACTOR).is(b.firstOf(NUMBER, PARENS, VARIABLE));
     b.rule(PARENS).is(LPAR, EXPRESSION, RPAR);
 
+    b.setRootRule(ROOT);
+
     return b;
   }
 
   public static LexerlessGrammar createGrammar() {
-    return new GrammarAdapter(createGrammarBuilder().build(), ROOT);
+    return createGrammarBuilder().build();
   }
 
 }

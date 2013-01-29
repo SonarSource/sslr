@@ -21,7 +21,6 @@ package org.sonar.sslr.internal.grammar;
 
 import org.sonar.sslr.grammar.Grammar;
 
-
 public interface MatcherBuilder {
 
   Object build(Grammar g);

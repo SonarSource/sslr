@@ -19,6 +19,11 @@
  */
 package org.sonar.sslr.grammar;
 
+/**
+ * A marker interface for grammar rules.
+ *
+ * @since 1.18
+ */
 public interface GrammarRule {
 
 }

@@ -21,7 +21,7 @@ package org.sonar.sslr.grammar;
 
 import com.sonar.sslr.api.TokenType;
 import org.junit.Test;
-import org.sonar.sslr.internal.grammar.LexerlessGrammar;
+import org.sonar.sslr.internal.grammar.LexerlessGrammarAdapter;
 import org.sonar.sslr.internal.grammar.MatcherBuilder;
 import org.sonar.sslr.internal.matchers.EndOfInputMatcher;
 import org.sonar.sslr.internal.matchers.FirstOfMatcher;
@@ -43,41 +43,47 @@ public class LexerlessGrammarBuilderTest {
 
   @Test
   public void should_have_no_definitions_at_first() {
-    assertThat(LexerlessGrammarBuilder.create().rules()).isEmpty();
+    assertThat(((LexerlessGrammarAdapter) LexerlessGrammarBuilder.create().build()).rules()).isEmpty();
   }
 
   @Test
   public void should_allow_definitions_of_new_rules() {
-    LexerlessGrammarBuilder _ = LexerlessGrammarBuilder.create();
     GrammarRule rule1 = mock(GrammarRule.class);
     GrammarRule rule2 = mock(GrammarRule.class);
 
-    LexerlessGrammarRuleDefinition definition1 = _.rule(rule1);
-    assertThat(_.rules()).containsOnly(definition1);
-    assertThat(_.rule(rule1)).isSameAs(definition1);
-    assertThat(_.rules()).containsOnly(definition1);
+    LexerlessGrammarBuilder _ = LexerlessGrammarBuilder.create();
 
-    LexerlessGrammarRuleDefinition definition2 = _.rule(rule2);
-    assertThat(_.rules()).containsOnly(definition1, definition2);
+    GrammarRuleBuilder definition1 = _.rule(rule1).is("foo");
+    assertThat(((LexerlessGrammarAdapter) _.build()).rules()).containsOnly(rule1);
+    assertThat(_.rule(rule1)).isSameAs(definition1);
+    assertThat(((LexerlessGrammarAdapter) _.build()).rules()).containsOnly(rule1);
+
+    GrammarRuleBuilder definition2 = _.rule(rule2).is("foo");
+    assertThat(_.rule(rule2)).isSameAs(definition2);
+    assertThat(((LexerlessGrammarAdapter) _.build()).rules()).containsOnly(rule1, rule2);
   }
 
   @Test
   public void should_base_on_other_grammars() {
+    GrammarRule rule1 = mock(GrammarRule.class);
+    GrammarRule rule2 = mock(GrammarRule.class);
+    GrammarRule rule3 = mock(GrammarRule.class);
+
     LexerlessGrammarBuilder _1 = LexerlessGrammarBuilder.create();
-    LexerlessGrammarRuleDefinition definition1 = _1.rule(mock(GrammarRule.class));
-    LexerlessGrammarRuleDefinition definition2 = _1.rule(mock(GrammarRule.class));
+    _1.rule(rule1).is("foo");
+    _1.rule(rule2).is("foo");
 
     LexerlessGrammarBuilder _2 = LexerlessGrammarBuilder.create();
-    LexerlessGrammarRuleDefinition definition3 = _2.rule(mock(GrammarRule.class));
+    _2.rule(rule3).is("foo");
 
-    assertThat(LexerlessGrammarBuilder.createBasedOn(_1).rules()).containsOnly(definition1, definition2);
-    assertThat(LexerlessGrammarBuilder.createBasedOn(_2).rules()).containsOnly(definition3);
-    assertThat(LexerlessGrammarBuilder.createBasedOn(_1, _2).rules()).containsOnly(definition1, definition2, definition3);
+    assertThat(((LexerlessGrammarAdapter) LexerlessGrammarBuilder.createBasedOn(_1).build()).rules()).containsOnly(rule1, rule2);
+    assertThat(((LexerlessGrammarAdapter) LexerlessGrammarBuilder.createBasedOn(_2).build()).rules()).containsOnly(rule3);
+    assertThat(((LexerlessGrammarAdapter) LexerlessGrammarBuilder.createBasedOn(_1, _2).build()).rules()).containsOnly(rule1, rule2, rule3);
   }
 
   @Test
   public void should_build_grammar_instance() {
-    assertThat(LexerlessGrammarBuilder.create().build()).isInstanceOf(LexerlessGrammar.class);
+    assertThat(LexerlessGrammarBuilder.create().build()).isInstanceOf(LexerlessGrammarAdapter.class);
   }
 
   @Test

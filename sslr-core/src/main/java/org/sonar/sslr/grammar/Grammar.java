@@ -21,6 +21,14 @@ package org.sonar.sslr.grammar;
 
 import com.sonar.sslr.api.Rule;
 
+/**
+ * Grammar is a collection of rules.
+ * To create a new instance of grammar use {@link LexerlessGrammarBuilder} or {@link LexerfulGrammarBuilder}.
+ *
+ * <p>This interface is not intended to be implemented by clients.</p>
+ *
+ * @since 1.18
+ */
 public interface Grammar {
 
   Rule rule(GrammarRule rule);

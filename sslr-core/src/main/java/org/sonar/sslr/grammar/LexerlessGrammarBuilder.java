@@ -23,7 +23,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.api.Trivia.TriviaKind;
-import org.sonar.sslr.internal.grammar.LexerlessGrammar;
+import org.sonar.sslr.internal.grammar.LexerlessGrammarAdapter;
+import org.sonar.sslr.internal.grammar.LexerlessGrammarRuleDefinition;
 import org.sonar.sslr.internal.grammar.MatcherBuilderUtils;
 import org.sonar.sslr.internal.grammar.ReflexiveMatcherBuilder;
 import org.sonar.sslr.internal.matchers.EndOfInputMatcher;
@@ -37,13 +38,19 @@ import org.sonar.sslr.internal.matchers.TestNotMatcher;
 import org.sonar.sslr.internal.matchers.TokenMatcher;
 import org.sonar.sslr.internal.matchers.TriviaMatcher;
 import org.sonar.sslr.internal.matchers.ZeroOrMoreMatcher;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
-import java.util.Collection;
 import java.util.Map;
 
+/**
+ * A builder for creating grammars for lexerless parsing.
+ *
+ * @since 1.18
+ */
 public class LexerlessGrammarBuilder {
 
   private final Map<GrammarRule, LexerlessGrammarRuleDefinition> definitions = Maps.newHashMap();
+  private GrammarRule rootRule;
 
   public static LexerlessGrammarBuilder create() {
     return new LexerlessGrammarBuilder();
@@ -59,7 +66,7 @@ public class LexerlessGrammarBuilder {
     }
   }
 
-  public LexerlessGrammarRuleDefinition rule(GrammarRule rule) {
+  public GrammarRuleBuilder rule(GrammarRule rule) {
     LexerlessGrammarRuleDefinition definition = definitions.get(rule);
     if (definition == null) {
       definition = new LexerlessGrammarRuleDefinition(rule);
@@ -68,12 +75,15 @@ public class LexerlessGrammarBuilder {
     return definition;
   }
 
-  public Collection<LexerlessGrammarRuleDefinition> rules() {
-    return definitions.values();
+  public void setRootRule(GrammarRule rule) {
+    rootRule = rule;
   }
 
-  public Grammar build() {
-    return new LexerlessGrammar(this);
+  /**
+   * Constructs grammar.
+   */
+  public LexerlessGrammar build() {
+    return new LexerlessGrammarAdapter(this, definitions.values(), rootRule);
   }
 
   public Object sequence(Object e1, Object e2, Object... others) {

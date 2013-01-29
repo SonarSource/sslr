@@ -19,36 +19,49 @@
  */
 package org.sonar.sslr.internal.grammar;
 
-import org.sonar.sslr.grammar.Grammar;
-
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.sonar.sslr.api.Rule;
 import org.sonar.sslr.grammar.GrammarRule;
-import org.sonar.sslr.grammar.LexerlessGrammarRuleDefinition;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
+import java.util.Collection;
 import java.util.Map;
 
-public class LexerlessGrammar implements Grammar {
+public class LexerlessGrammarAdapter extends LexerlessGrammar {
 
   private final Map<GrammarRule, GrammarElementMatcher> ruleMatchers;
+  private final Rule rootRule;
 
-  public LexerlessGrammar(LexerlessGrammarBuilder builder) {
+  public LexerlessGrammarAdapter(LexerlessGrammarBuilder builder, Collection<LexerlessGrammarRuleDefinition> rules, GrammarRule rootRule) {
     ImmutableMap.Builder<GrammarRule, GrammarElementMatcher> b = ImmutableMap.builder();
-
-    for (LexerlessGrammarRuleDefinition definition : builder.rules()) {
+    for (LexerlessGrammarRuleDefinition definition : rules) {
       b.put(definition.getRule(), new GrammarElementMatcher(definition.getName()));
     }
     this.ruleMatchers = b.build();
 
-    for (LexerlessGrammarRuleDefinition definition : builder.rules()) {
+    for (LexerlessGrammarRuleDefinition definition : rules) {
       definition.build(this);
     }
+
+    this.rootRule = rule(rootRule);
   }
 
+  @Override
+  public Rule getRootRule() {
+    return rootRule;
+  }
+
+  @Override
   public Rule rule(GrammarRule rule) {
     return ruleMatchers.get(rule);
+  }
+
+  @VisibleForTesting
+  public Collection<GrammarRule> rules() {
+    return ruleMatchers.keySet();
   }
 
 }

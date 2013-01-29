@@ -17,32 +17,33 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.grammar;
+package org.sonar.sslr.internal.grammar;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
-import org.sonar.sslr.internal.grammar.MatcherBuilder;
+import org.sonar.sslr.grammar.GrammarRule;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class LexerfulGrammarRuleDefinitionTest {
+public class LexerlessGrammarRuleDefinitionTest {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
   private GrammarRule grammarRule;
-  private LexerfulGrammarRuleDefinition definition;
+  private LexerlessGrammarRuleDefinition definition;
 
   @Before
   public void init() {
     grammarRule = mock(GrammarRule.class);
-    definition = new LexerfulGrammarRuleDefinition(grammarRule);
+    definition = new LexerlessGrammarRuleDefinition(grammarRule);
   }
 
   @Test
@@ -59,7 +60,7 @@ public class LexerfulGrammarRuleDefinitionTest {
   public void should_fail_to_build_if_not_defined() {
     thrown.expect(IllegalStateException.class);
     thrown.expectMessage("The rule '" + definition.getName() + "' hasn't beed defined.");
-    definition.build(mock(Grammar.class));
+    definition.build(mock(LexerlessGrammar.class));
   }
 
   @Test
@@ -75,7 +76,7 @@ public class LexerfulGrammarRuleDefinitionTest {
     definition.is("foo");
 
     com.sonar.sslr.api.Rule ruleMatcher = mock(com.sonar.sslr.api.Rule.class);
-    Grammar g = mock(Grammar.class);
+    LexerlessGrammar g = mock(LexerlessGrammar.class);
     when(g.rule(grammarRule)).thenReturn(ruleMatcher);
 
     definition.build(g);
@@ -90,7 +91,7 @@ public class LexerfulGrammarRuleDefinitionTest {
     definition.override(matcherBuilder);
 
     com.sonar.sslr.api.Rule ruleMatcher = mock(com.sonar.sslr.api.Rule.class);
-    Grammar g = mock(Grammar.class);
+    LexerlessGrammar g = mock(LexerlessGrammar.class);
     when(g.rule(grammarRule)).thenReturn(ruleMatcher);
 
     definition.build(g);
@@ -99,17 +100,16 @@ public class LexerfulGrammarRuleDefinitionTest {
   }
 
   @Test
-  public void should_not_skip_nor_recovery_rule_by_default() {
+  public void should_not_skip_by_default() {
     definition.is("foo");
 
     com.sonar.sslr.api.Rule ruleMatcher = mock(com.sonar.sslr.api.Rule.class);
-    Grammar g = mock(Grammar.class);
+    LexerlessGrammar g = mock(LexerlessGrammar.class);
     when(g.rule(grammarRule)).thenReturn(ruleMatcher);
 
     definition.build(g);
     verify(ruleMatcher, Mockito.never()).skip();
     verify(ruleMatcher, Mockito.never()).skipIfOneChild();
-    verify(ruleMatcher, Mockito.never()).recoveryRule();
   }
 
   @Test
@@ -118,7 +118,7 @@ public class LexerfulGrammarRuleDefinitionTest {
     definition.skip();
 
     com.sonar.sslr.api.Rule ruleMatcher = mock(com.sonar.sslr.api.Rule.class);
-    Grammar g = mock(Grammar.class);
+    LexerlessGrammar g = mock(LexerlessGrammar.class);
     when(g.rule(grammarRule)).thenReturn(ruleMatcher);
 
     definition.build(g);
@@ -131,24 +131,11 @@ public class LexerfulGrammarRuleDefinitionTest {
     definition.skipIfOneChild();
 
     com.sonar.sslr.api.Rule ruleMatcher = mock(com.sonar.sslr.api.Rule.class);
-    Grammar g = mock(Grammar.class);
+    LexerlessGrammar g = mock(LexerlessGrammar.class);
     when(g.rule(grammarRule)).thenReturn(ruleMatcher);
 
     definition.build(g);
     verify(ruleMatcher).skipIfOneChild();
-  }
-
-  @Test
-  public void should_recovery_rule() {
-    definition.is("foo");
-    definition.recoveryRule();
-
-    com.sonar.sslr.api.Rule ruleMatcher = mock(com.sonar.sslr.api.Rule.class);
-    Grammar g = mock(Grammar.class);
-    when(g.rule(grammarRule)).thenReturn(ruleMatcher);
-
-    definition.build(g);
-    verify(ruleMatcher).recoveryRule();
   }
 
 }

@@ -17,35 +17,31 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.grammar;
+package org.sonar.sslr.examples.expression;
 
-import com.sonar.sslr.api.Rule;
 import org.junit.Test;
+import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.sonar.sslr.tests.Assertions.assertThat;
 
-public class GrammarAdapterTest {
+public class ExpressionGrammarRulesTest {
+
+  private LexerlessGrammarBuilder b = ExpressionGrammarRules.createGrammarBuilder();
 
   @Test
-  public void should_return_rule() {
-    Rule rule = mock(Rule.class);
-    GrammarRule grammarRule = mock(GrammarRule.class);
-    Grammar grammar = mock(Grammar.class);
-    when(grammar.rule(grammarRule)).thenReturn(rule);
-
-    assertThat(new GrammarAdapter(grammar, mock(GrammarRule.class)).rule(grammarRule)).isSameAs(rule);
+  public void test() {
+    assertThat(b.build().rule(ExpressionGrammarRules.ROOT))
+        .matches("20 * ( 2 + 2 ) - var")
+        .matches("1 + 1")
+        .notMatches("1 +");
   }
 
   @Test
-  public void should_return_root_rule() {
-    Rule rule = mock(Rule.class);
-    GrammarRule grammarRule = mock(GrammarRule.class);
-    Grammar grammar = mock(Grammar.class);
-    when(grammar.rule(grammarRule)).thenReturn(rule);
-
-    assertThat(new GrammarAdapter(grammar, grammarRule).getRootRule()).isSameAs(rule);
+  public void should_override() {
+    b.rule(ExpressionGrammarRules.PLUS).override("plus ");
+    assertThat(b.build().rule(ExpressionGrammarRules.ROOT))
+        .matches("1 plus 1")
+        .notMatches("1 + 1");
   }
 
 }

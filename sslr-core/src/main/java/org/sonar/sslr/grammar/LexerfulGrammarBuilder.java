@@ -36,16 +36,22 @@ import com.sonar.sslr.impl.matcher.OptMatcher;
 import com.sonar.sslr.impl.matcher.OrMatcher;
 import com.sonar.sslr.impl.matcher.TillNewLineMatcher;
 import com.sonar.sslr.impl.matcher.TokenTypesMatcher;
-import org.sonar.sslr.internal.grammar.LexerfulGrammar;
+import org.sonar.sslr.internal.grammar.LexerfulGrammarAdapter;
+import org.sonar.sslr.internal.grammar.LexerfulGrammarRuleDefinition;
 import org.sonar.sslr.internal.grammar.MatcherBuilderUtils;
 import org.sonar.sslr.internal.grammar.ReflexiveMatcherBuilder;
 
-import java.util.Collection;
 import java.util.Map;
 
+/**
+ * A builder for creating grammars for lexerful parsing.
+ *
+ * @since 1.18
+ */
 public class LexerfulGrammarBuilder {
 
   private final Map<GrammarRule, LexerfulGrammarRuleDefinition> definitions = Maps.newHashMap();
+  private GrammarRule rootRule;
 
   public static LexerfulGrammarBuilder create() {
     return new LexerfulGrammarBuilder();
@@ -61,7 +67,7 @@ public class LexerfulGrammarBuilder {
     }
   }
 
-  public LexerfulGrammarRuleDefinition rule(GrammarRule rule) {
+  public GrammarRuleBuilder rule(GrammarRule rule) {
     LexerfulGrammarRuleDefinition definition = definitions.get(rule);
     if (definition == null) {
       definition = new LexerfulGrammarRuleDefinition(rule);
@@ -70,16 +76,19 @@ public class LexerfulGrammarBuilder {
     return definition;
   }
 
-  public Collection<LexerfulGrammarRuleDefinition> rules() {
-    return definitions.values();
+  public void setRootRule(GrammarRule rule) {
+    rootRule = rule;
   }
 
-  public Grammar build() {
-    return new LexerfulGrammar(this, false);
+  /**
+   * Constructs grammar.
+   */
+  public com.sonar.sslr.api.Grammar build() {
+    return new LexerfulGrammarAdapter(this, definitions.values(), rootRule, false);
   }
 
-  public Grammar buildWithMemoizationOfMatchesForAllRules() {
-    return new LexerfulGrammar(this, true);
+  public com.sonar.sslr.api.Grammar buildWithMemoizationOfMatchesForAllRules() {
+    return new LexerfulGrammarAdapter(this, definitions.values(), rootRule, true);
   }
 
   public Object sequence(Object e1, Object e2, Object... others) {

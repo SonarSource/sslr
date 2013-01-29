@@ -19,29 +19,30 @@
  */
 package org.sonar.sslr.internal.grammar;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
-import org.sonar.sslr.grammar.Grammar;
 import org.sonar.sslr.grammar.GrammarRule;
 import org.sonar.sslr.grammar.LexerfulGrammarBuilder;
-import org.sonar.sslr.grammar.LexerfulGrammarRuleDefinition;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
+import java.util.Collection;
 import java.util.Map;
 
-public class LexerfulGrammar implements Grammar {
+public class LexerfulGrammarAdapter extends LexerlessGrammar {
 
   private final Map<GrammarRule, RuleDefinition> ruleMatchers;
+  private final Rule rootRule;
 
-  public LexerfulGrammar(LexerfulGrammarBuilder builder, boolean enableMemoizationOfMathesForAllRules) {
+  public LexerfulGrammarAdapter(LexerfulGrammarBuilder builder, Collection<LexerfulGrammarRuleDefinition> rules, GrammarRule rootRule, boolean enableMemoizationOfMathesForAllRules) {
     ImmutableMap.Builder<GrammarRule, RuleDefinition> b = ImmutableMap.builder();
-
-    for (LexerfulGrammarRuleDefinition definition : builder.rules()) {
+    for (LexerfulGrammarRuleDefinition definition : rules) {
       b.put(definition.getRule(), RuleDefinition.newRuleBuilder(definition.getName()));
     }
     this.ruleMatchers = b.build();
 
-    for (LexerfulGrammarRuleDefinition definition : builder.rules()) {
+    for (LexerfulGrammarRuleDefinition definition : rules) {
       definition.build(this);
     }
 
@@ -50,10 +51,23 @@ public class LexerfulGrammar implements Grammar {
         ruleDefinition.getRule().memoizeMatches();
       }
     }
+
+    this.rootRule = rule(rootRule);
   }
 
+  @Override
+  public Rule getRootRule() {
+    return rootRule;
+  }
+
+  @Override
   public Rule rule(GrammarRule rule) {
     return ruleMatchers.get(rule);
+  }
+
+  @VisibleForTesting
+  public Collection<GrammarRule> rules() {
+    return ruleMatchers.keySet();
   }
 
 }
