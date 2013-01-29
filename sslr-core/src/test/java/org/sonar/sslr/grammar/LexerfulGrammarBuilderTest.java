@@ -50,12 +50,12 @@ public class LexerfulGrammarBuilderTest {
 
   @Test
   public void should_have_no_definitions_at_first() {
-    assertThat(new LexerfulGrammarBuilder().rules()).isEmpty();
+    assertThat(LexerfulGrammarBuilder.create().rules()).isEmpty();
   }
 
   @Test
   public void should_allow_definitions_of_new_rules() {
-    LexerfulGrammarBuilder _ = new LexerfulGrammarBuilder();
+    LexerfulGrammarBuilder _ = LexerfulGrammarBuilder.create();
     GrammarRule rule1 = mock(GrammarRule.class);
     GrammarRule rule2 = mock(GrammarRule.class);
 
@@ -70,25 +70,21 @@ public class LexerfulGrammarBuilderTest {
 
   @Test
   public void should_base_on_other_grammars() {
-    LexerfulGrammarBuilder _1 = new LexerfulGrammarBuilder();
+    LexerfulGrammarBuilder _1 = LexerfulGrammarBuilder.create();
     LexerfulGrammarRuleDefinition definition1 = _1.rule(mock(GrammarRule.class));
     LexerfulGrammarRuleDefinition definition2 = _1.rule(mock(GrammarRule.class));
 
-    LexerfulGrammarBuilder _2 = new LexerfulGrammarBuilder();
+    LexerfulGrammarBuilder _2 = LexerfulGrammarBuilder.create();
     LexerfulGrammarRuleDefinition definition3 = _2.rule(mock(GrammarRule.class));
 
-    LexerfulGrammarBuilder _ = new LexerfulGrammarBuilder();
-
-    _.basedOn(_1);
-    assertThat(_.rules()).containsOnly(definition1, definition2);
-
-    _.basedOn(_2);
-    assertThat(_.rules()).containsOnly(definition1, definition2, definition3);
+    assertThat(LexerfulGrammarBuilder.createBasedOn(_1).rules()).containsOnly(definition1, definition2);
+    assertThat(LexerfulGrammarBuilder.createBasedOn(_2).rules()).containsOnly(definition3);
+    assertThat(LexerfulGrammarBuilder.createBasedOn(_1, _2).rules()).containsOnly(definition1, definition2, definition3);
   }
 
   @Test
   public void should_have_memoization_disabled_by_default() {
-    LexerfulGrammarBuilder _ = new LexerfulGrammarBuilder();
+    LexerfulGrammarBuilder _ = LexerfulGrammarBuilder.create();
     GrammarRule rule = mock(GrammarRule.class);
     _.rule(rule).is("foo");
     Grammar grammar = _.build();
@@ -99,7 +95,7 @@ public class LexerfulGrammarBuilderTest {
 
   @Test
   public void should_enable_memoization() {
-    LexerfulGrammarBuilder _ = new LexerfulGrammarBuilder();
+    LexerfulGrammarBuilder _ = LexerfulGrammarBuilder.create();
     GrammarRule rule = mock(GrammarRule.class);
     _.rule(rule).is("foo");
     Grammar grammar = _.buildWithMemoizationOfMatchesForAllRules();
@@ -110,12 +106,12 @@ public class LexerfulGrammarBuilderTest {
 
   @Test
   public void should_build_grammar_instance() {
-    assertThat(new LexerfulGrammarBuilder().build()).isInstanceOf(LexerfulGrammar.class);
+    assertThat(LexerfulGrammarBuilder.create().build()).isInstanceOf(LexerfulGrammar.class);
   }
 
   @Test
   public void matchers() {
-    LexerfulGrammarBuilder _ = new LexerfulGrammarBuilder();
+    LexerfulGrammarBuilder _ = LexerfulGrammarBuilder.create();
 
     assertThat(((MatcherBuilder) _.sequence("foo", "bar")).build(mock(Grammar.class))).isInstanceOf(AndMatcher.class);
     assertThat(((MatcherBuilder) _.firstOf("foo", "bar")).build(mock(Grammar.class))).isInstanceOf(OrMatcher.class);

@@ -43,12 +43,12 @@ public class LexerlessGrammarBuilderTest {
 
   @Test
   public void should_have_no_definitions_at_first() {
-    assertThat(new LexerlessGrammarBuilder().rules()).isEmpty();
+    assertThat(LexerlessGrammarBuilder.create().rules()).isEmpty();
   }
 
   @Test
   public void should_allow_definitions_of_new_rules() {
-    LexerlessGrammarBuilder _ = new LexerlessGrammarBuilder();
+    LexerlessGrammarBuilder _ = LexerlessGrammarBuilder.create();
     GrammarRule rule1 = mock(GrammarRule.class);
     GrammarRule rule2 = mock(GrammarRule.class);
 
@@ -63,30 +63,26 @@ public class LexerlessGrammarBuilderTest {
 
   @Test
   public void should_base_on_other_grammars() {
-    LexerlessGrammarBuilder _1 = new LexerlessGrammarBuilder();
+    LexerlessGrammarBuilder _1 = LexerlessGrammarBuilder.create();
     LexerlessGrammarRuleDefinition definition1 = _1.rule(mock(GrammarRule.class));
     LexerlessGrammarRuleDefinition definition2 = _1.rule(mock(GrammarRule.class));
 
-    LexerlessGrammarBuilder _2 = new LexerlessGrammarBuilder();
+    LexerlessGrammarBuilder _2 = LexerlessGrammarBuilder.create();
     LexerlessGrammarRuleDefinition definition3 = _2.rule(mock(GrammarRule.class));
 
-    LexerlessGrammarBuilder _ = new LexerlessGrammarBuilder();
-
-    _.basedOn(_1);
-    assertThat(_.rules()).containsOnly(definition1, definition2);
-
-    _.basedOn(_2);
-    assertThat(_.rules()).containsOnly(definition1, definition2, definition3);
+    assertThat(LexerlessGrammarBuilder.createBasedOn(_1).rules()).containsOnly(definition1, definition2);
+    assertThat(LexerlessGrammarBuilder.createBasedOn(_2).rules()).containsOnly(definition3);
+    assertThat(LexerlessGrammarBuilder.createBasedOn(_1, _2).rules()).containsOnly(definition1, definition2, definition3);
   }
 
   @Test
   public void should_build_grammar_instance() {
-    assertThat(new LexerlessGrammarBuilder().build()).isInstanceOf(LexerlessGrammar.class);
+    assertThat(LexerlessGrammarBuilder.create().build()).isInstanceOf(LexerlessGrammar.class);
   }
 
   @Test
   public void matchers() {
-    LexerlessGrammarBuilder _ = new LexerlessGrammarBuilder();
+    LexerlessGrammarBuilder _ = LexerlessGrammarBuilder.create();
 
     assertThat(((MatcherBuilder) _.sequence("foo", "bar")).build(mock(Grammar.class))).isInstanceOf(SequenceMatcher.class);
     assertThat(((MatcherBuilder) _.firstOf("foo", "bar")).build(mock(Grammar.class))).isInstanceOf(FirstOfMatcher.class);

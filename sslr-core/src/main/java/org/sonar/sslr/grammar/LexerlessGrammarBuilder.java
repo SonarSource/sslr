@@ -45,9 +45,18 @@ public class LexerlessGrammarBuilder {
 
   private final Map<GrammarRule, LexerlessGrammarRuleDefinition> definitions = Maps.newHashMap();
 
-  public LexerlessGrammarBuilder basedOn(LexerlessGrammarBuilder otherGrammar) {
-    this.definitions.putAll(otherGrammar.definitions);
-    return this;
+  public static LexerlessGrammarBuilder create() {
+    return new LexerlessGrammarBuilder();
+  }
+
+  public static LexerlessGrammarBuilder createBasedOn(LexerlessGrammarBuilder... base) {
+    return new LexerlessGrammarBuilder(base);
+  }
+
+  private LexerlessGrammarBuilder(LexerlessGrammarBuilder... base) {
+    for (LexerlessGrammarBuilder b : base) {
+      definitions.putAll(b.definitions);
+    }
   }
 
   public LexerlessGrammarRuleDefinition rule(GrammarRule rule) {
@@ -56,7 +65,6 @@ public class LexerlessGrammarBuilder {
       definition = new LexerlessGrammarRuleDefinition(rule);
       definitions.put(rule, definition);
     }
-
     return definition;
   }
 

@@ -48,7 +48,7 @@ public enum ExpressionGrammarRules implements GrammarRule {
   PARENS;
 
   public static LexerlessGrammarBuilder createGrammarBuilder() {
-    LexerlessGrammarBuilder b = new LexerlessGrammarBuilder();
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
 
     b.rule(WHITESPACE).is(b.commentTrivia(b.regexp("\\s*+")));
 
