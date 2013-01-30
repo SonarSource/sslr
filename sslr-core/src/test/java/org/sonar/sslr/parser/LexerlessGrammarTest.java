@@ -22,8 +22,8 @@ package org.sonar.sslr.parser;
 import com.sonar.sslr.api.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
-import org.sonar.sslr.internal.matchers.GrammarException;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

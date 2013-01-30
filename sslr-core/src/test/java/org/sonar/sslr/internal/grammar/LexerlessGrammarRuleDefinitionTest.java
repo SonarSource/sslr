@@ -24,6 +24,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
+import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
@@ -58,17 +59,25 @@ public class LexerlessGrammarRuleDefinitionTest {
 
   @Test
   public void should_fail_to_build_if_not_defined() {
-    thrown.expect(IllegalStateException.class);
+    thrown.expect(GrammarException.class);
     thrown.expectMessage("The rule '" + definition.getName() + "' hasn't beed defined.");
     definition.build(mock(LexerlessGrammar.class));
   }
 
   @Test
   public void should_fail_to_to_redefine() {
-    thrown.expect(IllegalStateException.class);
+    thrown.expect(GrammarException.class);
     thrown.expectMessage("The rule '" + definition.getName() + "' has already been defined somewhere in the grammar.");
     definition.is("foo");
     definition.is("foo");
+  }
+
+  @Test
+  public void should_fail_to_to_redefine2() {
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The rule '" + definition.getName() + "' has already been defined somewhere in the grammar.");
+    definition.is("foo", "bar");
+    definition.is("foo", "bar");
   }
 
   @Test
@@ -97,6 +106,24 @@ public class LexerlessGrammarRuleDefinitionTest {
     definition.build(g);
     verify(ruleMatcher).is(Mockito.any());
     verify(matcherBuilder).build(g);
+  }
+
+  @Test
+  public void should_build_rule_with_overriden_definition2() {
+    MatcherBuilder matcherBuilder1 = mock(MatcherBuilder.class);
+    MatcherBuilder matcherBuilder2 = mock(MatcherBuilder.class);
+
+    definition.is("foo");
+    definition.override(matcherBuilder1, matcherBuilder2);
+
+    com.sonar.sslr.api.Rule ruleMatcher = mock(com.sonar.sslr.api.Rule.class);
+    LexerlessGrammar g = mock(LexerlessGrammar.class);
+    when(g.rule(ruleKey)).thenReturn(ruleMatcher);
+
+    definition.build(g);
+    verify(ruleMatcher).is(Mockito.any(), Mockito.any());
+    verify(matcherBuilder1).build(g);
+    verify(matcherBuilder2).build(g);
   }
 
   @Test

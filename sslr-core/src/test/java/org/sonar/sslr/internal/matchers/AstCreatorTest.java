@@ -19,9 +19,12 @@
  */
 package org.sonar.sslr.internal.matchers;
 
-
 import com.google.common.collect.ImmutableList;
-import com.sonar.sslr.api.*;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.GenericTokenType;
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.TokenType;
+import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import org.junit.Test;
 import org.mockito.Mockito;

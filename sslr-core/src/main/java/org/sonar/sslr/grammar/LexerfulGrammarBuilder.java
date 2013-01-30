@@ -69,6 +69,9 @@ public class LexerfulGrammarBuilder {
     }
   }
 
+  /**
+   * Allows to describe rule.
+   */
   public GrammarRuleBuilder rule(GrammarRuleKey ruleKey) {
     LexerfulGrammarRuleDefinition definition = definitions.get(ruleKey);
     if (definition == null) {
@@ -78,17 +81,32 @@ public class LexerfulGrammarBuilder {
     return definition;
   }
 
+  /**
+   * Allows to specify that given rule should be root for grammar.
+   */
   public void setRootRule(GrammarRuleKey ruleKey) {
+    rule(ruleKey);
     rootRuleKey = ruleKey;
   }
 
   /**
    * Constructs grammar.
+   *
+   * @throws GrammarException if some of rules were used, but not defined
+   * @return grammar
+   * @see #buildWithMemoizationOfMatchesForAllRules()
    */
   public Grammar build() {
     return new LexerfulGrammarAdapter(definitions.values(), rootRuleKey, false);
   }
 
+  /**
+   * Constructs grammar with memoization of matches for all rules.
+   *
+   * @throws GrammarException if some of rules were used, but not defined
+   * @return grammar
+   * @see #build()
+   */
   public Grammar buildWithMemoizationOfMatchesForAllRules() {
     return new LexerfulGrammarAdapter(definitions.values(), rootRuleKey, true);
   }

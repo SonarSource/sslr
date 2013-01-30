@@ -67,6 +67,9 @@ public class LexerlessGrammarBuilder {
     }
   }
 
+  /**
+   * Allows to describe rule.
+   */
   public GrammarRuleBuilder rule(GrammarRuleKey ruleKey) {
     LexerlessGrammarRuleDefinition definition = definitions.get(ruleKey);
     if (definition == null) {
@@ -76,12 +79,19 @@ public class LexerlessGrammarBuilder {
     return definition;
   }
 
+  /**
+   * Allows to specify that given rule should be root for grammar.
+   */
   public void setRootRule(GrammarRuleKey ruleKey) {
+    rule(ruleKey);
     rootRuleKey = ruleKey;
   }
 
   /**
    * Constructs grammar.
+   *
+   * @throws GrammarException if some of rules were used, but not defined
+   * @return grammar
    */
   public LexerlessGrammar build() {
     return new LexerlessGrammarAdapter(definitions.values(), rootRuleKey);

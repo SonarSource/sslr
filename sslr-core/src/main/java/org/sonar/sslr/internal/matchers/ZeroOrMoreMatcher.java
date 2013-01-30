@@ -19,6 +19,8 @@
  */
 package org.sonar.sslr.internal.matchers;
 
+import org.sonar.sslr.grammar.GrammarException;
+
 /**
  * A {@link Matcher} that repeatedly tries its submatcher against the input.
  * Always succeeds.

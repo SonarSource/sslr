@@ -19,11 +19,11 @@
  */
 package org.sonar.sslr.internal.grammar;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.Rule;
-import org.sonar.sslr.grammar.GrammarRuleKey;
+import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.grammar.GrammarRuleBuilder;
+import org.sonar.sslr.grammar.GrammarRuleKey;
 
 public class LexerfulGrammarRuleDefinition implements GrammarRuleBuilder {
 
@@ -56,13 +56,17 @@ public class LexerfulGrammarRuleDefinition implements GrammarRuleBuilder {
   }
 
   public GrammarRuleBuilder is(Object e) {
-    Preconditions.checkState(matcherBuilders == null, "The rule '" + getName() + "' has already been defined somewhere in the grammar.");
+    if (matcherBuilders != null) {
+      throw new GrammarException("The rule '" + getName() + "' has already been defined somewhere in the grammar.");
+    }
     setMatcherBuilders(e);
     return this;
   }
 
   public LexerfulGrammarRuleDefinition is(Object e1, Object... others) {
-    Preconditions.checkState(matcherBuilders == null, "The rule '" + getName() + "' has already been defined somewhere in the grammar.");
+    if (matcherBuilders != null) {
+      throw new GrammarException("The rule '" + getName() + "' has already been defined somewhere in the grammar.");
+    }
     setMatcherBuilders(e1, others);
     return this;
   }
@@ -94,7 +98,9 @@ public class LexerfulGrammarRuleDefinition implements GrammarRuleBuilder {
   }
 
   public void build(com.sonar.sslr.api.Grammar g) {
-    Preconditions.checkState(matcherBuilders != null, "The rule '" + getName() + "' hasn't beed defined.");
+    if (matcherBuilders == null) {
+      throw new GrammarException("The rule '" + getName() + "' hasn't beed defined.");
+    }
 
     Rule ruleMatcher = g.rule(rule);
     ruleMatcher.is(MatcherBuilderUtils.build(g, matcherBuilders));

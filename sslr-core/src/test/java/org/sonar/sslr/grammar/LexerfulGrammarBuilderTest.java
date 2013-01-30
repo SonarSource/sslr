@@ -40,14 +40,20 @@ import com.sonar.sslr.impl.matcher.RuleDefinition;
 import com.sonar.sslr.impl.matcher.TillNewLineMatcher;
 import com.sonar.sslr.impl.matcher.TokenTypesMatcher;
 import com.sonar.sslr.impl.matcher.TokenValueMatcher;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.sonar.sslr.internal.grammar.LexerfulGrammarAdapter;
 import org.sonar.sslr.internal.grammar.MatcherBuilder;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class LexerfulGrammarBuilderTest {
+
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void should_have_no_definitions_at_first() {
@@ -59,16 +65,16 @@ public class LexerfulGrammarBuilderTest {
     GrammarRuleKey ruleKey1 = mock(GrammarRuleKey.class);
     GrammarRuleKey ruleKey2 = mock(GrammarRuleKey.class);
 
-    LexerfulGrammarBuilder _ = LexerfulGrammarBuilder.create();
+    LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
 
-    GrammarRuleBuilder definition1 = _.rule(ruleKey1).is("foo");
-    assertThat(((LexerfulGrammarAdapter) _.build()).ruleKeys()).containsOnly(ruleKey1);
-    assertThat(_.rule(ruleKey1)).isSameAs(definition1);
-    assertThat(((LexerfulGrammarAdapter) _.build()).ruleKeys()).containsOnly(ruleKey1);
+    GrammarRuleBuilder definition1 = b.rule(ruleKey1).is("foo");
+    assertThat(((LexerfulGrammarAdapter) b.build()).ruleKeys()).containsOnly(ruleKey1);
+    assertThat(b.rule(ruleKey1)).isSameAs(definition1);
+    assertThat(((LexerfulGrammarAdapter) b.build()).ruleKeys()).containsOnly(ruleKey1);
 
-    GrammarRuleBuilder definition2 = _.rule(ruleKey2).is("foo");
-    assertThat(_.rule(ruleKey2)).isSameAs(definition2);
-    assertThat(((LexerfulGrammarAdapter) _.build()).ruleKeys()).containsOnly(ruleKey1, ruleKey2);
+    GrammarRuleBuilder definition2 = b.rule(ruleKey2).is("foo");
+    assertThat(b.rule(ruleKey2)).isSameAs(definition2);
+    assertThat(((LexerfulGrammarAdapter) b.build()).ruleKeys()).containsOnly(ruleKey1, ruleKey2);
   }
 
   @Test
@@ -77,24 +83,24 @@ public class LexerfulGrammarBuilderTest {
     GrammarRuleKey ruleKey2 = mock(GrammarRuleKey.class);
     GrammarRuleKey ruleKey3 = mock(GrammarRuleKey.class);
 
-    LexerfulGrammarBuilder _1 = LexerfulGrammarBuilder.create();
-    _1.rule(ruleKey1).is("foo");
-    _1.rule(ruleKey2).is("foo");
+    LexerfulGrammarBuilder b1 = LexerfulGrammarBuilder.create();
+    b1.rule(ruleKey1).is("foo");
+    b1.rule(ruleKey2).is("foo");
 
-    LexerfulGrammarBuilder _2 = LexerfulGrammarBuilder.create();
-    _2.rule(ruleKey3).is("foo");
+    LexerfulGrammarBuilder b2 = LexerfulGrammarBuilder.create();
+    b2.rule(ruleKey3).is("foo");
 
-    assertThat(((LexerfulGrammarAdapter) LexerfulGrammarBuilder.createBasedOn(_1).build()).ruleKeys()).containsOnly(ruleKey1, ruleKey2);
-    assertThat(((LexerfulGrammarAdapter) LexerfulGrammarBuilder.createBasedOn(_2).build()).ruleKeys()).containsOnly(ruleKey3);
-    assertThat(((LexerfulGrammarAdapter) LexerfulGrammarBuilder.createBasedOn(_1, _2).build()).ruleKeys()).containsOnly(ruleKey1, ruleKey2, ruleKey3);
+    assertThat(((LexerfulGrammarAdapter) LexerfulGrammarBuilder.createBasedOn(b1).build()).ruleKeys()).containsOnly(ruleKey1, ruleKey2);
+    assertThat(((LexerfulGrammarAdapter) LexerfulGrammarBuilder.createBasedOn(b2).build()).ruleKeys()).containsOnly(ruleKey3);
+    assertThat(((LexerfulGrammarAdapter) LexerfulGrammarBuilder.createBasedOn(b1, b2).build()).ruleKeys()).containsOnly(ruleKey1, ruleKey2, ruleKey3);
   }
 
   @Test
   public void should_have_memoization_disabled_by_default() {
-    LexerfulGrammarBuilder _ = LexerfulGrammarBuilder.create();
+    LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
-    _.rule(ruleKey).is("foo");
-    Grammar grammar = _.build();
+    b.rule(ruleKey).is("foo");
+    Grammar grammar = b.build();
     Matcher[] ruleMatchers = ((RuleDefinition) grammar.rule(ruleKey)).getRule().children;
     assertThat(ruleMatchers).hasSize(1);
     assertThat(ruleMatchers[0]).isInstanceOf(TokenValueMatcher.class);
@@ -102,13 +108,40 @@ public class LexerfulGrammarBuilderTest {
 
   @Test
   public void should_enable_memoization() {
-    LexerfulGrammarBuilder _ = LexerfulGrammarBuilder.create();
+    LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
-    _.rule(ruleKey).is("foo");
-    Grammar grammar = _.buildWithMemoizationOfMatchesForAllRules();
+    b.rule(ruleKey).is("foo");
+    Grammar grammar = b.buildWithMemoizationOfMatchesForAllRules();
     Matcher[] ruleMatchers = ((RuleDefinition) grammar.rule(ruleKey)).getRule().children;
     assertThat(ruleMatchers).hasSize(1);
     assertThat(ruleMatchers[0]).isInstanceOf(MemoMatcher.class);
+  }
+
+  @Test
+  public void should_create_grammar_with_root_rule() {
+    LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    b.rule(ruleKey).is("foo");
+    b.setRootRule(ruleKey);
+    Grammar g = b.build();
+    assertThat(g.getRootRule()).isNotNull().isSameAs(g.rule(ruleKey));
+  }
+
+  @Test
+  public void should_create_grammar_without_root_rule() {
+    LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
+    assertThat(b.build().getRootRule()).isNull();
+  }
+
+  @Test
+  public void should_throw_exception_when_root_rule_not_defined() {
+    LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    when(ruleKey.toString()).thenReturn("name");
+    b.setRootRule(ruleKey);
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The rule 'name' hasn't beed defined.");
+    b.build();
   }
 
   @Test
@@ -118,40 +151,40 @@ public class LexerfulGrammarBuilderTest {
 
   @Test
   public void matchers() {
-    LexerfulGrammarBuilder _ = LexerfulGrammarBuilder.create();
+    LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
     Grammar g = mock(Grammar.class);
 
-    assertThat(((MatcherBuilder) _.sequence("foo", "bar")).build(g)).isInstanceOf(AndMatcher.class);
-    assertThat(((MatcherBuilder) _.sequence("foo", "bar", "baz")).build(g)).isInstanceOf(AndMatcher.class);
+    assertThat(((MatcherBuilder) b.sequence("foo", "bar")).build(g)).isInstanceOf(AndMatcher.class);
+    assertThat(((MatcherBuilder) b.sequence("foo", "bar", "baz")).build(g)).isInstanceOf(AndMatcher.class);
 
-    assertThat(((MatcherBuilder) _.firstOf("foo", "bar")).build(g)).isInstanceOf(OrMatcher.class);
-    assertThat(((MatcherBuilder) _.firstOf("foo", "bar", "baz")).build(g)).isInstanceOf(OrMatcher.class);
+    assertThat(((MatcherBuilder) b.firstOf("foo", "bar")).build(g)).isInstanceOf(OrMatcher.class);
+    assertThat(((MatcherBuilder) b.firstOf("foo", "bar", "baz")).build(g)).isInstanceOf(OrMatcher.class);
 
-    assertThat(((MatcherBuilder) _.optional("foo")).build(g)).isInstanceOf(OptMatcher.class);
-    assertThat(((MatcherBuilder) _.optional("foo", "bar")).build(g)).isInstanceOf(OptMatcher.class);
+    assertThat(((MatcherBuilder) b.optional("foo")).build(g)).isInstanceOf(OptMatcher.class);
+    assertThat(((MatcherBuilder) b.optional("foo", "bar")).build(g)).isInstanceOf(OptMatcher.class);
 
-    assertThat(((MatcherBuilder) _.oneOrMore("foo")).build(g)).isInstanceOf(OneToNMatcher.class);
-    assertThat(((MatcherBuilder) _.oneOrMore("foo", "bar")).build(g)).isInstanceOf(OneToNMatcher.class);
+    assertThat(((MatcherBuilder) b.oneOrMore("foo")).build(g)).isInstanceOf(OneToNMatcher.class);
+    assertThat(((MatcherBuilder) b.oneOrMore("foo", "bar")).build(g)).isInstanceOf(OneToNMatcher.class);
 
-    assertThat(((MatcherBuilder) _.zeroOrMore("foo")).build(g)).isInstanceOf(OptMatcher.class);
-    assertThat(((MatcherBuilder) _.zeroOrMore("foo", "bar")).build(g)).isInstanceOf(OptMatcher.class);
+    assertThat(((MatcherBuilder) b.zeroOrMore("foo")).build(g)).isInstanceOf(OptMatcher.class);
+    assertThat(((MatcherBuilder) b.zeroOrMore("foo", "bar")).build(g)).isInstanceOf(OptMatcher.class);
 
-    assertThat(((MatcherBuilder) _.next("foo")).build(g)).isInstanceOf(NextMatcher.class);
-    assertThat(((MatcherBuilder) _.next("foo", "bar")).build(g)).isInstanceOf(NextMatcher.class);
+    assertThat(((MatcherBuilder) b.next("foo")).build(g)).isInstanceOf(NextMatcher.class);
+    assertThat(((MatcherBuilder) b.next("foo", "bar")).build(g)).isInstanceOf(NextMatcher.class);
 
-    assertThat(((MatcherBuilder) _.nextNot("foo")).build(g)).isInstanceOf(NotMatcher.class);
-    assertThat(((MatcherBuilder) _.nextNot("foo", "bar")).build(g)).isInstanceOf(NotMatcher.class);
+    assertThat(((MatcherBuilder) b.nextNot("foo")).build(g)).isInstanceOf(NotMatcher.class);
+    assertThat(((MatcherBuilder) b.nextNot("foo", "bar")).build(g)).isInstanceOf(NotMatcher.class);
 
-    assertThat(((MatcherBuilder) _.nothing()).build(g)).isInstanceOf(BooleanMatcher.class);
-    assertThat(((MatcherBuilder) _.adjacent("foo")).build(g)).isInstanceOf(AdjacentMatcher.class);
-    assertThat(((MatcherBuilder) _.anyTokenButNot("foo")).build(g)).isInstanceOf(AnyTokenButNotMatcher.class);
-    assertThat(((MatcherBuilder) _.isOneOfThem(mock(TokenType.class))).build(g)).isInstanceOf(TokenTypesMatcher.class);
-    assertThat(((MatcherBuilder) _.bridge(mock(TokenType.class), mock(TokenType.class))).build(g)).isInstanceOf(BridgeMatcher.class);
-    assertThat(((MatcherBuilder) _.everything()).build(g)).isInstanceOf(BooleanMatcher.class);
-    assertThat(((MatcherBuilder) _.anyToken()).build(g)).isInstanceOf(AnyTokenMatcher.class);
-    assertThat(((MatcherBuilder) _.tillNewLine()).build(g)).isInstanceOf(TillNewLineMatcher.class);
-    assertThat(((MatcherBuilder) _.till("foo")).build(g)).isInstanceOf(InclusiveTillMatcher.class);
-    assertThat(((MatcherBuilder) _.exclusiveTill("foo")).build(g)).isInstanceOf(ExclusiveTillMatcher.class);
+    assertThat(((MatcherBuilder) b.nothing()).build(g)).isInstanceOf(BooleanMatcher.class);
+    assertThat(((MatcherBuilder) b.adjacent("foo")).build(g)).isInstanceOf(AdjacentMatcher.class);
+    assertThat(((MatcherBuilder) b.anyTokenButNot("foo")).build(g)).isInstanceOf(AnyTokenButNotMatcher.class);
+    assertThat(((MatcherBuilder) b.isOneOfThem(mock(TokenType.class))).build(g)).isInstanceOf(TokenTypesMatcher.class);
+    assertThat(((MatcherBuilder) b.bridge(mock(TokenType.class), mock(TokenType.class))).build(g)).isInstanceOf(BridgeMatcher.class);
+    assertThat(((MatcherBuilder) b.everything()).build(g)).isInstanceOf(BooleanMatcher.class);
+    assertThat(((MatcherBuilder) b.anyToken()).build(g)).isInstanceOf(AnyTokenMatcher.class);
+    assertThat(((MatcherBuilder) b.tillNewLine()).build(g)).isInstanceOf(TillNewLineMatcher.class);
+    assertThat(((MatcherBuilder) b.till("foo")).build(g)).isInstanceOf(InclusiveTillMatcher.class);
+    assertThat(((MatcherBuilder) b.exclusiveTill("foo")).build(g)).isInstanceOf(ExclusiveTillMatcher.class);
   }
 
 }

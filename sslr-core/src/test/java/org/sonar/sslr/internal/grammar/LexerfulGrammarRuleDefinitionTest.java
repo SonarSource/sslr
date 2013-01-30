@@ -25,6 +25,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
+import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -58,14 +59,14 @@ public class LexerfulGrammarRuleDefinitionTest {
 
   @Test
   public void should_fail_to_build_if_not_defined() {
-    thrown.expect(IllegalStateException.class);
+    thrown.expect(GrammarException.class);
     thrown.expectMessage("The rule '" + definition.getName() + "' hasn't beed defined.");
     definition.build(mock(Grammar.class));
   }
 
   @Test
   public void should_fail_to_to_redefine() {
-    thrown.expect(IllegalStateException.class);
+    thrown.expect(GrammarException.class);
     thrown.expectMessage("The rule '" + definition.getName() + "' has already been defined somewhere in the grammar.");
     definition.is("foo");
     definition.is("foo");
@@ -73,7 +74,7 @@ public class LexerfulGrammarRuleDefinitionTest {
 
   @Test
   public void should_fail_to_to_redefine2() {
-    thrown.expect(IllegalStateException.class);
+    thrown.expect(GrammarException.class);
     thrown.expectMessage("The rule '" + definition.getName() + "' has already been defined somewhere in the grammar.");
     definition.is("foo", "bar");
     definition.is("foo", "bar");

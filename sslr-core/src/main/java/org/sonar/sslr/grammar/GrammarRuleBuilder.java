@@ -31,11 +31,11 @@ public interface GrammarRuleBuilder {
   /**
    * Allows to provide definition of a grammar rule.
    * <p>
-   * <b>Note:</b> this method can be called only once for a rule. If it is called more than once, an IllegalStateException will be thrown.
+   * <b>Note:</b> this method can be called only once for a rule. If it is called more than once, an GrammarException will be thrown.
    *
    * @param e  grammar expression
    * @return this (for method chaining)
-   * @throws IllegalStateException if definition has been already done
+   * @throws GrammarException if definition has been already done
    */
   GrammarRuleBuilder is(Object e);
 
@@ -43,6 +43,7 @@ public interface GrammarRuleBuilder {
    * Convenience method equivalent to calling {@code is(grammarBuilder.sequence(e1, others))}.
    *
    * @return this (for method chaining)
+   * @throws GrammarException if definition has been already done
    * @see #is(Object)
    */
   GrammarRuleBuilder is(Object e1, Object... others);

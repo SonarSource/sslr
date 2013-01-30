@@ -20,7 +20,16 @@
 package org.sonar.sslr.parser;
 
 import org.junit.Test;
-import org.sonar.sslr.internal.matchers.*;
+import org.sonar.sslr.internal.matchers.FirstOfMatcher;
+import org.sonar.sslr.internal.matchers.Matcher;
+import org.sonar.sslr.internal.matchers.NothingMatcher;
+import org.sonar.sslr.internal.matchers.OneOrMoreMatcher;
+import org.sonar.sslr.internal.matchers.OptionalMatcher;
+import org.sonar.sslr.internal.matchers.SequenceMatcher;
+import org.sonar.sslr.internal.matchers.StringMatcher;
+import org.sonar.sslr.internal.matchers.TestMatcher;
+import org.sonar.sslr.internal.matchers.TestNotMatcher;
+import org.sonar.sslr.internal.matchers.ZeroOrMoreMatcher;
 
 import java.lang.reflect.Constructor;
 

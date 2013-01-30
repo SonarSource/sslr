@@ -19,6 +19,8 @@
  */
 package org.sonar.sslr.internal.matchers;
 
+import org.sonar.sslr.grammar.GrammarException;
+
 import java.util.regex.Pattern;
 
 public class PatternMatcher implements Matcher {

@@ -21,7 +21,7 @@ package com.sonar.sslr.api;
 
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.sonar.sslr.internal.matchers.GrammarException;
+import org.sonar.sslr.grammar.GrammarException;
 
 import java.lang.reflect.Field;
 import java.util.List;

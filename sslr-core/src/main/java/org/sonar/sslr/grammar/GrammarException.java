@@ -17,8 +17,16 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.internal.matchers;
+package org.sonar.sslr.grammar;
 
+/**
+ * Indicates problem with definition of grammar.
+ * If you face with this exception, then you should fix code, which defines your grammar.
+ *
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ *
+ * @since 1.18
+ */
 public class GrammarException extends RuntimeException {
 
   public GrammarException(String message) {

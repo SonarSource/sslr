@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.matchers;
 
-
 public abstract class MatcherContext implements CharSequence {
 
   protected InputBuffer inputBuffer;
