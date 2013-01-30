@@ -30,10 +30,17 @@ import com.sonar.sslr.impl.matcher.GrammarFunctions.Standard;
 
 public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
 
+  private final AstNodeType astNodeType;
+
   private RuleMatcher ruleMatcher;
   private AstNodeType astNodeSkippingPolicy = new NeverSkipFromAst();
 
   private RuleDefinition() {
+    astNodeType = this;
+  }
+
+  private RuleDefinition(AstNodeType astNodeType) {
+    this.astNodeType = astNodeType;
   }
 
   public static RuleDefinition newRuleBuilder(String ruleName) {
@@ -46,10 +53,8 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
    * @since 1.18
    */
   public static RuleDefinition newRuleBuilder(String ruleName, AstNodeType astNodeType) {
-    RuleDefinition ruleBuilder = new RuleDefinition();
-    RuleMatcher matcher = new RuleMatcher(ruleName);
-    ruleBuilder.setRuleMatcher(matcher);
-    matcher.setNodeType(astNodeType);
+    RuleDefinition ruleBuilder = new RuleDefinition(astNodeType);
+    ruleBuilder.setRuleMatcher(new RuleMatcher(ruleName));
     return ruleBuilder;
   }
 
@@ -133,7 +138,7 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
    * @since 1.18
    */
   public AstNodeType getRealAstNodeType() {
-    return this;
+    return astNodeType;
   }
 
 }
