@@ -21,6 +21,7 @@ package org.sonar.sslr.grammar;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.matcher.AdjacentMatcher;
 import com.sonar.sslr.impl.matcher.AnyTokenButNotMatcher;
@@ -84,11 +85,11 @@ public class LexerfulGrammarBuilder {
   /**
    * Constructs grammar.
    */
-  public com.sonar.sslr.api.Grammar build() {
+  public Grammar build() {
     return new LexerfulGrammarAdapter(definitions.values(), rootRuleKey, false);
   }
 
-  public com.sonar.sslr.api.Grammar buildWithMemoizationOfMatchesForAllRules() {
+  public Grammar buildWithMemoizationOfMatchesForAllRules() {
     return new LexerfulGrammarAdapter(definitions.values(), rootRuleKey, true);
   }
 

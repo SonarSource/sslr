@@ -19,8 +19,8 @@
  */
 package org.sonar.sslr.internal.grammar;
 
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
-import org.sonar.sslr.grammar.Grammar;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 
 public class RuleMatcherBuilder implements MatcherBuilder {

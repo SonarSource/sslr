@@ -20,12 +20,12 @@
 package org.sonar.sslr.internal.grammar;
 
 import com.google.common.base.Preconditions;
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.matcher.AndMatcher;
 import com.sonar.sslr.impl.matcher.TokenTypeClassMatcher;
 import com.sonar.sslr.impl.matcher.TokenTypeMatcher;
 import com.sonar.sslr.impl.matcher.TokenValueMatcher;
-import org.sonar.sslr.grammar.Grammar;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.matchers.SequenceMatcher;
 import org.sonar.sslr.internal.matchers.StringMatcher;

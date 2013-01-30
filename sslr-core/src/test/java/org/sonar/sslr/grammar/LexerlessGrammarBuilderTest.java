@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.grammar;
 
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.TokenType;
 import org.junit.Test;
 import org.sonar.sslr.internal.grammar.LexerlessGrammarAdapter;

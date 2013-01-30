@@ -29,7 +29,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Grammar implements org.sonar.sslr.grammar.Grammar {
+public abstract class Grammar {
 
   public Grammar() {
     instanciateRuleFields();

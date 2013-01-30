@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.grammar;
 
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.matcher.AdjacentMatcher;
 import com.sonar.sslr.impl.matcher.AndMatcher;

@@ -21,8 +21,8 @@ package org.sonar.sslr.internal.grammar;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
-import org.sonar.sslr.grammar.Grammar;
 
 import java.lang.reflect.Constructor;
 

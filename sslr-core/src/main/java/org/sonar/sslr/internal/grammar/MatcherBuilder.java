@@ -19,7 +19,7 @@
  */
 package org.sonar.sslr.internal.grammar;
 
-import org.sonar.sslr.grammar.Grammar;
+import com.sonar.sslr.api.Grammar;
 
 public interface MatcherBuilder {
 
