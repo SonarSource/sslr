@@ -23,7 +23,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.sonar.sslr.api.Rule;
 import org.sonar.sslr.grammar.GrammarRule;
-import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
@@ -35,7 +34,7 @@ public class LexerlessGrammarAdapter extends LexerlessGrammar {
   private final Map<GrammarRule, GrammarElementMatcher> ruleMatchers;
   private final Rule rootRule;
 
-  public LexerlessGrammarAdapter(LexerlessGrammarBuilder builder, Collection<LexerlessGrammarRuleDefinition> rules, GrammarRule rootRule) {
+  public LexerlessGrammarAdapter(Collection<LexerlessGrammarRuleDefinition> rules, GrammarRule rootRule) {
     ImmutableMap.Builder<GrammarRule, GrammarElementMatcher> b = ImmutableMap.builder();
     for (LexerlessGrammarRuleDefinition definition : rules) {
       b.put(definition.getRule(), new GrammarElementMatcher(definition.getName()));
@@ -46,7 +45,7 @@ public class LexerlessGrammarAdapter extends LexerlessGrammar {
       definition.build(this);
     }
 
-    this.rootRule = rule(rootRule);
+    this.rootRule = ruleMatchers.get(rootRule);
   }
 
   @Override

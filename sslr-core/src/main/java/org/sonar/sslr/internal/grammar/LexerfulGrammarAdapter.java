@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableMap;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.sonar.sslr.grammar.GrammarRule;
-import org.sonar.sslr.grammar.LexerfulGrammarBuilder;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.util.Collection;
@@ -35,7 +34,7 @@ public class LexerfulGrammarAdapter extends LexerlessGrammar {
   private final Map<GrammarRule, RuleDefinition> ruleMatchers;
   private final Rule rootRule;
 
-  public LexerfulGrammarAdapter(LexerfulGrammarBuilder builder, Collection<LexerfulGrammarRuleDefinition> rules, GrammarRule rootRule, boolean enableMemoizationOfMathesForAllRules) {
+  public LexerfulGrammarAdapter(Collection<LexerfulGrammarRuleDefinition> rules, GrammarRule rootRule, boolean enableMemoizationOfMathesForAllRules) {
     ImmutableMap.Builder<GrammarRule, RuleDefinition> b = ImmutableMap.builder();
     for (LexerfulGrammarRuleDefinition definition : rules) {
       b.put(definition.getRule(), RuleDefinition.newRuleBuilder(definition.getName()));
@@ -52,7 +51,7 @@ public class LexerfulGrammarAdapter extends LexerlessGrammar {
       }
     }
 
-    this.rootRule = rule(rootRule);
+    this.rootRule = ruleMatchers.get(rootRule);
   }
 
   @Override

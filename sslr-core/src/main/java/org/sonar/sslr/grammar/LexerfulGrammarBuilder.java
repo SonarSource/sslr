@@ -85,11 +85,11 @@ public class LexerfulGrammarBuilder {
    * Constructs grammar.
    */
   public com.sonar.sslr.api.Grammar build() {
-    return new LexerfulGrammarAdapter(this, definitions.values(), rootRule, false);
+    return new LexerfulGrammarAdapter(definitions.values(), rootRule, false);
   }
 
   public com.sonar.sslr.api.Grammar buildWithMemoizationOfMatchesForAllRules() {
-    return new LexerfulGrammarAdapter(this, definitions.values(), rootRule, true);
+    return new LexerfulGrammarAdapter(definitions.values(), rootRule, true);
   }
 
   public Object sequence(Object e1, Object e2) {

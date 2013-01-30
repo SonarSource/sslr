@@ -84,7 +84,7 @@ public class LexerlessGrammarBuilder {
    * Constructs grammar.
    */
   public LexerlessGrammar build() {
-    return new LexerlessGrammarAdapter(this, definitions.values(), rootRule);
+    return new LexerlessGrammarAdapter(definitions.values(), rootRule);
   }
 
   public Object sequence(Object e1, Object e2) {
