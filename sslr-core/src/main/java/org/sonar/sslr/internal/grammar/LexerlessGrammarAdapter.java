@@ -37,7 +37,8 @@ public class LexerlessGrammarAdapter extends LexerlessGrammar {
   public LexerlessGrammarAdapter(Collection<LexerlessGrammarRuleDefinition> rules, GrammarRule rootRule) {
     ImmutableMap.Builder<GrammarRule, GrammarElementMatcher> b = ImmutableMap.builder();
     for (LexerlessGrammarRuleDefinition definition : rules) {
-      b.put(definition.getRule(), new GrammarElementMatcher(definition.getName()));
+      GrammarRule ruleKey = definition.getRule();
+      b.put(ruleKey, new GrammarElementMatcher(definition.getName(), ruleKey));
     }
     this.ruleMatchers = b.build();
 

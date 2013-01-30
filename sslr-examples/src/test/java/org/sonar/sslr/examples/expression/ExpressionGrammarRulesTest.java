@@ -19,9 +19,14 @@
  */
 package org.sonar.sslr.examples.expression;
 
+import com.google.common.base.Charsets;
+import com.sonar.sslr.api.AstNode;
 import org.junit.Test;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
+import org.sonar.sslr.parser.LexerlessGrammar;
+import org.sonar.sslr.parser.ParserAdapter;
 
+import static org.fest.assertions.Assertions.assertThat;
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ExpressionGrammarRulesTest {
@@ -30,7 +35,7 @@ public class ExpressionGrammarRulesTest {
 
   @Test
   public void test() {
-    assertThat(b.build().rule(ExpressionGrammarRules.ROOT))
+    assertThat(b.build().rule(ExpressionGrammarRules.EXPRESSION))
         .matches("20 * ( 2 + 2 ) - var")
         .matches("1 + 1")
         .notMatches("1 +");
@@ -39,9 +44,26 @@ public class ExpressionGrammarRulesTest {
   @Test
   public void should_override() {
     b.rule(ExpressionGrammarRules.PLUS).override("plus ");
-    assertThat(b.build().rule(ExpressionGrammarRules.ROOT))
+    assertThat(b.build().rule(ExpressionGrammarRules.EXPRESSION))
         .matches("1 plus 1")
         .notMatches("1 + 1");
+  }
+
+  @Test
+  public void ast() {
+    ParserAdapter<LexerlessGrammar> parser = new ParserAdapter<LexerlessGrammar>(Charsets.UTF_8, b.build());
+    AstNode rootNode = parser.parse("2 + var");
+    assertThat(rootNode.getType()).isSameAs(ExpressionGrammarRules.EXPRESSION);
+
+    AstNode astNode = rootNode;
+    assertThat(astNode.getNumberOfChildren()).isEqualTo(1);
+    assertThat(astNode.getChild(0).getType()).isSameAs(ExpressionGrammarRules.ADDITIVE_EXPRESSION);
+
+    astNode = rootNode.getChild(0);
+    assertThat(astNode.getNumberOfChildren()).isEqualTo(3);
+    assertThat(astNode.getChild(0).getType()).isSameAs(ExpressionGrammarRules.NUMBER);
+    assertThat(astNode.getChild(1).getType()).isSameAs(ExpressionGrammarRules.PLUS);
+    assertThat(astNode.getChild(2).getType()).isSameAs(ExpressionGrammarRules.VARIABLE);
   }
 
 }

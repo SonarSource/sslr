@@ -21,6 +21,7 @@ package org.sonar.sslr.internal.matchers;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeSkippingPolicy;
+import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.ast.AlwaysSkipFromAst;
 import com.sonar.sslr.impl.ast.NeverSkipFromAst;
@@ -30,11 +31,21 @@ import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPolicy {
 
   private final String name;
+  private final AstNodeType astNodeType;
   private Matcher[] subMatchers;
   private AstNodeSkippingPolicy astNodeSkippingPolicy = new NeverSkipFromAst();
 
   public GrammarElementMatcher(String name) {
     this.name = name;
+    this.astNodeType = this;
+  }
+
+  /**
+   * @since 1.18
+   */
+  public GrammarElementMatcher(String name, AstNodeType astNodeType) {
+    this.name = name;
+    this.astNodeType = astNodeType;
   }
 
   public GrammarElementMatcher is(Object... elements) {
@@ -98,6 +109,13 @@ public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPoli
 
   public boolean hasToBeSkippedFromAst(AstNode node) {
     return astNodeSkippingPolicy.hasToBeSkippedFromAst(node);
+  }
+
+  /**
+   * @since 1.18
+   */
+  public AstNodeType getRealAstNodeType() {
+    return astNodeType;
   }
 
 }

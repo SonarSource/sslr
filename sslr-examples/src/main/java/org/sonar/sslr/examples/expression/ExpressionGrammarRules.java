@@ -21,7 +21,6 @@ package org.sonar.sslr.examples.expression;
 
 import org.sonar.sslr.grammar.GrammarRule;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 /**
  * This class demonstrates how to use {@link LexerlessGrammarBuilder} to define grammar for simple arithmetic expressions.
@@ -29,7 +28,6 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 public enum ExpressionGrammarRules implements GrammarRule {
 
   WHITESPACE,
-  END_OF_INPUT,
 
   PLUS,
   MINUS,
@@ -40,16 +38,16 @@ public enum ExpressionGrammarRules implements GrammarRule {
   LPAR,
   RPAR,
 
-  ROOT,
   EXPRESSION,
-  TERM,
-  FACTOR,
+  ADDITIVE_EXPRESSION,
+  MULTIPLICATIVE_EXPRESSION,
+  PRIMARY,
   PARENS;
 
   public static LexerlessGrammarBuilder createGrammarBuilder() {
     LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
 
-    b.rule(WHITESPACE).is(b.commentTrivia(b.regexp("\\s*+")));
+    b.rule(WHITESPACE).is(b.commentTrivia(b.regexp("\\s*+"))).skip();
 
     b.rule(PLUS).is('+', WHITESPACE);
     b.rule(MINUS).is('-', WHITESPACE);
@@ -59,21 +57,16 @@ public enum ExpressionGrammarRules implements GrammarRule {
     b.rule(VARIABLE).is(b.regexp("\\p{javaJavaIdentifierStart}++\\p{javaJavaIdentifierPart}*+"), WHITESPACE);
     b.rule(LPAR).is('(', WHITESPACE);
     b.rule(RPAR).is(')', WHITESPACE);
-    b.rule(END_OF_INPUT).is(b.endOfInput());
 
-    b.rule(ROOT).is(WHITESPACE, EXPRESSION, END_OF_INPUT);
-    b.rule(EXPRESSION).is(TERM, b.zeroOrMore(b.firstOf(PLUS, MINUS), TERM));
-    b.rule(TERM).is(FACTOR, b.zeroOrMore(b.firstOf(DIV, MUL), FACTOR));
-    b.rule(FACTOR).is(b.firstOf(NUMBER, PARENS, VARIABLE));
-    b.rule(PARENS).is(LPAR, EXPRESSION, RPAR);
+    b.rule(EXPRESSION).is(WHITESPACE, ADDITIVE_EXPRESSION, b.endOfInput());
+    b.rule(ADDITIVE_EXPRESSION).is(MULTIPLICATIVE_EXPRESSION, b.zeroOrMore(b.firstOf(PLUS, MINUS), MULTIPLICATIVE_EXPRESSION));
+    b.rule(MULTIPLICATIVE_EXPRESSION).is(PRIMARY, b.zeroOrMore(b.firstOf(DIV, MUL), PRIMARY)).skipIfOneChild();
+    b.rule(PRIMARY).is(b.firstOf(NUMBER, PARENS, VARIABLE)).skipIfOneChild();
+    b.rule(PARENS).is(LPAR, ADDITIVE_EXPRESSION, RPAR);
 
-    b.setRootRule(ROOT);
+    b.setRootRule(EXPRESSION);
 
     return b;
-  }
-
-  public static LexerlessGrammar createGrammar() {
-    return createGrammarBuilder().build();
   }
 
 }

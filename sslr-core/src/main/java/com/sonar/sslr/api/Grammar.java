@@ -97,6 +97,9 @@ public abstract class Grammar implements org.sonar.sslr.grammar.Grammar {
     }
   }
 
+  /**
+   * @since 1.18
+   */
   public Rule rule(GrammarRule rule) {
     throw new UnsupportedOperationException();
   }

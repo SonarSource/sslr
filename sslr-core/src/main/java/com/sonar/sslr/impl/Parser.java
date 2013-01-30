@@ -20,7 +20,12 @@
 package com.sonar.sslr.impl;
 
 import com.google.common.collect.ImmutableSet;
-import com.sonar.sslr.api.*;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.api.RecognitionException;
+import com.sonar.sslr.api.RecognitionExceptionListener;
+import com.sonar.sslr.api.Rule;
+import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import com.sonar.sslr.impl.events.ParsingEventListener;
 import com.sonar.sslr.impl.matcher.GrammarFunctions;
@@ -119,7 +124,11 @@ public class Parser<G extends Grammar> {
       parsingState.addListeners(listeners.toArray(new RecognitionExceptionListener[listeners.size()]));
       parsingState.parsingEventListeners = parsingEventListeners;
       parsingState.extendedStackTrace = extendedStackTrace;
-      return rootRule.getRule().match(parsingState);
+
+      AstNode astNode = rootRule.getRule().match(parsingState);
+      // Unwrap AstNodeType for root node:
+      astNode.hasToBeSkippedFromAst();
+      return astNode;
     } catch (BacktrackingEvent e) {
       throw extendedStackTrace == null ? new RecognitionException(parsingState, true) : new RecognitionException(extendedStackTrace, true);
     } finally {

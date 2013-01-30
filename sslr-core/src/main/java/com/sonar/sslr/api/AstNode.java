@@ -20,8 +20,10 @@
 package com.sonar.sslr.api;
 
 import com.google.common.collect.Lists;
+import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.sonar.sslr.internal.ast.select.AstSelect;
 import org.sonar.sslr.internal.ast.select.AstSelectFactory;
+import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 
 import javax.annotation.Nullable;
 
@@ -37,7 +39,7 @@ import java.util.List;
  */
 public class AstNode {
 
-  protected final AstNodeType type;
+  protected AstNodeType type;
   private final String name;
   private final Token token;
   private List<AstNode> children = Collections.EMPTY_LIST;
@@ -279,14 +281,27 @@ public class AstNode {
     return toIndex;
   }
 
+  /**
+   * For internal use only.
+   */
   public boolean hasToBeSkippedFromAst() {
     if (type == null) {
       return true;
     }
+    final boolean result;
     if (AstNodeSkippingPolicy.class.isAssignableFrom(type.getClass())) {
-      return ((AstNodeSkippingPolicy) type).hasToBeSkippedFromAst(this);
+      result = ((AstNodeSkippingPolicy) type).hasToBeSkippedFromAst(this);
+    } else {
+      result = false;
     }
-    return false;
+    // For LexerlessGrammarBuilder and LexerfulGrammarBuilder
+    // unwrap AstNodeType to get a real one, i.e. detach node from tree of matchers:
+    if (type instanceof GrammarElementMatcher) {
+      type = ((GrammarElementMatcher) type).getRealAstNodeType();
+    } else if (type instanceof RuleDefinition) {
+      type = ((RuleDefinition) type).getRealAstNodeType();
+    }
+    return result;
   }
 
   public void setToIndex(int toIndex) {

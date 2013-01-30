@@ -19,11 +19,13 @@
  */
 package org.sonar.sslr.grammar;
 
+import com.sonar.sslr.api.AstNodeType;
+
 /**
  * A marker interface for grammar rules.
  *
  * @since 1.18
  */
-public interface GrammarRule {
+public interface GrammarRule extends AstNodeType {
 
 }

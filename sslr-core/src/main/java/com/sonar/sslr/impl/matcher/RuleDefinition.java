@@ -42,6 +42,17 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
     return ruleBuilder;
   }
 
+  /**
+   * @since 1.18
+   */
+  public static RuleDefinition newRuleBuilder(String ruleName, AstNodeType astNodeType) {
+    RuleDefinition ruleBuilder = new RuleDefinition();
+    RuleMatcher matcher = new RuleMatcher(ruleName);
+    ruleBuilder.setRuleMatcher(matcher);
+    matcher.setNodeType(astNodeType);
+    return ruleBuilder;
+  }
+
   public static RuleDefinition newRuleBuilder(RuleMatcher ruleMatcher) {
     RuleDefinition ruleBuilder = new RuleDefinition();
     ruleBuilder.setRuleMatcher(ruleMatcher);
@@ -116,6 +127,13 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
       return ((AstNodeSkippingPolicy) astNodeSkippingPolicy).hasToBeSkippedFromAst(node);
     }
     return false;
+  }
+
+  /**
+   * @since 1.18
+   */
+  public AstNodeType getRealAstNodeType() {
+    return this;
   }
 
 }

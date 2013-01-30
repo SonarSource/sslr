@@ -111,7 +111,10 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
     char[] chars = ((AbstractText) input).toChars();
     ParsingResult result = parseRunner.parse(chars);
     if (result.isMatched()) {
-      return AstCreator.create(result, input);
+      AstNode astNode = AstCreator.create(result, input);
+      // Unwrap AstNodeType for root node:
+      astNode.hasToBeSkippedFromAst();
+      return astNode;
     } else {
       ParseError parseError = result.getParseError();
       InputBuffer inputBuffer = parseError.getInputBuffer();
