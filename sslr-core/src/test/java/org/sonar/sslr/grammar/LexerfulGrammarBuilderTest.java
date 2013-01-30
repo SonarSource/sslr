@@ -50,51 +50,51 @@ public class LexerfulGrammarBuilderTest {
 
   @Test
   public void should_have_no_definitions_at_first() {
-    assertThat(((LexerfulGrammarAdapter) LexerfulGrammarBuilder.create().build()).rules()).isEmpty();
+    assertThat(((LexerfulGrammarAdapter) LexerfulGrammarBuilder.create().build()).ruleKeys()).isEmpty();
   }
 
   @Test
   public void should_allow_definitions_of_new_rules() {
-    GrammarRule rule1 = mock(GrammarRule.class);
-    GrammarRule rule2 = mock(GrammarRule.class);
+    GrammarRuleKey ruleKey1 = mock(GrammarRuleKey.class);
+    GrammarRuleKey ruleKey2 = mock(GrammarRuleKey.class);
 
     LexerfulGrammarBuilder _ = LexerfulGrammarBuilder.create();
 
-    GrammarRuleBuilder definition1 = _.rule(rule1).is("foo");
-    assertThat(((LexerfulGrammarAdapter) _.build()).rules()).containsOnly(rule1);
-    assertThat(_.rule(rule1)).isSameAs(definition1);
-    assertThat(((LexerfulGrammarAdapter) _.build()).rules()).containsOnly(rule1);
+    GrammarRuleBuilder definition1 = _.rule(ruleKey1).is("foo");
+    assertThat(((LexerfulGrammarAdapter) _.build()).ruleKeys()).containsOnly(ruleKey1);
+    assertThat(_.rule(ruleKey1)).isSameAs(definition1);
+    assertThat(((LexerfulGrammarAdapter) _.build()).ruleKeys()).containsOnly(ruleKey1);
 
-    GrammarRuleBuilder definition2 = _.rule(rule2).is("foo");
-    assertThat(_.rule(rule2)).isSameAs(definition2);
-    assertThat(((LexerfulGrammarAdapter) _.build()).rules()).containsOnly(rule1, rule2);
+    GrammarRuleBuilder definition2 = _.rule(ruleKey2).is("foo");
+    assertThat(_.rule(ruleKey2)).isSameAs(definition2);
+    assertThat(((LexerfulGrammarAdapter) _.build()).ruleKeys()).containsOnly(ruleKey1, ruleKey2);
   }
 
   @Test
   public void should_base_on_other_grammars() {
-    GrammarRule rule1 = mock(GrammarRule.class);
-    GrammarRule rule2 = mock(GrammarRule.class);
-    GrammarRule rule3 = mock(GrammarRule.class);
+    GrammarRuleKey ruleKey1 = mock(GrammarRuleKey.class);
+    GrammarRuleKey ruleKey2 = mock(GrammarRuleKey.class);
+    GrammarRuleKey ruleKey3 = mock(GrammarRuleKey.class);
 
     LexerfulGrammarBuilder _1 = LexerfulGrammarBuilder.create();
-    _1.rule(rule1).is("foo");
-    _1.rule(rule2).is("foo");
+    _1.rule(ruleKey1).is("foo");
+    _1.rule(ruleKey2).is("foo");
 
     LexerfulGrammarBuilder _2 = LexerfulGrammarBuilder.create();
-    _2.rule(rule3).is("foo");
+    _2.rule(ruleKey3).is("foo");
 
-    assertThat(((LexerfulGrammarAdapter) LexerfulGrammarBuilder.createBasedOn(_1).build()).rules()).containsOnly(rule1, rule2);
-    assertThat(((LexerfulGrammarAdapter) LexerfulGrammarBuilder.createBasedOn(_2).build()).rules()).containsOnly(rule3);
-    assertThat(((LexerfulGrammarAdapter) LexerfulGrammarBuilder.createBasedOn(_1, _2).build()).rules()).containsOnly(rule1, rule2, rule3);
+    assertThat(((LexerfulGrammarAdapter) LexerfulGrammarBuilder.createBasedOn(_1).build()).ruleKeys()).containsOnly(ruleKey1, ruleKey2);
+    assertThat(((LexerfulGrammarAdapter) LexerfulGrammarBuilder.createBasedOn(_2).build()).ruleKeys()).containsOnly(ruleKey3);
+    assertThat(((LexerfulGrammarAdapter) LexerfulGrammarBuilder.createBasedOn(_1, _2).build()).ruleKeys()).containsOnly(ruleKey1, ruleKey2, ruleKey3);
   }
 
   @Test
   public void should_have_memoization_disabled_by_default() {
     LexerfulGrammarBuilder _ = LexerfulGrammarBuilder.create();
-    GrammarRule rule = mock(GrammarRule.class);
-    _.rule(rule).is("foo");
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    _.rule(ruleKey).is("foo");
     Grammar grammar = _.build();
-    Matcher[] ruleMatchers = ((RuleDefinition) grammar.rule(rule)).getRule().children;
+    Matcher[] ruleMatchers = ((RuleDefinition) grammar.rule(ruleKey)).getRule().children;
     assertThat(ruleMatchers).hasSize(1);
     assertThat(ruleMatchers[0]).isInstanceOf(TokenValueMatcher.class);
   }
@@ -102,10 +102,10 @@ public class LexerfulGrammarBuilderTest {
   @Test
   public void should_enable_memoization() {
     LexerfulGrammarBuilder _ = LexerfulGrammarBuilder.create();
-    GrammarRule rule = mock(GrammarRule.class);
-    _.rule(rule).is("foo");
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    _.rule(ruleKey).is("foo");
     Grammar grammar = _.buildWithMemoizationOfMatchesForAllRules();
-    Matcher[] ruleMatchers = ((RuleDefinition) grammar.rule(rule)).getRule().children;
+    Matcher[] ruleMatchers = ((RuleDefinition) grammar.rule(ruleKey)).getRule().children;
     assertThat(ruleMatchers).hasSize(1);
     assertThat(ruleMatchers[0]).isInstanceOf(MemoMatcher.class);
   }

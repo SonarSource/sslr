@@ -43,42 +43,42 @@ public class LexerlessGrammarBuilderTest {
 
   @Test
   public void should_have_no_definitions_at_first() {
-    assertThat(((LexerlessGrammarAdapter) LexerlessGrammarBuilder.create().build()).rules()).isEmpty();
+    assertThat(((LexerlessGrammarAdapter) LexerlessGrammarBuilder.create().build()).ruleKeys()).isEmpty();
   }
 
   @Test
   public void should_allow_definitions_of_new_rules() {
-    GrammarRule rule1 = mock(GrammarRule.class);
-    GrammarRule rule2 = mock(GrammarRule.class);
+    GrammarRuleKey ruleKey1 = mock(GrammarRuleKey.class);
+    GrammarRuleKey ruleKey2 = mock(GrammarRuleKey.class);
 
     LexerlessGrammarBuilder _ = LexerlessGrammarBuilder.create();
 
-    GrammarRuleBuilder definition1 = _.rule(rule1).is("foo");
-    assertThat(((LexerlessGrammarAdapter) _.build()).rules()).containsOnly(rule1);
-    assertThat(_.rule(rule1)).isSameAs(definition1);
-    assertThat(((LexerlessGrammarAdapter) _.build()).rules()).containsOnly(rule1);
+    GrammarRuleBuilder definition1 = _.rule(ruleKey1).is("foo");
+    assertThat(((LexerlessGrammarAdapter) _.build()).ruleKeys()).containsOnly(ruleKey1);
+    assertThat(_.rule(ruleKey1)).isSameAs(definition1);
+    assertThat(((LexerlessGrammarAdapter) _.build()).ruleKeys()).containsOnly(ruleKey1);
 
-    GrammarRuleBuilder definition2 = _.rule(rule2).is("foo");
-    assertThat(_.rule(rule2)).isSameAs(definition2);
-    assertThat(((LexerlessGrammarAdapter) _.build()).rules()).containsOnly(rule1, rule2);
+    GrammarRuleBuilder definition2 = _.rule(ruleKey2).is("foo");
+    assertThat(_.rule(ruleKey2)).isSameAs(definition2);
+    assertThat(((LexerlessGrammarAdapter) _.build()).ruleKeys()).containsOnly(ruleKey1, ruleKey2);
   }
 
   @Test
   public void should_base_on_other_grammars() {
-    GrammarRule rule1 = mock(GrammarRule.class);
-    GrammarRule rule2 = mock(GrammarRule.class);
-    GrammarRule rule3 = mock(GrammarRule.class);
+    GrammarRuleKey ruleKey1 = mock(GrammarRuleKey.class);
+    GrammarRuleKey ruleKey2 = mock(GrammarRuleKey.class);
+    GrammarRuleKey ruleKey3 = mock(GrammarRuleKey.class);
 
     LexerlessGrammarBuilder _1 = LexerlessGrammarBuilder.create();
-    _1.rule(rule1).is("foo");
-    _1.rule(rule2).is("foo");
+    _1.rule(ruleKey1).is("foo");
+    _1.rule(ruleKey2).is("foo");
 
     LexerlessGrammarBuilder _2 = LexerlessGrammarBuilder.create();
-    _2.rule(rule3).is("foo");
+    _2.rule(ruleKey3).is("foo");
 
-    assertThat(((LexerlessGrammarAdapter) LexerlessGrammarBuilder.createBasedOn(_1).build()).rules()).containsOnly(rule1, rule2);
-    assertThat(((LexerlessGrammarAdapter) LexerlessGrammarBuilder.createBasedOn(_2).build()).rules()).containsOnly(rule3);
-    assertThat(((LexerlessGrammarAdapter) LexerlessGrammarBuilder.createBasedOn(_1, _2).build()).rules()).containsOnly(rule1, rule2, rule3);
+    assertThat(((LexerlessGrammarAdapter) LexerlessGrammarBuilder.createBasedOn(_1).build()).ruleKeys()).containsOnly(ruleKey1, ruleKey2);
+    assertThat(((LexerlessGrammarAdapter) LexerlessGrammarBuilder.createBasedOn(_2).build()).ruleKeys()).containsOnly(ruleKey3);
+    assertThat(((LexerlessGrammarAdapter) LexerlessGrammarBuilder.createBasedOn(_1, _2).build()).ruleKeys()).containsOnly(ruleKey1, ruleKey2, ruleKey3);
   }
 
   @Test

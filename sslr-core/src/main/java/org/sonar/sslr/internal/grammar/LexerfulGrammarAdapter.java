@@ -23,7 +23,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
-import org.sonar.sslr.grammar.GrammarRule;
+import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.util.Collection;
@@ -31,13 +31,13 @@ import java.util.Map;
 
 public class LexerfulGrammarAdapter extends LexerlessGrammar {
 
-  private final Map<GrammarRule, RuleDefinition> ruleMatchers;
+  private final Map<GrammarRuleKey, RuleDefinition> ruleMatchers;
   private final Rule rootRule;
 
-  public LexerfulGrammarAdapter(Collection<LexerfulGrammarRuleDefinition> rules, GrammarRule rootRule, boolean enableMemoizationOfMathesForAllRules) {
-    ImmutableMap.Builder<GrammarRule, RuleDefinition> b = ImmutableMap.builder();
+  public LexerfulGrammarAdapter(Collection<LexerfulGrammarRuleDefinition> rules, GrammarRuleKey rootRuleKey, boolean enableMemoizationOfMathesForAllRules) {
+    ImmutableMap.Builder<GrammarRuleKey, RuleDefinition> b = ImmutableMap.builder();
     for (LexerfulGrammarRuleDefinition definition : rules) {
-      GrammarRule ruleKey = definition.getRule();
+      GrammarRuleKey ruleKey = definition.getRule();
       b.put(ruleKey, RuleDefinition.newRuleBuilder(definition.getName(), ruleKey));
     }
     this.ruleMatchers = b.build();
@@ -52,7 +52,7 @@ public class LexerfulGrammarAdapter extends LexerlessGrammar {
       }
     }
 
-    this.rootRule = ruleMatchers.get(rootRule);
+    this.rootRule = ruleMatchers.get(rootRuleKey);
   }
 
   @Override
@@ -61,12 +61,12 @@ public class LexerfulGrammarAdapter extends LexerlessGrammar {
   }
 
   @Override
-  public Rule rule(GrammarRule rule) {
-    return ruleMatchers.get(rule);
+  public Rule rule(GrammarRuleKey ruleKey) {
+    return ruleMatchers.get(ruleKey);
   }
 
   @VisibleForTesting
-  public Collection<GrammarRule> rules() {
+  public Collection<GrammarRuleKey> ruleKeys() {
     return ruleMatchers.keySet();
   }
 

@@ -24,7 +24,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
-import org.sonar.sslr.grammar.GrammarRule;
+import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -37,23 +37,23 @@ public class LexerlessGrammarRuleDefinitionTest {
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
-  private GrammarRule grammarRule;
+  private GrammarRuleKey ruleKey;
   private LexerlessGrammarRuleDefinition definition;
 
   @Before
   public void init() {
-    grammarRule = mock(GrammarRule.class);
-    definition = new LexerlessGrammarRuleDefinition(grammarRule);
+    ruleKey = mock(GrammarRuleKey.class);
+    definition = new LexerlessGrammarRuleDefinition(ruleKey);
   }
 
   @Test
   public void should_return_rule_name() {
-    assertThat(definition.getName()).isEqualTo(grammarRule.toString());
+    assertThat(definition.getName()).isEqualTo(ruleKey.toString());
   }
 
   @Test
   public void should_return_rule() {
-    assertThat(definition.getRule()).isSameAs(grammarRule);
+    assertThat(definition.getRuleKey()).isSameAs(ruleKey);
   }
 
   @Test
@@ -77,7 +77,7 @@ public class LexerlessGrammarRuleDefinitionTest {
 
     com.sonar.sslr.api.Rule ruleMatcher = mock(com.sonar.sslr.api.Rule.class);
     LexerlessGrammar g = mock(LexerlessGrammar.class);
-    when(g.rule(grammarRule)).thenReturn(ruleMatcher);
+    when(g.rule(ruleKey)).thenReturn(ruleMatcher);
 
     definition.build(g);
     verify(ruleMatcher).is(Mockito.any());
@@ -92,7 +92,7 @@ public class LexerlessGrammarRuleDefinitionTest {
 
     com.sonar.sslr.api.Rule ruleMatcher = mock(com.sonar.sslr.api.Rule.class);
     LexerlessGrammar g = mock(LexerlessGrammar.class);
-    when(g.rule(grammarRule)).thenReturn(ruleMatcher);
+    when(g.rule(ruleKey)).thenReturn(ruleMatcher);
 
     definition.build(g);
     verify(ruleMatcher).is(Mockito.any());
@@ -105,7 +105,7 @@ public class LexerlessGrammarRuleDefinitionTest {
 
     com.sonar.sslr.api.Rule ruleMatcher = mock(com.sonar.sslr.api.Rule.class);
     LexerlessGrammar g = mock(LexerlessGrammar.class);
-    when(g.rule(grammarRule)).thenReturn(ruleMatcher);
+    when(g.rule(ruleKey)).thenReturn(ruleMatcher);
 
     definition.build(g);
     verify(ruleMatcher, Mockito.never()).skip();
@@ -119,7 +119,7 @@ public class LexerlessGrammarRuleDefinitionTest {
 
     com.sonar.sslr.api.Rule ruleMatcher = mock(com.sonar.sslr.api.Rule.class);
     LexerlessGrammar g = mock(LexerlessGrammar.class);
-    when(g.rule(grammarRule)).thenReturn(ruleMatcher);
+    when(g.rule(ruleKey)).thenReturn(ruleMatcher);
 
     definition.build(g);
     verify(ruleMatcher).skip();
@@ -132,7 +132,7 @@ public class LexerlessGrammarRuleDefinitionTest {
 
     com.sonar.sslr.api.Rule ruleMatcher = mock(com.sonar.sslr.api.Rule.class);
     LexerlessGrammar g = mock(LexerlessGrammar.class);
-    when(g.rule(grammarRule)).thenReturn(ruleMatcher);
+    when(g.rule(ruleKey)).thenReturn(ruleMatcher);
 
     definition.build(g);
     verify(ruleMatcher).skipIfOneChild();

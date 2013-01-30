@@ -22,12 +22,12 @@ package org.sonar.sslr.internal.grammar;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.Rule;
-import org.sonar.sslr.grammar.GrammarRule;
+import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.GrammarRuleBuilder;
 
 public class LexerfulGrammarRuleDefinition implements GrammarRuleBuilder {
 
-  private final GrammarRule rule;
+  private final GrammarRuleKey rule;
   private MatcherBuilder[] matcherBuilders;
 
   private enum SkipState {
@@ -40,7 +40,7 @@ public class LexerfulGrammarRuleDefinition implements GrammarRuleBuilder {
 
   private boolean isRecoveryRule;
 
-  public LexerfulGrammarRuleDefinition(GrammarRule rule) {
+  public LexerfulGrammarRuleDefinition(GrammarRuleKey rule) {
     this.rule = rule;
     this.matcherBuilders = null;
     this.skipState = SkipState.DO_NOT_SKIP;
@@ -51,7 +51,7 @@ public class LexerfulGrammarRuleDefinition implements GrammarRuleBuilder {
     return rule.toString();
   }
 
-  public GrammarRule getRule() {
+  public GrammarRuleKey getRule() {
     return rule;
   }
 

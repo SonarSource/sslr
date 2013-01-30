@@ -51,8 +51,8 @@ import java.util.Map;
  */
 public class LexerfulGrammarBuilder {
 
-  private final Map<GrammarRule, LexerfulGrammarRuleDefinition> definitions = Maps.newHashMap();
-  private GrammarRule rootRule;
+  private final Map<GrammarRuleKey, LexerfulGrammarRuleDefinition> definitions = Maps.newHashMap();
+  private GrammarRuleKey rootRuleKey;
 
   public static LexerfulGrammarBuilder create() {
     return new LexerfulGrammarBuilder();
@@ -68,28 +68,28 @@ public class LexerfulGrammarBuilder {
     }
   }
 
-  public GrammarRuleBuilder rule(GrammarRule rule) {
-    LexerfulGrammarRuleDefinition definition = definitions.get(rule);
+  public GrammarRuleBuilder rule(GrammarRuleKey ruleKey) {
+    LexerfulGrammarRuleDefinition definition = definitions.get(ruleKey);
     if (definition == null) {
-      definition = new LexerfulGrammarRuleDefinition(rule);
-      definitions.put(rule, definition);
+      definition = new LexerfulGrammarRuleDefinition(ruleKey);
+      definitions.put(ruleKey, definition);
     }
     return definition;
   }
 
-  public void setRootRule(GrammarRule rule) {
-    rootRule = rule;
+  public void setRootRule(GrammarRuleKey ruleKey) {
+    rootRuleKey = ruleKey;
   }
 
   /**
    * Constructs grammar.
    */
   public com.sonar.sslr.api.Grammar build() {
-    return new LexerfulGrammarAdapter(definitions.values(), rootRule, false);
+    return new LexerfulGrammarAdapter(definitions.values(), rootRuleKey, false);
   }
 
   public com.sonar.sslr.api.Grammar buildWithMemoizationOfMatchesForAllRules() {
-    return new LexerfulGrammarAdapter(definitions.values(), rootRule, true);
+    return new LexerfulGrammarAdapter(definitions.values(), rootRuleKey, true);
   }
 
   public Object sequence(Object e1, Object e2) {

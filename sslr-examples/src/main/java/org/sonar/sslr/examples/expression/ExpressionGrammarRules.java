@@ -19,13 +19,13 @@
  */
 package org.sonar.sslr.examples.expression;
 
-import org.sonar.sslr.grammar.GrammarRule;
+import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 
 /**
  * This class demonstrates how to use {@link LexerlessGrammarBuilder} to define grammar for simple arithmetic expressions.
  */
-public enum ExpressionGrammarRules implements GrammarRule {
+public enum ExpressionGrammarRules implements GrammarRuleKey {
 
   WHITESPACE,
 

@@ -26,7 +26,7 @@ import com.sonar.sslr.impl.matcher.TokenTypeClassMatcher;
 import com.sonar.sslr.impl.matcher.TokenTypeMatcher;
 import com.sonar.sslr.impl.matcher.TokenValueMatcher;
 import org.sonar.sslr.grammar.Grammar;
-import org.sonar.sslr.grammar.GrammarRule;
+import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.matchers.SequenceMatcher;
 import org.sonar.sslr.internal.matchers.StringMatcher;
 
@@ -57,8 +57,8 @@ public final class MatcherBuilderUtils {
 
     if (element instanceof MatcherBuilder) {
       return (MatcherBuilder) element;
-    } else if (element instanceof GrammarRule) {
-      return new RuleMatcherBuilder((GrammarRule) element);
+    } else if (element instanceof GrammarRuleKey) {
+      return new RuleMatcherBuilder((GrammarRuleKey) element);
     } else if (element instanceof String) {
       return new ReflexiveMatcherBuilder(StringMatcher.class, new Object[] {element});
     } else if (element instanceof Character) {
@@ -88,8 +88,8 @@ public final class MatcherBuilderUtils {
 
     if (element instanceof MatcherBuilder) {
       return (MatcherBuilder) element;
-    } else if (element instanceof GrammarRule) {
-      return new RuleMatcherBuilder((GrammarRule) element);
+    } else if (element instanceof GrammarRuleKey) {
+      return new RuleMatcherBuilder((GrammarRuleKey) element);
     } else if (element instanceof String) {
       return new ReflexiveMatcherBuilder(TokenValueMatcher.class, new Object[] {element, false});
     } else if (element instanceof TokenType) {

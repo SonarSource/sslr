@@ -22,10 +22,17 @@ package org.sonar.sslr.grammar;
 import com.sonar.sslr.api.AstNodeType;
 
 /**
- * A marker interface for grammar rules.
+ * A marker interface for key of grammar rule.
+ * <p>
+ * For example:
+ * <pre>
+ * public enum YourGrammarRules implements GrammarRuleKey {
+ *   YOUR_RULE_KEY;
+ * }
+ * </pre>
  *
  * @since 1.18
  */
-public interface GrammarRule extends AstNodeType {
+public interface GrammarRuleKey extends AstNodeType {
 
 }

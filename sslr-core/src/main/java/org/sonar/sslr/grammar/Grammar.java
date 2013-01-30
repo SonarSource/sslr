@@ -31,6 +31,6 @@ import com.sonar.sslr.api.Rule;
  */
 public interface Grammar {
 
-  Rule rule(GrammarRule rule);
+  Rule rule(GrammarRuleKey ruleKey);
 
 }

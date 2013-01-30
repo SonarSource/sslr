@@ -20,7 +20,7 @@
 package com.sonar.sslr.api;
 
 import com.sonar.sslr.impl.matcher.RuleDefinition;
-import org.sonar.sslr.grammar.GrammarRule;
+import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 import org.sonar.sslr.internal.matchers.GrammarException;
 import org.sonar.sslr.parser.LexerlessGrammar;
@@ -100,7 +100,7 @@ public abstract class Grammar implements org.sonar.sslr.grammar.Grammar {
   /**
    * @since 1.18
    */
-  public Rule rule(GrammarRule rule) {
+  public Rule rule(GrammarRuleKey ruleKey) {
     throw new UnsupportedOperationException();
   }
 

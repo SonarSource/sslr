@@ -21,18 +21,18 @@ package org.sonar.sslr.internal.grammar;
 
 import com.sonar.sslr.api.Rule;
 import org.sonar.sslr.grammar.Grammar;
-import org.sonar.sslr.grammar.GrammarRule;
+import org.sonar.sslr.grammar.GrammarRuleKey;
 
 public class RuleMatcherBuilder implements MatcherBuilder {
 
-  private final GrammarRule rule;
+  private final GrammarRuleKey ruleKey;
 
-  public RuleMatcherBuilder(GrammarRule rule) {
-    this.rule = rule;
+  public RuleMatcherBuilder(GrammarRuleKey ruleKey) {
+    this.ruleKey = ruleKey;
   }
 
   public Rule build(Grammar g) {
-    return g.rule(rule);
+    return g.rule(ruleKey);
   }
 
 }

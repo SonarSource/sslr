@@ -50,8 +50,8 @@ import java.util.Map;
  */
 public class LexerlessGrammarBuilder {
 
-  private final Map<GrammarRule, LexerlessGrammarRuleDefinition> definitions = Maps.newHashMap();
-  private GrammarRule rootRule;
+  private final Map<GrammarRuleKey, LexerlessGrammarRuleDefinition> definitions = Maps.newHashMap();
+  private GrammarRuleKey rootRuleKey;
 
   public static LexerlessGrammarBuilder create() {
     return new LexerlessGrammarBuilder();
@@ -67,24 +67,24 @@ public class LexerlessGrammarBuilder {
     }
   }
 
-  public GrammarRuleBuilder rule(GrammarRule rule) {
-    LexerlessGrammarRuleDefinition definition = definitions.get(rule);
+  public GrammarRuleBuilder rule(GrammarRuleKey ruleKey) {
+    LexerlessGrammarRuleDefinition definition = definitions.get(ruleKey);
     if (definition == null) {
-      definition = new LexerlessGrammarRuleDefinition(rule);
-      definitions.put(rule, definition);
+      definition = new LexerlessGrammarRuleDefinition(ruleKey);
+      definitions.put(ruleKey, definition);
     }
     return definition;
   }
 
-  public void setRootRule(GrammarRule rule) {
-    rootRule = rule;
+  public void setRootRule(GrammarRuleKey ruleKey) {
+    rootRuleKey = ruleKey;
   }
 
   /**
    * Constructs grammar.
    */
   public LexerlessGrammar build() {
-    return new LexerlessGrammarAdapter(definitions.values(), rootRule);
+    return new LexerlessGrammarAdapter(definitions.values(), rootRuleKey);
   }
 
   public Object sequence(Object e1, Object e2) {

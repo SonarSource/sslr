@@ -22,7 +22,7 @@ package org.sonar.sslr.internal.grammar;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.sonar.sslr.api.Rule;
-import org.sonar.sslr.grammar.GrammarRule;
+import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
@@ -31,13 +31,13 @@ import java.util.Map;
 
 public class LexerlessGrammarAdapter extends LexerlessGrammar {
 
-  private final Map<GrammarRule, GrammarElementMatcher> ruleMatchers;
+  private final Map<GrammarRuleKey, GrammarElementMatcher> ruleMatchers;
   private final Rule rootRule;
 
-  public LexerlessGrammarAdapter(Collection<LexerlessGrammarRuleDefinition> rules, GrammarRule rootRule) {
-    ImmutableMap.Builder<GrammarRule, GrammarElementMatcher> b = ImmutableMap.builder();
+  public LexerlessGrammarAdapter(Collection<LexerlessGrammarRuleDefinition> rules, GrammarRuleKey rootRuleKey) {
+    ImmutableMap.Builder<GrammarRuleKey, GrammarElementMatcher> b = ImmutableMap.builder();
     for (LexerlessGrammarRuleDefinition definition : rules) {
-      GrammarRule ruleKey = definition.getRule();
+      GrammarRuleKey ruleKey = definition.getRuleKey();
       b.put(ruleKey, new GrammarElementMatcher(definition.getName(), ruleKey));
     }
     this.ruleMatchers = b.build();
@@ -46,7 +46,7 @@ public class LexerlessGrammarAdapter extends LexerlessGrammar {
       definition.build(this);
     }
 
-    this.rootRule = ruleMatchers.get(rootRule);
+    this.rootRule = ruleMatchers.get(rootRuleKey);
   }
 
   @Override
@@ -55,12 +55,12 @@ public class LexerlessGrammarAdapter extends LexerlessGrammar {
   }
 
   @Override
-  public Rule rule(GrammarRule rule) {
-    return ruleMatchers.get(rule);
+  public Rule rule(GrammarRuleKey ruleKey) {
+    return ruleMatchers.get(ruleKey);
   }
 
   @VisibleForTesting
-  public Collection<GrammarRule> rules() {
+  public Collection<GrammarRuleKey> ruleKeys() {
     return ruleMatchers.keySet();
   }
 
