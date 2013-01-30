@@ -118,24 +118,39 @@ public class LexerfulGrammarBuilderTest {
   @Test
   public void matchers() {
     LexerfulGrammarBuilder _ = LexerfulGrammarBuilder.create();
+    Grammar g = mock(Grammar.class);
 
-    assertThat(((MatcherBuilder) _.sequence("foo", "bar")).build(mock(Grammar.class))).isInstanceOf(AndMatcher.class);
-    assertThat(((MatcherBuilder) _.firstOf("foo", "bar")).build(mock(Grammar.class))).isInstanceOf(OrMatcher.class);
-    assertThat(((MatcherBuilder) _.optional("foo")).build(mock(Grammar.class))).isInstanceOf(OptMatcher.class);
-    assertThat(((MatcherBuilder) _.oneOrMore("foo")).build(mock(Grammar.class))).isInstanceOf(OneToNMatcher.class);
-    assertThat(((MatcherBuilder) _.zeroOrMore("foo")).build(mock(Grammar.class))).isInstanceOf(OptMatcher.class);
-    assertThat(((MatcherBuilder) _.next("foo")).build(mock(Grammar.class))).isInstanceOf(NextMatcher.class);
-    assertThat(((MatcherBuilder) _.nextNot("foo")).build(mock(Grammar.class))).isInstanceOf(NotMatcher.class);
-    assertThat(((MatcherBuilder) _.nothing()).build(mock(Grammar.class))).isInstanceOf(BooleanMatcher.class);
-    assertThat(((MatcherBuilder) _.adjacent("foo")).build(mock(Grammar.class))).isInstanceOf(AdjacentMatcher.class);
-    assertThat(((MatcherBuilder) _.anyTokenButNot("foo")).build(mock(Grammar.class))).isInstanceOf(AnyTokenButNotMatcher.class);
-    assertThat(((MatcherBuilder) _.isOneOfThem(mock(TokenType.class))).build(mock(Grammar.class))).isInstanceOf(TokenTypesMatcher.class);
-    assertThat(((MatcherBuilder) _.bridge(mock(TokenType.class), mock(TokenType.class))).build(mock(Grammar.class))).isInstanceOf(BridgeMatcher.class);
-    assertThat(((MatcherBuilder) _.everything()).build(mock(Grammar.class))).isInstanceOf(BooleanMatcher.class);
-    assertThat(((MatcherBuilder) _.anyToken()).build(mock(Grammar.class))).isInstanceOf(AnyTokenMatcher.class);
-    assertThat(((MatcherBuilder) _.tillNewLine()).build(mock(Grammar.class))).isInstanceOf(TillNewLineMatcher.class);
-    assertThat(((MatcherBuilder) _.till("foo")).build(mock(Grammar.class))).isInstanceOf(InclusiveTillMatcher.class);
-    assertThat(((MatcherBuilder) _.exclusiveTill("foo")).build(mock(Grammar.class))).isInstanceOf(ExclusiveTillMatcher.class);
+    assertThat(((MatcherBuilder) _.sequence("foo", "bar")).build(g)).isInstanceOf(AndMatcher.class);
+    assertThat(((MatcherBuilder) _.sequence("foo", "bar", "baz")).build(g)).isInstanceOf(AndMatcher.class);
+
+    assertThat(((MatcherBuilder) _.firstOf("foo", "bar")).build(g)).isInstanceOf(OrMatcher.class);
+    assertThat(((MatcherBuilder) _.firstOf("foo", "bar", "baz")).build(g)).isInstanceOf(OrMatcher.class);
+
+    assertThat(((MatcherBuilder) _.optional("foo")).build(g)).isInstanceOf(OptMatcher.class);
+    assertThat(((MatcherBuilder) _.optional("foo", "bar")).build(g)).isInstanceOf(OptMatcher.class);
+
+    assertThat(((MatcherBuilder) _.oneOrMore("foo")).build(g)).isInstanceOf(OneToNMatcher.class);
+    assertThat(((MatcherBuilder) _.oneOrMore("foo", "bar")).build(g)).isInstanceOf(OneToNMatcher.class);
+
+    assertThat(((MatcherBuilder) _.zeroOrMore("foo")).build(g)).isInstanceOf(OptMatcher.class);
+    assertThat(((MatcherBuilder) _.zeroOrMore("foo", "bar")).build(g)).isInstanceOf(OptMatcher.class);
+
+    assertThat(((MatcherBuilder) _.next("foo")).build(g)).isInstanceOf(NextMatcher.class);
+    assertThat(((MatcherBuilder) _.next("foo", "bar")).build(g)).isInstanceOf(NextMatcher.class);
+
+    assertThat(((MatcherBuilder) _.nextNot("foo")).build(g)).isInstanceOf(NotMatcher.class);
+    assertThat(((MatcherBuilder) _.nextNot("foo", "bar")).build(g)).isInstanceOf(NotMatcher.class);
+
+    assertThat(((MatcherBuilder) _.nothing()).build(g)).isInstanceOf(BooleanMatcher.class);
+    assertThat(((MatcherBuilder) _.adjacent("foo")).build(g)).isInstanceOf(AdjacentMatcher.class);
+    assertThat(((MatcherBuilder) _.anyTokenButNot("foo")).build(g)).isInstanceOf(AnyTokenButNotMatcher.class);
+    assertThat(((MatcherBuilder) _.isOneOfThem(mock(TokenType.class))).build(g)).isInstanceOf(TokenTypesMatcher.class);
+    assertThat(((MatcherBuilder) _.bridge(mock(TokenType.class), mock(TokenType.class))).build(g)).isInstanceOf(BridgeMatcher.class);
+    assertThat(((MatcherBuilder) _.everything()).build(g)).isInstanceOf(BooleanMatcher.class);
+    assertThat(((MatcherBuilder) _.anyToken()).build(g)).isInstanceOf(AnyTokenMatcher.class);
+    assertThat(((MatcherBuilder) _.tillNewLine()).build(g)).isInstanceOf(TillNewLineMatcher.class);
+    assertThat(((MatcherBuilder) _.till("foo")).build(g)).isInstanceOf(InclusiveTillMatcher.class);
+    assertThat(((MatcherBuilder) _.exclusiveTill("foo")).build(g)).isInstanceOf(ExclusiveTillMatcher.class);
   }
 
 }

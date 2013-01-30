@@ -72,6 +72,14 @@ public class LexerfulGrammarRuleDefinitionTest {
   }
 
   @Test
+  public void should_fail_to_to_redefine2() {
+    thrown.expect(IllegalStateException.class);
+    thrown.expectMessage("The rule '" + definition.getName() + "' has already been defined somewhere in the grammar.");
+    definition.is("foo", "bar");
+    definition.is("foo", "bar");
+  }
+
+  @Test
   public void should_build_rule_with_definition() {
     definition.is("foo");
 
@@ -97,6 +105,24 @@ public class LexerfulGrammarRuleDefinitionTest {
     definition.build(g);
     verify(ruleMatcher).is(Mockito.any());
     verify(matcherBuilder).build(g);
+  }
+
+  @Test
+  public void should_build_rule_with_overriden_definition2() {
+    MatcherBuilder matcherBuilder1 = mock(MatcherBuilder.class);
+    MatcherBuilder matcherBuilder2 = mock(MatcherBuilder.class);
+
+    definition.is("foo");
+    definition.override(matcherBuilder1, matcherBuilder2);
+
+    com.sonar.sslr.api.Rule ruleMatcher = mock(com.sonar.sslr.api.Rule.class);
+    Grammar g = mock(Grammar.class);
+    when(g.rule(grammarRule)).thenReturn(ruleMatcher);
+
+    definition.build(g);
+    verify(ruleMatcher).is(Mockito.any(), Mockito.any());
+    verify(matcherBuilder1).build(g);
+    verify(matcherBuilder2).build(g);
   }
 
   @Test

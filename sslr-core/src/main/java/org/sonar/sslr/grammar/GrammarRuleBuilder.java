@@ -33,8 +33,17 @@ public interface GrammarRuleBuilder {
    * <p>
    * <b>Note:</b> this method can be called only once for a rule. If it is called more than once, an IllegalStateException will be thrown.
    *
-   * @throws IllegalStateException if definition has been already done
+   * @param e  grammar expression
    * @return this (for method chaining)
+   * @throws IllegalStateException if definition has been already done
+   */
+  GrammarRuleBuilder is(Object e);
+
+  /**
+   * Convenience method equivalent to calling {@code is(grammarBuilder.sequence(e1, others))}.
+   *
+   * @return this (for method chaining)
+   * @see #is(Object)
    */
   GrammarRuleBuilder is(Object e1, Object... others);
 
@@ -43,7 +52,16 @@ public interface GrammarRuleBuilder {
    * <p>
    * This method has the same effect as {@link #is(Object...)}, except that it can be called more than once to redefine a rule from scratch.
    *
+   * @param e  grammar expression
    * @return this (for method chaining)
+   */
+  GrammarRuleBuilder override(Object e);
+
+  /**
+   * Convenience method equivalent to calling {@code override(grammarBuilder.sequence(e1, others))}.
+   *
+   * @return this (for method chaining)
+   * @see #override(Object)
    */
   GrammarRuleBuilder override(Object e1, Object... others);
 

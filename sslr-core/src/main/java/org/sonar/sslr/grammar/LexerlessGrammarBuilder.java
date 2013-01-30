@@ -40,6 +40,7 @@ import org.sonar.sslr.internal.matchers.TriviaMatcher;
 import org.sonar.sslr.internal.matchers.ZeroOrMoreMatcher;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -86,28 +87,56 @@ public class LexerlessGrammarBuilder {
     return new LexerlessGrammarAdapter(this, definitions.values(), rootRule);
   }
 
+  public Object sequence(Object e1, Object e2) {
+    return MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Arrays.asList(e1, e2));
+  }
+
   public Object sequence(Object e1, Object e2, Object... others) {
     return MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Lists.asList(e1, e2, others));
+  }
+
+  public Object firstOf(Object e1, Object e2) {
+    return new ReflexiveMatcherBuilder(FirstOfMatcher.class, MatcherBuilderUtils.lexerlessToMatcherBuilders(Arrays.asList(e1, e2)));
   }
 
   public Object firstOf(Object e1, Object e2, Object... others) {
     return new ReflexiveMatcherBuilder(FirstOfMatcher.class, MatcherBuilderUtils.lexerlessToMatcherBuilders(Lists.asList(e1, e2, others)));
   }
 
+  public Object optional(Object e1) {
+    return new ReflexiveMatcherBuilder(OptionalMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Arrays.asList(e1))});
+  }
+
   public Object optional(Object e1, Object... others) {
     return new ReflexiveMatcherBuilder(OptionalMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Lists.asList(e1, others))});
+  }
+
+  public Object oneOrMore(Object e1) {
+    return new ReflexiveMatcherBuilder(OneOrMoreMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Arrays.asList(e1))});
   }
 
   public Object oneOrMore(Object e1, Object... others) {
     return new ReflexiveMatcherBuilder(OneOrMoreMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Lists.asList(e1, others))});
   }
 
+  public Object zeroOrMore(Object e1) {
+    return new ReflexiveMatcherBuilder(ZeroOrMoreMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Arrays.asList(e1))});
+  }
+
   public Object zeroOrMore(Object e1, Object... others) {
     return new ReflexiveMatcherBuilder(ZeroOrMoreMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Lists.asList(e1, others))});
   }
 
+  public Object next(Object e1) {
+    return new ReflexiveMatcherBuilder(TestMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Arrays.asList(e1))});
+  }
+
   public Object next(Object e1, Object... others) {
     return new ReflexiveMatcherBuilder(TestMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Lists.asList(e1, others))});
+  }
+
+  public Object nextNot(Object e1) {
+    return new ReflexiveMatcherBuilder(TestNotMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Arrays.asList(e1))});
   }
 
   public Object nextNot(Object e1, Object... others) {

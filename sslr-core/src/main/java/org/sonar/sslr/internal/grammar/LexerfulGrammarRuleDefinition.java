@@ -55,10 +55,20 @@ public class LexerfulGrammarRuleDefinition implements GrammarRuleBuilder {
     return rule;
   }
 
+  public GrammarRuleBuilder is(Object e) {
+    Preconditions.checkState(matcherBuilders == null, "The rule '" + getName() + "' has already been defined somewhere in the grammar.");
+    setMatcherBuilders(e);
+    return this;
+  }
+
   public LexerfulGrammarRuleDefinition is(Object e1, Object... others) {
     Preconditions.checkState(matcherBuilders == null, "The rule '" + getName() + "' has already been defined somewhere in the grammar.");
-
     setMatcherBuilders(e1, others);
+    return this;
+  }
+
+  public LexerfulGrammarRuleDefinition override(Object e) {
+    setMatcherBuilders(e);
     return this;
   }
 
