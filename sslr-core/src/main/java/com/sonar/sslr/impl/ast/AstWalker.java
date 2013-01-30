@@ -73,7 +73,7 @@ public final class AstWalker {
   }
 
   /**
-   * @deprecated in 1.18, used {@link #walkAndVisit(AstNode)} instead.
+   * @deprecated in 1.18, use {@link #walkAndVisit(AstNode)} instead
    */
   @Deprecated
   public void walkVisitAndListen(AstNode ast, Object output) {
