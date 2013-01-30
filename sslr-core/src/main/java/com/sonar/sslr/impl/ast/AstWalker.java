@@ -19,9 +19,17 @@
  */
 package com.sonar.sslr.impl.ast;
 
-import com.sonar.sslr.api.*;
+import com.sonar.sslr.api.AstAndTokenVisitor;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.AstNodeType;
+import com.sonar.sslr.api.AstVisitor;
+import com.sonar.sslr.api.Token;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class AstWalker {
 
@@ -55,24 +63,28 @@ public final class AstWalker {
   }
 
   public void walkAndVisit(AstNode ast) {
-    walkVisitAndListen(ast, new Object());
-  }
-
-  public void walkVisitAndListen(AstNode ast, Object output) {
     for (AstVisitor visitor : visitors) {
       visitor.visitFile(ast);
     }
-    visit(ast, output);
+    visit(ast);
     for (int i = visitors.size() - 1; i >= 0; i--) {
       visitors.get(i).leaveFile(ast);
     }
   }
 
-  private void visit(AstNode ast, Object output) {
+  /**
+   * @deprecated in 1.18, used {@link #walkAndVisit(AstNode)} instead.
+   */
+  @Deprecated
+  public void walkVisitAndListen(AstNode ast, Object output) {
+    walkAndVisit(ast);
+  }
+
+  private void visit(AstNode ast) {
     AstVisitor[] nodeVisitors = getNodeVisitors(ast);
     visitNode(ast, nodeVisitors);
     visitToken(ast);
-    visitChildren(ast, output);
+    visitChildren(ast);
     leaveNode(ast, nodeVisitors);
   }
 
@@ -82,9 +94,9 @@ public final class AstWalker {
     }
   }
 
-  private void visitChildren(AstNode ast, Object output) {
+  private void visitChildren(AstNode ast) {
     for (AstNode child : ast.getChildren()) {
-      visit(child, output);
+      visit(child);
     }
   }
 
