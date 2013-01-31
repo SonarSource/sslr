@@ -66,7 +66,10 @@ public interface Rule extends AstNodeType {
   /**
    * Utility method used for unit testing in order to dynamically replace the definition of the rule to match as soon as a token whose value
    * equals the name of the rule is encountered
+   *
+   * @deprecated in 1.18
    */
+  @Deprecated
   void mock();
 
   /**
