@@ -28,7 +28,6 @@ import com.sonar.sslr.impl.ast.NeverSkipFromAst;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 import org.sonar.sslr.grammar.GrammarException;
 
-// TODO Godin: Retrofit methods with varargs (SSLR-215)
 public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPolicy {
 
   private final String name;

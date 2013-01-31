@@ -22,14 +22,24 @@ package org.sonar.sslr.parser;
 import com.google.common.base.Preconditions;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.api.Trivia.TriviaKind;
-import org.sonar.sslr.internal.matchers.*;
+import org.sonar.sslr.internal.matchers.EndOfInputMatcher;
+import org.sonar.sslr.internal.matchers.FirstOfMatcher;
+import org.sonar.sslr.internal.matchers.MatchersUtils;
+import org.sonar.sslr.internal.matchers.NothingMatcher;
+import org.sonar.sslr.internal.matchers.OneOrMoreMatcher;
+import org.sonar.sslr.internal.matchers.OptionalMatcher;
+import org.sonar.sslr.internal.matchers.PatternMatcher;
+import org.sonar.sslr.internal.matchers.TestMatcher;
+import org.sonar.sslr.internal.matchers.TestNotMatcher;
+import org.sonar.sslr.internal.matchers.TokenMatcher;
+import org.sonar.sslr.internal.matchers.TriviaMatcher;
+import org.sonar.sslr.internal.matchers.ZeroOrMoreMatcher;
 
 /**
  * Provides methods to define rules for {@link LexerlessGrammar}.
  *
  * @since 1.16
  */
-// TODO Godin: Retrofit methods with varargs (SSLR-215)
 public final class GrammarOperators {
 
   private GrammarOperators() {
