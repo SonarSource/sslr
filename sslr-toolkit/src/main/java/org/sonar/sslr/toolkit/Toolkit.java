@@ -30,6 +30,7 @@ import org.sonar.sslr.internal.toolkit.ToolkitViewImpl;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 import java.util.Collections;
 import java.util.List;
@@ -88,7 +89,12 @@ public class Toolkit {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         try {
-          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+            if ("Nimbus".equals(info.getName())) {
+              UIManager.setLookAndFeel(info.getClassName());
+              break;
+            }
+          }
         } catch (Exception e) {
           Throwables.propagate(e);
         }
