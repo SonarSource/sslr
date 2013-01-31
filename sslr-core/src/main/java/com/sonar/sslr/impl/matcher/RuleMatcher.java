@@ -73,7 +73,7 @@ public final class RuleMatcher extends StandardMatcher {
 
   /**
    * Should not be used directly, companion of {@link GrammarFunctions#enableMemoizationOfMatchesForAllRules(com.sonar.sslr.api.Grammar)}
-   * and {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#enableMemoizationOfMatchesForAllRules()}.
+   * and {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#buildWithMemoizationOfMatchesForAllRules()}.
    *
    * @since 1.14
    */
