@@ -17,6 +17,12 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
+
+/**
+ * Internals of Text API.
+ *
+ * <p>Members of this package must not be used from outside of SSLR.</p>
+ */
 @javax.annotation.ParametersAreNonnullByDefault
 package org.sonar.sslr.internal.text;
 

@@ -33,38 +33,42 @@ public interface GrammarRuleBuilder {
    * <p>
    * <b>Note:</b> this method can be called only once for a rule. If it is called more than once, an GrammarException will be thrown.
    *
-   * @param e  grammar expression
+   * @param e  expression of grammar
    * @return this (for method chaining)
    * @throws GrammarException if definition has been already done
    */
   GrammarRuleBuilder is(Object e);
 
   /**
-   * Convenience method equivalent to calling {@code is(grammarBuilder.sequence(e1, others))}.
+   * Convenience method equivalent to calling {@code is(grammarBuilder.sequence(e, rest))}.
    *
+   * @param e  expression of grammar
+   * @param rest  rest of expressions
    * @return this (for method chaining)
    * @throws GrammarException if definition has been already done
    * @see #is(Object)
    */
-  GrammarRuleBuilder is(Object e1, Object... others);
+  GrammarRuleBuilder is(Object e, Object... rest);
 
   /**
    * Allows to override definition of a grammar rule.
    * <p>
-   * This method has the same effect as {@link #is(Object...)}, except that it can be called more than once to redefine a rule from scratch.
+   * This method has the same effect as {@link #is(Object)}, except that it can be called more than once to redefine a rule from scratch.
    *
-   * @param e  grammar expression
+   * @param e  expression of grammar
    * @return this (for method chaining)
    */
   GrammarRuleBuilder override(Object e);
 
   /**
-   * Convenience method equivalent to calling {@code override(grammarBuilder.sequence(e1, others))}.
+   * Convenience method equivalent to calling {@code override(grammarBuilder.sequence(e, rest))}.
    *
+   * @param e  expression of grammar
+   * @param rest  rest of expressions
    * @return this (for method chaining)
    * @see #override(Object)
    */
-  GrammarRuleBuilder override(Object e1, Object... others);
+  GrammarRuleBuilder override(Object e, Object... rest);
 
   /**
    * Indicates that grammar rule should not lead to creation of AST node - its children should be attached directly to its parent.

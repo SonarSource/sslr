@@ -19,7 +19,9 @@
  */
 
 /**
- * Internals.
+ * Internals of Parser.
+ *
+ * <p>Members of this package must not be used from outside of SSLR.</p>
  */
 @javax.annotation.ParametersAreNonnullByDefault
 package org.sonar.sslr.internal.matchers;

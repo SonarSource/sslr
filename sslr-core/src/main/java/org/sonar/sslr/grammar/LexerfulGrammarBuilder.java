@@ -111,62 +111,146 @@ public class LexerfulGrammarBuilder {
     return new LexerfulGrammarAdapter(definitions.values(), rootRuleKey, true);
   }
 
+  /**
+   * Creates expression of grammar - "sequence".
+   *
+   * @param e1  first sub-expression
+   * @param e2  second sub-expression
+   */
   public Object sequence(Object e1, Object e2) {
     return MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Arrays.asList(e1, e2));
   }
 
-  public Object sequence(Object e1, Object e2, Object... others) {
-    return MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Lists.asList(e1, e2, others));
+  /**
+   * Creates expression of grammar - "sequence".
+   *
+   * @param e1  first sub-expression
+   * @param e2  second sub-expression
+   * @param rest  rest of sub-expressions
+   */
+  public Object sequence(Object e1, Object e2, Object... rest) {
+    return MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Lists.asList(e1, e2, rest));
   }
 
+  /**
+   * Creates expression of grammar - "first of".
+   *
+   * @param e1  first sub-expression
+   * @param e2  second sub-expression
+   */
   public Object firstOf(Object e1, Object e2) {
     return new ReflexiveMatcherBuilder(OrMatcher.class, MatcherBuilderUtils.lexerfulToMatcherBuilders(Arrays.asList(e1, e2)));
   }
 
-  public Object firstOf(Object e1, Object e2, Object... others) {
-    return new ReflexiveMatcherBuilder(OrMatcher.class, MatcherBuilderUtils.lexerfulToMatcherBuilders(Lists.asList(e1, e2, others)));
+  /**
+   * Creates expression of grammar - "first of".
+   *
+   * @param e1  first sub-expression
+   * @param e2  second sub-expression
+   * @param rest  rest of sub-expressions
+   */
+  public Object firstOf(Object e1, Object e2, Object... rest) {
+    return new ReflexiveMatcherBuilder(OrMatcher.class, MatcherBuilderUtils.lexerfulToMatcherBuilders(Lists.asList(e1, e2, rest)));
   }
 
-  public Object optional(Object e1) {
-    return new ReflexiveMatcherBuilder(OptMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Arrays.asList(e1))});
+  /**
+   * Creates expression of grammar - "optional".
+   *
+   * @param e  sub-expression
+   */
+  public Object optional(Object e) {
+    return new ReflexiveMatcherBuilder(OptMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Arrays.asList(e))});
   }
 
-  public Object optional(Object e1, Object... others) {
-    return new ReflexiveMatcherBuilder(OptMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Lists.asList(e1, others))});
+  /**
+   * Creates expression of grammar - "optional".
+   *
+   * @param e1  first sub-expression
+   * @param rest  rest of sub-expressions
+   */
+  public Object optional(Object e1, Object... rest) {
+    return new ReflexiveMatcherBuilder(OptMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Lists.asList(e1, rest))});
   }
 
-  public Object oneOrMore(Object e1) {
-    return new ReflexiveMatcherBuilder(OneToNMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Arrays.asList(e1))});
+  /**
+   * Creates expression of grammar - "one or more".
+   *
+   * @param e  sub-expression
+   */
+  public Object oneOrMore(Object e) {
+    return new ReflexiveMatcherBuilder(OneToNMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Arrays.asList(e))});
   }
 
-  public Object oneOrMore(Object e1, Object... others) {
-    return new ReflexiveMatcherBuilder(OneToNMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Lists.asList(e1, others))});
+  /**
+   * Creates expression of grammar - "one or more".
+   *
+   * @param e1  first sub-expression
+   * @param rest  rest of sub-expressions
+   */
+  public Object oneOrMore(Object e1, Object... rest) {
+    return new ReflexiveMatcherBuilder(OneToNMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Lists.asList(e1, rest))});
   }
 
-  public Object zeroOrMore(Object e1) {
-    return optional(new ReflexiveMatcherBuilder(OneToNMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Arrays.asList(e1))}));
+  /**
+   * Creates expression of grammar - "zero or more".
+   *
+   * @param e  sub-expression
+   */
+  public Object zeroOrMore(Object e) {
+    return optional(new ReflexiveMatcherBuilder(OneToNMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Arrays.asList(e))}));
   }
 
-  public Object zeroOrMore(Object e1, Object... others) {
-    return optional(new ReflexiveMatcherBuilder(OneToNMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Lists.asList(e1, others))}));
+  /**
+   * Creates expression of grammar - "zero or more".
+   *
+   * @param e1  sub-expression
+   * @param rest  rest of sub-expressions
+   */
+  public Object zeroOrMore(Object e1, Object... rest) {
+    return optional(new ReflexiveMatcherBuilder(OneToNMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Lists.asList(e1, rest))}));
   }
 
-  public Object next(Object e1) {
-    return new ReflexiveMatcherBuilder(NextMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Arrays.asList(e1))});
+  /**
+   * Creates expression of grammar - "next".
+   *
+   * @param e  sub-expression
+   */
+  public Object next(Object e) {
+    return new ReflexiveMatcherBuilder(NextMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Arrays.asList(e))});
   }
 
-  public Object next(Object e1, Object... others) {
-    return new ReflexiveMatcherBuilder(NextMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Lists.asList(e1, others))});
+  /**
+   * Creates expression of grammar - "next".
+   *
+   * @param e1  first sub-expression
+   * @param rest  rest of sub-expressions
+   */
+  public Object next(Object e1, Object... rest) {
+    return new ReflexiveMatcherBuilder(NextMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Lists.asList(e1, rest))});
   }
 
-  public Object nextNot(Object e1) {
-    return new ReflexiveMatcherBuilder(NotMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Arrays.asList(e1))});
+  /**
+   * Creates expression of grammar - "next not".
+   *
+   * @param e  sub-expression
+   */
+  public Object nextNot(Object e) {
+    return new ReflexiveMatcherBuilder(NotMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Arrays.asList(e))});
   }
 
-  public Object nextNot(Object e1, Object... others) {
-    return new ReflexiveMatcherBuilder(NotMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Lists.asList(e1, others))});
+  /**
+   * Creates expression of grammar - "next not".
+   *
+   * @param e1  sub-expression
+   * @param rest  rest of sub-expressions
+   */
+  public Object nextNot(Object e1, Object... rest) {
+    return new ReflexiveMatcherBuilder(NotMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Lists.asList(e1, rest))});
   }
 
+  /**
+   * Creates expression of grammar - "nothing".
+   */
   public Object nothing() {
     return new ReflexiveMatcherBuilder(BooleanMatcher.class, new Object[] {false});
   }
@@ -194,20 +278,37 @@ public class LexerfulGrammarBuilder {
     return new ReflexiveMatcherBuilder(BooleanMatcher.class, new Object[] {true});
   }
 
+  /**
+   * Creates expression of grammar - "any token".
+   */
   public Object anyToken() {
     return new ReflexiveMatcherBuilder(AnyTokenMatcher.class, new Object[0]);
   }
 
+  /**
+   * Creates expression of grammar - "till new line".
+   */
   public Object tillNewLine() {
     return new ReflexiveMatcherBuilder(TillNewLineMatcher.class, new Object[0]);
   }
 
-  public Object till(Object element) {
-    return new ReflexiveMatcherBuilder(InclusiveTillMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToMatcherBuilder(element)});
+  /**
+   * Creates expression of grammar - "till".
+   *
+   * @param e  sub-expression
+   */
+  public Object till(Object e) {
+    return new ReflexiveMatcherBuilder(InclusiveTillMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToMatcherBuilder(e)});
   }
 
-  public Object exclusiveTill(Object e1, Object... others) {
-    return new ReflexiveMatcherBuilder(ExclusiveTillMatcher.class, MatcherBuilderUtils.lexerfulToMatcherBuilders(Lists.asList(e1, others)));
+  /**
+   * Creates expression of grammar - "exclusive till".
+   *
+   * @param e1  first sub-expression
+   * @param rest  rest of sub-expressions
+   */
+  public Object exclusiveTill(Object e1, Object... rest) {
+    return new ReflexiveMatcherBuilder(ExclusiveTillMatcher.class, MatcherBuilderUtils.lexerfulToMatcherBuilders(Lists.asList(e1, rest)));
   }
 
 }

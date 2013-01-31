@@ -33,22 +33,20 @@ public class ExpressionGrammarRulesTest {
 
   private LexerlessGrammarBuilder b = ExpressionGrammarRules.createGrammarBuilder();
 
+  /**
+   * This test demonstrates how to use {@link org.sonar.sslr.tests.Assertions} to test rules of grammar.
+   */
   @Test
-  public void test() {
+  public void rules() {
     assertThat(b.build().rule(ExpressionGrammarRules.EXPRESSION))
-        .matches("20 * ( 2 + 2 ) - var")
         .matches("1 + 1")
-        .notMatches("1 +");
+        .notMatches("1 +")
+        .matches("20 * ( 2 + 2 ) - var");
   }
 
-  @Test
-  public void should_override() {
-    b.rule(ExpressionGrammarRules.PLUS).override("plus ");
-    assertThat(b.build().rule(ExpressionGrammarRules.EXPRESSION))
-        .matches("1 plus 1")
-        .notMatches("1 + 1");
-  }
-
+  /**
+   * This test demonstrates how to use {@link ParserAdapter} to parse and construct AST.
+   */
   @Test
   public void ast() {
     ParserAdapter<LexerlessGrammar> parser = new ParserAdapter<LexerlessGrammar>(Charsets.UTF_8, b.build());

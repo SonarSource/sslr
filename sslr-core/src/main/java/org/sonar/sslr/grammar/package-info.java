@@ -19,6 +19,10 @@
  */
 
 /**
+ * API to define <a href="http://en.wikipedia.org/wiki/Parsing_expression_grammar">Parsing Expression Grammar</a>.
+ *
+ * There is two entry points: {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder} and {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder}.
+ *
  * @since 1.18
  */
 @javax.annotation.ParametersAreNonnullByDefault
