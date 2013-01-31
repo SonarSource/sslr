@@ -17,8 +17,9 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.internal.ast.select;
+package org.sonar.sslr.ast;
 
+import com.google.common.annotations.Beta;
 import com.google.common.base.Predicate;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
@@ -31,10 +32,9 @@ import java.util.Iterator;
  *
  * <p>This interface is not intended to be implemented by clients.</p>
  *
- * TODO Godin: should be moved into API package
- *
  * @since 1.18
  */
+@Beta
 public interface AstSelect extends Iterable<AstNode> {
 
   /**

@@ -21,7 +21,7 @@ package com.sonar.sslr.api;
 
 import com.google.common.collect.Lists;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
-import org.sonar.sslr.internal.ast.select.AstSelect;
+import org.sonar.sslr.ast.AstSelect;
 import org.sonar.sslr.internal.ast.select.AstSelectFactory;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 

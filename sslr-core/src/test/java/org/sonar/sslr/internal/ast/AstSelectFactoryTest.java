@@ -17,11 +17,15 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.internal.ast.select;
+package org.sonar.sslr.internal.ast;
 
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
 import org.junit.Test;
+import org.sonar.sslr.internal.ast.select.AstSelectFactory;
+import org.sonar.sslr.internal.ast.select.EmptyAstSelect;
+import org.sonar.sslr.internal.ast.select.ListAstSelect;
+import org.sonar.sslr.internal.ast.select.SingleAstSelect;
 
 import java.util.Arrays;
 

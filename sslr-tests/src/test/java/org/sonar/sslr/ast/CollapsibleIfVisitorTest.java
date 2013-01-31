@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.internal.ast.query;
+package org.sonar.sslr.ast;
 
 import com.google.common.collect.Sets;
 import com.sonar.sslr.api.AstNode;
@@ -25,8 +25,6 @@ import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
 import com.sonar.sslr.test.miniC.MiniCParser;
 import org.junit.Test;
-import org.sonar.sslr.internal.ast.select.AstSelect;
-import org.sonar.sslr.internal.ast.select.AstSelectFactory;
 
 import java.io.File;
 import java.util.List;
@@ -34,7 +32,7 @@ import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class CollapsibleIfSelectTest {
+public class CollapsibleIfVisitorTest {
 
   private Parser<MiniCGrammar> p = MiniCParser.create();
   private MiniCGrammar g = p.getGrammar();
@@ -54,25 +52,32 @@ public class CollapsibleIfSelectTest {
   }
 
   private boolean visit(AstNode node) {
-    AstSelect select = AstSelectFactory.select(node);
-    return hasNoElseClause(select) && (hasIfStatementWithoutElse(select) || hasIfStatementWithoutElseInCompoundStatement(select));
+    return !hasElseClause(node) && hasCollapsibleIfStatement(node);
   }
 
-  private boolean hasNoElseClause(AstSelect select) {
-    return select.children(g.elseClause).isEmpty();
+  private boolean hasElseClause(AstNode node) {
+    return node.hasDirectChildren(g.elseClause);
   }
 
-  private boolean hasIfStatementWithoutElseInCompoundStatement(AstSelect select) {
-    select = select
-        .children(g.statement)
-        .children(g.compoundStatement);
-    return select.children().size() == 3
-      && hasIfStatementWithoutElse(select);
+  private boolean hasCollapsibleIfStatement(AstNode node) {
+    AstNode statementNode = node.getFirstChild(g.statement).getChild(0);
+    return isIfStatementWithoutElse(statementNode) || isIfStatementWithoutElseInCompoundStatement(statementNode);
   }
 
-  private boolean hasIfStatementWithoutElse(AstSelect select) {
-    select = select.children(g.statement).children(g.ifStatement);
-    return select.isNotEmpty() && hasNoElseClause(select);
+  private boolean isIfStatementWithoutElse(AstNode node) {
+    return node.is(g.ifStatement) && !hasElseClause(node);
+  }
+
+  private boolean isIfStatementWithoutElseInCompoundStatement(AstNode node) {
+    if (!node.is(g.compoundStatement) || node.getNumberOfChildren() != 3) {
+      return false;
+    }
+    AstNode statementNode = node.getFirstChild(g.statement);
+    if (statementNode == null) {
+      // Null check was initially forgotten, did not led to a NPE because the unit test did not cover that case yet!
+      return false;
+    }
+    return isIfStatementWithoutElse(statementNode.getChild(0));
   }
 
 }

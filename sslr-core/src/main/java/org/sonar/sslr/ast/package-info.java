@@ -17,39 +17,10 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.internal.ast.select;
 
-import org.sonar.sslr.ast.AstSelect;
+/**
+ * @since 1.18
+ */
+@javax.annotation.ParametersAreNonnullByDefault
+package org.sonar.sslr.ast;
 
-import com.sonar.sslr.api.AstNode;
-
-import javax.annotation.Nullable;
-
-import java.util.List;
-
-public final class AstSelectFactory {
-
-  private static final AstSelect EMPTY = new EmptyAstSelect();
-
-  private AstSelectFactory() {
-  }
-
-  public static AstSelect select(@Nullable AstNode node) {
-    return node == null ? EMPTY : new SingleAstSelect(node);
-  }
-
-  public static AstSelect create(List<AstNode> list) {
-    if (list.size() == 1) {
-      return new SingleAstSelect(list.get(0));
-    } else if (!list.isEmpty()) {
-      return new ListAstSelect(list);
-    } else {
-      return EMPTY;
-    }
-  }
-
-  public static AstSelect empty() {
-    return EMPTY;
-  }
-
-}

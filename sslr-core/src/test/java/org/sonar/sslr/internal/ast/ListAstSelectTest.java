@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.internal.ast.select;
+package org.sonar.sslr.internal.ast;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
@@ -27,6 +27,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.sonar.sslr.ast.AstSelect;
+import org.sonar.sslr.internal.ast.select.AstSelectFactory;
+import org.sonar.sslr.internal.ast.select.ListAstSelect;
+import org.sonar.sslr.internal.ast.select.SingleAstSelect;
 
 import java.util.Arrays;
 
