@@ -22,6 +22,7 @@ package com.sonar.sslr.api;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.sonar.sslr.grammar.GrammarException;
+import org.sonar.sslr.grammar.GrammarRuleKey;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -46,6 +47,12 @@ public class GrammarTest {
   public void testGetAllRuleFields() {
     List<Field> ruleFields = Grammar.getAllRuleFields(MyGrammar.class);
     assertThat(ruleFields.size()).isEqualTo(5);
+  }
+
+  @Test
+  public void method_rule_should_throw_exception_by_default() {
+    thrown.expect(UnsupportedOperationException.class);
+    grammar.rule(mock(GrammarRuleKey.class));
   }
 
   @Test

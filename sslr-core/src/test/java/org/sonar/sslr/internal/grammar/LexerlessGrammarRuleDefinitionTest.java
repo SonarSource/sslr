@@ -165,4 +165,10 @@ public class LexerlessGrammarRuleDefinitionTest {
     verify(ruleMatcher).skipIfOneChild();
   }
 
+  @Test
+  public void recovery_rule_not_supported() {
+    thrown.expect(UnsupportedOperationException.class);
+    definition.recoveryRule();
+  }
+
 }

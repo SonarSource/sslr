@@ -98,6 +98,11 @@ public abstract class Grammar {
   }
 
   /**
+   * Allows to test rules of grammars, which were constructed by
+   * {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder} and {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder}.
+   *
+   * <p>This method is not intended to be overridden.</p>
+   *
    * @since 1.18
    */
   public Rule rule(GrammarRuleKey ruleKey) {
