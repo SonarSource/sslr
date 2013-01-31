@@ -25,6 +25,8 @@ package org.sonar.sslr.grammar;
  * <p>This interface is not intended to be implemented by clients.</p>
  *
  * @since 1.18
+ * @see LexerlessGrammarBuilder#rule(GrammarRuleKey)
+ * @see LexerfulGrammarBuilder#rule(GrammarRuleKey)
  */
 public interface GrammarRuleBuilder {
 

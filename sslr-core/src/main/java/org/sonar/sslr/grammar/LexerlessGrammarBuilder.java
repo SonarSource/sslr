@@ -69,6 +69,8 @@ public class LexerlessGrammarBuilder {
 
   /**
    * Allows to describe rule.
+   * Result of this method should be used only for execution of methods in it, i.e. you should not save reference on it.
+   * No guarantee that this method always returns the same instance for the same key of rule.
    */
   public GrammarRuleBuilder rule(GrammarRuleKey ruleKey) {
     LexerlessGrammarRuleDefinition definition = definitions.get(ruleKey);
