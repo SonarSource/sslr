@@ -64,7 +64,6 @@ public abstract class AbstractConfigurationModel implements ConfigurationModel {
    * @return Charset for the current configuration
    */
   public Charset getCharset() {
-    System.out.println("AbstractConfigurationModel: The method doGetCharset() should be overriden!");
     return Charset.defaultCharset();
   }
 
