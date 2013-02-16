@@ -1,0 +1,54 @@
+/*
+ * SonarSource Language Recognizer
+ * Copyright (C) 2010 SonarSource
+ * dev@sonar.codehaus.org
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ */
+package org.sonar.sslr.internal.vm;
+
+import com.sonar.sslr.api.Trivia.TriviaKind;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.sonar.sslr.internal.matchers.MatcherContext;
+import org.sonar.sslr.internal.matchers.TriviaMatcher;
+
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
+public class TriviaExpressionTest {
+
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
+
+  // TODO not a unit test
+  @Test
+  public void test() {
+    Instruction[] instructions = new TriviaExpression(TriviaKind.COMMENT, new StringExpression("foo")).compile();
+    assertThat(Machine.execute("foo", instructions)).isTrue();
+    assertThat(Machine.execute("bar", instructions)).isFalse();
+  }
+
+  @Test
+  public void should_implement_Matcher() {
+    TriviaExpression expression = new TriviaExpression(TriviaKind.COMMENT, mock(ParsingExpression.class));
+    // Important for AstCreator
+    assertThat(expression).isInstanceOf(TriviaMatcher.class);
+    thrown.expect(UnsupportedOperationException.class);
+    expression.match(mock(MatcherContext.class));
+  }
+
+}

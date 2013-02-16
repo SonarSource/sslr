@@ -1,0 +1,294 @@
+/*
+ * SonarSource Language Recognizer
+ * Copyright (C) 2010 SonarSource
+ * dev@sonar.codehaus.org
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ */
+package org.sonar.sslr.internal.vm;
+
+import org.sonar.sslr.grammar.GrammarException;
+import org.sonar.sslr.internal.matchers.Matcher;
+
+import java.util.List;
+
+public abstract class Instruction {
+
+  private static final Instruction RET = new RetInstruction();
+  private static final Instruction BACKTRACK = new BacktrackInstruction();
+  private static final Instruction END = new EndInstruction();
+  private static final Instruction FAIL_TWICE = new FailTwiceInstruction();
+
+  public static void addAll(List<Instruction> list, Instruction[] array) {
+    for (Instruction i : array) {
+      list.add(i);
+    }
+  }
+
+  public static Instruction jump(int offset) {
+    return new JumpInstruction(offset);
+  }
+
+  public static Instruction call(int offset, Matcher matcher) {
+    return new CallInstruction(offset, matcher);
+  }
+
+  public static Instruction ret() {
+    return RET;
+  }
+
+  public static Instruction backtrack() {
+    return BACKTRACK;
+  }
+
+  public static Instruction end() {
+    return END;
+  }
+
+  public static Instruction choice(int offset) {
+    return new ChoiceInstruction(offset);
+  }
+
+  public static Instruction predicateChoice(int offset) {
+    return new PredicateChoiceInstruction(offset);
+  }
+
+  public static Instruction commit(int offset) {
+    return new CommitInstruction(offset);
+  }
+
+  public static Instruction commitVerify(int offset) {
+    return new CommitVerifyInstruction(offset);
+  }
+
+  public static Instruction failTwice() {
+    return FAIL_TWICE;
+  }
+
+  public static Instruction backCommit(int offset) {
+    return new BackCommitInstruction(offset);
+  }
+
+  /**
+   * Executes this instruction.
+   */
+  public abstract void execute(Machine machine);
+
+  public static final class JumpInstruction extends Instruction {
+    private final int offset;
+
+    public JumpInstruction(int offset) {
+      this.offset = offset;
+    }
+
+    @Override
+    public void execute(Machine machine) {
+      machine.jump(offset);
+    }
+
+    @Override
+    public String toString() {
+      return "Jump " + offset;
+    }
+  }
+
+  public static final class CallInstruction extends Instruction {
+    private final int offset;
+    private final Matcher matcher;
+
+    public CallInstruction(int offset, Matcher matcher) {
+      this.offset = offset;
+      this.matcher = matcher;
+    }
+
+    @Override
+    public void execute(Machine machine) {
+      machine.pushReturn(1, matcher, offset);
+    }
+
+    @Override
+    public String toString() {
+      return "Call " + offset;
+    }
+  }
+
+  public static final class ChoiceInstruction extends Instruction {
+    private final int offset;
+
+    public ChoiceInstruction(int offset) {
+      this.offset = offset;
+    }
+
+    @Override
+    public void execute(Machine machine) {
+      machine.pushBacktrack(offset);
+      machine.jump(1);
+    }
+
+    @Override
+    public String toString() {
+      return "Choice " + offset;
+    }
+  }
+
+  /**
+   * Instruction dedicated for predicates.
+   * Disables error reports and then behaves exactly as {@link ChoiceInstruction}.
+   */
+  public static final class PredicateChoiceInstruction extends Instruction {
+    private final int offset;
+
+    public PredicateChoiceInstruction(int offset) {
+      this.offset = offset;
+    }
+
+    @Override
+    public void execute(Machine machine) {
+      machine.setIgnoreErrors(true);
+      machine.pushBacktrack(offset);
+      machine.jump(1);
+    }
+
+    @Override
+    public String toString() {
+      return "PredicateChoice " + offset;
+    }
+  }
+
+  public static final class CommitInstruction extends Instruction {
+    private final int offset;
+
+    public CommitInstruction(int offset) {
+      this.offset = offset;
+    }
+
+    @Override
+    public void execute(Machine machine) {
+      // add all nodes to parent
+      machine.peek().parent.subNodes.addAll(machine.peek().subNodes);
+
+      machine.pop();
+      machine.jump(offset);
+    }
+
+    @Override
+    public String toString() {
+      return "Commit " + offset;
+    }
+  }
+
+  public static final class CommitVerifyInstruction extends Instruction {
+    private final int offset;
+
+    public CommitVerifyInstruction(int offset) {
+      this.offset = offset;
+    }
+
+    @Override
+    public void execute(Machine machine) {
+      if (machine.getIndex() == machine.peek().parent.index) {
+        // TODO better message
+        throw new GrammarException("The inner part of ZeroOrMore must not allow empty matches");
+      }
+      // add all nodes to parent
+      machine.peek().parent.subNodes.addAll(machine.peek().subNodes);
+
+      machine.pop();
+      machine.jump(offset);
+    }
+
+    @Override
+    public String toString() {
+      return "CommitVerify " + offset;
+    }
+  }
+
+  public static final class RetInstruction extends Instruction {
+    @Override
+    public void execute(Machine machine) {
+      machine.createNode();
+      MachineStack stack = machine.peek();
+      machine.setIgnoreErrors(stack.isIgnoreErrors());
+      machine.setAddress(stack.getAddress());
+      machine.popReturn();
+    }
+
+    @Override
+    public String toString() {
+      return "Ret";
+    }
+  }
+
+  public static final class BacktrackInstruction extends Instruction {
+    @Override
+    public void execute(Machine machine) {
+      machine.backtrack();
+    }
+
+    @Override
+    public String toString() {
+      return "Backtrack";
+    }
+  }
+
+  public static final class EndInstruction extends Instruction {
+    @Override
+    public void execute(Machine machine) {
+      machine.setAddress(-1);
+    }
+
+    @Override
+    public String toString() {
+      return "End";
+    }
+  }
+
+  public static final class FailTwiceInstruction extends Instruction {
+    @Override
+    public void execute(Machine machine) {
+      // remove pending alternative pushed by Choice instruction
+      machine.pop();
+      machine.backtrack();
+    }
+
+    @Override
+    public String toString() {
+      return "FailTwice";
+    }
+  }
+
+  public static final class BackCommitInstruction extends Instruction {
+    private final int offset;
+
+    public BackCommitInstruction(int offset) {
+      this.offset = offset;
+    }
+
+    @Override
+    public void execute(Machine machine) {
+      MachineStack stack = machine.peek();
+      machine.setIndex(stack.getIndex());
+      machine.setIgnoreErrors(stack.isIgnoreErrors());
+      machine.pop();
+      machine.jump(offset);
+    }
+
+    @Override
+    public String toString() {
+      return "BackCommit " + offset;
+    }
+  }
+
+}
