@@ -267,6 +267,7 @@ public class VmGrammarBuilder {
    * Creates expression of grammar based on regular expression.
    *
    * @param regexp  regular expression
+   * @throws java.util.regex.PatternSyntaxException if the expression's syntax is invalid
    */
   public Object regexp(String regexp) {
     return new PatternExpression(regexp);

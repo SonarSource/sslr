@@ -42,6 +42,9 @@ public class RegexpChannel extends Channel<Lexer> {
   private final String regexp;
   private final Token.Builder tokenBuilder = Token.builder();
 
+  /**
+   * @throws java.util.regex.PatternSyntaxException if the expression's syntax is invalid
+   */
   public RegexpChannel(TokenType type, String regexp) {
     matcher = Pattern.compile(regexp).matcher("");
     this.type = type;

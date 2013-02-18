@@ -26,6 +26,8 @@ import org.junit.rules.ExpectedException;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 
+import java.util.regex.PatternSyntaxException;
+
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -128,6 +130,13 @@ public class VmGrammarBuilderTest {
     thrown.expect(GrammarException.class);
     thrown.expectMessage("The rule " + ruleKey2 + " has been used somewhere in grammar, but not defined.");
     b.build();
+  }
+
+  @Test
+  public void test_wrong_regexp() {
+    VmGrammarBuilder b = VmGrammarBuilder.create();
+    thrown.expect(PatternSyntaxException.class);
+    b.regexp("[");
   }
 
 }

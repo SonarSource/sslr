@@ -39,6 +39,9 @@ public class BlackHoleChannel extends Channel<Lexer> {
 
   private final Matcher matcher;
 
+  /**
+   * @throws java.util.regex.PatternSyntaxException if the expression's syntax is invalid
+   */
   public BlackHoleChannel(String regexp) {
     matcher = Pattern.compile(regexp).matcher("");
   }
@@ -64,4 +67,5 @@ public class BlackHoleChannel extends Channel<Lexer> {
       return this;
     }
   }
+
 }

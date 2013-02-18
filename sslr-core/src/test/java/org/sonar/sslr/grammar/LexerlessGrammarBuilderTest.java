@@ -39,6 +39,8 @@ import org.sonar.sslr.internal.matchers.TokenMatcher;
 import org.sonar.sslr.internal.matchers.TriviaMatcher;
 import org.sonar.sslr.internal.matchers.ZeroOrMoreMatcher;
 
+import java.util.regex.PatternSyntaxException;
+
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -47,6 +49,13 @@ public class LexerlessGrammarBuilderTest {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
+
+  @Test
+  public void test_wrong_regexp() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+    thrown.expect(PatternSyntaxException.class);
+    b.regexp("[");
+  }
 
   @Test
   public void should_have_no_definitions_at_first() {

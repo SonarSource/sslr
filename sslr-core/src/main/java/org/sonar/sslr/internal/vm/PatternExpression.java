@@ -29,10 +29,16 @@ public class PatternExpression extends NativeExpression implements org.sonar.ssl
 
   private final Matcher matcher;
 
+  /**
+   * @throws java.util.regex.PatternSyntaxException if the expression's syntax is invalid
+   */
   public PatternExpression(String regex) {
     matcher = Pattern.compile(regex).matcher("");
   }
 
+  /**
+   * @throws GrammarException if execution of regular expression has led to StackOverflowError
+   */
   @Override
   public void execute(Machine machine) {
     matcher.reset(machine);

@@ -42,6 +42,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * A builder for creating grammars for lexerless parsing.
@@ -247,8 +248,10 @@ public class LexerlessGrammarBuilder {
    * Creates expression of grammar based on regular expression.
    *
    * @param regexp  regular expression
+   * @throws java.util.regex.PatternSyntaxException if the expression's syntax is invalid
    */
   public Object regexp(String regexp) {
+    Pattern.compile(regexp);
     return new ReflexiveMatcherBuilder(PatternMatcher.class, new Object[] {regexp});
   }
 

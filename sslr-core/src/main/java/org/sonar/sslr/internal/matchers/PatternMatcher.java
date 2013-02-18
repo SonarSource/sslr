@@ -27,10 +27,16 @@ public class PatternMatcher implements Matcher {
 
   private final java.util.regex.Matcher matcher;
 
+  /**
+   * @throws java.util.regex.PatternSyntaxException if the expression's syntax is invalid
+   */
   public PatternMatcher(String regex) {
     matcher = Pattern.compile(regex).matcher("");
   }
 
+  /**
+   * @throws GrammarException if execution of regular expression has led to StackOverflowError
+   */
   public boolean match(MatcherContext context) {
     matcher.reset(context);
     boolean result;

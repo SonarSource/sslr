@@ -40,6 +40,9 @@ public class IdentifierAndKeywordChannel extends Channel<Lexer> {
   private final boolean caseSensitive;
   private final Token.Builder tokenBuilder = Token.builder();
 
+  /**
+   * @throws java.util.regex.PatternSyntaxException if the expression's syntax is invalid
+   */
   public IdentifierAndKeywordChannel(String regexp, boolean caseSensitive, TokenType[]... keywordSets) {
     ImmutableMap.Builder<String, TokenType> keywordsMapBuilder = ImmutableMap.builder();
     for (TokenType[] keywords : keywordSets) {
