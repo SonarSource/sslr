@@ -25,17 +25,24 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class FirstOfExpressionTest {
 
-  // TODO not a unit test
   @Test
-  public void test() {
+  public void should_compile() {
     Instruction[] instructions = new FirstOfExpression(
-        new StringExpression("foo"),
-        new StringExpression("bar"),
-        new StringExpression("baz")).compile();
-    assertThat(Machine.execute("foo", instructions)).isTrue();
-    assertThat(Machine.execute("bar", instructions)).isTrue();
-    assertThat(Machine.execute("baz", instructions)).isTrue();
-    assertThat(Machine.execute("qux", instructions)).isFalse();
+        new SubExpression(1, 2, 3),
+        new SubExpression(4, 5),
+        new SubExpression(6)).compile();
+    assertThat(instructions).isEqualTo(new Instruction[] {
+      Instruction.choice(5),
+      SubExpression.mockInstruction(1),
+      SubExpression.mockInstruction(2),
+      SubExpression.mockInstruction(3),
+      Instruction.commit(6),
+      Instruction.choice(4),
+      SubExpression.mockInstruction(4),
+      SubExpression.mockInstruction(5),
+      Instruction.commit(2),
+      SubExpression.mockInstruction(6),
+    });
   }
 
 }

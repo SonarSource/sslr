@@ -25,13 +25,15 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class ZeroOrMoreExpressionTest {
 
-  // TODO not a unit test
   @Test
-  public void test() {
-    Instruction[] instructions = new ZeroOrMoreExpression(new StringExpression("a")).compile();
-    assertThat(Machine.execute("", instructions)).isTrue();
-    assertThat(Machine.execute("a", instructions)).isTrue();
-    assertThat(Machine.execute("aa", instructions)).isTrue();
+  public void should_compile() {
+    Instruction[] instructions = new ZeroOrMoreExpression(new SubExpression(1, 2)).compile();
+    assertThat(instructions).isEqualTo(new Instruction[] {
+      Instruction.choice(4),
+      SubExpression.mockInstruction(1),
+      SubExpression.mockInstruction(2),
+      Instruction.commitVerify(-3)
+    });
   }
 
 }

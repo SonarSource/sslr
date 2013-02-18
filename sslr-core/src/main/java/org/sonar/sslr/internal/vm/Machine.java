@@ -119,7 +119,7 @@ public class Machine implements CharSequence {
     this.input = input.toCharArray();
     this.handler = handler;
     this.memos = new ParseNode[this.input.length + 1];
-    this.stack = new MachineStack(null);
+    this.stack = new MachineStack();
     stack.child = new MachineStack(this.stack);
     stack = stack.child;
     stack.index = -1;

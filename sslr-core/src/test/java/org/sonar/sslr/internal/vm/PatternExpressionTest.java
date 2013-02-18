@@ -22,10 +22,16 @@ package org.sonar.sslr.internal.vm;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
+import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.internal.matchers.MatcherContext;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 public class PatternExpressionTest {
 
@@ -33,6 +39,7 @@ public class PatternExpressionTest {
   public ExpectedException thrown = ExpectedException.none();
 
   private PatternExpression expression = new PatternExpression("foo|bar");
+  private Machine machine = mock(Machine.class);
 
   @Test
   public void should_compile() {
@@ -40,13 +47,44 @@ public class PatternExpressionTest {
     assertThat(expression.toString()).isEqualTo("Pattern foo|bar");
   }
 
-  // TODO not a unit test
   @Test
-  public void test() {
-    Instruction[] instructions = expression.compile();
-    assertThat(Machine.execute("foo", instructions)).isTrue();
-    assertThat(Machine.execute("bar", instructions)).isTrue();
-    assertThat(Machine.execute("baz", instructions)).isFalse();
+  public void should_match() {
+    when(machine.length()).thenReturn(3);
+    when(machine.charAt(0)).thenReturn('f');
+    when(machine.charAt(1)).thenReturn('o');
+    when(machine.charAt(2)).thenReturn('o');
+    expression.execute(machine);
+    InOrder inOrder = Mockito.inOrder(machine);
+    inOrder.verify(machine, atLeast(1)).length();
+    inOrder.verify(machine, atLeast(1)).charAt(0);
+    inOrder.verify(machine, atLeast(1)).charAt(1);
+    inOrder.verify(machine, atLeast(1)).charAt(2);
+    inOrder.verify(machine).advanceIndex(3);
+    inOrder.verify(machine).createLeafNode(expression);
+    inOrder.verify(machine).jump(1);
+    verifyNoMoreInteractions(machine);
+  }
+
+  @Test
+  public void should_backtrack() {
+    when(machine.length()).thenReturn(1);
+    when(machine.charAt(0)).thenReturn('z');
+    expression.execute(machine);
+    InOrder inOrder = Mockito.inOrder(machine);
+    inOrder.verify(machine, atLeast(1)).length();
+    inOrder.verify(machine, atLeast(1)).charAt(0);
+    inOrder.verify(machine).backtrack();
+    verifyNoMoreInteractions(machine);
+  }
+
+  @Test
+  public void should_catch_StackOverflowError() {
+    when(machine.length()).thenReturn(1);
+    when(machine.charAt(0)).thenThrow(StackOverflowError.class);
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The regular expression 'foo|bar' has led to a stack overflow error."
+      + " This error is certainly due to an inefficient use of alternations. See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5050507");
+    expression.execute(machine);
   }
 
   @Test

@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.internal.vm;
 
+import com.google.common.base.Objects;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.internal.matchers.Matcher;
 
@@ -102,6 +103,16 @@ public abstract class Instruction {
     public String toString() {
       return "Jump " + offset;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+      return (obj instanceof JumpInstruction) && (this.offset == ((JumpInstruction) obj).offset);
+    }
+
+    @Override
+    public int hashCode() {
+      return offset;
+    }
   }
 
   public static final class CallInstruction extends Instruction {
@@ -122,6 +133,21 @@ public abstract class Instruction {
     public String toString() {
       return "Call " + offset;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj instanceof CallInstruction) {
+        CallInstruction other = (CallInstruction) obj;
+        return this.offset == other.offset
+          && Objects.equal(this.matcher, other.matcher);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      return offset;
+    }
   }
 
   public static final class ChoiceInstruction extends Instruction {
@@ -140,6 +166,16 @@ public abstract class Instruction {
     @Override
     public String toString() {
       return "Choice " + offset;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      return (obj instanceof ChoiceInstruction) && (this.offset == ((ChoiceInstruction) obj).offset);
+    }
+
+    @Override
+    public int hashCode() {
+      return offset;
     }
   }
 
@@ -165,6 +201,16 @@ public abstract class Instruction {
     public String toString() {
       return "PredicateChoice " + offset;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+      return (obj instanceof PredicateChoiceInstruction) && (this.offset == ((PredicateChoiceInstruction) obj).offset);
+    }
+
+    @Override
+    public int hashCode() {
+      return offset;
+    }
   }
 
   public static final class CommitInstruction extends Instruction {
@@ -186,6 +232,16 @@ public abstract class Instruction {
     @Override
     public String toString() {
       return "Commit " + offset;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      return (obj instanceof CommitInstruction) && (this.offset == ((CommitInstruction) obj).offset);
+    }
+
+    @Override
+    public int hashCode() {
+      return offset;
     }
   }
 
@@ -212,6 +268,16 @@ public abstract class Instruction {
     @Override
     public String toString() {
       return "CommitVerify " + offset;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      return (obj instanceof CommitVerifyInstruction) && (this.offset == ((CommitVerifyInstruction) obj).offset);
+    }
+
+    @Override
+    public int hashCode() {
+      return offset;
     }
   }
 
@@ -288,6 +354,16 @@ public abstract class Instruction {
     @Override
     public String toString() {
       return "BackCommit " + offset;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      return (obj instanceof BackCommitInstruction) && (this.offset == ((BackCommitInstruction) obj).offset);
+    }
+
+    @Override
+    public int hashCode() {
+      return offset;
     }
   }
 

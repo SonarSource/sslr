@@ -19,9 +19,12 @@
  */
 package org.sonar.sslr.internal.vm;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
+import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.internal.matchers.Matcher;
 import org.sonar.sslr.internal.vm.Instruction.BackCommitInstruction;
 import org.sonar.sslr.internal.vm.Instruction.BacktrackInstruction;
@@ -43,6 +46,9 @@ import static org.mockito.Mockito.when;
 
 public class InstructionTest {
 
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
+
   private Machine machine = mock(Machine.class);
 
   @Test
@@ -50,6 +56,10 @@ public class InstructionTest {
     Instruction instruction = Instruction.jump(42);
     assertThat(instruction).isInstanceOf(JumpInstruction.class);
     assertThat(instruction.toString()).isEqualTo("Jump 42");
+    assertThat(instruction.equals(Instruction.jump(42))).isTrue();
+    assertThat(instruction.equals(Instruction.jump(13))).isFalse();
+    assertThat(instruction.equals(new Object())).isFalse();
+    assertThat(instruction.hashCode()).isEqualTo(42);
 
     instruction.execute(machine);
     InOrder inOrder = Mockito.inOrder(machine);
@@ -63,6 +73,11 @@ public class InstructionTest {
     Instruction instruction = Instruction.call(42, matcher);
     assertThat(instruction).isInstanceOf(CallInstruction.class);
     assertThat(instruction.toString()).isEqualTo("Call 42");
+    assertThat(instruction.equals(Instruction.call(42, matcher))).isTrue();
+    assertThat(instruction.equals(Instruction.call(42, mock(Matcher.class)))).isFalse();
+    assertThat(instruction.equals(Instruction.call(13, matcher))).isFalse();
+    assertThat(instruction.equals(new Object())).isFalse();
+    assertThat(instruction.hashCode()).isEqualTo(42);
 
     instruction.execute(machine);
     InOrder inOrder = Mockito.inOrder(machine);
@@ -75,6 +90,10 @@ public class InstructionTest {
     Instruction instruction = Instruction.choice(42);
     assertThat(instruction).isInstanceOf(ChoiceInstruction.class);
     assertThat(instruction.toString()).isEqualTo("Choice 42");
+    assertThat(instruction.equals(Instruction.choice(42))).isTrue();
+    assertThat(instruction.equals(Instruction.choice(13))).isFalse();
+    assertThat(instruction.equals(new Object())).isFalse();
+    assertThat(instruction.hashCode()).isEqualTo(42);
 
     instruction.execute(machine);
     InOrder inOrder = Mockito.inOrder(machine);
@@ -88,6 +107,10 @@ public class InstructionTest {
     Instruction instruction = Instruction.predicateChoice(42);
     assertThat(instruction).isInstanceOf(PredicateChoiceInstruction.class);
     assertThat(instruction.toString()).isEqualTo("PredicateChoice 42");
+    assertThat(instruction.equals(Instruction.predicateChoice(42))).isTrue();
+    assertThat(instruction.equals(Instruction.predicateChoice(13))).isFalse();
+    assertThat(instruction.equals(new Object())).isFalse();
+    assertThat(instruction.hashCode()).isEqualTo(42);
 
     instruction.execute(machine);
     InOrder inOrder = Mockito.inOrder(machine);
@@ -102,6 +125,10 @@ public class InstructionTest {
     Instruction instruction = Instruction.commit(42);
     assertThat(instruction).isInstanceOf(CommitInstruction.class);
     assertThat(instruction.toString()).isEqualTo("Commit " + 42);
+    assertThat(instruction.equals(Instruction.commit(42))).isTrue();
+    assertThat(instruction.equals(Instruction.commit(13))).isFalse();
+    assertThat(instruction.equals(new Object())).isFalse();
+    assertThat(instruction.hashCode()).isEqualTo(42);
 
     MachineStack stack = new MachineStack(new MachineStack(null));
     when(machine.peek()).thenReturn(stack);
@@ -118,6 +145,10 @@ public class InstructionTest {
     Instruction instruction = Instruction.commitVerify(42);
     assertThat(instruction).isInstanceOf(CommitVerifyInstruction.class);
     assertThat(instruction.toString()).isEqualTo("CommitVerify " + 42);
+    assertThat(instruction.equals(Instruction.commitVerify(42))).isTrue();
+    assertThat(instruction.equals(Instruction.commitVerify(13))).isFalse();
+    assertThat(instruction.equals(new Object())).isFalse();
+    assertThat(instruction.hashCode()).isEqualTo(42);
 
     MachineStack stack = new MachineStack(new MachineStack(null));
     when(machine.peek()).thenReturn(stack);
@@ -129,6 +160,16 @@ public class InstructionTest {
     inOrder.verify(machine).pop();
     inOrder.verify(machine).jump(42);
     verifyNoMoreInteractions(machine);
+  }
+
+  @Test
+  public void commitVerify_should_throw_exception() {
+    Instruction instruction = Instruction.commitVerify(42);
+    MachineStack stack = new MachineStack(new MachineStack(null));
+    when(machine.peek()).thenReturn(stack);
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The inner part of ZeroOrMore must not allow empty matches");
+    instruction.execute(machine);
   }
 
   @Test
@@ -197,6 +238,10 @@ public class InstructionTest {
     Instruction instruction = Instruction.backCommit(42);
     assertThat(instruction).isInstanceOf(BackCommitInstruction.class);
     assertThat(instruction.toString()).isEqualTo("BackCommit 42");
+    assertThat(instruction.equals(Instruction.backCommit(42))).isTrue();
+    assertThat(instruction.equals(Instruction.backCommit(13))).isFalse();
+    assertThat(instruction.equals(new Object())).isFalse();
+    assertThat(instruction.hashCode()).isEqualTo(42);
 
     MachineStack stack = mock(MachineStack.class);
     when(stack.getIndex()).thenReturn(13);

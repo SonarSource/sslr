@@ -34,12 +34,17 @@ public class TriviaExpressionTest {
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
-  // TODO not a unit test
   @Test
-  public void test() {
-    Instruction[] instructions = new TriviaExpression(TriviaKind.COMMENT, new StringExpression("foo")).compile();
-    assertThat(Machine.execute("foo", instructions)).isTrue();
-    assertThat(Machine.execute("bar", instructions)).isFalse();
+  public void should_compile() {
+    TriviaExpression expression = new TriviaExpression(TriviaKind.COMMENT, new SubExpression(1, 2));
+    Instruction[] instructions = expression.compile();
+    assertThat(instructions).isEqualTo(new Instruction[] {
+      Instruction.call(2, expression),
+      Instruction.jump(4),
+      SubExpression.mockInstruction(1),
+      SubExpression.mockInstruction(2),
+      Instruction.ret()
+    });
   }
 
   @Test

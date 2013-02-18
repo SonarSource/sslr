@@ -50,8 +50,8 @@ public class ParsingRuleTest {
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
     ParsingRule rule = new ParsingRule(VmGrammarBuilder.create(), ruleKey);
     ParsingExpression e1 = mock(ParsingExpression.class);
-    rule.is(e1);
     ParsingExpression e2 = mock(ParsingExpression.class);
+    rule.is(e1, e2);
     rule.override(e2);
     assertThat(rule.getExpression()).isSameAs(e2);
     rule.override(e1, e2);

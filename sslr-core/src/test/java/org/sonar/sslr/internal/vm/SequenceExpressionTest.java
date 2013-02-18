@@ -25,13 +25,16 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class SequenceExpressionTest {
 
-  // TODO not a unit test
   @Test
-  public void test() {
+  public void should_compile() {
     Instruction[] instructions = new SequenceExpression(
-        new StringExpression("foo"), new StringExpression("bar")).compile();
-    assertThat(Machine.execute("foobar", instructions)).isTrue();
-    assertThat(Machine.execute("baz", instructions)).isFalse();
+        new SubExpression(1, 2),
+        new SubExpression(3)).compile();
+    assertThat(instructions).isEqualTo(new Instruction[] {
+      SubExpression.mockInstruction(1),
+      SubExpression.mockInstruction(2),
+      SubExpression.mockInstruction(3)
+    });
   }
 
 }

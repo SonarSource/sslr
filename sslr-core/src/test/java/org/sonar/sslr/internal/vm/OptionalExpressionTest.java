@@ -25,12 +25,15 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class OptionalExpressionTest {
 
-  // TODO not a unit test
   @Test
-  public void test() {
-    Instruction[] instructions = new OptionalExpression(new StringExpression("a")).compile();
-    assertThat(Machine.execute("", instructions)).isTrue();
-    assertThat(Machine.execute("a", instructions)).isTrue();
+  public void should_compile() {
+    Instruction[] instructions = new OptionalExpression(new SubExpression(1, 2)).compile();
+    assertThat(instructions).isEqualTo(new Instruction[] {
+      Instruction.choice(4),
+      SubExpression.mockInstruction(1),
+      SubExpression.mockInstruction(2),
+      Instruction.commit(1)
+    });
   }
 
 }

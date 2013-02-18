@@ -23,6 +23,7 @@ import com.google.common.collect.Lists;
 import org.sonar.sslr.internal.matchers.Matcher;
 import org.sonar.sslr.internal.matchers.ParseNode;
 
+import java.util.Collections;
 import java.util.List;
 
 public class MachineStack {
@@ -38,6 +39,12 @@ public class MachineStack {
 
   public int leftRecursion;
   public int calledAddress;
+
+  public MachineStack() {
+    this.parent = null;
+    this.subNodes = Collections.EMPTY_LIST;
+    this.index = -1;
+  }
 
   public MachineStack(MachineStack parent) {
     this.parent = parent;

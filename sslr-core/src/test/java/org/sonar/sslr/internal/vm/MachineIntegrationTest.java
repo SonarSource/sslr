@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.internal.vm;
 
+import com.sonar.sslr.api.Trivia.TriviaKind;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -26,6 +27,7 @@ import org.junit.rules.Timeout;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 
+import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class MachineIntegrationTest {
@@ -35,6 +37,85 @@ public class MachineIntegrationTest {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
+
+  @Test
+  public void pattern() {
+    Instruction[] instructions = new PatternExpression("foo|bar").compile();
+    assertThat(Machine.execute("foo", instructions)).isTrue();
+    assertThat(Machine.execute("bar", instructions)).isTrue();
+    assertThat(Machine.execute("baz", instructions)).isFalse();
+  }
+
+  @Test
+  public void string() {
+    Instruction[] instructions = new StringExpression("foo").compile();
+    assertThat(Machine.execute("foo", instructions)).isTrue();
+    assertThat(Machine.execute("bar", instructions)).isFalse();
+  }
+
+  @Test
+  public void sequence() {
+    Instruction[] instructions = new SequenceExpression(
+        new StringExpression("foo"), new StringExpression("bar")).compile();
+    assertThat(Machine.execute("foobar", instructions)).isTrue();
+    assertThat(Machine.execute("baz", instructions)).isFalse();
+  }
+
+  @Test
+  public void firstOf() {
+    Instruction[] instructions = new FirstOfExpression(
+        new StringExpression("foo"),
+        new StringExpression("bar"),
+        new StringExpression("baz")).compile();
+    assertThat(Machine.execute("foo", instructions)).isTrue();
+    assertThat(Machine.execute("bar", instructions)).isTrue();
+    assertThat(Machine.execute("baz", instructions)).isTrue();
+    assertThat(Machine.execute("qux", instructions)).isFalse();
+  }
+
+  @Test
+  public void optional() {
+    Instruction[] instructions = new OptionalExpression(new StringExpression("a")).compile();
+    assertThat(Machine.execute("", instructions)).isTrue();
+    assertThat(Machine.execute("a", instructions)).isTrue();
+  }
+
+  @Test
+  public void next() {
+    Instruction[] instructions = new NextExpression(new StringExpression("foo")).compile();
+    assertThat(Machine.execute("foo", instructions)).isTrue();
+    assertThat(Machine.execute("bar", instructions)).isFalse();
+  }
+
+  @Test
+  public void nextNot() {
+    Instruction[] instructions = new NextNotExpression(new StringExpression("foo")).compile();
+    assertThat(Machine.execute("foo", instructions)).isFalse();
+    assertThat(Machine.execute("bar", instructions)).isTrue();
+  }
+
+  @Test
+  public void zeroOrMore() {
+    Instruction[] instructions = new ZeroOrMoreExpression(new StringExpression("a")).compile();
+    assertThat(Machine.execute("", instructions)).isTrue();
+    assertThat(Machine.execute("a", instructions)).isTrue();
+    assertThat(Machine.execute("aa", instructions)).isTrue();
+  }
+
+  @Test
+  public void oneOrMore() {
+    Instruction[] instructions = new OneOrMoreExpression(new StringExpression("a")).compile();
+    assertThat(Machine.execute("", instructions)).isFalse();
+    assertThat(Machine.execute("a", instructions)).isTrue();
+    assertThat(Machine.execute("aa", instructions)).isTrue();
+  }
+
+  @Test
+  public void trivia() {
+    Instruction[] instructions = new TriviaExpression(TriviaKind.COMMENT, new StringExpression("foo")).compile();
+    assertThat(Machine.execute("foo", instructions)).isTrue();
+    assertThat(Machine.execute("bar", instructions)).isFalse();
+  }
 
   /**
    * SSLR-278
