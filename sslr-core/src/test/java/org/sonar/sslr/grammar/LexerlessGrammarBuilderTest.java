@@ -21,6 +21,7 @@ package org.sonar.sslr.grammar;
 
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.TokenType;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -43,12 +44,43 @@ import java.util.regex.PatternSyntaxException;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class LexerlessGrammarBuilderTest {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
+
+  @Test
+  public void test_wrong_root_rule() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    b.setRootRule(ruleKey);
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The rule '" + ruleKey + "' hasn't beed defined.");
+    b.build();
+  }
+
+  @Test
+  public void test_undefined_rule() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    b.rule(ruleKey);
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The rule '" + ruleKey + "' hasn't beed defined.");
+    b.build();
+  }
+
+  @Ignore("SSLR-276")
+  @Test
+  public void test_used_undefined_rule() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+    GrammarRuleKey ruleKey1 = mock(GrammarRuleKey.class);
+    GrammarRuleKey ruleKey2 = mock(GrammarRuleKey.class);
+    b.rule(ruleKey1).is(ruleKey2);
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The rule " + ruleKey2 + " has been used somewhere in grammar, but not defined.");
+    b.build();
+  }
 
   @Test
   public void test_wrong_regexp() {
@@ -116,17 +148,6 @@ public class LexerlessGrammarBuilderTest {
   public void should_create_grammar_without_root_rule() {
     LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
     assertThat(b.build().getRootRule()).isNull();
-  }
-
-  @Test
-  public void should_throw_an_exception_when_root_rule_not_defined() {
-    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
-    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
-    when(ruleKey.toString()).thenReturn("name");
-    b.setRootRule(ruleKey);
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("The rule 'name' hasn't beed defined.");
-    b.build();
   }
 
   @Test

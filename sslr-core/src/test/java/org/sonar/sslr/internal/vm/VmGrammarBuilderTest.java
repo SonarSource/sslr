@@ -105,13 +105,6 @@ public class VmGrammarBuilderTest {
   }
 
   @Test
-  public void test_wrong_argument() {
-    thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("Incorrect type of parsing expression: class java.lang.Object");
-    VmGrammarBuilder.create().convertToExpression(new Object());
-  }
-
-  @Test
   public void test_undefined_rule() {
     VmGrammarBuilder b = VmGrammarBuilder.create();
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
@@ -137,6 +130,13 @@ public class VmGrammarBuilderTest {
     VmGrammarBuilder b = VmGrammarBuilder.create();
     thrown.expect(PatternSyntaxException.class);
     b.regexp("[");
+  }
+
+  @Test
+  public void test_wrong_argument() {
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("Incorrect type of parsing expression: class java.lang.Object");
+    VmGrammarBuilder.create().convertToExpression(new Object());
   }
 
 }

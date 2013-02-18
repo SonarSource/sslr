@@ -40,6 +40,7 @@ import com.sonar.sslr.impl.matcher.RuleDefinition;
 import com.sonar.sslr.impl.matcher.TillNewLineMatcher;
 import com.sonar.sslr.impl.matcher.TokenTypesMatcher;
 import com.sonar.sslr.impl.matcher.TokenValueMatcher;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -48,12 +49,43 @@ import org.sonar.sslr.internal.grammar.MatcherBuilder;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class LexerfulGrammarBuilderTest {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
+
+  @Test
+  public void test_wrong_root_rule() {
+    LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    b.setRootRule(ruleKey);
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The rule '" + ruleKey + "' hasn't beed defined.");
+    b.build();
+  }
+
+  @Test
+  public void test_undefined_rule() {
+    LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    b.rule(ruleKey);
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The rule '" + ruleKey + "' hasn't beed defined.");
+    b.build();
+  }
+
+  @Ignore("SSLR-276")
+  @Test
+  public void test_used_undefined_rule() {
+    LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
+    GrammarRuleKey ruleKey1 = mock(GrammarRuleKey.class);
+    GrammarRuleKey ruleKey2 = mock(GrammarRuleKey.class);
+    b.rule(ruleKey1).is(ruleKey2);
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The rule " + ruleKey2 + " has been used somewhere in grammar, but not defined.");
+    b.build();
+  }
 
   @Test
   public void should_have_no_definitions_at_first() {
@@ -131,17 +163,6 @@ public class LexerfulGrammarBuilderTest {
   public void should_create_grammar_without_root_rule() {
     LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
     assertThat(b.build().getRootRule()).isNull();
-  }
-
-  @Test
-  public void should_throw_exception_when_root_rule_not_defined() {
-    LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
-    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
-    when(ruleKey.toString()).thenReturn("name");
-    b.setRootRule(ruleKey);
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("The rule 'name' hasn't beed defined.");
-    b.build();
   }
 
   @Test
