@@ -38,6 +38,7 @@ public interface GrammarRuleBuilder {
    * @param e  expression of grammar
    * @return this (for method chaining)
    * @throws GrammarException if definition has been already done
+   * @throws IllegalArgumentException if given argument is not a parsing expression
    */
   GrammarRuleBuilder is(Object e);
 
@@ -48,6 +49,7 @@ public interface GrammarRuleBuilder {
    * @param rest  rest of expressions
    * @return this (for method chaining)
    * @throws GrammarException if definition has been already done
+   * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    * @see #is(Object)
    */
   GrammarRuleBuilder is(Object e, Object... rest);
@@ -58,6 +60,7 @@ public interface GrammarRuleBuilder {
    * This method has the same effect as {@link #is(Object)}, except that it can be called more than once to redefine a rule from scratch.
    *
    * @param e  expression of grammar
+   * @throws IllegalArgumentException if given argument is not a parsing expression
    * @return this (for method chaining)
    */
   GrammarRuleBuilder override(Object e);
@@ -67,6 +70,7 @@ public interface GrammarRuleBuilder {
    *
    * @param e  expression of grammar
    * @param rest  rest of expressions
+   * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    * @return this (for method chaining)
    * @see #override(Object)
    */

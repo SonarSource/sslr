@@ -71,6 +71,8 @@ public class LexerfulGrammarBuilder {
 
   /**
    * Allows to describe rule.
+   * Result of this method should be used only for execution of methods in it, i.e. you should not save reference on it.
+   * No guarantee that this method always returns the same instance for the same key of rule.
    */
   public GrammarRuleBuilder rule(GrammarRuleKey ruleKey) {
     LexerfulGrammarRuleDefinition definition = definitions.get(ruleKey);
@@ -116,6 +118,7 @@ public class LexerfulGrammarBuilder {
    *
    * @param e1  first sub-expression
    * @param e2  second sub-expression
+   * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object sequence(Object e1, Object e2) {
     return MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Arrays.asList(e1, e2));
@@ -127,6 +130,7 @@ public class LexerfulGrammarBuilder {
    * @param e1  first sub-expression
    * @param e2  second sub-expression
    * @param rest  rest of sub-expressions
+   * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object sequence(Object e1, Object e2, Object... rest) {
     return MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Lists.asList(e1, e2, rest));
@@ -137,6 +141,7 @@ public class LexerfulGrammarBuilder {
    *
    * @param e1  first sub-expression
    * @param e2  second sub-expression
+   * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object firstOf(Object e1, Object e2) {
     return new ReflexiveMatcherBuilder(OrMatcher.class, MatcherBuilderUtils.lexerfulToMatcherBuilders(Arrays.asList(e1, e2)));
@@ -148,6 +153,7 @@ public class LexerfulGrammarBuilder {
    * @param e1  first sub-expression
    * @param e2  second sub-expression
    * @param rest  rest of sub-expressions
+   * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object firstOf(Object e1, Object e2, Object... rest) {
     return new ReflexiveMatcherBuilder(OrMatcher.class, MatcherBuilderUtils.lexerfulToMatcherBuilders(Lists.asList(e1, e2, rest)));
@@ -157,6 +163,7 @@ public class LexerfulGrammarBuilder {
    * Creates expression of grammar - "optional".
    *
    * @param e  sub-expression
+   * @throws IllegalArgumentException if given argument is not a parsing expression
    */
   public Object optional(Object e) {
     return new ReflexiveMatcherBuilder(OptMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Arrays.asList(e))});
@@ -167,6 +174,7 @@ public class LexerfulGrammarBuilder {
    *
    * @param e1  first sub-expression
    * @param rest  rest of sub-expressions
+   * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object optional(Object e1, Object... rest) {
     return new ReflexiveMatcherBuilder(OptMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Lists.asList(e1, rest))});
@@ -176,6 +184,7 @@ public class LexerfulGrammarBuilder {
    * Creates expression of grammar - "one or more".
    *
    * @param e  sub-expression
+   * @throws IllegalArgumentException if given argument is not a parsing expression
    */
   public Object oneOrMore(Object e) {
     return new ReflexiveMatcherBuilder(OneToNMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Arrays.asList(e))});
@@ -186,6 +195,7 @@ public class LexerfulGrammarBuilder {
    *
    * @param e1  first sub-expression
    * @param rest  rest of sub-expressions
+   * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object oneOrMore(Object e1, Object... rest) {
     return new ReflexiveMatcherBuilder(OneToNMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Lists.asList(e1, rest))});
@@ -195,6 +205,7 @@ public class LexerfulGrammarBuilder {
    * Creates expression of grammar - "zero or more".
    *
    * @param e  sub-expression
+   * @throws IllegalArgumentException if given argument is not a parsing expression
    */
   public Object zeroOrMore(Object e) {
     return optional(new ReflexiveMatcherBuilder(OneToNMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Arrays.asList(e))}));
@@ -205,6 +216,7 @@ public class LexerfulGrammarBuilder {
    *
    * @param e1  sub-expression
    * @param rest  rest of sub-expressions
+   * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object zeroOrMore(Object e1, Object... rest) {
     return optional(new ReflexiveMatcherBuilder(OneToNMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Lists.asList(e1, rest))}));
@@ -214,6 +226,7 @@ public class LexerfulGrammarBuilder {
    * Creates expression of grammar - "next".
    *
    * @param e  sub-expression
+   * @throws IllegalArgumentException if given argument is not a parsing expression
    */
   public Object next(Object e) {
     return new ReflexiveMatcherBuilder(NextMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Arrays.asList(e))});
@@ -224,6 +237,7 @@ public class LexerfulGrammarBuilder {
    *
    * @param e1  first sub-expression
    * @param rest  rest of sub-expressions
+   * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object next(Object e1, Object... rest) {
     return new ReflexiveMatcherBuilder(NextMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Lists.asList(e1, rest))});
@@ -233,6 +247,7 @@ public class LexerfulGrammarBuilder {
    * Creates expression of grammar - "next not".
    *
    * @param e  sub-expression
+   * @throws IllegalArgumentException if given argument is not a parsing expression
    */
   public Object nextNot(Object e) {
     return new ReflexiveMatcherBuilder(NotMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Arrays.asList(e))});
@@ -243,6 +258,7 @@ public class LexerfulGrammarBuilder {
    *
    * @param e1  sub-expression
    * @param rest  rest of sub-expressions
+   * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object nextNot(Object e1, Object... rest) {
     return new ReflexiveMatcherBuilder(NotMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToSingleMatcherBuilder(Lists.asList(e1, rest))});
@@ -296,6 +312,7 @@ public class LexerfulGrammarBuilder {
    * Creates expression of grammar - "till".
    *
    * @param e  sub-expression
+   * @throws IllegalArgumentException if given argument is not a parsing expression
    */
   public Object till(Object e) {
     return new ReflexiveMatcherBuilder(InclusiveTillMatcher.class, new Object[] {MatcherBuilderUtils.lexerfulToMatcherBuilder(e)});
@@ -306,6 +323,7 @@ public class LexerfulGrammarBuilder {
    *
    * @param e1  first sub-expression
    * @param rest  rest of sub-expressions
+   * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object exclusiveTill(Object e1, Object... rest) {
     return new ReflexiveMatcherBuilder(ExclusiveTillMatcher.class, MatcherBuilderUtils.lexerfulToMatcherBuilders(Lists.asList(e1, rest)));
