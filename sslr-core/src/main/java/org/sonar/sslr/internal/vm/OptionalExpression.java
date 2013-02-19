@@ -36,9 +36,9 @@ public class OptionalExpression implements ParsingExpression {
    * L1: ...
    * </pre>
    */
-  public Instruction[] compile() {
+  public Instruction[] compile(CompilationHandler compiler) {
     // not described in paper
-    Instruction[] instr = subExpression.compile();
+    Instruction[] instr = compiler.compile(subExpression);
     Instruction[] result = new Instruction[instr.length + 2];
     result[0] = Instruction.choice(result.length);
     System.arraycopy(instr, 0, result, 1, instr.length);

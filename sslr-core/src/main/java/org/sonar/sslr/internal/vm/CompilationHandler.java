@@ -19,22 +19,10 @@
  */
 package org.sonar.sslr.internal.vm;
 
-import org.junit.Test;
+public class CompilationHandler {
 
-import static org.fest.assertions.Assertions.assertThat;
-
-public class NextExpressionTest {
-
-  @Test
-  public void should_compile() {
-    Instruction[] instructions = new NextExpression(new SubExpression(1, 2)).compile(new CompilationHandler());
-    assertThat(instructions).isEqualTo(new Instruction[] {
-      Instruction.choice(4),
-      SubExpression.mockInstruction(1),
-      SubExpression.mockInstruction(2),
-      Instruction.backCommit(2),
-      Instruction.backtrack()
-    });
+  public Instruction[] compile(ParsingExpression expression) {
+    return expression.compile(this);
   }
 
 }

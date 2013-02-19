@@ -22,7 +22,7 @@ package com.sonar.sslr.api;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.grammar.GrammarRuleKey;
-import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
+import org.sonar.sslr.internal.grammar.MutableParsingRule;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.lang.reflect.Field;
@@ -84,7 +84,7 @@ public abstract class Grammar {
       try {
         Rule rule;
         if (this instanceof LexerlessGrammar) {
-          rule = new GrammarElementMatcher(ruleName);
+          rule = new MutableParsingRule(ruleName);
         } else {
           rule = RuleDefinition.newRuleBuilder(ruleName);
         }

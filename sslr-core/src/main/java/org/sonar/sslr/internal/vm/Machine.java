@@ -56,6 +56,10 @@ public class Machine implements CharSequence {
   private boolean ignoreErrors = false;
 
   public static ParsingResult parse(String input, CompiledGrammar grammar, GrammarRuleKey ruleKey) {
+    return parse(input.toCharArray(), grammar, ruleKey);
+  }
+
+  public static ParsingResult parse(char[] input, CompiledGrammar grammar, GrammarRuleKey ruleKey) {
     Instruction[] instructions = grammar.getInstructions();
 
     ErrorLocatingHandler errorLocatingHandler = new ErrorLocatingHandler();
@@ -116,7 +120,11 @@ public class Machine implements CharSequence {
   }
 
   public Machine(String input, Instruction[] instructions, MachineHandler handler) {
-    this.input = input.toCharArray();
+    this(input.toCharArray(), instructions, handler);
+  }
+
+  private Machine(char[] input, Instruction[] instructions, MachineHandler handler) {
+    this.input = input;
     this.handler = handler;
     this.memos = new ParseNode[this.input.length + 1];
     this.stack = new MachineStack();
@@ -211,12 +219,15 @@ public class Machine implements CharSequence {
   }
 
   public void backtrack() {
-    if (!ignoreErrors) {
-      handler.onBacktrack(this);
-    }
-
     // pop any return addresses from the top of the stack
     while (stack.isReturn()) {
+
+      // TODO we must have this inside of loop, otherwise report won't be generated in case of input "foo" and rule "nextNot(foo)"
+      ignoreErrors = stack.ignoreErrors;
+      if (!ignoreErrors) {
+        handler.onBacktrack(this);
+      }
+
       popReturn();
     }
 

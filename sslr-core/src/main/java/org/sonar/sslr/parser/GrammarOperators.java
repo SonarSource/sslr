@@ -22,18 +22,18 @@ package org.sonar.sslr.parser;
 import com.google.common.base.Preconditions;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.api.Trivia.TriviaKind;
-import org.sonar.sslr.internal.matchers.EndOfInputMatcher;
-import org.sonar.sslr.internal.matchers.FirstOfMatcher;
-import org.sonar.sslr.internal.matchers.MatchersUtils;
-import org.sonar.sslr.internal.matchers.NothingMatcher;
-import org.sonar.sslr.internal.matchers.OneOrMoreMatcher;
-import org.sonar.sslr.internal.matchers.OptionalMatcher;
-import org.sonar.sslr.internal.matchers.PatternMatcher;
-import org.sonar.sslr.internal.matchers.TestMatcher;
-import org.sonar.sslr.internal.matchers.TestNotMatcher;
-import org.sonar.sslr.internal.matchers.TokenMatcher;
-import org.sonar.sslr.internal.matchers.TriviaMatcher;
-import org.sonar.sslr.internal.matchers.ZeroOrMoreMatcher;
+import org.sonar.sslr.internal.matchers.MatchersUtils2;
+import org.sonar.sslr.internal.vm.EndOfInputExpression;
+import org.sonar.sslr.internal.vm.FirstOfExpression;
+import org.sonar.sslr.internal.vm.NextExpression;
+import org.sonar.sslr.internal.vm.NextNotExpression;
+import org.sonar.sslr.internal.vm.NothingExpression;
+import org.sonar.sslr.internal.vm.OneOrMoreExpression;
+import org.sonar.sslr.internal.vm.OptionalExpression;
+import org.sonar.sslr.internal.vm.PatternExpression;
+import org.sonar.sslr.internal.vm.TokenExpression;
+import org.sonar.sslr.internal.vm.TriviaExpression;
+import org.sonar.sslr.internal.vm.ZeroOrMoreExpression;
 
 /**
  * Provides methods to define rules for {@link LexerlessGrammar}.
@@ -46,66 +46,66 @@ public final class GrammarOperators {
   }
 
   public static Object sequence(Object... elements) {
-    return MatchersUtils.convertToSingleMatcher(elements);
+    return MatchersUtils2.convertToSingleMatcher(elements);
   }
 
   public static Object firstOf(Object... elements) {
     Preconditions.checkNotNull(elements);
 
     if (elements.length == 1) {
-      return MatchersUtils.convertToMatcher(elements[0]);
+      return MatchersUtils2.convertToMatcher(elements[0]);
     }
-    return new FirstOfMatcher(MatchersUtils.convertToMatchers(elements));
+    return new FirstOfExpression(MatchersUtils2.convertToMatchers(elements));
   }
 
   public static Object optional(Object... elements) {
-    return new OptionalMatcher(MatchersUtils.convertToSingleMatcher(elements));
+    return new OptionalExpression(MatchersUtils2.convertToSingleMatcher(elements));
   }
 
   public static Object oneOrMore(Object... elements) {
-    return new OneOrMoreMatcher(MatchersUtils.convertToSingleMatcher(elements));
+    return new OneOrMoreExpression(MatchersUtils2.convertToSingleMatcher(elements));
   }
 
   public static Object zeroOrMore(Object... elements) {
-    return new ZeroOrMoreMatcher(MatchersUtils.convertToSingleMatcher(elements));
+    return new ZeroOrMoreExpression(MatchersUtils2.convertToSingleMatcher(elements));
   }
 
   public static Object next(Object... elements) {
-    return new TestMatcher(MatchersUtils.convertToSingleMatcher(elements));
+    return new NextExpression(MatchersUtils2.convertToSingleMatcher(elements));
   }
 
   public static Object nextNot(Object... elements) {
-    return new TestNotMatcher(MatchersUtils.convertToSingleMatcher(elements));
+    return new NextNotExpression(MatchersUtils2.convertToSingleMatcher(elements));
   }
 
   public static Object regexp(String regexp) {
-    return new PatternMatcher(regexp);
+    return new PatternExpression(regexp);
   }
 
   public static Object endOfInput() {
-    return new EndOfInputMatcher();
+    return EndOfInputExpression.INSTANCE;
   }
 
   public static Object nothing() {
-    return new NothingMatcher();
+    return NothingExpression.INSTANCE;
   }
 
   public static Object token(TokenType tokenType, Object element) {
-    return new TokenMatcher(tokenType, MatchersUtils.convertToMatcher(element));
+    return new TokenExpression(tokenType, MatchersUtils2.convertToMatcher(element));
   }
 
   /**
    * @since 1.17
    */
   public static Object commentTrivia(Object element) {
-    return new TriviaMatcher(TriviaKind.COMMENT, MatchersUtils.convertToMatcher(element));
+    return new TriviaExpression(TriviaKind.COMMENT, MatchersUtils2.convertToMatcher(element));
   }
 
   /**
    * @since 1.17
    */
   public static Object skippedTrivia(Object element) {
-    return new TriviaMatcher(TriviaKind.SKIPPED_TEXT, MatchersUtils.convertToMatcher(element));
+    return new TriviaExpression(TriviaKind.SKIPPED_TEXT, MatchersUtils2.convertToMatcher(element));
   }
 
 }

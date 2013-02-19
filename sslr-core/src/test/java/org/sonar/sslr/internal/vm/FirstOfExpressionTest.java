@@ -30,7 +30,7 @@ public class FirstOfExpressionTest {
     Instruction[] instructions = new FirstOfExpression(
         new SubExpression(1, 2, 3),
         new SubExpression(4, 5),
-        new SubExpression(6)).compile();
+        new SubExpression(6)).compile(new CompilationHandler());
     assertThat(instructions).isEqualTo(new Instruction[] {
       Instruction.choice(5),
       SubExpression.mockInstruction(1),

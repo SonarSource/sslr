@@ -27,7 +27,7 @@ public class OptionalExpressionTest {
 
   @Test
   public void should_compile() {
-    Instruction[] instructions = new OptionalExpression(new SubExpression(1, 2)).compile();
+    Instruction[] instructions = new OptionalExpression(new SubExpression(1, 2)).compile(new CompilationHandler());
     assertThat(instructions).isEqualTo(new Instruction[] {
       Instruction.choice(4),
       SubExpression.mockInstruction(1),

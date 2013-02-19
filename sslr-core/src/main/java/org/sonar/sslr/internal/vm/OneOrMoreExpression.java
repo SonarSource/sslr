@@ -48,8 +48,8 @@ public class OneOrMoreExpression implements ParsingExpression {
    * L2: ...
    * </pre>
    */
-  public Instruction[] compile() {
-    Instruction[] sub = subExpression.compile();
+  public Instruction[] compile(CompilationHandler compiler) {
+    Instruction[] sub = compiler.compile(subExpression);
     Instruction[] result = new Instruction[sub.length + 5];
     result[0] = Instruction.choice(sub.length + 4);
     System.arraycopy(sub, 0, result, 1, sub.length);

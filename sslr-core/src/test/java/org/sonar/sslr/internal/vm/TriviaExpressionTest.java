@@ -37,7 +37,7 @@ public class TriviaExpressionTest {
   @Test
   public void should_compile() {
     TriviaExpression expression = new TriviaExpression(TriviaKind.COMMENT, new SubExpression(1, 2));
-    Instruction[] instructions = expression.compile();
+    Instruction[] instructions = expression.compile(new CompilationHandler());
     assertThat(instructions).isEqualTo(new Instruction[] {
       Instruction.call(2, expression),
       Instruction.jump(5),
@@ -53,6 +53,7 @@ public class TriviaExpressionTest {
     TriviaExpression expression = new TriviaExpression(TriviaKind.COMMENT, mock(ParsingExpression.class));
     // Important for AstCreator
     assertThat(expression).isInstanceOf(TriviaMatcher.class);
+    assertThat(expression.getTriviaKind()).isSameAs(TriviaKind.COMMENT);
     thrown.expect(UnsupportedOperationException.class);
     expression.match(mock(MatcherContext.class));
   }

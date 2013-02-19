@@ -19,26 +19,27 @@
  */
 package org.sonar.sslr.grammar;
 
-import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.TokenType;
-import org.junit.Ignore;
+import com.sonar.sslr.api.Trivia.TriviaKind;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.sonar.sslr.internal.grammar.LexerlessGrammarAdapter;
-import org.sonar.sslr.internal.grammar.MatcherBuilder;
-import org.sonar.sslr.internal.matchers.EndOfInputMatcher;
-import org.sonar.sslr.internal.matchers.FirstOfMatcher;
-import org.sonar.sslr.internal.matchers.NothingMatcher;
-import org.sonar.sslr.internal.matchers.OneOrMoreMatcher;
-import org.sonar.sslr.internal.matchers.OptionalMatcher;
-import org.sonar.sslr.internal.matchers.PatternMatcher;
-import org.sonar.sslr.internal.matchers.SequenceMatcher;
-import org.sonar.sslr.internal.matchers.TestMatcher;
-import org.sonar.sslr.internal.matchers.TestNotMatcher;
-import org.sonar.sslr.internal.matchers.TokenMatcher;
+import org.sonar.sslr.internal.grammar.MutableLexerlessGrammar;
+import org.sonar.sslr.internal.grammar.MutableParsingRule;
 import org.sonar.sslr.internal.matchers.TriviaMatcher;
-import org.sonar.sslr.internal.matchers.ZeroOrMoreMatcher;
+import org.sonar.sslr.internal.vm.EndOfInputExpression;
+import org.sonar.sslr.internal.vm.FirstOfExpression;
+import org.sonar.sslr.internal.vm.NextExpression;
+import org.sonar.sslr.internal.vm.NextNotExpression;
+import org.sonar.sslr.internal.vm.NothingExpression;
+import org.sonar.sslr.internal.vm.OneOrMoreExpression;
+import org.sonar.sslr.internal.vm.OptionalExpression;
+import org.sonar.sslr.internal.vm.ParsingExpression;
+import org.sonar.sslr.internal.vm.PatternExpression;
+import org.sonar.sslr.internal.vm.SequenceExpression;
+import org.sonar.sslr.internal.vm.StringExpression;
+import org.sonar.sslr.internal.vm.TokenExpression;
+import org.sonar.sslr.internal.vm.ZeroOrMoreExpression;
 
 import java.util.regex.PatternSyntaxException;
 
@@ -51,7 +52,85 @@ public class LexerlessGrammarBuilderTest {
   public ExpectedException thrown = ExpectedException.none();
 
   @Test
-  public void test_wrong_root_rule() {
+  public void should_create_expressions() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+    ParsingExpression e1 = mock(ParsingExpression.class);
+    ParsingExpression e2 = mock(ParsingExpression.class);
+    ParsingExpression e3 = mock(ParsingExpression.class);
+
+    assertThat(b.convertToExpression(e1)).isSameAs(e1);
+    assertThat(b.convertToExpression("")).isInstanceOf(StringExpression.class);
+    assertThat(b.convertToExpression('c')).isInstanceOf(StringExpression.class);
+
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    assertThat(b.convertToExpression(ruleKey)).isInstanceOf(MutableParsingRule.class);
+    assertThat(b.convertToExpression(ruleKey)).isSameAs(b.convertToExpression(ruleKey));
+
+    assertThat(b.sequence(e1, e2)).isInstanceOf(SequenceExpression.class);
+    assertThat(b.sequence(e1, e2, e3)).isInstanceOf(SequenceExpression.class);
+
+    assertThat(b.firstOf(e1, e2)).isInstanceOf(FirstOfExpression.class);
+    assertThat(b.firstOf(e1, e2, e3)).isInstanceOf(FirstOfExpression.class);
+
+    assertThat(b.optional(e1)).isInstanceOf(OptionalExpression.class);
+    assertThat(b.optional(e1, e2)).isInstanceOf(OptionalExpression.class);
+
+    assertThat(b.oneOrMore(e1)).isInstanceOf(OneOrMoreExpression.class);
+    assertThat(b.oneOrMore(e1, e2)).isInstanceOf(OneOrMoreExpression.class);
+
+    assertThat(b.zeroOrMore(e1)).isInstanceOf(ZeroOrMoreExpression.class);
+    assertThat(b.zeroOrMore(e1, e2)).isInstanceOf(ZeroOrMoreExpression.class);
+
+    assertThat(b.next(e1)).isInstanceOf(NextExpression.class);
+    assertThat(b.next(e1, e2)).isInstanceOf(NextExpression.class);
+
+    assertThat(b.nextNot(e1)).isInstanceOf(NextNotExpression.class);
+    assertThat(b.nextNot(e1, e2)).isInstanceOf(NextNotExpression.class);
+
+    assertThat(b.nothing()).isInstanceOf(NothingExpression.class);
+
+    assertThat(b.regexp("")).isInstanceOf(PatternExpression.class);
+
+    assertThat(b.endOfInput()).isInstanceOf(EndOfInputExpression.class);
+  }
+
+  @Test
+  public void test_token() {
+    TokenType tokenType = mock(TokenType.class);
+    ParsingExpression e = mock(ParsingExpression.class);
+    Object result = LexerlessGrammarBuilder.create().token(tokenType, e);
+    assertThat(result).isInstanceOf(TokenExpression.class);
+    assertThat(((TokenExpression) result).getTokenType()).isSameAs(tokenType);
+  }
+
+  @Test
+  public void test_commentTrivia() {
+    ParsingExpression e = mock(ParsingExpression.class);
+    Object result = LexerlessGrammarBuilder.create().commentTrivia(e);
+    assertThat(result).isInstanceOf(TriviaMatcher.class);
+    assertThat(((TriviaMatcher) result).getTriviaKind()).isEqualTo(TriviaKind.COMMENT);
+  }
+
+  @Test
+  public void test_skippedTrivia() {
+    ParsingExpression e = mock(ParsingExpression.class);
+    Object result = LexerlessGrammarBuilder.create().skippedTrivia(e);
+    assertThat(result).isInstanceOf(TriviaMatcher.class);
+    assertThat(((TriviaMatcher) result).getTriviaKind()).isEqualTo(TriviaKind.SKIPPED_TEXT);
+  }
+
+  @Test
+  public void should_set_root_rule() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    b.rule(ruleKey).is(b.nothing());
+    b.setRootRule(ruleKey);
+    MutableLexerlessGrammar grammar = (MutableLexerlessGrammar) b.build();
+    assertThat(grammar.getRootRuleKey()).isSameAs(ruleKey);
+  }
+
+  @Test
+  public void test_undefined_root_rule() {
     LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
     b.setRootRule(ruleKey);
@@ -70,7 +149,6 @@ public class LexerlessGrammarBuilderTest {
     b.build();
   }
 
-  @Ignore("SSLR-276")
   @Test
   public void test_used_undefined_rule() {
     LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
@@ -78,7 +156,9 @@ public class LexerlessGrammarBuilderTest {
     GrammarRuleKey ruleKey2 = mock(GrammarRuleKey.class);
     b.rule(ruleKey1).is(ruleKey2);
     thrown.expect(GrammarException.class);
-    thrown.expectMessage("The rule " + ruleKey2 + " has been used somewhere in grammar, but not defined.");
+    // TODO
+    thrown.expectMessage("The rule '" + ruleKey2 + "' hasn't beed defined.");
+    // thrown.expectMessage("The rule " + ruleKey2 + " has been used somewhere in grammar, but not defined.");
     b.build();
   }
 
@@ -90,98 +170,38 @@ public class LexerlessGrammarBuilderTest {
   }
 
   @Test
-  public void should_have_no_definitions_at_first() {
-    assertThat(((LexerlessGrammarAdapter) LexerlessGrammarBuilder.create().build()).ruleKeys()).isEmpty();
+  public void test_wrong_argument() {
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("Incorrect type of parsing expression: class java.lang.Object");
+    LexerlessGrammarBuilder.create().convertToExpression(new Object());
   }
 
   @Test
-  public void should_allow_definitions_of_new_rules() {
-    GrammarRuleKey ruleKey1 = mock(GrammarRuleKey.class);
-    GrammarRuleKey ruleKey2 = mock(GrammarRuleKey.class);
-
-    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
-
-    GrammarRuleBuilder definition1 = b.rule(ruleKey1).is("foo");
-    assertThat(((LexerlessGrammarAdapter) b.build()).ruleKeys()).containsOnly(ruleKey1);
-    assertThat(b.rule(ruleKey1)).isSameAs(definition1);
-    assertThat(((LexerlessGrammarAdapter) b.build()).ruleKeys()).containsOnly(ruleKey1);
-
-    GrammarRuleBuilder definition2 = b.rule(ruleKey2).is("foo");
-    assertThat(b.rule(ruleKey2)).isSameAs(definition2);
-    assertThat(((LexerlessGrammarAdapter) b.build()).ruleKeys()).containsOnly(ruleKey1, ruleKey2);
-  }
-
-  @Test
-  public void should_base_on_other_grammars() {
-    GrammarRuleKey ruleKey1 = mock(GrammarRuleKey.class);
-    GrammarRuleKey ruleKey2 = mock(GrammarRuleKey.class);
-    GrammarRuleKey ruleKey3 = mock(GrammarRuleKey.class);
-
-    LexerlessGrammarBuilder _1 = LexerlessGrammarBuilder.create();
-    _1.rule(ruleKey1).is("foo");
-    _1.rule(ruleKey2).is("foo");
-
-    LexerlessGrammarBuilder _2 = LexerlessGrammarBuilder.create();
-    _2.rule(ruleKey3).is("foo");
-
-    assertThat(((LexerlessGrammarAdapter) LexerlessGrammarBuilder.createBasedOn(_1).build()).ruleKeys()).containsOnly(ruleKey1, ruleKey2);
-    assertThat(((LexerlessGrammarAdapter) LexerlessGrammarBuilder.createBasedOn(_2).build()).ruleKeys()).containsOnly(ruleKey3);
-    assertThat(((LexerlessGrammarAdapter) LexerlessGrammarBuilder.createBasedOn(_1, _2).build()).ruleKeys()).containsOnly(ruleKey1, ruleKey2, ruleKey3);
-  }
-
-  @Test
-  public void should_build_grammar_instance() {
-    assertThat(LexerlessGrammarBuilder.create().build()).isInstanceOf(LexerlessGrammarAdapter.class);
-  }
-
-  @Test
-  public void should_create_grammar_with_root_rule() {
+  public void should_fail_to_redefine() {
     LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
     b.rule(ruleKey).is("foo");
-    b.setRootRule(ruleKey);
-    Grammar g = b.build();
-    assertThat(g.getRootRule()).isNotNull().isSameAs(g.rule(ruleKey));
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.");
+    b.rule(ruleKey).is("foo");
   }
 
   @Test
-  public void should_create_grammar_without_root_rule() {
-    LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
-    assertThat(b.build().getRootRule()).isNull();
-  }
-
-  @Test
-  public void matchers() {
+  public void should_fail_to_redefine2() {
     LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
-    Grammar g = mock(Grammar.class);
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    b.rule(ruleKey).is("foo", "bar");
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.");
+    b.rule(ruleKey).is("foo", "bar");
+  }
 
-    assertThat(((MatcherBuilder) b.sequence("foo", "bar")).build(g)).isInstanceOf(SequenceMatcher.class);
-    assertThat(((MatcherBuilder) b.sequence("foo", "bar", "baz")).build(g)).isInstanceOf(SequenceMatcher.class);
-
-    assertThat(((MatcherBuilder) b.firstOf("foo", "bar")).build(g)).isInstanceOf(FirstOfMatcher.class);
-    assertThat(((MatcherBuilder) b.firstOf("foo", "bar", "baz")).build(g)).isInstanceOf(FirstOfMatcher.class);
-
-    assertThat(((MatcherBuilder) b.optional("foo")).build(g)).isInstanceOf(OptionalMatcher.class);
-    assertThat(((MatcherBuilder) b.optional("foo", "bar")).build(g)).isInstanceOf(OptionalMatcher.class);
-
-    assertThat(((MatcherBuilder) b.oneOrMore("foo")).build(g)).isInstanceOf(OneOrMoreMatcher.class);
-    assertThat(((MatcherBuilder) b.oneOrMore("foo", "bar")).build(g)).isInstanceOf(OneOrMoreMatcher.class);
-
-    assertThat(((MatcherBuilder) b.zeroOrMore("foo")).build(g)).isInstanceOf(ZeroOrMoreMatcher.class);
-    assertThat(((MatcherBuilder) b.zeroOrMore("foo", "bar")).build(g)).isInstanceOf(ZeroOrMoreMatcher.class);
-
-    assertThat(((MatcherBuilder) b.next("foo")).build(g)).isInstanceOf(TestMatcher.class);
-    assertThat(((MatcherBuilder) b.next("foo", "bar")).build(g)).isInstanceOf(TestMatcher.class);
-
-    assertThat(((MatcherBuilder) b.nextNot("foo")).build(g)).isInstanceOf(TestNotMatcher.class);
-    assertThat(((MatcherBuilder) b.nextNot("foo", "bar")).build(g)).isInstanceOf(TestNotMatcher.class);
-
-    assertThat(((MatcherBuilder) b.nothing()).build(g)).isInstanceOf(NothingMatcher.class);
-    assertThat(((MatcherBuilder) b.regexp("foo")).build(g)).isInstanceOf(PatternMatcher.class);
-    assertThat(((MatcherBuilder) b.endOfInput()).build(g)).isInstanceOf(EndOfInputMatcher.class);
-    assertThat(((MatcherBuilder) b.token(mock(TokenType.class), "foo")).build(g)).isInstanceOf(TokenMatcher.class);
-    assertThat(((MatcherBuilder) b.commentTrivia("foo")).build(g)).isInstanceOf(TriviaMatcher.class);
-    assertThat(((MatcherBuilder) b.skippedTrivia("foo")).build(g)).isInstanceOf(TriviaMatcher.class);
+  @Test
+  public void recovery_rule_not_supported() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    thrown.expect(UnsupportedOperationException.class);
+    b.rule(ruleKey).recoveryRule();
   }
 
 }

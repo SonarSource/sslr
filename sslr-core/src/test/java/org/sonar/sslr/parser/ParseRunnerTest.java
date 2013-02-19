@@ -24,6 +24,7 @@ import com.sonar.sslr.api.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
+import org.sonar.sslr.internal.grammar.MutableParsingRule;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 import org.sonar.sslr.internal.matchers.MatcherContext;
 
@@ -44,7 +45,7 @@ public class ParseRunnerTest {
 
   @Test
   public void should_report_error_at_rule_level() {
-    Rule rule = new GrammarElementMatcher("rule").is("foo", "bar");
+    Rule rule = new MutableParsingRule("rule").is("foo", "bar");
     ParseRunner runner = new ParseRunner(rule);
     ParsingResult result = runner.parse("foo".toCharArray());
     assertThat(result.isMatched()).isFalse();
@@ -57,8 +58,8 @@ public class ParseRunnerTest {
 
   @Test
   public void should_report_error_at_end_of_input() {
-    Rule endOfInput = new GrammarElementMatcher("endOfInput").is(GrammarOperators.endOfInput());
-    Rule rule = new GrammarElementMatcher("rule").is("foo", endOfInput);
+    Rule endOfInput = new MutableParsingRule("endOfInput").is(GrammarOperators.endOfInput());
+    Rule rule = new MutableParsingRule("rule").is("foo", endOfInput);
     ParseRunner runner = new ParseRunner(rule);
     ParsingResult result = runner.parse("foo bar".toCharArray());
     assertThat(result.isMatched()).isFalse();
@@ -71,8 +72,8 @@ public class ParseRunnerTest {
 
   @Test
   public void should_not_report_error_inside_of_predicate_not() {
-    Rule subRule = new GrammarElementMatcher("subRule").is("foo");
-    Rule rule = new GrammarElementMatcher("rule").is(GrammarOperators.nextNot(subRule), "bar");
+    Rule subRule = new MutableParsingRule("subRule").is("foo");
+    Rule rule = new MutableParsingRule("rule").is(GrammarOperators.nextNot(subRule), "bar");
     ParseRunner runner = new ParseRunner(rule);
     ParsingResult result = runner.parse("baz".toCharArray());
     assertThat(result.isMatched()).isFalse();
@@ -85,8 +86,8 @@ public class ParseRunnerTest {
 
   @Test
   public void should_report_error_inside_of_predicate_next() {
-    Rule subRule = new GrammarElementMatcher("subRule").is("foo");
-    Rule rule = new GrammarElementMatcher("rule").is(GrammarOperators.next(subRule), "bar");
+    Rule subRule = new MutableParsingRule("subRule").is("foo");
+    Rule rule = new MutableParsingRule("rule").is(GrammarOperators.next(subRule), "bar");
     ParseRunner runner = new ParseRunner(rule);
     ParsingResult result = runner.parse("baz".toCharArray());
     assertThat(result.isMatched()).isFalse();
@@ -99,8 +100,8 @@ public class ParseRunnerTest {
 
   @Test
   public void should_not_report_error_inside_of_token() {
-    Rule subRule = new GrammarElementMatcher("subRule").is("foo");
-    Rule rule = new GrammarElementMatcher("rule").is(GrammarOperators.token(GenericTokenType.IDENTIFIER, subRule), "bar");
+    Rule subRule = new MutableParsingRule("subRule").is("foo");
+    Rule rule = new MutableParsingRule("rule").is(GrammarOperators.token(GenericTokenType.IDENTIFIER, subRule), "bar");
     ParseRunner runner = new ParseRunner(rule);
     ParsingResult result = runner.parse("baz".toCharArray());
     assertThat(result.isMatched()).isFalse();
@@ -113,8 +114,8 @@ public class ParseRunnerTest {
 
   @Test
   public void should_not_report_error_inside_of_trivia() {
-    Rule subRule = new GrammarElementMatcher("subRule").is("foo");
-    Rule rule = new GrammarElementMatcher("rule").is(GrammarOperators.skippedTrivia(subRule), "bar");
+    Rule subRule = new MutableParsingRule("subRule").is("foo");
+    Rule rule = new MutableParsingRule("rule").is(GrammarOperators.skippedTrivia(subRule), "bar");
     ParseRunner runner = new ParseRunner(rule);
     ParsingResult result = runner.parse("baz".toCharArray());
     assertThat(result.isMatched()).isFalse();
@@ -127,9 +128,9 @@ public class ParseRunnerTest {
 
   @Test
   public void should_report_error_at_several_paths() {
-    Rule subRule1 = new GrammarElementMatcher("subRule1").is("foo");
-    Rule subRule2 = new GrammarElementMatcher("subRule2").is("bar");
-    Rule rule = new GrammarElementMatcher("rule").is(GrammarOperators.firstOf(subRule1, subRule2));
+    Rule subRule1 = new MutableParsingRule("subRule1").is("foo");
+    Rule subRule2 = new MutableParsingRule("subRule2").is("bar");
+    Rule rule = new MutableParsingRule("rule").is(GrammarOperators.firstOf(subRule1, subRule2));
     ParseRunner runner = new ParseRunner(rule);
     ParsingResult result = runner.parse("baz".toCharArray());
     assertThat(result.isMatched()).isFalse();

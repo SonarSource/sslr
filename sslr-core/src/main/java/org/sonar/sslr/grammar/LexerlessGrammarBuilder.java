@@ -19,30 +19,31 @@
  */
 package org.sonar.sslr.grammar;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.api.Trivia.TriviaKind;
-import org.sonar.sslr.internal.grammar.LexerlessGrammarAdapter;
-import org.sonar.sslr.internal.grammar.LexerlessGrammarRuleDefinition;
-import org.sonar.sslr.internal.grammar.MatcherBuilderUtils;
-import org.sonar.sslr.internal.grammar.ReflexiveMatcherBuilder;
-import org.sonar.sslr.internal.matchers.EndOfInputMatcher;
-import org.sonar.sslr.internal.matchers.FirstOfMatcher;
-import org.sonar.sslr.internal.matchers.NothingMatcher;
-import org.sonar.sslr.internal.matchers.OneOrMoreMatcher;
-import org.sonar.sslr.internal.matchers.OptionalMatcher;
-import org.sonar.sslr.internal.matchers.PatternMatcher;
-import org.sonar.sslr.internal.matchers.TestMatcher;
-import org.sonar.sslr.internal.matchers.TestNotMatcher;
-import org.sonar.sslr.internal.matchers.TokenMatcher;
-import org.sonar.sslr.internal.matchers.TriviaMatcher;
-import org.sonar.sslr.internal.matchers.ZeroOrMoreMatcher;
+import org.sonar.sslr.internal.grammar.MutableLexerlessGrammar;
+import org.sonar.sslr.internal.grammar.MutableParsingRule;
+import org.sonar.sslr.internal.vm.EndOfInputExpression;
+import org.sonar.sslr.internal.vm.FirstOfExpression;
+import org.sonar.sslr.internal.vm.NextExpression;
+import org.sonar.sslr.internal.vm.NextNotExpression;
+import org.sonar.sslr.internal.vm.NothingExpression;
+import org.sonar.sslr.internal.vm.OneOrMoreExpression;
+import org.sonar.sslr.internal.vm.OptionalExpression;
+import org.sonar.sslr.internal.vm.ParsingExpression;
+import org.sonar.sslr.internal.vm.PatternExpression;
+import org.sonar.sslr.internal.vm.SequenceExpression;
+import org.sonar.sslr.internal.vm.StringExpression;
+import org.sonar.sslr.internal.vm.TokenExpression;
+import org.sonar.sslr.internal.vm.TriviaExpression;
+import org.sonar.sslr.internal.vm.ZeroOrMoreExpression;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * A builder for creating grammars for lexerless parsing.
@@ -51,7 +52,7 @@ import java.util.regex.Pattern;
  */
 public class LexerlessGrammarBuilder {
 
-  private final Map<GrammarRuleKey, LexerlessGrammarRuleDefinition> definitions = Maps.newHashMap();
+  private final Map<GrammarRuleKey, MutableParsingRule> definitions = Maps.newHashMap();
   private GrammarRuleKey rootRuleKey;
 
   public static LexerlessGrammarBuilder create() {
@@ -74,12 +75,12 @@ public class LexerlessGrammarBuilder {
    * No guarantee that this method always returns the same instance for the same key of rule.
    */
   public GrammarRuleBuilder rule(GrammarRuleKey ruleKey) {
-    LexerlessGrammarRuleDefinition definition = definitions.get(ruleKey);
-    if (definition == null) {
-      definition = new LexerlessGrammarRuleDefinition(ruleKey);
-      definitions.put(ruleKey, definition);
+    MutableParsingRule rule = definitions.get(ruleKey);
+    if (rule == null) {
+      rule = new MutableParsingRule(ruleKey);
+      definitions.put(ruleKey, rule);
     }
-    return definition;
+    return new RuleBuilder(rule);
   }
 
   /**
@@ -97,7 +98,12 @@ public class LexerlessGrammarBuilder {
    * @return grammar
    */
   public LexerlessGrammar build() {
-    return new LexerlessGrammarAdapter(definitions.values(), rootRuleKey);
+    for (MutableParsingRule rule : definitions.values()) {
+      if (rule.getExpression() == null) {
+        throw new GrammarException("The rule '" + rule.getRuleKey() + "' hasn't beed defined.");
+      }
+    }
+    return new MutableLexerlessGrammar(definitions, rootRuleKey);
   }
 
   /**
@@ -108,7 +114,7 @@ public class LexerlessGrammarBuilder {
    * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object sequence(Object e1, Object e2) {
-    return MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Arrays.asList(e1, e2));
+    return new SequenceExpression(convertToExpression(e1), convertToExpression(e2));
   }
 
   /**
@@ -120,7 +126,7 @@ public class LexerlessGrammarBuilder {
    * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object sequence(Object e1, Object e2, Object... rest) {
-    return MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Lists.asList(e1, e2, rest));
+    return new SequenceExpression(convertToExpressions(Lists.asList(e1, e2, rest)));
   }
 
   /**
@@ -131,7 +137,7 @@ public class LexerlessGrammarBuilder {
    * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object firstOf(Object e1, Object e2) {
-    return new ReflexiveMatcherBuilder(FirstOfMatcher.class, MatcherBuilderUtils.lexerlessToMatcherBuilders(Arrays.asList(e1, e2)));
+    return new FirstOfExpression(convertToExpression(e1), convertToExpression(e2));
   }
 
   /**
@@ -143,7 +149,7 @@ public class LexerlessGrammarBuilder {
    * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object firstOf(Object e1, Object e2, Object... rest) {
-    return new ReflexiveMatcherBuilder(FirstOfMatcher.class, MatcherBuilderUtils.lexerlessToMatcherBuilders(Lists.asList(e1, e2, rest)));
+    return new FirstOfExpression(convertToExpressions(Lists.asList(e1, e2, rest)));
   }
 
   /**
@@ -153,7 +159,7 @@ public class LexerlessGrammarBuilder {
    * @throws IllegalArgumentException if given argument is not a parsing expression
    */
   public Object optional(Object e) {
-    return new ReflexiveMatcherBuilder(OptionalMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Arrays.asList(e))});
+    return new OptionalExpression(convertToExpression(e));
   }
 
   /**
@@ -164,7 +170,7 @@ public class LexerlessGrammarBuilder {
    * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object optional(Object e1, Object... rest) {
-    return new ReflexiveMatcherBuilder(OptionalMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Lists.asList(e1, rest))});
+    return new OptionalExpression(new SequenceExpression(convertToExpressions(Lists.asList(e1, rest))));
   }
 
   /**
@@ -174,7 +180,7 @@ public class LexerlessGrammarBuilder {
    * @throws IllegalArgumentException if given argument is not a parsing expression
    */
   public Object oneOrMore(Object e) {
-    return new ReflexiveMatcherBuilder(OneOrMoreMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Arrays.asList(e))});
+    return new OneOrMoreExpression(convertToExpression(e));
   }
 
   /**
@@ -185,7 +191,7 @@ public class LexerlessGrammarBuilder {
    * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object oneOrMore(Object e1, Object... rest) {
-    return new ReflexiveMatcherBuilder(OneOrMoreMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Lists.asList(e1, rest))});
+    return new OneOrMoreExpression(new SequenceExpression(convertToExpressions(Lists.asList(e1, rest))));
   }
 
   /**
@@ -195,7 +201,7 @@ public class LexerlessGrammarBuilder {
    * @throws IllegalArgumentException if given argument is not a parsing expression
    */
   public Object zeroOrMore(Object e) {
-    return new ReflexiveMatcherBuilder(ZeroOrMoreMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Arrays.asList(e))});
+    return new ZeroOrMoreExpression(convertToExpression(e));
   }
 
   /**
@@ -206,7 +212,7 @@ public class LexerlessGrammarBuilder {
    * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object zeroOrMore(Object e1, Object... rest) {
-    return new ReflexiveMatcherBuilder(ZeroOrMoreMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Lists.asList(e1, rest))});
+    return new ZeroOrMoreExpression(new SequenceExpression(convertToExpressions(Lists.asList(e1, rest))));
   }
 
   /**
@@ -216,7 +222,7 @@ public class LexerlessGrammarBuilder {
    * @throws IllegalArgumentException if given argument is not a parsing expression
    */
   public Object next(Object e) {
-    return new ReflexiveMatcherBuilder(TestMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Arrays.asList(e))});
+    return new NextExpression(convertToExpression(e));
   }
 
   /**
@@ -227,7 +233,7 @@ public class LexerlessGrammarBuilder {
    * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object next(Object e1, Object... rest) {
-    return new ReflexiveMatcherBuilder(TestMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Lists.asList(e1, rest))});
+    return new NextExpression(new SequenceExpression(convertToExpressions(Lists.asList(e1, rest))));
   }
 
   /**
@@ -237,7 +243,7 @@ public class LexerlessGrammarBuilder {
    * @throws IllegalArgumentException if given argument is not a parsing expression
    */
   public Object nextNot(Object e) {
-    return new ReflexiveMatcherBuilder(TestNotMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Arrays.asList(e))});
+    return new NextNotExpression(convertToExpression(e));
   }
 
   /**
@@ -248,14 +254,14 @@ public class LexerlessGrammarBuilder {
    * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object nextNot(Object e1, Object... rest) {
-    return new ReflexiveMatcherBuilder(TestNotMatcher.class, new Object[] {MatcherBuilderUtils.lexerlessToSingleMatcherBuilder(Lists.asList(e1, rest))});
+    return new NextNotExpression(new SequenceExpression(convertToExpressions(Lists.asList(e1, rest))));
   }
 
   /**
    * Creates expression of grammar - "nothing".
    */
   public Object nothing() {
-    return new ReflexiveMatcherBuilder(NothingMatcher.class, new Object[0]);
+    return NothingExpression.INSTANCE;
   }
 
   /**
@@ -265,15 +271,14 @@ public class LexerlessGrammarBuilder {
    * @throws java.util.regex.PatternSyntaxException if the expression's syntax is invalid
    */
   public Object regexp(String regexp) {
-    Pattern.compile(regexp);
-    return new ReflexiveMatcherBuilder(PatternMatcher.class, new Object[] {regexp});
+    return new PatternExpression(regexp);
   }
 
   /**
    * Creates expression of grammar - "end of input".
    */
   public Object endOfInput() {
-    return new ReflexiveMatcherBuilder(EndOfInputMatcher.class, new Object[0]);
+    return EndOfInputExpression.INSTANCE;
   }
 
   /**
@@ -283,7 +288,7 @@ public class LexerlessGrammarBuilder {
    * @throws IllegalArgumentException if given argument is not a parsing expression
    */
   public Object token(TokenType tokenType, Object e) {
-    return new ReflexiveMatcherBuilder(TokenMatcher.class, new Object[] {tokenType, MatcherBuilderUtils.lexerlessToMatcherBuilder(e)});
+    return new TokenExpression(tokenType, convertToExpression(e));
   }
 
   /**
@@ -293,7 +298,7 @@ public class LexerlessGrammarBuilder {
    * @throws IllegalArgumentException if given argument is not a parsing expression
    */
   public Object commentTrivia(Object e) {
-    return new ReflexiveMatcherBuilder(TriviaMatcher.class, new Object[] {TriviaKind.COMMENT, MatcherBuilderUtils.lexerlessToMatcherBuilder(e)});
+    return new TriviaExpression(TriviaKind.COMMENT, convertToExpression(e));
   }
 
   /**
@@ -303,7 +308,75 @@ public class LexerlessGrammarBuilder {
    * @throws IllegalArgumentException if given argument is not a parsing expression
    */
   public Object skippedTrivia(Object e) {
-    return new ReflexiveMatcherBuilder(TriviaMatcher.class, new Object[] {TriviaKind.SKIPPED_TEXT, MatcherBuilderUtils.lexerlessToMatcherBuilder(e)});
+    return new TriviaExpression(TriviaKind.SKIPPED_TEXT, convertToExpression(e));
+  }
+
+  @VisibleForTesting
+  ParsingExpression convertToExpression(Object e) {
+    if (e instanceof ParsingExpression) {
+      return (ParsingExpression) e;
+    } else if (e instanceof String) {
+      return new StringExpression((String) e);
+    } else if (e instanceof Character) {
+      return new StringExpression(((Character) e).toString());
+    } else if (e instanceof GrammarRuleKey) {
+      GrammarRuleKey ruleKey = (GrammarRuleKey) e;
+      rule(ruleKey);
+      return definitions.get(ruleKey);
+    } else {
+      throw new IllegalArgumentException("Incorrect type of parsing expression: " + e.getClass().toString());
+    }
+  }
+
+  private ParsingExpression[] convertToExpressions(List<Object> expressions) {
+    ParsingExpression[] result = new ParsingExpression[expressions.size()];
+    for (int i = 0; i < expressions.size(); i++) {
+      result[i] = convertToExpression(expressions.get(i));
+    }
+    return result;
+  }
+
+  private class RuleBuilder implements GrammarRuleBuilder {
+
+    private final MutableParsingRule delegate;
+
+    public RuleBuilder(MutableParsingRule delegate) {
+      this.delegate = delegate;
+    }
+
+    public GrammarRuleBuilder is(Object e) {
+      if (delegate.getExpression() != null) {
+        throw new GrammarException("The rule '" + delegate.getRuleKey() + "' has already been defined somewhere in the grammar.");
+      }
+      delegate.setSubMatchers(convertToExpression(e));
+      return this;
+    }
+
+    public GrammarRuleBuilder is(Object e, Object... rest) {
+      return is(new SequenceExpression(convertToExpressions(Lists.asList(e, rest))));
+    }
+
+    public GrammarRuleBuilder override(Object e) {
+      delegate.setSubMatchers(e);
+      return this;
+    }
+
+    public GrammarRuleBuilder override(Object e, Object... rest) {
+      return override(new SequenceExpression(convertToExpressions(Lists.asList(e, rest))));
+    }
+
+    public void skip() {
+      delegate.skip();
+    }
+
+    public void skipIfOneChild() {
+      delegate.skipIfOneChild();
+    }
+
+    public void recoveryRule() {
+      throw new UnsupportedOperationException();
+    }
+
   }
 
 }

@@ -45,8 +45,8 @@ public class NextNotExpression implements ParsingExpression {
    * L2: ...
    * </pre>
    */
-  public Instruction[] compile() {
-    Instruction[] sub = subExpression.compile();
+  public Instruction[] compile(CompilationHandler compiler) {
+    Instruction[] sub = compiler.compile(subExpression);
     Instruction[] result = new Instruction[sub.length + 2];
     result[0] = Instruction.predicateChoice(sub.length + 2);
     System.arraycopy(sub, 0, result, 1, sub.length);

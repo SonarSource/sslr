@@ -40,10 +40,10 @@ public class SequenceExpression implements ParsingExpression {
    * ...
    * </pre>
    */
-  public Instruction[] compile() {
+  public Instruction[] compile(CompilationHandler compiler) {
     List<Instruction> result = Lists.newArrayList();
     for (ParsingExpression subExpression : subExpressions) {
-      Instruction.addAll(result, subExpression.compile());
+      Instruction.addAll(result, compiler.compile(subExpression));
     }
     return result.toArray(new Instruction[result.size()]);
   }

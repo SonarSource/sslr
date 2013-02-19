@@ -24,20 +24,20 @@ import com.sonar.sslr.api.Trivia.TriviaKind;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.sonar.sslr.internal.matchers.EndOfInputMatcher;
-import org.sonar.sslr.internal.matchers.FirstOfMatcher;
-import org.sonar.sslr.internal.matchers.Matcher;
-import org.sonar.sslr.internal.matchers.NothingMatcher;
-import org.sonar.sslr.internal.matchers.OneOrMoreMatcher;
-import org.sonar.sslr.internal.matchers.OptionalMatcher;
-import org.sonar.sslr.internal.matchers.PatternMatcher;
-import org.sonar.sslr.internal.matchers.SequenceMatcher;
-import org.sonar.sslr.internal.matchers.StringMatcher;
-import org.sonar.sslr.internal.matchers.TestMatcher;
-import org.sonar.sslr.internal.matchers.TestNotMatcher;
-import org.sonar.sslr.internal.matchers.TokenMatcher;
 import org.sonar.sslr.internal.matchers.TriviaMatcher;
-import org.sonar.sslr.internal.matchers.ZeroOrMoreMatcher;
+import org.sonar.sslr.internal.vm.EndOfInputExpression;
+import org.sonar.sslr.internal.vm.FirstOfExpression;
+import org.sonar.sslr.internal.vm.NextExpression;
+import org.sonar.sslr.internal.vm.NextNotExpression;
+import org.sonar.sslr.internal.vm.NothingExpression;
+import org.sonar.sslr.internal.vm.OneOrMoreExpression;
+import org.sonar.sslr.internal.vm.OptionalExpression;
+import org.sonar.sslr.internal.vm.ParsingExpression;
+import org.sonar.sslr.internal.vm.PatternExpression;
+import org.sonar.sslr.internal.vm.SequenceExpression;
+import org.sonar.sslr.internal.vm.StringExpression;
+import org.sonar.sslr.internal.vm.TokenExpression;
+import org.sonar.sslr.internal.vm.ZeroOrMoreExpression;
 
 import java.lang.reflect.Constructor;
 
@@ -51,48 +51,57 @@ public class GrammarOperatorsTest {
 
   @Test
   public void test() {
-    Matcher subMatcher = mock(Matcher.class);
-    assertThat(GrammarOperators.sequence(subMatcher)).isSameAs(subMatcher);
-    assertThat(GrammarOperators.sequence(subMatcher, subMatcher)).isInstanceOf(SequenceMatcher.class);
-    assertThat(GrammarOperators.sequence("foo")).isInstanceOf(StringMatcher.class);
-    assertThat(GrammarOperators.sequence('f')).isInstanceOf(StringMatcher.class);
+    ParsingExpression e1 = mock(ParsingExpression.class);
+    ParsingExpression e2 = mock(ParsingExpression.class);
 
-    assertThat(GrammarOperators.firstOf(subMatcher)).isSameAs(subMatcher);
-    assertThat(GrammarOperators.firstOf(subMatcher, subMatcher)).isInstanceOf(FirstOfMatcher.class);
+    assertThat(GrammarOperators.sequence(e1)).isSameAs(e1);
+    assertThat(GrammarOperators.sequence(e1, e2)).isInstanceOf(SequenceExpression.class);
+    assertThat(GrammarOperators.sequence("foo")).isInstanceOf(StringExpression.class);
+    assertThat(GrammarOperators.sequence('f')).isInstanceOf(StringExpression.class);
 
-    assertThat(GrammarOperators.optional(subMatcher)).isInstanceOf(OptionalMatcher.class);
+    assertThat(GrammarOperators.firstOf(e1)).isSameAs(e1);
+    assertThat(GrammarOperators.firstOf(e1, e2)).isInstanceOf(FirstOfExpression.class);
 
-    assertThat(GrammarOperators.oneOrMore(subMatcher)).isInstanceOf(OneOrMoreMatcher.class);
+    assertThat(GrammarOperators.optional(e1)).isInstanceOf(OptionalExpression.class);
 
-    assertThat(GrammarOperators.zeroOrMore(subMatcher)).isInstanceOf(ZeroOrMoreMatcher.class);
+    assertThat(GrammarOperators.oneOrMore(e1)).isInstanceOf(OneOrMoreExpression.class);
 
-    assertThat(GrammarOperators.next(subMatcher)).isInstanceOf(TestMatcher.class);
+    assertThat(GrammarOperators.zeroOrMore(e1)).isInstanceOf(ZeroOrMoreExpression.class);
 
-    assertThat(GrammarOperators.nextNot(subMatcher)).isInstanceOf(TestNotMatcher.class);
+    assertThat(GrammarOperators.next(e1)).isInstanceOf(NextExpression.class);
 
-    assertThat(GrammarOperators.regexp("foo")).isInstanceOf(PatternMatcher.class);
+    assertThat(GrammarOperators.nextNot(e1)).isInstanceOf(NextNotExpression.class);
 
-    assertThat(GrammarOperators.endOfInput()).isInstanceOf(EndOfInputMatcher.class);
+    assertThat(GrammarOperators.regexp("foo")).isInstanceOf(PatternExpression.class);
 
-    assertThat(GrammarOperators.nothing()).isInstanceOf(NothingMatcher.class);
+    assertThat(GrammarOperators.endOfInput()).isInstanceOf(EndOfInputExpression.class);
 
-    assertThat(GrammarOperators.token(mock(TokenType.class), subMatcher)).isInstanceOf(TokenMatcher.class);
+    assertThat(GrammarOperators.nothing()).isInstanceOf(NothingExpression.class);
+  }
+
+  @Test
+  public void test_token() {
+    TokenType tokenType = mock(TokenType.class);
+    ParsingExpression e = mock(ParsingExpression.class);
+    Object result = GrammarOperators.token(tokenType, e);
+    assertThat(result).isInstanceOf(TokenExpression.class);
+    assertThat(((TokenExpression) result).getTokenType()).isSameAs(tokenType);
   }
 
   @Test
   public void test_commentTrivia() {
-    Matcher subMatcher = mock(Matcher.class);
-    Object matcher = GrammarOperators.commentTrivia(subMatcher);
-    assertThat(matcher).isInstanceOf(TriviaMatcher.class);
-    assertThat(((TriviaMatcher) matcher).getTriviaKind()).isEqualTo(TriviaKind.COMMENT);
+    ParsingExpression e = mock(ParsingExpression.class);
+    Object result = GrammarOperators.commentTrivia(e);
+    assertThat(result).isInstanceOf(TriviaMatcher.class);
+    assertThat(((TriviaMatcher) result).getTriviaKind()).isEqualTo(TriviaKind.COMMENT);
   }
 
   @Test
   public void test_skippedTrivia() {
-    Matcher subMatcher = mock(Matcher.class);
-    Object matcher = GrammarOperators.skippedTrivia(subMatcher);
-    assertThat(matcher).isInstanceOf(TriviaMatcher.class);
-    assertThat(((TriviaMatcher) matcher).getTriviaKind()).isEqualTo(TriviaKind.SKIPPED_TEXT);
+    ParsingExpression e = mock(ParsingExpression.class);
+    Object result = GrammarOperators.skippedTrivia(e);
+    assertThat(result).isInstanceOf(TriviaMatcher.class);
+    assertThat(((TriviaMatcher) result).getTriviaKind()).isEqualTo(TriviaKind.SKIPPED_TEXT);
   }
 
   @Test

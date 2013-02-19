@@ -47,8 +47,8 @@ public class NextExpression implements ParsingExpression {
    * L1: ...
    * </pre>
    */
-  public Instruction[] compile() {
-    Instruction[] sub = subExpression.compile();
+  public Instruction[] compile(CompilationHandler compiler) {
+    Instruction[] sub = compiler.compile(subExpression);
     Instruction[] result = new Instruction[sub.length + 3];
     result[0] = Instruction.choice(result.length - 1);
     System.arraycopy(sub, 0, result, 1, sub.length);

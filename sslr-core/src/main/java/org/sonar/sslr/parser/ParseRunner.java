@@ -22,7 +22,20 @@ package org.sonar.sslr.parser;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.sonar.sslr.api.Rule;
-import org.sonar.sslr.internal.matchers.*;
+import org.sonar.sslr.internal.grammar.MutableParsingRule;
+import org.sonar.sslr.internal.matchers.BasicMatcherContext;
+import org.sonar.sslr.internal.matchers.ErrorLocatingHandler;
+import org.sonar.sslr.internal.matchers.ErrorReportingHandler;
+import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
+import org.sonar.sslr.internal.matchers.ImmutableInputBuffer;
+import org.sonar.sslr.internal.matchers.InputBuffer;
+import org.sonar.sslr.internal.matchers.Matcher;
+import org.sonar.sslr.internal.matchers.MatcherContext;
+import org.sonar.sslr.internal.matchers.MatcherPathElement;
+import org.sonar.sslr.internal.matchers.Memoizer;
+import org.sonar.sslr.internal.vm.CompiledGrammar;
+import org.sonar.sslr.internal.vm.Machine;
+import org.sonar.sslr.internal.vm.MutableGrammarCompiler;
 
 import java.util.List;
 
@@ -36,12 +49,23 @@ import java.util.List;
 public class ParseRunner {
 
   private final Matcher rootMatcher;
+  private final CompiledGrammar compiledGrammar;
 
   public ParseRunner(Rule rule) {
     this.rootMatcher = (Matcher) Preconditions.checkNotNull(rule, "rule");
+
+    if (rootMatcher instanceof MutableParsingRule) {
+      compiledGrammar = MutableGrammarCompiler.compile((MutableParsingRule) rootMatcher);
+    } else {
+      compiledGrammar = null;
+    }
   }
 
   public ParsingResult parse(char[] input) {
+    if (rootMatcher instanceof MutableParsingRule) {
+      return Machine.parse(input, compiledGrammar, ((MutableParsingRule) rootMatcher).getRuleKey());
+    }
+
     InputBuffer inputBuffer = new ImmutableInputBuffer(input);
     Memoizer memoizer = new Memoizer(input.length);
     ErrorLocatingHandler errorLocatingHandler = new ErrorLocatingHandler(memoizer);

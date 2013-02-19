@@ -42,9 +42,9 @@ public class TokenExpression extends TokenMatcher implements ParsingExpression {
    * L2: ...
    * </pre>
    */
-  public Instruction[] compile() {
+  public Instruction[] compile(CompilationHandler compiler) {
     // TODO maybe can be optimized
-    Instruction[] instr = subExpression.compile();
+    Instruction[] instr = compiler.compile(subExpression);
     Instruction[] result = new Instruction[instr.length + 4];
     result[0] = Instruction.call(2, this);
     result[1] = Instruction.jump(instr.length + 3);

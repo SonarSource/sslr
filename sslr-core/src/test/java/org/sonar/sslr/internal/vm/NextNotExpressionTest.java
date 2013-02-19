@@ -27,7 +27,7 @@ public class NextNotExpressionTest {
 
   @Test
   public void should_compile() {
-    Instruction[] instructions = new NextNotExpression(new SubExpression(1, 2)).compile();
+    Instruction[] instructions = new NextNotExpression(new SubExpression(1, 2)).compile(new CompilationHandler());
     assertThat(instructions).isEqualTo(new Instruction[] {
       Instruction.predicateChoice(4),
       SubExpression.mockInstruction(1),

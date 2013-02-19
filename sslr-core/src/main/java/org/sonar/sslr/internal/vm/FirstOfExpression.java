@@ -47,20 +47,20 @@ public class FirstOfExpression implements ParsingExpression {
    * E: ...
    * </pre>
    */
-  public Instruction[] compile() {
+  public Instruction[] compile(CompilationHandler compiler) {
     int[] offsets = new int[subExpressions.length - 1];
     List<Instruction> result = Lists.newArrayList();
     for (int i = 0; i < subExpressions.length - 1; i++) {
       // add placeholder for "Choice"
       result.add(null);
       // add program
-      Instruction.addAll(result, subExpressions[i].compile());
+      Instruction.addAll(result, compiler.compile(subExpressions[i]));
       // add placeholder for "Commit"
       result.add(null);
       offsets[i] = result.size();
     }
     // add last program
-    Instruction.addAll(result, subExpressions[subExpressions.length - 1].compile());
+    Instruction.addAll(result, compiler.compile(subExpressions[subExpressions.length - 1]));
 
     // replace placholders
     int index = 0;

@@ -38,7 +38,7 @@ public class RuleRefExpressionTest {
 
   @Test
   public void should_compile() {
-    assertThat(expression.compile()).containsOnly(expression);
+    assertThat(expression.compile(new CompilationHandler())).containsOnly(expression);
     assertThat(expression.getRuleKey()).isSameAs(ruleKey);
     assertThat(expression.toString()).isEqualTo("Ref " + ruleKey);
   }

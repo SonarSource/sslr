@@ -27,6 +27,6 @@ public interface ParsingExpression {
   /**
    * Compiles this expression into a sequence of instructions.
    */
-  Instruction[] compile();
+  Instruction[] compile(CompilationHandler compiler);
 
 }

@@ -20,16 +20,16 @@
 package org.sonar.sslr.parser;
 
 import org.junit.Test;
-import org.sonar.sslr.internal.matchers.FirstOfMatcher;
-import org.sonar.sslr.internal.matchers.Matcher;
-import org.sonar.sslr.internal.matchers.NothingMatcher;
-import org.sonar.sslr.internal.matchers.OneOrMoreMatcher;
-import org.sonar.sslr.internal.matchers.OptionalMatcher;
-import org.sonar.sslr.internal.matchers.SequenceMatcher;
-import org.sonar.sslr.internal.matchers.StringMatcher;
-import org.sonar.sslr.internal.matchers.TestMatcher;
-import org.sonar.sslr.internal.matchers.TestNotMatcher;
-import org.sonar.sslr.internal.matchers.ZeroOrMoreMatcher;
+import org.sonar.sslr.internal.vm.FirstOfExpression;
+import org.sonar.sslr.internal.vm.NextExpression;
+import org.sonar.sslr.internal.vm.NextNotExpression;
+import org.sonar.sslr.internal.vm.NothingExpression;
+import org.sonar.sslr.internal.vm.OneOrMoreExpression;
+import org.sonar.sslr.internal.vm.OptionalExpression;
+import org.sonar.sslr.internal.vm.ParsingExpression;
+import org.sonar.sslr.internal.vm.SequenceExpression;
+import org.sonar.sslr.internal.vm.StringExpression;
+import org.sonar.sslr.internal.vm.ZeroOrMoreExpression;
 
 import java.lang.reflect.Constructor;
 
@@ -40,26 +40,28 @@ public class GrammarFunctionsMigratorTest {
 
   @Test
   public void test() {
-    Matcher subMatcher = mock(Matcher.class);
-    assertThat(GrammarFunctionsMigrator.and(subMatcher)).isSameAs(subMatcher);
-    assertThat(GrammarFunctionsMigrator.and(subMatcher, subMatcher)).isInstanceOf(SequenceMatcher.class);
-    assertThat(GrammarFunctionsMigrator.and("foo")).isInstanceOf(StringMatcher.class);
-    assertThat(GrammarFunctionsMigrator.and('f')).isInstanceOf(StringMatcher.class);
+    ParsingExpression e1 = mock(ParsingExpression.class);
+    ParsingExpression e2 = mock(ParsingExpression.class);
 
-    assertThat(GrammarFunctionsMigrator.or(subMatcher)).isSameAs(subMatcher);
-    assertThat(GrammarFunctionsMigrator.or(subMatcher, subMatcher)).isInstanceOf(FirstOfMatcher.class);
+    assertThat(GrammarFunctionsMigrator.and(e1)).isSameAs(e1);
+    assertThat(GrammarFunctionsMigrator.and(e1, e2)).isInstanceOf(SequenceExpression.class);
+    assertThat(GrammarFunctionsMigrator.and("foo")).isInstanceOf(StringExpression.class);
+    assertThat(GrammarFunctionsMigrator.and('f')).isInstanceOf(StringExpression.class);
 
-    assertThat(GrammarFunctionsMigrator.opt(subMatcher)).isInstanceOf(OptionalMatcher.class);
+    assertThat(GrammarFunctionsMigrator.or(e1)).isSameAs(e1);
+    assertThat(GrammarFunctionsMigrator.or(e1, e2)).isInstanceOf(FirstOfExpression.class);
 
-    assertThat(GrammarFunctionsMigrator.one2n(subMatcher)).isInstanceOf(OneOrMoreMatcher.class);
+    assertThat(GrammarFunctionsMigrator.opt(e1)).isInstanceOf(OptionalExpression.class);
 
-    assertThat(GrammarFunctionsMigrator.o2n(subMatcher)).isInstanceOf(ZeroOrMoreMatcher.class);
+    assertThat(GrammarFunctionsMigrator.one2n(e1)).isInstanceOf(OneOrMoreExpression.class);
 
-    assertThat(GrammarFunctionsMigrator.next(subMatcher)).isInstanceOf(TestMatcher.class);
+    assertThat(GrammarFunctionsMigrator.o2n(e1)).isInstanceOf(ZeroOrMoreExpression.class);
 
-    assertThat(GrammarFunctionsMigrator.not(subMatcher)).isInstanceOf(TestNotMatcher.class);
+    assertThat(GrammarFunctionsMigrator.next(e1)).isInstanceOf(NextExpression.class);
 
-    assertThat(GrammarFunctionsMigrator.isFalse()).isInstanceOf(NothingMatcher.class);
+    assertThat(GrammarFunctionsMigrator.not(e1)).isInstanceOf(NextNotExpression.class);
+
+    assertThat(GrammarFunctionsMigrator.isFalse()).isInstanceOf(NothingExpression.class);
   }
 
   @Test

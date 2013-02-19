@@ -30,7 +30,7 @@ public class SubExpression implements ParsingExpression {
     this.ids = ids;
   }
 
-  public Instruction[] compile() {
+  public Instruction[] compile(CompilationHandler compiler) {
     Instruction[] result = new Instruction[ids.length];
     for (int i = 0; i < ids.length; i++) {
       result[i] = mockInstruction(ids[i]);

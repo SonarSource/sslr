@@ -21,7 +21,10 @@ package org.sonar.sslr.tests;
 
 import com.sonar.sslr.api.Rule;
 import org.fest.assertions.GenericAssert;
+import org.sonar.sslr.grammar.GrammarRuleKey;
+import org.sonar.sslr.internal.grammar.MutableParsingRule;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
+import org.sonar.sslr.internal.vm.EndOfInputExpression;
 import org.sonar.sslr.parser.GrammarOperators;
 import org.sonar.sslr.parser.ParseErrorFormatter;
 import org.sonar.sslr.parser.ParseRunner;
@@ -40,8 +43,38 @@ public class RuleAssert extends GenericAssert<RuleAssert, Rule> {
     super(RuleAssert.class, actual);
   }
 
+  private static class WithEndOfInput implements GrammarRuleKey {
+    private final GrammarRuleKey ruleKey;
+
+    public WithEndOfInput(GrammarRuleKey ruleKey) {
+      this.ruleKey = ruleKey;
+    }
+
+    @Override
+    public String toString() {
+      return ruleKey + " with end of input";
+    }
+  }
+
+  private static class EndOfInput implements GrammarRuleKey {
+    @Override
+    public String toString() {
+      return "end of input";
+    }
+  }
+
   private ParseRunner createParseRunnerWithEofMatcher() {
     isNotNull();
+
+    if (actual instanceof MutableParsingRule) {
+      MutableParsingRule rule = (MutableParsingRule) actual;
+      MutableParsingRule endOfInput = (MutableParsingRule) new MutableParsingRule(new EndOfInput())
+          .is(EndOfInputExpression.INSTANCE);
+      MutableParsingRule withEndOfInput = (MutableParsingRule) new MutableParsingRule(new WithEndOfInput(rule.getRuleKey()))
+          .is(actual, endOfInput);
+      return new ParseRunner(withEndOfInput);
+    }
+
     GrammarElementMatcher endOfInput = new GrammarElementMatcher("end of input")
         .is(GrammarOperators.endOfInput());
     GrammarElementMatcher matcher = new GrammarElementMatcher(getRuleName() + " with end of input")

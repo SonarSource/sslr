@@ -17,76 +17,105 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.internal.vm;
+package org.sonar.sslr.internal.grammar;
 
-import com.google.common.collect.Lists;
+import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeSkippingPolicy;
+import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.ast.AlwaysSkipFromAst;
 import com.sonar.sslr.impl.ast.NeverSkipFromAst;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 import org.sonar.sslr.grammar.GrammarException;
-import org.sonar.sslr.grammar.GrammarRuleBuilder;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
+import org.sonar.sslr.internal.matchers.MatchersUtils2;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.EndOfInputExpression;
+import org.sonar.sslr.internal.vm.FirstOfExpression;
+import org.sonar.sslr.internal.vm.Instruction;
+import org.sonar.sslr.internal.vm.ParsingExpression;
+import org.sonar.sslr.internal.vm.PatternExpression;
+import org.sonar.sslr.internal.vm.RuleRefExpression;
 
-public class ParsingRule implements GrammarRuleBuilder {
+/**
+ * TODO Replacement for {@link GrammarElementMatcher}.
+ */
+public class MutableParsingRule extends GrammarElementMatcher implements Rule, AstNodeSkippingPolicy, ParsingExpression, GrammarRuleKey {
 
   private static final AstNodeSkippingPolicy NEVER = new NeverSkipFromAst();
   private static final AstNodeSkippingPolicy ALWAYS = new AlwaysSkipFromAst();
   private static final AstNodeSkippingPolicy IF_ONE_CHILD = new SkipFromAstIfOnlyOneChild();
 
-  private final VmGrammarBuilder builder;
   private final GrammarRuleKey ruleKey;
   private ParsingExpression expression;
   private AstNodeSkippingPolicy astNodeSkippingPolicy = NEVER;
 
-  public ParsingRule(VmGrammarBuilder builder, GrammarRuleKey ruleKey) {
-    this.builder = builder;
+  public MutableParsingRule(String name) {
+    super(name);
+    this.ruleKey = this;
+  }
+
+  public MutableParsingRule(GrammarRuleKey ruleKey) {
+    super(ruleKey.toString(), ruleKey);
     this.ruleKey = ruleKey;
+  }
+
+  public GrammarRuleKey getRuleKey() {
+    return ruleKey;
   }
 
   public ParsingExpression getExpression() {
     return expression;
   }
 
-  public GrammarRuleBuilder is(Object e) {
+  public GrammarElementMatcher is(Object... matchers) {
     if (expression != null) {
       throw new GrammarException("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.");
     }
-    expression = builder.convertToExpression(e);
+    setSubMatchers(matchers);
     return this;
   }
 
-  public GrammarRuleBuilder is(Object e, Object... rest) {
-    return is(new SequenceExpression(builder.convertToExpressions(Lists.asList(e, rest))));
-  }
-
-  public GrammarRuleBuilder override(Object e) {
-    expression = builder.convertToExpression(e);
+  public GrammarElementMatcher override(Object... matchers) {
+    setSubMatchers(matchers);
     return this;
   }
 
-  public GrammarRuleBuilder override(Object e, Object... rest) {
-    return override(new SequenceExpression(builder.convertToExpressions(Lists.asList(e, rest))));
+  public void mock() {
+    setSubMatchers(getName(), new FirstOfExpression(new PatternExpression("\\s++"), EndOfInputExpression.INSTANCE));
+  }
+
+  public void setSubMatchers(Object... elements) {
+    this.expression = MatchersUtils2.convertToSingleMatcher(elements);
   }
 
   public void skip() {
-    this.astNodeSkippingPolicy = ALWAYS;
+    astNodeSkippingPolicy = ALWAYS;
   }
 
   public void skipIfOneChild() {
-    this.astNodeSkippingPolicy = IF_ONE_CHILD;
+    astNodeSkippingPolicy = IF_ONE_CHILD;
+  }
+
+  public void skipIf(AstNodeSkippingPolicy policy) {
+    astNodeSkippingPolicy = policy;
   }
 
   public void recoveryRule() {
     throw new UnsupportedOperationException();
   }
 
-  public GrammarElementMatcher convert() {
-    // For AstCreator
-    GrammarElementMatcher matcher = new GrammarElementMatcher(ruleKey.toString(), ruleKey);
-    matcher.skipIf(astNodeSkippingPolicy);
-    return matcher;
+  public boolean hasToBeSkippedFromAst(AstNode node) {
+    return astNodeSkippingPolicy.hasToBeSkippedFromAst(node);
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    return compiler.compile(new RuleRefExpression(ruleKey));
+  }
+
+  @Override
+  public String toString() {
+    return getName();
   }
 
 }

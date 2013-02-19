@@ -35,7 +35,7 @@ public class EndOfInputExpressionTest {
 
   @Test
   public void should_compile() {
-    assertThat(expression.compile()).containsOnly(expression);
+    assertThat(expression.compile(new CompilationHandler())).containsOnly(expression);
     assertThat(expression.toString()).isEqualTo("EndOfInput");
   }
 
