@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.internal.vm;
 
+import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Trivia.TriviaKind;
 import org.junit.Rule;
 import org.junit.Test;
@@ -108,6 +109,13 @@ public class MachineIntegrationTest {
     assertThat(Machine.execute("", instructions)).isFalse();
     assertThat(Machine.execute("a", instructions)).isTrue();
     assertThat(Machine.execute("aa", instructions)).isTrue();
+  }
+
+  @Test
+  public void token() {
+    Instruction[] instructions = new TokenExpression(GenericTokenType.IDENTIFIER, new StringExpression("foo")).compile();
+    assertThat(Machine.execute("foo", instructions)).isTrue();
+    assertThat(Machine.execute("bar", instructions)).isFalse();
   }
 
   @Test

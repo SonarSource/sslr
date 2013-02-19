@@ -301,8 +301,7 @@ public class VmGrammarBuilder {
    * @throws IllegalArgumentException if given argument is not a parsing expression
    */
   public Object token(TokenType tokenType, Object e) {
-    // TODO there is no need to use TokenMatcher with new Grammar API (SSLR-284)
-    return convertToExpression(e);
+    return new TokenExpression(tokenType, convertToExpression(e));
   }
 
   /**

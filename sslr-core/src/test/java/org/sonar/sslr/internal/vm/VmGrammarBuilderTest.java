@@ -81,7 +81,7 @@ public class VmGrammarBuilderTest {
     assertThat(b.commentTrivia(e1)).isInstanceOf(TriviaExpression.class);
     assertThat(b.skippedTrivia(e1)).isInstanceOf(TriviaExpression.class);
 
-    assertThat(b.token(mock(TokenType.class), e1)).isSameAs(e1);
+    assertThat(b.token(mock(TokenType.class), e1)).isInstanceOf(TokenExpression.class);
   }
 
   @Test
