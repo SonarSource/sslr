@@ -80,7 +80,7 @@ public class LexerlessGrammarBuilder {
       rule = new MutableParsingRule(ruleKey);
       definitions.put(ruleKey, rule);
     }
-    return new RuleBuilder(rule);
+    return new RuleBuilder(this, rule);
   }
 
   /**
@@ -336,11 +336,14 @@ public class LexerlessGrammarBuilder {
     return result;
   }
 
-  private class RuleBuilder implements GrammarRuleBuilder {
+  @VisibleForTesting
+  static class RuleBuilder implements GrammarRuleBuilder {
 
+    private final LexerlessGrammarBuilder b;
     private final MutableParsingRule delegate;
 
-    public RuleBuilder(MutableParsingRule delegate) {
+    public RuleBuilder(LexerlessGrammarBuilder b, MutableParsingRule delegate) {
+      this.b = b;
       this.delegate = delegate;
     }
 
@@ -348,21 +351,21 @@ public class LexerlessGrammarBuilder {
       if (delegate.getExpression() != null) {
         throw new GrammarException("The rule '" + delegate.getRuleKey() + "' has already been defined somewhere in the grammar.");
       }
-      delegate.setSubMatchers(convertToExpression(e));
+      delegate.setExpression(b.convertToExpression(e));
       return this;
     }
 
     public GrammarRuleBuilder is(Object e, Object... rest) {
-      return is(new SequenceExpression(convertToExpressions(Lists.asList(e, rest))));
+      return is(new SequenceExpression(b.convertToExpressions(Lists.asList(e, rest))));
     }
 
     public GrammarRuleBuilder override(Object e) {
-      delegate.setSubMatchers(e);
+      delegate.setExpression(b.convertToExpression(e));
       return this;
     }
 
     public GrammarRuleBuilder override(Object e, Object... rest) {
-      return override(new SequenceExpression(convertToExpressions(Lists.asList(e, rest))));
+      return override(new SequenceExpression(b.convertToExpressions(Lists.asList(e, rest))));
     }
 
     public void skip() {

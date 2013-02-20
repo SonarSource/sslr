@@ -72,21 +72,21 @@ public class MutableParsingRule extends GrammarElementMatcher implements Rule, A
     if (expression != null) {
       throw new GrammarException("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.");
     }
-    setSubMatchers(matchers);
+    setExpression(MatchersUtils2.convertToSingleMatcher(matchers));
     return this;
   }
 
   public GrammarElementMatcher override(Object... matchers) {
-    setSubMatchers(matchers);
+    setExpression(MatchersUtils2.convertToSingleMatcher(matchers));
     return this;
   }
 
   public void mock() {
-    setSubMatchers(getName(), new FirstOfExpression(new PatternExpression("\\s++"), EndOfInputExpression.INSTANCE));
+    setExpression(MatchersUtils2.convertToSingleMatcher(getName(), new FirstOfExpression(new PatternExpression("\\s++"), EndOfInputExpression.INSTANCE)));
   }
 
-  public void setSubMatchers(Object... elements) {
-    this.expression = MatchersUtils2.convertToSingleMatcher(elements);
+  public void setExpression(ParsingExpression expression) {
+    this.expression = expression;
   }
 
   public void skip() {

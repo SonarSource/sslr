@@ -130,6 +130,15 @@ public class LexerlessGrammarBuilderTest {
   }
 
   @Test
+  public void should_build_based_on_another_builder() {
+    LexerlessGrammarBuilder base = LexerlessGrammarBuilder.create();
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    base.rule(ruleKey).is(base.nothing());
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.createBasedOn(base);
+    assertThat(b.build().rule(ruleKey)).isNotNull();
+  }
+
+  @Test
   public void test_undefined_root_rule() {
     LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
