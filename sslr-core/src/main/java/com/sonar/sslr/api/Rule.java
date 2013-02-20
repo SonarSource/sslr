@@ -20,67 +20,76 @@
 package com.sonar.sslr.api;
 
 /**
- * A Rule describes a context free grammar syntactic rule.
- *
- * @see Grammar
+ * <p>This interface is not intended to be implemented by clients.</p>
  */
 public interface Rule extends AstNodeType {
 
   /**
-   * This method allows to provide the definition of a context-free grammar rule. <br>
-   * <br>
+   * Allows to provide definition of a grammar rule.
+   * <p>
    * <b>Note:</b> this method can be called only once for a rule. If it is called more than once, an IllegalStateException will be thrown.
-   * If the rule definition really needs to be redefine, then the {@link Rule#override(Object...)} method must be used.
    *
-   * @param matchers
-   *          the matchers that define the rule
-   * @return this rule
+   * @param e expression of grammar that defines this rule
+   * @return this (for method chaining)
+   * @throws IllegalStateException if definition has been already done
+   * @throws IllegalArgumentException if any of given arguments is not a parsing expression
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.GrammarRuleBuilder#is(Object)} instead.
    */
-  Rule is(Object... matchers);
+  @Deprecated
+  Rule is(Object... e);
 
   /**
-   * This method has the same effect as {@link RuleImpl#is(Object...)}, except that it can be called more than once to redefine a rule from
-   * scratch. It can be used if the rule has to be redefined later (for instance in a grammar extension).
+   * Allows to override definition of a grammar rule.
+   * <p>
+   * This method has the same effect as {@link #is(Object)}, except that it can be called more than once to redefine a rule from scratch.
    *
-   * @param matchers
-   *          the matchers that define the rule
-   * @return this rule
+   * @param e expression of grammar that defines this rule
+   * @return this (for method chaining)
+   * @throws IllegalArgumentException if any of given arguments is not a parsing expression
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.GrammarRuleBuilder#override(Object)} instead.
    */
-  Rule override(Object... matchers);
+  @Deprecated
+  Rule override(Object... e);
 
   /**
-   * Remove this node from the AST and attached its children directly to its parent
+   * Indicates that grammar rule should not lead to creation of AST node - its children should be attached directly to its parent.
+   *
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.GrammarRuleBuilder#skip()} instead.
    */
+  @Deprecated
   void skip();
 
   /**
-   * Remove this node from the AST according to a provided policy
+   * Defines policy of creation of AST node for this rule.
+   *
+   * @deprecated in 1.19
    */
+  @Deprecated
   void skipIf(AstNodeSkippingPolicy policy);
 
   /**
-   * Remove this node from the AST if it has exactly 1 child
+   * Indicates that grammar rule should not lead to creation of AST node if it has exactly one child.
+   *
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.GrammarRuleBuilder#skipIfOneChild()} instead.
    */
+  @Deprecated
   void skipIfOneChild();
 
   /**
    * Utility method used for unit testing in order to dynamically replace the definition of the rule to match as soon as a token whose value
    * equals the name of the rule is encountered.
    *
-   * @deprecated in 1.18. Method override(...) must be used instead.
+   * @deprecated in 1.18, use {@link #override(Object...)} instead.
    */
   @Deprecated
   void mock();
 
   /**
-   * A rule should be flagged as being a "Recovery" rule if it's responsibility is to consume
-   * some bad tokens in order to recover from a parsing error.
+   * Indicates that grammar rule is a "recovery" rule, i.e. it's able to consume some bad input in order to recover from a parse error.
    *
-   * In such case, all {@link RecognitionExceptionListener} injected into the {@link com.sonar.sslr.impl.Parser} are automatically
-   * notified.
-   *
-   * @see RecognitionExceptionListener
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.GrammarRuleBuilder#recoveryRule()} instead.
    */
+  @Deprecated
   void recoveryRule();
 
 }

@@ -49,6 +49,7 @@ import java.util.Map;
  * A builder for creating grammars for lexerful parsing.
  *
  * @since 1.18
+ * @see LexerlessGrammarBuilder
  */
 public class LexerfulGrammarBuilder {
 

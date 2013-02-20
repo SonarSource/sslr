@@ -68,6 +68,7 @@ public class MutableParsingRule extends GrammarElementMatcher implements Rule, A
     return expression;
   }
 
+  @Override
   public GrammarElementMatcher is(Object... matchers) {
     if (expression != null) {
       throw new GrammarException("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.");
@@ -76,11 +77,13 @@ public class MutableParsingRule extends GrammarElementMatcher implements Rule, A
     return this;
   }
 
+  @Override
   public GrammarElementMatcher override(Object... matchers) {
     setExpression(MatchersUtils2.convertToSingleMatcher(matchers));
     return this;
   }
 
+  @Override
   public void mock() {
     setExpression(MatchersUtils2.convertToSingleMatcher(getName(), new FirstOfExpression(new PatternExpression("\\s++"), EndOfInputExpression.INSTANCE)));
   }
@@ -89,22 +92,27 @@ public class MutableParsingRule extends GrammarElementMatcher implements Rule, A
     this.expression = expression;
   }
 
+  @Override
   public void skip() {
     astNodeSkippingPolicy = ALWAYS;
   }
 
+  @Override
   public void skipIfOneChild() {
     astNodeSkippingPolicy = IF_ONE_CHILD;
   }
 
+  @Override
   public void skipIf(AstNodeSkippingPolicy policy) {
     astNodeSkippingPolicy = policy;
   }
 
+  @Override
   public void recoveryRule() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public boolean hasToBeSkippedFromAst(AstNode node) {
     return astNodeSkippingPolicy.hasToBeSkippedFromAst(node);
   }

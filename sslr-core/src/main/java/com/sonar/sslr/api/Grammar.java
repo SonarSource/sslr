@@ -29,6 +29,11 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder} to create instances of this class.
+ *
+ * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ */
 public abstract class Grammar {
 
   public Grammar() {
@@ -98,10 +103,8 @@ public abstract class Grammar {
   }
 
   /**
-   * Allows to test rules of grammars, which were constructed by
+   * Allows to obtain an instance of grammar rule, which was constructed by
    * {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder} and {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder}.
-   *
-   * <p>This method is not intended to be overridden.</p>
    *
    * @since 1.18
    */
