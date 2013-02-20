@@ -20,12 +20,10 @@
 package org.sonar.sslr.examples.recursion;
 
 import com.sonar.sslr.api.Grammar;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
-@Ignore("SSLR-278")
 public class RecursiveGrammarTest {
 
   private Grammar grammar = RecursiveGrammar.create();

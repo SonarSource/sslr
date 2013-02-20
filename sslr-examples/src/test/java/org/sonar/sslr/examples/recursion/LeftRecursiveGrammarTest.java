@@ -20,14 +20,12 @@
 package org.sonar.sslr.examples.recursion;
 
 import com.sonar.sslr.api.Grammar;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.parser.ParseRunner;
 
-@Ignore("SSLR-220")
 public class LeftRecursiveGrammarTest {
 
   @Rule
