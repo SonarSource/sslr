@@ -39,7 +39,9 @@ import org.sonar.sslr.internal.vm.ZeroOrMoreExpression;
  * Provides methods to define rules for {@link LexerlessGrammar}.
  *
  * @since 1.16
+ * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder} instead.
  */
+@Deprecated
 public final class GrammarOperators {
 
   private GrammarOperators() {

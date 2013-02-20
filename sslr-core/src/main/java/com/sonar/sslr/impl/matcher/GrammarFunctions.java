@@ -27,8 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class provides all the functions to define a context-free grammar
+ * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder} instead.
  */
+@Deprecated
 public final class GrammarFunctions {
 
   private static final String AT_LEAST_ONE_MATCHER_MESSAGE = "You must define at least one matcher.";
