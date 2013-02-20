@@ -183,11 +183,13 @@ public class Machine implements CharSequence {
       address += callOffset;
 
       if (calls[address] == index) {
+        // TODO better message, e.g. dump stack
         String ruleName = ((GrammarElementMatcher) matcher).getName();
         throw new GrammarException("Left recursion has been detected, involved rule: " + ruleName);
       }
-      calls[address] = index;
       stack.calledAddress = address;
+      stack.leftRecursion = calls[address];
+      calls[address] = index;
     }
   }
 
