@@ -179,10 +179,17 @@ public class LexerlessGrammarBuilderTest {
   }
 
   @Test
-  public void test_wrong_argument() {
+  public void test_incorrect_type_of_parsing_expression() {
     thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage("Incorrect type of parsing expression: class java.lang.Object");
     LexerlessGrammarBuilder.create().convertToExpression(new Object());
+  }
+
+  @Test
+  public void test_null_parsing_expression() {
+    thrown.expect(NullPointerException.class);
+    thrown.expectMessage("Parsing expression can't be null");
+    LexerlessGrammarBuilder.create().convertToExpression(null);
   }
 
   @Test

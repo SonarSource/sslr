@@ -20,6 +20,7 @@
 package org.sonar.sslr.grammar;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sonar.sslr.api.TokenType;
@@ -314,6 +315,7 @@ public class LexerlessGrammarBuilder {
 
   @VisibleForTesting
   ParsingExpression convertToExpression(Object e) {
+    Preconditions.checkNotNull(e, "Parsing expression can't be null");
     if (e instanceof ParsingExpression) {
       return (ParsingExpression) e;
     } else if (e instanceof String) {

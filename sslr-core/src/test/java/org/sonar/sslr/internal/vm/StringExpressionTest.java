@@ -65,6 +65,7 @@ public class StringExpressionTest {
 
   @Test
   public void should_backtrack() {
+    when(machine.length()).thenReturn(0);
     expression.execute(machine);
     InOrder inOrder = Mockito.inOrder(machine);
     inOrder.verify(machine).length();
