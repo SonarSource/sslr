@@ -45,11 +45,12 @@ public class TriviaExpression extends TriviaMatcher implements ParsingExpression
   public Instruction[] compile() {
     // TODO maybe can be optimized
     Instruction[] instr = subExpression.compile();
-    Instruction[] result = new Instruction[instr.length + 3];
+    Instruction[] result = new Instruction[instr.length + 4];
     result[0] = Instruction.call(2, this);
-    result[1] = Instruction.jump(instr.length + 2);
-    System.arraycopy(instr, 0, result, 2, instr.length);
-    result[instr.length + 2] = Instruction.ret();
+    result[1] = Instruction.jump(instr.length + 3);
+    result[2] = Instruction.ignoreErrors();
+    System.arraycopy(instr, 0, result, 3, instr.length);
+    result[3 + instr.length] = Instruction.ret();
     return result;
   }
 

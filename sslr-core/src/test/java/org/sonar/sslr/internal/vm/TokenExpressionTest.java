@@ -40,7 +40,8 @@ public class TokenExpressionTest {
     Instruction[] instructions = expression.compile();
     assertThat(instructions).isEqualTo(new Instruction[] {
       Instruction.call(2, expression),
-      Instruction.jump(4),
+      Instruction.jump(5),
+      Instruction.ignoreErrors(),
       SubExpression.mockInstruction(1),
       SubExpression.mockInstruction(2),
       Instruction.ret()

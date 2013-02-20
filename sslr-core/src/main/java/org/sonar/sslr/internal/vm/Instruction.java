@@ -31,6 +31,7 @@ public abstract class Instruction {
   private static final Instruction BACKTRACK = new BacktrackInstruction();
   private static final Instruction END = new EndInstruction();
   private static final Instruction FAIL_TWICE = new FailTwiceInstruction();
+  private static final Instruction IGNORE_ERRORS = new IgnoreErrorsInstruction();
 
   public static void addAll(List<Instruction> list, Instruction[] array) {
     for (Instruction i : array) {
@@ -80,6 +81,10 @@ public abstract class Instruction {
 
   public static Instruction backCommit(int offset) {
     return new BackCommitInstruction(offset);
+  }
+
+  public static Instruction ignoreErrors() {
+    return IGNORE_ERRORS;
   }
 
   /**
@@ -176,6 +181,19 @@ public abstract class Instruction {
     @Override
     public int hashCode() {
       return offset;
+    }
+  }
+
+  public static final class IgnoreErrorsInstruction extends Instruction {
+    @Override
+    public void execute(Machine machine) {
+      machine.setIgnoreErrors(true);
+      machine.jump(1);
+    }
+
+    @Override
+    public String toString() {
+      return "IgnoreErrors";
     }
   }
 

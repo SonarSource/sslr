@@ -34,6 +34,7 @@ import org.sonar.sslr.internal.vm.Instruction.CommitInstruction;
 import org.sonar.sslr.internal.vm.Instruction.CommitVerifyInstruction;
 import org.sonar.sslr.internal.vm.Instruction.EndInstruction;
 import org.sonar.sslr.internal.vm.Instruction.FailTwiceInstruction;
+import org.sonar.sslr.internal.vm.Instruction.IgnoreErrorsInstruction;
 import org.sonar.sslr.internal.vm.Instruction.JumpInstruction;
 import org.sonar.sslr.internal.vm.Instruction.PredicateChoiceInstruction;
 import org.sonar.sslr.internal.vm.Instruction.RetInstruction;
@@ -41,6 +42,7 @@ import org.sonar.sslr.internal.vm.Instruction.RetInstruction;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -254,6 +256,19 @@ public class InstructionTest {
     inOrder.verify(machine).setIgnoreErrors(true);
     inOrder.verify(machine).pop();
     inOrder.verify(machine).jump(42);
+    verifyNoMoreInteractions(machine);
+  }
+
+  @Test
+  public void ignoreErrors() {
+    Instruction instruction = Instruction.ignoreErrors();
+    assertThat(instruction).isInstanceOf(IgnoreErrorsInstruction.class);
+    assertThat(instruction.toString()).isEqualTo("IgnoreErrors");
+    assertThat(instruction).as("singleton").isSameAs(Instruction.ignoreErrors());
+
+    instruction.execute(machine);
+    verify(machine).setIgnoreErrors(true);
+    verify(machine).jump(1);
     verifyNoMoreInteractions(machine);
   }
 
