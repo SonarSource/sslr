@@ -29,7 +29,7 @@ public class NextExpressionTest {
   public void should_compile() {
     Instruction[] instructions = new NextExpression(new SubExpression(1, 2)).compile();
     assertThat(instructions).isEqualTo(new Instruction[] {
-      Instruction.predicateChoice(4),
+      Instruction.choice(4),
       SubExpression.mockInstruction(1),
       SubExpression.mockInstruction(2),
       Instruction.backCommit(2),

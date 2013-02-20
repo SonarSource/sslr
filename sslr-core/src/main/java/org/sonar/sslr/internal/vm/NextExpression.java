@@ -50,7 +50,7 @@ public class NextExpression implements ParsingExpression {
   public Instruction[] compile() {
     Instruction[] sub = subExpression.compile();
     Instruction[] result = new Instruction[sub.length + 3];
-    result[0] = Instruction.predicateChoice(result.length - 1);
+    result[0] = Instruction.choice(result.length - 1);
     System.arraycopy(sub, 0, result, 1, sub.length);
     result[sub.length + 1] = Instruction.backCommit(2);
     result[sub.length + 2] = Instruction.backtrack();
