@@ -19,14 +19,14 @@
  */
 package org.sonar.sslr.examples.abc;
 
+import com.sonar.sslr.api.Grammar;
 import org.junit.Test;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class AbcGrammarTest {
 
-  private LexerlessGrammar g = AbcGrammar.createGrammar();
+  private Grammar g = AbcGrammar.createGrammar();
 
   @Test
   public void test() {

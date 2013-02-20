@@ -112,6 +112,20 @@ public class ParseRunnerTest {
   }
 
   @Test
+  public void should_not_report_error_inside_of_trivia() {
+    Rule subRule = new GrammarElementMatcher("subRule").is("foo");
+    Rule rule = new GrammarElementMatcher("rule").is(GrammarOperators.skippedTrivia(subRule), "bar");
+    ParseRunner runner = new ParseRunner(rule);
+    ParsingResult result = runner.parse("baz".toCharArray());
+    assertThat(result.isMatched()).isFalse();
+    ParseError parseError = result.getParseError();
+    System.out.println(new ParseErrorFormatter().format(parseError));
+    assertThat(parseError.getErrorIndex()).isEqualTo(0);
+    assertThat(parseError.getMessage()).isEqualTo("failed to match: rule");
+    assertThat(parseError.getFailedPaths()).hasSize(1);
+  }
+
+  @Test
   public void should_report_error_at_several_paths() {
     Rule subRule1 = new GrammarElementMatcher("subRule1").is("foo");
     Rule subRule2 = new GrammarElementMatcher("subRule2").is("bar");

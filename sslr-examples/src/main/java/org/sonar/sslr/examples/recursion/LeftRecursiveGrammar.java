@@ -17,25 +17,36 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.examples.abc;
+package org.sonar.sslr.examples.recursion;
 
 import com.sonar.sslr.api.Grammar;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 
-/**
- * Grammar for the classic non-context-free language { a^n b^n c^n : n >= 1 }.
- */
-public enum AbcGrammar implements GrammarRuleKey {
+public enum LeftRecursiveGrammar implements GrammarRuleKey {
 
-  S, A, B;
+  A, B, C, T1, T2, T3, S1, S2;
 
-  public static Grammar createGrammar() {
+  public static Grammar create() {
     LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
 
-    b.rule(S).is(b.next(A, "c"), b.oneOrMore("a"), B, b.nextNot("a", "b", "c"));
-    b.rule(A).is("a", b.optional(A), "b");
-    b.rule(B).is("b", b.optional(B), "c");
+    // Immediate left recursion
+    b.rule(A).is(b.firstOf(
+        b.sequence(A, T1),
+        T1));
+    b.rule(T1).is("t1");
+
+    // Indirect left recursion
+    b.rule(B).is(b.firstOf(
+        b.sequence(C, T2),
+        S1));
+    b.rule(C).is(b.firstOf(
+        b.sequence(B, T3),
+        S2));
+    b.rule(T2).is("t1");
+    b.rule(S1).is("s1");
+    b.rule(T3).is("t2");
+    b.rule(S2).is("s2");
 
     return b.build();
   }
