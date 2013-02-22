@@ -49,24 +49,15 @@ public class GrammarElementMatcher implements Rule, Matcher, AstNodeSkippingPoli
   }
 
   public GrammarElementMatcher is(Object... elements) {
-    if (subMatchers != null) {
-      throw new IllegalStateException("The rule '" + name + "' has already been defined somewhere in the grammar.");
-    }
-    setSubMatchers(elements);
-    return this;
+    throw new AssertionError("Expected that this method not used directly and overridden in MutableParsingRule");
   }
 
   public GrammarElementMatcher override(Object... elements) {
-    setSubMatchers(elements);
-    return this;
+    throw new AssertionError("Expected that this method not used directly and overridden in MutableParsingRule");
   }
 
   public void mock() {
-    setSubMatchers(getName(), new FirstOfMatcher(new PatternMatcher("\\s++"), new EndOfInputMatcher()));
-  }
-
-  private void setSubMatchers(Object... elements) {
-    subMatchers = MatchersUtils.convertToMatchers(elements);
+    throw new AssertionError("Expected that this method not used directly and overridden in MutableParsingRule");
   }
 
   public String getName() {
