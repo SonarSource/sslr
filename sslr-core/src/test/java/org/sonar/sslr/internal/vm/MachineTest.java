@@ -63,12 +63,21 @@ public class MachineTest {
 
   @Test
   public void should_advanceIndex() {
-    Machine machine = new Machine("", new Instruction[2]);
+    Machine machine = new Machine("foo bar", new Instruction[2]);
     assertThat(machine.getIndex()).isEqualTo(0);
-    machine.advanceIndex(42);
-    assertThat(machine.getIndex()).isEqualTo(42);
-    machine.advanceIndex(13);
-    assertThat(machine.getIndex()).isEqualTo(42 + 13);
+    assertThat(machine.length()).isEqualTo(7);
+    assertThat(machine.charAt(0)).isEqualTo('f');
+    assertThat(machine.charAt(1)).isEqualTo('o');
+    machine.advanceIndex(3);
+    assertThat(machine.getIndex()).isEqualTo(3);
+    assertThat(machine.length()).isEqualTo(4);
+    assertThat(machine.charAt(0)).isEqualTo(' ');
+    assertThat(machine.charAt(1)).isEqualTo('b');
+    machine.advanceIndex(1);
+    assertThat(machine.getIndex()).isEqualTo(4);
+    assertThat(machine.length()).isEqualTo(3);
+    assertThat(machine.charAt(0)).isEqualTo('b');
+    assertThat(machine.charAt(1)).isEqualTo('a');
   }
 
   @Test
@@ -78,12 +87,12 @@ public class MachineTest {
     machine.advanceIndex(1);
     machine.jump(1);
     MachineStack previousStack = machine.peek();
-    machine.pushReturn(13, matcher, 1);
+    machine.pushReturn(2, matcher, 1);
     assertThat(machine.getAddress()).as("new address").isEqualTo(2);
     assertThat(machine.peek()).isNotSameAs(previousStack);
     assertThat(machine.peek().parent).isSameAs(previousStack);
     assertThat(machine.peek().index).as("current index").isEqualTo(1);
-    assertThat(machine.peek().address).as("return address").isEqualTo(1 + 13);
+    assertThat(machine.peek().address).as("return address").isEqualTo(1 + 2);
     assertThat(machine.peek().matcher).isSameAs(matcher);
   }
 
@@ -191,6 +200,38 @@ public class MachineTest {
     assertThat(node.getStartIndex()).isEqualTo(1);
     assertThat(node.getEndIndex()).isEqualTo(1 + 13);
     assertThat(node.getChildren()).hasSize(2);
+  }
+
+  @Test
+  public void should_use_memo() {
+    Machine machine = new Machine("foo", new Instruction[3]);
+    Matcher matcher = mock(Matcher.class);
+    machine.pushBacktrack(0);
+    machine.pushReturn(1, matcher, 2);
+    machine.advanceIndex(3);
+    machine.createNode();
+    ParseNode memo = machine.peek().parent.subNodes.get(0);
+    machine.backtrack();
+    machine.pushReturn(2, matcher, 1);
+    assertThat(machine.getAddress()).isEqualTo(2);
+    assertThat(machine.getIndex()).isEqualTo(3);
+    assertThat(machine.peek().subNodes).containsOnly(memo);
+  }
+
+  @Test
+  public void should_not_use_memo() {
+    Machine machine = new Machine("foo", new Instruction[3]);
+    Matcher matcher = mock(Matcher.class);
+    machine.pushBacktrack(0);
+    machine.pushReturn(2, matcher, 1);
+    machine.advanceIndex(3);
+    machine.createNode();
+    machine.backtrack();
+    Matcher anotherMatcher = mock(Matcher.class);
+    machine.pushReturn(2, anotherMatcher, 1);
+    assertThat(machine.getAddress()).isEqualTo(1);
+    assertThat(machine.getIndex()).isEqualTo(0);
+    assertThat(machine.peek().subNodes).isEmpty();
   }
 
 }
