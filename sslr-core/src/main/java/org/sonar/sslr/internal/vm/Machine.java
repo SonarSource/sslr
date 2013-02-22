@@ -128,8 +128,7 @@ public class Machine implements CharSequence {
     this.handler = handler;
     this.memos = new ParseNode[this.input.length + 1];
     this.stack = new MachineStack();
-    stack.child = new MachineStack(this.stack);
-    stack = stack.child;
+    stack = stack.getOrCreateChild();
     stack.index = -1;
     calls = new int[instructions.length];
     Arrays.fill(calls, -1);
@@ -163,11 +162,7 @@ public class Machine implements CharSequence {
   }
 
   private void push(int address) {
-    // reuse elements of stack
-    if (stack.child == null) {
-      stack.child = new MachineStack(stack);
-    }
-    stack = stack.child;
+    stack = stack.getOrCreateChild();
     stack.subNodes.clear();
     stack.address = address;
     stack.index = index;

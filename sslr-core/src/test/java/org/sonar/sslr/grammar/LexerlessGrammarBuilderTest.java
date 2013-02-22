@@ -87,11 +87,11 @@ public class LexerlessGrammarBuilderTest {
     assertThat(b.nextNot(e1)).isInstanceOf(NextNotExpression.class);
     assertThat(b.nextNot(e1, e2)).isInstanceOf(NextNotExpression.class);
 
-    assertThat(b.nothing()).isInstanceOf(NothingExpression.class);
+    assertThat(b.nothing()).as("singleton").isSameAs(NothingExpression.INSTANCE);
 
     assertThat(b.regexp("")).isInstanceOf(PatternExpression.class);
 
-    assertThat(b.endOfInput()).isInstanceOf(EndOfInputExpression.class);
+    assertThat(b.endOfInput()).as("singleton").isSameAs(EndOfInputExpression.INSTANCE);
   }
 
   @Test

@@ -132,7 +132,7 @@ public class InstructionTest {
     assertThat(instruction.equals(new Object())).isFalse();
     assertThat(instruction.hashCode()).isEqualTo(42);
 
-    MachineStack stack = new MachineStack(new MachineStack(null));
+    MachineStack stack = new MachineStack().getOrCreateChild();
     when(machine.peek()).thenReturn(stack);
     instruction.execute(machine);
     InOrder inOrder = Mockito.inOrder(machine);
@@ -152,7 +152,7 @@ public class InstructionTest {
     assertThat(instruction.equals(new Object())).isFalse();
     assertThat(instruction.hashCode()).isEqualTo(42);
 
-    MachineStack stack = new MachineStack(new MachineStack(null));
+    MachineStack stack = new MachineStack().getOrCreateChild();
     when(machine.peek()).thenReturn(stack);
     when(machine.getIndex()).thenReturn(13);
     instruction.execute(machine);
@@ -167,7 +167,7 @@ public class InstructionTest {
   @Test
   public void commitVerify_should_throw_exception() {
     Instruction instruction = Instruction.commitVerify(42);
-    MachineStack stack = new MachineStack(new MachineStack(null));
+    MachineStack stack = new MachineStack().getOrCreateChild();
     stack.index = 13;
     when(machine.peek()).thenReturn(stack);
     when(machine.getIndex()).thenReturn(13);

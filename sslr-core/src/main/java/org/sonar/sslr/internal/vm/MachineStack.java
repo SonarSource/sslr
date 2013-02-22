@@ -29,7 +29,7 @@ import java.util.List;
 public class MachineStack {
 
   public final MachineStack parent;
-  public MachineStack child;
+  private MachineStack child;
 
   public final List<ParseNode> subNodes;
   public int address;
@@ -46,9 +46,16 @@ public class MachineStack {
     this.index = -1;
   }
 
-  public MachineStack(MachineStack parent) {
+  private MachineStack(MachineStack parent) {
     this.parent = parent;
     this.subNodes = Lists.newArrayList();
+  }
+
+  public MachineStack getOrCreateChild() {
+    if (child == null) {
+      child = new MachineStack(this);
+    }
+    return child;
   }
 
   public boolean isReturn() {
