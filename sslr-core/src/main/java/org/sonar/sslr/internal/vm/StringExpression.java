@@ -20,7 +20,6 @@
 package org.sonar.sslr.internal.vm;
 
 import org.sonar.sslr.internal.matchers.Matcher;
-import org.sonar.sslr.internal.matchers.MatcherContext;
 
 public class StringExpression extends NativeExpression implements Matcher {
 
@@ -44,10 +43,6 @@ public class StringExpression extends NativeExpression implements Matcher {
     machine.advanceIndex(string.length());
     machine.createLeafNode(this);
     machine.jump(1);
-  }
-
-  public boolean match(MatcherContext context) {
-    throw new UnsupportedOperationException();
   }
 
   @Override

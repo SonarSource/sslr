@@ -49,8 +49,4 @@ public class MutableLexerlessGrammar extends LexerlessGrammar {
     return rootRuleKey;
   }
 
-  public Map<GrammarRuleKey, MutableParsingRule> getRules() {
-    return rules;
-  }
-
 }

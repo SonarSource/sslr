@@ -28,7 +28,9 @@ import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.sonar.sslr.internal.grammar.MutableParsingRule;
 import org.sonar.sslr.internal.text.LocatedText;
+import org.sonar.sslr.internal.vm.TokenExpression;
 import org.sonar.sslr.parser.ParsingResult;
 
 import java.util.Collections;
@@ -43,9 +45,9 @@ public class AstCreatorTest {
   public void should_create_tokens_and_trivias() {
     char[] input = "foo bar".toCharArray();
 
-    TokenMatcher tokenMatcher = mockTokenMatcher(GenericTokenType.IDENTIFIER);
-    TokenMatcher triviaMatcher = mockTokenMatcher(GenericTokenType.COMMENT);
-    GrammarElementMatcher ruleMatcher = mockRuleMatcher("rule");
+    TokenExpression tokenMatcher = mockTokenMatcher(GenericTokenType.IDENTIFIER);
+    TokenExpression triviaMatcher = mockTokenMatcher(GenericTokenType.COMMENT);
+    MutableParsingRule ruleMatcher = mockRuleMatcher("rule");
 
     ParseNode triviaNode = new ParseNode(0, 4, Collections.EMPTY_LIST, triviaMatcher);
     ParseNode tokenNode = new ParseNode(4, 7, Collections.EMPTY_LIST, tokenMatcher);
@@ -88,7 +90,7 @@ public class AstCreatorTest {
 
     ParseNode firstTerminal = new ParseNode(0, 3, Collections.EMPTY_LIST, null);
     ParseNode secondTerminal = new ParseNode(3, 6, Collections.EMPTY_LIST, null);
-    GrammarElementMatcher ruleMatcher = mockRuleMatcher("rule");
+    MutableParsingRule ruleMatcher = mockRuleMatcher("rule");
     ParseNode parseTreeRoot = new ParseNode(0, 6, ImmutableList.of(firstTerminal, secondTerminal), ruleMatcher);
 
     InputBuffer inputBuffer = new ImmutableInputBuffer(input);
@@ -125,9 +127,9 @@ public class AstCreatorTest {
   public void should_skip_nodes() {
     char[] input = "foo".toCharArray();
 
-    GrammarElementMatcher ruleMatcher1 = mockRuleMatcher("rule1");
+    MutableParsingRule ruleMatcher1 = mockRuleMatcher("rule1");
     when(ruleMatcher1.hasToBeSkippedFromAst(Mockito.any(AstNode.class))).thenReturn(true);
-    GrammarElementMatcher ruleMatcher2 = mockRuleMatcher("rule2");
+    MutableParsingRule ruleMatcher2 = mockRuleMatcher("rule2");
     ParseNode node = new ParseNode(0, 3, Collections.EMPTY_LIST, ruleMatcher1);
     ParseNode parseTreeRoot = new ParseNode(0, 3, ImmutableList.of(node), ruleMatcher2);
 
@@ -145,12 +147,12 @@ public class AstCreatorTest {
     assertThat(astNode.getToken()).isNull();
   }
 
-  private static GrammarElementMatcher mockRuleMatcher(String name) {
-    return when(mock(GrammarElementMatcher.class).getName()).thenReturn(name).getMock();
+  private static MutableParsingRule mockRuleMatcher(String name) {
+    return when(mock(MutableParsingRule.class).getName()).thenReturn(name).getMock();
   }
 
-  private static TokenMatcher mockTokenMatcher(TokenType tokenType) {
-    return when(mock(TokenMatcher.class).getTokenType()).thenReturn(tokenType).getMock();
+  private static TokenExpression mockTokenMatcher(TokenType tokenType) {
+    return when(mock(TokenExpression.class).getTokenType()).thenReturn(tokenType).getMock();
   }
 
 }

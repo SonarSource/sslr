@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.sonar.sslr.internal.grammar.MutableLexerlessGrammar;
 import org.sonar.sslr.internal.grammar.MutableParsingRule;
-import org.sonar.sslr.internal.matchers.TriviaMatcher;
 import org.sonar.sslr.internal.vm.EndOfInputExpression;
 import org.sonar.sslr.internal.vm.FirstOfExpression;
 import org.sonar.sslr.internal.vm.NextExpression;
@@ -39,6 +38,7 @@ import org.sonar.sslr.internal.vm.PatternExpression;
 import org.sonar.sslr.internal.vm.SequenceExpression;
 import org.sonar.sslr.internal.vm.StringExpression;
 import org.sonar.sslr.internal.vm.TokenExpression;
+import org.sonar.sslr.internal.vm.TriviaExpression;
 import org.sonar.sslr.internal.vm.ZeroOrMoreExpression;
 
 import java.util.regex.PatternSyntaxException;
@@ -107,16 +107,16 @@ public class LexerlessGrammarBuilderTest {
   public void test_commentTrivia() {
     ParsingExpression e = mock(ParsingExpression.class);
     Object result = LexerlessGrammarBuilder.create().commentTrivia(e);
-    assertThat(result).isInstanceOf(TriviaMatcher.class);
-    assertThat(((TriviaMatcher) result).getTriviaKind()).isEqualTo(TriviaKind.COMMENT);
+    assertThat(result).isInstanceOf(TriviaExpression.class);
+    assertThat(((TriviaExpression) result).getTriviaKind()).isEqualTo(TriviaKind.COMMENT);
   }
 
   @Test
   public void test_skippedTrivia() {
     ParsingExpression e = mock(ParsingExpression.class);
     Object result = LexerlessGrammarBuilder.create().skippedTrivia(e);
-    assertThat(result).isInstanceOf(TriviaMatcher.class);
-    assertThat(((TriviaMatcher) result).getTriviaKind()).isEqualTo(TriviaKind.SKIPPED_TEXT);
+    assertThat(result).isInstanceOf(TriviaExpression.class);
+    assertThat(((TriviaExpression) result).getTriviaKind()).isEqualTo(TriviaKind.SKIPPED_TEXT);
   }
 
   @Test

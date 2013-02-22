@@ -20,7 +20,6 @@
 package org.sonar.sslr.internal.vm;
 
 import org.sonar.sslr.grammar.GrammarException;
-import org.sonar.sslr.internal.matchers.MatcherContext;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,10 +56,6 @@ public class PatternExpression extends NativeExpression implements org.sonar.ssl
     } else {
       machine.backtrack();
     }
-  }
-
-  public boolean match(MatcherContext context) {
-    throw new UnsupportedOperationException();
   }
 
   @Override

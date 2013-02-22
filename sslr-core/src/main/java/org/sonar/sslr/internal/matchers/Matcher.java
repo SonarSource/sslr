@@ -21,9 +21,4 @@ package org.sonar.sslr.internal.matchers;
 
 public interface Matcher {
 
-  /**
-   * @return true if the match was successful
-   */
-  boolean match(MatcherContext context);
-
 }

@@ -19,6 +19,9 @@
  */
 package org.sonar.sslr.internal.matchers;
 
+import org.sonar.sslr.internal.grammar.MutableParsingRule;
+import org.sonar.sslr.internal.vm.TokenExpression;
+
 public class ParseTreePrinter {
 
   public static String leafsToString(ParseNode node, char[] input) {
@@ -62,10 +65,10 @@ public class ParseTreePrinter {
   }
 
   private static String matcherToString(Matcher matcher) {
-    if (matcher instanceof GrammarElementMatcher) {
-      return ((GrammarElementMatcher) matcher).getName();
-    } else if (matcher instanceof TokenMatcher) {
-      return ((TokenMatcher) matcher).getTokenType().getName();
+    if (matcher instanceof MutableParsingRule) {
+      return ((MutableParsingRule) matcher).getName();
+    } else if (matcher instanceof TokenExpression) {
+      return ((TokenExpression) matcher).getTokenType().getName();
     } else {
       return matcher.toString();
     }

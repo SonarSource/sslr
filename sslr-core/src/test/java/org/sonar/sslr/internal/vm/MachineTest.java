@@ -23,7 +23,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.sonar.sslr.grammar.GrammarException;
-import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
+import org.sonar.sslr.internal.grammar.MutableParsingRule;
 import org.sonar.sslr.internal.matchers.Matcher;
 import org.sonar.sslr.internal.matchers.ParseNode;
 
@@ -90,7 +90,7 @@ public class MachineTest {
   @Test
   public void should_detect_left_recursion() {
     Machine machine = new Machine("foo", new Instruction[2]);
-    GrammarElementMatcher matcher = mock(GrammarElementMatcher.class);
+    MutableParsingRule matcher = mock(MutableParsingRule.class);
     when(matcher.getName()).thenReturn("left-recursive");
 
     machine.advanceIndex(1);

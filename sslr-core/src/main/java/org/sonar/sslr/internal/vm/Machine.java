@@ -24,7 +24,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.grammar.GrammarRuleKey;
-import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
+import org.sonar.sslr.internal.grammar.MutableParsingRule;
 import org.sonar.sslr.internal.matchers.ImmutableInputBuffer;
 import org.sonar.sslr.internal.matchers.InputBuffer;
 import org.sonar.sslr.internal.matchers.Matcher;
@@ -89,7 +89,7 @@ public class Machine implements CharSequence {
       sb.append(':');
       for (List<MatcherPathElement> failedPath : errorReportingHandler.getFailedPaths()) {
         Matcher failedMatcher = Iterables.getLast(failedPath).getMatcher();
-        sb.append(' ').append(((GrammarElementMatcher) failedMatcher).getName());
+        sb.append(' ').append(((MutableParsingRule) failedMatcher).getName());
       }
       InputBuffer inputBuffer = new ImmutableInputBuffer(machine.input);
       ParseError parseError = new ParseError(
@@ -192,7 +192,7 @@ public class Machine implements CharSequence {
 
       if (calls[address] == index) {
         // TODO better message, e.g. dump stack
-        String ruleName = ((GrammarElementMatcher) matcher).getName();
+        String ruleName = ((MutableParsingRule) matcher).getName();
         throw new GrammarException("Left recursion has been detected, involved rule: " + ruleName);
       }
       stack.calledAddress = address;

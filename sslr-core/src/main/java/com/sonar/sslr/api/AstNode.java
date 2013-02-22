@@ -24,7 +24,7 @@ import com.google.common.collect.Lists;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.sonar.sslr.ast.AstSelect;
 import org.sonar.sslr.internal.ast.select.AstSelectFactory;
-import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
+import org.sonar.sslr.internal.grammar.MutableParsingRule;
 
 import javax.annotation.Nullable;
 
@@ -297,8 +297,8 @@ public class AstNode {
     }
     // For LexerlessGrammarBuilder and LexerfulGrammarBuilder
     // unwrap AstNodeType to get a real one, i.e. detach node from tree of matchers:
-    if (type instanceof GrammarElementMatcher) {
-      type = ((GrammarElementMatcher) type).getRealAstNodeType();
+    if (type instanceof MutableParsingRule) {
+      type = ((MutableParsingRule) type).getRealAstNodeType();
     } else if (type instanceof RuleDefinition) {
       type = ((RuleDefinition) type).getRealAstNodeType();
     }

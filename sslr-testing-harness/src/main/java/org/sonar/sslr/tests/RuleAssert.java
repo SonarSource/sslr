@@ -23,9 +23,7 @@ import com.sonar.sslr.api.Rule;
 import org.fest.assertions.GenericAssert;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.grammar.MutableParsingRule;
-import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 import org.sonar.sslr.internal.vm.EndOfInputExpression;
-import org.sonar.sslr.parser.GrammarOperators;
 import org.sonar.sslr.parser.ParseErrorFormatter;
 import org.sonar.sslr.parser.ParseRunner;
 import org.sonar.sslr.parser.ParsingResult;
@@ -66,20 +64,12 @@ public class RuleAssert extends GenericAssert<RuleAssert, Rule> {
   private ParseRunner createParseRunnerWithEofMatcher() {
     isNotNull();
 
-    if (actual instanceof MutableParsingRule) {
-      MutableParsingRule rule = (MutableParsingRule) actual;
-      MutableParsingRule endOfInput = (MutableParsingRule) new MutableParsingRule(new EndOfInput())
-          .is(EndOfInputExpression.INSTANCE);
-      MutableParsingRule withEndOfInput = (MutableParsingRule) new MutableParsingRule(new WithEndOfInput(rule.getRuleKey()))
-          .is(actual, endOfInput);
-      return new ParseRunner(withEndOfInput);
-    }
-
-    GrammarElementMatcher endOfInput = new GrammarElementMatcher("end of input")
-        .is(GrammarOperators.endOfInput());
-    GrammarElementMatcher matcher = new GrammarElementMatcher(getRuleName() + " with end of input")
+    MutableParsingRule rule = (MutableParsingRule) actual;
+    MutableParsingRule endOfInput = (MutableParsingRule) new MutableParsingRule(new EndOfInput())
+        .is(EndOfInputExpression.INSTANCE);
+    MutableParsingRule withEndOfInput = (MutableParsingRule) new MutableParsingRule(new WithEndOfInput(rule.getRuleKey()))
         .is(actual, endOfInput);
-    return new ParseRunner(matcher);
+    return new ParseRunner(withEndOfInput);
   }
 
   /**
@@ -139,7 +129,7 @@ public class RuleAssert extends GenericAssert<RuleAssert, Rule> {
   }
 
   private String getRuleName() {
-    return ((GrammarElementMatcher) actual).getName();
+    return ((MutableParsingRule) actual).getName();
   }
 
 }

@@ -27,7 +27,10 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.api.Trivia.TriviaKind;
+import org.sonar.sslr.internal.grammar.MutableParsingRule;
 import org.sonar.sslr.internal.text.CompositeText.CompositeTextCharSequence;
+import org.sonar.sslr.internal.vm.TokenExpression;
+import org.sonar.sslr.internal.vm.TriviaExpression;
 import org.sonar.sslr.parser.ParsingResult;
 import org.sonar.sslr.text.Text;
 import org.sonar.sslr.text.TextCharSequence;
@@ -64,7 +67,7 @@ public final class AstCreator {
   }
 
   private AstNode visit(ParseNode node) {
-    if (node.getMatcher() instanceof GrammarElementMatcher) {
+    if (node.getMatcher() instanceof MutableParsingRule) {
       return visitNonTerminal(node);
     } else {
       return visitTerminal(node);
@@ -72,8 +75,8 @@ public final class AstCreator {
   }
 
   private AstNode visitTerminal(ParseNode node) {
-    if (node.getMatcher() instanceof TriviaMatcher) {
-      TriviaMatcher ruleMatcher = (TriviaMatcher) node.getMatcher();
+    if (node.getMatcher() instanceof TriviaExpression) {
+      TriviaExpression ruleMatcher = (TriviaExpression) node.getMatcher();
       if (ruleMatcher.getTriviaKind() == TriviaKind.SKIPPED_TEXT) {
         return null;
       } else if (ruleMatcher.getTriviaKind() == TriviaKind.COMMENT) {
@@ -85,9 +88,9 @@ public final class AstCreator {
       } else {
         throw new IllegalStateException("Unexpected trivia kind: " + ruleMatcher.getTriviaKind());
       }
-    } else if (node.getMatcher() instanceof TokenMatcher) {
+    } else if (node.getMatcher() instanceof TokenExpression) {
       updateTokenPositionAndValue(node);
-      TokenMatcher ruleMatcher = (TokenMatcher) node.getMatcher();
+      TokenExpression ruleMatcher = (TokenExpression) node.getMatcher();
       tokenBuilder.setType(ruleMatcher.getTokenType());
       if (ruleMatcher.getTokenType() == GenericTokenType.COMMENT) {
         tokenBuilder.setTrivia(Collections.EMPTY_LIST);
@@ -135,7 +138,7 @@ public final class AstCreator {
   }
 
   private AstNode visitNonTerminal(ParseNode node) {
-    GrammarElementMatcher ruleMatcher = (GrammarElementMatcher) node.getMatcher();
+    MutableParsingRule ruleMatcher = (MutableParsingRule) node.getMatcher();
     List<AstNode> astNodes = Lists.newArrayList();
     for (ParseNode child : node.getChildren()) {
       AstNode astNode = visit(child);

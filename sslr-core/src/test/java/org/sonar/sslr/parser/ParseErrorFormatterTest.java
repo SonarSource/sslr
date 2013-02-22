@@ -21,7 +21,7 @@ package org.sonar.sslr.parser;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
+import org.sonar.sslr.internal.grammar.MutableParsingRule;
 import org.sonar.sslr.internal.matchers.ImmutableInputBuffer;
 import org.sonar.sslr.internal.matchers.InputBuffer;
 import org.sonar.sslr.internal.matchers.MatcherPathElement;
@@ -43,14 +43,14 @@ public class ParseErrorFormatterTest {
   @Test
   public void test() {
     InputBuffer inputBuffer = new ImmutableInputBuffer("\t2+4*10-0*\n".toCharArray());
-    MatcherPathElement root = new MatcherPathElement(new GrammarElementMatcher("root"), 0, 1);
-    MatcherPathElement expression = new MatcherPathElement(new GrammarElementMatcher("expression"), 1, 8);
-    MatcherPathElement term = new MatcherPathElement(new GrammarElementMatcher("term"), 8, 10);
-    MatcherPathElement factor = new MatcherPathElement(new GrammarElementMatcher("factor"), 10, 10);
-    MatcherPathElement number = new MatcherPathElement(new GrammarElementMatcher("number"), 10, 10);
-    MatcherPathElement parens = new MatcherPathElement(new GrammarElementMatcher("parens"), 10, 10);
-    MatcherPathElement lpar = new MatcherPathElement(new GrammarElementMatcher("lpar"), 10, 10);
-    MatcherPathElement variable = new MatcherPathElement(new GrammarElementMatcher("variable"), 10, 10);
+    MatcherPathElement root = new MatcherPathElement(new MutableParsingRule("root"), 0, 1);
+    MatcherPathElement expression = new MatcherPathElement(new MutableParsingRule("expression"), 1, 8);
+    MatcherPathElement term = new MatcherPathElement(new MutableParsingRule("term"), 8, 10);
+    MatcherPathElement factor = new MatcherPathElement(new MutableParsingRule("factor"), 10, 10);
+    MatcherPathElement number = new MatcherPathElement(new MutableParsingRule("number"), 10, 10);
+    MatcherPathElement parens = new MatcherPathElement(new MutableParsingRule("parens"), 10, 10);
+    MatcherPathElement lpar = new MatcherPathElement(new MutableParsingRule("lpar"), 10, 10);
+    MatcherPathElement variable = new MatcherPathElement(new MutableParsingRule("variable"), 10, 10);
     List<List<MatcherPathElement>> failedPaths = Arrays.asList(
         Arrays.asList(root, expression, term, factor, number),
         Arrays.asList(root, expression, term, factor, parens, lpar),
@@ -81,8 +81,8 @@ public class ParseErrorFormatterTest {
   @Test
   public void single_path() {
     InputBuffer inputBuffer = new ImmutableInputBuffer("".toCharArray());
-    MatcherPathElement root = new MatcherPathElement(new GrammarElementMatcher("root"), 0, 0);
-    MatcherPathElement expression = new MatcherPathElement(new GrammarElementMatcher("expression"), 0, 0);
+    MatcherPathElement root = new MatcherPathElement(new MutableParsingRule("root"), 0, 0);
+    MatcherPathElement expression = new MatcherPathElement(new MutableParsingRule("expression"), 0, 0);
     List<List<MatcherPathElement>> failedPaths = Arrays.asList(
         Arrays.asList(root, expression));
     String result = formatter.format(new ParseError(inputBuffer, 0, "expected: expression", failedPaths));

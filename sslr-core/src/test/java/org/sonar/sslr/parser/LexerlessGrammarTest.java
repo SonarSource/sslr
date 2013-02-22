@@ -23,7 +23,7 @@ import com.sonar.sslr.api.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.sonar.sslr.grammar.GrammarException;
-import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
+import org.sonar.sslr.internal.grammar.MutableParsingRule;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -36,8 +36,8 @@ public class LexerlessGrammarTest {
   @Test
   public void should_instanciate_rule_fields() {
     TestGrammar grammar = new TestGrammar();
-    assertThat(grammar.getRootRule()).isInstanceOf(GrammarElementMatcher.class);
-    assertThat(((GrammarElementMatcher) grammar.getRootRule()).getName()).isEqualTo("rootRule");
+    assertThat(grammar.getRootRule()).isInstanceOf(MutableParsingRule.class);
+    assertThat(((MutableParsingRule) grammar.getRootRule()).getName()).isEqualTo("rootRule");
   }
 
   @Test

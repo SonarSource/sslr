@@ -20,16 +20,20 @@
 package org.sonar.sslr.internal.vm;
 
 import com.sonar.sslr.api.Trivia.TriviaKind;
-import org.sonar.sslr.internal.matchers.MatcherContext;
-import org.sonar.sslr.internal.matchers.TriviaMatcher;
+import org.sonar.sslr.internal.matchers.Matcher;
 
-public class TriviaExpression extends TriviaMatcher implements ParsingExpression {
+public class TriviaExpression implements Matcher, ParsingExpression {
 
+  private final TriviaKind triviaKind;
   private final ParsingExpression subExpression;
 
   public TriviaExpression(TriviaKind triviaKind, ParsingExpression subExpression) {
-    super(triviaKind, null);
+    this.triviaKind = triviaKind;
     this.subExpression = subExpression;
+  }
+
+  public TriviaKind getTriviaKind() {
+    return triviaKind;
   }
 
   /**
@@ -52,10 +56,6 @@ public class TriviaExpression extends TriviaMatcher implements ParsingExpression
     System.arraycopy(instr, 0, result, 3, instr.length);
     result[3 + instr.length] = Instruction.ret();
     return result;
-  }
-
-  public boolean match(MatcherContext context) {
-    throw new UnsupportedOperationException();
   }
 
 }

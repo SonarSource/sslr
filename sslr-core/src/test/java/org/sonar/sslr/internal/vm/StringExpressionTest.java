@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
-import org.sonar.sslr.internal.matchers.MatcherContext;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -83,12 +82,6 @@ public class StringExpressionTest {
     inOrder.verify(machine).charAt(0);
     inOrder.verify(machine).backtrack();
     verifyNoMoreInteractions(machine);
-  }
-
-  @Test
-  public void should_implement_Matcher() {
-    thrown.expect(UnsupportedOperationException.class);
-    expression.match(mock(MatcherContext.class));
   }
 
 }

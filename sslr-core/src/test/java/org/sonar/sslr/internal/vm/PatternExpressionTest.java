@@ -25,7 +25,6 @@ import org.junit.rules.ExpectedException;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.sonar.sslr.grammar.GrammarException;
-import org.sonar.sslr.internal.matchers.MatcherContext;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.atLeast;
@@ -85,12 +84,6 @@ public class PatternExpressionTest {
     thrown.expectMessage("The regular expression 'foo|bar' has led to a stack overflow error."
       + " This error is certainly due to an inefficient use of alternations. See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5050507");
     expression.execute(machine);
-  }
-
-  @Test
-  public void should_implement_Matcher() {
-    thrown.expect(UnsupportedOperationException.class);
-    expression.match(mock(MatcherContext.class));
   }
 
 }

@@ -20,16 +20,20 @@
 package org.sonar.sslr.internal.vm;
 
 import com.sonar.sslr.api.TokenType;
-import org.sonar.sslr.internal.matchers.MatcherContext;
-import org.sonar.sslr.internal.matchers.TokenMatcher;
+import org.sonar.sslr.internal.matchers.Matcher;
 
-public class TokenExpression extends TokenMatcher implements ParsingExpression {
+public class TokenExpression implements Matcher, ParsingExpression {
 
+  private final TokenType tokenType;
   private final ParsingExpression subExpression;
 
   public TokenExpression(TokenType tokenType, ParsingExpression subExpression) {
-    super(tokenType, null);
+    this.tokenType = tokenType;
     this.subExpression = subExpression;
+  }
+
+  public TokenType getTokenType() {
+    return tokenType;
   }
 
   /**
@@ -52,10 +56,6 @@ public class TokenExpression extends TokenMatcher implements ParsingExpression {
     System.arraycopy(instr, 0, result, 3, instr.length);
     result[3 + instr.length] = Instruction.ret();
     return result;
-  }
-
-  public boolean match(MatcherContext context) {
-    throw new UnsupportedOperationException();
   }
 
 }

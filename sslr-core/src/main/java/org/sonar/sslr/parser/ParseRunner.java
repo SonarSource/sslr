@@ -20,24 +20,11 @@
 package org.sonar.sslr.parser;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterables;
 import com.sonar.sslr.api.Rule;
 import org.sonar.sslr.internal.grammar.MutableParsingRule;
-import org.sonar.sslr.internal.matchers.BasicMatcherContext;
-import org.sonar.sslr.internal.matchers.ErrorLocatingHandler;
-import org.sonar.sslr.internal.matchers.ErrorReportingHandler;
-import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
-import org.sonar.sslr.internal.matchers.ImmutableInputBuffer;
-import org.sonar.sslr.internal.matchers.InputBuffer;
-import org.sonar.sslr.internal.matchers.Matcher;
-import org.sonar.sslr.internal.matchers.MatcherContext;
-import org.sonar.sslr.internal.matchers.MatcherPathElement;
-import org.sonar.sslr.internal.matchers.Memoizer;
 import org.sonar.sslr.internal.vm.CompiledGrammar;
 import org.sonar.sslr.internal.vm.Machine;
 import org.sonar.sslr.internal.vm.MutableGrammarCompiler;
-
-import java.util.List;
 
 /**
  * Performs parsing of a given grammar rule on a given input text.
@@ -48,54 +35,14 @@ import java.util.List;
  */
 public class ParseRunner {
 
-  private final Matcher rootMatcher;
   private final CompiledGrammar compiledGrammar;
 
   public ParseRunner(Rule rule) {
-    this.rootMatcher = (Matcher) Preconditions.checkNotNull(rule, "rule");
-
-    if (rootMatcher instanceof MutableParsingRule) {
-      compiledGrammar = MutableGrammarCompiler.compile((MutableParsingRule) rootMatcher);
-    } else {
-      compiledGrammar = null;
-    }
+    compiledGrammar = MutableGrammarCompiler.compile((MutableParsingRule) Preconditions.checkNotNull(rule, "rule"));
   }
 
   public ParsingResult parse(char[] input) {
-    if (rootMatcher instanceof MutableParsingRule) {
-      return Machine.parse(input, compiledGrammar, ((MutableParsingRule) rootMatcher).getRuleKey());
-    }
-
-    InputBuffer inputBuffer = new ImmutableInputBuffer(input);
-    Memoizer memoizer = new Memoizer(input.length);
-    ErrorLocatingHandler errorLocatingHandler = new ErrorLocatingHandler(memoizer);
-    MatcherContext matcherContext = new BasicMatcherContext(inputBuffer, errorLocatingHandler, rootMatcher);
-    boolean matched = matcherContext.runMatcher();
-    if (matched) {
-      return new ParsingResult(inputBuffer, matched, matcherContext.getNode(), null);
-    } else {
-      // Perform second run in order to collect information for error report
-
-      // TODO Godin: Looks like memoized nodes should be removed for correct error reporting,
-      // but maybe we can remove only some of them
-      memoizer = new Memoizer(input.length);
-      ErrorReportingHandler errorReportingHandler = new ErrorReportingHandler(memoizer, errorLocatingHandler.getErrorIndex());
-      matched = new BasicMatcherContext(inputBuffer, errorReportingHandler, rootMatcher).runMatcher();
-      // failure should be permanent, otherwise something generally wrong
-      Preconditions.checkState(!matched);
-
-      StringBuilder sb = new StringBuilder("failed to match");
-      if (errorReportingHandler.getFailedPaths().size() > 1) {
-        sb.append(" all of");
-      }
-      sb.append(':');
-      for (List<MatcherPathElement> failedPath : errorReportingHandler.getFailedPaths()) {
-        Matcher failedMatcher = Iterables.getLast(failedPath).getMatcher();
-        sb.append(' ').append(((GrammarElementMatcher) failedMatcher).getName());
-      }
-      ParseError parseError = new ParseError(inputBuffer, errorLocatingHandler.getErrorIndex(), sb.toString(), errorReportingHandler.getFailedPaths());
-      return new ParsingResult(inputBuffer, matched, null, parseError);
-    }
+    return Machine.parse(input, compiledGrammar, compiledGrammar.getRootRuleKey());
   }
 
 }

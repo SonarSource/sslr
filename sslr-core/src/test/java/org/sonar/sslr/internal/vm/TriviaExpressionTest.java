@@ -23,8 +23,6 @@ import com.sonar.sslr.api.Trivia.TriviaKind;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.sonar.sslr.internal.matchers.MatcherContext;
-import org.sonar.sslr.internal.matchers.TriviaMatcher;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -52,10 +50,7 @@ public class TriviaExpressionTest {
   public void should_implement_Matcher() {
     TriviaExpression expression = new TriviaExpression(TriviaKind.COMMENT, mock(ParsingExpression.class));
     // Important for AstCreator
-    assertThat(expression).isInstanceOf(TriviaMatcher.class);
     assertThat(expression.getTriviaKind()).isSameAs(TriviaKind.COMMENT);
-    thrown.expect(UnsupportedOperationException.class);
-    expression.match(mock(MatcherContext.class));
   }
 
 }

@@ -23,7 +23,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.grammar.MutableParsingRule;
-import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
 
 import java.util.List;
 import java.util.Map;
@@ -36,7 +35,7 @@ public class MutableGrammarCompiler extends CompilationHandler {
   }
 
   private final Queue<MutableParsingRule> compilationQueue = Lists.newLinkedList();
-  private final Map<GrammarRuleKey, GrammarElementMatcher> matchers = Maps.newHashMap();
+  private final Map<GrammarRuleKey, MutableParsingRule> matchers = Maps.newHashMap();
   private final Map<GrammarRuleKey, Integer> offsets = Maps.newHashMap();
 
   private CompiledGrammar doCompile(MutableParsingRule start) {

@@ -23,8 +23,6 @@ import com.sonar.sslr.api.GenericTokenType;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.sonar.sslr.internal.matchers.MatcherContext;
-import org.sonar.sslr.internal.matchers.TokenMatcher;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -52,10 +50,7 @@ public class TokenExpressionTest {
   public void should_implement_Matcher() {
     TokenExpression expression = new TokenExpression(GenericTokenType.IDENTIFIER, mock(ParsingExpression.class));
     // Important for AstCreator
-    assertThat(expression).isInstanceOf(TokenMatcher.class);
     assertThat(expression.getTokenType()).isSameAs(GenericTokenType.IDENTIFIER);
-    thrown.expect(UnsupportedOperationException.class);
-    expression.match(mock(MatcherContext.class));
   }
 
 }

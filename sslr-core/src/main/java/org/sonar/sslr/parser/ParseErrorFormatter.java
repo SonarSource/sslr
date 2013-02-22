@@ -21,7 +21,7 @@ package org.sonar.sslr.parser;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import org.sonar.sslr.internal.matchers.GrammarElementMatcher;
+import org.sonar.sslr.internal.grammar.MutableParsingRule;
 import org.sonar.sslr.internal.matchers.InputBuffer;
 import org.sonar.sslr.internal.matchers.InputBuffer.Position;
 import org.sonar.sslr.internal.matchers.MatcherPathElement;
@@ -124,7 +124,7 @@ public class ParseErrorFormatter {
   }
 
   private static void appendPathElement(StringBuilder sb, InputBuffer inputBuffer, MatcherPathElement pathElement) {
-    sb.append(((GrammarElementMatcher) pathElement.getMatcher()).getName());
+    sb.append(((MutableParsingRule) pathElement.getMatcher()).getName());
     if (pathElement.getStartIndex() != pathElement.getEndIndex()) {
       sb.append(" consumed from ")
           .append(inputBuffer.getPosition(pathElement.getStartIndex()).toString())
