@@ -168,7 +168,9 @@ public class InstructionTest {
   public void commitVerify_should_throw_exception() {
     Instruction instruction = Instruction.commitVerify(42);
     MachineStack stack = new MachineStack(new MachineStack(null));
+    stack.index = 13;
     when(machine.peek()).thenReturn(stack);
+    when(machine.getIndex()).thenReturn(13);
     thrown.expect(GrammarException.class);
     thrown.expectMessage("The inner part of ZeroOrMore must not allow empty matches");
     instruction.execute(machine);

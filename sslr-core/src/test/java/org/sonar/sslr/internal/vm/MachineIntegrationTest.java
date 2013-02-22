@@ -25,6 +25,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.Timeout;
+import org.sonar.sslr.grammar.GrammarException;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -101,11 +102,33 @@ public class MachineIntegrationTest {
   }
 
   @Test
+  public void zeroOrMore_should_not_cause_infinite_loop() {
+    Instruction[] instructions = new ZeroOrMoreExpression(
+        new FirstOfExpression(
+            new StringExpression("foo"),
+            new StringExpression(""))).compile(new CompilationHandler());
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The inner part of ZeroOrMore must not allow empty matches");
+    Machine.execute("foo", instructions);
+  }
+
+  @Test
   public void oneOrMore() {
     Instruction[] instructions = new OneOrMoreExpression(new StringExpression("a")).compile(new CompilationHandler());
     assertThat(Machine.execute("", instructions)).isFalse();
     assertThat(Machine.execute("a", instructions)).isTrue();
     assertThat(Machine.execute("aa", instructions)).isTrue();
+  }
+
+  @Test
+  public void oneOrMore_should_not_cause_infinite_loop() {
+    Instruction[] instructions = new OneOrMoreExpression(
+        new FirstOfExpression(
+            new StringExpression("foo"),
+            new StringExpression(""))).compile(new CompilationHandler());
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The inner part of ZeroOrMore must not allow empty matches");
+    Machine.execute("foo", instructions);
   }
 
   @Test

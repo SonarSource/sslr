@@ -272,7 +272,7 @@ public abstract class Instruction {
 
     @Override
     public void execute(Machine machine) {
-      if (machine.getIndex() == machine.peek().parent.index) {
+      if (machine.getIndex() == machine.peek().index) {
         // TODO better message
         throw new GrammarException("The inner part of ZeroOrMore must not allow empty matches");
       }
