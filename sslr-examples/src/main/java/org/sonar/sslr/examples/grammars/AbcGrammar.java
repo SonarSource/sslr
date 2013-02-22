@@ -17,20 +17,25 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.examples.recursion;
+package org.sonar.sslr.examples.grammars;
 
 import com.sonar.sslr.api.Grammar;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 
-public enum RecursiveGrammar implements GrammarRuleKey {
+/**
+ * Grammar for the classic non-context-free language { a^n b^n c^n : n >= 1 }.
+ */
+public enum AbcGrammar implements GrammarRuleKey {
 
-  S;
+  S, A, B;
 
-  public static Grammar create() {
+  public static Grammar createGrammar() {
     LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
 
-    b.rule(S).is("(", b.optional(S), ")");
+    b.rule(S).is(b.next(A, "c"), b.oneOrMore("a"), B, b.nextNot("a", "b", "c"));
+    b.rule(A).is("a", b.optional(A), "b");
+    b.rule(B).is("b", b.optional(B), "c");
 
     return b.build();
   }

@@ -17,39 +17,34 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.examples.expression;
+package org.sonar.sslr.examples.grammars;
 
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 
-import static org.sonar.sslr.examples.expression.ExpressionGrammarRules.DIV;
-import static org.sonar.sslr.examples.expression.ExpressionGrammarRules.EXPRESSION;
-import static org.sonar.sslr.examples.expression.ExpressionGrammarRules.MINUS;
-import static org.sonar.sslr.examples.expression.ExpressionGrammarRules.MUL;
-import static org.sonar.sslr.examples.expression.ExpressionGrammarRules.NUMBER;
-import static org.sonar.sslr.examples.expression.ExpressionGrammarRules.PARENS;
-import static org.sonar.sslr.examples.expression.ExpressionGrammarRules.PLUS;
-import static org.sonar.sslr.examples.expression.ExpressionGrammarRules.PRIMARY;
-import static org.sonar.sslr.examples.expression.ExpressionGrammarRules.VARIABLE;
-import static org.sonar.sslr.examples.expression.ExpressionGrammarRules.WHITESPACE;
+import static org.sonar.sslr.examples.grammars.ExpressionGrammar.EXPRESSION;
 
 /**
  * This class demonstrates how to use {@link LexerlessGrammarBuilder} to extend another grammar.
  */
-public enum ExpressionGrammarExtensionRules implements GrammarRuleKey {
+public enum ExtendedExpressionGrammar implements GrammarRuleKey {
 
   FUNCTION;
 
   public static LexerlessGrammarBuilder createGrammarBuilder(LexerlessGrammarBuilder expressionGrammarRules) {
     LexerlessGrammarBuilder b = LexerlessGrammarBuilder.createBasedOn(expressionGrammarRules);
 
-    b.rule(PLUS).override("plus", WHITESPACE);
-    b.rule(MINUS).override("minus", WHITESPACE);
-    b.rule(DIV).override("div", WHITESPACE);
-    b.rule(MUL).override("mul", WHITESPACE);
+    b.rule(ExpressionGrammar.PLUS).override("plus", ExpressionGrammar.WHITESPACE);
+    b.rule(ExpressionGrammar.MINUS).override("minus", ExpressionGrammar.WHITESPACE);
+    b.rule(ExpressionGrammar.DIV).override("div", ExpressionGrammar.WHITESPACE);
+    b.rule(ExpressionGrammar.MUL).override("mul", ExpressionGrammar.WHITESPACE);
 
-    b.rule(FUNCTION).is("fun()", WHITESPACE);
-    b.rule(PRIMARY).override(b.firstOf(NUMBER, PARENS, FUNCTION, VARIABLE)).skipIfOneChild();
+    b.rule(FUNCTION).is("fun()", ExpressionGrammar.WHITESPACE);
+    b.rule(ExpressionGrammar.PRIMARY).override(b.firstOf(
+        ExpressionGrammar.NUMBER,
+        ExpressionGrammar.PARENS,
+        FUNCTION,
+        ExpressionGrammar.VARIABLE));
 
     b.setRootRule(EXPRESSION);
 

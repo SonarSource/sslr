@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.examples.expression;
+package org.sonar.sslr.examples.grammars;
 
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
@@ -25,7 +25,7 @@ import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 /**
  * This class demonstrates how to use {@link LexerlessGrammarBuilder} to define grammar for simple arithmetic expressions.
  */
-public enum ExpressionGrammarRules implements GrammarRuleKey {
+public enum ExpressionGrammar implements GrammarRuleKey {
 
   WHITESPACE,
 

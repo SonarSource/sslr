@@ -17,38 +17,29 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.examples.recursion;
+package org.sonar.sslr.examples.grammars;
 
 import com.sonar.sslr.api.Grammar;
-import org.sonar.sslr.grammar.GrammarRuleKey;
-import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
+import org.junit.Test;
 
-public enum LeftRecursiveGrammar implements GrammarRuleKey {
+import static org.sonar.sslr.tests.Assertions.assertThat;
 
-  A, B, C, T1, T2, T3, S1, S2;
+public class AbcGrammarTest {
 
-  public static Grammar create() {
-    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+  private Grammar g = AbcGrammar.createGrammar();
 
-    // Immediate left recursion
-    b.rule(A).is(b.firstOf(
-        b.sequence(A, T1),
-        T1));
-    b.rule(T1).is("t1");
-
-    // Indirect left recursion
-    b.rule(B).is(b.firstOf(
-        b.sequence(C, T2),
-        S1));
-    b.rule(C).is(b.firstOf(
-        b.sequence(B, T3),
-        S2));
-    b.rule(T2).is("t1");
-    b.rule(S1).is("s1");
-    b.rule(T3).is("t2");
-    b.rule(S2).is("s2");
-
-    return b.build();
+  @Test
+  public void test() {
+    assertThat(g.rule(AbcGrammar.S))
+        .matches("abc")
+        .matches("aabbcc")
+        .matches("aaabbbccc")
+        .notMatches("aabc")
+        .notMatches("aabbc")
+        .notMatches("aabcc")
+        .notMatches("abbc")
+        .notMatches("abbcc")
+        .notMatches("abcc");
   }
 
 }

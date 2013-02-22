@@ -17,27 +17,27 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.examples.abc;
+package org.sonar.sslr.examples.grammars;
 
 import com.sonar.sslr.api.Grammar;
-import org.sonar.sslr.grammar.GrammarRuleKey;
-import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
+import org.junit.Test;
 
-/**
- * Grammar for the classic non-context-free language { a^n b^n c^n : n >= 1 }.
- */
-public enum AbcGrammar implements GrammarRuleKey {
+import static org.sonar.sslr.tests.Assertions.assertThat;
 
-  S, A, B;
+public class RecursiveGrammarTest {
 
-  public static Grammar createGrammar() {
-    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+  private Grammar grammar = RecursiveGrammar.create();
 
-    b.rule(S).is(b.next(A, "c"), b.oneOrMore("a"), B, b.nextNot("a", "b", "c"));
-    b.rule(A).is("a", b.optional(A), "b");
-    b.rule(B).is("b", b.optional(B), "c");
-
-    return b.build();
+  @Test
+  public void test() {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < 100000; i++) {
+      sb.append('(');
+    }
+    for (int i = 0; i < 100000; i++) {
+      sb.append(')');
+    }
+    assertThat(grammar.rule(RecursiveGrammar.S)).matches(sb.toString());
   }
 
 }

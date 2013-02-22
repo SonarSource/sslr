@@ -17,27 +17,23 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.examples.recursion;
+package org.sonar.sslr.examples.grammars;
 
 import com.sonar.sslr.api.Grammar;
-import org.junit.Test;
+import org.sonar.sslr.grammar.GrammarRuleKey;
+import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 
-import static org.sonar.sslr.tests.Assertions.assertThat;
+public enum InfiniteLoopGrammar implements GrammarRuleKey {
 
-public class RecursiveGrammarTest {
+  A, B;
 
-  private Grammar grammar = RecursiveGrammar.create();
+  public static Grammar create() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
 
-  @Test
-  public void test() {
-    StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < 100000; i++) {
-      sb.append('(');
-    }
-    for (int i = 0; i < 100000; i++) {
-      sb.append(')');
-    }
-    assertThat(grammar.rule(RecursiveGrammar.S)).matches(sb.toString());
+    b.rule(A).is(b.zeroOrMore(b.optional("foo")));
+    b.rule(B).is(b.oneOrMore(b.optional("foo")));
+
+    return b.build();
   }
 
 }

@@ -17,24 +17,24 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.examples.expression;
+package org.sonar.sslr.examples.grammars;
 
 import org.junit.Test;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
-public class ExpressionGrammarExtensionRulesTest {
+public class ExtendedExpressionGrammarTest {
 
-  private LexerlessGrammarBuilder base = ExpressionGrammarRules.createGrammarBuilder();
-  private LexerlessGrammarBuilder b = ExpressionGrammarExtensionRules.createGrammarBuilder(base);
+  private LexerlessGrammarBuilder base = ExpressionGrammar.createGrammarBuilder();
+  private LexerlessGrammarBuilder b = ExtendedExpressionGrammar.createGrammarBuilder(base);
 
   /**
    * This test demonstrates how to use {@link org.sonar.sslr.tests.Assertions} to test rules of grammar.
    */
   @Test
   public void rules() {
-    assertThat(b.build().rule(ExpressionGrammarRules.EXPRESSION))
+    assertThat(b.build().rule(ExpressionGrammar.EXPRESSION))
         .notMatches("1 + 1")
         .matches("1 plus 1")
         .notMatches("20 * ( 2 + 2 ) - var")

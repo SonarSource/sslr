@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.examples.expression;
+package org.sonar.sslr.examples.grammars;
 
 import com.google.common.base.Charsets;
 import com.sonar.sslr.api.AstNode;
@@ -29,16 +29,16 @@ import org.sonar.sslr.parser.ParserAdapter;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
-public class ExpressionGrammarRulesTest {
+public class ExpressionGrammarTest {
 
-  private LexerlessGrammarBuilder b = ExpressionGrammarRules.createGrammarBuilder();
+  private LexerlessGrammarBuilder b = ExpressionGrammar.createGrammarBuilder();
 
   /**
    * This test demonstrates how to use {@link org.sonar.sslr.tests.Assertions} to test rules of grammar.
    */
   @Test
   public void rules() {
-    assertThat(b.build().rule(ExpressionGrammarRules.EXPRESSION))
+    assertThat(b.build().rule(ExpressionGrammar.EXPRESSION))
         .matches("1 + 1")
         .notMatches("1 +")
         .matches("20 * ( 2 + 2 ) - var");
@@ -51,17 +51,17 @@ public class ExpressionGrammarRulesTest {
   public void ast() {
     ParserAdapter<LexerlessGrammar> parser = new ParserAdapter<LexerlessGrammar>(Charsets.UTF_8, b.build());
     AstNode rootNode = parser.parse("2 + var");
-    assertThat(rootNode.getType()).isSameAs(ExpressionGrammarRules.EXPRESSION);
+    assertThat(rootNode.getType()).isSameAs(ExpressionGrammar.EXPRESSION);
 
     AstNode astNode = rootNode;
     assertThat(astNode.getNumberOfChildren()).isEqualTo(1);
-    assertThat(astNode.getChild(0).getType()).isSameAs(ExpressionGrammarRules.ADDITIVE_EXPRESSION);
+    assertThat(astNode.getChild(0).getType()).isSameAs(ExpressionGrammar.ADDITIVE_EXPRESSION);
 
     astNode = rootNode.getChild(0);
     assertThat(astNode.getNumberOfChildren()).isEqualTo(3);
-    assertThat(astNode.getChild(0).getType()).isSameAs(ExpressionGrammarRules.NUMBER);
-    assertThat(astNode.getChild(1).getType()).isSameAs(ExpressionGrammarRules.PLUS);
-    assertThat(astNode.getChild(2).getType()).isSameAs(ExpressionGrammarRules.VARIABLE);
+    assertThat(astNode.getChild(0).getType()).isSameAs(ExpressionGrammar.NUMBER);
+    assertThat(astNode.getChild(1).getType()).isSameAs(ExpressionGrammar.PLUS);
+    assertThat(astNode.getChild(2).getType()).isSameAs(ExpressionGrammar.VARIABLE);
   }
 
 }
