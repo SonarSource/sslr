@@ -182,7 +182,7 @@ public class Machine implements CharSequence {
   public void pushReturn(int returnOffset, Matcher matcher, int callOffset) {
     ParseNode memo = memos[index];
     if (memo != null && memo.getMatcher() == matcher) {
-      stack.parent.subNodes.add(memo);
+      stack.subNodes.add(memo);
       index = memo.getEndIndex();
       address += returnOffset;
     } else {
