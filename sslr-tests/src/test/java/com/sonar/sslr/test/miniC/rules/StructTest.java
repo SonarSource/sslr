@@ -22,8 +22,6 @@ package com.sonar.sslr.test.miniC.rules;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.sonar.sslr.test.parser.ParserMatchers.parse;
-import static org.junit.Assert.assertThat;
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class StructTest extends RuleTest {
@@ -39,9 +37,6 @@ public class StructTest extends RuleTest {
     assertThat(p)
         .matches("struct my { int a; }")
         .matches("struct my { int a; int b; }");
-
-    assertThat(p, parse("struct my { int a; }"));
-    assertThat(p, parse("struct my { int a; int b; }"));
   }
 
 }

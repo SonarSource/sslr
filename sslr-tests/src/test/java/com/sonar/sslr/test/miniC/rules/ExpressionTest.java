@@ -22,9 +22,6 @@ package com.sonar.sslr.test.miniC.rules;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.sonar.sslr.test.parser.ParserMatchers.notParse;
-import static com.sonar.sslr.test.parser.ParserMatchers.parse;
-import static org.junit.Assert.assertThat;
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ExpressionTest extends RuleTest {
@@ -53,23 +50,6 @@ public class ExpressionTest extends RuleTest {
         .matches("myVariable = i++")
         .matches("myVariable = myFunction(1, 3)*2")
         .matches("++((myVariable))");
-
-    assertThat(p, parse("1"));
-    assertThat(p, parse("1 + 1"));
-    assertThat(p, parse("1 + 1 * 1"));
-    assertThat(p, parse("(1)"));
-    assertThat(p, parse("(1 + 1)"));
-    assertThat(p, parse("myVariable"));
-    assertThat(p, parse("myVariable = 0"));
-    assertThat(p, notParse("myVariable = myVariable2 = 0"));
-    assertThat(p, parse("myFunction()"));
-    assertThat(p, parse("myFunction(arg1, arg2, 1*3)"));
-    assertThat(p, parse("myVariable++"));
-    assertThat(p, parse("++myVariable"));
-    assertThat(p, notParse("++++myVariable"));
-    assertThat(p, parse("myVariable = i++"));
-    assertThat(p, parse("myVariable = myFunction(1, 3)*2"));
-    assertThat(p, parse("++((myVariable))"));
   }
 
 }
