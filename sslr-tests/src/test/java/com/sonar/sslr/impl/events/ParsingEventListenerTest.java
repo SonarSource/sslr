@@ -28,6 +28,7 @@ import com.sonar.sslr.impl.matcher.GrammarFunctions;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.MatcherTreePrinter;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -38,6 +39,7 @@ import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.firstOf;
 import static org.fest.assertions.Assertions.assertThat;
 
+@Ignore("ParsingEventListener will be removed")
 public class ParsingEventListenerTest {
 
   private PrintStream stream;

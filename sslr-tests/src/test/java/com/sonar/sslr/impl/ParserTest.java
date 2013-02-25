@@ -21,6 +21,7 @@ package com.sonar.sslr.impl;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.RecognitionException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
@@ -50,6 +51,7 @@ public class ParserTest {
     }
   }
 
+  @Ignore("Retry will be done automatically")
   @Test
   public void parseErrorWorthToRetry() {
     try {

@@ -23,6 +23,7 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.Parser;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -34,6 +35,7 @@ import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.firstOf;
 import static org.fest.assertions.Assertions.assertThat;
 
+@Ignore("ExtendedStackTrace will be removed")
 public class ExtendedStackTraceTest {
 
   public class MyTestGrammar extends Grammar {

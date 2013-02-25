@@ -70,7 +70,14 @@ public class Machine implements CharSequence {
       return machine.stack.subNodes.get(0);
     } else {
       // FIXME Perform second run in order to collect information for error report
-      throw new RecognitionException(0, "");
+      machine = new Machine(null, inputTokens, grammar.getInstructions(), errorLocatingHandler);
+      machine.execute(grammar.getMatcher(grammar.getRootRuleKey()), grammar.getOffset(grammar.getRootRuleKey()), grammar.getInstructions());
+
+      // failure should be permanent, otherwise something generally wrong
+      Preconditions.checkState(!machine.matched);
+
+      int line = tokens.get(errorLocatingHandler.getErrorIndex()).getLine();
+      throw new RecognitionException(line, "");
     }
   }
 

@@ -130,11 +130,11 @@ public class Parser<G extends Grammar> {
       parsingState.parsingEventListeners = parsingEventListeners;
       parsingState.extendedStackTrace = extendedStackTrace;
 
-      // FIXME should be removed:
-      AstNode astNode = rootRule.getRule().match(parsingState);
       // TODO can be compiled only once
       CompiledGrammar g = MutableGrammarCompiler.compile((CompilableGrammarRule) rootRule.getRule());
-      astNode = LexerfulAstCreator.create(Machine.parse(tokens, g, g.getRootRuleKey()), tokens);
+      AstNode astNode = LexerfulAstCreator.create(Machine.parse(tokens, g, g.getRootRuleKey()), tokens);
+      // Correct index in ParsingState:
+      parsingState.lexerIndex = astNode.getToIndex();
       // Unwrap AstNodeType for root node:
       astNode.hasToBeSkippedFromAst();
       return astNode;
