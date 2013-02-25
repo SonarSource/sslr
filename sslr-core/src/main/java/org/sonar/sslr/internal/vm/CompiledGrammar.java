@@ -20,20 +20,19 @@
 package org.sonar.sslr.internal.vm;
 
 import org.sonar.sslr.grammar.GrammarRuleKey;
-import org.sonar.sslr.internal.grammar.MutableParsingRule;
 import org.sonar.sslr.internal.matchers.Matcher;
 
 import java.util.Map;
 
 public class CompiledGrammar {
 
-  private final Map<GrammarRuleKey, MutableParsingRule> rules;
+  private final Map<GrammarRuleKey, CompilableGrammarRule> rules;
   private final Instruction[] instructions;
   // TODO Is there more efficient way to store this information? I.e. without primitive wrappers.
   private final Map<GrammarRuleKey, Integer> offsets;
   private final GrammarRuleKey rootRuleKey;
 
-  public CompiledGrammar(Instruction[] instructions, Map<GrammarRuleKey, Integer> offsets, Map<GrammarRuleKey, MutableParsingRule> rules, GrammarRuleKey rootRuleKey) {
+  public CompiledGrammar(Instruction[] instructions, Map<GrammarRuleKey, Integer> offsets, Map<GrammarRuleKey, CompilableGrammarRule> rules, GrammarRuleKey rootRuleKey) {
     this.instructions = instructions;
     this.offsets = offsets;
     this.rules = rules;

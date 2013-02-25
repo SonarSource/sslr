@@ -20,6 +20,10 @@
 package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.Token;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.Instruction;
+import org.sonar.sslr.internal.vm.NothingExpression;
+import org.sonar.sslr.internal.vm.lexerful.AnyTokenExpression;
 
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
@@ -63,6 +67,14 @@ public final class BooleanMatcher extends TokenMatcher {
     }
     BooleanMatcher other = (BooleanMatcher) obj;
     return this.internalState == other.internalState;
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    if (internalState) {
+      return AnyTokenExpression.INSTANCE.compile(compiler);
+    } else {
+      return NothingExpression.INSTANCE.compile(compiler);
+    }
   }
 
 }

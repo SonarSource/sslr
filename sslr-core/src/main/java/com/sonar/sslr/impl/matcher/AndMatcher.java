@@ -21,6 +21,9 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.Instruction;
+import org.sonar.sslr.internal.vm.SequenceExpression;
 
 /**
  * A {@link Matcher} that tries all of its submatchers in sequence and only succeeds if all submatchers succeed.
@@ -60,6 +63,10 @@ public final class AndMatcher extends StandardMatcher {
   @Override
   public String toString() {
     return "and";
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    return new SequenceExpression(children).compile(compiler);
   }
 
 }

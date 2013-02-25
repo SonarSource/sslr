@@ -23,13 +23,14 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.events.ParsingEventListener;
+import org.sonar.sslr.internal.vm.ParsingExpression;
 
 import javax.annotation.Nullable;
 
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
-public abstract class Matcher {
+public abstract class Matcher implements ParsingExpression {
 
   public Matcher[] children;
 

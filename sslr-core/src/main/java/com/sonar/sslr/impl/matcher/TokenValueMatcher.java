@@ -21,6 +21,9 @@ package com.sonar.sslr.impl.matcher;
 
 import com.google.common.base.Objects;
 import com.sonar.sslr.api.Token;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.Instruction;
+import org.sonar.sslr.internal.vm.lexerful.TokenValueExpression;
 
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
@@ -64,6 +67,10 @@ public final class TokenValueMatcher extends TokenMatcher {
     }
     TokenValueMatcher other = (TokenValueMatcher) obj;
     return Objects.equal(this.tokenValue, other.tokenValue);
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    return new TokenValueExpression(tokenValue).compile(compiler);
   }
 
 }

@@ -21,6 +21,9 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.FirstOfExpression;
+import org.sonar.sslr.internal.vm.Instruction;
 
 /**
  * A {@link Matcher} trying all of its submatchers in sequence and succeeding when the first submatcher succeeds.
@@ -52,6 +55,10 @@ public final class OrMatcher extends StandardMatcher {
   @Override
   public String toString() {
     return "or";
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    return new FirstOfExpression(children).compile(compiler);
   }
 
 }

@@ -21,6 +21,11 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.Instruction;
+import org.sonar.sslr.internal.vm.NextNotExpression;
+import org.sonar.sslr.internal.vm.SequenceExpression;
+import org.sonar.sslr.internal.vm.lexerful.AnyTokenExpression;
 
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
@@ -52,6 +57,10 @@ public final class AnyTokenButNotMatcher extends StandardMatcher {
   @Override
   public String toString() {
     return "anyTokenButNot";
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    return new SequenceExpression(new NextNotExpression(children[0]), AnyTokenExpression.INSTANCE).compile(compiler);
   }
 
 }

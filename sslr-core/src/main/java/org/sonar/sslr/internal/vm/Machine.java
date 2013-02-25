@@ -22,6 +22,8 @@ package org.sonar.sslr.internal.vm;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
+import com.sonar.sslr.api.RecognitionException;
+import com.sonar.sslr.api.Token;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.grammar.MutableParsingRule;
@@ -40,6 +42,8 @@ import java.util.List;
 public class Machine implements CharSequence {
 
   private final char[] input;
+  private final Token[] tokens;
+  private final int inputLength;
 
   private MachineStack stack;
   private int index;
@@ -55,6 +59,21 @@ public class Machine implements CharSequence {
 
   private boolean ignoreErrors = false;
 
+  public static ParseNode parse(List<Token> tokens, CompiledGrammar grammar, GrammarRuleKey ruleKey) {
+    Token[] inputTokens = tokens.toArray(new Token[tokens.size()]);
+
+    ErrorLocatingHandler errorLocatingHandler = new ErrorLocatingHandler();
+    Machine machine = new Machine(null, inputTokens, grammar.getInstructions(), errorLocatingHandler);
+    machine.execute(grammar.getMatcher(grammar.getRootRuleKey()), grammar.getOffset(grammar.getRootRuleKey()), grammar.getInstructions());
+
+    if (machine.matched) {
+      return machine.stack.subNodes.get(0);
+    } else {
+      // FIXME Perform second run in order to collect information for error report
+      throw new RecognitionException(0, "");
+    }
+  }
+
   public static ParsingResult parse(String input, CompiledGrammar grammar, GrammarRuleKey ruleKey) {
     return parse(input.toCharArray(), grammar, ruleKey);
   }
@@ -63,7 +82,7 @@ public class Machine implements CharSequence {
     Instruction[] instructions = grammar.getInstructions();
 
     ErrorLocatingHandler errorLocatingHandler = new ErrorLocatingHandler();
-    Machine machine = new Machine(input, instructions, errorLocatingHandler);
+    Machine machine = new Machine(input, null, instructions, errorLocatingHandler);
     machine.execute(grammar.getMatcher(ruleKey), grammar.getOffset(ruleKey), instructions);
 
     if (machine.matched) {
@@ -76,7 +95,7 @@ public class Machine implements CharSequence {
     } else {
       // Perform second run in order to collect information for error report
       ErrorReportingHandler errorReportingHandler = new ErrorReportingHandler(errorLocatingHandler.getErrorIndex());
-      machine = new Machine(input, instructions, errorReportingHandler);
+      machine = new Machine(input, null, instructions, errorReportingHandler);
       machine.execute(grammar.getMatcher(ruleKey), grammar.getOffset(ruleKey), instructions);
 
       // failure should be permanent, otherwise something generally wrong
@@ -119,14 +138,30 @@ public class Machine implements CharSequence {
     return machine.matched;
   }
 
-  public Machine(String input, Instruction[] instructions, MachineHandler handler) {
-    this(input.toCharArray(), instructions, handler);
+  @VisibleForTesting
+  public static boolean execute(Instruction[] instructions, Token... input) {
+    Machine machine = new Machine(null, input, instructions, NOP_HANDLER);
+    while (machine.address != -1 && machine.address < instructions.length) {
+      instructions[machine.address].execute(machine);
+    }
+    return machine.matched;
   }
 
-  private Machine(char[] input, Instruction[] instructions, MachineHandler handler) {
+  public Machine(String input, Instruction[] instructions, MachineHandler handler) {
+    this(input.toCharArray(), null, instructions, handler);
+  }
+
+  private Machine(char[] input, Token[] tokens, Instruction[] instructions, MachineHandler handler) {
     this.input = input;
+    this.tokens = tokens;
+    if (input != null) {
+      this.inputLength = input.length;
+    } else {
+      this.inputLength = tokens.length;
+    }
+
     this.handler = handler;
-    this.memos = new ParseNode[this.input.length + 1];
+    this.memos = new ParseNode[inputLength + 1];
     this.stack = new MachineStack();
     stack = stack.getOrCreateChild();
     stack.index = -1;
@@ -134,13 +169,15 @@ public class Machine implements CharSequence {
     Arrays.fill(calls, -1);
   }
 
+  private static final MachineHandler NOP_HANDLER = new MachineHandler() {
+    public void onBacktrack(Machine machine) {
+      // nop
+    }
+  };
+
   @VisibleForTesting
   public Machine(String input, Instruction[] instructions) {
-    this(input, instructions, new MachineHandler() {
-      public void onBacktrack(Machine machine) {
-        // nop
-      }
-    });
+    this(input, instructions, NOP_HANDLER);
   }
 
   private void execute(Instruction[] instructions) {
@@ -264,7 +301,7 @@ public class Machine implements CharSequence {
   }
 
   public int length() {
-    return input.length - index;
+    return inputLength - index;
   }
 
   public char charAt(int offset) {
@@ -278,6 +315,10 @@ public class Machine implements CharSequence {
    */
   public CharSequence subSequence(int start, int end) {
     throw new UnsupportedOperationException();
+  }
+
+  public Token tokenAt(int offset) {
+    return tokens[index + offset];
   }
 
 }

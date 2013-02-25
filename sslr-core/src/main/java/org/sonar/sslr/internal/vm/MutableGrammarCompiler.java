@@ -22,7 +22,6 @@ package org.sonar.sslr.internal.vm;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.sonar.sslr.grammar.GrammarRuleKey;
-import org.sonar.sslr.internal.grammar.MutableParsingRule;
 
 import java.util.List;
 import java.util.Map;
@@ -30,15 +29,15 @@ import java.util.Queue;
 
 public class MutableGrammarCompiler extends CompilationHandler {
 
-  public static CompiledGrammar compile(MutableParsingRule rule) {
+  public static CompiledGrammar compile(CompilableGrammarRule rule) {
     return new MutableGrammarCompiler().doCompile(rule);
   }
 
-  private final Queue<MutableParsingRule> compilationQueue = Lists.newLinkedList();
-  private final Map<GrammarRuleKey, MutableParsingRule> matchers = Maps.newHashMap();
+  private final Queue<CompilableGrammarRule> compilationQueue = Lists.newLinkedList();
+  private final Map<GrammarRuleKey, CompilableGrammarRule> matchers = Maps.newHashMap();
   private final Map<GrammarRuleKey, Integer> offsets = Maps.newHashMap();
 
-  private CompiledGrammar doCompile(MutableParsingRule start) {
+  private CompiledGrammar doCompile(CompilableGrammarRule start) {
     List<Instruction> instructions = Lists.newArrayList();
 
     // Compile
@@ -47,7 +46,7 @@ public class MutableGrammarCompiler extends CompilationHandler {
     matchers.put(start.getRuleKey(), start);
 
     while (!compilationQueue.isEmpty()) {
-      MutableParsingRule rule = compilationQueue.poll();
+      CompilableGrammarRule rule = compilationQueue.poll();
       GrammarRuleKey ruleKey = rule.getRuleKey();
 
       offsets.put(ruleKey, instructions.size());
@@ -73,8 +72,8 @@ public class MutableGrammarCompiler extends CompilationHandler {
 
   @Override
   public Instruction[] compile(ParsingExpression expression) {
-    if (expression instanceof MutableParsingRule) {
-      MutableParsingRule rule = (MutableParsingRule) expression;
+    if (expression instanceof CompilableGrammarRule) {
+      CompilableGrammarRule rule = (CompilableGrammarRule) expression;
       if (!matchers.containsKey(rule.getRuleKey())) {
         compilationQueue.add(rule);
         matchers.put(rule.getRuleKey(), rule);

@@ -23,17 +23,25 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.ParsingState;
+import org.sonar.sslr.grammar.GrammarRuleKey;
+import org.sonar.sslr.internal.vm.CompilableGrammarRule;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.Instruction;
+import org.sonar.sslr.internal.vm.ParsingExpression;
+import org.sonar.sslr.internal.vm.RuleRefExpression;
 
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
-public final class RuleMatcher extends StandardMatcher {
+public final class RuleMatcher extends StandardMatcher implements CompilableGrammarRule {
 
+  private final GrammarRuleKey ruleKey;
   private final String name;
   private boolean recoveryRule = false;
   private AstNodeType astNodeType;
 
-  public RuleMatcher(String name) {
+  public RuleMatcher(GrammarRuleKey ruleKey, String name) {
+    this.ruleKey = ruleKey;
     this.name = name;
   }
 
@@ -110,6 +118,18 @@ public final class RuleMatcher extends StandardMatcher {
   @Override
   public int hashCode() {
     return getName().hashCode();
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    return compiler.compile(new RuleRefExpression(getRuleKey()));
+  }
+
+  public GrammarRuleKey getRuleKey() {
+    return ruleKey;
+  }
+
+  public ParsingExpression getExpression() {
+    return children[0];
   }
 
 }

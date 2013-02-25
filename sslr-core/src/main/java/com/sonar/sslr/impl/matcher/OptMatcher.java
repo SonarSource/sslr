@@ -21,6 +21,9 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.Instruction;
+import org.sonar.sslr.internal.vm.OptionalExpression;
 
 /**
  * A {@link Matcher} that tries its submatcher once against the input and always succeeds.
@@ -46,6 +49,10 @@ public final class OptMatcher extends StandardMatcher {
   @Override
   public String toString() {
     return "opt";
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    return new OptionalExpression(children[0]).compile(compiler);
   }
 
 }

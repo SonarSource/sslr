@@ -22,6 +22,13 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.FirstOfExpression;
+import org.sonar.sslr.internal.vm.Instruction;
+import org.sonar.sslr.internal.vm.NextNotExpression;
+import org.sonar.sslr.internal.vm.SequenceExpression;
+import org.sonar.sslr.internal.vm.ZeroOrMoreExpression;
+import org.sonar.sslr.internal.vm.lexerful.AnyTokenExpression;
 
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
@@ -57,6 +64,15 @@ public final class ExclusiveTillMatcher extends StatelessMatcher {
   @Override
   public String toString() {
     return "exclusiveTill";
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    return new ZeroOrMoreExpression(
+        new SequenceExpression(
+            new NextNotExpression(
+                // TODO firstOf is useless in case of single sub-expression
+                new FirstOfExpression(children)),
+            AnyTokenExpression.INSTANCE)).compile(compiler);
   }
 
 }

@@ -20,6 +20,9 @@
 package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.Token;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.Instruction;
+import org.sonar.sslr.internal.vm.lexerful.AnyTokenExpression;
 
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
@@ -57,6 +60,10 @@ public final class AnyTokenMatcher extends TokenMatcher {
       return false;
     }
     return true;
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    return AnyTokenExpression.INSTANCE.compile(compiler);
   }
 
 }

@@ -22,6 +22,8 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.Instruction;
 
 import java.util.Arrays;
 
@@ -80,6 +82,10 @@ public class StandardMatcher extends MemoizedMatcher {
     }
     StandardMatcher other = (StandardMatcher) obj;
     return Arrays.equals(children, other.children);
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    throw new UnsupportedOperationException("This method must be overridden by subclass.");
   }
 
 }

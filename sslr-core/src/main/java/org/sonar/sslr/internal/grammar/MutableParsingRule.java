@@ -30,6 +30,7 @@ import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.matchers.Matcher;
 import org.sonar.sslr.internal.matchers.MatchersUtils2;
+import org.sonar.sslr.internal.vm.CompilableGrammarRule;
 import org.sonar.sslr.internal.vm.CompilationHandler;
 import org.sonar.sslr.internal.vm.EndOfInputExpression;
 import org.sonar.sslr.internal.vm.FirstOfExpression;
@@ -38,7 +39,7 @@ import org.sonar.sslr.internal.vm.ParsingExpression;
 import org.sonar.sslr.internal.vm.PatternExpression;
 import org.sonar.sslr.internal.vm.RuleRefExpression;
 
-public class MutableParsingRule implements Matcher, Rule, AstNodeSkippingPolicy, ParsingExpression, GrammarRuleKey {
+public class MutableParsingRule implements CompilableGrammarRule, Matcher, Rule, AstNodeSkippingPolicy, ParsingExpression, GrammarRuleKey {
 
   private static final AstNodeSkippingPolicy NEVER = new NeverSkipFromAst();
   private static final AstNodeSkippingPolicy ALWAYS = new AlwaysSkipFromAst();

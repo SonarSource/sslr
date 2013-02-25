@@ -22,6 +22,9 @@ package com.sonar.sslr.impl.matcher;
 import com.google.common.base.Objects;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.Instruction;
+import org.sonar.sslr.internal.vm.lexerful.TokenTypesExpression;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -65,6 +68,10 @@ public final class TokenTypesMatcher extends TokenMatcher {
     }
     TokenTypesMatcher other = (TokenTypesMatcher) obj;
     return Objects.equal(this.tokenTypes, other.tokenTypes);
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    return new TokenTypesExpression(tokenTypes.toArray(new TokenType[tokenTypes.size()])).compile(compiler);
   }
 
 }

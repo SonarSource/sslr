@@ -17,32 +17,20 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.parser;
+package org.sonar.sslr.internal.vm;
 
-import com.google.common.base.Preconditions;
-import com.sonar.sslr.api.Rule;
-import org.sonar.sslr.internal.vm.CompilableGrammarRule;
-import org.sonar.sslr.internal.vm.CompiledGrammar;
-import org.sonar.sslr.internal.vm.Machine;
-import org.sonar.sslr.internal.vm.MutableGrammarCompiler;
+import org.sonar.sslr.grammar.GrammarRuleKey;
+import org.sonar.sslr.internal.matchers.Matcher;
 
 /**
- * Performs parsing of a given grammar rule on a given input text.
- *
- * <p>This class is not intended to be subclassed by clients.</p>
- *
- * @since 1.16
+ * Rule, which can be compiled by {@link MutableGrammarCompiler}.
  */
-public class ParseRunner {
+public interface CompilableGrammarRule extends Matcher {
 
-  private final CompiledGrammar compiledGrammar;
+  GrammarRuleKey getRuleKey();
 
-  public ParseRunner(Rule rule) {
-    compiledGrammar = MutableGrammarCompiler.compile((CompilableGrammarRule) Preconditions.checkNotNull(rule, "rule"));
-  }
+  ParsingExpression getExpression();
 
-  public ParsingResult parse(char[] input) {
-    return Machine.parse(input, compiledGrammar, compiledGrammar.getRootRuleKey());
-  }
+  Instruction[] compile(CompilationHandler compiler);
 
 }

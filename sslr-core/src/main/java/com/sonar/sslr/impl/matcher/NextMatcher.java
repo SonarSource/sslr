@@ -20,6 +20,9 @@
 package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.impl.ParsingState;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.Instruction;
+import org.sonar.sslr.internal.vm.NextExpression;
 
 /**
  * A special {@link Matcher} not actually matching any input but rather trying its submatcher against the current input
@@ -52,6 +55,10 @@ public final class NextMatcher extends StandardMatcher {
   @Override
   public String toString() {
     return "next";
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    return new NextExpression(children[0]).compile(compiler);
   }
 
 }

@@ -22,6 +22,8 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.events.ParsingEventListener;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.Instruction;
 
 /**
  * Special wrapping {@link Matcher} that performs memoization of its submatcher.
@@ -83,6 +85,10 @@ public class MemoMatcher extends DelegatingMatcher {
         }
       }
     }
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    return getDelegate().compile(compiler);
   }
 
 }

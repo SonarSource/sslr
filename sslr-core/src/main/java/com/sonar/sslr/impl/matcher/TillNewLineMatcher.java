@@ -22,6 +22,9 @@ package com.sonar.sslr.impl.matcher;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ParsingState;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.Instruction;
+import org.sonar.sslr.internal.vm.lexerful.TillNewLineExpression;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 
@@ -51,6 +54,10 @@ public final class TillNewLineMatcher extends StatelessMatcher {
   @Override
   public String toString() {
     return "tillNewLine()";
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    return TillNewLineExpression.INSTANCE.compile(compiler);
   }
 
 }

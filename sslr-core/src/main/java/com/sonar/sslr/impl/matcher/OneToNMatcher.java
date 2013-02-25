@@ -21,6 +21,9 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.Instruction;
+import org.sonar.sslr.internal.vm.OneOrMoreExpression;
 
 /**
  * A {@link Matcher} that repeatedly tries its submatcher against the input.
@@ -60,6 +63,10 @@ public final class OneToNMatcher extends StandardMatcher {
   @Override
   public String toString() {
     return "one2n";
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    return new OneOrMoreExpression(children[0]).compile(compiler);
   }
 
 }

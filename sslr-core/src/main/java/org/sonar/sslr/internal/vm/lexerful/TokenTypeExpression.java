@@ -17,32 +17,37 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.sslr.parser;
+package org.sonar.sslr.internal.vm.lexerful;
 
-import com.google.common.base.Preconditions;
-import com.sonar.sslr.api.Rule;
-import org.sonar.sslr.internal.vm.CompilableGrammarRule;
-import org.sonar.sslr.internal.vm.CompiledGrammar;
+import com.sonar.sslr.api.TokenType;
+import org.sonar.sslr.internal.matchers.Matcher;
 import org.sonar.sslr.internal.vm.Machine;
-import org.sonar.sslr.internal.vm.MutableGrammarCompiler;
+import org.sonar.sslr.internal.vm.NativeExpression;
 
 /**
- * Performs parsing of a given grammar rule on a given input text.
- *
- * <p>This class is not intended to be subclassed by clients.</p>
- *
- * @since 1.16
+ * TODO Replacement for {@link com.sonar.sslr.impl.matcher.TokenTypeMatcher}
  */
-public class ParseRunner {
+public class TokenTypeExpression extends NativeExpression implements Matcher {
 
-  private final CompiledGrammar compiledGrammar;
+  private final TokenType type;
 
-  public ParseRunner(Rule rule) {
-    compiledGrammar = MutableGrammarCompiler.compile((CompilableGrammarRule) Preconditions.checkNotNull(rule, "rule"));
+  public TokenTypeExpression(TokenType type) {
+    this.type = type;
   }
 
-  public ParsingResult parse(char[] input) {
-    return Machine.parse(input, compiledGrammar, compiledGrammar.getRootRuleKey());
+  @Override
+  public void execute(Machine machine) {
+    if (machine.length() == 0 || type != machine.tokenAt(0).getType()) {
+      machine.backtrack();
+      return;
+    }
+    machine.createLeafNode(this, 1);
+    machine.jump(1);
+  }
+
+  @Override
+  public String toString() {
+    return "TokenType " + type;
   }
 
 }

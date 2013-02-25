@@ -27,8 +27,9 @@ import com.sonar.sslr.impl.ast.AlwaysSkipFromAst;
 import com.sonar.sslr.impl.ast.NeverSkipFromAst;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 import com.sonar.sslr.impl.matcher.GrammarFunctions.Standard;
+import org.sonar.sslr.grammar.GrammarRuleKey;
 
-public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
+public final class RuleDefinition implements Rule, AstNodeSkippingPolicy, GrammarRuleKey {
 
   private final AstNodeType astNodeType;
 
@@ -45,16 +46,16 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
 
   public static RuleDefinition newRuleBuilder(String ruleName) {
     RuleDefinition ruleBuilder = new RuleDefinition();
-    ruleBuilder.setRuleMatcher(new RuleMatcher(ruleName));
+    ruleBuilder.setRuleMatcher(new RuleMatcher(ruleBuilder, ruleName));
     return ruleBuilder;
   }
 
   /**
    * @since 1.18
    */
-  public static RuleDefinition newRuleBuilder(String ruleName, AstNodeType astNodeType) {
-    RuleDefinition ruleBuilder = new RuleDefinition(astNodeType);
-    ruleBuilder.setRuleMatcher(new RuleMatcher(ruleName));
+  public static RuleDefinition newRuleBuilder(String ruleName, GrammarRuleKey ruleKey) {
+    RuleDefinition ruleBuilder = new RuleDefinition(ruleKey);
+    ruleBuilder.setRuleMatcher(new RuleMatcher(ruleKey, ruleName));
     return ruleBuilder;
   }
 

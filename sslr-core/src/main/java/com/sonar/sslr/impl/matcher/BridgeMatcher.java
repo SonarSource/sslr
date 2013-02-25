@@ -25,6 +25,9 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.BacktrackingEvent;
 import com.sonar.sslr.impl.ParsingState;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.Instruction;
+import org.sonar.sslr.internal.vm.lexerful.TokensBridgeExpression;
 
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
@@ -85,6 +88,10 @@ public final class BridgeMatcher extends MemoizedMatcher {
     BridgeMatcher other = (BridgeMatcher) obj;
     return Objects.equal(this.from, other.from)
       && Objects.equal(this.to, other.to);
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    return new TokensBridgeExpression(from, to).compile(compiler);
   }
 
 }

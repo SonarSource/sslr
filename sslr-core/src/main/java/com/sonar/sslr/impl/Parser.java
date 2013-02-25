@@ -30,6 +30,11 @@ import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import com.sonar.sslr.impl.events.ParsingEventListener;
 import com.sonar.sslr.impl.matcher.GrammarFunctions;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
+import org.sonar.sslr.internal.matchers.LexerfulAstCreator;
+import org.sonar.sslr.internal.vm.CompilableGrammarRule;
+import org.sonar.sslr.internal.vm.CompiledGrammar;
+import org.sonar.sslr.internal.vm.Machine;
+import org.sonar.sslr.internal.vm.MutableGrammarCompiler;
 import org.sonar.sslr.parser.ParserAdapter;
 
 import java.io.File;
@@ -125,7 +130,11 @@ public class Parser<G extends Grammar> {
       parsingState.parsingEventListeners = parsingEventListeners;
       parsingState.extendedStackTrace = extendedStackTrace;
 
+      // FIXME should be removed:
       AstNode astNode = rootRule.getRule().match(parsingState);
+      // TODO can be compiled only once
+      CompiledGrammar g = MutableGrammarCompiler.compile((CompilableGrammarRule) rootRule.getRule());
+      astNode = LexerfulAstCreator.create(Machine.parse(tokens, g, g.getRootRuleKey()), tokens);
       // Unwrap AstNodeType for root node:
       astNode.hasToBeSkippedFromAst();
       return astNode;

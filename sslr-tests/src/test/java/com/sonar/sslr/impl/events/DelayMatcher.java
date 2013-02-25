@@ -19,15 +19,17 @@
  */
 package com.sonar.sslr.impl.events;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
-
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadMXBean;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.StatelessMatcher;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.Instruction;
+
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
+
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
 
 public class DelayMatcher extends StatelessMatcher {
 
@@ -60,6 +62,10 @@ public class DelayMatcher extends StatelessMatcher {
   private static long getCpuTime() {
     ThreadMXBean bean = ManagementFactory.getThreadMXBean();
     return bean.isCurrentThreadCpuTimeSupported() ? bean.getCurrentThreadCpuTime() : 0L;
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    throw new UnsupportedOperationException();
   }
 
 }
