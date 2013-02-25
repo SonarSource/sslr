@@ -50,8 +50,7 @@ public class PatternExpression extends NativeExpression implements org.sonar.ssl
     }
     if (result) {
       // TODO what if end == 0 ???
-      machine.advanceIndex(matcher.end());
-      machine.createLeafNode(this);
+      machine.createLeafNode(this, matcher.end());
       machine.jump(1);
     } else {
       machine.backtrack();

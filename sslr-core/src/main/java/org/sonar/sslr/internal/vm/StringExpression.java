@@ -40,8 +40,7 @@ public class StringExpression extends NativeExpression implements Matcher {
         return;
       }
     }
-    machine.advanceIndex(string.length());
-    machine.createLeafNode(this);
+    machine.createLeafNode(this, string.length());
     machine.jump(1);
   }
 

@@ -172,10 +172,7 @@ public class MachineTest {
     Machine machine = new Machine("", new Instruction[2]);
     Matcher matcher = mock(Matcher.class);
     machine.advanceIndex(42);
-    // remember startIndex
-    machine.pushBacktrack(0);
-    machine.advanceIndex(13);
-    machine.createLeafNode(matcher);
+    machine.createLeafNode(matcher, 13);
     ParseNode node = machine.peek().subNodes.get(0);
     assertThat(node.getMatcher()).isSameAs(matcher);
     assertThat(node.getStartIndex()).isEqualTo(42);
@@ -191,14 +188,13 @@ public class MachineTest {
     // remember startIndex and matcher
     machine.pushReturn(0, matcher, 0);
     Matcher subMatcher = mock(Matcher.class);
-    machine.createLeafNode(subMatcher);
-    machine.createLeafNode(subMatcher);
-    machine.advanceIndex(13);
+    machine.createLeafNode(subMatcher, 2);
+    machine.createLeafNode(subMatcher, 3);
     machine.createNode();
     ParseNode node = machine.peek().parent.subNodes.get(0);
     assertThat(node.getMatcher()).isSameAs(matcher);
     assertThat(node.getStartIndex()).isEqualTo(1);
-    assertThat(node.getEndIndex()).isEqualTo(1 + 13);
+    assertThat(node.getEndIndex()).isEqualTo(1 + 2 + 3);
     assertThat(node.getChildren()).hasSize(2);
   }
 

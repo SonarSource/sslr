@@ -56,8 +56,7 @@ public class StringExpressionTest {
     inOrder.verify(machine).charAt(0);
     inOrder.verify(machine).charAt(1);
     inOrder.verify(machine).charAt(2);
-    inOrder.verify(machine).advanceIndex(3);
-    inOrder.verify(machine).createLeafNode(expression);
+    inOrder.verify(machine).createLeafNode(expression, 3);
     inOrder.verify(machine).jump(1);
     verifyNoMoreInteractions(machine);
   }

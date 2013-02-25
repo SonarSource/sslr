@@ -245,9 +245,10 @@ public class Machine implements CharSequence {
     memos[stack.index] = node;
   }
 
-  public void createLeafNode(Matcher matcher) {
-    ParseNode node = new ParseNode(stack.index, index, Collections.EMPTY_LIST, matcher);
+  public void createLeafNode(Matcher matcher, int offset) {
+    ParseNode node = new ParseNode(index, index + offset, Collections.EMPTY_LIST, matcher);
     stack.subNodes.add(node);
+    index += offset;
   }
 
   public int getIndex() {

@@ -58,8 +58,7 @@ public class PatternExpressionTest {
     inOrder.verify(machine, atLeast(1)).charAt(0);
     inOrder.verify(machine, atLeast(1)).charAt(1);
     inOrder.verify(machine, atLeast(1)).charAt(2);
-    inOrder.verify(machine).advanceIndex(3);
-    inOrder.verify(machine).createLeafNode(expression);
+    inOrder.verify(machine).createLeafNode(expression, 3);
     inOrder.verify(machine).jump(1);
     verifyNoMoreInteractions(machine);
   }
