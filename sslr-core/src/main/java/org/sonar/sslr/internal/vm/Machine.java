@@ -76,7 +76,7 @@ public class Machine implements CharSequence {
       // failure should be permanent, otherwise something generally wrong
       Preconditions.checkState(!machine.matched);
 
-      int line = tokens.get(errorLocatingHandler.getErrorIndex()).getLine();
+      int line = tokens.size() == 0 ? 1 : tokens.get(errorLocatingHandler.getErrorIndex()).getLine();
       throw new RecognitionException(line, "");
     }
   }

@@ -88,7 +88,7 @@ public class MemoMatcher extends DelegatingMatcher {
   }
 
   public Instruction[] compile(CompilationHandler compiler) {
-    return getDelegate().compile(compiler);
+    return compiler.compile(getDelegate());
   }
 
 }
