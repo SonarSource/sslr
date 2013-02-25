@@ -43,7 +43,7 @@ public class RuleMatcherTest {
   @Before
   public void init() {
     javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
-    opMatcher = (Matcher) opt("implements", WORD, o2n(",", WORD));
+    opMatcher = opt("implements", WORD, o2n(",", WORD));
     javaClassDefinition.is("public", or("class", "interface"), opMatcher);
   }
 

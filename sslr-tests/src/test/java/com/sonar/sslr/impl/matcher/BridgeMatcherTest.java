@@ -47,22 +47,22 @@ public class BridgeMatcherTest {
 
   @Test
   public void shouldMatchSimpleBridge() {
-    assertThat((Matcher) bridge(LEFT, RIGHT), match(createTokens(LEFT, CAT, CAT, DOG, RIGHT)));
+    assertThat(bridge(LEFT, RIGHT), match(createTokens(LEFT, CAT, CAT, DOG, RIGHT)));
   }
 
   @Test
   public void shouldMatchCompositeBridges() {
-    assertThat((Matcher) bridge(LEFT, RIGHT), match(createTokens(LEFT, LEFT, CAT, LEFT, RIGHT, DOG, RIGHT, RIGHT)));
+    assertThat(bridge(LEFT, RIGHT), match(createTokens(LEFT, LEFT, CAT, LEFT, RIGHT, DOG, RIGHT, RIGHT)));
   }
 
   @Test
   public void shouldNotMatchBridgeStarter() {
-    assertThat((Matcher) bridge(LEFT, RIGHT), not(match(createTokens(CAT, LEFT, RIGHT))));
+    assertThat(bridge(LEFT, RIGHT), not(match(createTokens(CAT, LEFT, RIGHT))));
   }
 
   @Test
   public void shouldNotMatchPartialBridge() {
-    assertThat((Matcher) bridge(LEFT, RIGHT), not(match(createTokens(LEFT, LEFT, RIGHT))));
+    assertThat(bridge(LEFT, RIGHT), not(match(createTokens(LEFT, LEFT, RIGHT))));
   }
 
   private static List<Token> createTokens(TokenType... types) {
@@ -81,7 +81,7 @@ public class BridgeMatcherTest {
   @Test
   public void testAstNodeTokens() {
     ParsingState state = new ParsingState(IdentifierLexer.create().lex("one "));
-    AstNode astNode = ((Matcher) bridge(GenericTokenType.IDENTIFIER, GenericTokenType.EOF)).match(state);
+    AstNode astNode = bridge(GenericTokenType.IDENTIFIER, GenericTokenType.EOF).match(state);
     assertThat(state.lexerIndex).isEqualTo(2);
     assertThat(astNode.getChildren().size()).isEqualTo(2);
   }

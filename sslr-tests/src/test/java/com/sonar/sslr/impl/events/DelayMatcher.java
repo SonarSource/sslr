@@ -19,15 +19,15 @@
  */
 package com.sonar.sslr.impl.events;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.matcher.Matcher;
-import com.sonar.sslr.impl.matcher.StatelessMatcher;
+import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.*;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.impl.ParsingState;
+import com.sonar.sslr.impl.matcher.Matcher;
+import com.sonar.sslr.impl.matcher.StatelessMatcher;
 
 public class DelayMatcher extends StatelessMatcher {
 
@@ -38,7 +38,7 @@ public class DelayMatcher extends StatelessMatcher {
       throw new IllegalArgumentException("At least one matcher must be given.");
     }
 
-    return new DelayMatcher(delay, (Matcher) and(matchers));
+    return new DelayMatcher(delay, and(matchers));
   }
 
   public DelayMatcher(long delay, Matcher matcher) {

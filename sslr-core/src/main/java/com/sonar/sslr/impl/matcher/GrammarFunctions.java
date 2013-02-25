@@ -76,7 +76,7 @@ public final class GrammarFunctions {
      * }
      * </pre>
      */
-    public static Object o2n(Object... objects) {
+    public static Matcher o2n(Object... objects) {
       return opt(one2n(objects));
     }
 
@@ -91,8 +91,8 @@ public final class GrammarFunctions {
      * }
      * </pre>
      */
-    public static Object one2n(Object... elements) {
-      return getCachedMatcher(new OneToNMatcher((Matcher) and(elements)));
+    public static Matcher one2n(Object... elements) {
+      return getCachedMatcher(new OneToNMatcher(and(elements)));
     }
 
     /**
@@ -106,8 +106,8 @@ public final class GrammarFunctions {
      * }
      * </pre>
      */
-    public static Object opt(Object... elements) {
-      return getCachedMatcher(new OptMatcher((Matcher) and(elements)));
+    public static Matcher opt(Object... elements) {
+      return getCachedMatcher(new OptMatcher(and(elements)));
     }
 
     /**
@@ -128,11 +128,11 @@ public final class GrammarFunctions {
      * @deprecated in 1.16, use {@link GrammarFunctions.Standard#firstOf(Object...)} instead
      */
     @Deprecated
-    public static Object or(Object... elements) {
+    public static Matcher or(Object... elements) {
       return firstOf(elements);
     }
 
-    public static Object firstOf(Object... elements) {
+    public static Matcher firstOf(Object... elements) {
       if (elements == null || elements.length == 0) {
         throw new IllegalArgumentException(AT_LEAST_ONE_MATCHER_MESSAGE);
       } else if (elements.length == 1) {
@@ -151,7 +151,7 @@ public final class GrammarFunctions {
      * }
      * </pre>
      */
-    public static Object and(Object... elements) {
+    public static Matcher and(Object... elements) {
       if (elements == null || elements.length == 0) {
         throw new IllegalArgumentException(AT_LEAST_ONE_MATCHER_MESSAGE);
       } else if (elements.length == 1) {
@@ -171,15 +171,15 @@ public final class GrammarFunctions {
     /**
      * Syntactic predicate to check that the next tokens don't match an element.
      */
-    public static Object not(Object element) {
+    public static Matcher not(Object element) {
       return getCachedMatcher(new NotMatcher(convertToMatcher(element)));
     }
 
     /**
      * Syntactic predicate to check that the next tokens match some elements.
      */
-    public static Object next(Object... elements) {
-      return getCachedMatcher(new NextMatcher((Matcher) Standard.and(elements)));
+    public static Matcher next(Object... elements) {
+      return getCachedMatcher(new NextMatcher(Standard.and(elements)));
     }
 
   }
@@ -200,21 +200,21 @@ public final class GrammarFunctions {
      *
      * Without any space between previous_element and element
      */
-    public static Object adjacent(Object element) {
+    public static Matcher adjacent(Object element) {
       return getCachedMatcher(new AdjacentMatcher(convertToMatcher(element)));
     }
 
     /**
      * Consume the next token if and only if the element doesn't match
      */
-    public static Object anyTokenButNot(Object element) {
+    public static Matcher anyTokenButNot(Object element) {
       return getCachedMatcher(new AnyTokenButNotMatcher(convertToMatcher(element)));
     }
 
     /**
      * Match the next token if and only if its type belongs to the provided list
      */
-    public static Object isOneOfThem(TokenType... types) {
+    public static Matcher isOneOfThem(TokenType... types) {
       if (types == null || types.length == 0) {
         throw new IllegalArgumentException(AT_LEAST_ONE_MATCHER_MESSAGE);
       } else {
@@ -231,35 +231,35 @@ public final class GrammarFunctions {
      * }
      * </pre>
      */
-    public static Object bridge(TokenType from, TokenType to) {
+    public static Matcher bridge(TokenType from, TokenType to) {
       return getCachedMatcher(new BridgeMatcher(from, to));
     }
 
     /**
      * For unit test only Consume the next token whatever it is
      */
-    public static Object isTrue() {
+    public static Matcher isTrue() {
       return getCachedMatcher(new BooleanMatcher(true));
     }
 
     /**
      * For unit test only Not consume the next token whatever it is
      */
-    public static Object isFalse() {
+    public static Matcher isFalse() {
       return getCachedMatcher(new BooleanMatcher(false));
     }
 
     /**
      * Consume the next token whatever it is
      */
-    public static Object anyToken() {
+    public static Matcher anyToken() {
       return getCachedMatcher(new AnyTokenMatcher());
     }
 
     /**
      * Consume every following token which are on the current line
      */
-    public static Object tillNewLine() {
+    public static Matcher tillNewLine() {
       return getCachedMatcher(new TillNewLineMatcher());
     }
 
@@ -272,7 +272,7 @@ public final class GrammarFunctions {
      * }
      * </pre>
      */
-    public static Object till(Object element) {
+    public static Matcher till(Object element) {
       return getCachedMatcher(new InclusiveTillMatcher(convertToMatcher(element)));
     }
 
@@ -288,14 +288,14 @@ public final class GrammarFunctions {
      * }
      * </pre>
      */
-    public static Object exclusiveTill(Object... elements) {
+    public static Matcher exclusiveTill(Object... elements) {
       return getCachedMatcher(new ExclusiveTillMatcher(convertToMatchers(elements)));
     }
 
     /**
      * @since 1.14
      */
-    public static Object memoizeMatches(Object element) {
+    public static Matcher memoizeMatches(Object element) {
       Matcher matcher = convertToMatcher(element);
       return matcher instanceof MemoMatcher ? matcher : getCachedMatcher(new MemoMatcher(matcher));
     }

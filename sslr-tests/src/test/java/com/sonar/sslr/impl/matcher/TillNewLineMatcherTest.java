@@ -35,25 +35,25 @@ public class TillNewLineMatcherTest {
 
   @Test
   public void ok() {
-    assertThat((Matcher) tillNewLine(), match(""));
-    assertThat((Matcher) tillNewLine(), match("   "));
-    assertThat((Matcher) tillNewLine(), match("a b c d"));
-    assertThat((Matcher) and(tillNewLine(), "new"), match("a b c d \n new"));
-    assertThat((Matcher) and(tillNewLine(), "new"), match("a b c d \n\n new"));
-    assertThat((Matcher) and(tillNewLine(), "new"), match("a b c d \n\n\n new"));
-    assertThat((Matcher) and(tillNewLine(), "a", "b", "c"), match("\n a b c"));
-    assertThat((Matcher) and("a", "b", "c", tillNewLine()), match("a b c"));
-    assertThat((Matcher) and("a", "b", "c", tillNewLine()), match("a b c \n"));
-    assertThat((Matcher) and("a", "b", "c", tillNewLine()), match("a b c \n\n"));
-    assertThat((Matcher) and("bonjour", tillNewLine(), "hehe"), match("\n\n\nbonjour whatever wtf \n hehe"));
-    assertThat((Matcher) and("bonjour", tillNewLine()), match("bonjour hehe hoho huhu"));
-    assertThat((Matcher) and("bonjour", tillNewLine(), EOF), match("bonjour hehe hoho huhu EOF"));
+    assertThat(tillNewLine(), match(""));
+    assertThat(tillNewLine(), match("   "));
+    assertThat(tillNewLine(), match("a b c d"));
+    assertThat(and(tillNewLine(), "new"), match("a b c d \n new"));
+    assertThat(and(tillNewLine(), "new"), match("a b c d \n\n new"));
+    assertThat(and(tillNewLine(), "new"), match("a b c d \n\n\n new"));
+    assertThat(and(tillNewLine(), "a", "b", "c"), match("\n a b c"));
+    assertThat(and("a", "b", "c", tillNewLine()), match("a b c"));
+    assertThat(and("a", "b", "c", tillNewLine()), match("a b c \n"));
+    assertThat(and("a", "b", "c", tillNewLine()), match("a b c \n\n"));
+    assertThat(and("bonjour", tillNewLine(), "hehe"), match("\n\n\nbonjour whatever wtf \n hehe"));
+    assertThat(and("bonjour", tillNewLine()), match("bonjour hehe hoho huhu"));
+    assertThat(and("bonjour", tillNewLine(), EOF), match("bonjour hehe hoho huhu EOF"));
   }
 
   @Test
   public void testAstNodeTokens() {
     ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three\nfour"));
-    AstNode astNode = ((Matcher) tillNewLine()).match(state);
+    AstNode astNode = tillNewLine().match(state);
     assertThat(state.lexerIndex).isEqualTo(3);
     assertThat(astNode.getChildren().size()).isEqualTo(3);
   }

@@ -41,8 +41,8 @@ public class TokenTypeClassMatcherTest {
 
   @Test
   public void testThroughMatchers() {
-    assertThat((Matcher) and(GenericTokenType.class), match("word"));
-    assertThat((Matcher) and(MockTokenType.class), not(match("word")));
+    assertThat(and(GenericTokenType.class), match("word"));
+    assertThat(and(MockTokenType.class), not(match("word")));
   }
 
   @Test

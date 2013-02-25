@@ -34,15 +34,15 @@ public class ExclusiveTillMatcherTest {
 
   @Test
   public void ok() {
-    assertThat((Matcher) and(exclusiveTill("four"), "four"), match("one two three four"));
-    assertThat((Matcher) and(exclusiveTill("two", "three"), "two", "three", "four"), match("one two three four"));
-    assertThat((Matcher) and(exclusiveTill("two", "three"), "three", "two", "four"), match("one three two four"));
+    assertThat(and(exclusiveTill("four"), "four"), match("one two three four"));
+    assertThat(and(exclusiveTill("two", "three"), "two", "three", "four"), match("one two three four"));
+    assertThat(and(exclusiveTill("two", "three"), "three", "two", "four"), match("one three two four"));
   }
 
   @Test
   public void testAstNodeTokens() {
     ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three four"));
-    AstNode astNode = ((Matcher) exclusiveTill("three")).match(state);
+    AstNode astNode = exclusiveTill("three").match(state);
     assertThat(state.lexerIndex).isEqualTo(2);
     assertThat(astNode.getChildren().size()).isEqualTo(2);
   }

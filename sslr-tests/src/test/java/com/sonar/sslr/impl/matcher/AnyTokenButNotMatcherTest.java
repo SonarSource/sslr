@@ -34,8 +34,8 @@ public class AnyTokenButNotMatcherTest {
 
   @Test
   public void ok() {
-    assertThat((Matcher) anyTokenButNot("two"), match("one"));
-    assertThat((Matcher) anyTokenButNot("one"), not(match("one")));
+    assertThat(anyTokenButNot("two"), match("one"));
+    assertThat(anyTokenButNot("one"), not(match("one")));
   }
 
   @Test

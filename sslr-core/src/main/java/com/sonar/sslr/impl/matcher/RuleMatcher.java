@@ -82,7 +82,7 @@ public final class RuleMatcher extends StandardMatcher {
       // skip empty rule
       return;
     }
-    this.children[0] = (Matcher) GrammarFunctions.Advanced.memoizeMatches(children[0]);
+    this.children[0] = GrammarFunctions.Advanced.memoizeMatches(children[0]);
   }
 
   public void setNodeType(AstNodeType astNodeType) {
