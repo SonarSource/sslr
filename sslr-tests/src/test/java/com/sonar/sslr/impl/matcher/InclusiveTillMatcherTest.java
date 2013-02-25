@@ -35,16 +35,16 @@ public class InclusiveTillMatcherTest {
 
   @Test
   public void ok() {
-    assertThat(till("two"), not(match("one")));
-    assertThat(till("four"), match("one two three four"));
-    assertThat(till("three"), not(match("one two three four")));
-    assertThat(till(and("three", "four")), match("one two three four"));
+    assertThat((Matcher) till("two"), not(match("one")));
+    assertThat((Matcher) till("four"), match("one two three four"));
+    assertThat((Matcher) till("three"), not(match("one two three four")));
+    assertThat((Matcher) till(and("three", "four")), match("one two three four"));
   }
 
   @Test
   public void testAstNodeTokens() {
     ParsingState state = new ParsingState(IdentifierLexer.create().lex("one two three four"));
-    AstNode astNode = till("three").match(state);
+    AstNode astNode = ((Matcher) till("three")).match(state);
     assertThat(state.lexerIndex).isEqualTo(3);
     assertThat(astNode.getChildren().size()).isEqualTo(3);
   }

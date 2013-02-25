@@ -30,10 +30,10 @@ public class MatcherTreePrinterTest {
 
   @Test
   public void testPrint() {
-    assertThat(MatcherTreePrinter.print(or("test"))).isEqualTo("\"test\"");
-    assertThat(MatcherTreePrinter.print(and("a", "b"))).isEqualTo("and(\"a\", \"b\")");
-    assertThat(MatcherTreePrinter.print(o2n("a"))).isEqualTo("opt(one2n(\"a\"))");
-    assertThat(MatcherTreePrinter.print(o2n("a", "b"))).isEqualTo("opt(one2n(and(\"a\", \"b\")))");
+    assertThat(MatcherTreePrinter.print((Matcher) or("test"))).isEqualTo("\"test\"");
+    assertThat(MatcherTreePrinter.print((Matcher) and("a", "b"))).isEqualTo("and(\"a\", \"b\")");
+    assertThat(MatcherTreePrinter.print((Matcher) o2n("a"))).isEqualTo("opt(one2n(\"a\"))");
+    assertThat(MatcherTreePrinter.print((Matcher) o2n("a", "b"))).isEqualTo("opt(one2n(and(\"a\", \"b\")))");
 
     RuleDefinition heheBuilder = RuleDefinition.newRuleBuilder("hehe");
     RuleMatcher hehe = heheBuilder.is("bonjour", heheBuilder).getRule();

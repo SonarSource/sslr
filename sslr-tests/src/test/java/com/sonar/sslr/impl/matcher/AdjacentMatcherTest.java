@@ -35,8 +35,8 @@ public class AdjacentMatcherTest {
 
   @Test
   public void ok() {
-    assertThat(and("myMacro", adjacent("(")), match("myMacro("));
-    assertThat(and("myMacro", adjacent("(")), not(match("myMacro (")));
+    assertThat((Matcher) and("myMacro", adjacent("(")), match("myMacro("));
+    assertThat((Matcher) and("myMacro", adjacent("(")), not(match("myMacro (")));
   }
 
   @Test

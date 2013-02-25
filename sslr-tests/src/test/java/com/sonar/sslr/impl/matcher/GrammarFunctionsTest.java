@@ -133,13 +133,13 @@ public class GrammarFunctionsTest {
     assertThat(GrammarFunctions.Predicate.not("a") == GrammarFunctions.Predicate.not("b")).isFalse();
     assertThat(GrammarFunctions.Predicate.not("a") == GrammarFunctions.Predicate.next("a")).isFalse();
 
-    assertThat(and("one", GrammarFunctions.Predicate.not("two"), "three"), match("one three"));
-    assertThat(and("one", GrammarFunctions.Predicate.not("two"), "two"),
+    assertThat((Matcher) and("one", GrammarFunctions.Predicate.not("two"), "three"), match("one three"));
+    assertThat((Matcher) and("one", GrammarFunctions.Predicate.not("two"), "two"),
         org.hamcrest.Matchers.not(match("one two")));
 
-    assertThat(and(opt(GrammarFunctions.Predicate.not(and("one", "two")), "one"), opt(and("one", "two"))),
+    assertThat((Matcher) and(opt(GrammarFunctions.Predicate.not(and("one", "two")), "one"), opt(and("one", "two"))),
         match("one"));
-    assertThat(and(opt(GrammarFunctions.Predicate.not(and("one", "two")), "one"), opt(and("one", "two"))),
+    assertThat((Matcher) and(opt(GrammarFunctions.Predicate.not(and("one", "two")), "one"), opt(and("one", "two"))),
         match("one two"));
   }
 
@@ -151,8 +151,8 @@ public class GrammarFunctionsTest {
     assertThat(next("a", "a") == next("a", "b")).isFalse();
     assertThat(next("a", "a") == and("a", "a")).isFalse();
 
-    assertThat(and(next("one"), "one"), match("one"));
-    assertThat(and(next("two"), "one"), not(match("one")));
+    assertThat((Matcher) and(next("one"), "one"), match("one"));
+    assertThat((Matcher) and(next("two"), "one"), not(match("one")));
   }
 
   @Test

@@ -76,18 +76,18 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy {
   public RuleDefinition is(Object... matchers) {
     throwExceptionIfRuleAlreadyDefined("The rule '" + ruleMatcher + "' has already been defined somewhere in the grammar.");
     throwExceptionIfEmptyListOfMatchers(matchers);
-    setMatcher(GrammarFunctions.Standard.and(matchers));
+    setMatcher((Matcher) GrammarFunctions.Standard.and(matchers));
     return this;
   }
 
   public RuleDefinition override(Object... matchers) {
     throwExceptionIfEmptyListOfMatchers(matchers);
-    setMatcher(GrammarFunctions.Standard.and(matchers));
+    setMatcher((Matcher) GrammarFunctions.Standard.and(matchers));
     return this;
   }
 
   public void mock() {
-    setMatcher(Standard.firstOf(ruleMatcher.getName(), ruleMatcher.getName().toUpperCase()));
+    setMatcher((Matcher) Standard.firstOf(ruleMatcher.getName(), ruleMatcher.getName().toUpperCase()));
   }
 
   public void skip() {
