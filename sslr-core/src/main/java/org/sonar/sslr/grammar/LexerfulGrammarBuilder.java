@@ -354,21 +354,23 @@ public class LexerfulGrammarBuilder {
   @VisibleForTesting
   ParsingExpression convertToExpression(Object e) {
     Preconditions.checkNotNull(e, "Parsing expression can't be null");
+    final ParsingExpression result;
     if (e instanceof ParsingExpression) {
-      return (ParsingExpression) e;
+      result = (ParsingExpression) e;
     } else if (e instanceof String) {
-      return new TokenValueExpression((String) e);
+      result = new TokenValueExpression((String) e);
     } else if (e instanceof TokenType) {
-      return new TokenTypeExpression((TokenType) e);
+      result = new TokenTypeExpression((TokenType) e);
     } else if (e instanceof Class) {
-      return new TokenTypeClassExpression((Class) e);
+      result = new TokenTypeClassExpression((Class) e);
     } else if (e instanceof GrammarRuleKey) {
       GrammarRuleKey ruleKey = (GrammarRuleKey) e;
       rule(ruleKey);
-      return definitions.get(ruleKey).getRule();
+      result = definitions.get(ruleKey).getRule();
     } else {
       throw new IllegalArgumentException("Incorrect type of parsing expression: " + e.getClass().toString());
     }
+    return result;
   }
 
   private ParsingExpression[] convertToExpressions(List<Object> expressions) {

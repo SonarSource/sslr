@@ -316,19 +316,21 @@ public class LexerlessGrammarBuilder {
   @VisibleForTesting
   ParsingExpression convertToExpression(Object e) {
     Preconditions.checkNotNull(e, "Parsing expression can't be null");
+    final ParsingExpression result;
     if (e instanceof ParsingExpression) {
-      return (ParsingExpression) e;
+      result = (ParsingExpression) e;
     } else if (e instanceof String) {
-      return new StringExpression((String) e);
+      result = new StringExpression((String) e);
     } else if (e instanceof Character) {
-      return new StringExpression(((Character) e).toString());
+      result = new StringExpression(((Character) e).toString());
     } else if (e instanceof GrammarRuleKey) {
       GrammarRuleKey ruleKey = (GrammarRuleKey) e;
       rule(ruleKey);
-      return definitions.get(ruleKey);
+      result = definitions.get(ruleKey);
     } else {
       throw new IllegalArgumentException("Incorrect type of parsing expression: " + e.getClass().toString());
     }
+    return result;
   }
 
   private ParsingExpression[] convertToExpressions(List<Object> expressions) {

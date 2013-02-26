@@ -47,8 +47,6 @@ import java.lang.reflect.Field;
 @Deprecated
 public final class GrammarFunctions {
 
-  private static final String AT_LEAST_ONE_MATCHER_MESSAGE = "You must define at least one matcher.";
-
   /**
    * @deprecated in 1.19
    */
@@ -134,9 +132,8 @@ public final class GrammarFunctions {
     }
 
     public static Matcher firstOf(Object... elements) {
-      if (elements == null || elements.length == 0) {
-        throw new IllegalArgumentException(AT_LEAST_ONE_MATCHER_MESSAGE);
-      } else if (elements.length == 1) {
+      checkSize(elements);
+      if (elements.length == 1) {
         return convertToMatcher(elements[0]);
       } else {
         return new FirstOfExpression(convertToMatchers(elements));
@@ -153,9 +150,8 @@ public final class GrammarFunctions {
      * </pre>
      */
     public static Matcher and(Object... elements) {
-      if (elements == null || elements.length == 0) {
-        throw new IllegalArgumentException(AT_LEAST_ONE_MATCHER_MESSAGE);
-      } else if (elements.length == 1) {
+      checkSize(elements);
+      if (elements.length == 1) {
         return convertToMatcher(elements[0]);
       } else {
         return new SequenceExpression(convertToMatchers(elements));
@@ -216,11 +212,8 @@ public final class GrammarFunctions {
      * Match the next token if and only if its type belongs to the provided list
      */
     public static Matcher isOneOfThem(TokenType... types) {
-      if (types == null || types.length == 0) {
-        throw new IllegalArgumentException(AT_LEAST_ONE_MATCHER_MESSAGE);
-      } else {
-        return new TokenTypesExpression(types);
-      }
+      checkSize(types);
+      return new TokenTypesExpression(types);
     }
 
     /**
@@ -336,10 +329,7 @@ public final class GrammarFunctions {
   }
 
   protected static ParsingExpression[] convertToMatchers(Object[] objects) {
-    if (objects == null || objects.length == 0) {
-      throw new IllegalArgumentException(AT_LEAST_ONE_MATCHER_MESSAGE);
-    }
-
+    checkSize(objects);
     ParsingExpression[] matchers = new ParsingExpression[objects.length];
     for (int i = 0; i < matchers.length; i++) {
       matchers[i] = (ParsingExpression) convertToMatcher(objects[i]);
@@ -364,6 +354,12 @@ public final class GrammarFunctions {
       throw new IllegalArgumentException("The matcher object can't be anything else than a Rule, Matcher, String, TokenType or Class. Object = " + object);
     }
     return matcher;
+  }
+
+  private static void checkSize(Object[] objects) {
+    if (objects == null || objects.length == 0) {
+      throw new IllegalArgumentException("You must define at least one matcher.");
+    }
   }
 
 }

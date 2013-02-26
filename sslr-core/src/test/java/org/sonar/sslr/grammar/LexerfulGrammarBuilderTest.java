@@ -92,13 +92,6 @@ public class LexerfulGrammarBuilderTest {
   }
 
   @Test
-  public void test_incorrect_type_of_parsing_expression() {
-    thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("Incorrect type of parsing expression: class java.lang.Object");
-    LexerfulGrammarBuilder.create().convertToExpression(new Object());
-  }
-
-  @Test
   public void test_undefined_root_rule() {
     LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
@@ -129,6 +122,40 @@ public class LexerfulGrammarBuilderTest {
     thrown.expectMessage("The rule '" + ruleKey2 + "' hasn't beed defined.");
     // thrown.expectMessage("The rule " + ruleKey2 + " has been used somewhere in grammar, but not defined.");
     b.build();
+  }
+
+  @Test
+  public void test_incorrect_type_of_parsing_expression() {
+    thrown.expect(IllegalArgumentException.class);
+    thrown.expectMessage("Incorrect type of parsing expression: class java.lang.Object");
+    LexerfulGrammarBuilder.create().convertToExpression(new Object());
+  }
+
+  @Test
+  public void test_null_parsing_expression() {
+    thrown.expect(NullPointerException.class);
+    thrown.expectMessage("Parsing expression can't be null");
+    LexerfulGrammarBuilder.create().convertToExpression(null);
+  }
+
+  @Test
+  public void should_fail_to_redefine() {
+    LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    b.rule(ruleKey).is("foo");
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.");
+    b.rule(ruleKey).is("foo");
+  }
+
+  @Test
+  public void should_fail_to_redefine2() {
+    LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    b.rule(ruleKey).is("foo", "bar");
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.");
+    b.rule(ruleKey).is("foo");
   }
 
 }
