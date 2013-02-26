@@ -35,19 +35,19 @@ public class RuleMatcherTest {
 
   @Before
   public void init() {
-    javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
+    javaClassDefinition = new RuleDefinition("JavaClassDefinition");
     opMatcher = opt("implements", WORD, o2n(",", WORD));
     javaClassDefinition.is("public", or("class", "interface"), opMatcher);
   }
 
   @Test
   public void getName() {
-    assertThat(javaClassDefinition.getRule().getName()).isEqualTo("JavaClassDefinition");
+    assertThat(javaClassDefinition.getName()).isEqualTo("JavaClassDefinition");
   }
 
   @Test
   public void getToString() {
-    assertThat(javaClassDefinition.getRule().getName()).isEqualTo("JavaClassDefinition");
+    assertThat(javaClassDefinition.getName()).isEqualTo("JavaClassDefinition");
   }
 
 }

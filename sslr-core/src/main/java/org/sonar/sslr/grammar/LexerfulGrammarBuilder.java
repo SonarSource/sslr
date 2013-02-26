@@ -81,7 +81,7 @@ public class LexerfulGrammarBuilder {
   public GrammarRuleBuilder rule(GrammarRuleKey ruleKey) {
     RuleDefinition rule = definitions.get(ruleKey);
     if (rule == null) {
-      rule = RuleDefinition.newRuleBuilder(ruleKey.toString(), ruleKey);
+      rule = new RuleDefinition(ruleKey);
       definitions.put(ruleKey, rule);
     }
     return new RuleBuilder(this, rule);
@@ -104,8 +104,8 @@ public class LexerfulGrammarBuilder {
    */
   public Grammar build() {
     for (RuleDefinition rule : definitions.values()) {
-      if (rule.getRule().getExpression() == null) {
-        throw new GrammarException("The rule '" + rule.getRule().getRuleKey() + "' hasn't beed defined.");
+      if (rule.getExpression() == null) {
+        throw new GrammarException("The rule '" + rule.getRuleKey() + "' hasn't beed defined.");
       }
     }
     return new LexerfulGrammarAdapter(definitions, rootRuleKey);
@@ -366,7 +366,7 @@ public class LexerfulGrammarBuilder {
     } else if (e instanceof GrammarRuleKey) {
       GrammarRuleKey ruleKey = (GrammarRuleKey) e;
       rule(ruleKey);
-      result = definitions.get(ruleKey).getRule();
+      result = definitions.get(ruleKey);
     } else {
       throw new IllegalArgumentException("Incorrect type of parsing expression: " + e.getClass().toString());
     }
@@ -393,10 +393,10 @@ public class LexerfulGrammarBuilder {
     }
 
     public GrammarRuleBuilder is(Object e) {
-      if (delegate.getRule().getExpression() != null) {
-        throw new GrammarException("The rule '" + delegate.getRule().getRuleKey() + "' has already been defined somewhere in the grammar.");
+      if (delegate.getExpression() != null) {
+        throw new GrammarException("The rule '" + delegate.getRuleKey() + "' has already been defined somewhere in the grammar.");
       }
-      delegate.getRule().setExpression(b.convertToExpression(e));
+      delegate.setExpression(b.convertToExpression(e));
       return this;
     }
 
@@ -405,7 +405,7 @@ public class LexerfulGrammarBuilder {
     }
 
     public GrammarRuleBuilder override(Object e) {
-      delegate.getRule().setExpression(b.convertToExpression(e));
+      delegate.setExpression(b.convertToExpression(e));
       return this;
     }
 

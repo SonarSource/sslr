@@ -22,7 +22,7 @@ package org.sonar.sslr.internal.matchers;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.matcher.RuleMatcher;
+import com.sonar.sslr.impl.matcher.RuleDefinition;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class LexerfulAstCreator {
   }
 
   private AstNode visit(ParseNode node) {
-    if (node.getMatcher() instanceof RuleMatcher) {
+    if (node.getMatcher() instanceof RuleDefinition) {
       return visitNonTerminal(node);
     } else {
       return visitTerminal(node);
@@ -57,10 +57,10 @@ public class LexerfulAstCreator {
       }
     }
 
-    RuleMatcher ruleMatcher = (RuleMatcher) node.getMatcher();
+    RuleDefinition ruleMatcher = (RuleDefinition) node.getMatcher();
 
     Token token = tokens.get(node.getStartIndex());
-    AstNode astNode = new AstNode(ruleMatcher.getRuleKey(), ruleMatcher.getName(), token);
+    AstNode astNode = new AstNode(ruleMatcher, ruleMatcher.getName(), token);
     for (AstNode child : astNodes) {
       astNode.addChild(child);
     }

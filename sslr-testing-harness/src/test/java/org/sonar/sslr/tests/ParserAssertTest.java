@@ -46,7 +46,7 @@ public class ParserAssertTest {
         .withChannel(new RegexpChannel(GenericTokenType.IDENTIFIER, "[a-z]++"))
         .withChannel(new BlackHoleChannel(" "))
         .build();
-    rule = RuleDefinition.newRuleBuilder("ruleName").is("foo");
+    rule = new RuleDefinition("ruleName").is("foo");
     Grammar grammar = new Grammar() {
       @Override
       public Rule getRootRule() {

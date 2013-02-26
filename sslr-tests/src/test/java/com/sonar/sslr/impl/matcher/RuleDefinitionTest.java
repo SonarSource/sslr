@@ -21,7 +21,6 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -36,7 +35,7 @@ public class RuleDefinitionTest {
 
   @Test
   public void testEmptyIs() {
-    RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
+    RuleDefinition javaClassDefinition = new RuleDefinition("JavaClassDefinition");
     thrown.expect(IllegalStateException.class);
     thrown.expectMessage("The rule 'JavaClassDefinition' should at least contains one matcher.");
     javaClassDefinition.is();
@@ -44,49 +43,16 @@ public class RuleDefinitionTest {
 
   @Test
   public void testMoreThanOneDefinitionForASigleRuleWithIs() {
-    RuleDefinition javaClassDefinition = RuleDefinition.newRuleBuilder("JavaClassDefinition");
+    RuleDefinition javaClassDefinition = new RuleDefinition("JavaClassDefinition");
     javaClassDefinition.is("option1");
     thrown.expect(IllegalStateException.class);
     thrown.expectMessage("The rule 'JavaClassDefinition' has already been defined somewhere in the grammar.");
     javaClassDefinition.is("option2");
   }
 
-  @Ignore("MatcherTreePrinter is broken")
-  @Test
-  public void testIs() {
-    RuleDefinition myRule = RuleDefinition.newRuleBuilder("MyRule");
-    myRule.is("option1");
-    assertThat(MatcherTreePrinter.print(myRule.getRule())).isEqualTo("MyRule.is(\"option1\")");
-  }
-
-  @Ignore("MatcherTreePrinter is broken")
-  @Test
-  public void testOverride() {
-    RuleDefinition myRule = RuleDefinition.newRuleBuilder("MyRule");
-    myRule.is("option1");
-    assertThat(MatcherTreePrinter.print(myRule.getRule())).isEqualTo("MyRule.is(\"option1\")");
-    myRule.override("option2");
-    assertThat(MatcherTreePrinter.print(myRule.getRule())).isEqualTo("MyRule.is(\"option2\")");
-    thrown.expect(IllegalStateException.class);
-    thrown.expectMessage("The rule 'MyRule' has already been defined somewhere in the grammar.");
-    myRule.is("option3");
-  }
-
-  @Ignore("MatcherTreePrinter is broken")
-  @Test
-  public void testMock() {
-    RuleDefinition myRule = RuleDefinition.newRuleBuilder("foo");
-    myRule.is("foo");
-    myRule.mock();
-    assertThat(MatcherTreePrinter.print(myRule.getRule())).isEqualTo("foo.is(or(\"foo\", \"FOO\"))");
-    thrown.expect(IllegalStateException.class);
-    thrown.expectMessage("The rule 'foo' has already been defined somewhere in the grammar.");
-    myRule.is("bar");
-  }
-
   @Test
   public void testSkipFromAst() {
-    RuleDefinition ruleBuilder = RuleDefinition.newRuleBuilder("MyRule");
+    RuleDefinition ruleBuilder = new RuleDefinition("MyRule");
     assertThat(ruleBuilder.hasToBeSkippedFromAst(null)).isFalse();
 
     ruleBuilder.skip();
@@ -95,7 +61,7 @@ public class RuleDefinitionTest {
 
   @Test
   public void testSkipFromAstIf() {
-    RuleDefinition ruleBuilder = RuleDefinition.newRuleBuilder("MyRule");
+    RuleDefinition ruleBuilder = new RuleDefinition("MyRule");
     ruleBuilder.skipIfOneChild();
 
     AstNode parent = new AstNode(mockToken(GenericTokenType.IDENTIFIER, "parent"));

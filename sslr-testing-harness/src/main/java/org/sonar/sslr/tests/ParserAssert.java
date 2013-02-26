@@ -93,7 +93,7 @@ public class ParserAssert extends GenericAssert<ParserAssert, Parser> {
   }
 
   private String getRuleName() {
-    return actual.getRootRule().getRule().getName();
+    return actual.getRootRule().getName();
   }
 
 }

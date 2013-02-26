@@ -128,7 +128,7 @@ public class Parser<G extends Grammar> {
     parsingState.extendedStackTrace = extendedStackTrace;
 
     // TODO can be compiled only once
-    CompiledGrammar g = MutableGrammarCompiler.compile((CompilableGrammarRule) rootRule.getRule());
+    CompiledGrammar g = MutableGrammarCompiler.compile((CompilableGrammarRule) rootRule);
     AstNode astNode = LexerfulAstCreator.create(Machine.parse(tokens, g, g.getRootRuleKey()), tokens);
     // Correct index in ParsingState:
     parsingState.lexerIndex = astNode.getToIndex();

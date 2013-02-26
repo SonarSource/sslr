@@ -19,85 +19,12 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.AstNodeType;
-import org.sonar.sslr.grammar.GrammarRuleKey;
-import org.sonar.sslr.internal.vm.CompilableGrammarRule;
-import org.sonar.sslr.internal.vm.CompilationHandler;
-import org.sonar.sslr.internal.vm.Instruction;
-import org.sonar.sslr.internal.vm.ParsingExpression;
-import org.sonar.sslr.internal.vm.RuleRefExpression;
-
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ *
+ * @deprecated in 1.19
  */
-public final class RuleMatcher implements CompilableGrammarRule, ParsingExpression {
-
-  private final GrammarRuleKey ruleKey;
-  private final String name;
-  private boolean recoveryRule = false;
-  private AstNodeType astNodeType;
-  private ParsingExpression expression;
-
-  public RuleMatcher(GrammarRuleKey ruleKey, String name) {
-    this.ruleKey = ruleKey;
-    this.name = name;
-  }
-
-  /**
-   * Should not be used directly, companion of {@link GrammarFunctions#enableMemoizationOfMatchesForAllRules(com.sonar.sslr.api.Grammar)}
-   * and {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#buildWithMemoizationOfMatchesForAllRules()}.
-   *
-   * @since 1.14
-   */
-  public void memoizeMatches() {
-    if (expression == null) {
-      // skip empty rule
-      return;
-    }
-    expression = (ParsingExpression) GrammarFunctions.Advanced.memoizeMatches(expression);
-  }
-
-  public void setNodeType(AstNodeType astNodeType) {
-    this.astNodeType = astNodeType;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void recoveryRule() {
-    recoveryRule = true;
-  }
-
-  @Override
-  public String toString() {
-    return getName();
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    return this == obj;
-  }
-
-  @Override
-  public int hashCode() {
-    return getName().hashCode();
-  }
-
-  public Instruction[] compile(CompilationHandler compiler) {
-    return compiler.compile(new RuleRefExpression(getRuleKey()));
-  }
-
-  public GrammarRuleKey getRuleKey() {
-    return ruleKey;
-  }
-
-  public ParsingExpression getExpression() {
-    return expression;
-  }
-
-  public void setExpression(ParsingExpression expression) {
-    this.expression = expression;
-  }
+@Deprecated
+public final class RuleMatcher {
 
 }

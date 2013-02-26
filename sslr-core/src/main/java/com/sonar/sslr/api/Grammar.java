@@ -91,7 +91,7 @@ public abstract class Grammar {
         if (this instanceof LexerlessGrammar) {
           rule = new MutableParsingRule(ruleName);
         } else {
-          rule = RuleDefinition.newRuleBuilder(ruleName);
+          rule = new RuleDefinition(ruleName);
         }
 
         ruleField.setAccessible(true);

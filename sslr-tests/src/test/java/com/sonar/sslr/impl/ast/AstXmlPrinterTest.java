@@ -32,7 +32,7 @@ public class AstXmlPrinterTest {
 
   @Test
   public void testPrintRuleAstNode() {
-    AstNode root = new AstNode(RuleDefinition.newRuleBuilder("expr"), "expr", mockTokenBuilder(new WordTokenType(), "word").setLine(34)
+    AstNode root = new AstNode(new RuleDefinition("expr"), "expr", mockTokenBuilder(new WordTokenType(), "word").setLine(34)
         .setColumn(12).build());
 
     assertThat(AstXmlPrinter.print(root)).isEqualTo("<expr tokenValue=\"word\" tokenLine=\"34\" tokenColumn=\"12\"/>");
@@ -46,7 +46,7 @@ public class AstXmlPrinterTest {
 
   @Test
   public void testPrintFullAstNode() {
-    AstNode astNode = new AstNode(RuleDefinition.newRuleBuilder("expr"), "expr", null);
+    AstNode astNode = new AstNode(new RuleDefinition("expr"), "expr", null);
     astNode.addChild(new AstNode(mockToken(new WordTokenType(), "x")));
     astNode.addChild(new AstNode(mockToken(new WordTokenType(), "=")));
     astNode.addChild(new AstNode(mockToken(new WordTokenType(), "4")));

@@ -28,76 +28,55 @@ import com.sonar.sslr.impl.ast.NeverSkipFromAst;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 import com.sonar.sslr.impl.matcher.GrammarFunctions.Standard;
 import org.sonar.sslr.grammar.GrammarRuleKey;
+import org.sonar.sslr.internal.vm.CompilableGrammarRule;
+import org.sonar.sslr.internal.vm.CompilationHandler;
+import org.sonar.sslr.internal.vm.Instruction;
 import org.sonar.sslr.internal.vm.ParsingExpression;
+import org.sonar.sslr.internal.vm.RuleRefExpression;
 
-public final class RuleDefinition implements Rule, AstNodeSkippingPolicy, GrammarRuleKey {
+/**
+ * <p>This class is not intended to be instantiated or subclassed by clients.</p>
+ */
+public final class RuleDefinition implements Rule, AstNodeSkippingPolicy, GrammarRuleKey, CompilableGrammarRule, ParsingExpression {
 
-  private final AstNodeType astNodeType;
-
-  private RuleMatcher ruleMatcher;
+  private final GrammarRuleKey ruleKey;
+  private final String name;
+  private ParsingExpression expression;
   private AstNodeType astNodeSkippingPolicy = new NeverSkipFromAst();
 
-  private RuleDefinition() {
-    astNodeType = this;
+  public RuleDefinition(String name) {
+    this.ruleKey = this;
+    this.name = name;
   }
 
-  private RuleDefinition(AstNodeType astNodeType) {
-    this.astNodeType = astNodeType;
+  public RuleDefinition(GrammarRuleKey ruleKey) {
+    this.ruleKey = ruleKey;
+    this.name = ruleKey.toString();
   }
 
-  public static RuleDefinition newRuleBuilder(String ruleName) {
-    RuleDefinition ruleBuilder = new RuleDefinition();
-    ruleBuilder.setRuleMatcher(new RuleMatcher(ruleBuilder, ruleName));
-    return ruleBuilder;
-  }
-
-  /**
-   * @since 1.18
-   */
-  public static RuleDefinition newRuleBuilder(String ruleName, GrammarRuleKey ruleKey) {
-    RuleDefinition ruleBuilder = new RuleDefinition(ruleKey);
-    ruleBuilder.setRuleMatcher(new RuleMatcher(ruleKey, ruleName));
-    return ruleBuilder;
-  }
-
-  public static RuleDefinition newRuleBuilder(RuleMatcher ruleMatcher) {
-    RuleDefinition ruleBuilder = new RuleDefinition();
-    ruleBuilder.setRuleMatcher(ruleMatcher);
-    return ruleBuilder;
-  }
-
-  public RuleMatcher getRule() {
-    return ruleMatcher;
-  }
-
-  public void setRuleMatcher(RuleMatcher ruleMatcher) {
-    this.ruleMatcher = ruleMatcher;
-    ruleMatcher.setNodeType(this);
+  public String getName() {
+    return name;
   }
 
   public RuleDefinition is(Object... matchers) {
-    throwExceptionIfRuleAlreadyDefined("The rule '" + ruleMatcher + "' has already been defined somewhere in the grammar.");
+    throwExceptionIfRuleAlreadyDefined("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.");
     throwExceptionIfEmptyListOfMatchers(matchers);
-    setMatcher(GrammarFunctions.Standard.and(matchers));
+    setExpression((ParsingExpression) GrammarFunctions.Standard.and(matchers));
     return this;
   }
 
   public RuleDefinition override(Object... matchers) {
     throwExceptionIfEmptyListOfMatchers(matchers);
-    setMatcher(GrammarFunctions.Standard.and(matchers));
+    setExpression((ParsingExpression) GrammarFunctions.Standard.and(matchers));
     return this;
   }
 
   public void mock() {
-    setMatcher(Standard.firstOf(ruleMatcher.getName(), ruleMatcher.getName().toUpperCase()));
+    setExpression((ParsingExpression) Standard.firstOf(getName(), getName().toUpperCase()));
   }
 
   public void skip() {
     astNodeSkippingPolicy = new AlwaysSkipFromAst();
-  }
-
-  protected void setMatcher(Matcher matcher) {
-    ruleMatcher.setExpression((ParsingExpression) matcher);
   }
 
   public void skipIf(AstNodeSkippingPolicy astNodeSkipPolicy) {
@@ -109,24 +88,19 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy, Gramma
   }
 
   private void throwExceptionIfRuleAlreadyDefined(String exceptionMessage) {
-    if (ruleMatcher.getExpression() != null) {
+    if (getExpression() != null) {
       throw new IllegalStateException(exceptionMessage);
     }
   }
 
   private void throwExceptionIfEmptyListOfMatchers(Object[] matchers) {
     if (matchers.length == 0) {
-      throw new IllegalStateException("The rule '" + ruleMatcher + "' should at least contains one matcher.");
+      throw new IllegalStateException("The rule '" + ruleKey + "' should at least contains one matcher.");
     }
   }
 
   public void recoveryRule() {
-    ruleMatcher.recoveryRule();
-  }
-
-  @Override
-  public String toString() {
-    return ruleMatcher.getName();
+    // TODO
   }
 
   public boolean hasToBeSkippedFromAst(AstNode node) {
@@ -140,7 +114,28 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy, Gramma
    * @since 1.18
    */
   public AstNodeType getRealAstNodeType() {
-    return astNodeType;
+    return ruleKey;
+  }
+
+  public GrammarRuleKey getRuleKey() {
+    return ruleKey;
+  }
+
+  public ParsingExpression getExpression() {
+    return expression;
+  }
+
+  public void setExpression(ParsingExpression expression) {
+    this.expression = expression;
+  }
+
+  public Instruction[] compile(CompilationHandler compiler) {
+    return compiler.compile(new RuleRefExpression(getRuleKey()));
+  }
+
+  @Override
+  public String toString() {
+    return getName();
   }
 
 }

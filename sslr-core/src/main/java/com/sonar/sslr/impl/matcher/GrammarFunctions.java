@@ -39,8 +39,6 @@ import org.sonar.sslr.internal.vm.lexerful.TokenTypesExpression;
 import org.sonar.sslr.internal.vm.lexerful.TokenValueExpression;
 import org.sonar.sslr.internal.vm.lexerful.TokensBridgeExpression;
 
-import java.lang.reflect.Field;
-
 /**
  * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder} instead.
  */
@@ -316,16 +314,7 @@ public final class GrammarFunctions {
    * @since 1.14
    */
   public static void enableMemoizationOfMatchesForAllRules(Grammar grammar) {
-    for (Field ruleField : Grammar.getAllRuleFields(grammar.getClass())) {
-      String ruleName = ruleField.getName();
-      RuleDefinition rule;
-      try {
-        rule = (RuleDefinition) ruleField.get(grammar);
-      } catch (IllegalAccessException e) {
-        throw new IllegalStateException("Unable to enable memoization for rule '" + ruleName + "'", e);
-      }
-      rule.getRule().memoizeMatches();
-    }
+    // TODO
   }
 
   protected static ParsingExpression[] convertToMatchers(Object[] objects) {
@@ -345,7 +334,7 @@ public final class GrammarFunctions {
       TokenType tokenType = (TokenType) object;
       matcher = new TokenTypeExpression(tokenType);
     } else if (object instanceof RuleDefinition) {
-      matcher = ((RuleDefinition) object).getRule();
+      matcher = ((RuleDefinition) object);
     } else if (object instanceof Class) {
       matcher = new TokenTypeClassExpression((Class) object);
     } else if (object instanceof Matcher) {
