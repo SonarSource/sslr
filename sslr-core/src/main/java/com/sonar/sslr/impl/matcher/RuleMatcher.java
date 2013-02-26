@@ -30,7 +30,7 @@ import org.sonar.sslr.internal.vm.RuleRefExpression;
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
-public final class RuleMatcher extends MemoizedMatcher implements CompilableGrammarRule, ParsingExpression {
+public final class RuleMatcher implements CompilableGrammarRule, ParsingExpression {
 
   private final GrammarRuleKey ruleKey;
   private final String name;
