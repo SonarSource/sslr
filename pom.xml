@@ -231,6 +231,7 @@
         </plugins>
       </build>
     </profile>
+    <!--
     <profile>
       <id>coverage-per-test</id>
       <dependencies>
@@ -258,6 +259,7 @@
         </plugins>
       </build>
     </profile>
+    -->
   </profiles>
 
 </project>
