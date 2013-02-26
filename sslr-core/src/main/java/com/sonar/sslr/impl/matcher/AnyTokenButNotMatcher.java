@@ -19,8 +19,6 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.ParsingState;
 import org.sonar.sslr.internal.vm.CompilationHandler;
 import org.sonar.sslr.internal.vm.Instruction;
 import org.sonar.sslr.internal.vm.NextNotExpression;
@@ -30,28 +28,10 @@ import org.sonar.sslr.internal.vm.lexerful.AnyTokenExpression;
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
-public final class AnyTokenButNotMatcher extends StandardMatcher {
+public final class AnyTokenButNotMatcher extends Matcher {
 
   public AnyTokenButNotMatcher(Matcher matcher) {
     super(matcher);
-  }
-
-  @Override
-  protected MatchResult doMatch(ParsingState parsingState) {
-    enterEvent(parsingState);
-    if (!parsingState.hasNextToken()) {
-      exitWithoutMatchEvent(parsingState);
-      return MatchResult.fail(parsingState, parsingState.lexerIndex);
-    }
-    int startingIndex = parsingState.lexerIndex;
-    if (super.children[0].doMatch(parsingState).isMatching()) {
-      exitWithoutMatchEvent(parsingState);
-      return MatchResult.fail(parsingState, startingIndex);
-    } else {
-      AstNode astNode = new AstNode(parsingState.popToken(this));
-      exitWithMatchEvent(parsingState, astNode);
-      return MatchResult.succeed(parsingState, startingIndex, astNode);
-    }
   }
 
   @Override

@@ -19,10 +19,7 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
-import com.sonar.sslr.api.RecognitionException;
-import com.sonar.sslr.impl.ParsingState;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.vm.CompilableGrammarRule;
 import org.sonar.sslr.internal.vm.CompilationHandler;
@@ -33,7 +30,7 @@ import org.sonar.sslr.internal.vm.RuleRefExpression;
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
-public final class RuleMatcher extends StandardMatcher implements CompilableGrammarRule {
+public final class RuleMatcher extends MemoizedMatcher implements CompilableGrammarRule {
 
   private final GrammarRuleKey ruleKey;
   private final String name;
@@ -43,40 +40,6 @@ public final class RuleMatcher extends StandardMatcher implements CompilableGram
   public RuleMatcher(GrammarRuleKey ruleKey, String name) {
     this.ruleKey = ruleKey;
     this.name = name;
-  }
-
-  @Override
-  protected MatchResult doMatch(ParsingState parsingState) {
-    enterEvent(parsingState);
-
-    int startIndex = parsingState.lexerIndex;
-    if (super.children.length == 0) {
-      throw new IllegalStateException("The rule '" + name + "' hasn't beed defined.");
-    }
-
-    MatchResult matchResult = super.children[0].doMatch(parsingState);
-
-    if (recoveryRule) {
-      RecognitionException recognitionException = parsingState.extendedStackTrace == null ?
-          new RecognitionException(parsingState, false) : new RecognitionException(parsingState.extendedStackTrace, false);
-
-      if (matchResult.isMatching()) {
-        parsingState.lexerIndex = startIndex;
-        parsingState.notifyListeners(recognitionException);
-        parsingState.lexerIndex = matchResult.getToIndex();
-      }
-    }
-
-    if (!matchResult.isMatching()) {
-      exitWithoutMatchEvent(parsingState);
-      return MatchResult.fail(parsingState, startIndex);
-    }
-
-    AstNode childNode = matchResult.getAstNode();
-    AstNode astNode = new AstNode(astNodeType, name, parsingState.peekTokenIfExists(startIndex, super.children[0]));
-    astNode.addChild(childNode);
-    exitWithMatchEvent(parsingState, astNode);
-    return MatchResult.succeed(parsingState, startIndex, astNode);
   }
 
   /**

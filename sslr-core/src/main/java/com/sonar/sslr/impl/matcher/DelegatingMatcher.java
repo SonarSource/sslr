@@ -19,14 +19,12 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.impl.ParsingState;
-
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  *
  * @since 1.14
  */
-public abstract class DelegatingMatcher extends StandardMatcher {
+public abstract class DelegatingMatcher extends Matcher {
 
   public DelegatingMatcher(Matcher delegate) {
     super(delegate);
@@ -34,11 +32,6 @@ public abstract class DelegatingMatcher extends StandardMatcher {
 
   protected Matcher getDelegate() {
     return this.children[0];
-  }
-
-  @Override
-  protected MatchResult doMatch(ParsingState parsingState) {
-    return getDelegate().doMatch(parsingState);
   }
 
   @Override

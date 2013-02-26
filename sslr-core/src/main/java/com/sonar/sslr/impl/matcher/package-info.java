@@ -22,3 +22,4 @@
 package com.sonar.sslr.impl.matcher;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+

@@ -19,9 +19,6 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.RecognitionException;
-import com.sonar.sslr.api.RecognitionExceptionListener;
-import com.sonar.sslr.impl.ParsingState;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,11 +26,7 @@ import static com.sonar.sslr.impl.MockTokenType.WORD;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
 import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.or;
-import static com.sonar.sslr.test.lexer.TokenUtils.lex;
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 public class RuleMatcherTest {
 
@@ -55,60 +48,6 @@ public class RuleMatcherTest {
   @Test
   public void getToString() {
     assertThat(javaClassDefinition.getRule().getName()).isEqualTo("JavaClassDefinition");
-  }
-
-  @Test
-  public void testNoRecoveryMode() {
-    RuleDefinition ruleBuilder = RuleDefinition.newRuleBuilder("MyRule");
-    ruleBuilder.is("one");
-
-    RuleMatcher rule = ruleBuilder.getRule();
-
-    ParsingState parsingState = new ParsingState(lex("one"));
-    RecognitionExceptionListener listener = mock(RecognitionExceptionListener.class);
-    parsingState.addListeners(listener);
-    rule.match(parsingState);
-
-    verify(listener, times(0)).processRecognitionException(org.mockito.Mockito.any(RecognitionException.class));
-  }
-
-  @Test
-  public void testRecoveryModeListenerInvoked() {
-    RuleDefinition ruleBuilder = RuleDefinition.newRuleBuilder("MyRule");
-    ruleBuilder.is("one");
-
-    RuleMatcher rule = ruleBuilder.getRule();
-    rule.recoveryRule();
-
-    ParsingState parsingState = new ParsingState(lex("one"));
-    RecognitionExceptionListener listener = mock(RecognitionExceptionListener.class);
-    parsingState.addListeners(listener);
-    rule.match(parsingState);
-
-    verify(listener, times(1)).processRecognitionException(org.mockito.Mockito.any(RecognitionException.class));
-  }
-
-  @Test
-  public void testRecoveryModeAtErrorLexerIndex() {
-    RuleDefinition ruleBuilder = RuleDefinition.newRuleBuilder("MyRule");
-    ruleBuilder.is("one");
-
-    RuleMatcher rule = ruleBuilder.getRule();
-    rule.recoveryRule();
-
-    final ParsingState parsingState = new ParsingState(lex("one"));
-
-    RecognitionExceptionListener listener = new RecognitionExceptionListener() {
-
-      public void processRecognitionException(RecognitionException e) {
-        assertThat(parsingState.lexerIndex).isEqualTo(0);
-      }
-
-    };
-    parsingState.addListeners(listener);
-    rule.match(parsingState);
-
-    assertThat(parsingState.lexerIndex).isEqualTo(1);
   }
 
 }

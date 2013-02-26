@@ -19,12 +19,7 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.google.common.base.Objects;
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
-import com.sonar.sslr.impl.BacktrackingEvent;
-import com.sonar.sslr.impl.ParsingState;
 import org.sonar.sslr.internal.vm.CompilationHandler;
 import org.sonar.sslr.internal.vm.Instruction;
 import org.sonar.sslr.internal.vm.lexerful.TokensBridgeExpression;
@@ -32,7 +27,7 @@ import org.sonar.sslr.internal.vm.lexerful.TokensBridgeExpression;
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
-public final class BridgeMatcher extends MemoizedMatcher {
+public final class BridgeMatcher extends Matcher {
 
   private final TokenType from;
   private final TokenType to;
@@ -45,49 +40,8 @@ public final class BridgeMatcher extends MemoizedMatcher {
   }
 
   @Override
-  protected AstNode matchWorker(ParsingState parsingState) {
-    Token token = parsingState.peekToken(parsingState.lexerIndex, this);
-    if (from == token.getType()) {
-      AstNode astNode = new AstNode(null, "bridgeMatcher", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
-      int bridgeLevel = 0;
-      do {
-        token = parsingState.popToken(this);
-        astNode.addChild(new AstNode(token));
-
-        if (token.getType() == from) {
-          bridgeLevel++;
-        }
-        if (token.getType() == to) {
-          bridgeLevel--;
-        }
-      } while (token.getType() != to || bridgeLevel != 0);
-      return astNode;
-    } else {
-      throw BacktrackingEvent.create();
-    }
-  }
-
-  @Override
   public String toString() {
     return "bridge(" + from.getName() + ", " + to.getName() + ")";
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(getClass(), from, to);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null || obj.getClass() != getClass()) {
-      return false;
-    }
-    BridgeMatcher other = (BridgeMatcher) obj;
-    return Objects.equal(this.from, other.from)
-      && Objects.equal(this.to, other.to);
   }
 
   public Instruction[] compile(CompilationHandler compiler) {

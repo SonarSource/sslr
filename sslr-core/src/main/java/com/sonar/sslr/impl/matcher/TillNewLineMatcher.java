@@ -19,36 +19,17 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.ParsingState;
 import org.sonar.sslr.internal.vm.CompilationHandler;
 import org.sonar.sslr.internal.vm.Instruction;
 import org.sonar.sslr.internal.vm.lexerful.TillNewLineExpression;
 
-import static com.sonar.sslr.api.GenericTokenType.EOF;
-
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
-public final class TillNewLineMatcher extends StatelessMatcher {
+public final class TillNewLineMatcher extends Matcher {
 
   public TillNewLineMatcher() {
     super();
-  }
-
-  @Override
-  protected AstNode matchWorker(ParsingState parsingState) {
-    int currentLine = parsingState.lexerIndex - 1 >= 0 ? parsingState.readToken(parsingState.lexerIndex - 1).getLine() : 1;
-
-    AstNode astNode = new AstNode(null, "tillNewLine", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
-    for (int i = parsingState.lexerIndex; i < parsingState.lexerSize && parsingState.peekToken(this).getLine() == currentLine
-      && parsingState.peekToken(this).getType() != EOF; i++) {
-      Token token = parsingState.popToken(this);
-      astNode.addChild(new AstNode(token));
-    }
-
-    return astNode;
   }
 
   @Override

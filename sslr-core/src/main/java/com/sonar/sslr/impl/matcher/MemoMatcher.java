@@ -19,9 +19,6 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.events.ParsingEventListener;
 import org.sonar.sslr.internal.vm.CompilationHandler;
 import org.sonar.sslr.internal.vm.Instruction;
 
@@ -36,55 +33,6 @@ public class MemoMatcher extends DelegatingMatcher {
 
   public MemoMatcher(Matcher delegate) {
     super(delegate);
-  }
-
-  @Override
-  protected MatchResult doMatch(ParsingState parsingState) {
-    AstNode memoizedAstNode = parsingState.getMemoizedAst(this);
-    if (memoizedAstNode != null) {
-      enterEvent(getDelegate(), parsingState);
-      parsingState.lexerIndex = memoizedAstNode.getToIndex();
-      exitWithMatchEvent(getDelegate(), parsingState, memoizedAstNode);
-      return MatchResult.succeed(parsingState, memoizedAstNode.getFromIndex(), memoizedAstNode);
-    } else {
-      MatchResult matchResult = super.doMatch(parsingState);
-      if (matchResult.getAstNode() != null) {
-        parsingState.memoizeAst(this, matchResult.getAstNode());
-      }
-      return matchResult;
-    }
-  }
-
-  private static void enterEvent(Matcher matcher, ParsingState parsingState) {
-    if (parsingState.parsingEventListeners != null) {
-      if (matcher instanceof RuleMatcher) {
-        /* Fire the enterRule event */
-        for (ParsingEventListener listener : parsingState.parsingEventListeners) {
-          listener.enterRule((RuleMatcher) matcher, parsingState);
-        }
-      } else {
-        /* Fire the enterMatcher event */
-        for (ParsingEventListener listener : parsingState.parsingEventListeners) {
-          listener.enterMatcher(matcher, parsingState);
-        }
-      }
-    }
-  }
-
-  private static void exitWithMatchEvent(Matcher matcher, ParsingState parsingState, AstNode astNode) {
-    if (parsingState.parsingEventListeners != null) {
-      if (matcher instanceof RuleMatcher) {
-        /* Fire the exitWithMatchRule event */
-        for (ParsingEventListener listener : parsingState.parsingEventListeners) {
-          listener.exitWithMatchRule((RuleMatcher) matcher, parsingState, astNode);
-        }
-      } else {
-        /* Fire the exitWithMatchMatcher event */
-        for (ParsingEventListener listener : parsingState.parsingEventListeners) {
-          listener.exitWithMatchMatcher(matcher, parsingState, astNode);
-        }
-      }
-    }
   }
 
   public Instruction[] compile(CompilationHandler compiler) {

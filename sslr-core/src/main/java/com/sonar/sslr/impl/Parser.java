@@ -28,7 +28,6 @@ import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import com.sonar.sslr.impl.events.ParsingEventListener;
-import com.sonar.sslr.impl.matcher.GrammarFunctions;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.sonar.sslr.internal.matchers.LexerfulAstCreator;
 import org.sonar.sslr.internal.vm.CompilableGrammarRule;
@@ -83,7 +82,6 @@ public class Parser<G extends Grammar> {
       this.parsingEventListeners = builder.parsingEventListeners.toArray(new ParsingEventListener[builder.parsingEventListeners.size()]);
     }
 
-    GrammarFunctions.resetCache();
     this.rootRule = (RuleDefinition) this.grammar.getRootRule();
   }
 

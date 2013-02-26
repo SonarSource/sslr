@@ -19,8 +19,6 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.ParsingState;
 import org.sonar.sslr.internal.vm.CompilationHandler;
 import org.sonar.sslr.internal.vm.FirstOfExpression;
 import org.sonar.sslr.internal.vm.Instruction;
@@ -30,26 +28,10 @@ import org.sonar.sslr.internal.vm.Instruction;
  *
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
-public final class OrMatcher extends StandardMatcher {
+public final class OrMatcher extends Matcher {
 
   public OrMatcher(Matcher... matchers) {
     super(matchers);
-  }
-
-  @Override
-  protected MatchResult doMatch(ParsingState parsingState) {
-    enterEvent(parsingState);
-    int startingIndex = parsingState.lexerIndex;
-    for (Matcher matcher : super.children) {
-      MatchResult matchResult = matcher.doMatch(parsingState);
-      if (matchResult.isMatching()) {
-        AstNode astNode = matchResult.getAstNode();
-        exitWithMatchEvent(parsingState, astNode);
-        return MatchResult.succeed(parsingState, startingIndex, astNode);
-      }
-    }
-    exitWithoutMatchEvent(parsingState);
-    return MatchResult.fail(parsingState, startingIndex);
   }
 
   @Override

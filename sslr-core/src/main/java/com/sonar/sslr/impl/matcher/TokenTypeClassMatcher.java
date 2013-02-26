@@ -19,8 +19,6 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.google.common.base.Objects;
-import com.sonar.sslr.api.Token;
 import org.sonar.sslr.internal.vm.CompilationHandler;
 import org.sonar.sslr.internal.vm.Instruction;
 import org.sonar.sslr.internal.vm.lexerful.TokenTypeClassExpression;
@@ -38,30 +36,8 @@ public final class TokenTypeClassMatcher extends TokenMatcher {
   }
 
   @Override
-  protected boolean isExpectedToken(Token token) {
-    return typeClass == token.getType().getClass();
-  }
-
-  @Override
   public String toString() {
     return typeClass.getCanonicalName() + ".class";
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(getClass(), typeClass);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null || obj.getClass() != getClass()) {
-      return false;
-    }
-    TokenTypeClassMatcher other = (TokenTypeClassMatcher) obj;
-    return Objects.equal(this.typeClass, other.typeClass);
   }
 
   public Instruction[] compile(CompilationHandler compiler) {

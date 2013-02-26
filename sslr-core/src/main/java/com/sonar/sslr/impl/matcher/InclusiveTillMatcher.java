@@ -19,9 +19,6 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.ParsingState;
 import org.sonar.sslr.internal.vm.CompilationHandler;
 import org.sonar.sslr.internal.vm.Instruction;
 import org.sonar.sslr.internal.vm.NextNotExpression;
@@ -32,23 +29,10 @@ import org.sonar.sslr.internal.vm.lexerful.AnyTokenExpression;
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
-public final class InclusiveTillMatcher extends StatelessMatcher {
+public final class InclusiveTillMatcher extends Matcher {
 
   public InclusiveTillMatcher(Matcher matcher) {
     super(matcher);
-  }
-
-  @Override
-  protected AstNode matchWorker(ParsingState parsingState) {
-    AstNode astNode = new AstNode(null, "till", parsingState.peekTokenIfExists(parsingState.lexerIndex, this));
-
-    while (!super.children[0].isMatching(parsingState)) {
-      Token token = parsingState.popToken(this);
-      astNode.addChild(new AstNode(token));
-    }
-
-    astNode.addChild(super.children[0].match(parsingState));
-    return astNode;
   }
 
   @Override

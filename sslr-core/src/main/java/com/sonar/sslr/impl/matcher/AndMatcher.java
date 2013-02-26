@@ -19,8 +19,6 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.ParsingState;
 import org.sonar.sslr.internal.vm.CompilationHandler;
 import org.sonar.sslr.internal.vm.Instruction;
 import org.sonar.sslr.internal.vm.SequenceExpression;
@@ -30,34 +28,10 @@ import org.sonar.sslr.internal.vm.SequenceExpression;
  *
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
-public final class AndMatcher extends StandardMatcher {
+public final class AndMatcher extends Matcher {
 
   public AndMatcher(Matcher... matchers) {
     super(matchers);
-  }
-
-  @Override
-  protected MatchResult doMatch(ParsingState parsingState) {
-    enterEvent(parsingState);
-    AstNode[] childNodes = new AstNode[super.children.length];
-    int startIndex = parsingState.lexerIndex;
-
-    for (int i = 0; i < super.children.length; i++) {
-      MatchResult matchResult = super.children[i].doMatch(parsingState);
-      if (matchResult.isMatching()) {
-        childNodes[i] = matchResult.getAstNode();
-      } else {
-        exitWithoutMatchEvent(parsingState);
-        return MatchResult.fail(parsingState, startIndex);
-      }
-    }
-
-    AstNode astNode = new AstNode(null, "AllMatcher", parsingState.peekTokenIfExists(startIndex, this));
-    for (AstNode childNode : childNodes) {
-      astNode.addChild(childNode);
-    }
-    exitWithMatchEvent(parsingState, astNode);
-    return MatchResult.succeed(parsingState, startIndex, astNode);
   }
 
   @Override

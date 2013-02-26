@@ -19,10 +19,6 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.BacktrackingEvent;
-import com.sonar.sslr.impl.ParsingState;
-
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
@@ -31,45 +27,5 @@ public abstract class MemoizedMatcher extends Matcher {
   public MemoizedMatcher(Matcher... children) {
     super(children);
   }
-
-  @Override
-  public AstNode match(ParsingState parsingState) {
-    enterEvent(parsingState);
-
-    /* Memoizer lookup */
-    AstNode memoizedAstNode = getMemoizedAst(parsingState);
-    if (memoizedAstNode != null) {
-      parsingState.lexerIndex = memoizedAstNode.getToIndex();
-      exitWithMatchEvent(parsingState, memoizedAstNode);
-      return memoizedAstNode;
-    }
-
-    int startingIndex = parsingState.lexerIndex;
-
-    try {
-      AstNode astNode = matchWorker(parsingState);
-      if (astNode != null) {
-        astNode.setFromIndex(startingIndex);
-        astNode.setToIndex(parsingState.lexerIndex);
-        memoizeAst(parsingState, astNode);
-      }
-
-      exitWithMatchEvent(parsingState, astNode);
-      return astNode;
-    } catch (BacktrackingEvent re) {
-      exitWithoutMatchEvent(parsingState);
-      throw re;
-    }
-  }
-
-  protected void memoizeAst(ParsingState parsingState, AstNode astNode) {
-    parsingState.memoizeAst(this, astNode);
-  }
-
-  protected AstNode getMemoizedAst(ParsingState parsingState) {
-    return parsingState.getMemoizedAst(this);
-  }
-
-  protected abstract AstNode matchWorker(ParsingState parsingState);
 
 }

@@ -19,7 +19,6 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.Token;
 import org.sonar.sslr.internal.vm.CompilationHandler;
 import org.sonar.sslr.internal.vm.Instruction;
 import org.sonar.sslr.internal.vm.NothingExpression;
@@ -39,34 +38,8 @@ public final class BooleanMatcher extends TokenMatcher {
   }
 
   @Override
-  protected boolean isExpectedToken(Token token) {
-    return internalState;
-  }
-
-  @Override
   public String toString() {
     return internalState ? "isTrue()" : "isFalse()";
-  }
-
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + getClass().hashCode();
-    result = prime * result + (internalState ? 1231 : 1237);
-    return result;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null || obj.getClass() != getClass()) {
-      return false;
-    }
-    BooleanMatcher other = (BooleanMatcher) obj;
-    return this.internalState == other.internalState;
   }
 
   public Instruction[] compile(CompilationHandler compiler) {

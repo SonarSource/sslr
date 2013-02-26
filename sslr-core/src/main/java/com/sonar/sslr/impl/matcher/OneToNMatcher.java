@@ -19,8 +19,6 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.ParsingState;
 import org.sonar.sslr.internal.vm.CompilationHandler;
 import org.sonar.sslr.internal.vm.Instruction;
 import org.sonar.sslr.internal.vm.OneOrMoreExpression;
@@ -31,33 +29,10 @@ import org.sonar.sslr.internal.vm.OneOrMoreExpression;
  *
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
-public final class OneToNMatcher extends StandardMatcher {
+public final class OneToNMatcher extends Matcher {
 
   public OneToNMatcher(Matcher matcher) {
     super(matcher);
-  }
-
-  @Override
-  protected MatchResult doMatch(ParsingState parsingState) {
-    enterEvent(parsingState);
-    MatchResult matchResult;
-    int startIndex = parsingState.lexerIndex;
-    AstNode astNode = null;
-    do {
-      matchResult = super.children[0].doMatch(parsingState);
-      if (matchResult.isMatching()) {
-        if (astNode == null) {
-          astNode = new AstNode(null, "oneToNMatcher", parsingState.peekTokenIfExists(startIndex, this));
-        }
-        astNode.addChild(matchResult.getAstNode());
-      }
-    } while (matchResult.isMatching());
-    if (astNode == null) {
-      exitWithoutMatchEvent(parsingState);
-      return MatchResult.fail(parsingState, startIndex);
-    }
-    exitWithMatchEvent(parsingState, astNode);
-    return MatchResult.succeed(parsingState, startIndex, astNode);
   }
 
   @Override

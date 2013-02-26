@@ -19,7 +19,6 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.impl.ParsingState;
 import org.sonar.sslr.internal.vm.CompilationHandler;
 import org.sonar.sslr.internal.vm.Instruction;
 import org.sonar.sslr.internal.vm.NextExpression;
@@ -30,26 +29,10 @@ import org.sonar.sslr.internal.vm.NextExpression;
  *
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
-public final class NextMatcher extends StandardMatcher {
+public final class NextMatcher extends Matcher {
 
   public NextMatcher(Matcher matcher) {
     super(matcher);
-  }
-
-  @Override
-  protected MatchResult doMatch(ParsingState parsingState) {
-    // Note that memoization not used here, because anyway doesn't work for match failures and for null AstNodes
-    enterEvent(parsingState);
-    int startingIndex = parsingState.lexerIndex;
-    MatchResult matchResult = super.children[0].doMatch(parsingState);
-    if (matchResult.isMatching()) {
-      parsingState.lexerIndex = startingIndex;
-      exitWithMatchEvent(parsingState, null);
-      return MatchResult.succeed(parsingState, startingIndex, null);
-    } else {
-      exitWithoutMatchEvent(parsingState);
-      return MatchResult.fail(parsingState, startingIndex);
-    }
   }
 
   @Override

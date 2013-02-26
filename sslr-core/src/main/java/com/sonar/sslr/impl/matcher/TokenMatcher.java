@@ -19,37 +19,15 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.ParsingState;
-
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
-public abstract class TokenMatcher extends StandardMatcher {
+public abstract class TokenMatcher extends Matcher {
 
   private final boolean hasToBeSkippedFromAst;
 
   public TokenMatcher(boolean hasToBeSkippedFromAst) {
     this.hasToBeSkippedFromAst = hasToBeSkippedFromAst;
   }
-
-  @Override
-  protected final MatchResult doMatch(ParsingState parsingState) {
-    enterEvent(parsingState);
-    int startingIndex = parsingState.lexerIndex;
-    Token token = parsingState.peekTokenIfExists(parsingState.lexerIndex, this);
-    if (token != null && isExpectedToken(token)) {
-      token = parsingState.popToken(this);
-      AstNode astNode = hasToBeSkippedFromAst ? null : new AstNode(token);
-      exitWithMatchEvent(parsingState, astNode);
-      return MatchResult.succeed(parsingState, startingIndex, astNode);
-    } else {
-      exitWithoutMatchEvent(parsingState);
-      return MatchResult.fail(parsingState, startingIndex);
-    }
-  }
-
-  protected abstract boolean isExpectedToken(Token token);
 
 }

@@ -19,9 +19,6 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.ParsingState;
 import org.sonar.sslr.internal.vm.CompilationHandler;
 import org.sonar.sslr.internal.vm.Instruction;
 import org.sonar.sslr.internal.vm.SequenceExpression;
@@ -30,35 +27,10 @@ import org.sonar.sslr.internal.vm.lexerful.AdjacentExpression;
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
-public final class AdjacentMatcher extends StandardMatcher {
+public final class AdjacentMatcher extends Matcher {
 
   public AdjacentMatcher(Matcher matcher) {
     super(matcher);
-  }
-
-  @Override
-  protected MatchResult doMatch(ParsingState parsingState) {
-    enterEvent(parsingState);
-    int index = parsingState.lexerIndex;
-    Token nextToken = parsingState.peekTokenIfExists(index, this);
-    Token previousToken = parsingState.readToken(index - 1);
-    if (nextToken != null
-        && nextToken.getColumn() <= previousToken.getColumn() + previousToken.getValue().length()
-        && nextToken.getLine() == previousToken.getLine()) {
-      MatchResult matchResult = super.children[0].doMatch(parsingState);
-      if (matchResult.isMatching()) {
-        AstNode node = new AstNode(null, "adjacentMatcher", nextToken);
-        node.addChild(matchResult.getAstNode());
-        exitWithMatchEvent(parsingState, node);
-        return MatchResult.succeed(parsingState, index, node);
-      } else {
-        exitWithoutMatchEvent(parsingState);
-        return MatchResult.fail(parsingState, index);
-      }
-    } else {
-      exitWithoutMatchEvent(parsingState);
-      return MatchResult.fail(parsingState, index);
-    }
   }
 
   @Override

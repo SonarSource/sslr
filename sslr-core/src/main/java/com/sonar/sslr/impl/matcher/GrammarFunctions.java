@@ -23,8 +23,6 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.TokenType;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder} instead.
@@ -34,25 +32,11 @@ public final class GrammarFunctions {
 
   private static final String AT_LEAST_ONE_MATCHER_MESSAGE = "You must define at least one matcher.";
 
-  private static final ThreadLocal<Map<Matcher, Matcher>> MATCHER_CACHE = new ThreadLocal<Map<Matcher, Matcher>>() {
-
-    @Override
-    protected Map<Matcher, Matcher> initialValue() {
-      return new HashMap<Matcher, Matcher>();
-    }
-  };
-
-  private static Matcher getCachedMatcher(Matcher matcher) {
-    if (MATCHER_CACHE.get().containsKey(matcher)) {
-      return MATCHER_CACHE.get().get(matcher);
-    }
-
-    MATCHER_CACHE.get().put(matcher, matcher);
-    return matcher;
-  }
-
+  /**
+   * @deprecated in 1.19
+   */
+  @Deprecated
   public static void resetCache() {
-    MATCHER_CACHE.set(new HashMap<Matcher, Matcher>());
   }
 
   private GrammarFunctions() {
@@ -92,7 +76,7 @@ public final class GrammarFunctions {
      * </pre>
      */
     public static Matcher one2n(Object... elements) {
-      return getCachedMatcher(new OneToNMatcher(and(elements)));
+      return new OneToNMatcher(and(elements));
     }
 
     /**
@@ -107,7 +91,7 @@ public final class GrammarFunctions {
      * </pre>
      */
     public static Matcher opt(Object... elements) {
-      return getCachedMatcher(new OptMatcher(and(elements)));
+      return new OptMatcher(and(elements));
     }
 
     /**
@@ -138,7 +122,7 @@ public final class GrammarFunctions {
       } else if (elements.length == 1) {
         return convertToMatcher(elements[0]);
       } else {
-        return getCachedMatcher(new OrMatcher(convertToMatchers(elements)));
+        return new OrMatcher(convertToMatchers(elements));
       }
     }
 
@@ -157,7 +141,7 @@ public final class GrammarFunctions {
       } else if (elements.length == 1) {
         return convertToMatcher(elements[0]);
       } else {
-        return getCachedMatcher(new AndMatcher(convertToMatchers(elements)));
+        return new AndMatcher(convertToMatchers(elements));
       }
     }
 
@@ -172,14 +156,14 @@ public final class GrammarFunctions {
      * Syntactic predicate to check that the next tokens don't match an element.
      */
     public static Matcher not(Object element) {
-      return getCachedMatcher(new NotMatcher(convertToMatcher(element)));
+      return new NotMatcher(convertToMatcher(element));
     }
 
     /**
      * Syntactic predicate to check that the next tokens match some elements.
      */
     public static Matcher next(Object... elements) {
-      return getCachedMatcher(new NextMatcher(Standard.and(elements)));
+      return new NextMatcher(Standard.and(elements));
     }
 
   }
@@ -201,14 +185,14 @@ public final class GrammarFunctions {
      * Without any space between previous_element and element
      */
     public static Matcher adjacent(Object element) {
-      return getCachedMatcher(new AdjacentMatcher(convertToMatcher(element)));
+      return new AdjacentMatcher(convertToMatcher(element));
     }
 
     /**
      * Consume the next token if and only if the element doesn't match
      */
     public static Matcher anyTokenButNot(Object element) {
-      return getCachedMatcher(new AnyTokenButNotMatcher(convertToMatcher(element)));
+      return new AnyTokenButNotMatcher(convertToMatcher(element));
     }
 
     /**
@@ -218,7 +202,7 @@ public final class GrammarFunctions {
       if (types == null || types.length == 0) {
         throw new IllegalArgumentException(AT_LEAST_ONE_MATCHER_MESSAGE);
       } else {
-        return getCachedMatcher(new TokenTypesMatcher(types));
+        return new TokenTypesMatcher(types);
       }
     }
 
@@ -232,35 +216,35 @@ public final class GrammarFunctions {
      * </pre>
      */
     public static Matcher bridge(TokenType from, TokenType to) {
-      return getCachedMatcher(new BridgeMatcher(from, to));
+      return new BridgeMatcher(from, to);
     }
 
     /**
      * For unit test only Consume the next token whatever it is
      */
     public static Matcher isTrue() {
-      return getCachedMatcher(new BooleanMatcher(true));
+      return new BooleanMatcher(true);
     }
 
     /**
      * For unit test only Not consume the next token whatever it is
      */
     public static Matcher isFalse() {
-      return getCachedMatcher(new BooleanMatcher(false));
+      return new BooleanMatcher(false);
     }
 
     /**
      * Consume the next token whatever it is
      */
     public static Matcher anyToken() {
-      return getCachedMatcher(new AnyTokenMatcher());
+      return new AnyTokenMatcher();
     }
 
     /**
      * Consume every following token which are on the current line
      */
     public static Matcher tillNewLine() {
-      return getCachedMatcher(new TillNewLineMatcher());
+      return new TillNewLineMatcher();
     }
 
     /**
@@ -273,7 +257,7 @@ public final class GrammarFunctions {
      * </pre>
      */
     public static Matcher till(Object element) {
-      return getCachedMatcher(new InclusiveTillMatcher(convertToMatcher(element)));
+      return new InclusiveTillMatcher(convertToMatcher(element));
     }
 
     /**
@@ -289,7 +273,7 @@ public final class GrammarFunctions {
      * </pre>
      */
     public static Matcher exclusiveTill(Object... elements) {
-      return getCachedMatcher(new ExclusiveTillMatcher(convertToMatchers(elements)));
+      return new ExclusiveTillMatcher(convertToMatchers(elements));
     }
 
     /**
@@ -297,7 +281,7 @@ public final class GrammarFunctions {
      */
     public static Matcher memoizeMatches(Object element) {
       Matcher matcher = convertToMatcher(element);
-      return matcher instanceof MemoMatcher ? matcher : getCachedMatcher(new MemoMatcher(matcher));
+      return matcher instanceof MemoMatcher ? matcher : new MemoMatcher(matcher);
     }
 
   }
@@ -340,14 +324,14 @@ public final class GrammarFunctions {
   protected static Matcher convertToMatcher(Object object) {
     final Matcher matcher;
     if (object instanceof String) {
-      matcher = getCachedMatcher(new TokenValueMatcher((String) object, false));
+      matcher = new TokenValueMatcher((String) object, false);
     } else if (object instanceof TokenType) {
       TokenType tokenType = (TokenType) object;
-      matcher = getCachedMatcher(new TokenTypeMatcher(tokenType, tokenType.hasToBeSkippedFromAst(null)));
+      matcher = new TokenTypeMatcher(tokenType, tokenType.hasToBeSkippedFromAst(null));
     } else if (object instanceof RuleDefinition) {
       matcher = ((RuleDefinition) object).getRule();
     } else if (object instanceof Class) {
-      matcher = getCachedMatcher(new TokenTypeClassMatcher((Class) object));
+      matcher = new TokenTypeClassMatcher((Class) object);
     } else if (object instanceof Matcher) {
       matcher = (Matcher) object;
     } else {
