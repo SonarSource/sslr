@@ -122,25 +122,22 @@ public class Parser<G extends Grammar> {
   public AstNode parse(List<Token> tokens) {
     fireBeginParseEvent();
 
-    try {
-      parsingState = new ParsingState(tokens);
-      parsingState.addListeners(listeners.toArray(new RecognitionExceptionListener[listeners.size()]));
-      parsingState.parsingEventListeners = parsingEventListeners;
-      parsingState.extendedStackTrace = extendedStackTrace;
+    parsingState = new ParsingState(tokens);
+    parsingState.addListeners(listeners.toArray(new RecognitionExceptionListener[listeners.size()]));
+    parsingState.parsingEventListeners = parsingEventListeners;
+    parsingState.extendedStackTrace = extendedStackTrace;
 
-      // TODO can be compiled only once
-      CompiledGrammar g = MutableGrammarCompiler.compile((CompilableGrammarRule) rootRule.getRule());
-      AstNode astNode = LexerfulAstCreator.create(Machine.parse(tokens, g, g.getRootRuleKey()), tokens);
-      // Correct index in ParsingState:
-      parsingState.lexerIndex = astNode.getToIndex();
-      // Unwrap AstNodeType for root node:
-      astNode.hasToBeSkippedFromAst();
-      return astNode;
-    } catch (BacktrackingEvent e) {
-      throw extendedStackTrace == null ? new RecognitionException(parsingState, true) : new RecognitionException(extendedStackTrace, true);
-    } finally {
-      fireEndParseEvent();
-    }
+    // TODO can be compiled only once
+    CompiledGrammar g = MutableGrammarCompiler.compile((CompilableGrammarRule) rootRule.getRule());
+    AstNode astNode = LexerfulAstCreator.create(Machine.parse(tokens, g, g.getRootRuleKey()), tokens);
+    // Correct index in ParsingState:
+    parsingState.lexerIndex = astNode.getToIndex();
+    // Unwrap AstNodeType for root node:
+    astNode.hasToBeSkippedFromAst();
+
+    fireEndParseEvent();
+
+    return astNode;
   }
 
   private void fireBeginLexEvent() {

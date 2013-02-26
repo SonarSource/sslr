@@ -20,18 +20,19 @@
 package com.sonar.sslr.impl;
 
 import com.google.common.collect.Sets;
-import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.RecognitionExceptionListener;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import com.sonar.sslr.impl.events.ParsingEventListener;
-import com.sonar.sslr.impl.matcher.Matcher;
-import com.sonar.sslr.impl.matcher.MemoizedMatcher;
 
 import java.util.List;
 import java.util.Set;
 
+/**
+ * @deprecated in 1.19
+ */
+@Deprecated
 public class ParsingState {
 
   private final Token[] tokens;
@@ -40,73 +41,17 @@ public class ParsingState {
   public final int lexerSize;
 
   private int outpostMatcherTokenIndex = -1;
-  private Matcher outpostMatcher;
-
   private final Set<RecognitionExceptionListener> listeners = Sets.newHashSet();
-  private final AstNode[] astNodeMemoization;
-  private final MemoizedMatcher[] astMatcherMemoization;
   public ParsingEventListener[] parsingEventListeners;
   public ExtendedStackTrace extendedStackTrace;
 
   public ParsingState(List<Token> tokens) {
     this.tokens = tokens.toArray(new Token[tokens.size()]);
     lexerSize = this.tokens.length;
-    astNodeMemoization = new AstNode[lexerSize + 1];
-    astMatcherMemoization = new MemoizedMatcher[lexerSize + 1];
-  }
-
-  /**
-   * @throws BacktrackingEvent when there is no next token
-   */
-  public final Token popToken(Matcher matcher) {
-    if (lexerIndex >= outpostMatcherTokenIndex) {
-      outpostMatcherTokenIndex = lexerIndex;
-      outpostMatcher = matcher;
-    }
-    if (lexerIndex >= lexerSize) {
-      throw BacktrackingEvent.create();
-    }
-    return tokens[lexerIndex++];
   }
 
   public final boolean hasNextToken() {
     return lexerIndex < lexerSize;
-  }
-
-  /**
-   * @throws BacktrackingEvent when there is no next token
-   */
-  public final Token peekToken(int index, Matcher matcher) {
-    if (index > outpostMatcherTokenIndex) {
-      outpostMatcherTokenIndex = index;
-      outpostMatcher = matcher;
-    }
-    if (index >= lexerSize) {
-      throw BacktrackingEvent.create();
-    }
-    return tokens[index];
-  }
-
-  /**
-   * @return null, when there is no next token
-   */
-  public final Token peekTokenIfExists(int index, Matcher matcher) {
-    // Note that implementation almost the same as in peekToken
-    if (index > outpostMatcherTokenIndex) {
-      outpostMatcherTokenIndex = index;
-      outpostMatcher = matcher;
-    }
-    if (index >= lexerSize) {
-      return null;
-    }
-    return tokens[index];
-  }
-
-  /**
-   * @throws BacktrackingEvent when there is no next token
-   */
-  public final Token peekToken(Matcher matcher) {
-    return peekToken(lexerIndex, matcher);
   }
 
   public Token readToken(int tokenIndex) {
@@ -116,53 +61,11 @@ public class ParsingState {
     return tokens[tokenIndex];
   }
 
-  public final Matcher getOutpostMatcher() {
-    return outpostMatcher;
-  }
-
   public Token getOutpostMatcherToken() {
     if (outpostMatcherTokenIndex >= lexerSize || outpostMatcherTokenIndex == -1) {
       return null;
     }
     return tokens[outpostMatcherTokenIndex];
-  }
-
-  public final int getOutpostMatcherTokenIndex() {
-    return outpostMatcherTokenIndex;
-  }
-
-  public final int getOutpostMatcherTokenLine() {
-    if (outpostMatcherTokenIndex < lexerSize) {
-      return tokens[outpostMatcherTokenIndex].getLine();
-    }
-    return tokens[lexerSize - 1].getLine();
-  }
-
-  public void memoizeAst(MemoizedMatcher matcher, AstNode astNode) {
-    astNode.setToIndex(lexerIndex);
-    astNodeMemoization[astNode.getFromIndex()] = astNode;
-    astMatcherMemoization[astNode.getFromIndex()] = matcher;
-  }
-
-  public final void deleteMemoizedAstAfter(int index) {
-    for (int i = index; i <= outpostMatcherTokenIndex; i++) {
-      astMatcherMemoization[i] = null;
-      astNodeMemoization[i] = null;
-    }
-  }
-
-  public boolean hasMemoizedAst(MemoizedMatcher matcher) {
-    if (astMatcherMemoization[lexerIndex] == matcher) {
-      return true;
-    }
-    return false;
-  }
-
-  public AstNode getMemoizedAst(MemoizedMatcher matcher) {
-    if (hasMemoizedAst(matcher)) {
-      return astNodeMemoization[lexerIndex];
-    }
-    return null;
   }
 
   public final void addListeners(RecognitionExceptionListener... listeners) {
