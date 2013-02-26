@@ -27,12 +27,11 @@ import org.sonar.sslr.internal.vm.lexerful.TokenTypeExpression;
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
-public final class TokenTypeMatcher extends TokenMatcher {
+public final class TokenTypeMatcher implements Matcher {
 
   private final TokenType type;
 
-  public TokenTypeMatcher(TokenType type, boolean hasToBeSkippedFromAst) {
-    super(hasToBeSkippedFromAst);
+  public TokenTypeMatcher(TokenType type) {
     this.type = type;
   }
 

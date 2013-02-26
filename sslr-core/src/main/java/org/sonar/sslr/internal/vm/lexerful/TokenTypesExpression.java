@@ -27,9 +27,6 @@ import org.sonar.sslr.internal.vm.NativeExpression;
 
 import java.util.Set;
 
-/**
- * TODO Replacement for {@link com.sonar.sslr.impl.matcher.TokenTypesMatcher}
- */
 public class TokenTypesExpression extends NativeExpression implements Matcher {
 
   private final Set<TokenType> types;

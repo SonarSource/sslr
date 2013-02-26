@@ -21,6 +21,23 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.TokenType;
+import org.sonar.sslr.internal.vm.FirstOfExpression;
+import org.sonar.sslr.internal.vm.NextExpression;
+import org.sonar.sslr.internal.vm.NextNotExpression;
+import org.sonar.sslr.internal.vm.NothingExpression;
+import org.sonar.sslr.internal.vm.OneOrMoreExpression;
+import org.sonar.sslr.internal.vm.OptionalExpression;
+import org.sonar.sslr.internal.vm.ParsingExpression;
+import org.sonar.sslr.internal.vm.SequenceExpression;
+import org.sonar.sslr.internal.vm.ZeroOrMoreExpression;
+import org.sonar.sslr.internal.vm.lexerful.AdjacentExpression;
+import org.sonar.sslr.internal.vm.lexerful.AnyTokenExpression;
+import org.sonar.sslr.internal.vm.lexerful.TillNewLineExpression;
+import org.sonar.sslr.internal.vm.lexerful.TokenTypeClassExpression;
+import org.sonar.sslr.internal.vm.lexerful.TokenTypeExpression;
+import org.sonar.sslr.internal.vm.lexerful.TokenTypesExpression;
+import org.sonar.sslr.internal.vm.lexerful.TokenValueExpression;
+import org.sonar.sslr.internal.vm.lexerful.TokensBridgeExpression;
 
 import java.lang.reflect.Field;
 
@@ -61,7 +78,7 @@ public final class GrammarFunctions {
      * </pre>
      */
     public static Matcher o2n(Object... objects) {
-      return opt(one2n(objects));
+      return new ZeroOrMoreExpression((ParsingExpression) and(objects));
     }
 
     /**
@@ -76,7 +93,7 @@ public final class GrammarFunctions {
      * </pre>
      */
     public static Matcher one2n(Object... elements) {
-      return new OneToNMatcher(and(elements));
+      return new OneOrMoreExpression((ParsingExpression) and(elements));
     }
 
     /**
@@ -91,7 +108,7 @@ public final class GrammarFunctions {
      * </pre>
      */
     public static Matcher opt(Object... elements) {
-      return new OptMatcher(and(elements));
+      return new OptionalExpression((ParsingExpression) and(elements));
     }
 
     /**
@@ -122,7 +139,7 @@ public final class GrammarFunctions {
       } else if (elements.length == 1) {
         return convertToMatcher(elements[0]);
       } else {
-        return new OrMatcher(convertToMatchers(elements));
+        return new FirstOfExpression(convertToMatchers(elements));
       }
     }
 
@@ -141,7 +158,7 @@ public final class GrammarFunctions {
       } else if (elements.length == 1) {
         return convertToMatcher(elements[0]);
       } else {
-        return new AndMatcher(convertToMatchers(elements));
+        return new SequenceExpression(convertToMatchers(elements));
       }
     }
 
@@ -156,14 +173,14 @@ public final class GrammarFunctions {
      * Syntactic predicate to check that the next tokens don't match an element.
      */
     public static Matcher not(Object element) {
-      return new NotMatcher(convertToMatcher(element));
+      return new NextNotExpression((ParsingExpression) convertToMatcher(element));
     }
 
     /**
      * Syntactic predicate to check that the next tokens match some elements.
      */
     public static Matcher next(Object... elements) {
-      return new NextMatcher(Standard.and(elements));
+      return new NextExpression((ParsingExpression) Standard.and(elements));
     }
 
   }
@@ -185,14 +202,14 @@ public final class GrammarFunctions {
      * Without any space between previous_element and element
      */
     public static Matcher adjacent(Object element) {
-      return new AdjacentMatcher(convertToMatcher(element));
+      return new SequenceExpression(AdjacentExpression.INSTANCE, (ParsingExpression) convertToMatcher(element));
     }
 
     /**
      * Consume the next token if and only if the element doesn't match
      */
     public static Matcher anyTokenButNot(Object element) {
-      return new AnyTokenButNotMatcher(convertToMatcher(element));
+      return new SequenceExpression(new NextNotExpression((ParsingExpression) convertToMatcher(element)), AnyTokenExpression.INSTANCE);
     }
 
     /**
@@ -202,7 +219,7 @@ public final class GrammarFunctions {
       if (types == null || types.length == 0) {
         throw new IllegalArgumentException(AT_LEAST_ONE_MATCHER_MESSAGE);
       } else {
-        return new TokenTypesMatcher(types);
+        return new TokenTypesExpression(types);
       }
     }
 
@@ -216,35 +233,35 @@ public final class GrammarFunctions {
      * </pre>
      */
     public static Matcher bridge(TokenType from, TokenType to) {
-      return new BridgeMatcher(from, to);
+      return new TokensBridgeExpression(from, to);
     }
 
     /**
      * For unit test only Consume the next token whatever it is
      */
     public static Matcher isTrue() {
-      return new BooleanMatcher(true);
+      return anyToken();
     }
 
     /**
      * For unit test only Not consume the next token whatever it is
      */
     public static Matcher isFalse() {
-      return new BooleanMatcher(false);
+      return NothingExpression.INSTANCE;
     }
 
     /**
      * Consume the next token whatever it is
      */
     public static Matcher anyToken() {
-      return new AnyTokenMatcher();
+      return AnyTokenExpression.INSTANCE;
     }
 
     /**
      * Consume every following token which are on the current line
      */
     public static Matcher tillNewLine() {
-      return new TillNewLineMatcher();
+      return TillNewLineExpression.INSTANCE;
     }
 
     /**
@@ -257,7 +274,13 @@ public final class GrammarFunctions {
      * </pre>
      */
     public static Matcher till(Object element) {
-      return new InclusiveTillMatcher(convertToMatcher(element));
+      ParsingExpression expression = (ParsingExpression) convertToMatcher(element);
+      return new SequenceExpression(
+          new ZeroOrMoreExpression(
+              new SequenceExpression(
+                  new NextNotExpression(expression),
+                  AnyTokenExpression.INSTANCE)),
+          expression);
     }
 
     /**
@@ -273,15 +296,19 @@ public final class GrammarFunctions {
      * </pre>
      */
     public static Matcher exclusiveTill(Object... elements) {
-      return new ExclusiveTillMatcher(convertToMatchers(elements));
+      return new ZeroOrMoreExpression(
+          new SequenceExpression(
+              new NextNotExpression(
+                  // TODO firstOf is useless in case of single sub-expression
+                  new FirstOfExpression(convertToMatchers(elements))),
+              AnyTokenExpression.INSTANCE));
     }
 
     /**
      * @since 1.14
      */
     public static Matcher memoizeMatches(Object element) {
-      Matcher matcher = convertToMatcher(element);
-      return matcher instanceof MemoMatcher ? matcher : new MemoMatcher(matcher);
+      return convertToMatcher(element);
     }
 
   }
@@ -308,30 +335,29 @@ public final class GrammarFunctions {
     }
   }
 
-  protected static Matcher[] convertToMatchers(Object[] objects) {
+  protected static ParsingExpression[] convertToMatchers(Object[] objects) {
     if (objects == null || objects.length == 0) {
       throw new IllegalArgumentException(AT_LEAST_ONE_MATCHER_MESSAGE);
     }
 
-    Matcher[] matchers = new Matcher[objects.length];
+    ParsingExpression[] matchers = new ParsingExpression[objects.length];
     for (int i = 0; i < matchers.length; i++) {
-      matchers[i] = convertToMatcher(objects[i]);
+      matchers[i] = (ParsingExpression) convertToMatcher(objects[i]);
     }
     return matchers;
   }
 
-  @SuppressWarnings("rawtypes")
   protected static Matcher convertToMatcher(Object object) {
     final Matcher matcher;
     if (object instanceof String) {
-      matcher = new TokenValueMatcher((String) object, false);
+      matcher = new TokenValueExpression((String) object);
     } else if (object instanceof TokenType) {
       TokenType tokenType = (TokenType) object;
-      matcher = new TokenTypeMatcher(tokenType, tokenType.hasToBeSkippedFromAst(null));
+      matcher = new TokenTypeExpression(tokenType);
     } else if (object instanceof RuleDefinition) {
       matcher = ((RuleDefinition) object).getRule();
     } else if (object instanceof Class) {
-      matcher = new TokenTypeClassMatcher((Class) object);
+      matcher = new TokenTypeClassExpression((Class) object);
     } else if (object instanceof Matcher) {
       matcher = (Matcher) object;
     } else {

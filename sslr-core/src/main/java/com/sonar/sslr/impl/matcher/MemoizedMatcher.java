@@ -22,10 +22,6 @@ package com.sonar.sslr.impl.matcher;
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
-public abstract class MemoizedMatcher extends Matcher {
-
-  public MemoizedMatcher(Matcher... children) {
-    super(children);
-  }
+public abstract class MemoizedMatcher implements Matcher {
 
 }

@@ -28,6 +28,7 @@ import com.sonar.sslr.impl.ast.NeverSkipFromAst;
 import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 import com.sonar.sslr.impl.matcher.GrammarFunctions.Standard;
 import org.sonar.sslr.grammar.GrammarRuleKey;
+import org.sonar.sslr.internal.vm.ParsingExpression;
 
 public final class RuleDefinition implements Rule, AstNodeSkippingPolicy, GrammarRuleKey {
 
@@ -96,7 +97,7 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy, Gramma
   }
 
   protected void setMatcher(Matcher matcher) {
-    ruleMatcher.children = new Matcher[] {matcher};
+    ruleMatcher.setExpression((ParsingExpression) matcher);
   }
 
   public void skipIf(AstNodeSkippingPolicy astNodeSkipPolicy) {
@@ -108,7 +109,7 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy, Gramma
   }
 
   private void throwExceptionIfRuleAlreadyDefined(String exceptionMessage) {
-    if (ruleMatcher.children.length != 0) {
+    if (ruleMatcher.getExpression() != null) {
       throw new IllegalStateException(exceptionMessage);
     }
   }

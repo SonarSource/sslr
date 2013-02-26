@@ -22,7 +22,7 @@ package org.sonar.sslr.internal.vm;
 /**
  * Parsing expression.
  */
-public interface ParsingExpression {
+public interface ParsingExpression extends com.sonar.sslr.impl.matcher.Matcher {
 
   /**
    * Compiles this expression into a sequence of instructions.

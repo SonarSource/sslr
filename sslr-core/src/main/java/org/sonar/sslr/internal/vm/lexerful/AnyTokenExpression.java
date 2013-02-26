@@ -23,9 +23,6 @@ import org.sonar.sslr.internal.matchers.Matcher;
 import org.sonar.sslr.internal.vm.Machine;
 import org.sonar.sslr.internal.vm.NativeExpression;
 
-/**
- * TODO Replacement for {@link com.sonar.sslr.impl.matcher.AnyTokenMatcher}
- */
 public class AnyTokenExpression extends NativeExpression implements Matcher {
 
   public static final AnyTokenExpression INSTANCE = new AnyTokenExpression();

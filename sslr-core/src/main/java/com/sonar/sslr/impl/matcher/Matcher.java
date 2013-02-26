@@ -19,17 +19,9 @@
  */
 package com.sonar.sslr.impl.matcher;
 
-import org.sonar.sslr.internal.vm.ParsingExpression;
-
 /**
- * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ * <p>This interface is not intended to be implemented by clients.</p>
  */
-public abstract class Matcher implements ParsingExpression {
-
-  public Matcher[] children;
-
-  protected Matcher(Matcher... children) {
-    this.children = children;
-  }
+public interface Matcher {
 
 }

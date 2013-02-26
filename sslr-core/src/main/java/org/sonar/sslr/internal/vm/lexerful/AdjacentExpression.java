@@ -23,9 +23,6 @@ import com.sonar.sslr.api.Token;
 import org.sonar.sslr.internal.vm.Machine;
 import org.sonar.sslr.internal.vm.NativeExpression;
 
-/**
- * TODO Replacement for {@link com.sonar.sslr.impl.matcher.AdjacentMatcher}
- */
 public class AdjacentExpression extends NativeExpression {
 
   public static final AdjacentExpression INSTANCE = new AdjacentExpression();

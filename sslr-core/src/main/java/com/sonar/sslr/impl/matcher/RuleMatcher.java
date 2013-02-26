@@ -30,12 +30,13 @@ import org.sonar.sslr.internal.vm.RuleRefExpression;
 /**
  * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
  */
-public final class RuleMatcher extends MemoizedMatcher implements CompilableGrammarRule {
+public final class RuleMatcher extends MemoizedMatcher implements CompilableGrammarRule, ParsingExpression {
 
   private final GrammarRuleKey ruleKey;
   private final String name;
   private boolean recoveryRule = false;
   private AstNodeType astNodeType;
+  private ParsingExpression expression;
 
   public RuleMatcher(GrammarRuleKey ruleKey, String name) {
     this.ruleKey = ruleKey;
@@ -49,11 +50,11 @@ public final class RuleMatcher extends MemoizedMatcher implements CompilableGram
    * @since 1.14
    */
   public void memoizeMatches() {
-    if (this.children.length == 0) {
+    if (expression == null) {
       // skip empty rule
       return;
     }
-    this.children[0] = GrammarFunctions.Advanced.memoizeMatches(children[0]);
+    expression = (ParsingExpression) GrammarFunctions.Advanced.memoizeMatches(expression);
   }
 
   public void setNodeType(AstNodeType astNodeType) {
@@ -92,7 +93,11 @@ public final class RuleMatcher extends MemoizedMatcher implements CompilableGram
   }
 
   public ParsingExpression getExpression() {
-    return children[0];
+    return expression;
+  }
+
+  public void setExpression(ParsingExpression expression) {
+    this.expression = expression;
   }
 
 }

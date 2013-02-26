@@ -25,9 +25,6 @@ import org.sonar.sslr.internal.matchers.Matcher;
 import org.sonar.sslr.internal.vm.Machine;
 import org.sonar.sslr.internal.vm.NativeExpression;
 
-/**
- * TODO Replacement for {@link com.sonar.sslr.impl.matcher.BridgeMatcher}
- */
 public class TokensBridgeExpression extends NativeExpression implements Matcher {
 
   private final TokenType from;

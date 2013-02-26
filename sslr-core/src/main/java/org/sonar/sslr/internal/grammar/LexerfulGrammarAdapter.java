@@ -19,55 +19,35 @@
  */
 package org.sonar.sslr.internal.grammar;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.sonar.sslr.grammar.GrammarRuleKey;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
-import java.util.Collection;
 import java.util.Map;
 
-public class LexerfulGrammarAdapter extends LexerlessGrammar {
+public class LexerfulGrammarAdapter extends Grammar {
 
-  private final Map<GrammarRuleKey, RuleDefinition> ruleMatchers;
-  private final Rule rootRule;
+  private final Map<GrammarRuleKey, RuleDefinition> rules;
+  private final GrammarRuleKey rootRuleKey;
 
-  public LexerfulGrammarAdapter(Collection<LexerfulGrammarRuleDefinition> rules, GrammarRuleKey rootRuleKey, boolean enableMemoizationOfMathesForAllRules) {
-    ImmutableMap.Builder<GrammarRuleKey, RuleDefinition> b = ImmutableMap.builder();
-    for (LexerfulGrammarRuleDefinition definition : rules) {
-      GrammarRuleKey ruleKey = definition.getRule();
-      b.put(ruleKey, RuleDefinition.newRuleBuilder(definition.getName(), ruleKey));
-    }
-    this.ruleMatchers = b.build();
-
-    for (LexerfulGrammarRuleDefinition definition : rules) {
-      definition.build(this);
-    }
-
-    if (enableMemoizationOfMathesForAllRules) {
-      for (RuleDefinition ruleDefinition : ruleMatchers.values()) {
-        ruleDefinition.getRule().memoizeMatches();
-      }
-    }
-
-    this.rootRule = ruleMatchers.get(rootRuleKey);
-  }
-
-  @Override
-  public Rule getRootRule() {
-    return rootRule;
+  public LexerfulGrammarAdapter(Map<GrammarRuleKey, RuleDefinition> rules, GrammarRuleKey rootRuleKey) {
+    this.rules = rules;
+    this.rootRuleKey = rootRuleKey;
   }
 
   @Override
   public Rule rule(GrammarRuleKey ruleKey) {
-    return ruleMatchers.get(ruleKey);
+    return rules.get(ruleKey);
   }
 
-  @VisibleForTesting
-  public Collection<GrammarRuleKey> ruleKeys() {
-    return ruleMatchers.keySet();
+  @Override
+  public Rule getRootRule() {
+    return rule(rootRuleKey);
+  }
+
+  public GrammarRuleKey getRootRuleKey() {
+    return rootRuleKey;
   }
 
 }
