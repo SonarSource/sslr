@@ -42,7 +42,7 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy, Gramma
   private final GrammarRuleKey ruleKey;
   private final String name;
   private ParsingExpression expression;
-  private AstNodeType astNodeSkippingPolicy = new NeverSkipFromAst();
+  private AstNodeType astNodeSkippingPolicy = NeverSkipFromAst.INSTANCE;
 
   public RuleDefinition(String name) {
     this.ruleKey = this;
@@ -76,7 +76,7 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy, Gramma
   }
 
   public void skip() {
-    astNodeSkippingPolicy = new AlwaysSkipFromAst();
+    astNodeSkippingPolicy = AlwaysSkipFromAst.INSTANCE;
   }
 
   public void skipIf(AstNodeSkippingPolicy astNodeSkipPolicy) {
@@ -84,7 +84,7 @@ public final class RuleDefinition implements Rule, AstNodeSkippingPolicy, Gramma
   }
 
   public void skipIfOneChild() {
-    astNodeSkippingPolicy = new SkipFromAstIfOnlyOneChild();
+    astNodeSkippingPolicy = SkipFromAstIfOnlyOneChild.INSTANCE;
   }
 
   private void throwExceptionIfRuleAlreadyDefined(String exceptionMessage) {

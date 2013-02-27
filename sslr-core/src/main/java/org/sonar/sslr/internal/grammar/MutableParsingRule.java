@@ -41,14 +41,10 @@ import org.sonar.sslr.internal.vm.RuleRefExpression;
 
 public class MutableParsingRule implements CompilableGrammarRule, Matcher, Rule, AstNodeSkippingPolicy, ParsingExpression, GrammarRuleKey {
 
-  private static final AstNodeSkippingPolicy NEVER = new NeverSkipFromAst();
-  private static final AstNodeSkippingPolicy ALWAYS = new AlwaysSkipFromAst();
-  private static final AstNodeSkippingPolicy IF_ONE_CHILD = new SkipFromAstIfOnlyOneChild();
-
   private final GrammarRuleKey ruleKey;
   private final String name;
   private ParsingExpression expression;
-  private AstNodeSkippingPolicy astNodeSkippingPolicy = NEVER;
+  private AstNodeSkippingPolicy astNodeSkippingPolicy = NeverSkipFromAst.INSTANCE;
 
   public MutableParsingRule(String name) {
     this.ruleKey = this;
@@ -98,11 +94,11 @@ public class MutableParsingRule implements CompilableGrammarRule, Matcher, Rule,
   }
 
   public void skip() {
-    astNodeSkippingPolicy = ALWAYS;
+    astNodeSkippingPolicy = AlwaysSkipFromAst.INSTANCE;
   }
 
   public void skipIfOneChild() {
-    astNodeSkippingPolicy = IF_ONE_CHILD;
+    astNodeSkippingPolicy = SkipFromAstIfOnlyOneChild.INSTANCE;
   }
 
   public void skipIf(AstNodeSkippingPolicy policy) {

@@ -20,28 +20,17 @@
 package com.sonar.sslr.impl.ast;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.GenericTokenType;
 import org.junit.Test;
 
-import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
-public class SkipFromAstIfOnlyOneChildTest {
+public class AlwaysSkipFromAstTest {
 
   @Test
-  public void testHasToBeSkippedFromAst() {
-    AstNode parent = new AstNode(mockToken(GenericTokenType.IDENTIFIER, "identifier"));
-    AstNode child1 = new AstNode(mockToken(GenericTokenType.IDENTIFIER, "child1"));
-    AstNode child2 = new AstNode(mockToken(GenericTokenType.IDENTIFIER, "child2"));
-    parent.addChild(child1);
-    parent.addChild(child2);
-    child2.addChild(child1);
-
-    SkipFromAstIfOnlyOneChild astNodeType = new SkipFromAstIfOnlyOneChild();
-
-    assertThat(astNodeType.hasToBeSkippedFromAst(parent)).isFalse();
-    assertThat(astNodeType.hasToBeSkippedFromAst(child1)).isFalse();
-    assertThat(astNodeType.hasToBeSkippedFromAst(child2)).isTrue();
+  public void test() {
+    AstNode astNode = mock(AstNode.class);
+    assertThat(AlwaysSkipFromAst.INSTANCE.hasToBeSkippedFromAst(astNode)).isTrue();
   }
 
 }

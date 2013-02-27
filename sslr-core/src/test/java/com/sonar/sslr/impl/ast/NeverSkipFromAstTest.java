@@ -19,16 +19,18 @@
  */
 package com.sonar.sslr.impl.ast;
 
+import com.sonar.sslr.api.AstNode;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
-public class AlwaysSkipFromAstTest {
+public class NeverSkipFromAstTest {
 
   @Test
-  public void testHasToBeSkippedFromAst() {
-    AlwaysSkipFromAst skipPolicy = new AlwaysSkipFromAst();
-    assertThat(skipPolicy.hasToBeSkippedFromAst(null)).isTrue();
+  public void test() {
+    AstNode astNode = mock(AstNode.class);
+    assertThat(NeverSkipFromAst.INSTANCE.hasToBeSkippedFromAst(astNode)).isFalse();
   }
 
 }

@@ -24,6 +24,11 @@ import com.sonar.sslr.api.AstNodeSkippingPolicy;
 
 public class NeverSkipFromAst implements AstNodeSkippingPolicy {
 
+  public static final NeverSkipFromAst INSTANCE = new NeverSkipFromAst();
+
+  private NeverSkipFromAst() {
+  }
+
   public boolean hasToBeSkippedFromAst(AstNode node) {
     return false;
   }
