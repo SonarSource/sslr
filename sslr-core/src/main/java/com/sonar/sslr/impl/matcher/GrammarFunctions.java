@@ -45,13 +45,6 @@ import org.sonar.sslr.internal.vm.lexerful.TokensBridgeExpression;
 @Deprecated
 public final class GrammarFunctions {
 
-  /**
-   * @deprecated in 1.19
-   */
-  @Deprecated
-  public static void resetCache() {
-  }
-
   private GrammarFunctions() {
   }
 

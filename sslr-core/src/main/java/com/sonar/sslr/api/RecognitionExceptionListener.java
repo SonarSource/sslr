@@ -20,12 +20,11 @@
 package com.sonar.sslr.api;
 
 /**
- * A RecognitionExceptionListener must be used to be notified of parsing error
+ * @deprecated in 1.19
  */
+@Deprecated
 public interface RecognitionExceptionListener {
 
-  /**
-   * This method is called when a recognition exception occurs
-   */
   void processRecognitionException(RecognitionException e);
+
 }

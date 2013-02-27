@@ -19,6 +19,9 @@
  */
 package com.sonar.sslr.impl;
 
+/**
+ * <p>This class is not intended to be instantiated or subclassed by clients.</p>
+ */
 public class LexerException extends RuntimeException {
 
   private static final long serialVersionUID = 4901910668771476677L;
@@ -30,4 +33,5 @@ public class LexerException extends RuntimeException {
   public LexerException(String message) {
     super(message);
   }
+
 }

@@ -21,7 +21,6 @@ package com.sonar.sslr.impl;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.RecognitionException;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
@@ -48,17 +47,6 @@ public class ParserTest {
       throw new AssertionError("This should be unreachable!");
     } catch (RecognitionException re) {
       assertThat(re.isToRetryWithExtendStackTrace()).isFalse();
-    }
-  }
-
-  @Ignore("Retry will be done automatically")
-  @Test
-  public void parseErrorWorthToRetry() {
-    try {
-      parseString("<");
-      throw new AssertionError("This should be unreachable!");
-    } catch (RecognitionException re) {
-      assertThat(re.isToRetryWithExtendStackTrace()).isTrue();
     }
   }
 
