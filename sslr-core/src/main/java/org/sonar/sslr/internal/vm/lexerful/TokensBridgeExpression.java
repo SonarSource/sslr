@@ -60,9 +60,7 @@ public class TokensBridgeExpression extends NativeExpression implements Matcher 
         // nop
       }
     } while (token.getType() != to || bridgeLevel != 0);
-    for (int i = 0; i <= offset; i++) {
-      machine.createLeafNode(this, 1);
-    }
+    machine.createLeafNode(this, offset + 1);
     machine.jump(1);
   }
 

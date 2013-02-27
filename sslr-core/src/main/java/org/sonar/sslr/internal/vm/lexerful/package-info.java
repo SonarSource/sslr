@@ -17,20 +17,10 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.impl.matcher;
 
-public final class MatcherTreePrinter {
+/**
+ * <p>Members of this package must not be used from outside of SSLR.</p>
+ */
+@javax.annotation.ParametersAreNonnullByDefault
+package org.sonar.sslr.internal.vm.lexerful;
 
-  private MatcherTreePrinter() {
-  }
-
-  public static String print(Matcher matcher) {
-    return print(matcher, true);
-  }
-
-  private static String print(Matcher matcher, boolean expandRule) {
-    // FIXME
-    return "";
-  }
-
-}

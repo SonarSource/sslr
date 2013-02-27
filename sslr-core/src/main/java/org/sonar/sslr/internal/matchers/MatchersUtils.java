@@ -24,12 +24,9 @@ import org.sonar.sslr.internal.vm.ParsingExpression;
 import org.sonar.sslr.internal.vm.SequenceExpression;
 import org.sonar.sslr.internal.vm.StringExpression;
 
-/**
- * TODO Replacement for {@link org.sonar.sslr.internal.matchers.MatchersUtils}
- */
-public class MatchersUtils2 {
+public class MatchersUtils {
 
-  private MatchersUtils2() {
+  private MatchersUtils() {
   }
 
   public static ParsingExpression convertToSingleMatcher(Object... elements) {
@@ -44,11 +41,6 @@ public class MatchersUtils2 {
   public static ParsingExpression[] convertToMatchers(Object... elements) {
     Preconditions.checkNotNull(elements);
     Preconditions.checkArgument(elements.length > 0);
-
-    // TODO
-    // if (elements.length == 1 && elements[0] instanceof SequenceMatcher) {
-    // return ((SequenceMatcher) elements[0]).getSubMatchers();
-    // }
 
     ParsingExpression[] matchers = new ParsingExpression[elements.length];
     for (int i = 0; i < matchers.length; i++) {

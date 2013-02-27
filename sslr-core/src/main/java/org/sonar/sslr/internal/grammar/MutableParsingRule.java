@@ -29,7 +29,7 @@ import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.matchers.Matcher;
-import org.sonar.sslr.internal.matchers.MatchersUtils2;
+import org.sonar.sslr.internal.matchers.MatchersUtils;
 import org.sonar.sslr.internal.vm.CompilableGrammarRule;
 import org.sonar.sslr.internal.vm.CompilationHandler;
 import org.sonar.sslr.internal.vm.EndOfInputExpression;
@@ -76,17 +76,17 @@ public class MutableParsingRule implements CompilableGrammarRule, Matcher, Rule,
     if (expression != null) {
       throw new GrammarException("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.");
     }
-    setExpression(MatchersUtils2.convertToSingleMatcher(matchers));
+    setExpression(MatchersUtils.convertToSingleMatcher(matchers));
     return this;
   }
 
   public Rule override(Object... matchers) {
-    setExpression(MatchersUtils2.convertToSingleMatcher(matchers));
+    setExpression(MatchersUtils.convertToSingleMatcher(matchers));
     return this;
   }
 
   public void mock() {
-    setExpression(MatchersUtils2.convertToSingleMatcher(getName(), new FirstOfExpression(new PatternExpression("\\s++"), EndOfInputExpression.INSTANCE)));
+    setExpression(MatchersUtils.convertToSingleMatcher(getName(), new FirstOfExpression(new PatternExpression("\\s++"), EndOfInputExpression.INSTANCE)));
   }
 
   public void setExpression(ParsingExpression expression) {

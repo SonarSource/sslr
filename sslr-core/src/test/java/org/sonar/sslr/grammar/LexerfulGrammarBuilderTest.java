@@ -118,9 +118,7 @@ public class LexerfulGrammarBuilderTest {
     GrammarRuleKey ruleKey2 = mock(GrammarRuleKey.class);
     b.rule(ruleKey1).is(ruleKey2);
     thrown.expect(GrammarException.class);
-    // TODO
     thrown.expectMessage("The rule '" + ruleKey2 + "' hasn't beed defined.");
-    // thrown.expectMessage("The rule " + ruleKey2 + " has been used somewhere in grammar, but not defined.");
     b.build();
   }
 

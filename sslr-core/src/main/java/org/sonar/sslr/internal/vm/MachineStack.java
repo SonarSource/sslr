@@ -23,6 +23,8 @@ import com.google.common.collect.Lists;
 import org.sonar.sslr.internal.matchers.Matcher;
 import org.sonar.sslr.internal.matchers.ParseNode;
 
+import javax.annotation.Nullable;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -101,7 +103,7 @@ public class MachineStack {
     return matcher;
   }
 
-  public void setMatcher(Matcher matcher) {
+  public void setMatcher(@Nullable Matcher matcher) {
     this.matcher = matcher;
   }
 
