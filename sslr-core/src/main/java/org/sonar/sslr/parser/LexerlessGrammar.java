@@ -24,7 +24,7 @@ import com.sonar.sslr.api.Grammar;
 /**
  * Use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder} to create instances of this class.
  *
- * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ * <p>This class is not intended to be instantiated or subclassed by clients.</p>
  *
  * @since 1.16
  */

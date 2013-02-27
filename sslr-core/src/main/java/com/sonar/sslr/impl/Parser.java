@@ -45,7 +45,7 @@ import java.util.Set;
 /**
  * To create a new instance of this class use <code>{@link Parser#builder(Grammar)}</code>.
  *
- * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ * <p>This class is not intended to be instantiated or subclassed by clients.</p>
  */
 public class Parser<G extends Grammar> {
 

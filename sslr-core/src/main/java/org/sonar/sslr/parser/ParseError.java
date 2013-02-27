@@ -29,7 +29,7 @@ import java.util.List;
  * Describes an error, which is occurred during parse.
  * Use {@link ParseErrorFormatter} to convert instances of this class to readable format.
  *
- * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ * <p>This class is not intended to be instantiated or subclassed by clients.</p>
  *
  * @since 1.16
  */

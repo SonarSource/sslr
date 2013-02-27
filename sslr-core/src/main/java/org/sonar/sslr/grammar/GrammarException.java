@@ -23,7 +23,7 @@ package org.sonar.sslr.grammar;
  * Indicates problem with definition of grammar.
  * If you face with this exception, then you should fix code, which defines your grammar.
  *
- * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ * <p>This class is not intended to be instantiated or subclassed by clients.</p>
  *
  * @since 1.18
  */

@@ -20,7 +20,7 @@
 package com.sonar.sslr.impl.matcher;
 
 /**
- * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ * <p>This class is not intended to be instantiated or subclassed by clients.</p>
  *
  * @deprecated in 1.19
  */

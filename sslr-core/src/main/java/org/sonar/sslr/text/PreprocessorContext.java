@@ -20,7 +20,7 @@
 package org.sonar.sslr.text;
 
 /**
- * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ * <p>This class is not intended to be instantiated or subclassed by clients.</p>
  *
  * @since 1.17
  */

@@ -27,7 +27,7 @@ import java.io.File;
 import java.net.URI;
 
 /**
- * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ * <p>This class is not intended to be instantiated or subclassed by clients.</p>
  *
  * @since 1.17
  */

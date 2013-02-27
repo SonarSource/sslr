@@ -22,7 +22,7 @@ package org.sonar.sslr.tests;
 import org.junit.ComparisonFailure;
 
 /**
- * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ * <p>This class is not intended to be instantiated or subclassed by clients.</p>
  *
  * @since 1.16
  */

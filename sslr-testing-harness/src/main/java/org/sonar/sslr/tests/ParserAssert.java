@@ -28,7 +28,7 @@ import org.fest.assertions.GenericAssert;
 /**
  * To create a new instance of this class invoke <code>{@link Assertions#assertThat(Parser)}</code>.
  *
- * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ * <p>This class is not intended to be instantiated or subclassed by clients.</p>
  *
  * @since 1.16
  */

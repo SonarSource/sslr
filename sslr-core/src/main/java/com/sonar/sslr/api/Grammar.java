@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * Use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder} to create instances of this class.
  *
- * <p>This class is not intended to be instantiated or sub-classed by clients.</p>
+ * <p>This class is not intended to be instantiated or subclassed by clients.</p>
  */
 public abstract class Grammar {
 

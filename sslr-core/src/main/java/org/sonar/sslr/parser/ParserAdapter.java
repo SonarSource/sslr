@@ -45,7 +45,7 @@ import java.util.List;
 /**
  * Adapts {@link ParseRunner} to be used as {@link Parser}.
  *
- * <p>This class is not intended to be sub-classed by clients.</p>
+ * <p>This class is not intended to be subclassed by clients.</p>
  *
  * @since 1.16
  */
