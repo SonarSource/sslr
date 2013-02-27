@@ -24,6 +24,10 @@ import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.matcher.Matcher;
 import com.sonar.sslr.impl.matcher.RuleMatcher;
 
+/**
+ * @deprecated in 1.19
+ */
+@Deprecated
 public abstract class ParsingEventListener {
 
   /* Parsing level */

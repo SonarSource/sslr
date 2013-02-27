@@ -85,6 +85,10 @@ public class Parser<G extends Grammar> {
     this.rootRule = (RuleDefinition) this.grammar.getRootRule();
   }
 
+  /**
+   * @deprecated in 1.19
+   */
+  @Deprecated
   public void printStackTrace(PrintStream stream) {
     stream.append(ParsingStackTrace.generateFullStackTrace(getParsingState()));
   }
@@ -172,6 +176,10 @@ public class Parser<G extends Grammar> {
     }
   }
 
+  /**
+   * @deprecated in 1.19
+   */
+  @Deprecated
   public ParsingState getParsingState() {
     return parsingState;
   }
@@ -230,12 +238,20 @@ public class Parser<G extends Grammar> {
       return this;
     }
 
+    /**
+     * @deprecated in 1.19
+     */
+    @Deprecated
     public Builder<G> setParsingEventListeners(ParsingEventListener... parsingEventListeners) {
       this.parsingEventListeners.clear();
       addParsingEventListeners(parsingEventListeners);
       return this;
     }
 
+    /**
+     * @deprecated in 1.19
+     */
+    @Deprecated
     public Builder<G> addParsingEventListeners(ParsingEventListener... parsingEventListeners) {
       for (ParsingEventListener parsingEventListener : parsingEventListeners) {
         this.parsingEventListeners.add(parsingEventListener);
@@ -243,12 +259,20 @@ public class Parser<G extends Grammar> {
       return this;
     }
 
+    /**
+     * @deprecated in 1.19
+     */
+    @Deprecated
     public Builder<G> setRecognictionExceptionListener(RecognitionExceptionListener... listeners) {
       this.listeners.clear();
       addRecognictionExceptionListeners(listeners);
       return this;
     }
 
+    /**
+     * @deprecated in 1.19
+     */
+    @Deprecated
     public Builder<G> addRecognictionExceptionListeners(RecognitionExceptionListener... listeners) {
       for (RecognitionExceptionListener listener : listeners) {
         this.listeners.add(listener);
@@ -256,6 +280,10 @@ public class Parser<G extends Grammar> {
       return this;
     }
 
+    /**
+     * @deprecated in 1.19
+     */
+    @Deprecated
     public Builder<G> setExtendedStackTrace(ExtendedStackTrace extendedStackTrace) {
       this.extendedStackTrace = extendedStackTrace;
       return this;
