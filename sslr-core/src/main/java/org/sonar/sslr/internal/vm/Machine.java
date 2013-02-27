@@ -78,9 +78,14 @@ public class Machine implements CharSequence {
       // failure should be permanent, otherwise something generally wrong
       Preconditions.checkState(!machine.matched);
 
-      String errorMsg = new LexerfulParseErrorFormatter().format(tokens, errorLocatingHandler.getErrorIndex(), errorReportingHandler.getFailedPaths());
-      int errorLine = tokens.isEmpty() ? 1 : tokens.get(errorLocatingHandler.getErrorIndex()).getLine();
-      throw new RecognitionException(errorLine, errorMsg);
+      if (tokens.isEmpty()) {
+        // Godin: weird situation - I expect that list of tokens contains at least EOF, but this is not the case in C Parser
+        throw new RecognitionException(1, "No tokens");
+      } else {
+        String errorMsg = new LexerfulParseErrorFormatter().format(tokens, errorLocatingHandler.getErrorIndex(), errorReportingHandler.getFailedPaths());
+        int errorLine = tokens.get(errorLocatingHandler.getErrorIndex()).getLine();
+        throw new RecognitionException(errorLine, errorMsg);
+      }
     }
   }
 
