@@ -108,7 +108,7 @@ public class MachineIntegrationTest {
             new StringExpression("foo"),
             new StringExpression(""))).compile(new CompilationHandler());
     thrown.expect(GrammarException.class);
-    thrown.expectMessage("The inner part of ZeroOrMore must not allow empty matches");
+    thrown.expectMessage("The inner part of ZeroOrMore and OneOrMore must not allow empty matches");
     Machine.execute("foo", instructions);
   }
 
@@ -127,7 +127,7 @@ public class MachineIntegrationTest {
             new StringExpression("foo"),
             new StringExpression(""))).compile(new CompilationHandler());
     thrown.expect(GrammarException.class);
-    thrown.expectMessage("The inner part of ZeroOrMore must not allow empty matches");
+    thrown.expectMessage("The inner part of ZeroOrMore and OneOrMore must not allow empty matches");
     Machine.execute("foo", instructions);
   }
 

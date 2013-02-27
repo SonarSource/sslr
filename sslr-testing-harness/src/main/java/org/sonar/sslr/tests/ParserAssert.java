@@ -24,10 +24,11 @@ import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.fest.assertions.GenericAssert;
-import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.vm.EndOfInputExpression;
 import org.sonar.sslr.internal.vm.FirstOfExpression;
 import org.sonar.sslr.internal.vm.lexerful.TokenTypeExpression;
+import org.sonar.sslr.tests.RuleAssert.EndOfInput;
+import org.sonar.sslr.tests.RuleAssert.WithEndOfInput;
 
 /**
  * To create a new instance of this class invoke <code>{@link Assertions#assertThat(Parser)}</code>.
@@ -40,26 +41,6 @@ public class ParserAssert extends GenericAssert<ParserAssert, Parser> {
 
   public ParserAssert(Parser actual) {
     super(ParserAssert.class, actual);
-  }
-
-  private static class WithEndOfInput implements GrammarRuleKey {
-    private final GrammarRuleKey ruleKey;
-
-    public WithEndOfInput(GrammarRuleKey ruleKey) {
-      this.ruleKey = ruleKey;
-    }
-
-    @Override
-    public String toString() {
-      return ruleKey + " with end of input";
-    }
-  }
-
-  private static class EndOfInput implements GrammarRuleKey {
-    @Override
-    public String toString() {
-      return "end of input";
-    }
   }
 
   private Parser createParserWithEofMatcher() {

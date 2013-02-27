@@ -273,8 +273,8 @@ public abstract class Instruction {
     @Override
     public void execute(Machine machine) {
       if (machine.getIndex() == machine.peek().index()) {
-        // TODO better message
-        throw new GrammarException("The inner part of ZeroOrMore must not allow empty matches");
+        // TODO better message, e.g. dump stack
+        throw new GrammarException("The inner part of ZeroOrMore and OneOrMore must not allow empty matches");
       }
       // add all nodes to parent
       machine.peek().parent().subNodes().addAll(machine.peek().subNodes());

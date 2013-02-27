@@ -95,7 +95,8 @@ public class GrammarFunctionsTest {
 
     assertThat(GrammarFunctions.Advanced.till(e1).toString()).isEqualTo("Sequence[ZeroOrMore[Sequence[NextNot[" + e1 + "], AnyToken]], " + e1 + "]");
 
-    assertThat(GrammarFunctions.Advanced.exclusiveTill(e1).toString()).isEqualTo("ZeroOrMore[Sequence[NextNot[FirstOf[" + e1 + "]], AnyToken]]");
+    assertThat(GrammarFunctions.Advanced.exclusiveTill(e1).toString()).isEqualTo("ZeroOrMore[Sequence[NextNot[" + e1 + "], AnyToken]]");
+    assertThat(GrammarFunctions.Advanced.exclusiveTill(e1, e2).toString()).isEqualTo("ZeroOrMore[Sequence[NextNot[FirstOf[" + e1 + ", " + e2 + "]], AnyToken]]");
 
     assertThat(GrammarFunctions.Advanced.memoizeMatches(e1)).isSameAs(e1);
   }

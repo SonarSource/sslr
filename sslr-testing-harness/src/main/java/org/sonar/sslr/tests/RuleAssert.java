@@ -41,7 +41,7 @@ public class RuleAssert extends GenericAssert<RuleAssert, Rule> {
     super(RuleAssert.class, actual);
   }
 
-  private static class WithEndOfInput implements GrammarRuleKey {
+  static class WithEndOfInput implements GrammarRuleKey {
     private final GrammarRuleKey ruleKey;
 
     public WithEndOfInput(GrammarRuleKey ruleKey) {
@@ -54,7 +54,7 @@ public class RuleAssert extends GenericAssert<RuleAssert, Rule> {
     }
   }
 
-  private static class EndOfInput implements GrammarRuleKey {
+  static class EndOfInput implements GrammarRuleKey {
     @Override
     public String toString() {
       return "end of input";

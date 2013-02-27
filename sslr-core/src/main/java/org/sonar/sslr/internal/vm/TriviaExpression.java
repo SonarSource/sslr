@@ -47,15 +47,7 @@ public class TriviaExpression implements Matcher, ParsingExpression {
    * </pre>
    */
   public Instruction[] compile(CompilationHandler compiler) {
-    // TODO maybe can be optimized
-    Instruction[] instr = compiler.compile(subExpression);
-    Instruction[] result = new Instruction[instr.length + 4];
-    result[0] = Instruction.call(2, this);
-    result[1] = Instruction.jump(instr.length + 3);
-    result[2] = Instruction.ignoreErrors();
-    System.arraycopy(instr, 0, result, 3, instr.length);
-    result[3 + instr.length] = Instruction.ret();
-    return result;
+    return TokenExpression.compile(compiler, this, subExpression);
   }
 
   @Override

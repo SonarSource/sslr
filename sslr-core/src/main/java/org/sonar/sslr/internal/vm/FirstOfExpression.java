@@ -19,10 +19,7 @@
  */
 package org.sonar.sslr.internal.vm;
 
-import com.google.common.collect.Lists;
-
 import java.util.Arrays;
-import java.util.List;
 
 public class FirstOfExpression implements ParsingExpression {
 
@@ -49,34 +46,25 @@ public class FirstOfExpression implements ParsingExpression {
    * </pre>
    */
   public Instruction[] compile(CompilationHandler compiler) {
-    int[] offsets = new int[subExpressions.length - 1];
-    List<Instruction> result = Lists.newArrayList();
-    for (int i = 0; i < subExpressions.length - 1; i++) {
-      // add placeholder for "Choice"
-      result.add(null);
-      // add program
-      Instruction.addAll(result, compiler.compile(subExpressions[i]));
-      // add placeholder for "Commit"
-      result.add(null);
-      offsets[i] = result.size();
-    }
-    // add last program
-    Instruction.addAll(result, compiler.compile(subExpressions[subExpressions.length - 1]));
-
-    // replace placholders
     int index = 0;
-    for (int i = 0; i < subExpressions.length - 1; i++) {
-      while (result.get(index) != null) {
-        index++;
-      }
-      result.set(index, Instruction.choice(offsets[i] - index));
-      while (result.get(index) != null) {
-        index++;
-      }
-      result.set(index, Instruction.commit(result.size() - index));
+    Instruction[][] sub = new Instruction[subExpressions.length][];
+    for (int i = 0; i < subExpressions.length; i++) {
+      sub[i] = compiler.compile(subExpressions[i]);
+      index += sub[i].length;
     }
+    Instruction[] result = new Instruction[index + (subExpressions.length - 1) * 2];
 
-    return result.toArray(new Instruction[result.size()]);
+    index = 0;
+    for (int i = 0; i < subExpressions.length - 1; i++) {
+      result[index] = Instruction.choice(sub[i].length + 2);
+      System.arraycopy(sub[i], 0, result, index + 1, sub[i].length);
+      index += sub[i].length + 1;
+      result[index] = Instruction.commit(result.length - index);
+      index++;
+    }
+    System.arraycopy(sub[sub.length - 1], 0, result, index, sub[sub.length - 1].length);
+
+    return result;
   }
 
   @Override

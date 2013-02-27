@@ -47,10 +47,17 @@ public class TokenExpression implements Matcher, ParsingExpression {
    * </pre>
    */
   public Instruction[] compile(CompilationHandler compiler) {
+    return compile(compiler, this, subExpression);
+  }
+
+  /**
+   * Helper method to reduce duplication between {@link TokenExpression} and {@link TriviaExpression}.
+   */
+  static Instruction[] compile(CompilationHandler compiler, Matcher expression, ParsingExpression subExpression) {
     // TODO maybe can be optimized
     Instruction[] instr = compiler.compile(subExpression);
     Instruction[] result = new Instruction[instr.length + 4];
-    result[0] = Instruction.call(2, this);
+    result[0] = Instruction.call(2, expression);
     result[1] = Instruction.jump(instr.length + 3);
     result[2] = Instruction.ignoreErrors();
     System.arraycopy(instr, 0, result, 3, instr.length);

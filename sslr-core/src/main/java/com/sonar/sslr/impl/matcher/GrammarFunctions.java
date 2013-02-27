@@ -323,15 +323,16 @@ public final class GrammarFunctions {
      * }
      * </pre>
      *
-     * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#exclusiveTill(Object, Object...)} instead.
+     * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#exclusiveTill(Object)} instead.
      */
     @Deprecated
     public static Matcher exclusiveTill(Object... e) {
+      ParsingExpression[] expressions = convertToExpressions(e);
+      ParsingExpression subExpression = expressions.length == 1 ? expressions[0] : new FirstOfExpression(expressions);
       return new ZeroOrMoreExpression(
           new SequenceExpression(
               new NextNotExpression(
-                  // TODO firstOf is useless in case of single sub-expression
-                  new FirstOfExpression(convertToExpressions(e))),
+                  subExpression),
               AnyTokenExpression.INSTANCE));
     }
 

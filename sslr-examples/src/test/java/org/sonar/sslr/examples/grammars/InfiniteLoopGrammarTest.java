@@ -36,14 +36,14 @@ public class InfiniteLoopGrammarTest {
   @Test
   public void zeroOrMore_should_not_cause_infinite_loop() {
     thrown.expect(GrammarException.class);
-    thrown.expectMessage("The inner part of ZeroOrMore must not allow empty matches");
+    thrown.expectMessage("The inner part of ZeroOrMore and OneOrMore must not allow empty matches");
     new ParseRunner(grammar.rule(InfiniteLoopGrammar.A)).parse("foo".toCharArray());
   }
 
   @Test
   public void oneOrMore_should_not_cause_infinite_loop() {
     thrown.expect(GrammarException.class);
-    thrown.expectMessage("The inner part of ZeroOrMore must not allow empty matches");
+    thrown.expectMessage("The inner part of ZeroOrMore and OneOrMore must not allow empty matches");
     new ParseRunner(grammar.rule(InfiniteLoopGrammar.B)).parse("foo".toCharArray());
   }
 

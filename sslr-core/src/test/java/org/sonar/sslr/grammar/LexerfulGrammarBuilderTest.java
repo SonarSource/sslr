@@ -93,7 +93,8 @@ public class LexerfulGrammarBuilderTest {
 
     assertThat(b.till(e1).toString()).isEqualTo("Sequence[ZeroOrMore[Sequence[NextNot[" + e1 + "], AnyToken]], " + e1 + "]");
 
-    assertThat(b.exclusiveTill(e1).toString()).isEqualTo("ZeroOrMore[Sequence[NextNot[FirstOf[" + e1 + "]], AnyToken]]");
+    assertThat(b.exclusiveTill(e1).toString()).isEqualTo("ZeroOrMore[Sequence[NextNot[" + e1 + "], AnyToken]]");
+    assertThat(b.exclusiveTill(e1, e2).toString()).isEqualTo("ZeroOrMore[Sequence[NextNot[FirstOf[" + e1 + ", " + e2 + "]], AnyToken]]");
 
     assertThat(b.everything()).as("singleton").isSameAs(AnyTokenExpression.INSTANCE);
     assertThat(b.anyToken()).as("singleton").isSameAs(AnyTokenExpression.INSTANCE);

@@ -342,17 +342,25 @@ public class LexerfulGrammarBuilder {
   /**
    * Creates expression of grammar - "exclusive till".
    *
+   * @param e  sub-expression
+   * @throws IllegalArgumentException if any of given arguments is not a parsing expression
+   */
+  public Object exclusiveTill(Object e) {
+    return new ZeroOrMoreExpression(
+        new SequenceExpression(
+            new NextNotExpression(convertToExpression(e)),
+            AnyTokenExpression.INSTANCE));
+  }
+
+  /**
+   * Creates expression of grammar - "exclusive till".
+   *
    * @param e1  first sub-expression
    * @param rest  rest of sub-expressions
    * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object exclusiveTill(Object e1, Object... rest) {
-    return new ZeroOrMoreExpression(
-        new SequenceExpression(
-            new NextNotExpression(
-                // TODO firstOf is useless in case of single sub-expression
-                new FirstOfExpression(convertToExpressions(Lists.asList(e1, rest)))),
-            AnyTokenExpression.INSTANCE));
+    return exclusiveTill(new FirstOfExpression(convertToExpressions(Lists.asList(e1, rest))));
   }
 
   @VisibleForTesting

@@ -172,7 +172,7 @@ public class InstructionTest {
     when(machine.peek()).thenReturn(stack);
     when(machine.getIndex()).thenReturn(13);
     thrown.expect(GrammarException.class);
-    thrown.expectMessage("The inner part of ZeroOrMore must not allow empty matches");
+    thrown.expectMessage("The inner part of ZeroOrMore and OneOrMore must not allow empty matches");
     instruction.execute(machine);
   }
 
