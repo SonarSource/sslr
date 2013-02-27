@@ -241,7 +241,7 @@ public abstract class Instruction {
     @Override
     public void execute(Machine machine) {
       // add all nodes to parent
-      machine.peek().parent.subNodes.addAll(machine.peek().subNodes);
+      machine.peek().parent().subNodes().addAll(machine.peek().subNodes());
 
       machine.pop();
       machine.jump(offset);
@@ -272,12 +272,12 @@ public abstract class Instruction {
 
     @Override
     public void execute(Machine machine) {
-      if (machine.getIndex() == machine.peek().index) {
+      if (machine.getIndex() == machine.peek().index()) {
         // TODO better message
         throw new GrammarException("The inner part of ZeroOrMore must not allow empty matches");
       }
       // add all nodes to parent
-      machine.peek().parent.subNodes.addAll(machine.peek().subNodes);
+      machine.peek().parent().subNodes().addAll(machine.peek().subNodes());
 
       machine.pop();
       machine.jump(offset);
@@ -305,7 +305,7 @@ public abstract class Instruction {
       machine.createNode();
       MachineStack stack = machine.peek();
       machine.setIgnoreErrors(stack.isIgnoreErrors());
-      machine.setAddress(stack.getAddress());
+      machine.setAddress(stack.address());
       machine.popReturn();
     }
 
@@ -363,7 +363,7 @@ public abstract class Instruction {
     @Override
     public void execute(Machine machine) {
       MachineStack stack = machine.peek();
-      machine.setIndex(stack.getIndex());
+      machine.setIndex(stack.index());
       machine.setIgnoreErrors(stack.isIgnoreErrors());
       machine.pop();
       machine.jump(offset);

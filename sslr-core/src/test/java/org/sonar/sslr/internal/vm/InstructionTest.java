@@ -168,7 +168,7 @@ public class InstructionTest {
   public void commitVerify_should_throw_exception() {
     Instruction instruction = Instruction.commitVerify(42);
     MachineStack stack = new MachineStack().getOrCreateChild();
-    stack.index = 13;
+    stack.setIndex(13);
     when(machine.peek()).thenReturn(stack);
     when(machine.getIndex()).thenReturn(13);
     thrown.expect(GrammarException.class);
@@ -184,7 +184,7 @@ public class InstructionTest {
     assertThat(instruction).as("singleton").isSameAs(Instruction.ret());
 
     MachineStack stack = mock(MachineStack.class);
-    when(stack.getAddress()).thenReturn(42);
+    when(stack.address()).thenReturn(42);
     when(stack.isIgnoreErrors()).thenReturn(true);
     when(machine.peek()).thenReturn(stack);
     instruction.execute(machine);
@@ -248,7 +248,7 @@ public class InstructionTest {
     assertThat(instruction.hashCode()).isEqualTo(42);
 
     MachineStack stack = mock(MachineStack.class);
-    when(stack.getIndex()).thenReturn(13);
+    when(stack.index()).thenReturn(13);
     when(stack.isIgnoreErrors()).thenReturn(true);
     when(machine.peek()).thenReturn(stack);
     instruction.execute(machine);

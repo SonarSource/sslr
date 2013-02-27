@@ -28,17 +28,17 @@ import java.util.List;
 
 public class MachineStack {
 
-  public final MachineStack parent;
+  private final MachineStack parent;
   private MachineStack child;
 
-  public final List<ParseNode> subNodes;
-  public int address;
-  public int index;
-  public boolean ignoreErrors;
-  public Matcher matcher;
+  private final List<ParseNode> subNodes;
+  private int address;
+  private int index;
+  private boolean ignoreErrors;
+  private Matcher matcher;
 
-  public int leftRecursion;
-  public int calledAddress;
+  private int leftRecursion;
+  private int calledAddress;
 
   public MachineStack() {
     this.parent = null;
@@ -49,6 +49,10 @@ public class MachineStack {
   private MachineStack(MachineStack parent) {
     this.parent = parent;
     this.subNodes = Lists.newArrayList();
+  }
+
+  public MachineStack parent() {
+    return parent;
   }
 
   public MachineStack getOrCreateChild() {
@@ -69,16 +73,56 @@ public class MachineStack {
     return index == -1;
   }
 
-  public int getAddress() {
+  public int address() {
     return address;
   }
 
-  public int getIndex() {
+  public void setAddress(int address) {
+    this.address = address;
+  }
+
+  public int index() {
     return index;
+  }
+
+  public void setIndex(int index) {
+    this.index = index;
   }
 
   public boolean isIgnoreErrors() {
     return ignoreErrors;
+  }
+
+  public void setIgnoreErrors(boolean ignoreErrors) {
+    this.ignoreErrors = ignoreErrors;
+  }
+
+  public Matcher matcher() {
+    return matcher;
+  }
+
+  public void setMatcher(Matcher matcher) {
+    this.matcher = matcher;
+  }
+
+  public int leftRecursion() {
+    return leftRecursion;
+  }
+
+  public void setLeftRecursion(int leftRecursion) {
+    this.leftRecursion = leftRecursion;
+  }
+
+  public int calledAddress() {
+    return calledAddress;
+  }
+
+  public void setCalledAddress(int calledAddress) {
+    this.calledAddress = calledAddress;
+  }
+
+  public List<ParseNode> subNodes() {
+    return subNodes;
   }
 
 }

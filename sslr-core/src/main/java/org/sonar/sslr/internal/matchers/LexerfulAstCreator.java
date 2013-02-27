@@ -34,7 +34,7 @@ public class LexerfulAstCreator {
 
   private final List<Token> tokens;
 
-  public LexerfulAstCreator(List<Token> tokens) {
+  private LexerfulAstCreator(List<Token> tokens) {
     this.tokens = tokens;
   }
 

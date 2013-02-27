@@ -90,10 +90,10 @@ public class MachineTest {
     machine.pushReturn(2, matcher, 1);
     assertThat(machine.getAddress()).as("new address").isEqualTo(2);
     assertThat(machine.peek()).isNotSameAs(previousStack);
-    assertThat(machine.peek().parent).isSameAs(previousStack);
-    assertThat(machine.peek().index).as("current index").isEqualTo(1);
-    assertThat(machine.peek().address).as("return address").isEqualTo(1 + 2);
-    assertThat(machine.peek().matcher).isSameAs(matcher);
+    assertThat(machine.peek().parent()).isSameAs(previousStack);
+    assertThat(machine.peek().index()).as("current index").isEqualTo(1);
+    assertThat(machine.peek().address()).as("return address").isEqualTo(1 + 2);
+    assertThat(machine.peek().matcher()).isSameAs(matcher);
   }
 
   @Test
@@ -104,14 +104,14 @@ public class MachineTest {
 
     machine.advanceIndex(1);
     machine.pushReturn(0, matcher, 1);
-    assertThat(machine.peek().calledAddress).isEqualTo(1);
-    assertThat(machine.peek().leftRecursion).isEqualTo(-1);
+    assertThat(machine.peek().calledAddress()).isEqualTo(1);
+    assertThat(machine.peek().leftRecursion()).isEqualTo(-1);
 
     // same rule, but another index of input sequence
     machine.advanceIndex(1);
     machine.pushReturn(0, matcher, 0);
-    assertThat(machine.peek().calledAddress).isEqualTo(1);
-    assertThat(machine.peek().leftRecursion).isEqualTo(1);
+    assertThat(machine.peek().calledAddress()).isEqualTo(1);
+    assertThat(machine.peek().leftRecursion()).isEqualTo(1);
 
     // same rule and index of input sequence
     thrown.expect(GrammarException.class);
@@ -127,10 +127,10 @@ public class MachineTest {
     MachineStack previousStack = machine.peek();
     machine.pushBacktrack(13);
     assertThat(machine.peek()).isNotSameAs(previousStack);
-    assertThat(machine.peek().parent).isSameAs(previousStack);
-    assertThat(machine.peek().index).as("current index").isEqualTo(1);
-    assertThat(machine.peek().address).as("backtrack address").isEqualTo(42 + 13);
-    assertThat(machine.peek().matcher).isNull();
+    assertThat(machine.peek().parent()).isSameAs(previousStack);
+    assertThat(machine.peek().index()).as("current index").isEqualTo(1);
+    assertThat(machine.peek().address()).as("backtrack address").isEqualTo(42 + 13);
+    assertThat(machine.peek().matcher()).isNull();
   }
 
   @Test
@@ -173,7 +173,7 @@ public class MachineTest {
     Matcher matcher = mock(Matcher.class);
     machine.advanceIndex(42);
     machine.createLeafNode(matcher, 13);
-    ParseNode node = machine.peek().subNodes.get(0);
+    ParseNode node = machine.peek().subNodes().get(0);
     assertThat(node.getMatcher()).isSameAs(matcher);
     assertThat(node.getStartIndex()).isEqualTo(42);
     assertThat(node.getEndIndex()).isEqualTo(42 + 13);
@@ -191,7 +191,7 @@ public class MachineTest {
     machine.createLeafNode(subMatcher, 2);
     machine.createLeafNode(subMatcher, 3);
     machine.createNode();
-    ParseNode node = machine.peek().parent.subNodes.get(0);
+    ParseNode node = machine.peek().parent().subNodes().get(0);
     assertThat(node.getMatcher()).isSameAs(matcher);
     assertThat(node.getStartIndex()).isEqualTo(1);
     assertThat(node.getEndIndex()).isEqualTo(1 + 2 + 3);
@@ -206,12 +206,12 @@ public class MachineTest {
     machine.pushReturn(1, matcher, 2);
     machine.advanceIndex(3);
     machine.createNode();
-    ParseNode memo = machine.peek().parent.subNodes.get(0);
+    ParseNode memo = machine.peek().parent().subNodes().get(0);
     machine.backtrack();
     machine.pushReturn(2, matcher, 1);
     assertThat(machine.getAddress()).isEqualTo(2);
     assertThat(machine.getIndex()).isEqualTo(3);
-    assertThat(machine.peek().subNodes).containsOnly(memo);
+    assertThat(machine.peek().subNodes()).containsOnly(memo);
   }
 
   @Test
@@ -227,7 +227,7 @@ public class MachineTest {
     machine.pushReturn(2, anotherMatcher, 1);
     assertThat(machine.getAddress()).isEqualTo(1);
     assertThat(machine.getIndex()).isEqualTo(0);
-    assertThat(machine.peek().subNodes).isEmpty();
+    assertThat(machine.peek().subNodes()).isEmpty();
   }
 
 }

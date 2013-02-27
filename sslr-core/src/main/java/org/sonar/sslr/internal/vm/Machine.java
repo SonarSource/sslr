@@ -67,7 +67,7 @@ public class Machine implements CharSequence {
     machine.execute(grammar.getMatcher(grammar.getRootRuleKey()), grammar.getOffset(grammar.getRootRuleKey()), grammar.getInstructions());
 
     if (machine.matched) {
-      return machine.stack.subNodes.get(0);
+      return machine.stack.subNodes().get(0);
     } else {
       // FIXME Perform second run in order to collect information for error report
       machine = new Machine(null, inputTokens, grammar.getInstructions(), errorLocatingHandler);
@@ -76,7 +76,7 @@ public class Machine implements CharSequence {
       // failure should be permanent, otherwise something generally wrong
       Preconditions.checkState(!machine.matched);
 
-      int line = tokens.size() == 0 ? 1 : tokens.get(errorLocatingHandler.getErrorIndex()).getLine();
+      int line = tokens.isEmpty() ? 1 : tokens.get(errorLocatingHandler.getErrorIndex()).getLine();
       throw new RecognitionException(line, "");
     }
   }
@@ -97,7 +97,7 @@ public class Machine implements CharSequence {
           new ImmutableInputBuffer(machine.input),
           machine.matched,
           // TODO what if there is no nodes, or more than one?
-          machine.stack.subNodes.get(0),
+          machine.stack.subNodes().get(0),
           null);
     } else {
       // Perform second run in order to collect information for error report
@@ -130,7 +130,7 @@ public class Machine implements CharSequence {
   private void execute(Matcher matcher, int offset, Instruction[] instructions) {
     // Place first rule on top of stack
     push(-1);
-    stack.matcher = matcher;
+    stack.setMatcher(matcher);
     jump(offset);
 
     execute(instructions);
@@ -171,7 +171,7 @@ public class Machine implements CharSequence {
     this.memos = new ParseNode[inputLength + 1];
     this.stack = new MachineStack();
     stack = stack.getOrCreateChild();
-    stack.index = -1;
+    stack.setIndex(-1);
     calls = new int[instructions.length];
     Arrays.fill(calls, -1);
   }
@@ -207,26 +207,26 @@ public class Machine implements CharSequence {
 
   private void push(int address) {
     stack = stack.getOrCreateChild();
-    stack.subNodes.clear();
-    stack.address = address;
-    stack.index = index;
-    stack.ignoreErrors = ignoreErrors;
+    stack.subNodes().clear();
+    stack.setAddress(address);
+    stack.setIndex(index);
+    stack.setIgnoreErrors(ignoreErrors);
   }
 
   public void popReturn() {
-    calls[stack.calledAddress] = stack.leftRecursion;
-    stack = stack.parent;
+    calls[stack.calledAddress()] = stack.leftRecursion();
+    stack = stack.parent();
   }
 
   public void pushReturn(int returnOffset, Matcher matcher, int callOffset) {
     ParseNode memo = memos[index];
     if (memo != null && memo.getMatcher() == matcher) {
-      stack.subNodes.add(memo);
+      stack.subNodes().add(memo);
       index = memo.getEndIndex();
       address += returnOffset;
     } else {
       push(address + returnOffset);
-      stack.matcher = matcher;
+      stack.setMatcher(matcher);
       address += callOffset;
 
       if (calls[address] == index) {
@@ -234,19 +234,19 @@ public class Machine implements CharSequence {
         String ruleName = ((MutableParsingRule) matcher).getName();
         throw new GrammarException("Left recursion has been detected, involved rule: " + ruleName);
       }
-      stack.calledAddress = address;
-      stack.leftRecursion = calls[address];
+      stack.setCalledAddress(address);
+      stack.setLeftRecursion(calls[address]);
       calls[address] = index;
     }
   }
 
   public void pushBacktrack(int offset) {
     push(address + offset);
-    stack.matcher = null;
+    stack.setMatcher(null);
   }
 
   public void pop() {
-    stack = stack.parent;
+    stack = stack.parent();
   }
 
   public MachineStack peek() {
@@ -262,7 +262,7 @@ public class Machine implements CharSequence {
     while (stack.isReturn()) {
 
       // TODO we must have this inside of loop, otherwise report won't be generated in case of input "foo" and rule "nextNot(foo)"
-      ignoreErrors = stack.ignoreErrors;
+      ignoreErrors = stack.isIgnoreErrors();
       if (!ignoreErrors) {
         handler.onBacktrack(this);
       }
@@ -276,22 +276,22 @@ public class Machine implements CharSequence {
       matched = false;
     } else {
       // restore state
-      index = stack.index;
-      address = stack.address;
-      ignoreErrors = stack.ignoreErrors;
-      stack = stack.parent;
+      index = stack.index();
+      address = stack.address();
+      ignoreErrors = stack.isIgnoreErrors();
+      stack = stack.parent();
     }
   }
 
   public void createNode() {
-    ParseNode node = new ParseNode(stack.index, index, stack.subNodes, stack.matcher);
-    stack.parent.subNodes.add(node);
-    memos[stack.index] = node;
+    ParseNode node = new ParseNode(stack.index(), index, stack.subNodes(), stack.matcher());
+    stack.parent().subNodes().add(node);
+    memos[stack.index()] = node;
   }
 
   public void createLeafNode(Matcher matcher, int offset) {
     ParseNode node = new ParseNode(index, index + offset, Collections.EMPTY_LIST, matcher);
-    stack.subNodes.add(node);
+    stack.subNodes().add(node);
     index += offset;
   }
 

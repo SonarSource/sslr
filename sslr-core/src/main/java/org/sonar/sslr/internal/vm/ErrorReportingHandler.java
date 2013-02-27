@@ -53,11 +53,11 @@ public class ErrorReportingHandler implements MachineHandler {
     int endIndex = machine.getIndex();
     MachineStack stack = machine.peek();
     while (!stack.isEmpty()) {
-      if (stack.matcher instanceof MutableParsingRule) {
-        list.add(new MatcherPathElement(stack.matcher, stack.index, endIndex));
-        endIndex = stack.index;
+      if (stack.matcher() instanceof MutableParsingRule) {
+        list.add(new MatcherPathElement(stack.matcher(), stack.index(), endIndex));
+        endIndex = stack.index();
       }
-      stack = stack.parent;
+      stack = stack.parent();
     }
     return ImmutableList.copyOf(Lists.reverse(list));
   }
