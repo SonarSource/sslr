@@ -19,10 +19,13 @@
  */
 package com.sonar.sslr.api;
 
+import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.grammar.GrammarRuleKey;
+import org.sonar.sslr.internal.grammar.MutableParsingRule;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -34,8 +37,6 @@ public class GrammarTest {
 
   @org.junit.Rule
   public ExpectedException thrown = ExpectedException.none();
-
-  private final MyGrammar grammar = new MyGrammar();
 
   @Test
   public void testGetRuleFields() {
@@ -52,20 +53,26 @@ public class GrammarTest {
   @Test
   public void method_rule_should_throw_exception_by_default() {
     thrown.expect(UnsupportedOperationException.class);
-    grammar.rule(mock(GrammarRuleKey.class));
+    new MyGrammar().rule(mock(GrammarRuleKey.class));
   }
 
   @Test
-  public void shouldAutomaticallyInstanciateDirectRules() {
-    assertThat(grammar.rootRule).isNotNull();
-  }
-
-  @Test
-  public void shouldAutomaticallyInstanciateInheritedRules() throws IllegalAccessException {
+  public void should_automatically_instanciate_lexerful_rules() throws IllegalAccessException {
     List<Field> ruleFields = Grammar.getAllRuleFields(MyGrammar.class);
+    Grammar grammar = new MyGrammar();
     for (Field ruleField : ruleFields) {
       ruleField.setAccessible(true);
-      assertThat(ruleField.get(grammar)).as("Current rule name = " + ruleField.getName()).isNotNull();
+      assertThat(ruleField.get(grammar)).as("Current rule name = " + ruleField.getName()).isNotNull().isInstanceOf(RuleDefinition.class);
+    }
+  }
+
+  @Test
+  public void should_automatically_instanciate_lexerless_rules() throws IllegalAccessException {
+    List<Field> ruleFields = Grammar.getAllRuleFields(MyLexerlessGrammar.class);
+    LexerlessGrammar grammar = new MyLexerlessGrammar();
+    for (Field ruleField : ruleFields) {
+      ruleField.setAccessible(true);
+      assertThat(ruleField.get(grammar)).as("Current rule name = " + ruleField.getName()).isNotNull().isInstanceOf(MutableParsingRule.class);
     }
   }
 
@@ -88,6 +95,15 @@ public class GrammarTest {
     @SuppressWarnings("unused")
     private int junkIntField;
     public Object junkObjectField;
+    public Rule rootRule;
+
+    @Override
+    public Rule getRootRule() {
+      return rootRule;
+    }
+  }
+
+  private static class MyLexerlessGrammar extends LexerlessGrammar {
     public Rule rootRule;
 
     @Override
