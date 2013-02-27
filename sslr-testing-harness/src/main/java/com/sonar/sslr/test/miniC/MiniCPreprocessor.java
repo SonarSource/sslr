@@ -25,10 +25,11 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Preprocessor;
 import com.sonar.sslr.api.PreprocessorAction;
 import com.sonar.sslr.api.RecognitionException;
-import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.impl.Parser;
+import org.sonar.sslr.grammar.GrammarRuleKey;
+import org.sonar.sslr.grammar.LexerfulGrammarBuilder;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -43,20 +44,22 @@ public class MiniCPreprocessor extends Preprocessor {
   private AstNode structure;
   private Grammar structureGrammar;
 
-  public class MiniCPreprocessorGrammar extends Grammar {
+  public enum MiniCPreprocessorGrammar implements GrammarRuleKey {
 
-    public Rule defineDirective;
-    public Rule binDefinition;
+    DEFINE_DIRECTIVE,
+    BIN_DEFINITION;
 
-    public MiniCPreprocessorGrammar() {
-      defineDirective.is(HASH, "define", binDefinition);
-      binDefinition.is(IDENTIFIER);
+    public static Grammar create() {
+      LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
+
+      b.rule(DEFINE_DIRECTIVE).is(HASH, "define", BIN_DEFINITION);
+      b.rule(BIN_DEFINITION).is(IDENTIFIER);
+
+      b.setRootRule(DEFINE_DIRECTIVE);
+
+      return b.build();
     }
 
-    @Override
-    public Rule getRootRule() {
-      return defineDirective;
-    }
   }
 
   @Override
@@ -66,7 +69,7 @@ public class MiniCPreprocessor extends Preprocessor {
 
   private boolean isBufferValid() {
     /* Launch the preprocessor parser on buffer, and set the resulting AstNode on the first token */
-    Parser<MiniCPreprocessorGrammar> parser = Parser.builder(new MiniCPreprocessorGrammar()).build();
+    Parser<Grammar> parser = Parser.builder(MiniCPreprocessorGrammar.create()).build();
     try {
       AstNode node = parser.parse(buffer);
       this.structure = node;
