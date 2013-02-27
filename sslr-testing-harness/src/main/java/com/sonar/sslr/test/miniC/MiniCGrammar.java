@@ -20,15 +20,11 @@
 package com.sonar.sslr.test.miniC;
 
 import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.api.Rule;
+import org.sonar.sslr.grammar.GrammarRuleKey;
+import org.sonar.sslr.grammar.LexerfulGrammarBuilder;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.and;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.firstOf;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.o2n;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.one2n;
-import static com.sonar.sslr.impl.matcher.GrammarFunctions.Standard.opt;
 import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.BREAK;
 import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.CONTINUE;
 import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.ELSE;
@@ -59,135 +55,137 @@ import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.PAREN_R;
 import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.SEMICOLON;
 import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.SUB;
 
-public class MiniCGrammar extends Grammar {
+public enum MiniCGrammar implements GrammarRuleKey {
 
-  public Rule binType;
-  public Rule binFunctionDefinition;
-  public Rule binParameter;
-  public Rule binVariableDefinition;
-  public Rule binFunctionReference;
-  public Rule binVariableReference;
+  BIN_TYPE,
+  BIN_FUNCTION_DEFINITION,
+  BIN_PARAMETER,
+  BIN_VARIABLE_DEFINITION,
+  BIN_FUNCTION_REFERENCE,
+  BIN_VARIABLE_REFERENCE,
 
-  public Rule compilationUnit;
-  public Rule definition;
-  public Rule structDefinition;
-  public Rule structMember;
-  public Rule functionDefinition;
-  public Rule variableDefinition;
-  public Rule parametersList;
-  public Rule parameterDeclaration;
-  public Rule compoundStatement;
-  public Rule variableInitializer;
-  public Rule argumentExpressionList;
+  COMPILATION_UNIT,
+  DEFINITION,
+  STRUCT_DEFINITION,
+  STRUCT_MEMBER,
+  FUNCTION_DEFINITION,
+  VARIABLE_DEFINITION,
+  PARAMETERS_LIST,
+  PARAMETER_DECLARATION,
+  COMPOUND_STATEMENT,
+  VARIABLE_INITIALIZER,
+  ARGUMENT_EXPRESSION_LIST,
 
-  public Rule statement;
-  public Rule expressionStatement;
-  public Rule returnStatement;
-  public Rule continueStatement;
-  public Rule breakStatement;
-  public Rule ifStatement;
-  public Rule whileStatement;
-  public Rule conditionClause;
-  public Rule elseClause;
-  public Rule noComplexityStatement;
+  STATEMENT,
+  EXPRESSION_STATEMENT,
+  RETURN_STATEMENT,
+  CONTINUE_STATEMENT,
+  BREAK_STATEMENT,
+  IF_STATEMENT,
+  WHILE_STATEMENT,
+  CONDITION_CLAUSE,
+  ELSE_CLAUSE,
+  NO_COMPLEXITY_STATEMENT,
 
-  public Rule expression;
-  public Rule assignmentExpression;
-  public Rule relationalExpression;
-  public Rule relationalOperator;
-  public Rule additiveExpression;
-  public Rule additiveOperator;
-  public Rule multiplicativeExpression;
-  public Rule multiplicativeOperator;
-  public Rule unaryExpression;
-  public Rule unaryOperator;
-  public Rule postfixExpression;
-  public Rule postfixOperator;
-  public Rule primaryExpression;
+  EXPRESSION,
+  ASSIGNMENT_EXPRESSION,
+  RELATIONAL_EXPRESSION,
+  RELATIONAL_OPERATOR,
+  ADDITIVE_EXPRESSION,
+  ADDITIVE_OPERATOR,
+  MULTIPLICATIVE_EXPRESSION,
+  MULTIPLICATIVE_OPERATOR,
+  UNARY_EXPRESSION,
+  UNARY_OPERATOR,
+  POSTFIX_EXPRESSION,
+  POSTFIX_OPERATOR,
+  PRIMARY_EXPRESSION;
 
-  public MiniCGrammar() {
+  public static Grammar create() {
+    LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
+
     // Bins
 
-    binType.is(firstOf(
+    b.rule(BIN_TYPE).is(b.firstOf(
         INT,
         VOID));
 
-    binParameter.is(IDENTIFIER);
+    b.rule(BIN_PARAMETER).is(IDENTIFIER);
 
-    binFunctionDefinition.is(IDENTIFIER);
+    b.rule(BIN_FUNCTION_DEFINITION).is(IDENTIFIER);
 
-    binVariableDefinition.is(IDENTIFIER);
+    b.rule(BIN_VARIABLE_DEFINITION).is(IDENTIFIER);
 
-    binFunctionReference.is(IDENTIFIER);
+    b.rule(BIN_FUNCTION_REFERENCE).is(IDENTIFIER);
 
-    binVariableReference.is(IDENTIFIER);
+    b.rule(BIN_VARIABLE_REFERENCE).is(IDENTIFIER);
 
     // Miscellaneous
 
-    compilationUnit.is(o2n(definition), EOF);
+    b.rule(COMPILATION_UNIT).is(b.zeroOrMore(DEFINITION), EOF);
 
-    definition.is(firstOf(
-        structDefinition,
-        functionDefinition,
-        variableDefinition));
+    b.rule(DEFINITION).is(b.firstOf(
+        STRUCT_DEFINITION,
+        FUNCTION_DEFINITION,
+        VARIABLE_DEFINITION));
 
-    structDefinition.is(STRUCT, IDENTIFIER, BRACE_L, one2n(structMember, SEMICOLON), BRACE_R);
+    b.rule(STRUCT_DEFINITION).is(STRUCT, IDENTIFIER, BRACE_L, b.oneOrMore(STRUCT_MEMBER, SEMICOLON), BRACE_R);
 
-    structMember.is(binType, IDENTIFIER);
+    b.rule(STRUCT_MEMBER).is(BIN_TYPE, IDENTIFIER);
 
-    functionDefinition.is(binType, binFunctionDefinition, PAREN_L, opt(parametersList), PAREN_R, compoundStatement);
+    b.rule(FUNCTION_DEFINITION).is(BIN_TYPE, BIN_FUNCTION_DEFINITION, PAREN_L, b.optional(PARAMETERS_LIST), PAREN_R, COMPOUND_STATEMENT);
 
-    variableDefinition.is(binType, binVariableDefinition, opt(variableInitializer), SEMICOLON);
+    b.rule(VARIABLE_DEFINITION).is(BIN_TYPE, BIN_VARIABLE_DEFINITION, b.optional(VARIABLE_INITIALIZER), SEMICOLON);
 
-    parametersList.is(parameterDeclaration, o2n(COMMA, parameterDeclaration));
+    b.rule(PARAMETERS_LIST).is(PARAMETER_DECLARATION, b.zeroOrMore(COMMA, PARAMETER_DECLARATION));
 
-    parameterDeclaration.is(binType, binParameter);
+    b.rule(PARAMETER_DECLARATION).is(BIN_TYPE, BIN_PARAMETER);
 
-    compoundStatement.is(BRACE_L, o2n(variableDefinition), o2n(statement), BRACE_R);
+    b.rule(COMPOUND_STATEMENT).is(BRACE_L, b.zeroOrMore(VARIABLE_DEFINITION), b.zeroOrMore(STATEMENT), BRACE_R);
 
-    variableInitializer.is(EQ, expression);
+    b.rule(VARIABLE_INITIALIZER).is(EQ, EXPRESSION);
 
-    argumentExpressionList.is(expression, o2n(COMMA, expression));
+    b.rule(ARGUMENT_EXPRESSION_LIST).is(EXPRESSION, b.zeroOrMore(COMMA, EXPRESSION));
 
     // Statements
 
-    statement.is(firstOf(
-        expressionStatement,
-        compoundStatement,
-        returnStatement,
-        continueStatement,
-        breakStatement,
-        ifStatement,
-        whileStatement,
-        noComplexityStatement));
+    b.rule(STATEMENT).is(b.firstOf(
+        EXPRESSION_STATEMENT,
+        COMPOUND_STATEMENT,
+        RETURN_STATEMENT,
+        CONTINUE_STATEMENT,
+        BREAK_STATEMENT,
+        IF_STATEMENT,
+        WHILE_STATEMENT,
+        NO_COMPLEXITY_STATEMENT));
 
-    expressionStatement.is(expression, SEMICOLON);
+    b.rule(EXPRESSION_STATEMENT).is(EXPRESSION, SEMICOLON);
 
-    returnStatement.is(RETURN, expression, SEMICOLON);
+    b.rule(RETURN_STATEMENT).is(RETURN, EXPRESSION, SEMICOLON);
 
-    continueStatement.is(CONTINUE, SEMICOLON);
+    b.rule(CONTINUE_STATEMENT).is(CONTINUE, SEMICOLON);
 
-    breakStatement.is(BREAK, SEMICOLON);
+    b.rule(BREAK_STATEMENT).is(BREAK, SEMICOLON);
 
-    ifStatement.is(IF, conditionClause, statement, opt(elseClause));
+    b.rule(IF_STATEMENT).is(IF, CONDITION_CLAUSE, STATEMENT, b.optional(ELSE_CLAUSE));
 
-    whileStatement.is(WHILE, conditionClause, statement);
+    b.rule(WHILE_STATEMENT).is(WHILE, CONDITION_CLAUSE, STATEMENT);
 
-    conditionClause.is(PAREN_L, expression, PAREN_R);
+    b.rule(CONDITION_CLAUSE).is(PAREN_L, EXPRESSION, PAREN_R);
 
-    elseClause.is(ELSE, statement);
+    b.rule(ELSE_CLAUSE).is(ELSE, STATEMENT);
 
-    noComplexityStatement.is("nocomplexity", statement);
+    b.rule(NO_COMPLEXITY_STATEMENT).is("nocomplexity", STATEMENT);
 
     // Expressions
 
-    expression.is(assignmentExpression);
+    b.rule(EXPRESSION).is(ASSIGNMENT_EXPRESSION);
 
-    assignmentExpression.is(relationalExpression, opt(EQ, relationalExpression)).skipIfOneChild();
+    b.rule(ASSIGNMENT_EXPRESSION).is(RELATIONAL_EXPRESSION, b.optional(EQ, RELATIONAL_EXPRESSION)).skipIfOneChild();
 
-    relationalExpression.is(additiveExpression, opt(relationalOperator, relationalExpression)).skipIfOneChild();
+    b.rule(RELATIONAL_EXPRESSION).is(ADDITIVE_EXPRESSION, b.optional(RELATIONAL_OPERATOR, RELATIONAL_EXPRESSION)).skipIfOneChild();
 
-    relationalOperator.is(firstOf(
+    b.rule(RELATIONAL_OPERATOR).is(b.firstOf(
         EQEQ,
         NE,
         LT,
@@ -195,44 +193,43 @@ public class MiniCGrammar extends Grammar {
         GT,
         GTE));
 
-    additiveExpression.is(multiplicativeExpression, opt(additiveOperator, additiveExpression)).skipIfOneChild();
+    b.rule(ADDITIVE_EXPRESSION).is(MULTIPLICATIVE_EXPRESSION, b.optional(ADDITIVE_OPERATOR, ADDITIVE_EXPRESSION)).skipIfOneChild();
 
-    additiveOperator.is(firstOf(
+    b.rule(ADDITIVE_OPERATOR).is(b.firstOf(
         ADD,
         SUB));
 
-    multiplicativeExpression.is(unaryExpression, opt(multiplicativeOperator, multiplicativeExpression)).skipIfOneChild();
+    b.rule(MULTIPLICATIVE_EXPRESSION).is(UNARY_EXPRESSION, b.optional(MULTIPLICATIVE_OPERATOR, MULTIPLICATIVE_EXPRESSION)).skipIfOneChild();
 
-    multiplicativeOperator.is(firstOf(
+    b.rule(MULTIPLICATIVE_OPERATOR).is(b.firstOf(
         MUL,
         DIV));
 
-    unaryExpression.is(firstOf(
-        and(unaryOperator, primaryExpression),
-        postfixExpression)).skipIfOneChild();
+    b.rule(UNARY_EXPRESSION).is(b.firstOf(
+        b.sequence(UNARY_OPERATOR, PRIMARY_EXPRESSION),
+        POSTFIX_EXPRESSION)).skipIfOneChild();
 
-    unaryOperator.is(firstOf(
+    b.rule(UNARY_OPERATOR).is(b.firstOf(
         INC,
         DEC));
 
-    postfixExpression.is(firstOf(
-        and(primaryExpression, postfixOperator),
-        and(binFunctionReference, PAREN_L, opt(argumentExpressionList), PAREN_R),
-        primaryExpression)).skipIfOneChild();
+    b.rule(POSTFIX_EXPRESSION).is(b.firstOf(
+        b.sequence(PRIMARY_EXPRESSION, POSTFIX_OPERATOR),
+        b.sequence(BIN_FUNCTION_REFERENCE, PAREN_L, b.optional(ARGUMENT_EXPRESSION_LIST), PAREN_R),
+        PRIMARY_EXPRESSION)).skipIfOneChild();
 
-    postfixOperator.is(firstOf(
+    b.rule(POSTFIX_OPERATOR).is(b.firstOf(
         INC,
         DEC));
 
-    primaryExpression.is(firstOf(
+    b.rule(PRIMARY_EXPRESSION).is(b.firstOf(
         INTEGER,
-        binVariableReference,
-        and(PAREN_L, expression, PAREN_R)));
-  }
+        BIN_VARIABLE_REFERENCE,
+        b.sequence(PAREN_L, EXPRESSION, PAREN_R)));
 
-  @Override
-  public Rule getRootRule() {
-    return compilationUnit;
+    b.setRootRule(COMPILATION_UNIT);
+
+    return b.build();
   }
 
 }

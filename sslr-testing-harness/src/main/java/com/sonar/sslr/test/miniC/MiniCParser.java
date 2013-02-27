@@ -19,24 +19,24 @@
  */
 package com.sonar.sslr.test.miniC;
 
-import java.io.File;
-
-import org.apache.commons.io.FileUtils;
-
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.events.ParsingEventListener;
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
 
 public final class MiniCParser {
 
-  private static final Parser<MiniCGrammar> P = MiniCParser.create();
-  private static final MiniCGrammar G = P.getGrammar();
+  private static final Parser<Grammar> P = MiniCParser.create();
+  private static final Grammar G = P.getGrammar();
 
   private MiniCParser() {
   }
 
-  public static Parser<MiniCGrammar> create(ParsingEventListener... parsingEventListeners) {
-    return Parser.builder(new MiniCGrammar()).withLexer(MiniCLexer.create()).setParsingEventListeners(parsingEventListeners).build();
+  public static Parser<Grammar> create(ParsingEventListener... parsingEventListeners) {
+    return Parser.builder(MiniCGrammar.create()).withLexer(MiniCLexer.create()).setParsingEventListeners(parsingEventListeners).build();
   }
 
   public static AstNode parseFile(String filePath) {
@@ -52,7 +52,7 @@ public final class MiniCParser {
     return P.parse(source);
   }
 
-  public static MiniCGrammar getGrammar() {
+  public static Grammar getGrammar() {
     return G;
   }
 

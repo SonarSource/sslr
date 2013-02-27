@@ -19,6 +19,7 @@
  */
 package com.sonar.sslr.test.miniC.rules;
 
+import com.sonar.sslr.test.miniC.MiniCGrammar;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ public class StructTest extends RuleTest {
   @Override
   @Before
   public void init() {
-    p.setRootRule(g.structDefinition);
+    p.setRootRule(g.rule(MiniCGrammar.STRUCT_DEFINITION));
   }
 
   @Test

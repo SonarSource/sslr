@@ -20,6 +20,7 @@
 package org.sonar.sslr.minic.symboltable;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
 import com.sonar.sslr.test.miniC.MiniCLexer;
@@ -38,10 +39,9 @@ public class ParameterAssignmentTest {
 
   @Test
   public void test() throws Exception {
-    Parser<MiniCGrammar> parser = MiniCParser.create();
-    MiniCGrammar grammar = parser.getGrammar();
+    Parser<Grammar> parser = MiniCParser.create();
     AstNode ast = parser.parse(FileUtils.readFileToString(new File("src/test/resources/parameterAssignment.mc")));
-    SemanticModel semanticModel = new MiniCSymbolTableBuilder(grammar).buildSymbolTable(ast);
+    SemanticModel semanticModel = new MiniCSymbolTableBuilder().buildSymbolTable(ast);
 
     int parameterAssignmentsCount = 0;
     Collection<FunctionSymbol> functions = semanticModel.getSymbols(FunctionSymbol.class);
@@ -49,7 +49,7 @@ public class ParameterAssignmentTest {
       for (Symbol parameter : function.getSymbols()) {
         Collection<AstNode> references = semanticModel.getReferences(parameter);
         for (AstNode reference : references) {
-          assertThat(reference.is(grammar.binVariableReference));
+          assertThat(reference.is(MiniCGrammar.BIN_VARIABLE_REFERENCE));
           if (reference.nextAstNode().is(MiniCLexer.Punctuators.EQ)) {
             System.out.println("Assignment to parameter '" + parameter.getKey() + "' at line " + reference.getTokenLine());
             parameterAssignmentsCount++;

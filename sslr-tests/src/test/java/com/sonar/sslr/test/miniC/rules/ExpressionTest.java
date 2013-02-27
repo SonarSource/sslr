@@ -19,6 +19,7 @@
  */
 package com.sonar.sslr.test.miniC.rules;
 
+import com.sonar.sslr.test.miniC.MiniCGrammar;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ public class ExpressionTest extends RuleTest {
   @Override
   @Before
   public void init() {
-    p.setRootRule(g.expression);
+    p.setRootRule(g.rule(MiniCGrammar.EXPRESSION));
   }
 
   @Test

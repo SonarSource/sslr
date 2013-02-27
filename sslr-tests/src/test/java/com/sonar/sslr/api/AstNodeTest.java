@@ -19,12 +19,12 @@
  */
 package com.sonar.sslr.api;
 
+import com.sonar.sslr.test.miniC.MiniCGrammar;
 import org.junit.Test;
 
 import java.util.List;
 
 import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
-import static com.sonar.sslr.test.miniC.MiniCParser.getGrammar;
 import static com.sonar.sslr.test.miniC.MiniCParser.parseString;
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -172,53 +172,53 @@ public class AstNodeTest {
   public void testIs() {
     AstNode declarationNode = parseString("int a = 0;").getChild(0);
 
-    assertThat(declarationNode.is(getGrammar().definition)).isTrue();
-    assertThat(declarationNode.is(getGrammar().compilationUnit, getGrammar().definition)).isTrue();
-    assertThat(declarationNode.is(getGrammar().definition, getGrammar().compilationUnit)).isTrue();
-    assertThat(declarationNode.is(getGrammar().compilationUnit)).isFalse();
+    assertThat(declarationNode.is(MiniCGrammar.DEFINITION)).isTrue();
+    assertThat(declarationNode.is(MiniCGrammar.COMPILATION_UNIT, MiniCGrammar.DEFINITION)).isTrue();
+    assertThat(declarationNode.is(MiniCGrammar.DEFINITION, MiniCGrammar.COMPILATION_UNIT)).isTrue();
+    assertThat(declarationNode.is(MiniCGrammar.COMPILATION_UNIT)).isFalse();
   }
 
   @Test
   public void testIsNot() {
     AstNode declarationNode = parseString("int a = 0;").getChild(0);
 
-    assertThat(declarationNode.isNot(getGrammar().definition)).isFalse();
-    assertThat(declarationNode.isNot(getGrammar().compilationUnit, getGrammar().definition)).isFalse();
-    assertThat(declarationNode.isNot(getGrammar().definition, getGrammar().compilationUnit)).isFalse();
-    assertThat(declarationNode.isNot(getGrammar().compilationUnit)).isTrue();
+    assertThat(declarationNode.isNot(MiniCGrammar.DEFINITION)).isFalse();
+    assertThat(declarationNode.isNot(MiniCGrammar.COMPILATION_UNIT, MiniCGrammar.DEFINITION)).isFalse();
+    assertThat(declarationNode.isNot(MiniCGrammar.DEFINITION, MiniCGrammar.COMPILATION_UNIT)).isFalse();
+    assertThat(declarationNode.isNot(MiniCGrammar.COMPILATION_UNIT)).isTrue();
   }
 
   @Test
   public void testFindChildren() {
     AstNode fileNode = parseString("int a = 0; int myFunction() { int b = 0; { int c = 0; } }");
 
-    List<AstNode> binVariableDeclarationNodes = fileNode.findChildren(getGrammar().binVariableDefinition);
+    List<AstNode> binVariableDeclarationNodes = fileNode.findChildren(MiniCGrammar.BIN_VARIABLE_DEFINITION);
     assertThat(binVariableDeclarationNodes.size()).isEqualTo(3);
     assertThat(binVariableDeclarationNodes.get(0).getTokenValue()).isEqualTo("a");
     assertThat(binVariableDeclarationNodes.get(1).getTokenValue()).isEqualTo("b");
     assertThat(binVariableDeclarationNodes.get(2).getTokenValue()).isEqualTo("c");
 
-    List<AstNode> binVDeclarationNodes = fileNode.findChildren(getGrammar().binVariableDefinition, getGrammar().binFunctionDefinition);
+    List<AstNode> binVDeclarationNodes = fileNode.findChildren(MiniCGrammar.BIN_VARIABLE_DEFINITION, MiniCGrammar.BIN_FUNCTION_DEFINITION);
     assertThat(binVDeclarationNodes.size()).isEqualTo(4);
     assertThat(binVDeclarationNodes.get(0).getTokenValue()).isEqualTo("a");
     assertThat(binVDeclarationNodes.get(1).getTokenValue()).isEqualTo("myFunction");
     assertThat(binVDeclarationNodes.get(2).getTokenValue()).isEqualTo("b");
     assertThat(binVDeclarationNodes.get(3).getTokenValue()).isEqualTo("c");
 
-    assertThat(fileNode.findChildren(getGrammar().multiplicativeExpression).size()).isEqualTo(0);
+    assertThat(fileNode.findChildren(MiniCGrammar.MULTIPLICATIVE_EXPRESSION).size()).isEqualTo(0);
   }
 
   @Test
   public void testFindDirectChildren() {
     AstNode fileNode = parseString("int a = 0; void myFunction() { int b = 0*3; { int c = 0; } }");
 
-    List<AstNode> declarationNodes = fileNode.findDirectChildren(getGrammar().definition);
+    List<AstNode> declarationNodes = fileNode.findDirectChildren(MiniCGrammar.DEFINITION);
     assertThat(declarationNodes.size()).isEqualTo(2);
     assertThat(declarationNodes.get(0).getTokenValue()).isEqualTo("int");
     assertThat(declarationNodes.get(1).getTokenValue()).isEqualTo("void");
 
-    List<AstNode> binVDeclarationNodes = fileNode.findDirectChildren(getGrammar().binVariableDefinition,
-        getGrammar().binFunctionDefinition);
+    List<AstNode> binVDeclarationNodes = fileNode.findDirectChildren(MiniCGrammar.BIN_VARIABLE_DEFINITION,
+        MiniCGrammar.BIN_FUNCTION_DEFINITION);
     assertThat(binVDeclarationNodes.size()).isEqualTo(0);
   }
 

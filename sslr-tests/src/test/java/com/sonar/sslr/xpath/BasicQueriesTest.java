@@ -20,6 +20,7 @@
 package com.sonar.sslr.xpath;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.test.miniC.MiniCGrammar;
 import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +28,6 @@ import org.junit.Test;
 import java.util.List;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.test.miniC.MiniCParser.getGrammar;
 import static com.sonar.sslr.test.miniC.MiniCParser.parseFile;
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -42,31 +42,31 @@ public class BasicQueriesTest {
 
   @Test
   public void compilationUnitTest() {
-    AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("/compilationUnit");
+    AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("/COMPILATION_UNIT");
     assertThat(xpath.selectSingleNode(fileNode)).isEqualTo(fileNode);
   }
 
   @Test
   public void anyCompilationUnitTest() {
-    AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("//compilationUnit");
+    AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("//COMPILATION_UNIT");
     assertThat(xpath.selectSingleNode(fileNode)).isEqualTo(fileNode);
   }
 
   @Test
   public void compilationUnitWithPredicateWithEOFTest() {
-    AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("/compilationUnit[not(not(EOF))]");
+    AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("/COMPILATION_UNIT[not(not(EOF))]");
     assertThat(xpath.selectSingleNode(fileNode)).isEqualTo(fileNode);
   }
 
   @Test
   public void compilationUnitWithPredicateWithoutEOFTest() {
-    AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("/compilationUnit[not(EOF)]");
+    AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("/COMPILATION_UNIT[not(EOF)]");
     assertThat(xpath.selectSingleNode(fileNode)).isNull();
   }
 
   @Test
   public void EOFTest() {
-    AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("/compilationUnit/EOF");
+    AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("/COMPILATION_UNIT/EOF");
     assertThat(xpath.selectSingleNode(fileNode)).isEqualTo(fileNode.findFirstChild(EOF));
   }
 
@@ -78,28 +78,28 @@ public class BasicQueriesTest {
 
   @Test
   public void getTokenValueAttributeTest() {
-    AstNodeXPathQuery<String> xpath = AstNodeXPathQuery.create("string(/compilationUnit/@tokenValue)");
+    AstNodeXPathQuery<String> xpath = AstNodeXPathQuery.create("string(/COMPILATION_UNIT/@tokenValue)");
     assertThat(xpath.selectSingleNode(fileNode)).isEqualTo("int");
   }
 
   @Test
   public void getTokenLineAttributeTest() {
-    AstNodeXPathQuery<String> xpath = AstNodeXPathQuery.create("string(/compilationUnit/@tokenLine)");
+    AstNodeXPathQuery<String> xpath = AstNodeXPathQuery.create("string(/COMPILATION_UNIT/@tokenLine)");
     assertThat(xpath.selectSingleNode(fileNode)).isEqualTo("2");
   }
 
   @Test
   public void getTokenColumnAttributeTest() {
-    AstNodeXPathQuery<String> xpath = AstNodeXPathQuery.create("string(/compilationUnit/@tokenColumn)");
+    AstNodeXPathQuery<String> xpath = AstNodeXPathQuery.create("string(/COMPILATION_UNIT/@tokenColumn)");
     assertThat(xpath.selectSingleNode(fileNode)).isEqualTo("0");
   }
 
   @Test
   public void getSecondDeclarationTest() {
-    AstNodeXPathQuery<AstNode> xpath1 = AstNodeXPathQuery.create("/compilationUnit/definition[@tokenLine=4]");
-    AstNodeXPathQuery<AstNode> xpath2 = AstNodeXPathQuery.create("/compilationUnit/definition[2]");
+    AstNodeXPathQuery<AstNode> xpath1 = AstNodeXPathQuery.create("/COMPILATION_UNIT/DEFINITION[@tokenLine=4]");
+    AstNodeXPathQuery<AstNode> xpath2 = AstNodeXPathQuery.create("/COMPILATION_UNIT/DEFINITION[2]");
     AstNode declarationAtLineFour = fileNode.getChild(1);
-    assertThat(declarationAtLineFour.is(getGrammar().definition)).isTrue();
+    assertThat(declarationAtLineFour.is(MiniCGrammar.DEFINITION)).isTrue();
     assertThat(declarationAtLineFour.getTokenLine()).isEqualTo(4);
     assertThat(xpath1.selectSingleNode(fileNode)).isEqualTo(declarationAtLineFour);
     assertThat(xpath1.selectSingleNode(fileNode)).isEqualTo(xpath2.selectSingleNode(fileNode));
@@ -107,7 +107,7 @@ public class BasicQueriesTest {
 
   @Test
   public void identifiersCountTest() {
-    AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("/compilationUnit[count(//IDENTIFIER) = 2]");
+    AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create("/COMPILATION_UNIT[count(//IDENTIFIER) = 2]");
     assertThat(xpath.selectSingleNode(fileNode)).isEqualTo(fileNode);
   }
 

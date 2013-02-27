@@ -21,6 +21,7 @@ package org.sonar.sslr.ast;
 
 import com.google.common.collect.Sets;
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
 import com.sonar.sslr.test.miniC.MiniCParser;
@@ -34,13 +35,13 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class CollapsibleIfVisitorTest {
 
-  private Parser<MiniCGrammar> p = MiniCParser.create();
-  private MiniCGrammar g = p.getGrammar();
+  private Parser<Grammar> p = MiniCParser.create();
+  private Grammar g = p.getGrammar();
 
   @Test
   public void test() {
     AstNode fileNode = p.parse(new File("src/test/resources/queries/collapsible_if.mc"));
-    List<AstNode> ifStatements = fileNode.getDescendants(g.ifStatement);
+    List<AstNode> ifStatements = fileNode.getDescendants(MiniCGrammar.IF_STATEMENT);
 
     Set<Integer> violations = Sets.newHashSet();
     for (AstNode node : ifStatements) {
@@ -56,23 +57,23 @@ public class CollapsibleIfVisitorTest {
   }
 
   private boolean hasElseClause(AstNode node) {
-    return node.hasDirectChildren(g.elseClause);
+    return node.hasDirectChildren(MiniCGrammar.ELSE_CLAUSE);
   }
 
   private boolean hasCollapsibleIfStatement(AstNode node) {
-    AstNode statementNode = node.getFirstChild(g.statement).getChild(0);
+    AstNode statementNode = node.getFirstChild(MiniCGrammar.STATEMENT).getChild(0);
     return isIfStatementWithoutElse(statementNode) || isIfStatementWithoutElseInCompoundStatement(statementNode);
   }
 
   private boolean isIfStatementWithoutElse(AstNode node) {
-    return node.is(g.ifStatement) && !hasElseClause(node);
+    return node.is(MiniCGrammar.IF_STATEMENT) && !hasElseClause(node);
   }
 
   private boolean isIfStatementWithoutElseInCompoundStatement(AstNode node) {
-    if (!node.is(g.compoundStatement) || node.getNumberOfChildren() != 3) {
+    if (!node.is(MiniCGrammar.COMPOUND_STATEMENT) || node.getNumberOfChildren() != 3) {
       return false;
     }
-    AstNode statementNode = node.getFirstChild(g.statement);
+    AstNode statementNode = node.getFirstChild(MiniCGrammar.STATEMENT);
     if (statementNode == null) {
       // Null check was initially forgotten, did not led to a NPE because the unit test did not cover that case yet!
       return false;

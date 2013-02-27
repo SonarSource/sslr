@@ -20,13 +20,13 @@
 package com.sonar.sslr.xpath;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.test.miniC.MiniCGrammar;
 import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 
-import static com.sonar.sslr.test.miniC.MiniCParser.getGrammar;
 import static com.sonar.sslr.test.miniC.MiniCParser.parseFile;
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -42,7 +42,7 @@ public class IfSMustUseBracesTest {
   @Test
   public void firstValueEqualsOnlyValueTest() {
     AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create(
-        "//ifStatement/statement[not(compoundStatement)]/..|//elseClause/statement[not(compoundStatement)]/..");
+        "//IF_STATEMENT/STATEMENT[not(COMPOUND_STATEMENT)]/..|//ELSE_CLAUSE/STATEMENT[not(COMPOUND_STATEMENT)]/..");
 
     List<AstNode> nodes = xpath.selectNodes(fileNode);
 
@@ -53,14 +53,14 @@ public class IfSMustUseBracesTest {
   @Test
   public void valuesTest() {
     AstNodeXPathQuery<AstNode> xpath = AstNodeXPathQuery.create(
-        "//ifStatement/statement[not(compoundStatement)]/..|//elseClause/statement[not(compoundStatement)]/..");
+        "//IF_STATEMENT/STATEMENT[not(COMPOUND_STATEMENT)]/..|//ELSE_CLAUSE/STATEMENT[not(COMPOUND_STATEMENT)]/..");
 
     List<AstNode> nodes = xpath.selectNodes(fileNode);
 
     assertThat(nodes.size()).isEqualTo(2);
-    assertThat(nodes.get(0).is(getGrammar().ifStatement)).isTrue();
+    assertThat(nodes.get(0).is(MiniCGrammar.IF_STATEMENT)).isTrue();
     assertThat(nodes.get(0).getTokenLine()).isEqualTo(3);
-    assertThat(nodes.get(1).is(getGrammar().elseClause)).isTrue();
+    assertThat(nodes.get(1).is(MiniCGrammar.ELSE_CLAUSE)).isTrue();
     assertThat(nodes.get(1).getTokenLine()).isEqualTo(16);
   }
 

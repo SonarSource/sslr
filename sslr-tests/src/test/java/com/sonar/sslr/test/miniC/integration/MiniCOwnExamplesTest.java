@@ -19,23 +19,22 @@
  */
 package com.sonar.sslr.test.miniC.integration;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
-
+import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.api.RecognitionException;
+import com.sonar.sslr.impl.Parser;
+import com.sonar.sslr.impl.events.ExtendedStackTrace;
+import com.sonar.sslr.impl.events.ExtendedStackTraceStream;
+import com.sonar.sslr.test.miniC.MiniCParser;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.sonar.sslr.api.RecognitionException;
-import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.impl.events.ExtendedStackTrace;
-import com.sonar.sslr.impl.events.ExtendedStackTraceStream;
-import com.sonar.sslr.test.miniC.MiniCGrammar;
-import com.sonar.sslr.test.miniC.MiniCParser;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @RunWith(value = Parameterized.class)
 public class MiniCOwnExamplesTest {
@@ -43,8 +42,8 @@ public class MiniCOwnExamplesTest {
   private static ExtendedStackTrace extendedStackTrace = new ExtendedStackTrace();
 
   private File file = null;
-  private static final Parser<MiniCGrammar> parser = MiniCParser.create();
-  private static final Parser<MiniCGrammar> parserDebug = MiniCParser.create(extendedStackTrace);
+  private static final Parser<Grammar> parser = MiniCParser.create();
+  private static final Parser<Grammar> parserDebug = MiniCParser.create(extendedStackTrace);
 
   @Parameterized.Parameters
   public static Collection<Object[]> getFiles() throws URISyntaxException {

@@ -20,8 +20,8 @@
 package org.sonar.sslr.minic.symboltable;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.test.miniC.MiniCGrammar;
 import com.sonar.sslr.test.miniC.MiniCParser;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
@@ -36,10 +36,9 @@ public class UnusedLocalVariableTest {
 
   @Test
   public void test() throws Exception {
-    Parser<MiniCGrammar> parser = MiniCParser.create();
-    MiniCGrammar grammar = parser.getGrammar();
+    Parser<Grammar> parser = MiniCParser.create();
     AstNode ast = parser.parse(FileUtils.readFileToString(new File("src/test/resources/unusedLocalVariable.mc")));
-    SemanticModel semanticModel = new MiniCSymbolTableBuilder(grammar).buildSymbolTable(ast);
+    SemanticModel semanticModel = new MiniCSymbolTableBuilder().buildSymbolTable(ast);
 
     int unusedLocalVariablesCount = 0;
     Collection<LocalScope> scopes = semanticModel.getScopes(LocalScope.class);

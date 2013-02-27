@@ -21,6 +21,7 @@ package org.sonar.sslr.ast;
 
 import com.google.common.collect.Sets;
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
 import com.sonar.sslr.test.miniC.MiniCParser;
@@ -34,13 +35,13 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class CollapsibleIfSelectTest {
 
-  private Parser<MiniCGrammar> p = MiniCParser.create();
-  private MiniCGrammar g = p.getGrammar();
+  private Parser<Grammar> p = MiniCParser.create();
+  private Grammar g = p.getGrammar();
 
   @Test
   public void test() {
     AstNode fileNode = p.parse(new File("src/test/resources/queries/collapsible_if.mc"));
-    List<AstNode> ifStatements = fileNode.getDescendants(g.ifStatement);
+    List<AstNode> ifStatements = fileNode.getDescendants(MiniCGrammar.IF_STATEMENT);
 
     Set<Integer> violations = Sets.newHashSet();
     for (AstNode node : ifStatements) {
@@ -57,19 +58,19 @@ public class CollapsibleIfSelectTest {
   }
 
   private boolean hasNoElseClause(AstSelect select) {
-    return select.children(g.elseClause).isEmpty();
+    return select.children(MiniCGrammar.ELSE_CLAUSE).isEmpty();
   }
 
   private boolean hasIfStatementWithoutElseInCompoundStatement(AstSelect select) {
     select = select
-        .children(g.statement)
-        .children(g.compoundStatement);
+        .children(MiniCGrammar.STATEMENT)
+        .children(MiniCGrammar.COMPOUND_STATEMENT);
     return select.children().size() == 3
       && hasIfStatementWithoutElse(select);
   }
 
   private boolean hasIfStatementWithoutElse(AstSelect select) {
-    select = select.children(g.statement).children(g.ifStatement);
+    select = select.children(MiniCGrammar.STATEMENT).children(MiniCGrammar.IF_STATEMENT);
     return select.isNotEmpty() && hasNoElseClause(select);
   }
 

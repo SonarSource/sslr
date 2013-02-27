@@ -22,14 +22,18 @@ package org.sonar.sslr.minic.symboltable;
 import com.google.common.base.Preconditions;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.test.miniC.MiniCGrammar;
-import org.sonar.sslr.symboltable.*;
+import org.sonar.sslr.symboltable.Scope;
+import org.sonar.sslr.symboltable.SemanticModel;
+import org.sonar.sslr.symboltable.Symbol;
+import org.sonar.sslr.symboltable.SymbolTableBuilder;
+import org.sonar.sslr.symboltable.SymbolTableBuilderVisitor;
 
 public class MiniCSymbolTableBuilder {
 
   private final SymbolTableBuilder builder = new SymbolTableBuilder();
 
-  public MiniCSymbolTableBuilder(MiniCGrammar grammar) {
-    builder.addToFirstPhase(new SymbolTableBuilderVisitor(grammar.compilationUnit) {
+  public MiniCSymbolTableBuilder() {
+    builder.addToFirstPhase(new SymbolTableBuilderVisitor(MiniCGrammar.COMPILATION_UNIT) {
       @Override
       public void visitNode(SemanticModel semanticModel, AstNode astNode) {
         Scope currentScope = semanticModel.getEnclosingScope(astNode);
@@ -38,7 +42,7 @@ public class MiniCSymbolTableBuilder {
         semanticModel.declareScope(astNode, newCurrentScope);
       }
     });
-    builder.addToFirstPhase(new SymbolTableBuilderVisitor(grammar.compoundStatement) {
+    builder.addToFirstPhase(new SymbolTableBuilderVisitor(MiniCGrammar.COMPOUND_STATEMENT) {
       @Override
       public void visitNode(SemanticModel semanticModel, AstNode astNode) {
         Scope currentScope = semanticModel.getEnclosingScope(astNode);
@@ -47,7 +51,7 @@ public class MiniCSymbolTableBuilder {
         semanticModel.declareScope(astNode, newCurrentScope);
       }
     });
-    builder.addToFirstPhase(new SymbolTableBuilderVisitor(grammar.structDefinition) {
+    builder.addToFirstPhase(new SymbolTableBuilderVisitor(MiniCGrammar.STRUCT_DEFINITION) {
       @Override
       public void visitNode(SemanticModel semanticModel, AstNode astNode) {
         String name = astNode.getChild(1).getTokenValue();
@@ -58,7 +62,7 @@ public class MiniCSymbolTableBuilder {
         semanticModel.declareScope(astNode, structSymbol);
       }
     });
-    builder.addToFirstPhase(new SymbolTableBuilderVisitor(grammar.functionDefinition) {
+    builder.addToFirstPhase(new SymbolTableBuilderVisitor(MiniCGrammar.FUNCTION_DEFINITION) {
       @Override
       public void visitNode(SemanticModel semanticModel, AstNode astNode) {
         String name = astNode.getChild(1).getTokenValue();
@@ -69,7 +73,7 @@ public class MiniCSymbolTableBuilder {
         semanticModel.declareScope(astNode, functionSymbol);
       }
     });
-    builder.addToFirstPhase(new SymbolTableBuilderVisitor(grammar.variableDefinition, grammar.parameterDeclaration, grammar.structMember) {
+    builder.addToFirstPhase(new SymbolTableBuilderVisitor(MiniCGrammar.VARIABLE_DEFINITION, MiniCGrammar.PARAMETER_DECLARATION, MiniCGrammar.STRUCT_MEMBER) {
       @Override
       public void visitNode(SemanticModel semanticModel, AstNode astNode) {
         String name = astNode.getChild(1).getTokenValue();
@@ -79,7 +83,7 @@ public class MiniCSymbolTableBuilder {
         semanticModel.declareSymbol(astNode, variableSymbol);
       }
     });
-    builder.addToSecondPhase(new SymbolTableBuilderVisitor(grammar.binVariableReference) {
+    builder.addToSecondPhase(new SymbolTableBuilderVisitor(MiniCGrammar.BIN_VARIABLE_REFERENCE) {
       @Override
       public void visitNode(SemanticModel semanticModel, AstNode astNode) {
         Scope enclosingScope = semanticModel.getEnclosingScope(astNode);
