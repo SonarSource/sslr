@@ -19,67 +19,10 @@
  */
 package com.sonar.sslr.impl.events;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.matcher.Matcher;
-import com.sonar.sslr.impl.matcher.RuleMatcher;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
 /**
  * @deprecated in 1.19
  */
 @Deprecated
 public final class ExtendedStackTrace extends ParsingEventListener {
-
-  public Matcher longestOutertMatcher;
-  public Matcher longestMatcher;
-  public int longestIndex;
-  public ParsingState longestParsingState;
-
-  @Override
-  public void beginParse() {
-  }
-
-  @Override
-  public void enterRule(RuleMatcher rule, ParsingState parsingState) {
-  }
-
-  @Override
-  public void exitWithMatchRule(RuleMatcher rule, ParsingState parsingState, AstNode astNode) {
-  }
-
-  @Override
-  public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState) {
-  }
-
-  @Override
-  public void enterMatcher(Matcher matcher, ParsingState parsingState) {
-  }
-
-  @Override
-  public void exitWithMatchMatcher(Matcher matcher, ParsingState parsingState, AstNode astNode) {
-  }
-
-  @Override
-  public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState) {
-  }
-
-  @Override
-  public String toString() {
-    PrintStream stream = null;
-
-    try {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      stream = new PrintStream(baos);
-      ExtendedStackTraceStream.print(this, stream);
-      return baos.toString();
-    } finally {
-      if (stream != null) {
-        stream.close();
-      }
-    }
-  }
 
 }

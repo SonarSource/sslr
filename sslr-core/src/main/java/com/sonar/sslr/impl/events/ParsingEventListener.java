@@ -19,48 +19,10 @@
  */
 package com.sonar.sslr.impl.events;
 
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.matcher.Matcher;
-import com.sonar.sslr.impl.matcher.RuleMatcher;
-
 /**
  * @deprecated in 1.19
  */
 @Deprecated
 public abstract class ParsingEventListener {
-
-  /* Parsing level */
-  public void beginLex() {
-  };
-
-  public void endLex() {
-  };
-
-  public void beginParse() {
-  };
-
-  public void endParse() {
-  };
-
-  /* Rule level */
-  public void enterRule(RuleMatcher rule, ParsingState parsingState) {
-  };
-
-  public void exitWithMatchRule(RuleMatcher rule, ParsingState parsingState, AstNode astNode) {
-  };
-
-  public void exitWithoutMatchRule(RuleMatcher rule, ParsingState parsingState) {
-  };
-
-  /* Matcher level */
-  public void enterMatcher(Matcher matcher, ParsingState parsingState) {
-  };
-
-  public void exitWithMatchMatcher(Matcher matcher, ParsingState parsingState, AstNode astNode) {
-  };
-
-  public void exitWithoutMatchMatcher(Matcher matcher, ParsingState parsingState) {
-  };
 
 }

@@ -19,7 +19,6 @@
  */
 package com.sonar.sslr.impl;
 
-import com.google.common.collect.ImmutableSet;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.RecognitionException;
@@ -37,10 +36,7 @@ import org.sonar.sslr.internal.vm.MutableGrammarCompiler;
 import org.sonar.sslr.parser.ParserAdapter;
 
 import java.io.File;
-import java.io.PrintStream;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * To create a new instance of this class use <code>{@link Parser#builder(Grammar)}</code>.
@@ -52,8 +48,6 @@ public class Parser<G extends Grammar> {
   private RuleDefinition rootRule;
   private final Lexer lexer;
   private final G grammar;
-  private final Set<RecognitionExceptionListener> listeners;
-  private final ParsingEventListener[] parsingEventListeners;
 
   /**
    * @since 1.16
@@ -61,103 +55,40 @@ public class Parser<G extends Grammar> {
   protected Parser(G grammar) {
     this.grammar = grammar;
     lexer = null;
-    listeners = ImmutableSet.of();
-    parsingEventListeners = new ParsingEventListener[0];
   }
 
   private Parser(Builder<G> builder) {
     this.lexer = builder.lexer;
     this.grammar = builder.grammar;
-    this.listeners = builder.listeners;
-    this.parsingEventListeners = builder.parsingEventListeners.toArray(new ParsingEventListener[builder.parsingEventListeners.size()]);
     this.rootRule = (RuleDefinition) this.grammar.getRootRule();
   }
 
-  /**
-   * @deprecated in 1.19
-   */
-  @Deprecated
-  public void printStackTrace(PrintStream stream) {
-  }
-
-  /**
-   * @deprecated in 1.19
-   */
-  @Deprecated
-  public void addListener(RecognitionExceptionListener listerner) {
-    listeners.add(listerner);
-  }
-
   public AstNode parse(File file) {
-    fireBeginLexEvent();
     try {
       lexer.lex(file);
     } catch (LexerException e) {
       throw new RecognitionException(e);
-    } finally {
-      fireEndLexEvent();
     }
-
     return parse(lexer.getTokens());
   }
 
   public AstNode parse(String source) {
-    fireBeginLexEvent();
     try {
       lexer.lex(source);
     } catch (LexerException e) {
       throw new RecognitionException(e);
-    } finally {
-      fireEndLexEvent();
     }
-
     return parse(lexer.getTokens());
   }
 
   public AstNode parse(List<Token> tokens) {
-    fireBeginParseEvent();
-
     // TODO can be compiled only once
     CompiledGrammar g = MutableGrammarCompiler.compile((CompilableGrammarRule) rootRule);
     AstNode astNode = LexerfulAstCreator.create(Machine.parse(tokens, g, g.getRootRuleKey()), tokens);
     // Unwrap AstNodeType for root node:
     astNode.hasToBeSkippedFromAst();
 
-    fireEndParseEvent();
-
     return astNode;
-  }
-
-  private void fireBeginLexEvent() {
-    if (parsingEventListeners != null) {
-      for (ParsingEventListener listener : this.parsingEventListeners) {
-        listener.beginLex();
-      }
-    }
-  }
-
-  private void fireEndLexEvent() {
-    if (parsingEventListeners != null) {
-      for (ParsingEventListener listener : this.parsingEventListeners) {
-        listener.endLex();
-      }
-    }
-  }
-
-  private void fireEndParseEvent() {
-    if (parsingEventListeners != null) {
-      for (ParsingEventListener listener : this.parsingEventListeners) {
-        listener.endParse();
-      }
-    }
-  }
-
-  private void fireBeginParseEvent() {
-    if (parsingEventListeners != null) {
-      for (ParsingEventListener listener : this.parsingEventListeners) {
-        listener.beginParse();
-      }
-    }
   }
 
   public G getGrammar() {
@@ -185,9 +116,6 @@ public class Parser<G extends Grammar> {
     private Parser<G> baseParser;
     private Lexer lexer;
     private final G grammar;
-    private final Set<ParsingEventListener> parsingEventListeners = new HashSet<ParsingEventListener>();
-    private final Set<RecognitionExceptionListener> listeners = new HashSet<RecognitionExceptionListener>();
-    private ExtendedStackTrace extendedStackTrace;
 
     private Builder(G grammar) {
       this.grammar = grammar;
@@ -197,8 +125,6 @@ public class Parser<G extends Grammar> {
       this.baseParser = parser;
       this.lexer = parser.lexer;
       this.grammar = parser.grammar;
-      setParsingEventListeners(parser.parsingEventListeners);
-      setRecognictionExceptionListener(parser.listeners.toArray(new RecognitionExceptionListener[parser.listeners.size()]));
     }
 
     public Parser<G> build() {
@@ -218,8 +144,6 @@ public class Parser<G extends Grammar> {
      */
     @Deprecated
     public Builder<G> setParsingEventListeners(ParsingEventListener... parsingEventListeners) {
-      this.parsingEventListeners.clear();
-      addParsingEventListeners(parsingEventListeners);
       return this;
     }
 
@@ -228,9 +152,6 @@ public class Parser<G extends Grammar> {
      */
     @Deprecated
     public Builder<G> addParsingEventListeners(ParsingEventListener... parsingEventListeners) {
-      for (ParsingEventListener parsingEventListener : parsingEventListeners) {
-        this.parsingEventListeners.add(parsingEventListener);
-      }
       return this;
     }
 
@@ -239,8 +160,6 @@ public class Parser<G extends Grammar> {
      */
     @Deprecated
     public Builder<G> setRecognictionExceptionListener(RecognitionExceptionListener... listeners) {
-      this.listeners.clear();
-      addRecognictionExceptionListeners(listeners);
       return this;
     }
 
@@ -249,9 +168,6 @@ public class Parser<G extends Grammar> {
      */
     @Deprecated
     public Builder<G> addRecognictionExceptionListeners(RecognitionExceptionListener... listeners) {
-      for (RecognitionExceptionListener listener : listeners) {
-        this.listeners.add(listener);
-      }
       return this;
     }
 
