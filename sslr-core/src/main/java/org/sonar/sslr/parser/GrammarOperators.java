@@ -47,10 +47,18 @@ public final class GrammarOperators {
   private GrammarOperators() {
   }
 
+  /**
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#sequence(Object, Object)} instead.
+   */
+  @Deprecated
   public static Object sequence(Object... elements) {
     return MatchersUtils.convertToSingleMatcher(elements);
   }
 
+  /**
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#firstOf(Object, Object)} instead.
+   */
+  @Deprecated
   public static Object firstOf(Object... elements) {
     Preconditions.checkNotNull(elements);
 
@@ -60,52 +68,92 @@ public final class GrammarOperators {
     return new FirstOfExpression(MatchersUtils.convertToMatchers(elements));
   }
 
+  /**
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#optional(Object)} instead.
+   */
+  @Deprecated
   public static Object optional(Object... elements) {
     return new OptionalExpression(MatchersUtils.convertToSingleMatcher(elements));
   }
 
+  /**
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#oneOrMore(Object)} instead.
+   */
+  @Deprecated
   public static Object oneOrMore(Object... elements) {
     return new OneOrMoreExpression(MatchersUtils.convertToSingleMatcher(elements));
   }
 
+  /**
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#zeroOrMore(Object)} instead.
+   */
+  @Deprecated
   public static Object zeroOrMore(Object... elements) {
     return new ZeroOrMoreExpression(MatchersUtils.convertToSingleMatcher(elements));
   }
 
+  /**
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#next(Object)} instead.
+   */
+  @Deprecated
   public static Object next(Object... elements) {
     return new NextExpression(MatchersUtils.convertToSingleMatcher(elements));
   }
 
+  /**
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#nextNot(Object)} instead.
+   */
+  @Deprecated
   public static Object nextNot(Object... elements) {
     return new NextNotExpression(MatchersUtils.convertToSingleMatcher(elements));
   }
 
+  /**
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#regexp(String)} instead.
+   */
+  @Deprecated
   public static Object regexp(String regexp) {
     return new PatternExpression(regexp);
   }
 
+  /**
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#endOfInput()} instead.
+   */
+  @Deprecated
   public static Object endOfInput() {
     return EndOfInputExpression.INSTANCE;
   }
 
+  /**
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#nothing()} instead.
+   */
+  @Deprecated
   public static Object nothing() {
     return NothingExpression.INSTANCE;
   }
 
+  /**
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#token(TokenType, Object)} instead.
+   */
+  @Deprecated
   public static Object token(TokenType tokenType, Object element) {
     return new TokenExpression(tokenType, MatchersUtils.convertToMatcher(element));
   }
 
   /**
    * @since 1.17
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#commentTrivia(Object)} instead.
    */
+  @Deprecated
   public static Object commentTrivia(Object element) {
     return new TriviaExpression(TriviaKind.COMMENT, MatchersUtils.convertToMatcher(element));
   }
 
   /**
    * @since 1.17
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#skippedTrivia(Object)} instead.
    */
+  @Deprecated
   public static Object skippedTrivia(Object element) {
     return new TriviaExpression(TriviaKind.SKIPPED_TEXT, MatchersUtils.convertToMatcher(element));
   }

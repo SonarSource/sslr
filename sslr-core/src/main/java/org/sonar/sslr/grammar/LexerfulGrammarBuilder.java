@@ -300,6 +300,10 @@ public class LexerfulGrammarBuilder {
     return new TokensBridgeExpression(from, to);
   }
 
+  /**
+   * @deprecated in 1.19, use {@link #anyToken()} instead.
+   */
+  @Deprecated
   public Object everything() {
     return AnyTokenExpression.INSTANCE;
   }
