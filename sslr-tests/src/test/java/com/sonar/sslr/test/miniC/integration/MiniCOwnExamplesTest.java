@@ -39,7 +39,12 @@ public class MiniCOwnExamplesTest {
     Collection<File> files = FileUtils.listFiles(new File("src/test/resources/MiniCIntegration"), null, true);
     assertThat(files).isNotEmpty();
     for (File file : files) {
-      parser.parse(file);
+      try {
+        parser.parse(file);
+      } catch (RuntimeException e) {
+        e.printStackTrace();
+        throw e;
+      }
     }
   }
 

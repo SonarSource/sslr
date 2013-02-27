@@ -59,7 +59,7 @@ public class LexerfulAstCreator {
 
     RuleDefinition ruleMatcher = (RuleDefinition) node.getMatcher();
 
-    Token token = tokens.get(node.getStartIndex());
+    Token token = node.getStartIndex() < tokens.size() ? tokens.get(node.getStartIndex()) : null;
     AstNode astNode = new AstNode(ruleMatcher, ruleMatcher.getName(), token);
     for (AstNode child : astNodes) {
       astNode.addChild(child);

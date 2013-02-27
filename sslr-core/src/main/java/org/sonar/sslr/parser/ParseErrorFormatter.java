@@ -26,6 +26,7 @@ import org.sonar.sslr.internal.matchers.InputBuffer;
 import org.sonar.sslr.internal.matchers.InputBuffer.Position;
 import org.sonar.sslr.internal.matchers.MatcherPathElement;
 import org.sonar.sslr.internal.matchers.TextUtils;
+import org.sonar.sslr.internal.vm.ErrorTreeNode;
 
 import java.util.List;
 
@@ -58,14 +59,9 @@ public class ParseErrorFormatter {
     appendSnippet(sb, inputBuffer, position);
     sb.append('\n');
     sb.append("Failed at rules:\n");
-    ErrorTreeNode tree = buildTree(parseError.getFailedPaths());
+    ErrorTreeNode tree = ErrorTreeNode.buildTree(parseError.getFailedPaths());
     appendTree(sb, inputBuffer, tree);
     return sb.toString();
-  }
-
-  private static class ErrorTreeNode {
-    MatcherPathElement pathElement;
-    List<ErrorTreeNode> children = Lists.newArrayList();
   }
 
   private void appendTree(StringBuilder sb, InputBuffer inputBuffer, ErrorTreeNode node) {
@@ -88,39 +84,6 @@ public class ParseErrorFormatter {
     }
     sb.append(prefix + (isTail ? "/-" : "+-"));
     appendPathElement(sb, inputBuffer, node.pathElement);
-  }
-
-  private ErrorTreeNode buildTree(List<List<MatcherPathElement>> paths) {
-    ErrorTreeNode root = new ErrorTreeNode();
-    root.pathElement = paths.get(0).get(0);
-    for (List<MatcherPathElement> path : paths) {
-      addToTree(root, path);
-    }
-    return root;
-  }
-
-  private static void addToTree(ErrorTreeNode root, List<MatcherPathElement> path) {
-    ErrorTreeNode current = root;
-    int i = 1;
-    boolean found = true;
-    while (found && i < path.size()) {
-      found = false;
-      for (ErrorTreeNode child : current.children) {
-        if (child.pathElement.equals(path.get(i))) {
-          current = child;
-          i++;
-          found = true;
-          break;
-        }
-      }
-    }
-    while (i < path.size()) {
-      ErrorTreeNode child = new ErrorTreeNode();
-      child.pathElement = path.get(i);
-      current.children.add(child);
-      current = child;
-      i++;
-    }
   }
 
   private static void appendPathElement(StringBuilder sb, InputBuffer inputBuffer, MatcherPathElement pathElement) {

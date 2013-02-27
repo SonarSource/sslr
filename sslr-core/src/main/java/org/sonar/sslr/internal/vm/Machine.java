@@ -32,6 +32,7 @@ import org.sonar.sslr.internal.matchers.InputBuffer;
 import org.sonar.sslr.internal.matchers.Matcher;
 import org.sonar.sslr.internal.matchers.MatcherPathElement;
 import org.sonar.sslr.internal.matchers.ParseNode;
+import org.sonar.sslr.internal.vm.lexerful.LexerfulParseErrorFormatter;
 import org.sonar.sslr.parser.ParseError;
 import org.sonar.sslr.parser.ParsingResult;
 
@@ -69,15 +70,17 @@ public class Machine implements CharSequence {
     if (machine.matched) {
       return machine.stack.subNodes().get(0);
     } else {
-      // FIXME Perform second run in order to collect information for error report
-      machine = new Machine(null, inputTokens, grammar.getInstructions(), errorLocatingHandler);
+      // Perform second run in order to collect information for error report
+      ErrorReportingHandler errorReportingHandler = new ErrorReportingHandler(errorLocatingHandler.getErrorIndex());
+      machine = new Machine(null, inputTokens, grammar.getInstructions(), errorReportingHandler);
       machine.execute(grammar.getMatcher(grammar.getRootRuleKey()), grammar.getOffset(grammar.getRootRuleKey()), grammar.getInstructions());
 
       // failure should be permanent, otherwise something generally wrong
       Preconditions.checkState(!machine.matched);
 
-      int line = tokens.isEmpty() ? 1 : tokens.get(errorLocatingHandler.getErrorIndex()).getLine();
-      throw new RecognitionException(line, "");
+      String errorMsg = new LexerfulParseErrorFormatter().format(tokens, errorLocatingHandler.getErrorIndex(), errorReportingHandler.getFailedPaths());
+      int errorLine = tokens.isEmpty() ? 1 : tokens.get(errorLocatingHandler.getErrorIndex()).getLine();
+      throw new RecognitionException(errorLine, errorMsg);
     }
   }
 

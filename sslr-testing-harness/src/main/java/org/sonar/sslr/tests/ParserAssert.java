@@ -22,8 +22,12 @@ package org.sonar.sslr.tests;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.impl.events.ExtendedStackTrace;
+import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.fest.assertions.GenericAssert;
+import org.sonar.sslr.grammar.GrammarRuleKey;
+import org.sonar.sslr.internal.vm.EndOfInputExpression;
+import org.sonar.sslr.internal.vm.FirstOfExpression;
+import org.sonar.sslr.internal.vm.lexerful.TokenTypeExpression;
 
 /**
  * To create a new instance of this class invoke <code>{@link Assertions#assertThat(Parser)}</code>.
@@ -38,6 +42,39 @@ public class ParserAssert extends GenericAssert<ParserAssert, Parser> {
     super(ParserAssert.class, actual);
   }
 
+  private static class WithEndOfInput implements GrammarRuleKey {
+    private final GrammarRuleKey ruleKey;
+
+    public WithEndOfInput(GrammarRuleKey ruleKey) {
+      this.ruleKey = ruleKey;
+    }
+
+    @Override
+    public String toString() {
+      return ruleKey + " with end of input";
+    }
+  }
+
+  private static class EndOfInput implements GrammarRuleKey {
+    @Override
+    public String toString() {
+      return "end of input";
+    }
+  }
+
+  private Parser createParserWithEofMatcher() {
+    RuleDefinition rule = actual.getRootRule();
+    RuleDefinition endOfInput = new RuleDefinition(new EndOfInput())
+        .is(new FirstOfExpression(EndOfInputExpression.INSTANCE, new TokenTypeExpression(GenericTokenType.EOF)));
+    RuleDefinition withEndOfInput = new RuleDefinition(new WithEndOfInput(actual.getRootRule().getRuleKey()))
+        .is(rule, endOfInput);
+
+    Parser parser = Parser.builder(actual).build();
+    parser.setRootRule(withEndOfInput);
+
+    return parser;
+  }
+
   /**
    * Verifies that the actual <code>{@link Parser}</code> fully matches a given input.
    * @return this assertion object.
@@ -45,17 +82,12 @@ public class ParserAssert extends GenericAssert<ParserAssert, Parser> {
   public ParserAssert matches(String input) {
     isNotNull();
     hasRootRule();
-    Parser parser = Parser.builder(actual).setExtendedStackTrace(new ExtendedStackTrace()).build();
-    parser.setRootRule(actual.getRootRule());
+    Parser parser = createParserWithEofMatcher();
     String expected = "Rule '" + getRuleName() + "' should match:\n" + input;
     try {
       parser.parse(input);
     } catch (RecognitionException e) {
       String actual = e.getMessage();
-      throw new ParsingResultComparisonFailure(expected, actual);
-    }
-    if (!isAllTokensConsumed(parser)) {
-      String actual = "Not all tokens have been consumed";
       throw new ParsingResultComparisonFailure(expected, actual);
     }
     return this;
@@ -68,28 +100,20 @@ public class ParserAssert extends GenericAssert<ParserAssert, Parser> {
   public ParserAssert notMatches(String input) {
     isNotNull();
     hasRootRule();
-    Parser parser = actual;
+    Parser parser = createParserWithEofMatcher();
     try {
       parser.parse(input);
     } catch (RecognitionException e) {
       // expected
       return this;
     }
-    if (isAllTokensConsumed(parser)) {
-      throw new AssertionError("Rule '" + getRuleName() + "' should not match:\n" + input);
-    }
-    return this;
+    throw new AssertionError("Rule '" + getRuleName() + "' should not match:\n" + input);
   }
 
   private void hasRootRule() {
     Assertions.assertThat(actual.getRootRule())
         .overridingErrorMessage("Root rule of the parser should not be null")
         .isNotNull();
-  }
-
-  private static boolean isAllTokensConsumed(Parser parser) {
-    return !parser.getParsingState().hasNextToken()
-        || parser.getParsingState().readToken(parser.getParsingState().lexerIndex).getType() == GenericTokenType.EOF;
   }
 
   private String getRuleName() {

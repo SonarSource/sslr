@@ -21,6 +21,7 @@ package org.sonar.sslr.internal.vm;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.sonar.sslr.internal.grammar.MutableParsingRule;
 import org.sonar.sslr.internal.matchers.MatcherPathElement;
 
@@ -53,7 +54,7 @@ public class ErrorReportingHandler implements MachineHandler {
     int endIndex = machine.getIndex();
     MachineStack stack = machine.peek();
     while (!stack.isEmpty()) {
-      if (stack.matcher() instanceof MutableParsingRule) {
+      if (stack.matcher() instanceof MutableParsingRule || stack.matcher() instanceof RuleDefinition) {
         list.add(new MatcherPathElement(stack.matcher(), stack.index(), endIndex));
         endIndex = stack.index();
       }

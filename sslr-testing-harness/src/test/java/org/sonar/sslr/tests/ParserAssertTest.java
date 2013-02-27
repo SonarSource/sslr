@@ -75,9 +75,9 @@ public class ParserAssertTest {
   @Test
   public void test2_matches_failure() {
     thrown.expect(ParsingResultComparisonFailure.class);
-    thrown.expectMessage("Rule 'ruleName' should match:\nfoo foo\nNot all tokens have been consumed");
+    thrown.expectMessage("Rule 'ruleName' should match:\nfoo bar");
     new ParserAssert(parser)
-        .matches("foo foo");
+        .matches("foo bar");
   }
 
   @Test
