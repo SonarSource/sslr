@@ -69,8 +69,8 @@ public final class GrammarFunctions {
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#zeroOrMore(Object)} instead.
      */
     @Deprecated
-    public static Matcher o2n(Object... objects) {
-      return new ZeroOrMoreExpression((ParsingExpression) and(objects));
+    public static Matcher o2n(Object... e) {
+      return new ZeroOrMoreExpression(convertToSingleExpression(e));
     }
 
     /**
@@ -87,8 +87,8 @@ public final class GrammarFunctions {
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#oneOrMore(Object)} instead.
      */
     @Deprecated
-    public static Matcher one2n(Object... elements) {
-      return new OneOrMoreExpression((ParsingExpression) and(elements));
+    public static Matcher one2n(Object... e) {
+      return new OneOrMoreExpression(convertToSingleExpression(e));
     }
 
     /**
@@ -105,8 +105,8 @@ public final class GrammarFunctions {
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#optional(Object)} instead.
      */
     @Deprecated
-    public static Matcher opt(Object... elements) {
-      return new OptionalExpression((ParsingExpression) and(elements));
+    public static Matcher opt(Object... e) {
+      return new OptionalExpression(convertToSingleExpression(e));
     }
 
     /**
@@ -127,20 +127,20 @@ public final class GrammarFunctions {
      * @deprecated in 1.16, use {@link GrammarFunctions.Standard#firstOf(Object...)} instead
      */
     @Deprecated
-    public static Matcher or(Object... elements) {
-      return firstOf(elements);
+    public static Matcher or(Object... e) {
+      return firstOf(e);
     }
 
     /**
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#firstOf(Object, Object)} instead.
      */
     @Deprecated
-    public static Matcher firstOf(Object... elements) {
-      checkSize(elements);
-      if (elements.length == 1) {
-        return convertToMatcher(elements[0]);
+    public static Matcher firstOf(Object... e) {
+      checkSize(e);
+      if (e.length == 1) {
+        return convertToExpression(e[0]);
       } else {
-        return new FirstOfExpression(convertToMatchers(elements));
+        return new FirstOfExpression(convertToExpressions(e));
       }
     }
 
@@ -156,13 +156,8 @@ public final class GrammarFunctions {
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#sequence(Object, Object)} instead.
      */
     @Deprecated
-    public static Matcher and(Object... elements) {
-      checkSize(elements);
-      if (elements.length == 1) {
-        return convertToMatcher(elements[0]);
-      } else {
-        return new SequenceExpression(convertToMatchers(elements));
-      }
+    public static Matcher and(Object... e) {
+      return convertToSingleExpression(e);
     }
 
   }
@@ -178,8 +173,8 @@ public final class GrammarFunctions {
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#nextNot(Object)} instead.
      */
     @Deprecated
-    public static Matcher not(Object element) {
-      return new NextNotExpression((ParsingExpression) convertToMatcher(element));
+    public static Matcher not(Object e) {
+      return new NextNotExpression(convertToExpression(e));
     }
 
     /**
@@ -188,8 +183,8 @@ public final class GrammarFunctions {
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#next(Object)} instead.
      */
     @Deprecated
-    public static Matcher next(Object... elements) {
-      return new NextExpression((ParsingExpression) Standard.and(elements));
+    public static Matcher next(Object... e) {
+      return new NextExpression(convertToSingleExpression(e));
     }
 
   }
@@ -213,8 +208,8 @@ public final class GrammarFunctions {
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#adjacent(Object)} instead.
      */
     @Deprecated
-    public static Matcher adjacent(Object element) {
-      return new SequenceExpression(AdjacentExpression.INSTANCE, (ParsingExpression) convertToMatcher(element));
+    public static Matcher adjacent(Object e) {
+      return new SequenceExpression(AdjacentExpression.INSTANCE, convertToExpression(e));
     }
 
     /**
@@ -223,8 +218,8 @@ public final class GrammarFunctions {
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#anyTokenButNot(Object)} instead.
      */
     @Deprecated
-    public static Matcher anyTokenButNot(Object element) {
-      return new SequenceExpression(new NextNotExpression((ParsingExpression) convertToMatcher(element)), AnyTokenExpression.INSTANCE);
+    public static Matcher anyTokenButNot(Object e) {
+      return new SequenceExpression(new NextNotExpression(convertToExpression(e)), AnyTokenExpression.INSTANCE);
     }
 
     /**
@@ -306,8 +301,8 @@ public final class GrammarFunctions {
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#till(Object)} instead.
      */
     @Deprecated
-    public static Matcher till(Object element) {
-      ParsingExpression expression = (ParsingExpression) convertToMatcher(element);
+    public static Matcher till(Object e) {
+      ParsingExpression expression = convertToExpression(e);
       return new SequenceExpression(
           new ZeroOrMoreExpression(
               new SequenceExpression(
@@ -331,20 +326,20 @@ public final class GrammarFunctions {
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#exclusiveTill(Object, Object...)} instead.
      */
     @Deprecated
-    public static Matcher exclusiveTill(Object... elements) {
+    public static Matcher exclusiveTill(Object... e) {
       return new ZeroOrMoreExpression(
           new SequenceExpression(
               new NextNotExpression(
                   // TODO firstOf is useless in case of single sub-expression
-                  new FirstOfExpression(convertToMatchers(elements))),
+                  new FirstOfExpression(convertToExpressions(e))),
               AnyTokenExpression.INSTANCE));
     }
 
     /**
      * @since 1.14
      */
-    public static Matcher memoizeMatches(Object element) {
-      return convertToMatcher(element);
+    public static Matcher memoizeMatches(Object e) {
+      return convertToExpression(e);
     }
 
   }
@@ -362,36 +357,45 @@ public final class GrammarFunctions {
     // TODO
   }
 
-  protected static ParsingExpression[] convertToMatchers(Object[] objects) {
-    checkSize(objects);
-    ParsingExpression[] matchers = new ParsingExpression[objects.length];
+  static ParsingExpression convertToSingleExpression(Object[] e) {
+    checkSize(e);
+    if (e.length == 1) {
+      return convertToExpression(e[0]);
+    } else {
+      return new SequenceExpression(convertToExpressions(e));
+    }
+  }
+
+  private static ParsingExpression[] convertToExpressions(Object[] e) {
+    checkSize(e);
+    ParsingExpression[] matchers = new ParsingExpression[e.length];
     for (int i = 0; i < matchers.length; i++) {
-      matchers[i] = (ParsingExpression) convertToMatcher(objects[i]);
+      matchers[i] = convertToExpression(e[i]);
     }
     return matchers;
   }
 
-  protected static Matcher convertToMatcher(Object object) {
-    final Matcher matcher;
-    if (object instanceof String) {
-      matcher = new TokenValueExpression((String) object);
-    } else if (object instanceof TokenType) {
-      TokenType tokenType = (TokenType) object;
-      matcher = new TokenTypeExpression(tokenType);
-    } else if (object instanceof RuleDefinition) {
-      matcher = ((RuleDefinition) object);
-    } else if (object instanceof Class) {
-      matcher = new TokenTypeClassExpression((Class) object);
-    } else if (object instanceof Matcher) {
-      matcher = (Matcher) object;
+  private static ParsingExpression convertToExpression(Object e) {
+    final ParsingExpression expression;
+    if (e instanceof String) {
+      expression = new TokenValueExpression((String) e);
+    } else if (e instanceof TokenType) {
+      TokenType tokenType = (TokenType) e;
+      expression = new TokenTypeExpression(tokenType);
+    } else if (e instanceof RuleDefinition) {
+      expression = ((RuleDefinition) e);
+    } else if (e instanceof Class) {
+      expression = new TokenTypeClassExpression((Class) e);
+    } else if (e instanceof ParsingExpression) {
+      expression = (ParsingExpression) e;
     } else {
-      throw new IllegalArgumentException("The matcher object can't be anything else than a Rule, Matcher, String, TokenType or Class. Object = " + object);
+      throw new IllegalArgumentException("The matcher object can't be anything else than a Rule, Matcher, String, TokenType or Class. Object = " + e);
     }
-    return matcher;
+    return expression;
   }
 
-  private static void checkSize(Object[] objects) {
-    if (objects == null || objects.length == 0) {
+  private static void checkSize(Object[] e) {
+    if (e == null || e.length == 0) {
       throw new IllegalArgumentException("You must define at least one matcher.");
     }
   }

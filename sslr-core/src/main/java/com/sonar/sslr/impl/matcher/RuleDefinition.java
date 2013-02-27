@@ -58,16 +58,16 @@ public class RuleDefinition implements Rule, AstNodeSkippingPolicy, GrammarRuleK
     return name;
   }
 
-  public RuleDefinition is(Object... matchers) {
+  public RuleDefinition is(Object... e) {
     throwExceptionIfRuleAlreadyDefined("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.");
-    throwExceptionIfEmptyListOfMatchers(matchers);
-    setExpression((ParsingExpression) GrammarFunctions.Standard.and(matchers));
+    throwExceptionIfEmptyListOfMatchers(e);
+    setExpression(GrammarFunctions.convertToSingleExpression(e));
     return this;
   }
 
-  public RuleDefinition override(Object... matchers) {
-    throwExceptionIfEmptyListOfMatchers(matchers);
-    setExpression((ParsingExpression) GrammarFunctions.Standard.and(matchers));
+  public RuleDefinition override(Object... e) {
+    throwExceptionIfEmptyListOfMatchers(e);
+    setExpression(GrammarFunctions.convertToSingleExpression(e));
     return this;
   }
 
@@ -100,7 +100,6 @@ public class RuleDefinition implements Rule, AstNodeSkippingPolicy, GrammarRuleK
   }
 
   public void recoveryRule() {
-    // TODO
   }
 
   public boolean hasToBeSkippedFromAst(AstNode node) {
