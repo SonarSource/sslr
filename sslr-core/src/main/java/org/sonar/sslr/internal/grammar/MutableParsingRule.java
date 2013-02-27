@@ -29,7 +29,6 @@ import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.matchers.Matcher;
-import org.sonar.sslr.internal.matchers.MatchersUtils;
 import org.sonar.sslr.internal.vm.CompilableGrammarRule;
 import org.sonar.sslr.internal.vm.CompilationHandler;
 import org.sonar.sslr.internal.vm.EndOfInputExpression;
@@ -38,6 +37,9 @@ import org.sonar.sslr.internal.vm.Instruction;
 import org.sonar.sslr.internal.vm.ParsingExpression;
 import org.sonar.sslr.internal.vm.PatternExpression;
 import org.sonar.sslr.internal.vm.RuleRefExpression;
+import org.sonar.sslr.internal.vm.SequenceExpression;
+import org.sonar.sslr.internal.vm.StringExpression;
+import org.sonar.sslr.parser.GrammarOperators;
 
 public class MutableParsingRule implements CompilableGrammarRule, Matcher, Rule, AstNodeSkippingPolicy, ParsingExpression, GrammarRuleKey {
 
@@ -72,21 +74,25 @@ public class MutableParsingRule implements CompilableGrammarRule, Matcher, Rule,
     return expression;
   }
 
-  public Rule is(Object... matchers) {
+  public Rule is(Object... e) {
     if (expression != null) {
       throw new GrammarException("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.");
     }
-    setExpression(MatchersUtils.convertToSingleMatcher(matchers));
+    setExpression((ParsingExpression) GrammarOperators.sequence(e));
     return this;
   }
 
-  public Rule override(Object... matchers) {
-    setExpression(MatchersUtils.convertToSingleMatcher(matchers));
+  public Rule override(Object... e) {
+    setExpression((ParsingExpression) GrammarOperators.sequence(e));
     return this;
   }
 
   public void mock() {
-    setExpression(MatchersUtils.convertToSingleMatcher(getName(), new FirstOfExpression(new PatternExpression("\\s++"), EndOfInputExpression.INSTANCE)));
+    setExpression(new SequenceExpression(
+        new StringExpression(getName()),
+        new FirstOfExpression(
+            new PatternExpression("\\s++"),
+            EndOfInputExpression.INSTANCE)));
   }
 
   public void setExpression(ParsingExpression expression) {

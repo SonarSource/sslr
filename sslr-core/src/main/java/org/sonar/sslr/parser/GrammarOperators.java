@@ -22,7 +22,6 @@ package org.sonar.sslr.parser;
 import com.google.common.base.Preconditions;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.api.Trivia.TriviaKind;
-import org.sonar.sslr.internal.matchers.MatchersUtils;
 import org.sonar.sslr.internal.vm.EndOfInputExpression;
 import org.sonar.sslr.internal.vm.FirstOfExpression;
 import org.sonar.sslr.internal.vm.NextExpression;
@@ -30,7 +29,10 @@ import org.sonar.sslr.internal.vm.NextNotExpression;
 import org.sonar.sslr.internal.vm.NothingExpression;
 import org.sonar.sslr.internal.vm.OneOrMoreExpression;
 import org.sonar.sslr.internal.vm.OptionalExpression;
+import org.sonar.sslr.internal.vm.ParsingExpression;
 import org.sonar.sslr.internal.vm.PatternExpression;
+import org.sonar.sslr.internal.vm.SequenceExpression;
+import org.sonar.sslr.internal.vm.StringExpression;
 import org.sonar.sslr.internal.vm.TokenExpression;
 import org.sonar.sslr.internal.vm.TriviaExpression;
 import org.sonar.sslr.internal.vm.ZeroOrMoreExpression;
@@ -51,61 +53,61 @@ public final class GrammarOperators {
    * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#sequence(Object, Object)} instead.
    */
   @Deprecated
-  public static Object sequence(Object... elements) {
-    return MatchersUtils.convertToSingleMatcher(elements);
+  public static Object sequence(Object... e) {
+    return convertToSingleExpression(e);
   }
 
   /**
    * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#firstOf(Object, Object)} instead.
    */
   @Deprecated
-  public static Object firstOf(Object... elements) {
-    Preconditions.checkNotNull(elements);
+  public static Object firstOf(Object... e) {
+    Preconditions.checkNotNull(e);
 
-    if (elements.length == 1) {
-      return MatchersUtils.convertToMatcher(elements[0]);
+    if (e.length == 1) {
+      return convertToExpression(e[0]);
     }
-    return new FirstOfExpression(MatchersUtils.convertToMatchers(elements));
+    return new FirstOfExpression(convertToExpressions(e));
   }
 
   /**
    * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#optional(Object)} instead.
    */
   @Deprecated
-  public static Object optional(Object... elements) {
-    return new OptionalExpression(MatchersUtils.convertToSingleMatcher(elements));
+  public static Object optional(Object... e) {
+    return new OptionalExpression(convertToSingleExpression(e));
   }
 
   /**
    * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#oneOrMore(Object)} instead.
    */
   @Deprecated
-  public static Object oneOrMore(Object... elements) {
-    return new OneOrMoreExpression(MatchersUtils.convertToSingleMatcher(elements));
+  public static Object oneOrMore(Object... e) {
+    return new OneOrMoreExpression(convertToSingleExpression(e));
   }
 
   /**
    * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#zeroOrMore(Object)} instead.
    */
   @Deprecated
-  public static Object zeroOrMore(Object... elements) {
-    return new ZeroOrMoreExpression(MatchersUtils.convertToSingleMatcher(elements));
+  public static Object zeroOrMore(Object... e) {
+    return new ZeroOrMoreExpression(convertToSingleExpression(e));
   }
 
   /**
    * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#next(Object)} instead.
    */
   @Deprecated
-  public static Object next(Object... elements) {
-    return new NextExpression(MatchersUtils.convertToSingleMatcher(elements));
+  public static Object next(Object... e) {
+    return new NextExpression(convertToSingleExpression(e));
   }
 
   /**
    * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#nextNot(Object)} instead.
    */
   @Deprecated
-  public static Object nextNot(Object... elements) {
-    return new NextNotExpression(MatchersUtils.convertToSingleMatcher(elements));
+  public static Object nextNot(Object... e) {
+    return new NextNotExpression(convertToSingleExpression(e));
   }
 
   /**
@@ -136,8 +138,8 @@ public final class GrammarOperators {
    * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#token(TokenType, Object)} instead.
    */
   @Deprecated
-  public static Object token(TokenType tokenType, Object element) {
-    return new TokenExpression(tokenType, MatchersUtils.convertToMatcher(element));
+  public static Object token(TokenType tokenType, Object e) {
+    return new TokenExpression(tokenType, convertToExpression(e));
   }
 
   /**
@@ -145,8 +147,8 @@ public final class GrammarOperators {
    * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#commentTrivia(Object)} instead.
    */
   @Deprecated
-  public static Object commentTrivia(Object element) {
-    return new TriviaExpression(TriviaKind.COMMENT, MatchersUtils.convertToMatcher(element));
+  public static Object commentTrivia(Object e) {
+    return new TriviaExpression(TriviaKind.COMMENT, convertToExpression(e));
   }
 
   /**
@@ -154,8 +156,42 @@ public final class GrammarOperators {
    * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerlessGrammarBuilder#skippedTrivia(Object)} instead.
    */
   @Deprecated
-  public static Object skippedTrivia(Object element) {
-    return new TriviaExpression(TriviaKind.SKIPPED_TEXT, MatchersUtils.convertToMatcher(element));
+  public static Object skippedTrivia(Object e) {
+    return new TriviaExpression(TriviaKind.SKIPPED_TEXT, convertToExpression(e));
+  }
+
+  private static ParsingExpression convertToSingleExpression(Object... elements) {
+    Preconditions.checkNotNull(elements);
+
+    if (elements.length == 1) {
+      return convertToExpression(elements[0]);
+    }
+    return new SequenceExpression(convertToExpressions(elements));
+  }
+
+  private static ParsingExpression[] convertToExpressions(Object... elements) {
+    Preconditions.checkNotNull(elements);
+    Preconditions.checkArgument(elements.length > 0);
+
+    ParsingExpression[] matchers = new ParsingExpression[elements.length];
+    for (int i = 0; i < matchers.length; i++) {
+      matchers[i] = convertToExpression(elements[i]);
+    }
+    return matchers;
+  }
+
+  private static ParsingExpression convertToExpression(Object e) {
+    Preconditions.checkNotNull(e);
+
+    if (e instanceof ParsingExpression) {
+      return (ParsingExpression) e;
+    } else if (e instanceof String) {
+      return new StringExpression((String) e);
+    } else if (e instanceof Character) {
+      return new StringExpression(((Character) e).toString());
+    } else {
+      throw new IllegalArgumentException("Incorrect type of parsing expression: " + e.getClass().toString());
+    }
   }
 
 }
