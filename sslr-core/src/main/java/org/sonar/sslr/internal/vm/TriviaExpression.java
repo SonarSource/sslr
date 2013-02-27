@@ -58,4 +58,9 @@ public class TriviaExpression implements Matcher, ParsingExpression {
     return result;
   }
 
+  @Override
+  public String toString() {
+    return "Trivia " + triviaKind + "[" + subExpression + "]";
+  }
+
 }

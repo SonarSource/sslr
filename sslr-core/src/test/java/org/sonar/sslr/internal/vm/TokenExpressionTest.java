@@ -35,6 +35,7 @@ public class TokenExpressionTest {
   @Test
   public void should_compile() {
     TokenExpression expression = new TokenExpression(GenericTokenType.IDENTIFIER, new SubExpression(1, 2));
+    assertThat(expression.toString()).isEqualTo("Token IDENTIFIER[SubExpression]");
     Instruction[] instructions = expression.compile(new CompilationHandler());
     assertThat(instructions).isEqualTo(new Instruction[] {
       Instruction.call(2, expression),

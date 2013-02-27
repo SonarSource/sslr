@@ -54,4 +54,9 @@ public class NextNotExpression implements ParsingExpression {
     return result;
   }
 
+  @Override
+  public String toString() {
+    return "NextNot[" + subExpression + "]";
+  }
+
 }

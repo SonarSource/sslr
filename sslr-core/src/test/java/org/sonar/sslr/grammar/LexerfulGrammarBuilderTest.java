@@ -23,6 +23,7 @@ import com.sonar.sslr.api.TokenType;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.sonar.sslr.internal.grammar.LexerfulGrammarAdapter;
 import org.sonar.sslr.internal.vm.FirstOfExpression;
 import org.sonar.sslr.internal.vm.NextExpression;
 import org.sonar.sslr.internal.vm.NextNotExpression;
@@ -86,9 +87,36 @@ public class LexerfulGrammarBuilderTest {
     assertThat(b.isOneOfThem(mock(TokenType.class), mock(TokenType.class))).isInstanceOf(TokenTypesExpression.class);
     assertThat(b.bridge(mock(TokenType.class), mock(TokenType.class))).isInstanceOf(TokensBridgeExpression.class);
 
+    assertThat(b.adjacent(e1).toString()).isEqualTo("Sequence[Adjacent, " + e1 + "]");
+
+    assertThat(b.anyTokenButNot(e1).toString()).isEqualTo("Sequence[NextNot[" + e1 + "], AnyToken]");
+
+    assertThat(b.till(e1).toString()).isEqualTo("Sequence[ZeroOrMore[Sequence[NextNot[" + e1 + "], AnyToken]], " + e1 + "]");
+
+    assertThat(b.exclusiveTill(e1).toString()).isEqualTo("ZeroOrMore[Sequence[NextNot[FirstOf[" + e1 + "]], AnyToken]]");
+
     assertThat(b.everything()).as("singleton").isSameAs(AnyTokenExpression.INSTANCE);
     assertThat(b.anyToken()).as("singleton").isSameAs(AnyTokenExpression.INSTANCE);
     assertThat(b.tillNewLine()).as("singleton").isSameAs(TillNewLineExpression.INSTANCE);
+  }
+
+  @Test
+  public void should_set_root_rule() {
+    LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    b.rule(ruleKey).is(b.nothing());
+    b.setRootRule(ruleKey);
+    LexerfulGrammarAdapter grammar = (LexerfulGrammarAdapter) b.build();
+    assertThat(grammar.getRootRuleKey()).isSameAs(ruleKey);
+  }
+
+  @Test
+  public void should_build_based_on_another_builder() {
+    LexerfulGrammarBuilder base = LexerfulGrammarBuilder.create();
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    base.rule(ruleKey).is(base.nothing());
+    LexerfulGrammarBuilder b = LexerfulGrammarBuilder.createBasedOn(base);
+    assertThat(b.build().rule(ruleKey)).isNotNull();
   }
 
   @Test

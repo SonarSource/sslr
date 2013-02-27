@@ -57,4 +57,9 @@ public class NextExpression implements ParsingExpression {
     return result;
   }
 
+  @Override
+  public String toString() {
+    return "Next[" + subExpression + "]";
+  }
+
 }

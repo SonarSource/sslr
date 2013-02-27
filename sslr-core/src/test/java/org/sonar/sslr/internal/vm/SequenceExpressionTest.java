@@ -27,9 +27,11 @@ public class SequenceExpressionTest {
 
   @Test
   public void should_compile() {
-    Instruction[] instructions = new SequenceExpression(
+    SequenceExpression expression = new SequenceExpression(
         new SubExpression(1, 2),
-        new SubExpression(3)).compile(new CompilationHandler());
+        new SubExpression(3));
+    assertThat(expression.toString()).isEqualTo("Sequence[SubExpression, SubExpression]");
+    Instruction[] instructions = expression.compile(new CompilationHandler());
     assertThat(instructions).isEqualTo(new Instruction[] {
       SubExpression.mockInstruction(1),
       SubExpression.mockInstruction(2),

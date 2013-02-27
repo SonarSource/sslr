@@ -21,6 +21,7 @@ package org.sonar.sslr.internal.vm;
 
 import com.google.common.collect.Lists;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class FirstOfExpression implements ParsingExpression {
@@ -76,6 +77,11 @@ public class FirstOfExpression implements ParsingExpression {
     }
 
     return result.toArray(new Instruction[result.size()]);
+  }
+
+  @Override
+  public String toString() {
+    return "FirstOf" + Arrays.toString(subExpressions);
   }
 
 }

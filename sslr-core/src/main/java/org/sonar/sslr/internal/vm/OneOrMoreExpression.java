@@ -60,4 +60,9 @@ public class OneOrMoreExpression implements ParsingExpression {
     return result;
   }
 
+  @Override
+  public String toString() {
+    return "OneOrMore[" + subExpression + "]";
+  }
+
 }

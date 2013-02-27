@@ -35,6 +35,7 @@ public class TriviaExpressionTest {
   @Test
   public void should_compile() {
     TriviaExpression expression = new TriviaExpression(TriviaKind.COMMENT, new SubExpression(1, 2));
+    assertThat(expression.toString()).isEqualTo("Trivia COMMENT[SubExpression]");
     Instruction[] instructions = expression.compile(new CompilationHandler());
     assertThat(instructions).isEqualTo(new Instruction[] {
       Instruction.call(2, expression),

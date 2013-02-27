@@ -27,7 +27,9 @@ public class OneOrMoreExpressionTest {
 
   @Test
   public void should_compile() {
-    Instruction[] instructions = new OneOrMoreExpression(new SubExpression(1, 2)).compile(new CompilationHandler());
+    OneOrMoreExpression expression = new OneOrMoreExpression(new SubExpression(1, 2));
+    assertThat(expression.toString()).isEqualTo("OneOrMore[SubExpression]");
+    Instruction[] instructions = expression.compile(new CompilationHandler());
     assertThat(instructions).isEqualTo(new Instruction[] {
       Instruction.choice(6),
       SubExpression.mockInstruction(1),

@@ -27,7 +27,8 @@ public class ZeroOrMoreExpressionTest {
 
   @Test
   public void should_compile() {
-    Instruction[] instructions = new ZeroOrMoreExpression(new SubExpression(1, 2)).compile(new CompilationHandler());
+    ZeroOrMoreExpression expression = new ZeroOrMoreExpression(new SubExpression(1, 2));
+    Instruction[] instructions = expression.compile(new CompilationHandler());
     assertThat(instructions).isEqualTo(new Instruction[] {
       Instruction.choice(4),
       SubExpression.mockInstruction(1),

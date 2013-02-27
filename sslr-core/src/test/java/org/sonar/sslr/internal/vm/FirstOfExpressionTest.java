@@ -27,10 +27,12 @@ public class FirstOfExpressionTest {
 
   @Test
   public void should_compile() {
-    Instruction[] instructions = new FirstOfExpression(
+    FirstOfExpression expression = new FirstOfExpression(
         new SubExpression(1, 2, 3),
         new SubExpression(4, 5),
-        new SubExpression(6)).compile(new CompilationHandler());
+        new SubExpression(6));
+    assertThat(expression.toString()).isEqualTo("FirstOf[SubExpression, SubExpression, SubExpression]");
+    Instruction[] instructions = expression.compile(new CompilationHandler());
     assertThat(instructions).isEqualTo(new Instruction[] {
       Instruction.choice(5),
       SubExpression.mockInstruction(1),

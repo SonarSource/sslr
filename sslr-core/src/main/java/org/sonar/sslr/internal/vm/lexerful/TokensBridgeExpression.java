@@ -64,4 +64,9 @@ public class TokensBridgeExpression extends NativeExpression implements Matcher 
     machine.jump(1);
   }
 
+  @Override
+  public String toString() {
+    return "Bridge[" + from + "," + to + "]";
+  }
+
 }

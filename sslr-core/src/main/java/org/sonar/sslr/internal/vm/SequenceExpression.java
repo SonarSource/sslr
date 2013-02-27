@@ -21,6 +21,7 @@ package org.sonar.sslr.internal.vm;
 
 import com.google.common.collect.Lists;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class SequenceExpression implements ParsingExpression {
@@ -46,6 +47,11 @@ public class SequenceExpression implements ParsingExpression {
       Instruction.addAll(result, compiler.compile(subExpression));
     }
     return result.toArray(new Instruction[result.size()]);
+  }
+
+  @Override
+  public String toString() {
+    return "Sequence" + Arrays.toString(subExpressions);
   }
 
 }

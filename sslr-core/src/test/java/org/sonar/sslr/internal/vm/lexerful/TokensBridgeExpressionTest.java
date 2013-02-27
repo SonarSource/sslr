@@ -26,8 +26,10 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
+import org.sonar.sslr.internal.vm.CompilationHandler;
 import org.sonar.sslr.internal.vm.Machine;
 
+import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -42,6 +44,12 @@ public class TokensBridgeExpressionTest {
   private TokenType anotherType = mock(TokenType.class);
   private TokensBridgeExpression expression = new TokensBridgeExpression(fromType, toType);
   private Machine machine = mock(Machine.class);
+
+  @Test
+  public void should_compile() {
+    assertThat(expression.compile(new CompilationHandler())).containsOnly(expression);
+    assertThat(expression.toString()).isEqualTo("Bridge[" + fromType + "," + toType + "]");
+  }
 
   @Test
   public void should_match() {

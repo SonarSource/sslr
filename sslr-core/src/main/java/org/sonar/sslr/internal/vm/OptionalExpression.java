@@ -46,4 +46,9 @@ public class OptionalExpression implements ParsingExpression {
     return result;
   }
 
+  @Override
+  public String toString() {
+    return "Optional[" + subExpression + "]";
+  }
+
 }

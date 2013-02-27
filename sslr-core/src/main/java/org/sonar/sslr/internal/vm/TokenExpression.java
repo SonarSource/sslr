@@ -58,4 +58,9 @@ public class TokenExpression implements Matcher, ParsingExpression {
     return result;
   }
 
+  @Override
+  public String toString() {
+    return "Token " + tokenType + "[" + subExpression + "]";
+  }
+
 }

@@ -55,6 +55,8 @@ public class GrammarFunctionsTest {
     ParsingExpression e1 = mock(ParsingExpression.class);
     ParsingExpression e2 = mock(ParsingExpression.class);
 
+    RuleDefinition rule = mock(RuleDefinition.class);
+    assertThat(GrammarFunctions.Standard.and(rule)).isSameAs(rule);
     assertThat(GrammarFunctions.Standard.and(e1)).isSameAs(e1);
     assertThat(GrammarFunctions.Standard.and(e1, e2)).isInstanceOf(SequenceExpression.class);
     assertThat(GrammarFunctions.Standard.and("foo")).isInstanceOf(TokenValueExpression.class);
@@ -63,6 +65,9 @@ public class GrammarFunctionsTest {
 
     assertThat(GrammarFunctions.Standard.firstOf(e1)).isSameAs(e1);
     assertThat(GrammarFunctions.Standard.firstOf(e1, e2)).isInstanceOf(FirstOfExpression.class);
+
+    assertThat(GrammarFunctions.Standard.or(e1)).isSameAs(e1);
+    assertThat(GrammarFunctions.Standard.or(e1, e2)).isInstanceOf(FirstOfExpression.class);
 
     assertThat(GrammarFunctions.Standard.opt(e1)).isInstanceOf(OptionalExpression.class);
 
@@ -83,6 +88,16 @@ public class GrammarFunctionsTest {
     assertThat(GrammarFunctions.Advanced.bridge(mock(TokenType.class), mock(TokenType.class))).isInstanceOf(TokensBridgeExpression.class);
 
     assertThat(GrammarFunctions.Advanced.isOneOfThem(mock(TokenType.class), mock(TokenType.class))).isInstanceOf(TokenTypesExpression.class);
+
+    assertThat(GrammarFunctions.Advanced.adjacent(e1).toString()).isEqualTo("Sequence[Adjacent, " + e1 + "]");
+
+    assertThat(GrammarFunctions.Advanced.anyTokenButNot(e1).toString()).isEqualTo("Sequence[NextNot[" + e1 + "], AnyToken]");
+
+    assertThat(GrammarFunctions.Advanced.till(e1).toString()).isEqualTo("Sequence[ZeroOrMore[Sequence[NextNot[" + e1 + "], AnyToken]], " + e1 + "]");
+
+    assertThat(GrammarFunctions.Advanced.exclusiveTill(e1).toString()).isEqualTo("ZeroOrMore[Sequence[NextNot[FirstOf[" + e1 + "]], AnyToken]]");
+
+    assertThat(GrammarFunctions.Advanced.memoizeMatches(e1)).isSameAs(e1);
   }
 
   @Test

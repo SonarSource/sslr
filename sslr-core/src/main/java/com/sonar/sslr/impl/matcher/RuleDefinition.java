@@ -37,7 +37,7 @@ import org.sonar.sslr.internal.vm.RuleRefExpression;
 /**
  * <p>This class is not intended to be instantiated or subclassed by clients.</p>
  */
-public final class RuleDefinition implements Rule, AstNodeSkippingPolicy, GrammarRuleKey, CompilableGrammarRule, ParsingExpression {
+public class RuleDefinition implements Rule, AstNodeSkippingPolicy, GrammarRuleKey, CompilableGrammarRule, ParsingExpression {
 
   private final GrammarRuleKey ruleKey;
   private final String name;

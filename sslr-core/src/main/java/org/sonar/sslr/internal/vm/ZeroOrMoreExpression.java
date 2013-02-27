@@ -46,4 +46,9 @@ public class ZeroOrMoreExpression implements ParsingExpression {
     return result;
   }
 
+  @Override
+  public String toString() {
+    return "ZeroOrMore[" + subExpression + "]";
+  }
+
 }
