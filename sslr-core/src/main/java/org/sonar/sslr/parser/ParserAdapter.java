@@ -24,7 +24,6 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.impl.ParsingState;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.apache.commons.io.IOUtils;
 import org.sonar.sslr.internal.matchers.AstCreator;
@@ -131,11 +130,6 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
 
   @Override
   public RuleDefinition getRootRule() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public ParsingState getParsingState() {
     throw new UnsupportedOperationException();
   }
 

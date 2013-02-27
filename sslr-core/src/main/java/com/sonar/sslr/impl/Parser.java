@@ -50,12 +50,10 @@ import java.util.Set;
 public class Parser<G extends Grammar> {
 
   private RuleDefinition rootRule;
-  private ParsingState parsingState;
   private final Lexer lexer;
   private final G grammar;
   private final Set<RecognitionExceptionListener> listeners;
   private final ParsingEventListener[] parsingEventListeners;
-  private final ExtendedStackTrace extendedStackTrace;
 
   /**
    * @since 1.16
@@ -65,23 +63,13 @@ public class Parser<G extends Grammar> {
     lexer = null;
     listeners = ImmutableSet.of();
     parsingEventListeners = new ParsingEventListener[0];
-    extendedStackTrace = null;
   }
 
   private Parser(Builder<G> builder) {
     this.lexer = builder.lexer;
     this.grammar = builder.grammar;
     this.listeners = builder.listeners;
-
-    this.extendedStackTrace = builder.extendedStackTrace;
-    if (this.extendedStackTrace != null) {
-      this.parsingEventListeners = builder.parsingEventListeners
-          .toArray(new ParsingEventListener[builder.parsingEventListeners.size() + 1]);
-      this.parsingEventListeners[this.parsingEventListeners.length - 1] = this.extendedStackTrace;
-    } else {
-      this.parsingEventListeners = builder.parsingEventListeners.toArray(new ParsingEventListener[builder.parsingEventListeners.size()]);
-    }
-
+    this.parsingEventListeners = builder.parsingEventListeners.toArray(new ParsingEventListener[builder.parsingEventListeners.size()]);
     this.rootRule = (RuleDefinition) this.grammar.getRootRule();
   }
 
@@ -90,9 +78,12 @@ public class Parser<G extends Grammar> {
    */
   @Deprecated
   public void printStackTrace(PrintStream stream) {
-    stream.append(ParsingStackTrace.generateFullStackTrace(getParsingState()));
   }
 
+  /**
+   * @deprecated in 1.19
+   */
+  @Deprecated
   public void addListener(RecognitionExceptionListener listerner) {
     listeners.add(listerner);
   }
@@ -125,11 +116,6 @@ public class Parser<G extends Grammar> {
 
   public AstNode parse(List<Token> tokens) {
     fireBeginParseEvent();
-
-    parsingState = new ParsingState(tokens);
-    parsingState.addListeners(listeners.toArray(new RecognitionExceptionListener[listeners.size()]));
-    parsingState.parsingEventListeners = parsingEventListeners;
-    parsingState.extendedStackTrace = extendedStackTrace;
 
     // TODO can be compiled only once
     CompiledGrammar g = MutableGrammarCompiler.compile((CompilableGrammarRule) rootRule);
@@ -174,14 +160,6 @@ public class Parser<G extends Grammar> {
     }
   }
 
-  /**
-   * @deprecated in 1.19
-   */
-  @Deprecated
-  public ParsingState getParsingState() {
-    return parsingState;
-  }
-
   public G getGrammar() {
     return grammar;
   }
@@ -221,7 +199,6 @@ public class Parser<G extends Grammar> {
       this.grammar = parser.grammar;
       setParsingEventListeners(parser.parsingEventListeners);
       setRecognictionExceptionListener(parser.listeners.toArray(new RecognitionExceptionListener[parser.listeners.size()]));
-      this.extendedStackTrace = parser.extendedStackTrace;
     }
 
     public Parser<G> build() {
@@ -283,7 +260,6 @@ public class Parser<G extends Grammar> {
      */
     @Deprecated
     public Builder<G> setExtendedStackTrace(ExtendedStackTrace extendedStackTrace) {
-      this.extendedStackTrace = extendedStackTrace;
       return this;
     }
 

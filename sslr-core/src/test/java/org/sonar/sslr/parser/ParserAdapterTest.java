@@ -103,10 +103,4 @@ public class ParserAdapterTest {
     parser.getRootRule();
   }
 
-  @Test
-  public void getParsingState_unsupported() {
-    thrown.expect(UnsupportedOperationException.class);
-    parser.getParsingState();
-  }
-
 }

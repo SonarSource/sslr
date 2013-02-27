@@ -20,46 +20,17 @@
 package com.sonar.sslr.api;
 
 import com.sonar.sslr.impl.LexerException;
-import com.sonar.sslr.impl.ParsingStackTrace;
-import com.sonar.sslr.impl.ParsingState;
-import com.sonar.sslr.impl.events.ExtendedStackTrace;
 
 /**
- * If a parsing error is encountered, an exception which implements this RecognitionException is thrown by the Parser. This
- * RecognitionException allows to get some contextual information about the parsing error like the parsing stack trace.
+ * <p>This class is not intended to be instantiated or subclassed by clients.</p>
  */
 public class RecognitionException extends RuntimeException {
 
   private final int line;
-  private final boolean isToRetryWithExtendStackTrace;
-  private final boolean isFatal;
-
-  public RecognitionException(ParsingState parsingState, boolean isFatal) {
-    super(ParsingStackTrace.generateFullStackTrace(parsingState));
-    line = parsingState.getOutpostMatcherToken() == null ? 0 : parsingState.getOutpostMatcherToken().getLine();
-    isToRetryWithExtendStackTrace = true;
-    this.isFatal = isFatal;
-  }
-
-  public RecognitionException(String message, ParsingState parsingState, boolean isFatal, Throwable e) {
-    super(message + "\n" + ParsingStackTrace.generateFullStackTrace(parsingState), e);
-    line = parsingState.getOutpostMatcherToken() == null ? 0 : parsingState.getOutpostMatcherToken().getLine();
-    isToRetryWithExtendStackTrace = false;
-    this.isFatal = isFatal;
-  }
-
-  public RecognitionException(ExtendedStackTrace extendedStackTrace, boolean isFatal) {
-    super(extendedStackTrace.toString());
-    line = extendedStackTrace.longestParsingState.readToken(extendedStackTrace.longestIndex).getLine();
-    isToRetryWithExtendStackTrace = false;
-    this.isFatal = isFatal;
-  }
 
   public RecognitionException(LexerException e) {
     super("Lexer error: " + e.getMessage(), e);
-    line = 0;
-    isToRetryWithExtendStackTrace = false;
-    this.isFatal = true;
+    this.line = 0;
   }
 
   /**
@@ -68,8 +39,6 @@ public class RecognitionException extends RuntimeException {
   public RecognitionException(int line, String message) {
     super(message);
     this.line = line;
-    this.isToRetryWithExtendStackTrace = false;
-    this.isFatal = true;
   }
 
   /**
@@ -78,8 +47,6 @@ public class RecognitionException extends RuntimeException {
   public RecognitionException(int line, String message, Throwable cause) {
     super(message, cause);
     this.line = line;
-    this.isToRetryWithExtendStackTrace = false;
-    this.isFatal = true;
   }
 
   /**
@@ -92,17 +59,19 @@ public class RecognitionException extends RuntimeException {
   }
 
   /**
-   * @return Whether or not it is worth to retry the parsing with the extended stack trace enabled.
+   * @deprecated in 1.19
    */
+  @Deprecated
   public boolean isToRetryWithExtendStackTrace() {
-    return isToRetryWithExtendStackTrace;
+    return false;
   }
 
   /**
-   * @return True if this recognition exception is a fatal one (i.e. not in recovery mode).
+   * @deprecated in 1.19
    */
+  @Deprecated
   public boolean isFatal() {
-    return isFatal;
+    return true;
   }
 
 }
