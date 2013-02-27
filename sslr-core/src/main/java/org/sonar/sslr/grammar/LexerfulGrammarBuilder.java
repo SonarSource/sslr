@@ -119,7 +119,9 @@ public class LexerfulGrammarBuilder {
    * @see #build()
    */
   public Grammar buildWithMemoizationOfMatchesForAllRules() {
-    // TODO
+    for (RuleDefinition rule : definitions.values()) {
+      rule.enableMemoization();
+    }
     return build();
   }
 

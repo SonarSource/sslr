@@ -34,6 +34,7 @@ import org.sonar.sslr.internal.vm.CompilationHandler;
 import org.sonar.sslr.internal.vm.EndOfInputExpression;
 import org.sonar.sslr.internal.vm.FirstOfExpression;
 import org.sonar.sslr.internal.vm.Instruction;
+import org.sonar.sslr.internal.vm.MemoParsingExpression;
 import org.sonar.sslr.internal.vm.ParsingExpression;
 import org.sonar.sslr.internal.vm.PatternExpression;
 import org.sonar.sslr.internal.vm.RuleRefExpression;
@@ -41,7 +42,7 @@ import org.sonar.sslr.internal.vm.SequenceExpression;
 import org.sonar.sslr.internal.vm.StringExpression;
 import org.sonar.sslr.parser.GrammarOperators;
 
-public class MutableParsingRule implements CompilableGrammarRule, Matcher, Rule, AstNodeSkippingPolicy, ParsingExpression, GrammarRuleKey {
+public class MutableParsingRule implements CompilableGrammarRule, Matcher, Rule, AstNodeSkippingPolicy, MemoParsingExpression, GrammarRuleKey {
 
   private final GrammarRuleKey ruleKey;
   private final String name;
@@ -126,6 +127,10 @@ public class MutableParsingRule implements CompilableGrammarRule, Matcher, Rule,
   @Override
   public String toString() {
     return getName();
+  }
+
+  public boolean shouldMemoize() {
+    return true;
   }
 
 }

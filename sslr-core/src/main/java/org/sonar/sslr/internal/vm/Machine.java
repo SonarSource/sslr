@@ -294,7 +294,9 @@ public class Machine implements CharSequence {
   public void createNode() {
     ParseNode node = new ParseNode(stack.index(), index, stack.subNodes(), stack.matcher());
     stack.parent().subNodes().add(node);
-    memos[stack.index()] = node;
+    if (stack.matcher() instanceof MemoParsingExpression && ((MemoParsingExpression) stack.matcher()).shouldMemoize()) {
+      memos[stack.index()] = node;
+    }
   }
 
   public void createLeafNode(Matcher matcher, int offset) {

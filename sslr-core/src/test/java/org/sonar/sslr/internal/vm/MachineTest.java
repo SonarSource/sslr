@@ -201,7 +201,8 @@ public class MachineTest {
   @Test
   public void should_use_memo() {
     Machine machine = new Machine("foo", new Instruction[3]);
-    Matcher matcher = mock(Matcher.class);
+    MemoParsingExpression matcher = mock(MemoParsingExpression.class);
+    when(matcher.shouldMemoize()).thenReturn(true);
     machine.pushBacktrack(0);
     machine.pushReturn(1, matcher, 2);
     machine.advanceIndex(3);
@@ -215,9 +216,26 @@ public class MachineTest {
   }
 
   @Test
+  public void should_not_memorize() {
+    Machine machine = new Machine("foo", new Instruction[3]);
+    MemoParsingExpression matcher = mock(MemoParsingExpression.class);
+    when(matcher.shouldMemoize()).thenReturn(false);
+    machine.pushBacktrack(0);
+    machine.pushReturn(1, matcher, 2);
+    machine.advanceIndex(3);
+    machine.createNode();
+    machine.backtrack();
+    machine.pushReturn(2, matcher, 1);
+    assertThat(machine.getAddress()).isEqualTo(1);
+    assertThat(machine.getIndex()).isEqualTo(0);
+    assertThat(machine.peek().subNodes()).isEmpty();
+  }
+
+  @Test
   public void should_not_use_memo() {
     Machine machine = new Machine("foo", new Instruction[3]);
-    Matcher matcher = mock(Matcher.class);
+    MemoParsingExpression matcher = mock(MemoParsingExpression.class);
+    when(matcher.shouldMemoize()).thenReturn(true);
     machine.pushBacktrack(0);
     machine.pushReturn(2, matcher, 1);
     machine.advanceIndex(3);

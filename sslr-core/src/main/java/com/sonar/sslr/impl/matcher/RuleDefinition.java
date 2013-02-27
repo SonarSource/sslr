@@ -31,18 +31,20 @@ import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.vm.CompilableGrammarRule;
 import org.sonar.sslr.internal.vm.CompilationHandler;
 import org.sonar.sslr.internal.vm.Instruction;
+import org.sonar.sslr.internal.vm.MemoParsingExpression;
 import org.sonar.sslr.internal.vm.ParsingExpression;
 import org.sonar.sslr.internal.vm.RuleRefExpression;
 
 /**
  * <p>This class is not intended to be instantiated or subclassed by clients.</p>
  */
-public class RuleDefinition implements Rule, AstNodeSkippingPolicy, GrammarRuleKey, CompilableGrammarRule, ParsingExpression {
+public class RuleDefinition implements Rule, AstNodeSkippingPolicy, GrammarRuleKey, CompilableGrammarRule, MemoParsingExpression {
 
   private final GrammarRuleKey ruleKey;
   private final String name;
   private ParsingExpression expression;
   private AstNodeType astNodeSkippingPolicy = NeverSkipFromAst.INSTANCE;
+  private boolean memoize = false;
 
   public RuleDefinition(String name) {
     this.ruleKey = this;
@@ -135,6 +137,14 @@ public class RuleDefinition implements Rule, AstNodeSkippingPolicy, GrammarRuleK
   @Override
   public String toString() {
     return getName();
+  }
+
+  public boolean shouldMemoize() {
+    return memoize;
+  }
+
+  public void enableMemoization() {
+    memoize = true;
   }
 
 }
