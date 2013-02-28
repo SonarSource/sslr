@@ -19,18 +19,19 @@
  */
 package org.sonar.sslr.internal.vm;
 
+import com.sonar.sslr.api.Rule;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.matchers.Matcher;
 
 /**
  * Rule, which can be compiled by {@link MutableGrammarCompiler}.
  */
-public interface CompilableGrammarRule extends Matcher {
+public interface CompilableGrammarRule extends Matcher, Rule, ParsingExpression {
 
   GrammarRuleKey getRuleKey();
 
-  ParsingExpression getExpression();
+  void setExpression(ParsingExpression expression);
 
-  Instruction[] compile(CompilationHandler compiler);
+  ParsingExpression getExpression();
 
 }

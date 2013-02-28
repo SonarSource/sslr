@@ -19,11 +19,14 @@
  */
 package org.sonar.sslr.grammar;
 
+import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.TokenType;
+import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.sonar.sslr.internal.grammar.LexerfulGrammarAdapter;
+import org.sonar.sslr.internal.grammar.MutableGrammar;
+import org.sonar.sslr.internal.vm.CompilableGrammarRule;
 import org.sonar.sslr.internal.vm.FirstOfExpression;
 import org.sonar.sslr.internal.vm.NextExpression;
 import org.sonar.sslr.internal.vm.NextNotExpression;
@@ -52,6 +55,7 @@ public class LexerfulGrammarBuilderTest {
   @Test
   public void should_create_expressions() {
     LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
+
     ParsingExpression e1 = mock(ParsingExpression.class);
     ParsingExpression e2 = mock(ParsingExpression.class);
     ParsingExpression e3 = mock(ParsingExpression.class);
@@ -107,8 +111,17 @@ public class LexerfulGrammarBuilderTest {
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
     b.rule(ruleKey).is(b.nothing());
     b.setRootRule(ruleKey);
-    LexerfulGrammarAdapter grammar = (LexerfulGrammarAdapter) b.build();
-    assertThat(grammar.getRootRuleKey()).isSameAs(ruleKey);
+    MutableGrammar grammar = (MutableGrammar) b.build();
+    assertThat(((CompilableGrammarRule) grammar.getRootRule()).getRuleKey()).isSameAs(ruleKey);
+  }
+
+  @Test
+  public void should_build_with_memoization() {
+    LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    b.rule(ruleKey).is("foo");
+    Grammar grammar = b.buildWithMemoizationOfMatchesForAllRules();
+    assertThat(((RuleDefinition) grammar.rule(ruleKey)).shouldMemoize()).isTrue();
   }
 
   @Test

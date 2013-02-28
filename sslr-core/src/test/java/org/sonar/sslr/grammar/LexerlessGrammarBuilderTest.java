@@ -24,8 +24,9 @@ import com.sonar.sslr.api.Trivia.TriviaKind;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.sonar.sslr.internal.grammar.MutableLexerlessGrammar;
+import org.sonar.sslr.internal.grammar.MutableGrammar;
 import org.sonar.sslr.internal.grammar.MutableParsingRule;
+import org.sonar.sslr.internal.vm.CompilableGrammarRule;
 import org.sonar.sslr.internal.vm.EndOfInputExpression;
 import org.sonar.sslr.internal.vm.FirstOfExpression;
 import org.sonar.sslr.internal.vm.NextExpression;
@@ -125,8 +126,8 @@ public class LexerlessGrammarBuilderTest {
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
     b.rule(ruleKey).is(b.nothing());
     b.setRootRule(ruleKey);
-    MutableLexerlessGrammar grammar = (MutableLexerlessGrammar) b.build();
-    assertThat(grammar.getRootRuleKey()).isSameAs(ruleKey);
+    MutableGrammar grammar = (MutableGrammar) b.build();
+    assertThat(((CompilableGrammarRule) grammar.getRootRule()).getRuleKey()).isSameAs(ruleKey);
   }
 
   @Test

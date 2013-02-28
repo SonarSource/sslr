@@ -24,8 +24,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
-import org.sonar.sslr.grammar.LexerlessGrammarBuilder.RuleBuilder;
-import org.sonar.sslr.internal.grammar.MutableParsingRule;
+import org.sonar.sslr.grammar.GrammarBuilder.RuleBuilder;
+import org.sonar.sslr.internal.vm.CompilableGrammarRule;
 import org.sonar.sslr.internal.vm.ParsingExpression;
 import org.sonar.sslr.internal.vm.SequenceExpression;
 
@@ -33,13 +33,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class LexerlessRuleBuilderTest {
+public class RuleBuilderTest {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
-  private LexerlessGrammarBuilder b = mock(LexerlessGrammarBuilder.class);
-  private MutableParsingRule delegate = mock(MutableParsingRule.class);
+  private GrammarBuilder b = mock(GrammarBuilder.class);
+  private CompilableGrammarRule delegate = mock(CompilableGrammarRule.class);
   private RuleBuilder ruleBuilder = new RuleBuilder(b, delegate);
 
   @Test

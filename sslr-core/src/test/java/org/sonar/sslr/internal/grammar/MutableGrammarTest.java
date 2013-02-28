@@ -19,34 +19,25 @@
  */
 package org.sonar.sslr.internal.grammar;
 
-import com.sonar.sslr.api.Rule;
+import com.google.common.collect.ImmutableMap;
+import org.junit.Test;
 import org.sonar.sslr.grammar.GrammarRuleKey;
-import org.sonar.sslr.parser.LexerlessGrammar;
+import org.sonar.sslr.internal.vm.CompilableGrammarRule;
 
-import java.util.Map;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
-public class MutableLexerlessGrammar extends LexerlessGrammar {
+public class MutableGrammarTest {
 
-  private final Map<GrammarRuleKey, MutableParsingRule> rules;
-  private final GrammarRuleKey rootRuleKey;
-
-  public MutableLexerlessGrammar(Map<GrammarRuleKey, MutableParsingRule> rules, GrammarRuleKey rootRuleKey) {
-    this.rules = rules;
-    this.rootRuleKey = rootRuleKey;
-  }
-
-  @Override
-  public Rule rule(GrammarRuleKey ruleKey) {
-    return rules.get(ruleKey);
-  }
-
-  @Override
-  public Rule getRootRule() {
-    return rule(rootRuleKey);
-  }
-
-  public GrammarRuleKey getRootRuleKey() {
-    return rootRuleKey;
+  @Test
+  public void test() {
+    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
+    CompilableGrammarRule rule = mock(CompilableGrammarRule.class);
+    GrammarRuleKey rootRuleKey = mock(GrammarRuleKey.class);
+    CompilableGrammarRule rootRule = mock(CompilableGrammarRule.class);
+    MutableGrammar grammar = new MutableGrammar(ImmutableMap.of(ruleKey, rule, rootRuleKey, rootRule), rootRuleKey);
+    assertThat(grammar.rule(ruleKey)).isSameAs(rule);
+    assertThat(grammar.getRootRule()).isSameAs(rootRule);
   }
 
 }

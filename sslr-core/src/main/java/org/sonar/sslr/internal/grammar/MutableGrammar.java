@@ -19,19 +19,19 @@
  */
 package org.sonar.sslr.internal.grammar;
 
-import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.sonar.sslr.grammar.GrammarRuleKey;
+import org.sonar.sslr.internal.vm.CompilableGrammarRule;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.util.Map;
 
-public class LexerfulGrammarAdapter extends Grammar {
+public class MutableGrammar extends LexerlessGrammar {
 
-  private final Map<GrammarRuleKey, RuleDefinition> rules;
+  private final Map<GrammarRuleKey, ? extends CompilableGrammarRule> rules;
   private final GrammarRuleKey rootRuleKey;
 
-  public LexerfulGrammarAdapter(Map<GrammarRuleKey, RuleDefinition> rules, GrammarRuleKey rootRuleKey) {
+  public MutableGrammar(Map<GrammarRuleKey, ? extends CompilableGrammarRule> rules, GrammarRuleKey rootRuleKey) {
     this.rules = rules;
     this.rootRuleKey = rootRuleKey;
   }
@@ -44,10 +44,6 @@ public class LexerfulGrammarAdapter extends Grammar {
   @Override
   public Rule getRootRule() {
     return rule(rootRuleKey);
-  }
-
-  public GrammarRuleKey getRootRuleKey() {
-    return rootRuleKey;
   }
 
 }
