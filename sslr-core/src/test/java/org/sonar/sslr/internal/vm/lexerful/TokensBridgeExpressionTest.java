@@ -31,6 +31,7 @@ import org.sonar.sslr.internal.vm.Machine;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -72,7 +73,8 @@ public class TokensBridgeExpressionTest {
     inOrder.verify(machine).tokenAt(2);
     inOrder.verify(machine).tokenAt(3);
     inOrder.verify(machine).tokenAt(4);
-    inOrder.verify(machine).createLeafNode(expression, 5);
+    // Number of created nodes must be equal to the number of consumed tokens (5):
+    inOrder.verify(machine, times(5)).createLeafNode(expression, 1);
     inOrder.verify(machine).jump(1);
     verifyNoMoreInteractions(machine);
   }
