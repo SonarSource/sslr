@@ -239,8 +239,7 @@ public class Machine implements CharSequence {
 
       if (calls[address] == index) {
         // TODO better message, e.g. dump stack
-        String ruleName = ((MutableParsingRule) matcher).getName();
-        throw new GrammarException("Left recursion has been detected, involved rule: " + ruleName);
+        throw new GrammarException("Left recursion has been detected, involved rule: " + matcher.toString());
       }
       stack.setCalledAddress(address);
       stack.setLeftRecursion(calls[address]);
