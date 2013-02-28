@@ -65,6 +65,7 @@ abstract class GrammarBuilder {
 
   /**
    * Creates parsing expression - "sequence".
+   * See {@link #sequence(Object, Object)} for more details.
    *
    * @param e1  first sub-expression
    * @param e2  second sub-expression
@@ -92,6 +93,7 @@ abstract class GrammarBuilder {
 
   /**
    * Creates parsing expression - "first of".
+   * See {@link #firstOf(Object, Object)} for more details.
    *
    * @param e1  first sub-expression
    * @param e2  second sub-expression
@@ -118,10 +120,13 @@ abstract class GrammarBuilder {
 
   /**
    * Creates parsing expression - "optional".
+   * Convenience method equivalent to calling {@code optional(sequence(e, rest))}.
    *
    * @param e1  first sub-expression
    * @param rest  rest of sub-expressions
    * @throws IllegalArgumentException if any of given arguments is not a parsing expression
+   * @see #optional(Object)
+   * @see #sequence(Object, Object)
    */
   public final Object optional(Object e1, Object... rest) {
     return new OptionalExpression(new SequenceExpression(convertToExpressions(Lists.asList(e1, rest))));
@@ -147,10 +152,13 @@ abstract class GrammarBuilder {
 
   /**
    * Creates parsing expression - "one or more".
+   * Convenience method equivalent to calling {@code oneOrMore(sequence(e1, rest))}.
    *
    * @param e1  first sub-expression
    * @param rest  rest of sub-expressions
    * @throws IllegalArgumentException if any of given arguments is not a parsing expression
+   * @see #oneOrMore(Object)
+   * @see #sequence(Object, Object)
    */
   public final Object oneOrMore(Object e1, Object... rest) {
     return new OneOrMoreExpression(new SequenceExpression(convertToExpressions(Lists.asList(e1, rest))));
@@ -176,10 +184,13 @@ abstract class GrammarBuilder {
 
   /**
    * Creates parsing expression - "zero or more".
+   * Convenience method equivalent to calling {@code zeroOrMore(sequence(e1, rest))}.
    *
    * @param e1  sub-expression
    * @param rest  rest of sub-expressions
    * @throws IllegalArgumentException if any of given arguments is not a parsing expression
+   * @see #zeroOrMore(Object)
+   * @see #sequence(Object, Object)
    */
   public final Object zeroOrMore(Object e1, Object... rest) {
     return new ZeroOrMoreExpression(new SequenceExpression(convertToExpressions(Lists.asList(e1, rest))));
@@ -199,10 +210,13 @@ abstract class GrammarBuilder {
 
   /**
    * Creates parsing expression - "next".
+   * Convenience method equivalent to calling {@code next(sequence(e1, rest))}.
    *
    * @param e1  first sub-expression
    * @param rest  rest of sub-expressions
    * @throws IllegalArgumentException if any of given arguments is not a parsing expression
+   * @see #next(Object)
+   * @see #sequence(Object, Object)
    */
   public final Object next(Object e1, Object... rest) {
     return new NextExpression(new SequenceExpression(convertToExpressions(Lists.asList(e1, rest))));
@@ -222,10 +236,13 @@ abstract class GrammarBuilder {
 
   /**
    * Creates parsing expression - "next not".
+   * Convenience method equivalent to calling {@code nextNot(sequence(e1, rest))}.
    *
    * @param e1  sub-expression
    * @param rest  rest of sub-expressions
    * @throws IllegalArgumentException if any of given arguments is not a parsing expression
+   * @see #nextNot(Object)
+   * @see #sequence(Object, Object)
    */
   public final Object nextNot(Object e1, Object... rest) {
     return new NextNotExpression(new SequenceExpression(convertToExpressions(Lists.asList(e1, rest))));

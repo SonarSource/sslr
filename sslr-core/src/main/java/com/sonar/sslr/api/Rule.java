@@ -85,9 +85,7 @@ public interface Rule extends AstNodeType {
   void mock();
 
   /**
-   * Indicates that grammar rule is a "recovery" rule, i.e. it's able to consume some bad input in order to recover from a parse error.
-   *
-   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.GrammarRuleBuilder#recoveryRule()} instead.
+   * @deprecated in 1.19, no difference between usual grammar rule and "recovery rule" - both will be presented in AST and so can be handled via AST visitor.
    */
   @Deprecated
   void recoveryRule();
