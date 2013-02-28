@@ -25,7 +25,6 @@ import com.google.common.collect.Iterables;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Token;
 import org.sonar.sslr.grammar.GrammarException;
-import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.grammar.MutableParsingRule;
 import org.sonar.sslr.internal.matchers.ImmutableInputBuffer;
 import org.sonar.sslr.internal.matchers.InputBuffer;
@@ -60,12 +59,12 @@ public class Machine implements CharSequence {
 
   private boolean ignoreErrors = false;
 
-  public static ParseNode parse(List<Token> tokens, CompiledGrammar grammar, GrammarRuleKey ruleKey) {
+  public static ParseNode parse(List<Token> tokens, CompiledGrammar grammar) {
     Token[] inputTokens = tokens.toArray(new Token[tokens.size()]);
 
     ErrorLocatingHandler errorLocatingHandler = new ErrorLocatingHandler();
     Machine machine = new Machine(null, inputTokens, grammar.getInstructions(), errorLocatingHandler);
-    machine.execute(grammar.getMatcher(grammar.getRootRuleKey()), grammar.getOffset(grammar.getRootRuleKey()), grammar.getInstructions());
+    machine.execute(grammar.getMatcher(grammar.getRootRuleKey()), grammar.getRootRuleOffset(), grammar.getInstructions());
 
     if (machine.matched) {
       return machine.stack.subNodes().get(0);
@@ -73,7 +72,7 @@ public class Machine implements CharSequence {
       // Perform second run in order to collect information for error report
       ErrorReportingHandler errorReportingHandler = new ErrorReportingHandler(errorLocatingHandler.getErrorIndex());
       machine = new Machine(null, inputTokens, grammar.getInstructions(), errorReportingHandler);
-      machine.execute(grammar.getMatcher(grammar.getRootRuleKey()), grammar.getOffset(grammar.getRootRuleKey()), grammar.getInstructions());
+      machine.execute(grammar.getMatcher(grammar.getRootRuleKey()), grammar.getRootRuleOffset(), grammar.getInstructions());
 
       // failure should be permanent, otherwise something generally wrong
       Preconditions.checkState(!machine.matched);
@@ -90,16 +89,12 @@ public class Machine implements CharSequence {
     }
   }
 
-  public static ParsingResult parse(String input, CompiledGrammar grammar, GrammarRuleKey ruleKey) {
-    return parse(input.toCharArray(), grammar, ruleKey);
-  }
-
-  public static ParsingResult parse(char[] input, CompiledGrammar grammar, GrammarRuleKey ruleKey) {
+  public static ParsingResult parse(char[] input, CompiledGrammar grammar) {
     Instruction[] instructions = grammar.getInstructions();
 
     ErrorLocatingHandler errorLocatingHandler = new ErrorLocatingHandler();
     Machine machine = new Machine(input, null, instructions, errorLocatingHandler);
-    machine.execute(grammar.getMatcher(ruleKey), grammar.getOffset(ruleKey), instructions);
+    machine.execute(grammar.getMatcher(grammar.getRootRuleKey()), grammar.getRootRuleOffset(), instructions);
 
     if (machine.matched) {
       return new ParsingResult(
@@ -112,7 +107,7 @@ public class Machine implements CharSequence {
       // Perform second run in order to collect information for error report
       ErrorReportingHandler errorReportingHandler = new ErrorReportingHandler(errorLocatingHandler.getErrorIndex());
       machine = new Machine(input, null, instructions, errorReportingHandler);
-      machine.execute(grammar.getMatcher(ruleKey), grammar.getOffset(ruleKey), instructions);
+      machine.execute(grammar.getMatcher(grammar.getRootRuleKey()), grammar.getRootRuleOffset(), instructions);
 
       // failure should be permanent, otherwise something generally wrong
       Preconditions.checkState(!machine.matched);

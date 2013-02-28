@@ -28,19 +28,14 @@ public class CompiledGrammar {
 
   private final Map<GrammarRuleKey, CompilableGrammarRule> rules;
   private final Instruction[] instructions;
-  // TODO Is there more efficient way to store this information? I.e. without primitive wrappers.
-  private final Map<GrammarRuleKey, Integer> offsets;
   private final GrammarRuleKey rootRuleKey;
+  private final int rootRuleOffset;
 
-  public CompiledGrammar(Instruction[] instructions, Map<GrammarRuleKey, Integer> offsets, Map<GrammarRuleKey, CompilableGrammarRule> rules, GrammarRuleKey rootRuleKey) {
+  public CompiledGrammar(Instruction[] instructions, Map<GrammarRuleKey, CompilableGrammarRule> rules, GrammarRuleKey rootRuleKey, int rootRuleOffset) {
     this.instructions = instructions;
-    this.offsets = offsets;
     this.rules = rules;
     this.rootRuleKey = rootRuleKey;
-  }
-
-  public int getOffset(GrammarRuleKey ruleKey) {
-    return offsets.get(ruleKey);
+    this.rootRuleOffset = rootRuleOffset;
   }
 
   public Instruction[] getInstructions() {
@@ -53,6 +48,10 @@ public class CompiledGrammar {
 
   public GrammarRuleKey getRootRuleKey() {
     return rootRuleKey;
+  }
+
+  public int getRootRuleOffset() {
+    return rootRuleOffset;
   }
 
 }

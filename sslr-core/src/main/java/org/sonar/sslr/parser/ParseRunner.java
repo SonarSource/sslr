@@ -42,7 +42,7 @@ public class ParseRunner {
   }
 
   public ParsingResult parse(char[] input) {
-    return Machine.parse(input, compiledGrammar, compiledGrammar.getRootRuleKey());
+    return Machine.parse(input, compiledGrammar);
   }
 
 }

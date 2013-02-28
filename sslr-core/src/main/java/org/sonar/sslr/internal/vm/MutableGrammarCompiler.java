@@ -67,7 +67,7 @@ public class MutableGrammarCompiler extends CompilationHandler {
       }
     }
 
-    return new CompiledGrammar(result, offsets, matchers, start.getRuleKey());
+    return new CompiledGrammar(result, matchers, start.getRuleKey(), offsets.get(start.getRuleKey()));
   }
 
   @Override
