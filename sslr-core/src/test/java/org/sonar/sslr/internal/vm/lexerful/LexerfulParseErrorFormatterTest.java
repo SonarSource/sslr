@@ -38,7 +38,7 @@ public class LexerfulParseErrorFormatterTest {
         token(4, 6, "qux"),
         token(6, 3, "end"));
     StringBuilder sb = new StringBuilder();
-    LexerfulParseErrorFormatter.appendSnippet(sb, tokens, 1);
+    LexerfulParseErrorFormatter.appendSnippet(sb, tokens, 1, 4);
     String expected = new StringBuilder()
         .append("    2: foo\n")
         .append("    3: bar\n")

@@ -42,9 +42,11 @@ public class LexerfulParseErrorFormatter {
 
   public String format(List<Token> tokens, int errorIndex, List<List<MatcherPathElement>> failedPaths) {
     StringBuilder sb = new StringBuilder();
-    Token errorToken = tokens.get(errorIndex);
-    sb.append("Parse error at line ").append(errorToken.getLine())
-        .append(" column ").append(errorToken.getColumn());
+    Pos errorPos = errorIndex < tokens.size()
+        ? getTokenStart(tokens.get(errorIndex))
+        : getTokenEnd(tokens.get(tokens.size() - 1));
+    sb.append("Parse error at line ").append(errorPos.line)
+        .append(" column ").append(errorPos.column);
     sb.append(" failed to match");
     if (failedPaths.size() > 1) {
       sb.append(" all of");
@@ -55,7 +57,7 @@ public class LexerfulParseErrorFormatter {
       sb.append(' ').append(((RuleDefinition) failedMatcher).getName());
     }
     sb.append('\n').append('\n');
-    appendSnippet(sb, tokens, errorIndex);
+    appendSnippet(sb, tokens, errorIndex, errorPos.line);
     sb.append('\n');
     sb.append("Failed at rules:\n");
     ErrorTreeNode tree = ErrorTreeNode.buildTree(failedPaths);
@@ -88,17 +90,18 @@ public class LexerfulParseErrorFormatter {
   private static void appendPathElement(StringBuilder sb, List<Token> tokens, MatcherPathElement pathElement) {
     sb.append(((RuleDefinition) pathElement.getMatcher()).getName());
     if (pathElement.getStartIndex() != pathElement.getEndIndex()) {
+
       sb.append(" consumed from ")
-          .append(formatTokenPosition(tokens.get(pathElement.getStartIndex())))
+          .append(getTokenStart(tokens.get(pathElement.getStartIndex())))
           .append(" to ")
-          .append(formatTokenPosition(tokens.get(pathElement.getEndIndex())))
+          .append(getTokenEnd(tokens.get(pathElement.getEndIndex() - 1)))
           .append(": ");
       int len = pathElement.getEndIndex() - pathElement.getStartIndex();
       if (len > EXCERPT_SIZE) {
         len = EXCERPT_SIZE;
         sb.append("...");
       }
-      for (int i = pathElement.getEndIndex() - len; i < pathElement.getEndIndex(); i++) {
+      for (int i = pathElement.getEndIndex() - len; i < Math.min(pathElement.getEndIndex(), tokens.size()); i++) {
         sb.append(' ');
         appendEscapedToken(sb, tokens.get(i));
       }
@@ -113,15 +116,41 @@ public class LexerfulParseErrorFormatter {
     }
   }
 
-  private static String formatTokenPosition(Token token) {
-    return "(" + token.getLine() + ", " + token.getColumn() + ")";
+  private static class Pos {
+    int line;
+    int column;
+
+    @Override
+    public String toString() {
+      return "(" + line + ", " + column + ")";
+    }
+  }
+
+  private static Pos getTokenStart(Token token) {
+    Pos pos = new Pos();
+    pos.line = token.getLine();
+    pos.column = token.getColumn();
+    return pos;
+  }
+
+  private static Pos getTokenEnd(Token token) {
+    Pos pos = new Pos();
+    pos.line = token.getLine();
+    pos.column = token.getColumn();
+    String[] tokenLines = token.getOriginalValue().split("(\r)?\n|\r", -1);
+    if (tokenLines.length == 1) {
+      pos.column += tokenLines[0].length();
+    } else {
+      pos.line += tokenLines.length - 1;
+      pos.column = tokenLines[tokenLines.length - 1].length();
+    }
+    return pos;
   }
 
   @VisibleForTesting
-  static void appendSnippet(StringBuilder sb, List<Token> tokens, int errorIndex) {
+  static void appendSnippet(StringBuilder sb, List<Token> tokens, int errorIndex, int errorLine) {
     int startToken = Math.max(errorIndex - SNIPPET_SIZE, 0);
     int endToken = Math.min(errorIndex + SNIPPET_SIZE, tokens.size());
-    int errorLine = tokens.get(errorIndex).getLine();
     tokens = tokens.subList(startToken, endToken);
 
     int line = tokens.get(0).getLine();

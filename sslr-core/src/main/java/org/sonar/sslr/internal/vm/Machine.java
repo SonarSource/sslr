@@ -82,8 +82,9 @@ public class Machine implements CharSequence {
         // Godin: weird situation - I expect that list of tokens contains at least EOF, but this is not the case in C Parser
         throw new RecognitionException(1, "No tokens");
       } else {
-        String errorMsg = new LexerfulParseErrorFormatter().format(tokens, errorLocatingHandler.getErrorIndex(), errorReportingHandler.getFailedPaths());
-        int errorLine = tokens.get(errorLocatingHandler.getErrorIndex()).getLine();
+        int errorIndex = errorLocatingHandler.getErrorIndex();
+        String errorMsg = new LexerfulParseErrorFormatter().format(tokens, errorIndex, errorReportingHandler.getFailedPaths());
+        int errorLine = errorIndex < tokens.size() ? tokens.get(errorIndex).getLine() : tokens.get(tokens.size() - 1).getLine();
         throw new RecognitionException(errorLine, errorMsg);
       }
     }
