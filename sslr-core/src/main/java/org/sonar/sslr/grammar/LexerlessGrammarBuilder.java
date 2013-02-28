@@ -36,7 +36,14 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 import java.util.Map;
 
 /**
- * A builder for creating grammars for lexerless parsing.
+ * A builder for creating <a href="http://en.wikipedia.org/wiki/Parsing_expression_grammar">Parsing Expression Grammars</a> for lexerless parsing.
+ * <p>
+ * Objects of following types can be used as an atomic parsing expressions:
+ * <ul>
+ * <li>GrammarRuleKey</li>
+ * <li>String</li>
+ * <li>Character</li>
+ * </ul>
  *
  * @since 1.18
  * @see LexerfulGrammarBuilder
@@ -60,6 +67,9 @@ public class LexerlessGrammarBuilder extends GrammarBuilder {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public GrammarRuleBuilder rule(GrammarRuleKey ruleKey) {
     MutableParsingRule rule = definitions.get(ruleKey);
     if (rule == null) {
@@ -69,6 +79,9 @@ public class LexerlessGrammarBuilder extends GrammarBuilder {
     return new RuleBuilder(this, rule);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public void setRootRule(GrammarRuleKey ruleKey) {
     rule(ruleKey);
     rootRuleKey = ruleKey;
@@ -90,7 +103,7 @@ public class LexerlessGrammarBuilder extends GrammarBuilder {
   }
 
   /**
-   * Creates expression of grammar based on regular expression.
+   * Creates parsing expression based on regular expression.
    *
    * @param regexp  regular expression
    * @throws java.util.regex.PatternSyntaxException if the expression's syntax is invalid
@@ -100,14 +113,15 @@ public class LexerlessGrammarBuilder extends GrammarBuilder {
   }
 
   /**
-   * Creates expression of grammar - "end of input".
+   * Creates parsing expression - "end of input".
+   * This expression succeeds only if parser reached end of input.
    */
   public Object endOfInput() {
     return EndOfInputExpression.INSTANCE;
   }
 
   /**
-   * Creates expression of grammar - "token".
+   * Creates parsing expression - "token".
    *
    * @param e  sub-expression
    * @throws IllegalArgumentException if given argument is not a parsing expression
@@ -117,7 +131,7 @@ public class LexerlessGrammarBuilder extends GrammarBuilder {
   }
 
   /**
-   * Creates expression of grammar - "comment trivia".
+   * Creates parsing expression - "comment trivia".
    *
    * @param e  sub-expression
    * @throws IllegalArgumentException if given argument is not a parsing expression
@@ -127,7 +141,7 @@ public class LexerlessGrammarBuilder extends GrammarBuilder {
   }
 
   /**
-   * Creates expression of grammar - "skipped trivia".
+   * Creates parsing expression - "skipped trivia".
    *
    * @param e  sub-expression
    * @throws IllegalArgumentException if given argument is not a parsing expression
@@ -141,14 +155,14 @@ public class LexerlessGrammarBuilder extends GrammarBuilder {
     final ParsingExpression result;
     if (e instanceof ParsingExpression) {
       result = (ParsingExpression) e;
-    } else if (e instanceof String) {
-      result = new StringExpression((String) e);
-    } else if (e instanceof Character) {
-      result = new StringExpression(((Character) e).toString());
     } else if (e instanceof GrammarRuleKey) {
       GrammarRuleKey ruleKey = (GrammarRuleKey) e;
       rule(ruleKey);
       result = definitions.get(ruleKey);
+    } else if (e instanceof String) {
+      result = new StringExpression((String) e);
+    } else if (e instanceof Character) {
+      result = new StringExpression(((Character) e).toString());
     } else {
       throw new IllegalArgumentException("Incorrect type of parsing expression: " + e.getClass().toString());
     }

@@ -56,18 +56,6 @@ public final class GrammarFunctions {
     }
 
     /**
-     * Match elements sequence zero or more times
-     *
-     * <pre>
-     * {@code
-     *     --------<----------------<------------------<--------
-     *    |                                                     |
-     * >------element 1----element 2---- ... ----element n---------->
-     *    |                                                     |
-     *     ------------------------->---------------------------
-     * }
-     * </pre>
-     *
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#zeroOrMore(Object)} instead.
      */
     @Deprecated
@@ -76,16 +64,6 @@ public final class GrammarFunctions {
     }
 
     /**
-     * Match elements sequence one or more times
-     *
-     * <pre>
-     * {@code
-     *     ------<----------------<------------------<------
-     *    |                                                 |
-     * >------element 1----element 2---- ... ----element n------>
-     * }
-     * </pre>
-     *
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#oneOrMore(Object)} instead.
      */
     @Deprecated
@@ -94,16 +72,6 @@ public final class GrammarFunctions {
     }
 
     /**
-     * Optionally match the element(s).
-     *
-     * <pre>
-     * {@code
-     * >------element 1----element 2----element n---->
-     *    |                                       |
-     *     ---------------------------------------
-     * }
-     * </pre>
-     *
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#optional(Object)} instead.
      */
     @Deprecated
@@ -112,20 +80,6 @@ public final class GrammarFunctions {
     }
 
     /**
-     * Match any alternative within the elements exactly once
-     *
-     * <pre>
-     * {@code
-     * >------element 1----->
-     *    |               |
-     *    ----element 2---
-     *    |               |
-     *    ----   ...   ---
-     *    |               |
-     *    ----element n---
-     * }
-     * </pre>
-     *
      * @deprecated in 1.16, use {@link GrammarFunctions.Standard#firstOf(Object...)} instead
      */
     @Deprecated
@@ -147,14 +101,6 @@ public final class GrammarFunctions {
     }
 
     /**
-     * Match all elements in a sequential order.
-     *
-     * <pre>
-     * {@code
-     * >------element 1----element 2---- ... ----element n---->
-     * }
-     * </pre>
-     *
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#sequence(Object, Object)} instead.
      */
     @Deprecated
@@ -170,8 +116,6 @@ public final class GrammarFunctions {
     }
 
     /**
-     * Syntactic predicate to check that the next tokens don't match an element.
-     *
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#nextNot(Object)} instead.
      */
     @Deprecated
@@ -180,8 +124,6 @@ public final class GrammarFunctions {
     }
 
     /**
-     * Syntactic predicate to check that the next tokens match some elements.
-     *
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#next(Object)} instead.
      */
     @Deprecated
@@ -197,16 +139,6 @@ public final class GrammarFunctions {
     }
 
     /**
-     * Match the element if and only if the first token of this element is adjacent to the previous consumed token.
-     *
-     * <pre>
-     * {@code
-     * >------previous_element---- element ---->
-     * }
-     * </pre>
-     *
-     * Without any space between previous_element and element
-     *
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#adjacent(Object)} instead.
      */
     @Deprecated
@@ -215,8 +147,6 @@ public final class GrammarFunctions {
     }
 
     /**
-     * Consume the next token if and only if the element doesn't match
-     *
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#anyTokenButNot(Object)} instead.
      */
     @Deprecated
@@ -225,8 +155,6 @@ public final class GrammarFunctions {
     }
 
     /**
-     * Match the next token if and only if its type belongs to the provided list
-     *
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#isOneOfThem(TokenType, TokenType...)} instead.
      */
     @Deprecated
@@ -236,14 +164,6 @@ public final class GrammarFunctions {
     }
 
     /**
-     * Consume all tokens between token from and token to.
-     *
-     * <pre>
-     * {@code
-     * >------ from ---- ... ---- to ---->
-     * }
-     * </pre>
-     *
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#bridge(TokenType, TokenType)} instead.
      */
     @Deprecated
@@ -252,18 +172,14 @@ public final class GrammarFunctions {
     }
 
     /**
-     * For unit test only Consume the next token whatever it is
-     *
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#anyToken()} instead.
      */
     @Deprecated
     public static Matcher isTrue() {
-      return anyToken();
+      return AnyTokenExpression.INSTANCE;
     }
 
     /**
-     * For unit test only Not consume the next token whatever it is
-     *
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#nothing()} instead.
      */
     @Deprecated
@@ -272,8 +188,6 @@ public final class GrammarFunctions {
     }
 
     /**
-     * Consume the next token whatever it is
-     *
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#anyToken()} instead.
      */
     @Deprecated
@@ -282,8 +196,6 @@ public final class GrammarFunctions {
     }
 
     /**
-     * Consume every following token which are on the current line
-     *
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#tillNewLine()} instead.
      */
     @Deprecated
@@ -292,14 +204,6 @@ public final class GrammarFunctions {
     }
 
     /**
-     * Consume all tokens as long as the element is not encountered. The element is also consumed.
-     *
-     * <pre>
-     * {@code
-     * >------ ... ---- element ---->
-     * }
-     * </pre>
-     *
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#till(Object)} instead.
      */
     @Deprecated
@@ -314,17 +218,6 @@ public final class GrammarFunctions {
     }
 
     /**
-     * Consume all tokens as long one of the provided elements is not encountered.
-     *
-     * <pre>
-     * {@code
-     * >------ ... ---- element 1 ---->
-     *              |-- element 2 --|
-     *              |--    ...    --|
-     *              |-- element n --|
-     * }
-     * </pre>
-     *
      * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#exclusiveTill(Object)} instead.
      */
     @Deprecated
@@ -341,13 +234,8 @@ public final class GrammarFunctions {
   }
 
   /**
-   * Allows to enable memoization for all rules in given grammar.
-   * <p>
-   * Usage of {@link GrammarFunctions.Advanced#memoizeMatches(Object)} is preferable than this method, because provides fine-grained control over memoization.
-   * Also note that this method was introduced in order to simplify migration from version 1.13 and may disappear in future versions.
-   * </p>
-   *
    * @since 1.14
+   * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#buildWithMemoizationOfMatchesForAllRules()} instead.
    */
   public static void enableMemoizationOfMatchesForAllRules(Grammar grammar) {
     for (Field ruleField : Grammar.getAllRuleFields(grammar.getClass())) {

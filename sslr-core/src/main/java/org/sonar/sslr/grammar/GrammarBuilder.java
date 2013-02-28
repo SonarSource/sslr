@@ -51,7 +51,9 @@ abstract class GrammarBuilder {
   public abstract void setRootRule(GrammarRuleKey ruleKey);
 
   /**
-   * Creates expression of grammar - "sequence".
+   * Creates parsing expression - "sequence".
+   * During execution of this expression parser will sequentially execute all sub-expressions.
+   * This expression succeeds only if all sub-expressions succeed.
    *
    * @param e1  first sub-expression
    * @param e2  second sub-expression
@@ -62,7 +64,7 @@ abstract class GrammarBuilder {
   }
 
   /**
-   * Creates expression of grammar - "sequence".
+   * Creates parsing expression - "sequence".
    *
    * @param e1  first sub-expression
    * @param e2  second sub-expression
@@ -74,7 +76,11 @@ abstract class GrammarBuilder {
   }
 
   /**
-   * Creates expression of grammar - "first of".
+   * Creates parsing expression - "first of".
+   * During execution of this expression parser will sequentially execute all sub-expressions.
+   * This expression succeeds when first sub-expression succeeds.
+   * <p>
+   * Be aware that in expression {@code firstOf("foo", sequence("foo", "bar"))} second sub-expression will never be executed.
    *
    * @param e1  first sub-expression
    * @param e2  second sub-expression
@@ -85,7 +91,7 @@ abstract class GrammarBuilder {
   }
 
   /**
-   * Creates expression of grammar - "first of".
+   * Creates parsing expression - "first of".
    *
    * @param e1  first sub-expression
    * @param e2  second sub-expression
@@ -97,7 +103,11 @@ abstract class GrammarBuilder {
   }
 
   /**
-   * Creates expression of grammar - "optional".
+   * Creates parsing expression - "optional".
+   * During execution of this expression parser will execute sub-expression once.
+   * This expression always succeeds regardless of sub-expression.
+   * <p>
+   * Be aware that this expression is greedy, i.e. expression {@code sequence(optional("foo"), "foo")} will never succeed.
    *
    * @param e  sub-expression
    * @throws IllegalArgumentException if given argument is not a parsing expression
@@ -107,7 +117,7 @@ abstract class GrammarBuilder {
   }
 
   /**
-   * Creates expression of grammar - "optional".
+   * Creates parsing expression - "optional".
    *
    * @param e1  first sub-expression
    * @param rest  rest of sub-expressions
@@ -118,7 +128,15 @@ abstract class GrammarBuilder {
   }
 
   /**
-   * Creates expression of grammar - "one or more".
+   * Creates parsing expression - "one or more".
+   * During execution of this expression parser will repeatedly try sub-expression until it fails.
+   * This expression succeeds only if sub-expression succeeds at least once.
+   * <p>
+   * Be aware that:
+   * <ul>
+   * <li>This expression is a greedy, i.e. expression {@code sequence(oneOrMore("foo"), "foo")} will never succeed.
+   * <li>Sub-expression must not allow empty matches, i.e. for expression {@code oneOrMore(optional("foo"))} parser will report infinite loop.
+   * </ul>
    *
    * @param e  sub-expression
    * @throws IllegalArgumentException if given argument is not a parsing expression
@@ -128,7 +146,7 @@ abstract class GrammarBuilder {
   }
 
   /**
-   * Creates expression of grammar - "one or more".
+   * Creates parsing expression - "one or more".
    *
    * @param e1  first sub-expression
    * @param rest  rest of sub-expressions
@@ -139,7 +157,15 @@ abstract class GrammarBuilder {
   }
 
   /**
-   * Creates expression of grammar - "zero or more".
+   * Creates parsing expression - "zero or more".
+   * During execution of this expression parser will repeatedly try sub-expression until it fails.
+   * This expression always succeeds regardless of sub-expression.
+   * <p>
+   * Be aware that:
+   * <ul>
+   * <li>This expression is greedy, i.e. expression {@code sequence(zeroOrMore("foo"), "foo")} will never succeed.
+   * <li>Sub-expression must not allow empty matches, i.e. for expression {@code zeroOrMore(optional("foo"))} parser will report infinite loop.
+   * </ul>
    *
    * @param e  sub-expression
    * @throws IllegalArgumentException if given argument is not a parsing expression
@@ -149,7 +175,7 @@ abstract class GrammarBuilder {
   }
 
   /**
-   * Creates expression of grammar - "zero or more".
+   * Creates parsing expression - "zero or more".
    *
    * @param e1  sub-expression
    * @param rest  rest of sub-expressions
@@ -160,7 +186,9 @@ abstract class GrammarBuilder {
   }
 
   /**
-   * Creates expression of grammar - "next".
+   * Creates parsing expression - "next".
+   * During execution of this expression parser will execute sub-expression once.
+   * This expression succeeds only if sub-expression succeeds, but never consumes any input.
    *
    * @param e  sub-expression
    * @throws IllegalArgumentException if given argument is not a parsing expression
@@ -170,7 +198,7 @@ abstract class GrammarBuilder {
   }
 
   /**
-   * Creates expression of grammar - "next".
+   * Creates parsing expression - "next".
    *
    * @param e1  first sub-expression
    * @param rest  rest of sub-expressions
@@ -181,7 +209,9 @@ abstract class GrammarBuilder {
   }
 
   /**
-   * Creates expression of grammar - "next not".
+   * Creates parsing expression - "next not".
+   * During execution of this expression parser will execute sub-expression once.
+   * This expression succeeds only if sub-expression fails.
    *
    * @param e  sub-expression
    * @throws IllegalArgumentException if given argument is not a parsing expression
@@ -191,7 +221,7 @@ abstract class GrammarBuilder {
   }
 
   /**
-   * Creates expression of grammar - "next not".
+   * Creates parsing expression - "next not".
    *
    * @param e1  sub-expression
    * @param rest  rest of sub-expressions
@@ -202,7 +232,8 @@ abstract class GrammarBuilder {
   }
 
   /**
-   * Creates expression of grammar - "nothing".
+   * Creates parsing expression - "nothing".
+   * This expression always fails.
    */
   public final Object nothing() {
     return NothingExpression.INSTANCE;
