@@ -78,8 +78,8 @@ abstract class GrammarBuilder {
 
   /**
    * Creates parsing expression - "first of".
-   * During execution of this expression parser will sequentially execute all sub-expressions.
-   * This expression succeeds when first sub-expression succeeds.
+   * During the execution of this expression parser execute sub-expressions in order until one succeeds.
+   * This expressions succeeds if any sub-expression succeeds.
    * <p>
    * Be aware that in expression {@code firstOf("foo", sequence("foo", "bar"))} second sub-expression will never be executed.
    *
@@ -107,7 +107,7 @@ abstract class GrammarBuilder {
   /**
    * Creates parsing expression - "optional".
    * During execution of this expression parser will execute sub-expression once.
-   * This expression always succeeds regardless of sub-expression.
+   * This expression always succeeds, with an empty match if sub-expression fails.
    * <p>
    * Be aware that this expression is greedy, i.e. expression {@code sequence(optional("foo"), "foo")} will never succeed.
    *
@@ -167,7 +167,7 @@ abstract class GrammarBuilder {
   /**
    * Creates parsing expression - "zero or more".
    * During execution of this expression parser will repeatedly try sub-expression until it fails.
-   * This expression always succeeds regardless of sub-expression.
+   * This expression always succeeds, with an empty match if sub-expression fails.
    * <p>
    * Be aware that:
    * <ul>

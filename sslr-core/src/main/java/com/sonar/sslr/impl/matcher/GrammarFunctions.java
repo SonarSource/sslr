@@ -237,6 +237,7 @@ public final class GrammarFunctions {
    * @since 1.14
    * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.LexerfulGrammarBuilder#buildWithMemoizationOfMatchesForAllRules()} instead.
    */
+  @Deprecated
   public static void enableMemoizationOfMatchesForAllRules(Grammar grammar) {
     for (Field ruleField : Grammar.getAllRuleFields(grammar.getClass())) {
       String ruleName = ruleField.getName();
