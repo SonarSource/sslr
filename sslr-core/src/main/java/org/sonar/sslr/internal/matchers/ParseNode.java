@@ -40,10 +40,23 @@ public class ParseNode {
     this.matcher = matcher;
   }
 
+  /**
+   * Leaf node.
+   */
+  public ParseNode(int startIndex, int endIndex, Matcher matcher) {
+    this.startIndex = startIndex;
+    this.endIndex = endIndex;
+    this.matcher = matcher;
+    this.children = ImmutableList.of();
+  }
+
   public int getStartIndex() {
     return startIndex;
   }
 
+  /**
+   * Be aware that element of input with this index is not included into this node.
+   */
   public int getEndIndex() {
     return endIndex;
   }

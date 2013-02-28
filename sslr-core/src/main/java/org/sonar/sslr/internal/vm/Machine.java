@@ -36,7 +36,6 @@ import org.sonar.sslr.parser.ParseError;
 import org.sonar.sslr.parser.ParsingResult;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class Machine implements CharSequence {
@@ -295,7 +294,7 @@ public class Machine implements CharSequence {
   }
 
   public void createLeafNode(Matcher matcher, int offset) {
-    ParseNode node = new ParseNode(index, index + offset, Collections.EMPTY_LIST, matcher);
+    ParseNode node = new ParseNode(index, index + offset, matcher);
     stack.subNodes().add(node);
     index += offset;
   }
