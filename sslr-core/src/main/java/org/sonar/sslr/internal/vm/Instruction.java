@@ -342,6 +342,10 @@ public abstract class Instruction {
   public static final class FailTwiceInstruction extends Instruction {
     @Override
     public void execute(Machine machine) {
+      // restore state of machine to correctly report error during backtrack
+      // note that there is no need restore value of "IgnoreErrors", because this will be done during backtrack
+      machine.setIndex(machine.peek().index());
+
       // remove pending alternative pushed by Choice instruction
       machine.pop();
       machine.backtrack();

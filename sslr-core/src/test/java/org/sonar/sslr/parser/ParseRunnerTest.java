@@ -80,6 +80,19 @@ public class ParseRunnerTest {
   }
 
   @Test
+  public void should_report_error_at_correct_index() {
+    Rule rule = new MutableParsingRule("rule").is(GrammarOperators.nextNot("foo"));
+    ParseRunner runner = new ParseRunner(rule);
+    ParsingResult result = runner.parse("foo".toCharArray());
+    assertThat(result.isMatched()).isFalse();
+    ParseError parseError = result.getParseError();
+    System.out.println(new ParseErrorFormatter().format(parseError));
+    assertThat(parseError.getErrorIndex()).isEqualTo(0);
+    assertThat(parseError.getMessage()).isEqualTo("failed to match: rule");
+    assertThat(parseError.getFailedPaths()).hasSize(1);
+  }
+
+  @Test
   public void should_report_error_inside_of_predicate_next() {
     Rule subRule = new MutableParsingRule("subRule").is("foo");
     Rule rule = new MutableParsingRule("rule").is(GrammarOperators.next(subRule), "bar");

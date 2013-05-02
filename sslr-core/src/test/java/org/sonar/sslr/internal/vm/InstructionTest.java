@@ -230,8 +230,13 @@ public class InstructionTest {
     assertThat(instruction.toString()).isEqualTo("FailTwice");
     assertThat(instruction).as("singleton").isSameAs(Instruction.failTwice());
 
+    MachineStack stack = mock(MachineStack.class);
+    when(stack.index()).thenReturn(13);
+    when(machine.peek()).thenReturn(stack);
     instruction.execute(machine);
     InOrder inOrder = Mockito.inOrder(machine);
+    inOrder.verify(machine).peek();
+    inOrder.verify(machine).setIndex(13);
     inOrder.verify(machine).pop();
     inOrder.verify(machine).backtrack();
     verifyNoMoreInteractions(machine);

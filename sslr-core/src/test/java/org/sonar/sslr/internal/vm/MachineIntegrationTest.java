@@ -29,6 +29,7 @@ import org.sonar.sslr.grammar.GrammarException;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+// TODO this test should also check state of machine after execution
 public class MachineIntegrationTest {
 
   @Rule
