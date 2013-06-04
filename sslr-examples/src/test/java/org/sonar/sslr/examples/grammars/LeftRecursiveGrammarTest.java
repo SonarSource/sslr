@@ -26,25 +26,55 @@ import org.junit.rules.ExpectedException;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.parser.ParseRunner;
 
+import static org.sonar.sslr.tests.Assertions.assertThat;
+
 public class LeftRecursiveGrammarTest {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
-  private Grammar grammar = LeftRecursiveGrammar.create();
-
   @Test
   public void should_detect_immediate_left_recursion() {
+    Grammar grammar = LeftRecursiveGrammar.immediateLeftRecursion();
     thrown.expect(GrammarException.class);
     thrown.expectMessage("Left recursion has been detected, involved rule: " + LeftRecursiveGrammar.A);
     new ParseRunner(grammar.rule(LeftRecursiveGrammar.A)).parse("".toCharArray());
   }
 
   @Test
+  public void eliminated_immediate_left_recursion() {
+    Grammar grammar = LeftRecursiveGrammar.eliminatedImmediateLeftRecursion();
+    assertThat(grammar.rule(LeftRecursiveGrammar.A))
+      .matches("s1")
+      .matches("s2")
+      .matches("s1t1")
+      .matches("s1t2")
+      .matches("s1t1t2")
+      .matches("s1t2t1")
+      .matches("s2t1")
+      .matches("s2t2")
+      .matches("s2t1t2")
+      .matches("s2t2t1");
+  }
+
+  @Test
   public void should_detect_indirect_left_recursion() {
+    Grammar grammar = LeftRecursiveGrammar.indirectLeftRecursion();
     thrown.expect(GrammarException.class);
-    thrown.expectMessage("Left recursion has been detected, involved rule: " + LeftRecursiveGrammar.C);
-    new ParseRunner(grammar.rule(LeftRecursiveGrammar.B)).parse("".toCharArray());
+    thrown.expectMessage("Left recursion has been detected, involved rule: " + LeftRecursiveGrammar.B);
+    new ParseRunner(grammar.rule(LeftRecursiveGrammar.A)).parse("".toCharArray());
+  }
+
+  @Test
+  public void eliminated_indirect_left_recursion() {
+    Grammar grammar = LeftRecursiveGrammar.eliminatedIndirectLeftRecursion();
+    assertThat(grammar.rule(LeftRecursiveGrammar.A))
+      .matches("s2t1")
+      .matches("s2t1t2t1")
+      .matches("s2t1t2t1t2t1")
+      .matches("s1")
+      .matches("s1t2t1")
+      .matches("s1t2t1t2t1");
   }
 
 }

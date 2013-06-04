@@ -23,32 +23,66 @@ import com.sonar.sslr.api.Grammar;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 
+/**
+ * Support of left recursion in PEG is controversial and not well defined (<a href="http://comments.gmane.org/gmane.comp.parsers.peg.general/429">Bryan Ford</a>),
+ * as there are papers claiming that it is easily achieved
+ * (<a href="http://www.tinlizzie.org/~awarth/papers/pepm08.pdf">Packrat Parsers Can Support Left Recursion, Warth et al.</a>),
+ * and others that it is much harder
+ * (<a href="http://port70.net/~nsz/articles/other/tratt_direct_left_recursive_peg_2010.pdf">Direct Left-Recursive Parsing Expressing Grammars, Laurence Tratt</a>).
+ * For those reasons, it was decided not to support left recursion in SSLR.
+ */
 public enum LeftRecursiveGrammar implements GrammarRuleKey {
 
-  A, B, C, T1, T2, T3, S1, S2;
+  A, B, T1, T2, S1, S2;
 
-  public static Grammar create() {
+  public static Grammar immediateLeftRecursion() {
     LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
-
-    // Immediate left recursion
     b.rule(A).is(b.firstOf(
-        b.sequence(A, T1),
-        T1));
-    b.rule(T1).is("t1");
-
-    // Indirect left recursion
-    b.rule(B).is(b.firstOf(
-        b.sequence(C, T2),
-        S1));
-    b.rule(C).is(b.firstOf(
-        b.sequence(B, T3),
-        S2));
-    b.rule(T2).is("t1");
-    b.rule(S1).is("s1");
-    b.rule(T3).is("t2");
-    b.rule(S2).is("s2");
-
+      b.sequence(A, T1),
+      b.sequence(A, T2),
+      S1,
+      S2));
+    otherRules(b);
     return b.build();
+  }
+
+  /**
+   * To eliminate immediate left recursion - factor out non recursive alternatives.
+   */
+  public static Grammar eliminatedImmediateLeftRecursion() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+    b.rule(A).is(b.firstOf(S1, S2), b.zeroOrMore(b.firstOf(T1, T2)));
+    otherRules(b);
+    return b.build();
+  }
+
+  public static Grammar indirectLeftRecursion() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+    b.rule(A).is(b.firstOf(
+      b.sequence(B, T1),
+      S1));
+    b.rule(B).is(b.firstOf(
+      b.sequence(A, T2),
+      S2));
+    otherRules(b);
+    return b.build();
+  }
+
+  /**
+   * To eliminate indirect left recursion - transform to immediate left recursion, then factor out non recursive alternatives.
+   */
+  public static Grammar eliminatedIndirectLeftRecursion() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+    b.rule(A).is(b.firstOf(b.sequence(S2, T1), S1), b.zeroOrMore(T2, T1));
+    otherRules(b);
+    return b.build();
+  }
+
+  private static void otherRules(LexerlessGrammarBuilder b) {
+    b.rule(T1).is("t1");
+    b.rule(T2).is("t2");
+    b.rule(S1).is("s1");
+    b.rule(S2).is("s2");
   }
 
 }
