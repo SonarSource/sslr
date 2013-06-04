@@ -29,7 +29,7 @@ import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
  * (<a href="http://www.tinlizzie.org/~awarth/papers/pepm08.pdf">Packrat Parsers Can Support Left Recursion, Warth et al.</a>),
  * and others that it is much harder
  * (<a href="http://port70.net/~nsz/articles/other/tratt_direct_left_recursive_peg_2010.pdf">Direct Left-Recursive Parsing Expressing Grammars, Laurence Tratt</a>).
- * For those reasons, it was decided not to support left recursion in SSLR.
+ * For those reasons, it was decided not to support it - SSLR can detect existence of left recursion at runtime and will report this as an error.
  */
 public enum LeftRecursiveGrammar implements GrammarRuleKey {
 

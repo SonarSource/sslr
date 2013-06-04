@@ -23,6 +23,12 @@ import com.sonar.sslr.api.Grammar;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 
+/**
+ * While for performance reasons preferable to write greedy rules instead of recursive,
+ * impossible to avoid recursion at all.
+ * Depth of recursion not limited by Java stack size (i.e. can't lead to {@link StackOverflowError})
+ * and limited only by amount of available memory.
+ */
 public enum RecursiveGrammar implements GrammarRuleKey {
 
   S;
