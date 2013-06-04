@@ -23,16 +23,41 @@ import com.sonar.sslr.api.Grammar;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 
-public enum InfiniteLoopGrammar implements GrammarRuleKey {
+/**
+ * This class demonstrates how SSLR detects various mistakes in grammars.
+ */
+public enum IncorrectGrammar implements GrammarRuleKey {
 
   A, B;
 
-  public static Grammar create() {
+  public static Grammar undefinedRule() {
     LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+    b.rule(A).is(B);
+    return b.build();
+  }
 
+  public static Grammar ruleDefinedTwice() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+    b.rule(A).is("foo");
+    b.rule(A).is("bar");
+    return b.build();
+  }
+
+  public static Grammar incorrectRegularExpression() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+    b.rule(A).is(b.regexp("*"));
+    return b.build();
+  }
+
+  public static Grammar infiniteZeroOrMore() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
     b.rule(A).is(b.zeroOrMore(b.optional("foo")));
-    b.rule(B).is(b.oneOrMore(b.optional("foo")));
+    return b.build();
+  }
 
+  public static Grammar infiniteOneOrMore() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+    b.rule(A).is(b.oneOrMore(b.optional("foo")));
     return b.build();
   }
 

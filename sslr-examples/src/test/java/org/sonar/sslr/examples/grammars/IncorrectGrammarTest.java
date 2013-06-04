@@ -19,32 +19,52 @@
  */
 package org.sonar.sslr.examples.grammars;
 
-import com.sonar.sslr.api.Grammar;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.parser.ParseRunner;
 
-public class InfiniteLoopGrammarTest {
+import java.util.regex.PatternSyntaxException;
+
+public class IncorrectGrammarTest {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
-  private Grammar grammar = InfiniteLoopGrammar.create();
-
   @Test
-  public void zeroOrMore_should_not_cause_infinite_loop() {
+  public void undefined_rule() {
     thrown.expect(GrammarException.class);
-    thrown.expectMessage("The inner part of ZeroOrMore and OneOrMore must not allow empty matches");
-    new ParseRunner(grammar.rule(InfiniteLoopGrammar.A)).parse("foo".toCharArray());
+    thrown.expectMessage("The rule 'B' hasn't beed defined.");
+    IncorrectGrammar.undefinedRule();
   }
 
   @Test
-  public void oneOrMore_should_not_cause_infinite_loop() {
+  public void rule_defined_twice() {
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The rule 'A' has already been defined somewhere in the grammar.");
+    IncorrectGrammar.ruleDefinedTwice();
+  }
+
+  @Test
+  public void incorrect_regular_expression() {
+    thrown.expect(PatternSyntaxException.class);
+    thrown.expectMessage("Dangling meta character '*' near index 0");
+    IncorrectGrammar.incorrectRegularExpression();
+  }
+
+  @Test
+  public void infinite_zero_or_more_expression() {
     thrown.expect(GrammarException.class);
     thrown.expectMessage("The inner part of ZeroOrMore and OneOrMore must not allow empty matches");
-    new ParseRunner(grammar.rule(InfiniteLoopGrammar.B)).parse("foo".toCharArray());
+    new ParseRunner(IncorrectGrammar.infiniteZeroOrMore().rule(IncorrectGrammar.A)).parse("foo".toCharArray());
+  }
+
+  @Test
+  public void infinite_one_or_more_expression() {
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The inner part of ZeroOrMore and OneOrMore must not allow empty matches");
+    new ParseRunner(IncorrectGrammar.infiniteOneOrMore().rule(IncorrectGrammar.A)).parse("foo".toCharArray());
   }
 
 }
