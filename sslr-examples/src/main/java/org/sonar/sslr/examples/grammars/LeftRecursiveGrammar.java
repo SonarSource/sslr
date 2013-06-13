@@ -35,6 +35,9 @@ public enum LeftRecursiveGrammar implements GrammarRuleKey {
 
   A, B, T1, T2, S1, S2;
 
+  /**
+   * @see #eliminatedImmediateLeftRecursion()
+   */
   public static Grammar immediateLeftRecursion() {
     LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
     b.rule(A).is(b.firstOf(
@@ -56,6 +59,9 @@ public enum LeftRecursiveGrammar implements GrammarRuleKey {
     return b.build();
   }
 
+  /**
+   * @see #eliminatedIndirectLeftRecursion()
+   */
   public static Grammar indirectLeftRecursion() {
     LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
     b.rule(A).is(b.firstOf(
