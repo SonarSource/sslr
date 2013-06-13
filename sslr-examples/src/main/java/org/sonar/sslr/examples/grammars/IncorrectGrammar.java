@@ -32,6 +32,12 @@ public enum IncorrectGrammar implements GrammarRuleKey {
 
   public static Grammar undefinedRule() {
     LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+    b.rule(A);
+    return b.build();
+  }
+
+  public static Grammar referenceToUndefinedRule() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
     b.rule(A).is(B);
     return b.build();
   }

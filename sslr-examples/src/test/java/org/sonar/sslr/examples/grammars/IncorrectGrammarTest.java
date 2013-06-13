@@ -35,8 +35,15 @@ public class IncorrectGrammarTest {
   @Test
   public void undefined_rule() {
     thrown.expect(GrammarException.class);
-    thrown.expectMessage("The rule 'B' hasn't beed defined.");
+    thrown.expectMessage("The rule 'A' hasn't beed defined.");
     IncorrectGrammar.undefinedRule();
+  }
+
+  @Test
+  public void reference_to_undefined_rule() {
+    thrown.expect(GrammarException.class);
+    thrown.expectMessage("The rule 'B' hasn't beed defined.");
+    IncorrectGrammar.referenceToUndefinedRule();
   }
 
   @Test
