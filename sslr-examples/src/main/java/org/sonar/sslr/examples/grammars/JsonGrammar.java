@@ -35,6 +35,9 @@ public enum JsonGrammar implements GrammarRuleKey {
   VALUE,
   STRING,
   NUMBER,
+  TRUE,
+  FALSE,
+  NULL,
   WHITESPACE;
 
   public static Grammar create() {
@@ -45,8 +48,11 @@ public enum JsonGrammar implements GrammarRuleKey {
     b.rule(PAIR).is(STRING, ":", WHITESPACE, VALUE);
     b.rule(ARRAY).is("[", WHITESPACE, b.optional(VALUE, b.zeroOrMore(",", WHITESPACE, VALUE)), "]", WHITESPACE);
     b.rule(STRING).is('"', b.regexp("([^\"\\\\]|\\\\([\"\\\\/bfnrt]|u[0-9a-fA-F]{4}))*+"), '"', WHITESPACE);
-    b.rule(VALUE).is(b.firstOf(STRING, NUMBER, OBJECT, ARRAY, "true", "false", "null"), WHITESPACE);
+    b.rule(VALUE).is(b.firstOf(STRING, NUMBER, OBJECT, ARRAY, TRUE, FALSE, NULL), WHITESPACE);
     b.rule(NUMBER).is(b.regexp("-?+(0|[1-9][0-9]*+)(\\.[0-9]++)?+([eE][+-]?+[0-9]++)?+"));
+    b.rule(TRUE).is("true");
+    b.rule(FALSE).is("false");
+    b.rule(NULL).is("null");
     b.rule(WHITESPACE).is(b.regexp("[ \n\r\t\f]*+"));
 
     return b.build();
