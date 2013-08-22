@@ -29,10 +29,27 @@ public class MemoizationGrammarTest {
   @Test
   public void should_be_slow_to_fail_to_parse_gramar_requiring_negative_memoization() {
     Grammar grammar = MemoizationGrammar.requiresNegativeMemoization();
-    assertThat(grammar.rule(MemoizationGrammar.ROOT))
-        .notMatches("aaaaaaaaaaaaaaaa") // Requires time T
-        .notMatches("aaaaaaaaaaaaaaaaa") // Requires time 2*T
-        .notMatches("aaaaaaaaaaaaaaaaaa"); // Requires time 4*T;
+    assertThat(grammar.rule(MemoizationGrammar.A))
+        .notMatches("aaaaaaaaaaaaaaa") // Requires time T
+        .notMatches("aaaaaaaaaaaaaaaa") // Requires time 2*T
+        .notMatches("aaaaaaaaaaaaaaaaa"); // Requires time 4*T, etc.
   }
 
+  @Test
+  public void should_be_fast_on_grammar_requiring_positive_memoization() {
+    Grammar grammar = MemoizationGrammar.requiresPositiveMemoization();
+    assertThat(grammar.rule(MemoizationGrammar.A))
+        .matches("((((((((((((((((((((((((b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b") // Requires time T
+        .matches("((((((((((((((((((((((((((b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b") // Requires time ~T
+        .matches("((((((((((((((((((((((((((((b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b"); // Requires time ~T, etc.
+  }
+
+  @Test
+  public void should_be_slow_on_grammar_requiring_positive_memoization_on_more_than_just_the_last_rule() {
+    Grammar grammar = MemoizationGrammar.requiresPositiveMemoizationOnMoreThanJustLastRule();
+    assertThat(grammar.rule(MemoizationGrammar.A))
+        .matches("(((((((((((((((b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b") // Requires time T
+        .matches("(((((((((((((((((b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b") // Requires time 4*T
+        .matches("(((((((((((((((((((b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b)b"); // Requires time 16*T, etc.
+  }
 }

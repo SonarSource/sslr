@@ -25,15 +25,45 @@ import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 
 public enum MemoizationGrammar implements GrammarRuleKey {
 
-  ROOT;
+  A,
+  B,
+  C;
 
   public static Grammar requiresNegativeMemoization() {
     LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
-    b.rule(ROOT).is(
+
+    b.rule(A).is(
         'a',
         b.firstOf(
-            b.sequence(ROOT, 'b'),
-            b.sequence(ROOT, 'c')));
+            b.sequence(A, 'b'),
+            b.sequence(A, 'c')));
+
+    return b.build();
+  }
+
+  public static Grammar requiresPositiveMemoization() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+
+    b.rule(A).is(
+        b.firstOf(
+            b.sequence(b.optional(B), 'a'),
+            b.sequence(b.optional(B), 'b')));
+    b.rule(B).is('(', A, ')');
+
+    return b.build();
+  }
+
+  public static Grammar requiresPositiveMemoizationOnMoreThanJustLastRule() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+
+    b.rule(A).is(
+        b.firstOf(
+            b.sequence(b.optional(B), 'a'),
+            b.sequence(C, '!'), // rule 'C' will match and override the memoization result of 'B'
+            b.sequence(b.optional(B), 'b')));
+    b.rule(B).is('(', A, ')');
+    b.rule(C).is('(', b.optional(C)); // rule 'C' will override each following memoization result of 'A'
+
     return b.build();
   }
 
