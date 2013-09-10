@@ -30,7 +30,6 @@ import org.sonar.sslr.internal.vm.EndOfInputExpression;
 import org.sonar.sslr.internal.vm.Instruction;
 import org.sonar.sslr.internal.vm.Machine;
 import org.sonar.sslr.internal.vm.OneOrMoreExpression;
-import org.sonar.sslr.internal.vm.OptionalExpression;
 import org.sonar.sslr.internal.vm.ParsingExpression;
 import org.sonar.sslr.internal.vm.SequenceExpression;
 import org.sonar.sslr.internal.vm.StringExpression;
@@ -38,28 +37,28 @@ import org.sonar.sslr.internal.vm.ZeroOrMoreExpression;
 
 @State
 @BenchmarkMode(Mode.Throughput)
-public class ZeroOrMoreExpressionBenchmark {
+public class OneOrMoreExpressionBenchmark {
 
   private String input;
-  private Instruction[] zeroOrMore, optionalOneOrMore;
+  private Instruction[] oneOrMore, usingZeroOrMore;
 
   @Setup
   public void setup() {
     int n = Integer.getInteger("n", 3);
     input = Strings.repeat("t", n);
     ParsingExpression subExpression = new StringExpression("t");
-    zeroOrMore = compile(new ZeroOrMoreExpression(subExpression));
-    optionalOneOrMore = compile(new OptionalExpression(new OneOrMoreExpression(subExpression)));
+    oneOrMore = compile(new OneOrMoreExpression(subExpression));
+    usingZeroOrMore = compile(new SequenceExpression(subExpression, new ZeroOrMoreExpression(subExpression)));
   }
 
   @GenerateMicroBenchmark
-  public boolean zeroOrMore() {
-    return Machine.execute(input, zeroOrMore);
+  public boolean oneOrMore() {
+    return Machine.execute(input, oneOrMore);
   }
 
   @GenerateMicroBenchmark
-  public boolean optionalOneOrMore() {
-    return Machine.execute(input, optionalOneOrMore);
+  public boolean usingZeroOrMore() {
+    return Machine.execute(input, usingZeroOrMore);
   }
 
   private Instruction[] compile(ParsingExpression expression) {
