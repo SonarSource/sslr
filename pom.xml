@@ -82,7 +82,6 @@
     <module>sslr-testing-harness</module>
     <module>sslr-xpath</module>
     <module>sslr-tests</module>
-    <module>sslr-symboltable</module>
     <module>sslr-examples</module>
   </modules>
 
