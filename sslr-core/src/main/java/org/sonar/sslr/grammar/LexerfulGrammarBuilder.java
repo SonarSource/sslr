@@ -166,8 +166,17 @@ public class LexerfulGrammarBuilder extends GrammarBuilder {
 
   /**
    * Creates parsing expression - "bridge".
-   * During execution of this expression parser will consume all tokens between token from and token to.
-   * Equivalent of rule {@code rule(key).is(from, key, to)}.
+   * Equivalent of:
+   * <pre>
+   *   rule(bridge).is(
+   *     from,
+   *     zeroOrMore(firstOf(
+   *       sequence(nextNot(from), anyToken()),
+   *       bridge
+   *     )),
+   *     to
+   *   ).skip()
+   * </pre>
    * Do not overuse this expression.
    */
   public Object bridge(TokenType from, TokenType to) {
