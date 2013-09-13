@@ -59,10 +59,12 @@ public enum MemoizationGrammar implements GrammarRuleKey {
     b.rule(A).is(
         b.firstOf(
             b.sequence(b.optional(B), 'a'),
-            b.sequence(C, '!'), // rule 'C' will match and override the memoization result of 'B'
+            // rule 'C' will match and override the memoization result of 'B':
+            b.sequence(C, '!'),
             b.sequence(b.optional(B), 'b')));
     b.rule(B).is('(', A, ')');
-    b.rule(C).is('(', b.optional(C)); // rule 'C' will override each following memoization result of 'A'
+    // rule 'C' will override each following memoization result of 'A':
+    b.rule(C).is('(', b.optional(C));
 
     return b.build();
   }

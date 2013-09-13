@@ -104,8 +104,7 @@ public class Validators {
 
       if (lowerBound == upperBound) {
         errorMessage = "Must be equal to " + lowerBound + ": " + value;
-      }
-      else if (upperBound == Integer.MAX_VALUE) {
+      } else if (upperBound == Integer.MAX_VALUE) {
         if (lowerBound == 0) {
           errorMessage = "Must be positive or 0: " + value;
         } else if (lowerBound == 1) {

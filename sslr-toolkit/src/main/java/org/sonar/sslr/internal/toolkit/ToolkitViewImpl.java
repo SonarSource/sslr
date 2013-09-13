@@ -277,8 +277,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
       for (AstNode childAstNode : astNode.getChildren()) {
         treeNode.add(getTreeNode(childAstNode));
       }
-    }
-    else if (astNode.hasToken() && astNode.getToken().hasTrivia()) {
+    } else if (astNode.hasToken() && astNode.getToken().hasTrivia()) {
       for (Trivia trivia : astNode.getToken().getTrivia()) {
         DefaultMutableTreeNode childTreeNode = new DefaultMutableTreeNode(trivia);
 
