@@ -126,7 +126,6 @@ public final class MiniCLexer {
         .withChannel(commentRegexp("(?s)/\\*.*?\\*/"))
         .withChannel(new PunctuatorChannel(Punctuators.values()))
         .withChannel(new BlackHoleChannel("[ \t\r\n]+"))
-        .withPreprocessor(new MiniCPreprocessor())
         .build();
   }
 
