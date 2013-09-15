@@ -81,7 +81,7 @@ public final class AstCreator {
         return null;
       } else if (ruleMatcher.getTriviaKind() == TriviaKind.COMMENT) {
         updateTokenPositionAndValue(node);
-        tokenBuilder.setTrivia(Collections.EMPTY_LIST);
+        tokenBuilder.setTrivia(Collections.<Trivia>emptyList());
         tokenBuilder.setType(GenericTokenType.COMMENT);
         trivias.add(Trivia.createComment(tokenBuilder.build()));
         return null;
@@ -93,7 +93,7 @@ public final class AstCreator {
       TokenExpression ruleMatcher = (TokenExpression) node.getMatcher();
       tokenBuilder.setType(ruleMatcher.getTokenType());
       if (ruleMatcher.getTokenType() == GenericTokenType.COMMENT) {
-        tokenBuilder.setTrivia(Collections.EMPTY_LIST);
+        tokenBuilder.setTrivia(Collections.<Trivia>emptyList());
         trivias.add(Trivia.createComment(tokenBuilder.build()));
         return null;
       }

@@ -61,8 +61,6 @@ public class AstNode {
 
   /**
    * Get the parent of this node in the tree.
-   *
-   * @param parent
    */
   public AstNode getParent() {
     return parent;

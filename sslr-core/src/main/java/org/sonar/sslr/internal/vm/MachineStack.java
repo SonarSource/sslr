@@ -44,7 +44,7 @@ public class MachineStack {
 
   public MachineStack() {
     this.parent = null;
-    this.subNodes = Collections.EMPTY_LIST;
+    this.subNodes = Collections.emptyList();
     this.index = -1;
   }
 
