@@ -22,6 +22,10 @@ package com.sonar.sslr.api;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @deprecated in 1.20, will be removed in next version
+ */
+@Deprecated
 public class AstNodeBrowser {
 
   private AstNode node;
