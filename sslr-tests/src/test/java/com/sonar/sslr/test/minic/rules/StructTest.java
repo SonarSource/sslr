@@ -17,35 +17,27 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.test.miniC.integration;
+package com.sonar.sslr.test.minic.rules;
 
-import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.test.miniC.MiniCParser;
-import org.apache.commons.io.FileUtils;
+import com.sonar.sslr.test.minic.MiniCGrammar;
+import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.util.Collection;
+import static org.sonar.sslr.tests.Assertions.assertThat;
 
-import static org.fest.assertions.Assertions.assertThat;
+public class StructTest extends RuleTest {
 
-public class MiniCOwnExamplesTest {
-
-  private static final Parser<Grammar> parser = MiniCParser.create();
+  @Override
+  @Before
+  public void init() {
+    p.setRootRule(g.rule(MiniCGrammar.STRUCT_DEFINITION));
+  }
 
   @Test
-  public void test() throws Exception {
-    Collection<File> files = FileUtils.listFiles(new File("src/test/resources/MiniCIntegration"), null, true);
-    assertThat(files).isNotEmpty();
-    for (File file : files) {
-      try {
-        parser.parse(file);
-      } catch (RuntimeException e) {
-        e.printStackTrace();
-        throw e;
-      }
-    }
+  public void reallife() {
+    assertThat(p)
+        .matches("struct my { int a; }")
+        .matches("struct my { int a; int b; }");
   }
 
 }

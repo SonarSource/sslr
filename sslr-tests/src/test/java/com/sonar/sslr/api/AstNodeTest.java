@@ -19,13 +19,13 @@
  */
 package com.sonar.sslr.api;
 
-import com.sonar.sslr.test.miniC.MiniCGrammar;
+import com.sonar.sslr.test.minic.MiniCGrammar;
 import org.junit.Test;
 
 import java.util.List;
 
 import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
-import static com.sonar.sslr.test.miniC.MiniCParser.parseString;
+import static com.sonar.sslr.test.minic.MiniCParser.parseString;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class AstNodeTest {

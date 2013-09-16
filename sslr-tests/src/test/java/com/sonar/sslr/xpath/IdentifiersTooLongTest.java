@@ -26,7 +26,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.sonar.sslr.test.miniC.MiniCParser.parseFile;
+import static com.sonar.sslr.test.minic.MiniCParser.parseFile;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class IdentifiersTooLongTest {

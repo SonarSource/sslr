@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.test.miniC;
+package com.sonar.sslr.test.minic;
 
 import com.sonar.sslr.impl.Lexer;
 import org.junit.Test;
@@ -25,9 +25,9 @@ import org.junit.Test;
 import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
 import static com.sonar.sslr.test.lexer.LexerMatchers.hasComment;
 import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.*;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Literals.INTEGER;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.*;
+import static com.sonar.sslr.test.minic.MiniCLexer.Keywords.*;
+import static com.sonar.sslr.test.minic.MiniCLexer.Literals.INTEGER;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.*;
 import static org.junit.Assert.assertThat;
 
 public class MiniCLexerTest {

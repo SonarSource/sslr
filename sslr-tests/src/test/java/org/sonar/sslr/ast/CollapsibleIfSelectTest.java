@@ -23,8 +23,8 @@ import com.google.common.collect.Sets;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.test.miniC.MiniCGrammar;
-import com.sonar.sslr.test.miniC.MiniCParser;
+import com.sonar.sslr.test.minic.MiniCGrammar;
+import com.sonar.sslr.test.minic.MiniCParser;
 import org.junit.Test;
 
 import java.io.File;

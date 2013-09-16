@@ -17,9 +17,9 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.test.miniC.rules;
+package com.sonar.sslr.test.minic.rules;
 
-import com.sonar.sslr.test.miniC.MiniCGrammar;
+import com.sonar.sslr.test.minic.MiniCGrammar;
 import org.junit.Before;
 import org.junit.Test;
 

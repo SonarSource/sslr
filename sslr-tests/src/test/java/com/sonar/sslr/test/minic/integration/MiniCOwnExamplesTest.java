@@ -17,37 +17,35 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.test.miniC;
+package com.sonar.sslr.test.minic.integration;
 
-import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
+import com.sonar.sslr.test.minic.MiniCParser;
 import org.apache.commons.io.FileUtils;
+import org.junit.Test;
 
 import java.io.File;
+import java.util.Collection;
 
-public final class MiniCParser {
+import static org.fest.assertions.Assertions.assertThat;
 
-  private static final Parser<Grammar> P = MiniCParser.create();
+public class MiniCOwnExamplesTest {
 
-  private MiniCParser() {
-  }
+  private static final Parser<Grammar> parser = MiniCParser.create();
 
-  public static Parser<Grammar> create() {
-    return Parser.builder(MiniCGrammar.create()).withLexer(MiniCLexer.create()).build();
-  }
-
-  public static AstNode parseFile(String filePath) {
-    File file = FileUtils.toFile(MiniCParser.class.getResource(filePath));
-    if (file == null || !file.exists()) {
-      throw new AssertionError("The file \"" + filePath + "\" does not exist.");
+  @Test
+  public void test() throws Exception {
+    Collection<File> files = FileUtils.listFiles(new File("src/test/resources/MiniCIntegration"), null, true);
+    assertThat(files).isNotEmpty();
+    for (File file : files) {
+      try {
+        parser.parse(file);
+      } catch (RuntimeException e) {
+        e.printStackTrace();
+        throw e;
+      }
     }
-
-    return P.parse(file);
-  }
-
-  public static AstNode parseString(String source) {
-    return P.parse(source);
   }
 
 }

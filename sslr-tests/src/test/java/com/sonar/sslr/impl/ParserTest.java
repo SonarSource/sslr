@@ -24,8 +24,8 @@ import com.sonar.sslr.api.RecognitionException;
 import org.junit.Test;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
-import static com.sonar.sslr.test.miniC.MiniCParser.parseFile;
-import static com.sonar.sslr.test.miniC.MiniCParser.parseString;
+import static com.sonar.sslr.test.minic.MiniCParser.parseFile;
+import static com.sonar.sslr.test.minic.MiniCParser.parseString;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class ParserTest {

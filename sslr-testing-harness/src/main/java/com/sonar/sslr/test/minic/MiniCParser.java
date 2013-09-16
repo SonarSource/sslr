@@ -17,27 +17,37 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.test.miniC.rules;
+package com.sonar.sslr.test.minic;
 
-import com.sonar.sslr.test.miniC.MiniCGrammar;
-import org.junit.Before;
-import org.junit.Test;
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Grammar;
+import com.sonar.sslr.impl.Parser;
+import org.apache.commons.io.FileUtils;
 
-import static org.sonar.sslr.tests.Assertions.assertThat;
+import java.io.File;
 
-public class StructTest extends RuleTest {
+public final class MiniCParser {
 
-  @Override
-  @Before
-  public void init() {
-    p.setRootRule(g.rule(MiniCGrammar.STRUCT_DEFINITION));
+  private static final Parser<Grammar> P = MiniCParser.create();
+
+  private MiniCParser() {
   }
 
-  @Test
-  public void reallife() {
-    assertThat(p)
-        .matches("struct my { int a; }")
-        .matches("struct my { int a; int b; }");
+  public static Parser<Grammar> create() {
+    return Parser.builder(MiniCGrammar.create()).withLexer(MiniCLexer.create()).build();
+  }
+
+  public static AstNode parseFile(String filePath) {
+    File file = FileUtils.toFile(MiniCParser.class.getResource(filePath));
+    if (file == null || !file.exists()) {
+      throw new AssertionError("The file \"" + filePath + "\" does not exist.");
+    }
+
+    return P.parse(file);
+  }
+
+  public static AstNode parseString(String source) {
+    return P.parse(source);
   }
 
 }

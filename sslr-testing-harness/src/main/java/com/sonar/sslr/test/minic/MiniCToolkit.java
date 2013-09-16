@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.test.miniC;
+package com.sonar.sslr.test.minic;
 
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.Grammar;

@@ -17,22 +17,26 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.test.miniC.rules;
+package com.sonar.sslr.test.minic;
 
-import com.sonar.sslr.api.Grammar;
-import com.sonar.sslr.api.Rule;
-import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.test.miniC.MiniCParser;
+import org.sonar.colorizer.CDocTokenizer;
+import org.sonar.colorizer.CppDocTokenizer;
+import org.sonar.colorizer.KeywordsTokenizer;
+import org.sonar.colorizer.Tokenizer;
 
-public abstract class RuleTest {
+import java.util.Arrays;
+import java.util.List;
 
-  protected final Parser<Grammar> p = MiniCParser.create();
-  protected final Grammar g = p.getGrammar();
+public final class MiniCColorizer {
 
-  public final Rule getTestedRule() {
-    return p.getRootRule();
+  private MiniCColorizer() {
   }
 
-  public abstract void init();
+  public static List<Tokenizer> getTokenizers() {
+    return Arrays.asList(
+        new CDocTokenizer("<span class=\"cd\">", "</span>"),
+        new CppDocTokenizer("<span class=\"cppd\">", "</span>"),
+        new KeywordsTokenizer("<span class=\"k\">", "</span>", MiniCLexer.Keywords.keywordValues()));
+  }
 
 }

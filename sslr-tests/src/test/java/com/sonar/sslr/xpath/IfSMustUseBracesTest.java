@@ -20,14 +20,14 @@
 package com.sonar.sslr.xpath;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.test.miniC.MiniCGrammar;
+import com.sonar.sslr.test.minic.MiniCGrammar;
 import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 
-import static com.sonar.sslr.test.miniC.MiniCParser.parseFile;
+import static com.sonar.sslr.test.minic.MiniCParser.parseFile;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class IfSMustUseBracesTest {

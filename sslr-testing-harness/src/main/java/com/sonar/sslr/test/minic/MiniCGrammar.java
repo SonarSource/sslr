@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.test.miniC;
+package com.sonar.sslr.test.minic;
 
 import com.sonar.sslr.api.Grammar;
 import org.sonar.sslr.grammar.GrammarRuleKey;
@@ -25,35 +25,35 @@ import org.sonar.sslr.grammar.LexerfulGrammarBuilder;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.BREAK;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.CONTINUE;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.ELSE;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.IF;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.INT;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.RETURN;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.STRUCT;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.VOID;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Keywords.WHILE;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Literals.INTEGER;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.ADD;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.BRACE_L;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.BRACE_R;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.COMMA;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.DEC;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.DIV;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.EQ;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.EQEQ;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.GT;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.GTE;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.INC;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.LT;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.LTE;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.MUL;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.NE;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.PAREN_L;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.PAREN_R;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.SEMICOLON;
-import static com.sonar.sslr.test.miniC.MiniCLexer.Punctuators.SUB;
+import static com.sonar.sslr.test.minic.MiniCLexer.Keywords.BREAK;
+import static com.sonar.sslr.test.minic.MiniCLexer.Keywords.CONTINUE;
+import static com.sonar.sslr.test.minic.MiniCLexer.Keywords.ELSE;
+import static com.sonar.sslr.test.minic.MiniCLexer.Keywords.IF;
+import static com.sonar.sslr.test.minic.MiniCLexer.Keywords.INT;
+import static com.sonar.sslr.test.minic.MiniCLexer.Keywords.RETURN;
+import static com.sonar.sslr.test.minic.MiniCLexer.Keywords.STRUCT;
+import static com.sonar.sslr.test.minic.MiniCLexer.Keywords.VOID;
+import static com.sonar.sslr.test.minic.MiniCLexer.Keywords.WHILE;
+import static com.sonar.sslr.test.minic.MiniCLexer.Literals.INTEGER;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.ADD;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.BRACE_L;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.BRACE_R;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.COMMA;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.DEC;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.DIV;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.EQ;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.EQEQ;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.GT;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.GTE;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.INC;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.LT;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.LTE;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.MUL;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.NE;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.PAREN_L;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.PAREN_R;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.SEMICOLON;
+import static com.sonar.sslr.test.minic.MiniCLexer.Punctuators.SUB;
 
 public enum MiniCGrammar implements GrammarRuleKey {
 
