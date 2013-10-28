@@ -116,8 +116,8 @@ public class InstructionTest {
 
     instruction.execute(machine);
     InOrder inOrder = Mockito.inOrder(machine);
-    inOrder.verify(machine).setIgnoreErrors(true);
     inOrder.verify(machine).pushBacktrack(42);
+    inOrder.verify(machine).setIgnoreErrors(true);
     inOrder.verify(machine).jump(1);
     verifyNoMoreInteractions(machine);
   }

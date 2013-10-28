@@ -199,7 +199,7 @@ public abstract class Instruction {
 
   /**
    * Instruction dedicated for predicates.
-   * Disables error reports and then behaves exactly as {@link ChoiceInstruction}.
+   * Behaves exactly as {@link ChoiceInstruction}, but disables error reports.
    */
   public static final class PredicateChoiceInstruction extends Instruction {
     private final int offset;
@@ -210,8 +210,8 @@ public abstract class Instruction {
 
     @Override
     public void execute(Machine machine) {
-      machine.setIgnoreErrors(true);
       machine.pushBacktrack(offset);
+      machine.setIgnoreErrors(true);
       machine.jump(1);
     }
 
