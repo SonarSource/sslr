@@ -21,6 +21,7 @@ package org.sonar.sslr.internal.matchers;
 
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
@@ -48,6 +49,8 @@ public class AstCreatorTest {
     TokenExpression tokenMatcher = mockTokenMatcher(GenericTokenType.IDENTIFIER);
     TokenExpression triviaMatcher = mockTokenMatcher(GenericTokenType.COMMENT);
     MutableParsingRule ruleMatcher = mockRuleMatcher("rule");
+    AstNodeType realAstNodeType = mock(AstNodeType.class);
+    when(ruleMatcher.getRealAstNodeType()).thenReturn(realAstNodeType);
 
     ParseNode triviaNode = new ParseNode(0, 4, Collections.EMPTY_LIST, triviaMatcher);
     ParseNode tokenNode = new ParseNode(4, 7, Collections.EMPTY_LIST, tokenMatcher);
@@ -59,7 +62,7 @@ public class AstCreatorTest {
     AstNode astNode = AstCreator.create(parsingResult, new LocatedText(null, input));
     System.out.println(AstXmlPrinter.print(astNode));
 
-    assertThat(astNode.getType()).isSameAs(ruleMatcher);
+    assertThat(astNode.getType()).isSameAs(realAstNodeType);
     assertThat(astNode.getName()).isEqualTo("rule");
     assertThat(astNode.getFromIndex()).isEqualTo(0);
     assertThat(astNode.getToIndex()).isEqualTo(7);
@@ -91,6 +94,8 @@ public class AstCreatorTest {
     ParseNode firstTerminal = new ParseNode(0, 3, Collections.EMPTY_LIST, null);
     ParseNode secondTerminal = new ParseNode(3, 6, Collections.EMPTY_LIST, null);
     MutableParsingRule ruleMatcher = mockRuleMatcher("rule");
+    AstNodeType realAstNodeType = mock(AstNodeType.class);
+    when(ruleMatcher.getRealAstNodeType()).thenReturn(realAstNodeType);
     ParseNode parseTreeRoot = new ParseNode(0, 6, ImmutableList.of(firstTerminal, secondTerminal), ruleMatcher);
 
     InputBuffer inputBuffer = new ImmutableInputBuffer(input);
@@ -99,7 +104,7 @@ public class AstCreatorTest {
     AstNode astNode = AstCreator.create(parsingResult, new LocatedText(null, input));
     System.out.println(AstXmlPrinter.print(astNode));
 
-    assertThat(astNode.getType()).isSameAs(ruleMatcher);
+    assertThat(astNode.getType()).isSameAs(realAstNodeType);
     assertThat(astNode.getName()).isEqualTo("rule");
     assertThat(astNode.getFromIndex()).isEqualTo(0);
     assertThat(astNode.getToIndex()).isEqualTo(6);
@@ -130,6 +135,9 @@ public class AstCreatorTest {
     MutableParsingRule ruleMatcher1 = mockRuleMatcher("rule1");
     when(ruleMatcher1.hasToBeSkippedFromAst(Mockito.any(AstNode.class))).thenReturn(true);
     MutableParsingRule ruleMatcher2 = mockRuleMatcher("rule2");
+    AstNodeType realAstNodeType = mock(AstNodeType.class);
+    when(ruleMatcher2.getRealAstNodeType()).thenReturn(realAstNodeType);
+
     ParseNode node = new ParseNode(0, 3, Collections.EMPTY_LIST, ruleMatcher1);
     ParseNode parseTreeRoot = new ParseNode(0, 3, ImmutableList.of(node), ruleMatcher2);
 
@@ -139,7 +147,7 @@ public class AstCreatorTest {
     AstNode astNode = AstCreator.create(parsingResult, new LocatedText(null, input));
     System.out.println(AstXmlPrinter.print(astNode));
 
-    assertThat(astNode.getType()).isSameAs(ruleMatcher2);
+    assertThat(astNode.getType()).isSameAs(realAstNodeType);
     assertThat(astNode.getName()).isEqualTo("rule2");
     assertThat(astNode.getFromIndex()).isEqualTo(0);
     assertThat(astNode.getToIndex()).isEqualTo(3);

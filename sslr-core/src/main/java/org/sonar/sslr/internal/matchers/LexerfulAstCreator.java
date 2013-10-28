@@ -29,7 +29,10 @@ import java.util.List;
 public class LexerfulAstCreator {
 
   public static AstNode create(ParseNode node, List<Token> tokens) {
-    return new LexerfulAstCreator(tokens).visit(node);
+    AstNode astNode = new LexerfulAstCreator(tokens).visit(node);
+    // Unwrap AstNodeType for root node:
+    astNode.hasToBeSkippedFromAst();
+    return astNode;
   }
 
   private final List<Token> tokens;

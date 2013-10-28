@@ -59,7 +59,10 @@ public final class AstCreator {
   private final List<Trivia> trivias = Lists.newArrayList();
 
   public static AstNode create(ParsingResult parsingResult, Text input) {
-    return new AstCreator(input).visit(parsingResult.getParseTreeRoot());
+    AstNode astNode = new AstCreator(input).visit(parsingResult.getParseTreeRoot());
+    // Unwrap AstNodeType for root node:
+    astNode.hasToBeSkippedFromAst();
+    return astNode;
   }
 
   private AstCreator(Text input) {

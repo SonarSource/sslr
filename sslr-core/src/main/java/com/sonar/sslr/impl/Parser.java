@@ -84,11 +84,7 @@ public class Parser<G extends Grammar> {
   public AstNode parse(List<Token> tokens) {
     // TODO can be compiled only once
     CompiledGrammar g = MutableGrammarCompiler.compile((CompilableGrammarRule) rootRule);
-    AstNode astNode = LexerfulAstCreator.create(Machine.parse(tokens, g), tokens);
-    // Unwrap AstNodeType for root node:
-    astNode.hasToBeSkippedFromAst();
-
-    return astNode;
+    return LexerfulAstCreator.create(Machine.parse(tokens, g), tokens);
   }
 
   public G getGrammar() {
