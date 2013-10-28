@@ -74,7 +74,11 @@ public class LexerfulAstCreator {
   }
 
   private AstNode visitTerminal(ParseNode node) {
-    return new AstNode(tokens.get(node.getStartIndex()));
+    Token token = tokens.get(node.getStartIndex());
+    AstNode astNode = new AstNode(token);
+    astNode.setFromIndex(node.getStartIndex());
+    astNode.setToIndex(node.getEndIndex());
+    return astNode;
   }
 
 }
