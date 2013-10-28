@@ -23,6 +23,7 @@ import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
+import org.sonar.sslr.internal.vm.lexerful.TokenTypeExpression;
 
 import java.util.List;
 
@@ -53,7 +54,9 @@ public class LexerfulAstCreator {
     List<AstNode> astNodes = Lists.newArrayList();
     for (ParseNode child : node.getChildren()) {
       AstNode astNode = visit(child);
-      if (astNode.hasToBeSkippedFromAst()) {
+      if (astNode == null) {
+        // skip
+      } else if (astNode.hasToBeSkippedFromAst()) {
         astNodes.addAll(astNode.getChildren());
       } else {
         astNodes.add(astNode);
@@ -75,6 +78,10 @@ public class LexerfulAstCreator {
 
   private AstNode visitTerminal(ParseNode node) {
     Token token = tokens.get(node.getStartIndex());
+    // For compatibility with SSLR < 1.19, TokenType should be checked only for TokenTypeExpression:
+    if ((node.getMatcher() instanceof TokenTypeExpression) && token.getType().hasToBeSkippedFromAst(null)) {
+      return null;
+    }
     AstNode astNode = new AstNode(token);
     astNode.setFromIndex(node.getStartIndex());
     astNode.setToIndex(node.getEndIndex());
