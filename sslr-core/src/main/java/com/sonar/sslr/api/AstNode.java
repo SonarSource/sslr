@@ -313,7 +313,6 @@ public class AstNode {
         return true;
       }
     }
-
     return false;
   }
 
@@ -380,14 +379,12 @@ public class AstNode {
    */
   public AstNode getFirstDescendant(AstNodeType... nodeTypes) {
     for (AstNode child : children) {
-      for (AstNodeType nodeType : nodeTypes) {
-        if (child.type == nodeType) {
-          return child;
-        }
-        AstNode node = child.getFirstDescendant(nodeTypes);
-        if (node != null) {
-          return node;
-        }
+      if (child.is(nodeTypes)) {
+        return child;
+      }
+      AstNode node = child.getFirstDescendant(nodeTypes);
+      if (node != null) {
+        return node;
       }
     }
     return null;
