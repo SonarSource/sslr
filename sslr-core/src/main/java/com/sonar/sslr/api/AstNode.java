@@ -527,6 +527,13 @@ public class AstNode {
   }
 
   /**
+   * @since 1.19.2
+   */
+  public boolean hasParent(AstNodeType... nodeTypes) {
+    return parent != null && parent.is(nodeTypes);
+  }
+
+  /**
    * @return true if this node has an ancestor of one of specified types
    * @since 1.17
    */
