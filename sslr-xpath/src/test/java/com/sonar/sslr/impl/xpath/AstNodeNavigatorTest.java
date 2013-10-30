@@ -22,7 +22,6 @@ package com.sonar.sslr.impl.xpath;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.xpath.AstNodeNavigator;
 import com.sonar.sslr.impl.xpath.AstNodeNavigator.Attribute;
 import org.junit.Before;
 import org.junit.Rule;
@@ -62,12 +61,12 @@ public class AstNodeNavigatorTest {
   @Test
   public void getAttributeStringValue() throws Exception {
     AstNode astNode = new AstNode(Token.builder()
-        .setURI(new URI("tests://unittest"))
-        .setType(GenericTokenType.IDENTIFIER)
-        .setLine(1)
-        .setColumn(2)
-        .setValueAndOriginalValue("foo", "bar")
-        .build());
+      .setURI(new URI("tests://unittest"))
+      .setType(GenericTokenType.IDENTIFIER)
+      .setLine(1)
+      .setColumn(2)
+      .setValueAndOriginalValue("foo", "bar")
+      .build());
     assertThat(navigator.getAttributeStringValue(new Attribute("tokenLine", astNode))).isEqualTo("1");
     assertThat(navigator.getAttributeStringValue(new Attribute("tokenColumn", astNode))).isEqualTo("2");
     assertThat(navigator.getAttributeStringValue(new Attribute("tokenValue", astNode))).isEqualTo("bar");
