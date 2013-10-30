@@ -140,6 +140,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
 
     astTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
     astTree.addTreeSelectionListener(new TreeSelectionListener() {
+      @Override
       public void valueChanged(TreeSelectionEvent event) {
         if (!astSelectionEventDisabled) {
           presenter.onAstSelectionChanged();
@@ -163,19 +164,23 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     sourceCodeEditorPane.setEditable(true);
     ((DefaultCaret) sourceCodeEditorPane.getCaret()).setUpdatePolicy(DefaultCaret.UPDATE_WHEN_ON_EDT);
     sourceCodeEditorPane.getDocument().addDocumentListener(new DocumentListener() {
+      @Override
       public void removeUpdate(DocumentEvent e) {
         presenter.onSourceCodeKeyTyped();
       }
 
+      @Override
       public void insertUpdate(DocumentEvent e) {
         presenter.onSourceCodeKeyTyped();
       }
 
+      @Override
       public void changedUpdate(DocumentEvent e) {
         presenter.onSourceCodeKeyTyped();
       }
     });
     sourceCodeEditorPane.addCaretListener(new CaretListener() {
+      @Override
       public void caretUpdate(CaretEvent e) {
         if (!sourceCodeTextCursorMovedEventDisabled) {
           presenter.onSourceCodeTextCursorMoved();
@@ -185,6 +190,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
 
     sourceCodeOpenButton.setText("Open Source File");
     sourceCodeOpenButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         presenter.onSourceCodeOpenButtonClick();
       }
@@ -192,6 +198,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
 
     sourceCodeParseButton.setText("Parse Source Code");
     sourceCodeParseButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         presenter.onSourceCodeParseButtonClick();
       }
@@ -218,6 +225,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
 
     xpathButton.setText("Evaluate XPath");
     xpathButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         presenter.onXPathEvaluateButtonClick();
       }
@@ -229,10 +237,12 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     add(southPanel, BorderLayout.SOUTH);
   }
 
+  @Override
   public void run() {
     setVisible(true);
   }
 
+  @Override
   public File pickFileToParse() {
     if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
       return fileChooser.getSelectedFile();
@@ -241,6 +251,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     }
   }
 
+  @Override
   public void displayHighlightedSourceCode(String htmlHighlightedSourceCode) {
     try {
       sourceCodeTextCursorMovedEventDisabled = true;
@@ -261,6 +272,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     }
   }
 
+  @Override
   public void displayAst(@Nullable AstNode astNode) {
     if (astNode == null) {
       astTree.setModel(EMPTY_TREE_MODEL);
@@ -292,12 +304,14 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     return treeNode;
   }
 
+  @Override
   public void displayXml(String xml) {
     checkNotNull(xml);
 
     xmlTextArea.setText(xml);
   }
 
+  @Override
   public Point getSourceCodeScrollbarPosition() {
     int x = sourceCodeEditorScrollPane.getHorizontalScrollBar().getValue();
     int y = sourceCodeEditorScrollPane.getVerticalScrollBar().getValue();
@@ -305,11 +319,13 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     return new Point(x, y);
   }
 
+  @Override
   public void scrollSourceCodeTo(final Point point) {
     checkNotNull(point);
 
     // http://stackoverflow.com/questions/8789371/java-jtextpane-jscrollpane-de-activate-automatic-scrolling
     SwingUtilities.invokeLater(new Runnable() {
+      @Override
       public void run() {
         sourceCodeEditorScrollPane.getHorizontalScrollBar().setValue(point.x);
         sourceCodeEditorScrollPane.getVerticalScrollBar().setValue(point.y);
@@ -317,6 +333,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     });
   }
 
+  @Override
   public String getSourceCode() {
     int startOffset = getCodeElementStartOffset();
     int endOffset = getCodeElementEndOffset();
@@ -340,10 +357,12 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     return codeElement.getEndOffset();
   }
 
+  @Override
   public String getXPath() {
     return xpathTextArea.getText();
   }
 
+  @Override
   public void selectAstNode(AstNode astNode) {
     if (astNode != null) {
       try {
@@ -371,8 +390,13 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     }
   }
 
+  @Override
   public void highlightSourceCode(AstNode astNode) {
     checkNotNull(astNode);
+
+    if (!astNode.hasToken()) {
+      return;
+    }
 
     Token startToken = astNode.getToken();
     Token endToken = astNode.getLastToken();
@@ -395,6 +419,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     return offset;
   }
 
+  @Override
   public void clearAstSelections() {
     try {
       astSelectionEventDisabled = true;
@@ -404,6 +429,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     }
   }
 
+  @Override
   public void scrollAstTo(@Nullable AstNode astNode) {
     if (astNode != null) {
       DefaultMutableTreeNode treeNode = getAstTreeNodeWithGivenUserObject((DefaultMutableTreeNode) astTree.getModel().getRoot(), astNode);
@@ -411,12 +437,14 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     }
   }
 
+  @Override
   public void clearSourceCodeHighlights() {
     sourceCodeEditorPane.getHighlighter().removeAllHighlights();
   }
 
+  @Override
   public void scrollSourceCodeTo(@Nullable AstNode astNode) {
-    if (astNode != null) {
+    if (astNode != null && astNode.hasToken()) {
       int visibleLines = sourceCodeEditorPane.getVisibleRect().height / sourceCodeEditorPane.getFontMetrics(sourceCodeEditorPane.getFont()).getHeight();
       int line = astNode.getToken().getLine() + visibleLines / 2;
 
@@ -429,14 +457,17 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     }
   }
 
+  @Override
   public void disableXPathEvaluateButton() {
     xpathButton.setEnabled(false);
   }
 
+  @Override
   public void enableXPathEvaluateButton() {
     xpathButton.setEnabled(true);
   }
 
+  @Override
   @Nullable
   public AstNode getAstNodeFollowingCurrentSourceCodeTextCursorPosition() {
     int currentOffset = sourceCodeEditorPane.getCaretPosition() - getCodeElementStartOffset();
@@ -472,6 +503,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     return followingAstNode;
   }
 
+  @Override
   public List<AstNode> getSelectedAstNodes() {
     List<AstNode> acc = Lists.newArrayList();
 
@@ -491,22 +523,27 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     return acc;
   }
 
+  @Override
   public void appendToConsole(String message) {
     consoleTextArea.append(message);
   }
 
+  @Override
   public void setFocusOnConsoleView() {
     tabbedPane.setSelectedComponent(consoleScrollPane);
   }
 
+  @Override
   public void setFocusOnAbstractSyntaxTreeView() {
     tabbedPane.setSelectedComponent(astTreeScrollPane);
   }
 
+  @Override
   public void clearConsole() {
     consoleTextArea.setText("");
   }
 
+  @Override
   public void addConfigurationProperty(final String name, String description) {
     ConfigurationPropertyPanel configurationPropertyPanel = new ConfigurationPropertyPanel(name, description);
 
@@ -530,22 +567,27 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     configurationInnerPanel.add(configurationPropertyPanel.getPanel(), constraints);
   }
 
+  @Override
   public String getConfigurationPropertyValue(String name) {
     return configurationPropertiesPanels.get(name).getValueTextField().getText();
   }
 
+  @Override
   public void setConfigurationPropertyValue(String name, String value) {
     configurationPropertiesPanels.get(name).getValueTextField().setText(value);
   }
 
+  @Override
   public void setConfigurationPropertyErrorMessage(String name, String errorMessage) {
     configurationPropertiesPanels.get(name).getErrorMessageLabel().setText(errorMessage);
   }
 
+  @Override
   public void setFocusOnConfigurationPropertyField(String name) {
     configurationPropertiesPanels.get(name).getValueTextField().requestFocus();
   }
 
+  @Override
   public void setFocusOnConfigurationView() {
     tabbedPane.setSelectedComponent(configurationScrollPane);
   }
