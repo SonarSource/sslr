@@ -562,7 +562,13 @@ public class AstNode {
    * @since 1.17
    */
   public AstNode getFirstAncestor(AstNodeType nodeType) {
-    return parent != null && parent.is(nodeType) ? parent : null;
+    if (parent == null) {
+      return null;
+    } else if (parent.is(nodeType)) {
+      return parent;
+    } else {
+      return parent.getFirstAncestor(nodeType);
+    }
   }
 
   /**

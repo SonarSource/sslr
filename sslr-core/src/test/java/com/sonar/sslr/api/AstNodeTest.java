@@ -32,8 +32,9 @@ public class AstNodeTest {
    *   |- A2
    *   |   \- B1
    *   |- B2
+   *   |   \- C1
    *   |- B3
-   *   \- C1
+   *   \- C2
    * </pre>
    */
   @Test
@@ -47,18 +48,20 @@ public class AstNodeTest {
     AstNode b2 = new AstNode(b, "b2", null);
     AstNode b3 = new AstNode(b, "b3", null);
     AstNode c1 = new AstNode(c, "c1", null);
+    AstNode c2 = new AstNode(c, "c2", null);
     a1.addChild(a2);
-    a1.addChild(b2);
-    a1.addChild(b3);
-    a1.addChild(c1);
     a2.addChild(b1);
+    a1.addChild(b2);
+    b2.addChild(c1);
+    a1.addChild(b3);
+    a1.addChild(c2);
 
     assertThat(a1.hasChildren()).isTrue();
     assertThat(c1.hasChildren()).isFalse();
 
     assertThat(a1.getFirstChild()).isSameAs(a2);
 
-    assertThat(a1.getLastChild()).isSameAs(c1);
+    assertThat(a1.getLastChild()).isSameAs(c2);
 
     assertThat(a1.hasDirectChildren(mock(AstNodeType.class))).isFalse();
     assertThat(a1.hasDirectChildren(a)).isTrue();
@@ -90,7 +93,7 @@ public class AstNodeTest {
 
     assertThat(a1.getNextSibling()).isNull();
     assertThat(c1.getNextSibling()).isNull();
-    assertThat(b3.getNextSibling()).isSameAs(c1);
+    assertThat(b3.getNextSibling()).isSameAs(c2);
 
     assertThat(a1.getPreviousSibling()).isNull();
     assertThat(a2.getPreviousSibling()).isNull();
@@ -102,15 +105,15 @@ public class AstNodeTest {
     assertThat(a1.getPreviousAstNode()).isNull();
     assertThat(b2.getPreviousAstNode()).isSameAs(a2);
 
-    assertThat(b1.hasAncestor(mock(AstNodeType.class))).isFalse();
-    assertThat(b1.hasAncestor(a)).isTrue();
-    assertThat(b1.hasAncestor(b)).isFalse();
-    assertThat(b1.hasAncestor(a, b)).isTrue();
+    assertThat(c1.hasAncestor(mock(AstNodeType.class))).isFalse();
+    assertThat(c1.hasAncestor(a)).isTrue();
+    assertThat(c1.hasAncestor(c)).isFalse();
+    assertThat(c1.hasAncestor(a, c)).isTrue();
 
-    assertThat(b1.getFirstAncestor(a)).isSameAs(a2);
-    assertThat(b1.getFirstAncestor(b)).isNull();
-    assertThat(b1.getFirstAncestor(a, b)).isSameAs(a2);
-    assertThat(b1.getFirstAncestor(b, b)).isNull();
+    assertThat(c1.getFirstAncestor(a)).isSameAs(a1);
+    assertThat(c1.getFirstAncestor(c)).isNull();
+    assertThat(c1.getFirstAncestor(a, c)).isSameAs(a1);
+    assertThat(c1.getFirstAncestor(c, c)).isNull();
 
     assertThat(a1.hasParent()).isFalse();
     assertThat(a2.hasParent(a)).isTrue();
