@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class AstNodeTest {
 
@@ -119,6 +120,19 @@ public class AstNodeTest {
     assertThat(a2.hasParent(a)).isTrue();
     assertThat(a2.hasParent(b)).isFalse();
     assertThat(a2.hasParent(a, b)).isTrue();
+  }
+
+  @Test
+  public void to_string() {
+    Token token = mock(Token.class);
+    when(token.getValue()).thenReturn("foo");
+    when(token.getLine()).thenReturn(42);
+    when(token.getColumn()).thenReturn(24);
+    AstNode node = new AstNode(mock(AstNodeType.class), "node_name", token);
+    assertThat(node.toString()).isEqualTo("node_name tokenValue='foo' tokenLine=42 tokenColumn=24");
+
+    node = new AstNode(mock(AstNodeType.class), "node_name", null);
+    assertThat(node.toString()).isEqualTo("node_name");
   }
 
 }

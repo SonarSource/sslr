@@ -33,7 +33,7 @@ public class AstXmlPrinterTest {
   @Test
   public void testPrintRuleAstNode() {
     AstNode root = new AstNode(new RuleDefinition("expr"), "expr", mockTokenBuilder(new WordTokenType(), "word").setLine(34)
-        .setColumn(12).build());
+      .setColumn(12).build());
 
     assertThat(AstXmlPrinter.print(root)).isEqualTo("<expr tokenValue=\"word\" tokenLine=\"34\" tokenColumn=\"12\"/>");
   }
@@ -50,27 +50,32 @@ public class AstXmlPrinterTest {
     astNode.addChild(new AstNode(mockToken(new WordTokenType(), "x")));
     astNode.addChild(new AstNode(mockToken(new WordTokenType(), "=")));
     astNode.addChild(new AstNode(mockToken(new WordTokenType(), "4")));
+    astNode.addChild(new AstNode(mockToken(new WordTokenType(), "WORD")));
 
     String expectedResult = new StringBuilder()
-        .append("<expr>\n")
-        .append("  <WORD tokenValue=\"x\" tokenLine=\"1\" tokenColumn=\"1\"/>\n")
-        .append("  <WORD tokenValue=\"=\" tokenLine=\"1\" tokenColumn=\"1\"/>\n")
-        .append("  <WORD tokenValue=\"4\" tokenLine=\"1\" tokenColumn=\"1\"/>\n")
-        .append("</expr>")
-        .toString();
+      .append("<expr>\n")
+      .append("  <WORD tokenValue=\"x\" tokenLine=\"1\" tokenColumn=\"1\"/>\n")
+      .append("  <WORD tokenValue=\"=\" tokenLine=\"1\" tokenColumn=\"1\"/>\n")
+      .append("  <WORD tokenValue=\"4\" tokenLine=\"1\" tokenColumn=\"1\"/>\n")
+      .append("  <WORD tokenValue=\"WORD\" tokenLine=\"1\" tokenColumn=\"1\"/>\n")
+      .append("</expr>")
+      .toString();
     assertThat(AstXmlPrinter.print(astNode)).isEqualTo(expectedResult);
   }
 
   private static class WordTokenType implements TokenType {
 
+    @Override
     public String getName() {
       return "WORD";
     }
 
+    @Override
     public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
 
+    @Override
     public String getValue() {
       return "WORDS";
     }

@@ -618,10 +618,9 @@ public class AstNode {
     StringBuilder result = new StringBuilder();
     result.append(name);
     if (token != null) {
-      result.append(" token='").append(token.getValue()).append("'");
-      result.append(" line=").append(token.getLine());
-      result.append(" column=").append(token.getColumn());
-      result.append(" uri='").append(token.getURI() + "'");
+      result.append(" tokenValue='").append(token.getValue()).append("'");
+      result.append(" tokenLine=").append(token.getLine());
+      result.append(" tokenColumn=").append(token.getColumn());
     }
     return result.toString();
   }
