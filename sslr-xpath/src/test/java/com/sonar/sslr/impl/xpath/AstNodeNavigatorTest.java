@@ -69,7 +69,7 @@ public class AstNodeNavigatorTest {
       .build());
     assertThat(navigator.getAttributeStringValue(new Attribute("tokenLine", astNode))).isEqualTo("1");
     assertThat(navigator.getAttributeStringValue(new Attribute("tokenColumn", astNode))).isEqualTo("2");
-    assertThat(navigator.getAttributeStringValue(new Attribute("tokenValue", astNode))).isEqualTo("bar");
+    assertThat(navigator.getAttributeStringValue(new Attribute("tokenValue", astNode))).isEqualTo("foo");
   }
 
   @Test

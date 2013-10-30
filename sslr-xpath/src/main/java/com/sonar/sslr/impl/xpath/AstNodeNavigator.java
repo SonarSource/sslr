@@ -63,7 +63,7 @@ public class AstNodeNavigator extends DefaultNavigator {
     } else if ("tokenColumn".equals(attribute.getName())) {
       return "" + attribute.getAstNode().getToken().getColumn();
     } else if ("tokenValue".equals(attribute.getName())) {
-      return attribute.getAstNode().getToken().getOriginalValue();
+      return attribute.getAstNode().getToken().getValue();
     } else {
       throw new UnsupportedOperationException("Unsupported attribute name \"" + attribute.getName() + "\"");
     }
