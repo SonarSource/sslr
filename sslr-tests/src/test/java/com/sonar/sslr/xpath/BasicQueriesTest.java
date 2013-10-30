@@ -98,7 +98,7 @@ public class BasicQueriesTest {
   public void getSecondDeclarationTest() {
     AstNodeXPathQuery<AstNode> xpath1 = AstNodeXPathQuery.create("/COMPILATION_UNIT/DEFINITION[@tokenLine=4]");
     AstNodeXPathQuery<AstNode> xpath2 = AstNodeXPathQuery.create("/COMPILATION_UNIT/DEFINITION[2]");
-    AstNode declarationAtLineFour = fileNode.getChild(1);
+    AstNode declarationAtLineFour = fileNode.getChildren().get(1);
     assertThat(declarationAtLineFour.is(MiniCGrammar.DEFINITION)).isTrue();
     assertThat(declarationAtLineFour.getTokenLine()).isEqualTo(4);
     assertThat(xpath1.selectSingleNode(fileNode)).isEqualTo(declarationAtLineFour);

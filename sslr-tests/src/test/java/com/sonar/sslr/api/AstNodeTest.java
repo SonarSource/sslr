@@ -170,7 +170,7 @@ public class AstNodeTest {
 
   @Test
   public void testIs() {
-    AstNode declarationNode = parseString("int a = 0;").getChild(0);
+    AstNode declarationNode = parseString("int a = 0;").getFirstChild();
 
     assertThat(declarationNode.is(MiniCGrammar.DEFINITION)).isTrue();
     assertThat(declarationNode.is(MiniCGrammar.COMPILATION_UNIT, MiniCGrammar.DEFINITION)).isTrue();
@@ -180,7 +180,7 @@ public class AstNodeTest {
 
   @Test
   public void testIsNot() {
-    AstNode declarationNode = parseString("int a = 0;").getChild(0);
+    AstNode declarationNode = parseString("int a = 0;").getFirstChild();
 
     assertThat(declarationNode.isNot(MiniCGrammar.DEFINITION)).isFalse();
     assertThat(declarationNode.isNot(MiniCGrammar.COMPILATION_UNIT, MiniCGrammar.DEFINITION)).isFalse();
@@ -218,7 +218,7 @@ public class AstNodeTest {
     assertThat(declarationNodes.get(1).getTokenValue()).isEqualTo("void");
 
     List<AstNode> binVDeclarationNodes = fileNode.findDirectChildren(MiniCGrammar.BIN_VARIABLE_DEFINITION,
-        MiniCGrammar.BIN_FUNCTION_DEFINITION);
+      MiniCGrammar.BIN_FUNCTION_DEFINITION);
     assertThat(binVDeclarationNodes.size()).isEqualTo(0);
   }
 
@@ -314,6 +314,7 @@ public class AstNodeTest {
       this.skippedFromAst = skippedFromAst;
     }
 
+    @Override
     public boolean hasToBeSkippedFromAst(AstNode node) {
       return skippedFromAst;
     }

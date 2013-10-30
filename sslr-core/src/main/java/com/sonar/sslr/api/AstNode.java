@@ -110,12 +110,9 @@ public class AstNode {
   }
 
   /**
-   * Get the desired child
-   *
-   * @param index
-   *          the index of the child (start at 0)
-   * @return the AstNode child
+   * @deprecated in 1.19.2, use {@link #getFirstChild(AstNodeType...)} instead
    */
+  @Deprecated
   public AstNode getChild(int index) {
     if (index >= getNumberOfChildren()) {
       throw new IllegalStateException("The AstNode '" + this + "' has only " + getNumberOfChildren()

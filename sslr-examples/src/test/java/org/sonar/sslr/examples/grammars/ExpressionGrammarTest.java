@@ -31,7 +31,7 @@ import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ExpressionGrammarTest {
 
-  private LexerlessGrammarBuilder b = ExpressionGrammar.createGrammarBuilder();
+  private final LexerlessGrammarBuilder b = ExpressionGrammar.createGrammarBuilder();
 
   /**
    * This test demonstrates how to use {@link org.sonar.sslr.tests.Assertions} to test rules of grammar.
@@ -39,9 +39,9 @@ public class ExpressionGrammarTest {
   @Test
   public void rules() {
     assertThat(b.build().rule(ExpressionGrammar.EXPRESSION))
-        .matches("1 + 1")
-        .notMatches("1 +")
-        .matches("20 * ( 2 + 2 ) - var");
+      .matches("1 + 1")
+      .notMatches("1 +")
+      .matches("20 * ( 2 + 2 ) - var");
   }
 
   /**
@@ -55,13 +55,13 @@ public class ExpressionGrammarTest {
 
     AstNode astNode = rootNode;
     assertThat(astNode.getNumberOfChildren()).isEqualTo(1);
-    assertThat(astNode.getChild(0).getType()).isSameAs(ExpressionGrammar.ADDITIVE_EXPRESSION);
+    assertThat(astNode.getChildren().get(0).getType()).isSameAs(ExpressionGrammar.ADDITIVE_EXPRESSION);
 
-    astNode = rootNode.getChild(0);
+    astNode = rootNode.getChildren().get(0);
     assertThat(astNode.getNumberOfChildren()).isEqualTo(3);
-    assertThat(astNode.getChild(0).getType()).isSameAs(ExpressionGrammar.NUMBER);
-    assertThat(astNode.getChild(1).getType()).isSameAs(ExpressionGrammar.PLUS);
-    assertThat(astNode.getChild(2).getType()).isSameAs(ExpressionGrammar.VARIABLE);
+    assertThat(astNode.getChildren().get(0).getType()).isSameAs(ExpressionGrammar.NUMBER);
+    assertThat(astNode.getChildren().get(1).getType()).isSameAs(ExpressionGrammar.PLUS);
+    assertThat(astNode.getChildren().get(2).getType()).isSameAs(ExpressionGrammar.VARIABLE);
   }
 
 }

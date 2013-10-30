@@ -35,8 +35,8 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class CollapsibleIfVisitorTest {
 
-  private Parser<Grammar> p = MiniCParser.create();
-  private Grammar g = p.getGrammar();
+  private final Parser<Grammar> p = MiniCParser.create();
+  private final Grammar g = p.getGrammar();
 
   @Test
   public void test() {
@@ -61,7 +61,7 @@ public class CollapsibleIfVisitorTest {
   }
 
   private boolean hasCollapsibleIfStatement(AstNode node) {
-    AstNode statementNode = node.getFirstChild(MiniCGrammar.STATEMENT).getChild(0);
+    AstNode statementNode = node.getFirstChild(MiniCGrammar.STATEMENT).getFirstChild();
     return isIfStatementWithoutElse(statementNode) || isIfStatementWithoutElseInCompoundStatement(statementNode);
   }
 
@@ -78,7 +78,7 @@ public class CollapsibleIfVisitorTest {
       // Null check was initially forgotten, did not led to a NPE because the unit test did not cover that case yet!
       return false;
     }
-    return isIfStatementWithoutElse(statementNode.getChild(0));
+    return isIfStatementWithoutElse(statementNode.getFirstChild());
   }
 
 }

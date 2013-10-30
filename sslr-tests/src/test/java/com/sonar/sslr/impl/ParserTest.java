@@ -54,7 +54,7 @@ public class ParserTest {
   public void parse() {
     AstNode compilationUnit = parseString("");
     assertThat(compilationUnit.getNumberOfChildren()).isEqualTo(1);
-    assertThat(compilationUnit.getChild(0).is(EOF)).isTrue();
+    assertThat(compilationUnit.getFirstChild().is(EOF)).isTrue();
   }
 
 }
