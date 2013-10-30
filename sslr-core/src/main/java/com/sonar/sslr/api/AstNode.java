@@ -519,7 +519,7 @@ public class AstNode {
   }
 
   /**
-   * @deprecated in 1.17, use {@link #hasAncestor(AstNodeType...)} instead
+   * @deprecated in 1.17, use {@link #hasAncestor(AstNodeType)} instead
    */
   @Deprecated
   public boolean hasParents(AstNodeType nodeType) {
@@ -534,15 +534,23 @@ public class AstNode {
   }
 
   /**
-   * @return true if this node has an ancestor of one of specified types
+   * @return true if this node has an ancestor of the specified type
    * @since 1.17
+   */
+  public boolean hasAncestor(AstNodeType nodeType) {
+    return getFirstAncestor(nodeType) != null;
+  }
+
+  /**
+   * @return true if this node has an ancestor of one of specified types
+   * @since 1.19.2
    */
   public boolean hasAncestor(AstNodeType... nodeTypes) {
     return getFirstAncestor(nodeTypes) != null;
   }
 
   /**
-   * @deprecated in 1.17, use {@link #getFirstAncestor(AstNodeType...)} instead
+   * @deprecated in 1.17, use {@link #getFirstAncestor(AstNodeType)} instead
    */
   @Deprecated
   public AstNode findFirstParent(AstNodeType nodeType) {
@@ -550,8 +558,16 @@ public class AstNode {
   }
 
   /**
-   * @return first ancestor of one of specified types, or null if not found
+   * @return first ancestor of the specified type, or null if not found
    * @since 1.17
+   */
+  public AstNode getFirstAncestor(AstNodeType nodeType) {
+    return parent != null && parent.is(nodeType) ? parent : null;
+  }
+
+  /**
+   * @return first ancestor of one of specified types, or null if not found
+   * @since 1.19.2
    */
   public AstNode getFirstAncestor(AstNodeType... nodeTypes) {
     AstNode result = parent;

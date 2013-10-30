@@ -110,6 +110,7 @@ public class AstNodeTest {
     assertThat(b1.getFirstAncestor(a)).isSameAs(a2);
     assertThat(b1.getFirstAncestor(b)).isNull();
     assertThat(b1.getFirstAncestor(a, b)).isSameAs(a2);
+    assertThat(b1.getFirstAncestor(b, b)).isNull();
 
     assertThat(a1.hasParent()).isFalse();
     assertThat(a2.hasParent(a)).isTrue();
