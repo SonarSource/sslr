@@ -171,7 +171,7 @@ public class LexerfulGrammarBuilder extends GrammarBuilder {
    *   rule(bridge).is(
    *     from,
    *     zeroOrMore(firstOf(
-   *       sequence(nextNot(from), anyToken()),
+   *       sequence(nextNot(firstOf(from, to)), anyToken()),
    *       bridge
    *     )),
    *     to
