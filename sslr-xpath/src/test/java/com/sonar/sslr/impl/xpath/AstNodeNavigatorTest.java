@@ -83,6 +83,7 @@ public class AstNodeNavigatorTest {
   @Test
   public void getElementStringValue() {
     thrown.expect(UnsupportedOperationException.class);
+    thrown.expectMessage("Implicit nodes to string conversion is not supported. Use the tokenValue attribute instead.");
     navigator.getElementStringValue(null);
   }
 

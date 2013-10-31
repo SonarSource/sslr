@@ -71,7 +71,7 @@ public class AstNodeNavigator extends DefaultNavigator {
 
   @Override
   public String getElementStringValue(Object arg0) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("Implicit nodes to string conversion is not supported. Use the tokenValue attribute instead.");
   }
 
   /* Namespaces */
