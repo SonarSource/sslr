@@ -122,6 +122,35 @@ public class AstNodeTest {
     assertThat(a2.hasParent(a, b)).isTrue();
   }
 
+  /**
+   * <pre>
+   *   root
+   *   |- empty
+   *   |- nonempty
+   *   \- intermediate empty
+   *      \- empty
+   * </pre>
+   */
+  @Test
+  public void test_getLastToken() {
+    Token token = mock(Token.class);
+    AstNodeType a = mock(AstNodeType.class);
+    AstNode rootNode = new AstNode(a, "root", token);
+    AstNode firstEmptyNode = new AstNode(a, "empty", null);
+    AstNode nonemptyNode = new AstNode(a, "nonempty", token);
+    AstNode intermediateEmptyNode = new AstNode(a, "intermediate empty", null);
+    AstNode lastEmptyNode = new AstNode(a, "empty", null);
+    rootNode.addChild(firstEmptyNode);
+    rootNode.addChild(nonemptyNode);
+    rootNode.addChild(intermediateEmptyNode);
+    intermediateEmptyNode.addChild(lastEmptyNode);
+
+    assertThat(rootNode.getLastToken()).isSameAs(token);
+    assertThat(firstEmptyNode.getLastToken()).isNull();
+    assertThat(intermediateEmptyNode.getLastToken()).isNull();
+    assertThat(lastEmptyNode.getLastToken()).isNull();
+  }
+
   @Test
   public void test_getTokens() {
     Token token = mock(Token.class);

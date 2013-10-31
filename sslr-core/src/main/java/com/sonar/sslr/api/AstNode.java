@@ -625,11 +625,20 @@ public class AstNode {
   }
 
   public Token getLastToken() {
-    AstNode lastAstNode = this;
-    while (lastAstNode.getLastChild() != null) {
-      lastAstNode = lastAstNode.getLastChild();
+    if (!this.hasToken()) {
+      return null;
     }
-    return lastAstNode.getToken();
+    AstNode currentNode = this;
+    while (currentNode.hasChildren()) {
+      for (int i = currentNode.children.size() - 1; i >= 0; i--) {
+        AstNode child = currentNode.children.get(i);
+        if (child.hasToken()) {
+          currentNode = child;
+          break;
+        }
+      }
+    }
+    return currentNode.getToken();
   }
 
   /**

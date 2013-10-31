@@ -95,7 +95,7 @@ public class AstNodeTest {
   @Test
   public void testGetLastToken() {
     Token lastToken = mockToken(GenericTokenType.IDENTIFIER, "LAST_TOKEN");
-    AstNode parent = new AstNode(new NodeType(), "parent", null);
+    AstNode parent = new AstNode(new NodeType(), "parent", lastToken);
     AstNode child1 = new AstNode(new NodeType(), "child1", null);
     AstNode child2 = new AstNode(new NodeType(), "child2", lastToken);
     parent.addChild(child1);
