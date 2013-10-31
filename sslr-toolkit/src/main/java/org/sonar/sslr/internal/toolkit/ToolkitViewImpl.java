@@ -258,7 +258,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
 
       checkNotNull(htmlHighlightedSourceCode);
 
-      StringBuffer sb = new StringBuffer();
+      StringBuilder sb = new StringBuilder();
       sb.append("<html><head><style type=\"text/css\">");
       sb.append(CssLoader.getCss());
       sb.append("</style></head><body><pre class=\"code\" id=\"code\">");
@@ -412,11 +412,11 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
   }
 
   private int getValidDocumentOffsetFromSourceCodeOffset(int offset) {
-    offset = Math.max(offset, 0);
-    offset += getCodeElementStartOffset();
-    offset = Math.min(offset, getCodeElementEndOffset());
+    int result = Math.max(offset, 0);
+    result += getCodeElementStartOffset();
+    result = Math.min(offset, getCodeElementEndOffset());
 
-    return offset;
+    return result;
   }
 
   @Override

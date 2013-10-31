@@ -20,7 +20,7 @@
 package com.sonar.sslr.api;
 
 /**
- * @deprecated in 1.19
+ * @deprecated in 1.19, use {@code com.sonar.sslr.squid.AstScannerExceptionHandler} from the SSLR Squid Bridge (2.3)
  */
 @Deprecated
 public interface RecognitionExceptionListener {

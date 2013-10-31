@@ -46,7 +46,7 @@ public class ParseError {
     this.message = Preconditions.checkNotNull(message, "message");
 
     Preconditions.checkNotNull(failedPaths, "failedPaths");
-    Preconditions.checkArgument(failedPaths.size() >= 1, "failedPaths must contain at least one element");
+    Preconditions.checkArgument(!failedPaths.isEmpty(), "failedPaths must contain at least one element");
     this.failedPaths = failedPaths;
   }
 
