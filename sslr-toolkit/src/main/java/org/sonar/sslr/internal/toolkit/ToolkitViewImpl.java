@@ -414,7 +414,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
   private int getValidDocumentOffsetFromSourceCodeOffset(int offset) {
     int result = Math.max(offset, 0);
     result += getCodeElementStartOffset();
-    result = Math.min(offset, getCodeElementEndOffset());
+    result = Math.min(result, getCodeElementEndOffset());
 
     return result;
   }
