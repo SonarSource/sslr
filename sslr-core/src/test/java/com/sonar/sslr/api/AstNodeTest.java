@@ -123,7 +123,25 @@ public class AstNodeTest {
   }
 
   @Test
-  public void to_string() {
+  public void test_getTokens() {
+    Token token = mock(Token.class);
+    AstNodeType a = mock(AstNodeType.class);
+    AstNode rootNode = new AstNode(a, "root", token);
+    AstNode firstEmptyNode = new AstNode(a, "empty", null);
+    AstNode nonemptyNode = new AstNode(a, "nonempty", token);
+    AstNode lastEmptyNode = new AstNode(a, "empty", null);
+    rootNode.addChild(firstEmptyNode);
+    rootNode.addChild(nonemptyNode);
+    rootNode.addChild(lastEmptyNode);
+
+    assertThat(rootNode.getTokens()).containsExactly(token);
+    assertThat(firstEmptyNode.getTokens()).isEmpty();
+    assertThat(nonemptyNode.getTokens()).containsExactly(token);
+    assertThat(lastEmptyNode.getTokens()).isEmpty();
+  }
+
+  @Test
+  public void test_toString() {
     Token token = mock(Token.class);
     when(token.getValue()).thenReturn("foo");
     when(token.getLine()).thenReturn(42);

@@ -99,7 +99,7 @@ public class ExpressionGrammarTest {
     System.out.println(astNode.getTokens());
     System.out.println(AstXmlPrinter.print(astNode));
 
-    assertThat(astNode.getTokens()).hasSize(8);
+    assertThat(astNode.getTokens()).hasSize(7);
 
     Token firstToken = astNode.getToken();
     assertThat(firstToken.getLine()).isEqualTo(1);

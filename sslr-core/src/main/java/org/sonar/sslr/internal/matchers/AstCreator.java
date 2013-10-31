@@ -154,7 +154,14 @@ public final class AstCreator {
       }
     }
 
-    Token token = astNodes.isEmpty() ? null : astNodes.get(0).getToken();
+    Token token = null;
+    for (AstNode child : astNodes) {
+      if (child.getToken() != null) {
+        token = child.getToken();
+        break;
+      }
+    }
+
     AstNode astNode = new AstNode(ruleMatcher, ruleMatcher.getName(), token);
     for (AstNode child : astNodes) {
       astNode.addChild(child);

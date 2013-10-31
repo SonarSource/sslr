@@ -602,7 +602,9 @@ public class AstNode {
 
   private void getTokens(List<Token> tokens) {
     if (!hasChildren()) {
-      tokens.add(token);
+      if (token != null) {
+        tokens.add(token);
+      }
     } else {
       for (int i = 0; i < children.size(); i++) {
         children.get(i).getTokens(tokens);
