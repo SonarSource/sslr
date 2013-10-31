@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.codehaus.sonar.sslr</groupId>
     <artifactId>sslr</artifactId>
-    <version>1.19.2</version>
+    <version>1.20-SNAPSHOT</version>
   </parent>
 
   <artifactId>sslr-testing-harness</artifactId>
