@@ -78,6 +78,7 @@
 
   <modules>
     <module>sslr-core</module>
+    <module>sslr-benchmarks</module>
     <module>sslr-toolkit</module>
     <module>sslr-testing-harness</module>
     <module>sslr-xpath</module>
