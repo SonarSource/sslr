@@ -23,6 +23,7 @@ import com.google.common.base.Strings;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
 import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.sonar.sslr.internal.vm.CompilationHandler;
@@ -36,7 +37,7 @@ import org.sonar.sslr.internal.vm.SequenceExpression;
 import org.sonar.sslr.internal.vm.StringExpression;
 import org.sonar.sslr.internal.vm.ZeroOrMoreExpression;
 
-@State
+@State(Scope.Thread)
 @BenchmarkMode(Mode.Throughput)
 public class ZeroOrMoreExpressionBenchmark {
 

@@ -24,6 +24,7 @@ import com.sonar.sslr.api.Grammar;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
 import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.sonar.sslr.grammar.GrammarRuleKey;
@@ -31,7 +32,7 @@ import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 import org.sonar.sslr.parser.ParseRunner;
 import org.sonar.sslr.parser.ParsingResult;
 
-@State
+@State(Scope.Thread)
 @BenchmarkMode(Mode.Throughput)
 public class RecursiveRuleBenchmark {
 

@@ -23,6 +23,7 @@ import com.google.common.base.Strings;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
 import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.sonar.sslr.grammar.GrammarRuleKey;
@@ -31,7 +32,7 @@ import org.sonar.sslr.parser.ParseRunner;
 
 import java.util.Arrays;
 
-@State
+@State(Scope.Thread)
 @BenchmarkMode(Mode.Throughput)
 public class MemoizationOfMismatchesBenchmark {
 
