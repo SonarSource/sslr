@@ -19,6 +19,10 @@
  */
 package com.sonar.sslr.api;
 
+/**
+ * @deprecated in 1.20 - use your own preprocessor instead
+ */
+@Deprecated
 public abstract class PreprocessingDirective {
 
   public abstract AstNode getAst();

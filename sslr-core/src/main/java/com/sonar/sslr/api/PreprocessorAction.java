@@ -19,24 +19,27 @@
  */
 package com.sonar.sslr.api;
 
-import static com.google.common.base.Preconditions.*;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.common.collect.Lists;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * This class encapsulates the actions to be performed by a preprocessor.
+ * @deprecated in 1.20 - use your own preprocessor instead
  */
+@Deprecated
 public class PreprocessorAction {
 
   /**
    * <p>
    * Use this no operation preprocessor action for improved readability and performances.
    * </p>
-   * 
+   *
    * <p>
    * Equivalent to: <tt>new PreprocessorAction(0, new ArrayList&lt;Trivia&gt;(), new ArrayList&lt;Token&gt;());</tt>
    * </p>
@@ -51,7 +54,7 @@ public class PreprocessorAction {
    * <p>
    * Construct a preprocessor action.
    * </p>
-   * 
+   *
    * <p>
    * The actions are executed in this order:
    * <ol>
@@ -60,7 +63,7 @@ public class PreprocessorAction {
    * <li>Injections of tokens, handled by tokensToInject</li>
    * </ol>
    * </p>
-   * 
+   *
    * <p>
    * Preprocessor actions are executed as follows:
    * <ol>
@@ -72,7 +75,7 @@ public class PreprocessorAction {
    * <li>Finally, if numberOfConsumedTokens was 0, the current token is injected, with any pending trivia which is then cleared.</li>
    * </ol>
    * </p>
-   * 
+   *
    * A few examples:
    * <ul>
    * <li>No operation action: <tt>new PreprocessorAction(0, new ArrayList&lt;Trivia&gt;(), new ArrayList&lt;Token&gt;());</tt></li>
@@ -80,7 +83,7 @@ public class PreprocessorAction {
    * <li>Modify current token action: <tt>new PreprocessorAction(1, new ArrayList&lt;Trivia&gt;(), Arrays.asList(modifiedToken));</tt></li>
    * <li>Inject trivia to current token action: <tt>new PreprocessorAction(0, Arrays.asList(newTrivia), new ArrayList&lt;Token&gt;());</tt></li>
    * </ul>
-   * 
+   *
    * @param numberOfConsumedTokens
    *          Number of tokens consumed by the preprocessor, which can be 0. Consumed tokens are deleted and will not lead to successive
    *          calls to the preprocessor.
