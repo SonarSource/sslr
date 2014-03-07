@@ -64,7 +64,7 @@ import java.util.List;
  * preprocessor.
  * </p>
  *
- * @deprecated in 1.20 - use your own preprocessor instead
+ * @deprecated in 1.20, use your own preprocessor API instead.
  */
 @Deprecated
 public abstract class Preprocessor {

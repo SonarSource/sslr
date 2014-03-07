@@ -30,7 +30,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * This class encapsulates the actions to be performed by a preprocessor.
- * @deprecated in 1.20 - use your own preprocessor instead
+ * @deprecated in 1.20, use your own preprocessor API instead.
  */
 @Deprecated
 public class PreprocessorAction {

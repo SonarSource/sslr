@@ -20,7 +20,7 @@
 package com.sonar.sslr.api;
 
 /**
- * @deprecated in 1.20 - use your own preprocessor instead
+ * @deprecated in 1.20, use your own preprocessor API instead.
  */
 @Deprecated
 public abstract class PreprocessingDirective {
