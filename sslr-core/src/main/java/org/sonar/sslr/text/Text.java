@@ -23,7 +23,9 @@ package org.sonar.sslr.text;
  * <p>This interface is not intended to be implemented by clients.</p>
  *
  * @since 1.17
+ * @deprecated in 1.20, use your own text API instead.
  */
+@Deprecated
 public interface Text {
 
   /**

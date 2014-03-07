@@ -21,7 +21,9 @@ package org.sonar.sslr.text;
 
 /**
  * @since 1.17
+ * @deprecated in 1.20, use your own text API instead.
  */
+@Deprecated
 public interface Preprocessor {
 
   Text process(PreprocessorContext context);

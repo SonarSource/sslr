@@ -26,7 +26,9 @@ import java.io.File;
 
 /**
  * @since 1.17
+ * @deprecated in 1.20, use your own text API instead.
  */
+@Deprecated
 public class Texts {
 
   private Texts() {

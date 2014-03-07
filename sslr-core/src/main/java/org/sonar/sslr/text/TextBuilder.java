@@ -31,7 +31,9 @@ import java.util.List;
  * <p>This class is not intended to be subclassed by clients.</p>
  *
  * @since 1.17
+ * @deprecated in 1.20, use your own text API instead.
  */
+@Deprecated
 public class TextBuilder {
 
   private static final Text EMPTY = new PlainText(new char[0]);

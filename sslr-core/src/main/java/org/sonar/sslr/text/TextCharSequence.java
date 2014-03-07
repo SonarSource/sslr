@@ -24,22 +24,28 @@ package org.sonar.sslr.text;
  *
  * @see Text#sequence()
  * @since 1.17
+ * @deprecated in 1.20, use your own text API instead.
  */
+@Deprecated
 public interface TextCharSequence extends CharSequence {
 
+  @Override
   int length();
 
+  @Override
   char charAt(int index);
 
   /**
    * @param start the start index, inclusive
    * @param end the end index, exclusive
    */
+  @Override
   TextCharSequence subSequence(int start, int end);
 
   /**
    * @return a string containing the characters in this sequence in the same order as this sequence
    */
+  @Override
   String toString();
 
   Text getText();

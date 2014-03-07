@@ -30,7 +30,9 @@ import java.net.URI;
  * <p>This class is not intended to be instantiated or subclassed by clients.</p>
  *
  * @since 1.17
+ * @deprecated in 1.20, use your own text API instead.
  */
+@Deprecated
 public class TextLocation {
 
   private final File file;
@@ -90,10 +92,10 @@ public class TextLocation {
   @Override
   public String toString() {
     return Objects.toStringHelper(this)
-        .add("file", file)
-        .add("line", line)
-        .add("column", column)
-        .toString();
+      .add("file", file)
+      .add("line", line)
+      .add("column", column)
+      .toString();
   }
 
 }
