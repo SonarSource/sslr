@@ -17,29 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.impl.channel;
+@ParametersAreNonnullByDefault
+package org.sonar.sslr.test.channel;
 
-import org.sonar.sslr.channel.CodeReader;
-
-import com.sonar.sslr.impl.Lexer;
-import org.junit.Test;
-import static org.fest.assertions.Assertions.assertThat;
-
-public class BomCharacterChannelTest {
-
-  private final Lexer lexer = Lexer.builder().build();
-  private final BomCharacterChannel channel = new BomCharacterChannel();
-
-  @Test
-  public void shouldConsumeBomCharacter() {
-    assertThat(channel.consume(new CodeReader("\uFEFF"), lexer)).isTrue();
-    assertThat(lexer.getTokens().size()).isEqualTo(0);
-  }
-
-  @Test
-  public void shouldNotConsumeOtherCharacters() {
-    assertThat(channel.consume(new CodeReader(" "), lexer)).isFalse();
-    assertThat(lexer.getTokens().size()).isEqualTo(0);
-  }
-
-}
+import javax.annotation.ParametersAreNonnullByDefault;

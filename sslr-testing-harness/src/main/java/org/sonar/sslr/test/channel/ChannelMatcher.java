@@ -17,29 +17,43 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.impl.channel;
+package org.sonar.sslr.test.channel;
 
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.sonar.sslr.channel.Channel;
 import org.sonar.sslr.channel.CodeReader;
 
-import com.sonar.sslr.impl.Lexer;
+public class ChannelMatcher<O> extends BaseMatcher<Channel<O>> {
 
-/**
- * Ignores all BOM characters.
- *
- * @since 1.17
- */
-public class BomCharacterChannel extends Channel<Lexer> {
+  private final String sourceCode;
+  private final O output;
+  private final CodeReader reader;
 
-  public static final int BOM_CHAR = '\uFEFF';
+  public ChannelMatcher(String sourceCode, O output) {
+    this.sourceCode = sourceCode;
+    this.output = output;
+    this.reader = new CodeReader(sourceCode);
+  }
+
+  public ChannelMatcher(CodeReader reader, O output) {
+    this.output = output;
+    this.sourceCode = new String(reader.peek(30));
+    this.reader = reader;
+  }
 
   @Override
-  public boolean consume(CodeReader code, Lexer lexer) {
-    if (code.peek() == BOM_CHAR) {
-      code.pop();
-      return true;
+  public boolean matches(Object arg0) {
+    if (!(arg0 instanceof Channel)) {
+      return false;
     }
-    return false;
+    Channel<O> channel = (Channel<O>) arg0;
+    return channel.consume(reader, output);
+  }
+
+  @Override
+  public void describeTo(Description description) {
+    description.appendText("Channel consumes '" + sourceCode + "'");
   }
 
 }

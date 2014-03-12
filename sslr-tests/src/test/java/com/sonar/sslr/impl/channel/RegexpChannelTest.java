@@ -23,11 +23,11 @@ import static com.sonar.sslr.test.lexer.LexerMatchers.*;
 import static com.sonar.sslr.test.lexer.MockHelper.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static org.sonar.test.channel.ChannelMatchers.*;
 
+import static org.sonar.sslr.test.channel.ChannelMatchers.*;
+
+import org.sonar.sslr.channel.CodeReader;
 import org.junit.Test;
-import org.sonar.channel.CodeReader;
-
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.impl.Lexer;
 

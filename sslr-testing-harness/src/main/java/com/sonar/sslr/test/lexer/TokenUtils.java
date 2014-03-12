@@ -22,12 +22,12 @@ package com.sonar.sslr.test.lexer;
 import static com.sonar.sslr.api.GenericTokenType.*;
 import static com.sonar.sslr.test.lexer.MockHelper.*;
 
+import org.sonar.sslr.channel.CodeReader;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.sonar.channel.CodeReader;
 
 import com.sonar.sslr.api.Token;
 

@@ -19,17 +19,17 @@
  */
 package com.sonar.sslr.impl.channel;
 
+import static org.sonar.sslr.test.channel.ChannelMatchers.consume;
+
+import org.sonar.sslr.channel.CodeReader;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.Lexer;
 import org.junit.Test;
-import org.sonar.channel.CodeReader;
-
 import static com.sonar.sslr.test.lexer.LexerMatchers.hasToken;
 import static com.sonar.sslr.test.lexer.MockHelper.mockLexer;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertThat;
-import static org.sonar.test.channel.ChannelMatchers.consume;
 
 public class PunctuatorChannelTest {
 

@@ -17,29 +17,21 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.impl.channel;
+package org.sonar.sslr.channel;
 
 import org.sonar.sslr.channel.CodeReader;
 
-import com.sonar.sslr.impl.Lexer;
-import org.junit.Test;
-import static org.fest.assertions.Assertions.assertThat;
+public abstract class Channel<O> {
 
-public class BomCharacterChannelTest {
-
-  private final Lexer lexer = Lexer.builder().build();
-  private final BomCharacterChannel channel = new BomCharacterChannel();
-
-  @Test
-  public void shouldConsumeBomCharacter() {
-    assertThat(channel.consume(new CodeReader("\uFEFF"), lexer)).isTrue();
-    assertThat(lexer.getTokens().size()).isEqualTo(0);
-  }
-
-  @Test
-  public void shouldNotConsumeOtherCharacters() {
-    assertThat(channel.consume(new CodeReader(" "), lexer)).isFalse();
-    assertThat(lexer.getTokens().size()).isEqualTo(0);
-  }
-
+  /**
+   * Tries to consume the character stream at the current reading cursor position (provided by the {@link org.sonar.sslr.channel.CodeReader}). If
+   * the character stream is consumed the method must return true and the OUTPUT object can be fed.
+   * 
+   * @param code
+   *          the handle on the input character stream
+   * @param output
+   *          the OUTPUT that can be optionally fed by the Channel
+   * @return false if the Channel doesn't want to consume the character stream, true otherwise.
+   */
+  public abstract boolean consume(CodeReader code, O output);
 }

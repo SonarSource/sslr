@@ -17,20 +17,9 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.channel;
+package org.sonar.sslr.channel;
 
-public class ChannelException extends RuntimeException {
+public interface EndMatcher {
 
-  public ChannelException(String message, Exception cause) {
-    super(message, cause);
-  }
-
-  public ChannelException(String message) {
-    super(message);
-  }
-
-  public ChannelException(String message, Throwable cause) {
-    super(message, cause);
-  }
-
+  boolean match(int toMatch);
 }

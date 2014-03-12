@@ -17,14 +17,14 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.channel;
+package org.sonar.sslr.channel;
+
+import org.apache.commons.io.IOUtils;
 
 import java.io.FilterReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-
-import org.apache.commons.io.IOUtils;
 
 /**
  * The CodeBuffer class provides all the basic features required to manipulate a source code character stream. Those features are :
@@ -52,7 +52,7 @@ public class CodeBuffer implements CharSequence {
   protected CodeBuffer(String code, CodeReaderConfiguration configuration) {
     this(new StringReader(code), configuration);
   }
-  
+
   /**
    * Note that this constructor will read everything from reader and will close it.
    */
@@ -80,7 +80,7 @@ public class CodeBuffer implements CharSequence {
 
   /**
    * Read and consume the next character
-   * 
+   *
    * @return the next character or -1 if the end of the stream is reached
    */
   public final int pop() {
@@ -90,7 +90,7 @@ public class CodeBuffer implements CharSequence {
     int character = buffer[bufferPosition++];
     updateCursorPosition(character);
     if (recordingMode) {
-      recordedCharacters.append((char)character);
+      recordedCharacters.append((char) character);
     }
     lastChar = character;
     return character;
@@ -98,7 +98,7 @@ public class CodeBuffer implements CharSequence {
 
   private void updateCursorPosition(int character) {
     // see Java Language Specification : http://java.sun.com/docs/books/jls/third_edition/html/lexical.html#3.4
-    if (character == LF || (character == CR && peek() != LF)) {
+    if (character == LF || character == CR && peek() != LF) {
       cursor.line++;
       cursor.column = 0;
     } else if (character == '\t') {
@@ -110,7 +110,7 @@ public class CodeBuffer implements CharSequence {
 
   /**
    * Looks at the last consumed character
-   * 
+   *
    * @return the last character or -1 if the no character has been yet consumed
    */
   public final int lastChar() {
@@ -119,7 +119,7 @@ public class CodeBuffer implements CharSequence {
 
   /**
    * Looks at the next character without consuming it
-   * 
+   *
    * @return the next character or -1 if the end of the stream has been reached
    */
   public final int peek() {
@@ -172,14 +172,15 @@ public class CodeBuffer implements CharSequence {
 
   /**
    * Returns the character at the specified index after the cursor without consuming it
-   * 
+   *
    * @param index
    *          the relative index of the character to be returned
    * @return the desired character
    * @see java.lang.CharSequence#charAt(int)
    */
+  @Override
   public final char charAt(int index) {
-    return (char)intAt(index);
+    return (char) intAt(index);
   }
 
   protected final int intAt(int index) {
@@ -192,10 +193,12 @@ public class CodeBuffer implements CharSequence {
   /**
    * Returns the relative length of the string (i.e. excluding the popped chars)
    */
+  @Override
   public final int length() {
     return buffer.length - bufferPosition;
   }
 
+  @Override
   public final CharSequence subSequence(int start, int end) {
     throw new UnsupportedOperationException();
   }
@@ -238,7 +241,7 @@ public class CodeBuffer implements CharSequence {
    */
   static final class Filter extends FilterReader {
 
-    private CodeReaderFilter<?> codeReaderFilter;
+    private final CodeReaderFilter<?> codeReaderFilter;
 
     public Filter(Reader in, CodeReaderFilter<?> codeReaderFilter, CodeReaderConfiguration configuration) {
       super(in);

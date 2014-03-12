@@ -19,9 +19,10 @@
  */
 package com.sonar.sslr.impl.channel;
 
+import org.sonar.sslr.channel.Channel;
+import org.sonar.sslr.channel.CodeReader;
+
 import com.sonar.sslr.impl.Lexer;
-import org.sonar.channel.Channel;
-import org.sonar.channel.CodeReader;
 
 import java.io.IOException;
 import java.util.regex.Matcher;

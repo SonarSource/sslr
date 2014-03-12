@@ -17,19 +17,24 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.channel;
+package org.sonar.sslr.test.channel;
 
-public abstract class Channel<O> {
+import org.sonar.sslr.channel.CodeReader;
 
-  /**
-   * Tries to consume the character stream at the current reading cursor position (provided by the {@link org.sonar.channel.CodeReader}). If
-   * the character stream is consumed the method must return true and the OUTPUT object can be fed.
-   * 
-   * @param code
-   *          the handle on the input character stream
-   * @param output
-   *          the OUTPUT that can be optionally fed by the Channel
-   * @return false if the Channel doesn't want to consume the character stream, true otherwise.
-   */
-  public abstract boolean consume(CodeReader code, O output);
+public final class ChannelMatchers {
+
+  private ChannelMatchers() {
+  }
+
+  public static <O> ChannelMatcher<O> consume(String sourceCode, O output) {
+    return new ChannelMatcher<O>(sourceCode, output);
+  }
+
+  public static <O> ChannelMatcher<O> consume(CodeReader codeReader, O output) {
+    return new ChannelMatcher<O>(codeReader, output);
+  }
+
+  public static ReaderHasNextCharMatcher hasNextChar(char nextChar) {
+    return new ReaderHasNextCharMatcher(nextChar);
+  }
 }

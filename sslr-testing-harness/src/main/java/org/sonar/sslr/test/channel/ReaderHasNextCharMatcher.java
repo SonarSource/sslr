@@ -17,29 +17,32 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package com.sonar.sslr.impl.channel;
+package org.sonar.sslr.test.channel;
 
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.sonar.sslr.channel.CodeReader;
 
-import com.sonar.sslr.impl.Lexer;
-import org.junit.Test;
-import static org.fest.assertions.Assertions.assertThat;
+public class ReaderHasNextCharMatcher extends BaseMatcher<CodeReader> {
 
-public class BomCharacterChannelTest {
+  private final char nextChar;
 
-  private final Lexer lexer = Lexer.builder().build();
-  private final BomCharacterChannel channel = new BomCharacterChannel();
-
-  @Test
-  public void shouldConsumeBomCharacter() {
-    assertThat(channel.consume(new CodeReader("\uFEFF"), lexer)).isTrue();
-    assertThat(lexer.getTokens().size()).isEqualTo(0);
+  public ReaderHasNextCharMatcher(char nextChar) {
+    this.nextChar = nextChar;
   }
 
-  @Test
-  public void shouldNotConsumeOtherCharacters() {
-    assertThat(channel.consume(new CodeReader(" "), lexer)).isFalse();
-    assertThat(lexer.getTokens().size()).isEqualTo(0);
+  @Override
+  public boolean matches(Object arg0) {
+    if (!(arg0 instanceof CodeReader)) {
+      return false;
+    }
+    CodeReader reader = (CodeReader) arg0;
+    return reader.peek() == nextChar;
+  }
+
+  @Override
+  public void describeTo(Description description) {
+    description.appendText("next char is '" + nextChar + "'");
   }
 
 }

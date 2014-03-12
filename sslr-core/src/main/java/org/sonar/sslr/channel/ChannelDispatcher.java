@@ -17,14 +17,14 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.channel;
+package org.sonar.sslr.channel;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ChannelDispatcher<O> extends Channel<O> {
 
@@ -77,10 +77,10 @@ public class ChannelDispatcher<O> extends Channel<O> {
           break;
         }
       }
-      if ( !characterConsumed) {
+      if (!characterConsumed) {
         if (LOG.isDebugEnabled() || failIfNoChannelToConsumeOneCharacter) {
           String message = "None of the channel has been able to handle character '" + (char) code.peek() + "' (decimal value "
-              + code.peek() + ") at line " + code.getLinePosition() + ", column " + code.getColumnPosition();
+            + code.peek() + ") at line " + code.getLinePosition() + ", column " + code.getColumnPosition();
           if (failIfNoChannelToConsumeOneCharacter) {
             throw new IllegalStateException(message);
           }
@@ -106,7 +106,7 @@ public class ChannelDispatcher<O> extends Channel<O> {
 
   public static final class Builder {
 
-    private List<Channel> channels = new ArrayList<Channel>();
+    private final List<Channel> channels = new ArrayList<Channel>();
     private boolean failIfNoChannelToConsumeOneCharacter = false;
 
     private Builder() {

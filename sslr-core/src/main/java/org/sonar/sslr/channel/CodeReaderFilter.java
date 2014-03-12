@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.channel;
+package org.sonar.sslr.channel;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -27,11 +27,6 @@ import java.io.Reader;
  * The purpose is to filter the character flow before the CodeReader class passes it to the different channels. It is possible to give
  * several filters to a CodeReader: they will be called one after another, following the declaration order in the CodeReader constructor, to
  * sequentially filter the character flow.
- * 
- * @see CodeReader
- * @see CodeBufferTest#testCodeReaderFilter()
- * @see CodeBufferTest#testSeveralCodeReaderFilter()
- * 
  */
 public abstract class CodeReaderFilter<O> {
 
@@ -50,7 +45,7 @@ public abstract class CodeReaderFilter<O> {
 
   /**
    * Returns the reader from which this class reads the character stream.
-   * 
+   *
    * @return the reader
    */
   public Reader getReader() {
@@ -59,7 +54,7 @@ public abstract class CodeReaderFilter<O> {
 
   /**
    * Sets the reader from which this class will read the character stream.
-   * 
+   *
    * @param reader
    *          the reader
    */
@@ -69,7 +64,7 @@ public abstract class CodeReaderFilter<O> {
 
   /**
    * Returns the output object.
-   * 
+   *
    * @return the output
    */
   public O getOutput() {
@@ -78,7 +73,7 @@ public abstract class CodeReaderFilter<O> {
 
   /**
    * Sets the output object
-   * 
+   *
    * @param output
    *          the output to set
    */
@@ -88,7 +83,7 @@ public abstract class CodeReaderFilter<O> {
 
   /**
    * Returns the configuration used for the CodeReader
-   * 
+   *
    * @return the configuration
    */
   public CodeReaderConfiguration getConfiguration() {
@@ -97,7 +92,7 @@ public abstract class CodeReaderFilter<O> {
 
   /**
    * Sets the configuration that must be used by the CodeReader
-   * 
+   *
    * @param configuration
    *          the configuration to set
    */
@@ -115,7 +110,7 @@ public abstract class CodeReaderFilter<O> {
    * <li>
    * and fill the given buffer to its full capacity with the filtered data.</li>
    * </ul>
-   * 
+   *
    * @param filteredBuffer
    *          the output buffer that must contain the filtered data
    * @param offset

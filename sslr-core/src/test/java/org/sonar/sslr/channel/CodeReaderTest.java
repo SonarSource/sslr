@@ -17,7 +17,11 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.channel;
+package org.sonar.sslr.channel;
+
+import org.sonar.sslr.channel.ChannelException;
+import org.sonar.sslr.channel.CodeReader;
+import org.sonar.sslr.channel.EndMatcher;
 
 import org.junit.Rule;
 import org.junit.Test;

@@ -17,7 +17,10 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.channel;
+package org.sonar.sslr.channel;
+
+import org.sonar.sslr.channel.CodeReaderConfiguration;
+import org.sonar.sslr.channel.CodeReaderFilter;
 
 import java.util.ArrayList;
 import java.util.Arrays;

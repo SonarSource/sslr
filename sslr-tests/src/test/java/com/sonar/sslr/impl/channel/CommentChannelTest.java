@@ -24,10 +24,10 @@ import static com.sonar.sslr.test.lexer.LexerMatchers.*;
 import static com.sonar.sslr.test.lexer.MockHelper.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static org.sonar.test.channel.ChannelMatchers.*;
+
+import static org.sonar.sslr.test.channel.ChannelMatchers.*;
 
 import org.junit.Test;
-
 import com.sonar.sslr.impl.Lexer;
 
 public class CommentChannelTest {

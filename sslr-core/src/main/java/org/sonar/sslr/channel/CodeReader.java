@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.channel;
+package org.sonar.sslr.channel;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -192,9 +192,9 @@ public class CodeReader extends CodeBuffer {
       }
     } catch (StackOverflowError e) {
       throw new ChannelException("Unable to apply regular expression '" + matcher.pattern().pattern()
-          + "' at line " + getCursor().getLine() + " and column " + getCursor().getColumn()
-          + ", because it led to a stack overflow error."
-          + " This error may be due to an inefficient use of alternations - see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5050507", e);
+        + "' at line " + getCursor().getLine() + " and column " + getCursor().getColumn()
+        + ", because it led to a stack overflow error."
+        + " This error may be due to an inefficient use of alternations - see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5050507", e);
     } catch (IndexOutOfBoundsException e) {
       return -1;
     } catch (IOException e) {

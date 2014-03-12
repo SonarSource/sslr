@@ -28,14 +28,14 @@
  *   <li>...</li>
  * </ul> 
  * 
- * The entry point of this framework is the {@link org.sonar.channel.ChannelDispatcher} class. 
- * This class must be initialized with a {@link org.sonar.channel.CodeReader} and a list of {@link org.sonar.channel.Channel}.
+ * The entry point of this framework is the {@link org.sonar.sslr.channel.ChannelDispatcher} class. 
+ * This class must be initialized with a {@link org.sonar.sslr.channel.CodeReader} and a list of {@link org.sonar.sslr.channel.Channel}.
  * 
- * The {@link org.sonar.channel.CodeReader} encapsulates any character stream in order to provide all mechanisms to Channels  
+ * The {@link org.sonar.sslr.channel.CodeReader} encapsulates any character stream in order to provide all mechanisms to Channels  
  * in order to look ahead and look behind the current reading cursor position. 
  * 
- * A {@link org.sonar.channel.Channel} is in charge to consume the character stream through the CodeReader in order to feed
+ * A {@link org.sonar.sslr.channel.Channel} is in charge to consume the character stream through the CodeReader in order to feed
  * the OUTPUT.
  */
-package org.sonar.channel;
+package org.sonar.sslr.channel;
 

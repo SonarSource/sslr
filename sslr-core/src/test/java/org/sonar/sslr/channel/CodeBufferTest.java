@@ -17,11 +17,18 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.channel;
+package org.sonar.sslr.channel;
 
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+
+import org.sonar.sslr.channel.Channel;
+import org.sonar.sslr.channel.ChannelCodeReaderFilter;
+import org.sonar.sslr.channel.CodeBuffer;
+import org.sonar.sslr.channel.CodeReader;
+import org.sonar.sslr.channel.CodeReaderConfiguration;
+import org.sonar.sslr.channel.CodeReaderFilter;
 
 import java.io.IOException;
 import java.util.regex.Pattern;

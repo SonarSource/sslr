@@ -19,6 +19,11 @@
  */
 package com.sonar.sslr.impl;
 
+import org.sonar.sslr.channel.Channel;
+import org.sonar.sslr.channel.ChannelDispatcher;
+import org.sonar.sslr.channel.CodeReader;
+import org.sonar.sslr.channel.CodeReaderConfiguration;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.Preprocessor;
@@ -26,10 +31,6 @@ import com.sonar.sslr.api.PreprocessorAction;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
 import org.apache.commons.io.IOUtils;
-import org.sonar.channel.Channel;
-import org.sonar.channel.ChannelDispatcher;
-import org.sonar.channel.CodeReader;
-import org.sonar.channel.CodeReaderConfiguration;
 
 import java.io.File;
 import java.io.InputStreamReader;

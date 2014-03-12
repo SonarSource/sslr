@@ -19,13 +19,13 @@
  */
 package com.sonar.sslr.impl.channel;
 
+import org.sonar.sslr.channel.Channel;
+import org.sonar.sslr.channel.CodeReader;
+
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.Lexer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonar.channel.Channel;
-import org.sonar.channel.CodeReader;
-
 import static com.sonar.sslr.api.GenericTokenType.UNKNOWN_CHAR;
 
 /**

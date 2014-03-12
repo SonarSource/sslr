@@ -17,10 +17,14 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.channel;
+package org.sonar.sslr.channel;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+
+import org.sonar.sslr.channel.Channel;
+import org.sonar.sslr.channel.ChannelDispatcher;
+import org.sonar.sslr.channel.CodeReader;
 
 import org.junit.Test;
 
