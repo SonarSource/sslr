@@ -20,12 +20,12 @@
 package org.sonar.sslr.parser;
 
 import com.google.common.base.Preconditions;
+import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
-import org.apache.commons.io.IOUtils;
 import org.sonar.sslr.internal.matchers.AstCreator;
 import org.sonar.sslr.internal.matchers.InputBuffer;
 import org.sonar.sslr.internal.text.AbstractText;
@@ -36,7 +36,6 @@ import org.sonar.sslr.text.Text;
 import javax.annotation.Nullable;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -90,14 +89,10 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
   }
 
   private static char[] fileToCharArray(File file, Charset charset) {
-    FileInputStream is = null;
     try {
-      is = new FileInputStream(file);
-      return IOUtils.toCharArray(is, charset.name());
+      return Files.toString(file, charset).toCharArray();
     } catch (IOException e) {
       throw new RecognitionException(0, e.getMessage(), e);
-    } finally {
-      IOUtils.closeQuietly(is);
     }
   }
 

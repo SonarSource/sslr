@@ -19,11 +19,12 @@
  */
 package org.sonar.sslr.parser;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
+import com.google.common.io.Files;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.Parser;
-import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -74,7 +75,7 @@ public class ParserAdapterTest {
   @Test
   public void should_parse_file() throws Exception {
     File file = temporaryFolder.newFile();
-    FileUtils.writeStringToFile(file, "1+1");
+    Files.write("1+1", file, Charsets.UTF_8);
     parser.parse(file);
   }
 

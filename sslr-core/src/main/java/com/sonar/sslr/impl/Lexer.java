@@ -19,18 +19,17 @@
  */
 package com.sonar.sslr.impl;
 
-import org.sonar.sslr.channel.Channel;
-import org.sonar.sslr.channel.ChannelDispatcher;
-import org.sonar.sslr.channel.CodeReader;
-import org.sonar.sslr.channel.CodeReaderConfiguration;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
+import com.google.common.io.Closeables;
 import com.sonar.sslr.api.Preprocessor;
 import com.sonar.sslr.api.PreprocessorAction;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
-import org.apache.commons.io.IOUtils;
+import org.sonar.sslr.channel.Channel;
+import org.sonar.sslr.channel.ChannelDispatcher;
+import org.sonar.sslr.channel.CodeReader;
+import org.sonar.sslr.channel.CodeReaderConfiguration;
 
 import java.io.File;
 import java.io.InputStreamReader;
@@ -104,7 +103,7 @@ public class Lexer {
     } catch (Exception e) {
       throw new LexerException("Unable to lex url: " + getURI(), e);
     } finally {
-      IOUtils.closeQuietly(reader);
+      Closeables.closeQuietly(reader);
     }
   }
 
@@ -134,12 +133,12 @@ public class Lexer {
       channelDispatcher.consume(code, this);
 
       addToken(Token.builder()
-          .setType(EOF)
-          .setValueAndOriginalValue("EOF")
-          .setURI(uri)
-          .setLine(code.getLinePosition())
-          .setColumn(code.getColumnPosition())
-          .build());
+        .setType(EOF)
+        .setValueAndOriginalValue("EOF")
+        .setURI(uri)
+        .setLine(code.getLinePosition())
+        .setColumn(code.getColumnPosition())
+        .build());
 
       preprocess();
 
@@ -270,7 +269,7 @@ public class Lexer {
 
     private ChannelDispatcher<Lexer> getChannelDispatcher() {
       ChannelDispatcher.Builder builder = ChannelDispatcher.builder()
-          .addChannels(channels.toArray(new Channel[channels.size()]));
+        .addChannels(channels.toArray(new Channel[channels.size()]));
 
       if (failIfNoChannelToConsumeOneCharacter) {
         builder.failIfNoChannelToConsumeOneCharacter();
