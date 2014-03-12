@@ -73,6 +73,11 @@ public class AstNodeTest {
     assertThat(a1.getFirstChild(b)).isSameAs(b2);
     assertThat(a1.getFirstChild(a, b)).isSameAs(a2);
 
+    assertThat(a1.getLastChild(mock(AstNodeType.class))).isNull();
+    assertThat(a1.getLastChild(a)).isSameAs(a2);
+    assertThat(a1.getLastChild(b)).isSameAs(b3);
+    assertThat(a1.getLastChild(a, b)).isSameAs(b3);
+
     assertThat(a1.getChildren(mock(AstNodeType.class))).isEmpty();
     assertThat(a1.getChildren(a)).containsExactly(a2);
     assertThat(a1.getChildren(b)).containsExactly(b2, b3);

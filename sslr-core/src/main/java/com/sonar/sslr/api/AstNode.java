@@ -491,6 +491,35 @@ public class AstNode {
   }
 
   /**
+   * Returns last child of one of specified types.
+   * <p>
+   * In the following case, {@code getLastChild("B")} would return "B3":
+   * <pre>
+   * A1
+   *  |__ C1
+   *  |    |__ B1
+   *  |__ B2
+   *  |__ B3
+   *       |__ B4
+   * </pre>
+   *
+   * @return last child of one of specified types, or null if not found
+   * @since 1.20
+   */
+  @Nullable
+  public AstNode getLastChild(AstNodeType... nodeTypes) {
+    for (int i = children.size() - 1; i >= 0; i--) {
+      AstNode child = children.get(i);
+      for (AstNodeType nodeType : nodeTypes) {
+        if (child.type == nodeType) {
+          return child;
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
    * @return true if this node has some children with the requested node types
    */
   public boolean hasDirectChildren(AstNodeType... nodeTypes) {
