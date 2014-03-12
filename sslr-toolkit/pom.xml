@@ -27,7 +27,7 @@
     </dependency>
     <dependency>
       <groupId>org.codehaus.sonar</groupId>
-      <artifactId>sonar-channel</artifactId>
+      <artifactId>sonar-colorizer</artifactId>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
