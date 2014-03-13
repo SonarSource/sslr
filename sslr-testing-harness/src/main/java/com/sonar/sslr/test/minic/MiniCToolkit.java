@@ -20,7 +20,6 @@
 package com.sonar.sslr.test.minic;
 
 import com.google.common.collect.ImmutableList;
-import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
 import org.sonar.colorizer.Tokenizer;
 import org.sonar.sslr.toolkit.AbstractConfigurationModel;
@@ -47,6 +46,7 @@ public final class MiniCToolkit {
 
     private final ConfigurationProperty charsetProperty = new ConfigurationProperty("Charset", "Charset used when opening files.", "UTF-8", new ValidationCallback() {
 
+      @Override
       public String validate(String newValueCandidate) {
         try {
           Charset.forName(newValueCandidate);
@@ -60,6 +60,7 @@ public final class MiniCToolkit {
 
     });
 
+    @Override
     public List<ConfigurationProperty> getProperties() {
       return ImmutableList.of(charsetProperty);
     }
@@ -70,7 +71,7 @@ public final class MiniCToolkit {
     }
 
     @Override
-    public Parser<? extends Grammar> doGetParser() {
+    public Parser doGetParser() {
       updateConfiguration();
       return MiniCParser.create();
     }

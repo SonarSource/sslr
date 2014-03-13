@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.toolkit;
 
-import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
 import org.sonar.colorizer.Tokenizer;
 
@@ -64,7 +63,7 @@ public interface ConfigurationModel {
    *
    * @return A parser for the current configuration
    */
-  Parser<? extends Grammar> getParser();
+  Parser getParser();
 
   /**
    * Gets tokenizers reflecting the current configuration state.

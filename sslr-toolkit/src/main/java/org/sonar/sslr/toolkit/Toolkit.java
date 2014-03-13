@@ -21,7 +21,6 @@ package org.sonar.sslr.toolkit;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
-import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
 import org.sonar.colorizer.Tokenizer;
 import org.sonar.sslr.internal.toolkit.SourceCodeModel;
@@ -50,9 +49,10 @@ public class Toolkit {
    * @deprecated in 1.17, use {@link #Toolkit(String, ConfigurationModel)} instead.
    */
   @Deprecated
-  public Toolkit(final Parser<?> parser, final List<Tokenizer> tokenizers, String title) {
+  public Toolkit(final Parser parser, final List<Tokenizer> tokenizers, String title) {
     this(title, new AbstractConfigurationModel() {
 
+      @Override
       public List<ConfigurationProperty> getProperties() {
         return Collections.EMPTY_LIST;
       }
@@ -63,7 +63,7 @@ public class Toolkit {
       }
 
       @Override
-      public Parser<? extends Grammar> doGetParser() {
+      public Parser doGetParser() {
         return parser;
       }
 
@@ -87,6 +87,7 @@ public class Toolkit {
 
   public void run() {
     SwingUtilities.invokeLater(new Runnable() {
+      @Override
       public void run() {
         try {
           for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {

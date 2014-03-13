@@ -167,7 +167,8 @@ public class Lexer {
       addTrivia(action.getTriviaToInject());
 
       for (int j = 0; j < action.getNumberOfConsumedTokens(); j++) {
-        Token removedToken = remainingTokens.get(i++);
+        Token removedToken = remainingTokens.get(i);
+        i++;
         addTrivia(removedToken.getTrivia());
       }
 
@@ -176,7 +177,8 @@ public class Lexer {
       }
 
       if (action.getNumberOfConsumedTokens() == 0) {
-        Token removedToken = remainingTokens.get(i++);
+        Token removedToken = remainingTokens.get(i);
+        i++;
         addTrivia(removedToken.getTrivia());
         addToken(removedToken);
       }

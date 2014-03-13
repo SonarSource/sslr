@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.toolkit;
 
-import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
 import org.sonar.colorizer.Tokenizer;
 
@@ -38,13 +37,14 @@ public abstract class AbstractConfigurationModel implements ConfigurationModel {
 
   private boolean updatedFlag;
 
-  private Parser<? extends Grammar> parser;
+  private Parser parser;
   private List<Tokenizer> tokenizers;
 
   public AbstractConfigurationModel() {
     this.updatedFlag = true;
   }
 
+  @Override
   public void setUpdatedFlag() {
     updatedFlag = true;
   }
@@ -63,15 +63,18 @@ public abstract class AbstractConfigurationModel implements ConfigurationModel {
    *
    * @return Charset for the current configuration
    */
+  @Override
   public Charset getCharset() {
     return Charset.defaultCharset();
   }
 
-  public Parser<? extends Grammar> getParser() {
+  @Override
+  public Parser getParser() {
     ensureUpToDate();
     return parser;
   }
 
+  @Override
   public List<Tokenizer> getTokenizers() {
     ensureUpToDate();
     return tokenizers;
@@ -83,7 +86,7 @@ public abstract class AbstractConfigurationModel implements ConfigurationModel {
    *
    * @return A parser for the current configuration
    */
-  public abstract Parser<? extends Grammar> doGetParser();
+  public abstract Parser doGetParser();
 
   /**
    * Gets tokenizers reflecting the current configuration state.
