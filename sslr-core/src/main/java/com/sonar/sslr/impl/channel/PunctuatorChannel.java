@@ -59,8 +59,9 @@ public class PunctuatorChannel extends Channel<Lexer> {
 
   @Override
   public boolean consume(CodeReader code, Lexer lexer) {
+    int c = code.peek();
     for (int i = 0; i < sortedPunctuators.length; i++) {
-      if (code.peek() == sortedPunctuatorsChars[i][0]
+      if (c == sortedPunctuatorsChars[i][0]
         && Arrays.equals(code.peek(sortedPunctuatorsChars[i].length), sortedPunctuatorsChars[i])) {
 
         Token token = tokenBuilder
