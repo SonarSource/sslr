@@ -19,9 +19,6 @@
  */
 package org.sonar.sslr.channel;
 
-import org.sonar.sslr.channel.CodeReaderConfiguration;
-import org.sonar.sslr.channel.CodeReaderFilter;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

@@ -19,10 +19,6 @@
  */
 package org.sonar.sslr.channel;
 
-import org.sonar.sslr.channel.Channel;
-import org.sonar.sslr.channel.CodeReader;
-import org.sonar.sslr.channel.CodeReaderFilter;
-
 import java.io.IOException;
 import java.io.Reader;
 

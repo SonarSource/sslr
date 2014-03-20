@@ -19,8 +19,6 @@
  */
 package org.sonar.sslr.channel;
 
-import org.sonar.sslr.channel.CodeReader;
-
 public abstract class Channel<O> {
 
   /**
