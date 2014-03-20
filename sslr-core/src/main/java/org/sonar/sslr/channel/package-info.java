@@ -18,24 +18,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
 /**
- * Provides a basic framework to sequentially read any kind of character stream in order to feed a generic OUTPUT. 
- * 
+ * Provides a basic framework to sequentially read any kind of character stream in order to feed a generic OUTPUT.
+ *
  * This framework can used for instance in order to :
  * <ul>
  *   <li>Create a lexer in charge to generate a list of tokens from a character stream</li>
  *   <li>Create a source code syntax highligther in charge to decorate a source code with HTML tags</li>
  *   <li>Create a javadoc generator</li>
  *   <li>...</li>
- * </ul> 
- * 
- * The entry point of this framework is the {@link org.sonar.sslr.channel.ChannelDispatcher} class. 
+ * </ul>
+ *
+ * The entry point of this framework is the {@link org.sonar.sslr.channel.ChannelDispatcher} class.
  * This class must be initialized with a {@link org.sonar.sslr.channel.CodeReader} and a list of {@link org.sonar.sslr.channel.Channel}.
- * 
- * The {@link org.sonar.sslr.channel.CodeReader} encapsulates any character stream in order to provide all mechanisms to Channels  
- * in order to look ahead and look behind the current reading cursor position. 
- * 
+ *
+ * The {@link org.sonar.sslr.channel.CodeReader} encapsulates any character stream in order to provide all mechanisms to Channels
+ * in order to look ahead and look behind the current reading cursor position.
+ *
  * A {@link org.sonar.sslr.channel.Channel} is in charge to consume the character stream through the CodeReader in order to feed
  * the OUTPUT.
+ *
+ * @since 1.20
  */
 package org.sonar.sslr.channel;
 
