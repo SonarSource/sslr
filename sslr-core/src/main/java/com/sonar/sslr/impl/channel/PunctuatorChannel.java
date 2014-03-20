@@ -19,12 +19,11 @@
  */
 package com.sonar.sslr.impl.channel;
 
-import org.sonar.sslr.channel.Channel;
-import org.sonar.sslr.channel.CodeReader;
-
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.Lexer;
+import org.sonar.sslr.channel.Channel;
+import org.sonar.sslr.channel.CodeReader;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -37,6 +36,7 @@ public class PunctuatorChannel extends Channel<Lexer> {
 
   private static class PunctuatorComparator implements Comparator<TokenType> {
 
+    @Override
     public int compare(TokenType a, TokenType b) {
       if (a.getValue().length() == b.getValue().length()) {
         return 0;
@@ -48,7 +48,7 @@ public class PunctuatorChannel extends Channel<Lexer> {
 
   public PunctuatorChannel(TokenType... punctuators) {
     sortedPunctuators = punctuators;
-    Arrays.<TokenType> sort(sortedPunctuators, new PunctuatorComparator());
+    Arrays.<TokenType>sort(sortedPunctuators, new PunctuatorComparator());
 
     sortedPunctuatorsChars = new char[sortedPunctuators.length][];
 
@@ -61,15 +61,15 @@ public class PunctuatorChannel extends Channel<Lexer> {
   public boolean consume(CodeReader code, Lexer lexer) {
     for (int i = 0; i < sortedPunctuators.length; i++) {
       if (code.peek() == sortedPunctuatorsChars[i][0]
-          && Arrays.equals(code.peek(sortedPunctuatorsChars[i].length), sortedPunctuatorsChars[i])) {
+        && Arrays.equals(code.peek(sortedPunctuatorsChars[i].length), sortedPunctuatorsChars[i])) {
 
         Token token = tokenBuilder
-            .setType(sortedPunctuators[i])
-            .setValueAndOriginalValue(sortedPunctuators[i].getValue())
-            .setURI(lexer.getURI())
-            .setLine(code.getLinePosition())
-            .setColumn(code.getColumnPosition())
-            .build();
+          .setType(sortedPunctuators[i])
+          .setValueAndOriginalValue(sortedPunctuators[i].getValue())
+          .setURI(lexer.getURI())
+          .setLine(code.getLinePosition())
+          .setColumn(code.getColumnPosition())
+          .build();
 
         lexer.addToken(token);
 
