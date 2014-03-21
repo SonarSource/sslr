@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import static com.sonar.sslr.api.GenericTokenType.UNKNOWN_CHAR;
 
 /**
- * Creates token with type {@link #UNKNOWN_CHAR} for any character, which is not {@link #BOM_CHAR}.
+ * Creates token with type {@link com.sonar.sslr.api.GenericTokenType#UNKNOWN_CHAR} for any character.
  * This channel, if present, should be the last one.
  *
  * @since 1.2
