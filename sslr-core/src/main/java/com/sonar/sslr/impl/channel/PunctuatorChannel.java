@@ -30,6 +30,7 @@ import java.util.Comparator;
 
 public class PunctuatorChannel extends Channel<Lexer> {
 
+  private final int lookahead;
   private final TokenType[] sortedPunctuators;
   private final char[][] sortedPunctuatorsChars;
   private final Token.Builder tokenBuilder = Token.builder();
@@ -48,22 +49,23 @@ public class PunctuatorChannel extends Channel<Lexer> {
 
   public PunctuatorChannel(TokenType... punctuators) {
     sortedPunctuators = punctuators;
-    Arrays.<TokenType>sort(sortedPunctuators, new PunctuatorComparator());
+    Arrays.sort(sortedPunctuators, new PunctuatorComparator());
 
     sortedPunctuatorsChars = new char[sortedPunctuators.length][];
 
+    int maxLength = 0;
     for (int i = 0; i < sortedPunctuators.length; i++) {
       sortedPunctuatorsChars[i] = sortedPunctuators[i].getValue().toCharArray();
+      maxLength = Math.max(maxLength, sortedPunctuatorsChars[i].length);
     }
+    this.lookahead = maxLength;
   }
 
   @Override
   public boolean consume(CodeReader code, Lexer lexer) {
-    int c = code.peek();
+    char[] next = code.peek(lookahead);
     for (int i = 0; i < sortedPunctuators.length; i++) {
-      if (c == sortedPunctuatorsChars[i][0]
-        && Arrays.equals(code.peek(sortedPunctuatorsChars[i].length), sortedPunctuatorsChars[i])) {
-
+      if (arraysEquals(next, sortedPunctuatorsChars[i])) {
         Token token = tokenBuilder
           .setType(sortedPunctuators[i])
           .setValueAndOriginalValue(sortedPunctuators[i].getValue())
@@ -84,6 +86,19 @@ public class PunctuatorChannel extends Channel<Lexer> {
     }
 
     return false;
+  }
+
+  /**
+   * Expected that length of second array can be less than length of first.
+   */
+  private static boolean arraysEquals(char[] a, char[] a2) {
+    int length = a2.length;
+    for (int i = 0; i < length; i++) {
+      if (a[i] != a2[i]) {
+        return false;
+      }
+    }
+    return true;
   }
 
 }
