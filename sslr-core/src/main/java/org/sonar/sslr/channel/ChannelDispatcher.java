@@ -19,16 +19,12 @@
  */
 package org.sonar.sslr.channel;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class ChannelDispatcher<O> extends Channel<O> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ChannelDispatcher.class);
   private final boolean failIfNoChannelToConsumeOneCharacter;
 
   private final Channel<O>[] channels;
@@ -78,13 +74,10 @@ public class ChannelDispatcher<O> extends Channel<O> {
         }
       }
       if (!characterConsumed) {
-        if (LOG.isDebugEnabled() || failIfNoChannelToConsumeOneCharacter) {
+        if (failIfNoChannelToConsumeOneCharacter) {
           String message = "None of the channel has been able to handle character '" + (char) code.peek() + "' (decimal value "
             + code.peek() + ") at line " + code.getLinePosition() + ", column " + code.getColumnPosition();
-          if (failIfNoChannelToConsumeOneCharacter) {
-            throw new IllegalStateException(message);
-          }
-          LOG.debug(message);
+          throw new IllegalStateException(message);
         }
         code.pop();
       }

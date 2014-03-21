@@ -19,13 +19,11 @@
  */
 package com.sonar.sslr.impl.channel;
 
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.impl.Lexer;
 import org.sonar.sslr.channel.Channel;
 import org.sonar.sslr.channel.CodeReader;
 
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.Lexer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import static com.sonar.sslr.api.GenericTokenType.UNKNOWN_CHAR;
 
 /**
@@ -36,26 +34,22 @@ import static com.sonar.sslr.api.GenericTokenType.UNKNOWN_CHAR;
  */
 public class UnknownCharacterChannel extends Channel<Lexer> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(UnknownCharacterChannel.class);
-
-  private boolean shouldLogWarning = false;
   private final Token.Builder tokenBuilder = Token.builder();
 
   public UnknownCharacterChannel() {
   }
 
+  /**
+   * @deprecated logging removed in 1.20, use {@link #UnknownCharacterChannel()} or implement your own Channel with logging
+   */
+  @Deprecated
   public UnknownCharacterChannel(boolean shouldLogWarning) {
-    this.shouldLogWarning = shouldLogWarning;
   }
 
   @Override
   public boolean consume(CodeReader code, Lexer lexer) {
     if (code.peek() != -1) {
       char unknownChar = (char) code.pop();
-      if (shouldLogWarning) {
-        LOG.warn("Unknown char: \"" + unknownChar + "\" (" + lexer.getURI() + ":" + code.getLinePosition() + ":"
-            + code.getColumnPosition() + ")");
-      }
 
       Token token = tokenBuilder
           .setType(UNKNOWN_CHAR)
