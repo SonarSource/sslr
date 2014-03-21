@@ -34,7 +34,7 @@ public class ChannelDispatcher<O> extends Channel<O> {
   private final Channel<O>[] channels;
 
   /**
-   * @deprecated in version 2.9. Please use the builder() method
+   * @deprecated in SQ version 2.9. Please use the builder() method
    */
   @SuppressWarnings("rawtypes")
   @Deprecated
@@ -43,7 +43,7 @@ public class ChannelDispatcher<O> extends Channel<O> {
   }
 
   /**
-   * @deprecated in version 2.9. Please use the builder() method
+   * @deprecated in SQ version 2.9. Please use the builder() method
    */
   @SuppressWarnings("rawtypes")
   @Deprecated
@@ -52,7 +52,7 @@ public class ChannelDispatcher<O> extends Channel<O> {
   }
 
   /**
-   * @deprecated in version 2.9. Please use the builder() method
+   * @deprecated in SQ version 2.9. Please use the builder() method
    */
   @SuppressWarnings("rawtypes")
   @Deprecated

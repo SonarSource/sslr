@@ -124,7 +124,7 @@ public class CodeReader extends CodeBuffer {
   }
 
   /**
-   * @deprecated in 2.2, use {@link #peekTo(EndMatcher matcher, Appendable appendable)} instead
+   * @deprecated in SQ version 2.2, use {@link #peekTo(EndMatcher matcher, Appendable appendable)} instead
    */
   @Deprecated
   public final String peekTo(EndMatcher matcher) {
@@ -134,7 +134,7 @@ public class CodeReader extends CodeBuffer {
   }
 
   /**
-   * @deprecated in 2.2, use {@link #popTo(Matcher matcher, Appendable appendable)} instead
+   * @deprecated in SQ version 2.2, use {@link #popTo(Matcher matcher, Appendable appendable)} instead
    */
   @Deprecated
   public final void popTo(EndMatcher matcher, Appendable appendable) {

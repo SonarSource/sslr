@@ -56,8 +56,8 @@ public abstract class RegexChannel<O> extends Channel<O> {
    *
    * @param token
    *          the token consumed in the character stream and matching the regular expression
-   * @param the
-   *          OUPUT object which can be optionally fed
+   * @param output
+   *          the OUTPUT object which can be optionally fed
    */
   protected abstract void consume(CharSequence token, O output);
 

@@ -29,7 +29,7 @@ import java.util.List;
 public class CodeReaderConfiguration {
 
   /**
-   * @deprecated in 2.12, do not use anymore.
+   * @deprecated in SQ version 2.12, do not use anymore.
    */
   @Deprecated
   public static final int DEFAULT_BUFFER_CAPACITY = 8000;
@@ -41,7 +41,7 @@ public class CodeReaderConfiguration {
   private List<CodeReaderFilter<?>> codeReaderFilters = new ArrayList<CodeReaderFilter<?>>();
 
   /**
-   * @deprecated in 2.12, do not use anymore.
+   * @deprecated in SQ version 2.12, do not use anymore.
    * @return the constant Integer.MAX_VALUE
    */
   @Deprecated
@@ -50,7 +50,7 @@ public class CodeReaderConfiguration {
   }
 
   /**
-   * @deprecated in 2.12, do not use anymore.
+   * @deprecated in SQ version 2.12, do not use anymore.
    * @param bufferCapacity
    *          the bufferCapacity to set
    */
