@@ -37,16 +37,16 @@ public class LexerfulParseErrorFormatterTest {
         token(2, 1, "foo\nbar\nbaz"),
         token(4, 6, "qux"),
         token(6, 3, "end"));
-    StringBuilder sb = new StringBuilder();
-    LexerfulParseErrorFormatter.appendSnippet(sb, tokens, 1, 4);
     String expected = new StringBuilder()
+        .append("Parse error at line 4 column 6:\n")
+        .append("\n")
         .append("    2: foo\n")
         .append("    3: bar\n")
         .append("  -->  baz   qux\n")
         .append("    5: \n")
         .append("    6:    end\n")
         .toString();
-    assertThat(sb.toString()).isEqualTo(expected);
+    assertThat(new LexerfulParseErrorFormatter().format(tokens, 1)).isEqualTo(expected);
   }
 
   private static Token token(int line, int column, String value) {

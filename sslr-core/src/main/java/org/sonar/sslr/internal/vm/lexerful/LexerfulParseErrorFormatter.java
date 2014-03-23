@@ -19,15 +19,7 @@
  */
 package org.sonar.sslr.internal.vm.lexerful;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.matcher.RuleDefinition;
-import org.sonar.sslr.internal.matchers.Matcher;
-import org.sonar.sslr.internal.matchers.MatcherPathElement;
-import org.sonar.sslr.internal.matchers.TextUtils;
-import org.sonar.sslr.internal.vm.ErrorTreeNode;
 
 import java.util.List;
 
@@ -38,82 +30,16 @@ public class LexerfulParseErrorFormatter {
    */
   private static final int SNIPPET_SIZE = 30;
 
-  private static final int EXCERPT_SIZE = 10;
-
-  public String format(List<Token> tokens, int errorIndex, List<List<MatcherPathElement>> failedPaths) {
+  public String format(List<Token> tokens, int errorIndex) {
     StringBuilder sb = new StringBuilder();
     Pos errorPos = errorIndex < tokens.size()
         ? getTokenStart(tokens.get(errorIndex))
         : getTokenEnd(tokens.get(tokens.size() - 1));
     sb.append("Parse error at line ").append(errorPos.line)
-        .append(" column ").append(errorPos.column);
-    sb.append(" failed to match");
-    if (failedPaths.size() > 1) {
-      sb.append(" all of");
-    }
-    sb.append(':');
-    for (List<MatcherPathElement> failedPath : failedPaths) {
-      Matcher failedMatcher = Iterables.getLast(failedPath).getMatcher();
-      sb.append(' ').append(((RuleDefinition) failedMatcher).getName());
-    }
-    sb.append('\n').append('\n');
+        .append(" column ").append(errorPos.column)
+        .append(":\n\n");
     appendSnippet(sb, tokens, errorIndex, errorPos.line);
-    sb.append('\n');
-    sb.append("Failed at rules:\n");
-    ErrorTreeNode tree = ErrorTreeNode.buildTree(failedPaths);
-    appendTree(sb, tokens, tree);
     return sb.toString();
-  }
-
-  private void appendTree(StringBuilder sb, List<Token> tokens, ErrorTreeNode node) {
-    List<ErrorTreeNode> nodes = Lists.newArrayList();
-    while (node.children.size() == 1) {
-      nodes.add(node);
-      node = node.children.get(0);
-    }
-    appendTree(sb, tokens, node, "", true);
-    for (int i = nodes.size() - 1; i >= 0; i--) {
-      appendPathElement(sb, tokens, nodes.get(i).pathElement);
-    }
-  }
-
-  private void appendTree(StringBuilder sb, List<Token> tokens, ErrorTreeNode node, String prefix, boolean isTail) {
-    boolean tail = true;
-    for (int i = 0; i < node.children.size(); i++) {
-      appendTree(sb, tokens, node.children.get(i), prefix + (isTail ? "  " : "| "), tail);
-      tail = false;
-    }
-    sb.append(prefix + (isTail ? "/-" : "+-"));
-    appendPathElement(sb, tokens, node.pathElement);
-  }
-
-  private static void appendPathElement(StringBuilder sb, List<Token> tokens, MatcherPathElement pathElement) {
-    sb.append(((RuleDefinition) pathElement.getMatcher()).getName());
-    if (pathElement.getStartIndex() != pathElement.getEndIndex()) {
-
-      sb.append(" consumed from ")
-          .append(getTokenStart(tokens.get(pathElement.getStartIndex())))
-          .append(" to ")
-          .append(getTokenEnd(tokens.get(pathElement.getEndIndex() - 1)))
-          .append(": ");
-      int len = pathElement.getEndIndex() - pathElement.getStartIndex();
-      if (len > EXCERPT_SIZE) {
-        len = EXCERPT_SIZE;
-        sb.append("...");
-      }
-      for (int i = pathElement.getEndIndex() - len; i < Math.min(pathElement.getEndIndex(), tokens.size()); i++) {
-        sb.append(' ');
-        appendEscapedToken(sb, tokens.get(i));
-      }
-    }
-    sb.append('\n');
-  }
-
-  private static void appendEscapedToken(StringBuilder sb, Token token) {
-    String value = token.getOriginalValue();
-    for (int i = 0; i < value.length(); i++) {
-      sb.append(TextUtils.escape(value.charAt(i)));
-    }
   }
 
   private static class Pos {
@@ -147,8 +73,7 @@ public class LexerfulParseErrorFormatter {
     return pos;
   }
 
-  @VisibleForTesting
-  static void appendSnippet(StringBuilder sb, List<Token> tokens, int errorIndex, int errorLine) {
+  private static void appendSnippet(StringBuilder sb, List<Token> tokens, int errorIndex, int errorLine) {
     int startToken = Math.max(errorIndex - SNIPPET_SIZE, 0);
     int endToken = Math.min(errorIndex + SNIPPET_SIZE, tokens.size());
     tokens = tokens.subList(startToken, endToken);

@@ -20,16 +20,12 @@
 package org.sonar.sslr.internal.vm;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterables;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Token;
 import org.sonar.sslr.grammar.GrammarException;
-import org.sonar.sslr.internal.grammar.MutableParsingRule;
 import org.sonar.sslr.internal.matchers.ImmutableInputBuffer;
 import org.sonar.sslr.internal.matchers.InputBuffer;
 import org.sonar.sslr.internal.matchers.Matcher;
-import org.sonar.sslr.internal.matchers.MatcherPathElement;
 import org.sonar.sslr.internal.matchers.ParseNode;
 import org.sonar.sslr.internal.vm.lexerful.LexerfulParseErrorFormatter;
 import org.sonar.sslr.parser.ParseError;
@@ -68,20 +64,12 @@ public class Machine implements CharSequence {
     if (machine.matched) {
       return machine.stack.subNodes().get(0);
     } else {
-      // Perform second run in order to collect information for error report
-      ErrorReportingHandler errorReportingHandler = new ErrorReportingHandler(errorLocatingHandler.getErrorIndex());
-      machine = new Machine(null, inputTokens, grammar.getInstructions(), errorReportingHandler);
-      machine.execute(grammar.getMatcher(grammar.getRootRuleKey()), grammar.getRootRuleOffset(), grammar.getInstructions());
-
-      // failure should be permanent, otherwise something generally wrong
-      Preconditions.checkState(!machine.matched);
-
       if (tokens.isEmpty()) {
         // Godin: weird situation - I expect that list of tokens contains at least EOF, but this is not the case in C Parser
         throw new RecognitionException(1, "No tokens");
       } else {
         int errorIndex = errorLocatingHandler.getErrorIndex();
-        String errorMsg = new LexerfulParseErrorFormatter().format(tokens, errorIndex, errorReportingHandler.getFailedPaths());
+        String errorMsg = new LexerfulParseErrorFormatter().format(tokens, errorIndex);
         int errorLine = errorIndex < tokens.size() ? tokens.get(errorIndex).getLine() : tokens.get(tokens.size() - 1).getLine();
         throw new RecognitionException(errorLine, errorMsg);
       }
@@ -103,29 +91,8 @@ public class Machine implements CharSequence {
           machine.stack.subNodes().get(0),
           null);
     } else {
-      // Perform second run in order to collect information for error report
-      ErrorReportingHandler errorReportingHandler = new ErrorReportingHandler(errorLocatingHandler.getErrorIndex());
-      machine = new Machine(input, null, instructions, errorReportingHandler);
-      machine.execute(grammar.getMatcher(grammar.getRootRuleKey()), grammar.getRootRuleOffset(), instructions);
-
-      // failure should be permanent, otherwise something generally wrong
-      Preconditions.checkState(!machine.matched);
-
-      StringBuilder sb = new StringBuilder("failed to match");
-      if (errorReportingHandler.getFailedPaths().size() > 1) {
-        sb.append(" all of");
-      }
-      sb.append(':');
-      for (List<MatcherPathElement> failedPath : errorReportingHandler.getFailedPaths()) {
-        Matcher failedMatcher = Iterables.getLast(failedPath).getMatcher();
-        sb.append(' ').append(((MutableParsingRule) failedMatcher).getName());
-      }
       InputBuffer inputBuffer = new ImmutableInputBuffer(machine.input);
-      ParseError parseError = new ParseError(
-          inputBuffer,
-          errorLocatingHandler.getErrorIndex(),
-          sb.toString(),
-          errorReportingHandler.getFailedPaths());
+      ParseError parseError = new ParseError(inputBuffer, errorLocatingHandler.getErrorIndex());
       return new ParsingResult(inputBuffer, machine.matched, null, parseError);
     }
   }
