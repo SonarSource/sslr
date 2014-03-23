@@ -19,6 +19,7 @@
  */
 package com.sonar.sslr.api;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public interface AstVisitor {
@@ -35,17 +36,17 @@ public interface AstVisitor {
    * the tree.
    * 
    * @param ast
-   *          the root of the tree
+   *          the root of the tree, or {@code null} if no tree
    */
-  void visitFile(AstNode ast);
+  void visitFile(@Nullable AstNode ast);
 
   /**
    * Called once a computation unit tree has been fully visited. Ideal place to report on information collected while processing a tree.
    * 
    * @param ast
-   *          the root of the tree
+   *          the root of the tree, or {@code null} if no tree
    */
-  void leaveFile(AstNode ast);
+  void leaveFile(@Nullable AstNode ast);
 
   /**
    * Called to process an AST node whose type has been registered to be visited.
