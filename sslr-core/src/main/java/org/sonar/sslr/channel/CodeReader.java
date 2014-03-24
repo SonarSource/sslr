@@ -97,7 +97,8 @@ public class CodeReader extends CodeBuffer {
     int nextChar = intAt(index);
     while (nextChar != -1 && index < length) {
       result[index] = (char) nextChar;
-      nextChar = intAt(++index);
+      index++;
+      nextChar = intAt(index);
     }
     return result;
   }
