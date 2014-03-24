@@ -73,11 +73,12 @@ public final class ChannelCodeReaderFilter<O> extends CodeReaderFilter<O> {
    */
   @Override
   public int read(char[] filteredBuffer, int offset, int length) throws IOException {
+    int currentOffset = offset;
     if (internalCodeReader.peek() == -1) {
       return -1;
     }
-    int initialOffset = offset;
-    while (offset < filteredBuffer.length) {
+    int initialOffset = currentOffset;
+    while (currentOffset < filteredBuffer.length) {
       if (internalCodeReader.peek() == -1) {
         break;
       }
@@ -90,11 +91,11 @@ public final class ChannelCodeReaderFilter<O> extends CodeReaderFilter<O> {
       }
       if (!consumed) {
         int charRead = internalCodeReader.pop();
-        filteredBuffer[offset] = (char) charRead;
-        offset++;
+        filteredBuffer[currentOffset] = (char) charRead;
+        currentOffset++;
       }
     }
-    return offset - initialOffset;
+    return currentOffset - initialOffset;
   }
 
 }

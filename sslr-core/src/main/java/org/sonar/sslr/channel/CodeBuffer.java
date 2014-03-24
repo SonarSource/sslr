@@ -217,7 +217,7 @@ public class CodeBuffer implements CharSequence {
     return result.toString();
   }
 
-  public final class Cursor implements Cloneable {
+  public static class Cursor implements Cloneable {
 
     private int line = 1;
     private int column = 0;
