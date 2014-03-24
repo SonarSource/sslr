@@ -19,10 +19,6 @@
  */
 package org.sonar.sslr.channel;
 
-import org.sonar.sslr.channel.ChannelException;
-import org.sonar.sslr.channel.CodeReader;
-import org.sonar.sslr.channel.EndMatcher;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -67,6 +63,7 @@ public class CodeReaderTest {
     StringBuilder result = new StringBuilder();
     reader.peekTo(new EndMatcher() {
 
+      @Override
       public boolean match(int endFlag) {
         return 'r' == (char) endFlag;
       }
@@ -76,32 +73,15 @@ public class CodeReaderTest {
   }
 
   @Test
-  public void testPopTo() {
-    CodeReader reader = new CodeReader(new StringReader("package org.sonar;"));
-    StringBuilder result = new StringBuilder();
-    reader.popTo(new EndMatcher() {
-
-      public boolean match(int endFlag) {
-        return 'r' == (char) endFlag;
-      }
-    }, result);
-    assertThat(result.toString(), is("package o"));
-    assertThat(reader.peek(), is((int) 'r'));
-    CodeReader.Cursor previousCursor = reader.getPreviousCursor();
-    assertThat(previousCursor.getColumn(), is(0));
-    assertThat(previousCursor.getLine(), is(1));
-  }
-
-  @Test
   public void testPopToWithRegex() {
     CodeReader reader = new CodeReader(new StringReader("123ABC"));
     StringBuilder token = new StringBuilder();
     assertEquals(3, reader.popTo(Pattern.compile("\\d+").matcher(new String()), token));
     assertEquals("123", token.toString());
-    assertEquals( -1, reader.popTo(Pattern.compile("\\d+").matcher(new String()), token));
+    assertEquals(-1, reader.popTo(Pattern.compile("\\d+").matcher(new String()), token));
     assertEquals(3, reader.popTo(Pattern.compile("\\w+").matcher(new String()), token));
     assertEquals("123ABC", token.toString());
-    assertEquals( -1, reader.popTo(Pattern.compile("\\w+").matcher(new String()), token));
+    assertEquals(-1, reader.popTo(Pattern.compile("\\w+").matcher(new String()), token));
   }
 
   @Test
@@ -117,8 +97,8 @@ public class CodeReaderTest {
 
     thrown.expect(ChannelException.class);
     thrown.expectMessage("Unable to apply regular expression '([a-fA-F]|\\d)+' at line 2 and column 1," +
-        " because it led to a stack overflow error." +
-        " This error may be due to an inefficient use of alternations - see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5050507");
+      " because it led to a stack overflow error." +
+      " This error may be due to an inefficient use of alternations - see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5050507");
     reader.popTo(Pattern.compile("([a-fA-F]|\\d)+").matcher(""), new StringBuilder());
   }
 
@@ -127,7 +107,7 @@ public class CodeReaderTest {
     Matcher digitMatcher = Pattern.compile("\\d+").matcher(new String());
     Matcher alphabeticMatcher = Pattern.compile("[a-zA-Z]").matcher(new String());
     StringBuilder token = new StringBuilder();
-    assertEquals( -1, new CodeReader(new StringReader("123 ABC")).popTo(digitMatcher, alphabeticMatcher, token));
+    assertEquals(-1, new CodeReader(new StringReader("123 ABC")).popTo(digitMatcher, alphabeticMatcher, token));
     assertEquals("", token.toString());
     assertEquals(3, new CodeReader(new StringReader("123ABC")).popTo(digitMatcher, alphabeticMatcher, token));
     assertEquals("123", token.toString());

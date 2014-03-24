@@ -25,7 +25,7 @@ import java.io.Reader;
 /**
  * This class is a special CodeReaderFilter that uses Channels to filter the character stream before it is passed to the main channels
  * declared for the CodeReader.
- * 
+ *
  */
 public final class ChannelCodeReaderFilter<O> extends CodeReaderFilter<O> {
 
@@ -36,7 +36,7 @@ public final class ChannelCodeReaderFilter<O> extends CodeReaderFilter<O> {
 
   /**
    * Creates a CodeReaderFilter that will use the provided Channels to filter the character stream it gets from its reader.
-   * 
+   *
    * @param channels
    *          the different channels
    */
@@ -48,7 +48,7 @@ public final class ChannelCodeReaderFilter<O> extends CodeReaderFilter<O> {
   /**
    * Creates a CodeReaderFilter that will use the provided Channels to filter the character stream it gets from its reader. And optionally,
    * it can push token to the provided output object.
-   * 
+   *
    * @param output
    *          the object that may accept tokens
    * @param channels
@@ -88,9 +88,10 @@ public final class ChannelCodeReaderFilter<O> extends CodeReaderFilter<O> {
           break;
         }
       }
-      if ( !consumed) {
+      if (!consumed) {
         int charRead = internalCodeReader.pop();
-        filteredBuffer[offset++] = (char) charRead;
+        filteredBuffer[offset] = (char) charRead;
+        offset++;
       }
     }
     return offset - initialOffset;

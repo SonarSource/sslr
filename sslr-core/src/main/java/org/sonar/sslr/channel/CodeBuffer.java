@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.channel;
 
+import com.google.common.base.Throwables;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Closeables;
 
@@ -88,7 +89,8 @@ public class CodeBuffer implements CharSequence {
     if (bufferPosition >= buffer.length) {
       return -1;
     }
-    int character = buffer[bufferPosition++];
+    int character = buffer[bufferPosition];
+    bufferPosition++;
     updateCursorPosition(character);
     if (recordingMode) {
       recordedCharacters.append((char) character);
@@ -230,9 +232,17 @@ public class CodeBuffer implements CharSequence {
 
     @Override
     public Cursor clone() {
-      Cursor clone = new Cursor();
+      Cursor clone;
+
+      try {
+        clone = (Cursor) super.clone();
+      } catch (CloneNotSupportedException e) {
+        throw Throwables.propagate(e);
+      }
+
       clone.column = column;
       clone.line = line;
+
       return clone;
     }
   }

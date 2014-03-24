@@ -112,37 +112,13 @@ public class CodeReader extends CodeBuffer {
    */
   public final void peekTo(EndMatcher matcher, Appendable appendable) {
     int index = 0;
-    char nextChar = charAt(index);
+    int nextChar = intAt(index);
     try {
       while (!matcher.match(nextChar) && nextChar != -1) {
-        appendable.append(nextChar);
-        nextChar = charAt(++index);
+        appendable.append((char) nextChar);
+        ++index;
+        nextChar = charAt(index);
       }
-    } catch (IOException e) {
-      throw new ChannelException(e.getMessage(), e);
-    }
-  }
-
-  /**
-   * @deprecated in SQ version 2.2, use {@link #peekTo(EndMatcher matcher, Appendable appendable)} instead
-   */
-  @Deprecated
-  public final String peekTo(EndMatcher matcher) {
-    StringBuilder sb = new StringBuilder();
-    peekTo(matcher, sb);
-    return sb.toString();
-  }
-
-  /**
-   * @deprecated in SQ version 2.2, use {@link #popTo(Matcher matcher, Appendable appendable)} instead
-   */
-  @Deprecated
-  public final void popTo(EndMatcher matcher, Appendable appendable) {
-    previousCursor = getCursor().clone();
-    try {
-      do {
-        appendable.append((char) pop());
-      } while (!matcher.match(peek()) && peek() != -1);
     } catch (IOException e) {
       throw new ChannelException(e.getMessage(), e);
     }

@@ -20,7 +20,6 @@
 package org.sonar.sslr.channel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ChannelDispatcher<O> extends Channel<O> {
@@ -28,34 +27,6 @@ public class ChannelDispatcher<O> extends Channel<O> {
   private final boolean failIfNoChannelToConsumeOneCharacter;
 
   private final Channel<O>[] channels;
-
-  /**
-   * @deprecated in SQ version 2.9. Please use the builder() method
-   */
-  @SuppressWarnings("rawtypes")
-  @Deprecated
-  public ChannelDispatcher(List<Channel> channels) {
-    this(channels, false);
-  }
-
-  /**
-   * @deprecated in SQ version 2.9. Please use the builder() method
-   */
-  @SuppressWarnings("rawtypes")
-  @Deprecated
-  public ChannelDispatcher(Channel... channels) {
-    this(Arrays.asList(channels), false);
-  }
-
-  /**
-   * @deprecated in SQ version 2.9. Please use the builder() method
-   */
-  @SuppressWarnings("rawtypes")
-  @Deprecated
-  public ChannelDispatcher(List<Channel> channels, boolean failIfNoChannelToConsumeOneCharacter) {
-    this.channels = channels.toArray(new Channel[channels.size()]);
-    this.failIfNoChannelToConsumeOneCharacter = failIfNoChannelToConsumeOneCharacter;
-  }
 
   private ChannelDispatcher(Builder builder) {
     this.channels = builder.channels.toArray(new Channel[builder.channels.size()]);
