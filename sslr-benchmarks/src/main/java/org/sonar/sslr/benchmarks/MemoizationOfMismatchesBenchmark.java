@@ -20,8 +20,8 @@
 package org.sonar.sslr.benchmarks;
 
 import com.google.common.base.Strings;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
@@ -69,12 +69,12 @@ public class MemoizationOfMismatchesBenchmark {
     notRequired = new ParseRunner(b.build().rule(root));
   }
 
-  @GenerateMicroBenchmark
+  @Benchmark
   public boolean required() {
     return required.parse(input).isMatched();
   }
 
-  @GenerateMicroBenchmark
+  @Benchmark
   public boolean notRequired() {
     return notRequired.parse(input).isMatched();
   }

@@ -21,8 +21,8 @@ package org.sonar.sslr.benchmarks;
 
 import com.google.common.base.Strings;
 import com.sonar.sslr.api.Grammar;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
@@ -71,12 +71,12 @@ public class RecursiveRuleBenchmark {
     greedy = new ParseRunner(MyGrammar.greedy().getRootRule());
   }
 
-  @GenerateMicroBenchmark
+  @Benchmark
   public ParsingResult recursive() {
     return recursive.parse(input);
   }
 
-  @GenerateMicroBenchmark
+  @Benchmark
   public ParsingResult greedy() {
     return greedy.parse(input);
   }

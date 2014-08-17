@@ -20,8 +20,8 @@
 package org.sonar.sslr.benchmarks;
 
 import com.google.common.base.Strings;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
@@ -52,12 +52,12 @@ public class OneOrMoreExpressionBenchmark {
     usingZeroOrMore = compile(new SequenceExpression(subExpression, new ZeroOrMoreExpression(subExpression)));
   }
 
-  @GenerateMicroBenchmark
+  @Benchmark
   public boolean oneOrMore() {
     return Machine.execute(input, oneOrMore);
   }
 
-  @GenerateMicroBenchmark
+  @Benchmark
   public boolean usingZeroOrMore() {
     return Machine.execute(input, usingZeroOrMore);
   }
