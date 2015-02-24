@@ -1,5 +1,5 @@
 # SonarSource Language Recognizer
 
-Project homepage : http://docs.sonarqube.org/display/SONAR/SSLR
+Project homepage : http://redirect.sonarsource.com/doc/sslr.html
 
 Issue tracking: http://jira.sonarsource.com/browse/SSLR
