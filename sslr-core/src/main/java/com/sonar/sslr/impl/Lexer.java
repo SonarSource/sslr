@@ -21,7 +21,6 @@ package com.sonar.sslr.impl;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import com.google.common.io.Closeables;
 import com.sonar.sslr.api.Preprocessor;
 import com.sonar.sslr.api.PreprocessorAction;
 import com.sonar.sslr.api.Token;
@@ -32,6 +31,8 @@ import org.sonar.sslr.channel.CodeReader;
 import org.sonar.sslr.channel.CodeReaderConfiguration;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
@@ -89,17 +90,20 @@ public class Lexer {
   public List<Token> lex(URL url) {
     checkNotNull(url, "url cannot be null");
 
-    InputStreamReader reader = null;
-    try {
-      this.uri = url.toURI();
+      try {
+          uri = url.toURI();
+      } catch (URISyntaxException e) {
+          throw new LexerException("failed to convert URL <" + url + "> to a URI", e);
+      }
 
-      reader = new InputStreamReader(url.openStream(), charset);
-      return lex(reader);
-    } catch (Exception e) {
-      throw new LexerException("Unable to lex url: " + getURI(), e);
-    } finally {
-      Closeables.closeQuietly(reader);
-    }
+      try (
+          final InputStream in = url.openStream();
+          final InputStreamReader reader = new InputStreamReader(in, charset);
+      ) {
+          return lex(reader);
+      } catch (IOException e) {
+          throw new LexerException("Unable to lex url: " + uri, e);
+      }
   }
 
   /**
