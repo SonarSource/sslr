@@ -19,8 +19,7 @@
  */
 package org.sonar.sslr.internal.vm;
 
-import com.google.common.collect.Lists;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class SequenceExpression implements ParsingExpression {
    * </pre>
    */
   public Instruction[] compile(CompilationHandler compiler) {
-    List<Instruction> result = Lists.newArrayList();
+    List<Instruction> result = new ArrayList<>();
     for (ParsingExpression subExpression : subExpressions) {
       Instruction.addAll(result, compiler.compile(subExpression));
     }

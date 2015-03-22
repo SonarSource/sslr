@@ -19,9 +19,9 @@
  */
 package org.sonar.sslr.internal.text;
 
-import com.google.common.collect.Lists;
 import org.sonar.sslr.text.Texts;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class TextUtils {
@@ -32,7 +32,7 @@ public final class TextUtils {
   private static final int[] EMPTY_INT_ARRAY = new int[0];
 
   public static int[] computeLines(char[] chars) {
-    List<Integer> newlines = Lists.newArrayList();
+    List<Integer> newlines = new ArrayList<>();
     int i = 0;
     while (i < chars.length) {
       if (isEndOfLine(chars, i)) {

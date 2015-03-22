@@ -19,14 +19,13 @@
  */
 package org.sonar.sslr.internal.ast.select;
 
-import org.sonar.sslr.ast.AstSelect;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
+import org.sonar.sslr.ast.AstSelect;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -59,7 +58,7 @@ public class SingleAstSelect implements AstSelect {
       }
       return AstSelectFactory.empty();
     } else if (node.getNumberOfChildren() > 1) {
-      List<AstNode> result = Lists.newArrayList();
+      List<AstNode> result = new ArrayList<>();
       // Don't use "getChildren(type)", because under the hood it will create an array of types and new List to keep the result
       for (AstNode child : node.getChildren()) {
         // Don't use "is(type)", because under the hood it will create an array of types
@@ -81,7 +80,7 @@ public class SingleAstSelect implements AstSelect {
       }
       return AstSelectFactory.empty();
     } else if (node.getNumberOfChildren() > 1) {
-      List<AstNode> result = Lists.newArrayList();
+      List<AstNode> result = new ArrayList<>();
       // Don't use "getChildren(type)", because it will create new List to keep the result
       for (AstNode child : node.getChildren()) {
         if (child.is(types)) {

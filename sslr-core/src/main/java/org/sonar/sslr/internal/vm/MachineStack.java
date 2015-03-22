@@ -19,12 +19,11 @@
  */
 package org.sonar.sslr.internal.vm;
 
-import com.google.common.collect.Lists;
 import org.sonar.sslr.internal.matchers.Matcher;
 import org.sonar.sslr.internal.matchers.ParseNode;
 
 import javax.annotation.Nullable;
-
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,7 +49,7 @@ public class MachineStack {
 
   private MachineStack(MachineStack parent) {
     this.parent = parent;
-    this.subNodes = Lists.newArrayList();
+    this.subNodes = new ArrayList<>();
   }
 
   public MachineStack parent() {

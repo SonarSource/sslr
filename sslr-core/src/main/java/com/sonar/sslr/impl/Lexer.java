@@ -20,7 +20,6 @@
 package com.sonar.sslr.impl;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
 import com.sonar.sslr.api.Preprocessor;
 import com.sonar.sslr.api.PreprocessorAction;
 import com.sonar.sslr.api.Token;
@@ -124,7 +123,7 @@ public class Lexer {
   }
 
   private List<Token> lex(Reader reader) {
-    tokens = Lists.newArrayList();
+    tokens = new ArrayList<>();
 
     initPreprocessors();
     CodeReader code = new CodeReader(reader, configuration);

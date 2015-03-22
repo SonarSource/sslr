@@ -19,8 +19,6 @@
  */
 package com.sonar.sslr.api;
 
-import com.google.common.collect.Lists;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -98,8 +96,8 @@ public class PreprocessorAction {
     Objects.requireNonNull(tokensToInject, "tokensToInject cannot be null");
 
     this.numberOfConsumedTokens = numberOfConsumedTokens;
-    this.triviaToInject = Collections.unmodifiableList(Lists.newArrayList(triviaToInject));
-    this.tokensToInject = Collections.unmodifiableList(Lists.newArrayList(tokensToInject));
+    this.triviaToInject = Collections.unmodifiableList(new ArrayList<>(triviaToInject));
+    this.tokensToInject = Collections.unmodifiableList(new ArrayList<>(tokensToInject));
   }
 
   public int getNumberOfConsumedTokens() {

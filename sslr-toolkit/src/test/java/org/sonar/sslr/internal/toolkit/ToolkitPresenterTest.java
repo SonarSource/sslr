@@ -21,7 +21,6 @@ package org.sonar.sslr.internal.toolkit;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
@@ -38,6 +37,7 @@ import java.io.PrintWriter;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -374,7 +374,7 @@ public class ToolkitPresenterTest {
     ToolkitView view = mock(ToolkitView.class);
     AstNode firstAstNode = mock(AstNode.class);
     AstNode secondAstNode = mock(AstNode.class);
-    when(view.getSelectedAstNodes()).thenReturn(Lists.newArrayList(firstAstNode, secondAstNode));
+    when(view.getSelectedAstNodes()).thenReturn(Arrays.asList(firstAstNode, secondAstNode));
 
     ToolkitPresenter presenter = new ToolkitPresenter(mock(ConfigurationModel.class), mock(SourceCodeModel.class));
     presenter.setView(view);
