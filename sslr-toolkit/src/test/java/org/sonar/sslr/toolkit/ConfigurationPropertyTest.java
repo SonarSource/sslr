@@ -72,7 +72,7 @@ public class ConfigurationPropertyTest {
     new ConfigurationProperty("", "", "", new ValidationCallback() {
 
       public String validate(String newValueCandidate) {
-        return newValueCandidate.length() == 0 ? "" : "The value \"" + newValueCandidate + "\" did not pass validation: Not valid!";
+        return newValueCandidate.isEmpty() ? "" : "The value \"" + newValueCandidate + "\" did not pass validation: Not valid!";
       }
 
     }).setValue("foo");
