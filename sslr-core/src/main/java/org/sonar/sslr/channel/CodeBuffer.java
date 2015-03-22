@@ -27,6 +27,7 @@ import java.io.FilterReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Arrays;
 
 /**
  * The CodeBuffer class provides all the basic features required to manipulate a source code character stream. Those features are :
@@ -203,7 +204,9 @@ public class CodeBuffer implements CharSequence {
 
   @Override
   public final CharSequence subSequence(int start, int end) {
-    throw new UnsupportedOperationException();
+    final int realStart = bufferPosition + start;
+    final int realEnd = bufferPosition + end;
+    return new String(Arrays.copyOfRange(buffer, realStart, realEnd));
   }
 
   @Override
