@@ -40,6 +40,7 @@ public final class ChannelCodeReaderFilter<O> extends CodeReaderFilter<O> {
    * @param channels
    *          the different channels
    */
+  @SafeVarargs
   public ChannelCodeReaderFilter(Channel<O>... channels) {
     super();
     this.channels = channels;
@@ -54,6 +55,7 @@ public final class ChannelCodeReaderFilter<O> extends CodeReaderFilter<O> {
    * @param channels
    *          the different channels
    */
+  @SafeVarargs
   public ChannelCodeReaderFilter(O output, Channel<O>... channels) {
     super(output);
     this.channels = channels;
