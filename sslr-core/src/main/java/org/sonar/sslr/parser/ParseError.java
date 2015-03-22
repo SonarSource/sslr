@@ -19,8 +19,9 @@
  */
 package org.sonar.sslr.parser;
 
-import com.google.common.base.Preconditions;
 import org.sonar.sslr.internal.matchers.InputBuffer;
+
+import java.util.Objects;
 
 /**
  * Describes an error, which is occurred during parse.
@@ -36,7 +37,7 @@ public class ParseError {
   private final int errorIndex;
 
   public ParseError(InputBuffer inputBuffer, int errorIndex) {
-    this.inputBuffer = Preconditions.checkNotNull(inputBuffer, "inputBuffer");
+    this.inputBuffer = Objects.requireNonNull(inputBuffer, "inputBuffer");
     this.errorIndex = errorIndex;
   }
 

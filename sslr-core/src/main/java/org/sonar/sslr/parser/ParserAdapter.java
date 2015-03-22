@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.parser;
 
-import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.RecognitionException;
@@ -34,11 +33,11 @@ import org.sonar.sslr.text.PreprocessorsChain;
 import org.sonar.sslr.text.Text;
 
 import javax.annotation.Nullable;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Adapts {@link ParseRunner} to be used as {@link Parser}.
@@ -61,8 +60,8 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
    * @since 1.17
    */
   public ParserAdapter(Charset charset, G grammar, @Nullable PreprocessorsChain preprocessorsChain) {
-    super(Preconditions.checkNotNull(grammar, "grammar"));
-    this.charset = Preconditions.checkNotNull(charset, "charset");
+    super(Objects.requireNonNull(grammar, "grammar"));
+    this.charset = Objects.requireNonNull(charset, "charset");
     this.parseRunner = new ParseRunner(grammar.getRootRule());
     this.preprocessorsChain = preprocessorsChain;
   }

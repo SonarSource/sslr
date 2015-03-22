@@ -35,8 +35,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.util.Objects;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 public class ToolkitPresenter {
@@ -51,7 +51,7 @@ public class ToolkitPresenter {
   }
 
   public void setView(ToolkitView view) {
-    checkNotNull(view);
+    Objects.requireNonNull(view);
     this.view = view;
   }
 

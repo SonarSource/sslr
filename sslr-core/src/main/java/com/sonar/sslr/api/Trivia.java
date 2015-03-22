@@ -22,8 +22,8 @@ package com.sonar.sslr.api;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
+import java.util.Objects;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 public class Trivia {
@@ -100,7 +100,7 @@ public class Trivia {
   }
 
   public static Trivia createSkippedText(List<Token> tokens) {
-    checkNotNull(tokens, "tokens cannot be null");
+    Objects.requireNonNull(tokens, "tokens cannot be null");
 
     return createSkippedText(tokens.toArray(new Token[tokens.size()]));
   }
