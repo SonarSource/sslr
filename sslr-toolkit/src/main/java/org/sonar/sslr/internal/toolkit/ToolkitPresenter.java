@@ -63,6 +63,7 @@ public class ToolkitPresenter {
   @VisibleForTesting
   void initUncaughtExceptionsHandler() {
     Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+      @Override
       public void uncaughtException(Thread t, Throwable e) {
         Writer result = new StringWriter();
         PrintWriter printWriter = new PrintWriter(result);

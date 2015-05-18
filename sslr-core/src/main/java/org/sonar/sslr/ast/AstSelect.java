@@ -188,6 +188,7 @@ public interface AstSelect extends Iterable<AstNode> {
    *
    * @return an iterator over the elements in this selection
    */
+  @Override
   Iterator<AstNode> iterator();
 
 }

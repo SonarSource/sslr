@@ -26,14 +26,17 @@ public enum MockTokenType implements TokenType {
 
   WORD, WORD1, WORD2;
 
+  @Override
   public String getName() {
     return name();
   }
 
+  @Override
   public String getValue() {
     return name();
   }
 
+  @Override
   public boolean hasToBeSkippedFromAst(AstNode node) {
     return false;
   }

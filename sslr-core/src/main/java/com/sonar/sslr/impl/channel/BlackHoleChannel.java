@@ -56,14 +56,17 @@ public class BlackHoleChannel extends Channel<Lexer> {
 
     private static final Appendable INSTANCE = new EmptyAppendable();
 
+    @Override
     public Appendable append(CharSequence csq) throws IOException {
       return this;
     }
 
+    @Override
     public Appendable append(char c) throws IOException {
       return this;
     }
 
+    @Override
     public Appendable append(CharSequence csq, int start, int end) throws IOException {
       return this;
     }

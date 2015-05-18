@@ -23,6 +23,7 @@ public class ErrorLocatingHandler implements MachineHandler {
 
   private int errorIndex = -1;
 
+  @Override
   public void onBacktrack(Machine machine) {
     if (errorIndex < machine.getIndex()) {
       errorIndex = machine.getIndex();

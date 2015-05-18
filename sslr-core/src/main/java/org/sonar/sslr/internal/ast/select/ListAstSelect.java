@@ -40,6 +40,7 @@ public class ListAstSelect implements AstSelect {
     this.list = list;
   }
 
+  @Override
   public AstSelect children() {
     List<AstNode> result = Lists.newArrayList();
     for (AstNode node : list) {
@@ -48,6 +49,7 @@ public class ListAstSelect implements AstSelect {
     return AstSelectFactory.create(result);
   }
 
+  @Override
   public AstSelect children(AstNodeType type) {
     List<AstNode> result = Lists.newArrayList();
     for (AstNode node : list) {
@@ -62,6 +64,7 @@ public class ListAstSelect implements AstSelect {
     return AstSelectFactory.create(result);
   }
 
+  @Override
   public AstSelect children(AstNodeType... types) {
     List<AstNode> result = Lists.newArrayList();
     for (AstNode node : list) {
@@ -75,6 +78,7 @@ public class ListAstSelect implements AstSelect {
     return AstSelectFactory.create(result);
   }
 
+  @Override
   public AstSelect nextSibling() {
     List<AstNode> result = Lists.newArrayList();
     for (AstNode node : list) {
@@ -86,6 +90,7 @@ public class ListAstSelect implements AstSelect {
     return AstSelectFactory.create(result);
   }
 
+  @Override
   public AstSelect previousSibling() {
     List<AstNode> result = Lists.newArrayList();
     for (AstNode node : list) {
@@ -97,6 +102,7 @@ public class ListAstSelect implements AstSelect {
     return AstSelectFactory.create(result);
   }
 
+  @Override
   public AstSelect parent() {
     List<AstNode> result = Lists.newArrayList();
     for (AstNode node : list) {
@@ -108,6 +114,7 @@ public class ListAstSelect implements AstSelect {
     return AstSelectFactory.create(result);
   }
 
+  @Override
   public AstSelect firstAncestor(AstNodeType type) {
     List<AstNode> result = Lists.newArrayList();
     for (AstNode node : list) {
@@ -122,6 +129,7 @@ public class ListAstSelect implements AstSelect {
     return AstSelectFactory.create(result);
   }
 
+  @Override
   public AstSelect firstAncestor(AstNodeType... types) {
     List<AstNode> result = Lists.newArrayList();
     for (AstNode node : list) {
@@ -136,6 +144,7 @@ public class ListAstSelect implements AstSelect {
     return AstSelectFactory.create(result);
   }
 
+  @Override
   public AstSelect descendants(AstNodeType type) {
     List<AstNode> result = Lists.newArrayList();
     for (AstNode node : list) {
@@ -144,6 +153,7 @@ public class ListAstSelect implements AstSelect {
     return AstSelectFactory.create(result);
   }
 
+  @Override
   public AstSelect descendants(AstNodeType... types) {
     List<AstNode> result = Lists.newArrayList();
     for (AstNode node : list) {
@@ -152,14 +162,17 @@ public class ListAstSelect implements AstSelect {
     return AstSelectFactory.create(result);
   }
 
+  @Override
   public boolean isEmpty() {
     return false;
   }
 
+  @Override
   public boolean isNotEmpty() {
     return true;
   }
 
+  @Override
   public AstSelect filter(AstNodeType type) {
     List<AstNode> result = Lists.newArrayList();
     for (AstNode node : list) {
@@ -170,6 +183,7 @@ public class ListAstSelect implements AstSelect {
     return AstSelectFactory.create(result);
   }
 
+  @Override
   public AstSelect filter(AstNodeType... types) {
     List<AstNode> result = Lists.newArrayList();
     for (AstNode node : list) {
@@ -180,6 +194,7 @@ public class ListAstSelect implements AstSelect {
     return AstSelectFactory.create(result);
   }
 
+  @Override
   public AstSelect filter(Predicate<AstNode> predicate) {
     List<AstNode> result = Lists.newArrayList();
     for (AstNode node : list) {
@@ -190,14 +205,17 @@ public class ListAstSelect implements AstSelect {
     return AstSelectFactory.create(result);
   }
 
+  @Override
   public int size() {
     return list.size();
   }
 
+  @Override
   public AstNode get(int index) {
     return list.get(index);
   }
 
+  @Override
   public Iterator<AstNode> iterator() {
     return list.iterator();
   }

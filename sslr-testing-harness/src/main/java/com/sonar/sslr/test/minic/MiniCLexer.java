@@ -38,14 +38,17 @@ public final class MiniCLexer {
 
     INTEGER;
 
+    @Override
     public String getName() {
       return name();
     }
 
+    @Override
     public String getValue() {
       return name();
     }
 
+    @Override
     public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
@@ -68,14 +71,17 @@ public final class MiniCLexer {
       this.value = value;
     }
 
+    @Override
     public String getName() {
       return name();
     }
 
+    @Override
     public String getValue() {
       return value;
     }
 
+    @Override
     public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }
@@ -95,14 +101,17 @@ public final class MiniCLexer {
       this.value = value;
     }
 
+    @Override
     public String getName() {
       return name();
     }
 
+    @Override
     public String getValue() {
       return value;
     }
 
+    @Override
     public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }

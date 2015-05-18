@@ -21,6 +21,7 @@ package org.sonar.sslr.internal.vm;
 
 public abstract class NativeExpression extends Instruction implements ParsingExpression {
 
+  @Override
   public final Instruction[] compile(CompilationHandler compiler) {
     return new Instruction[] {this};
   }

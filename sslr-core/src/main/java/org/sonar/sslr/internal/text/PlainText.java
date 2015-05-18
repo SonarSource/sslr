@@ -31,6 +31,7 @@ public class PlainText extends AbstractText implements TextCharSequence {
     this.chars = chars;
   }
 
+  @Override
   public Text subText(int start, int end) {
     return new SubText(this, start, end);
   }
@@ -40,10 +41,12 @@ public class PlainText extends AbstractText implements TextCharSequence {
     return 0;
   }
 
+  @Override
   public Text getText() {
     return this;
   }
 
+  @Override
   public int length() {
     return chars.length;
   }
@@ -53,18 +56,22 @@ public class PlainText extends AbstractText implements TextCharSequence {
     System.arraycopy(chars, srcPos, dest, destPos, length);
   }
 
+  @Override
   public TextCharSequence sequence() {
     return this;
   }
 
+  @Override
   public char charAt(int index) {
     return chars[index];
   }
 
+  @Override
   public TextCharSequence subSequence(int from, int to) {
     return subText(from, to).sequence();
   }
 
+  @Override
   public TextLocation getLocation(int index) {
     return null;
   }

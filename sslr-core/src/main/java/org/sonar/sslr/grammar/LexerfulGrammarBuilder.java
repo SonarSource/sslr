@@ -78,6 +78,7 @@ public class LexerfulGrammarBuilder extends GrammarBuilder {
   /**
    * {@inheritDoc}
    */
+  @Override
   public GrammarRuleBuilder rule(GrammarRuleKey ruleKey) {
     RuleDefinition rule = definitions.get(ruleKey);
     if (rule == null) {
@@ -90,6 +91,7 @@ public class LexerfulGrammarBuilder extends GrammarBuilder {
   /**
    * {@inheritDoc}
    */
+  @Override
   public void setRootRule(GrammarRuleKey ruleKey) {
     rule(ruleKey);
     rootRuleKey = ruleKey;
@@ -257,6 +259,7 @@ public class LexerfulGrammarBuilder extends GrammarBuilder {
     return exclusiveTill(new FirstOfExpression(convertToExpressions(Lists.asList(e1, rest))));
   }
 
+  @Override
   protected ParsingExpression convertToExpression(Object e) {
     Preconditions.checkNotNull(e, "Parsing expression can't be null");
     final ParsingExpression result;

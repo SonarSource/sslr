@@ -29,6 +29,7 @@ public class AlwaysSkipFromAst implements AstNodeSkippingPolicy {
   private AlwaysSkipFromAst() {
   }
 
+  @Override
   public boolean hasToBeSkippedFromAst(AstNode node) {
     return true;
   }

@@ -36,6 +36,7 @@ public class ZeroOrMoreExpression implements ParsingExpression {
    * L2: ...
    * </pre>
    */
+  @Override
   public Instruction[] compile(CompilationHandler compiler) {
     // TODO maybe can be optimized by introduction of new instruction PartialCommit
     Instruction[] sub = compiler.compile(subExpression);

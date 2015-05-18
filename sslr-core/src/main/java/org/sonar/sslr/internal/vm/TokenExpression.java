@@ -46,6 +46,7 @@ public class TokenExpression implements Matcher, ParsingExpression {
    * L2: ...
    * </pre>
    */
+  @Override
   public Instruction[] compile(CompilationHandler compiler) {
     return compile(compiler, this, subExpression);
   }

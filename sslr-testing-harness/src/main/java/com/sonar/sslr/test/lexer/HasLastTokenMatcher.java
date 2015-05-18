@@ -36,6 +36,7 @@ class HasLastTokenMatcher extends BaseMatcher<List<Token>> {
     this.tokenValue = tokenValue;
   }
 
+  @Override
   public boolean matches(Object obj) {
     if (!(obj instanceof List)) {
       return false;
@@ -48,6 +49,7 @@ class HasLastTokenMatcher extends BaseMatcher<List<Token>> {
     return lastToken.getValue().equals(tokenValue) && lastToken.getType() == tokenType;
   }
 
+  @Override
   public void describeTo(Description desc) {
     desc.appendText("Token('" + tokenValue + "'," + tokenType + ")");
   }

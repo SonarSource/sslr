@@ -35,6 +35,7 @@ public class SubText extends AbstractText {
     this.length = end - start;
   }
 
+  @Override
   public int length() {
     return length;
   }
@@ -49,6 +50,7 @@ public class SubText extends AbstractText {
     return text.getTransformationDepth();
   }
 
+  @Override
   public TextCharSequence sequence() {
     return new SubTextCharSequence();
   }
@@ -61,22 +63,27 @@ public class SubText extends AbstractText {
 
     private TextCharSequence innerCursor = text.sequence();
 
+    @Override
     public Text getText() {
       return SubText.this;
     }
 
+    @Override
     public int length() {
       return length;
     }
 
+    @Override
     public char charAt(int index) {
       return innerCursor.charAt(getOriginalIndex(index));
     }
 
+    @Override
     public TextCharSequence subSequence(int start, int end) {
       return subText(start, end).sequence();
     }
 
+    @Override
     public Text subText(int start, int end) {
       if (start == 0 && end == length) {
         return SubText.this;
@@ -84,6 +91,7 @@ public class SubText extends AbstractText {
       return innerCursor.subText(getOriginalIndex(start), getOriginalIndex(end));
     }
 
+    @Override
     public TextLocation getLocation(int index) {
       return innerCursor.getLocation(getOriginalIndex(index));
     }

@@ -46,6 +46,7 @@ public class LocatedText extends PlainText {
     this.lines = TextUtils.computeLines(chars);
   }
 
+  @Override
   public TextLocation getLocation(int index) {
     Preconditions.checkPositionIndex(index, length());
     int line = getLineNumber(index);

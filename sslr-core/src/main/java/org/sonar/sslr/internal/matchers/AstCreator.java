@@ -181,14 +181,17 @@ public final class AstCreator {
 
   @VisibleForTesting
   static final TokenType UNDEFINED_TOKEN_TYPE = new TokenType() {
+    @Override
     public String getName() {
       return "TOKEN";
     }
 
+    @Override
     public String getValue() {
       return getName();
     }
 
+    @Override
     public boolean hasToBeSkippedFromAst(AstNode node) {
       return false;
     }

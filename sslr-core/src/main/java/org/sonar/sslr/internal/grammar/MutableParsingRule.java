@@ -67,14 +67,17 @@ public class MutableParsingRule implements CompilableGrammarRule, Matcher, Rule,
     return ruleKey;
   }
 
+  @Override
   public GrammarRuleKey getRuleKey() {
     return ruleKey;
   }
 
+  @Override
   public ParsingExpression getExpression() {
     return expression;
   }
 
+  @Override
   public Rule is(Object... e) {
     if (expression != null) {
       throw new GrammarException("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.");
@@ -83,11 +86,13 @@ public class MutableParsingRule implements CompilableGrammarRule, Matcher, Rule,
     return this;
   }
 
+  @Override
   public Rule override(Object... e) {
     setExpression((ParsingExpression) GrammarOperators.sequence(e));
     return this;
   }
 
+  @Override
   public void mock() {
     setExpression(new SequenceExpression(
         new StringExpression(getName()),
@@ -96,30 +101,37 @@ public class MutableParsingRule implements CompilableGrammarRule, Matcher, Rule,
             EndOfInputExpression.INSTANCE)));
   }
 
+  @Override
   public void setExpression(ParsingExpression expression) {
     this.expression = expression;
   }
 
+  @Override
   public void skip() {
     astNodeSkippingPolicy = AlwaysSkipFromAst.INSTANCE;
   }
 
+  @Override
   public void skipIfOneChild() {
     astNodeSkippingPolicy = SkipFromAstIfOnlyOneChild.INSTANCE;
   }
 
+  @Override
   public void skipIf(AstNodeSkippingPolicy policy) {
     astNodeSkippingPolicy = policy;
   }
 
+  @Override
   public void recoveryRule() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public boolean hasToBeSkippedFromAst(AstNode node) {
     return astNodeSkippingPolicy.hasToBeSkippedFromAst(node);
   }
 
+  @Override
   public Instruction[] compile(CompilationHandler compiler) {
     return compiler.compile(new RuleRefExpression(ruleKey));
   }
@@ -129,6 +141,7 @@ public class MutableParsingRule implements CompilableGrammarRule, Matcher, Rule,
     return getName();
   }
 
+  @Override
   public boolean shouldMemoize() {
     return true;
   }

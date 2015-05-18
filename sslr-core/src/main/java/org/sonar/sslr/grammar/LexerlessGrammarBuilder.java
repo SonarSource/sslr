@@ -70,6 +70,7 @@ public class LexerlessGrammarBuilder extends GrammarBuilder {
   /**
    * {@inheritDoc}
    */
+  @Override
   public GrammarRuleBuilder rule(GrammarRuleKey ruleKey) {
     MutableParsingRule rule = definitions.get(ruleKey);
     if (rule == null) {
@@ -82,6 +83,7 @@ public class LexerlessGrammarBuilder extends GrammarBuilder {
   /**
    * {@inheritDoc}
    */
+  @Override
   public void setRootRule(GrammarRuleKey ruleKey) {
     rule(ruleKey);
     rootRuleKey = ruleKey;
@@ -150,6 +152,7 @@ public class LexerlessGrammarBuilder extends GrammarBuilder {
     return new TriviaExpression(TriviaKind.SKIPPED_TEXT, convertToExpression(e));
   }
 
+  @Override
   protected ParsingExpression convertToExpression(Object e) {
     Preconditions.checkNotNull(e, "Parsing expression can't be null");
     final ParsingExpression result;

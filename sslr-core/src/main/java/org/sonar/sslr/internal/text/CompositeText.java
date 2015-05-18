@@ -43,6 +43,7 @@ public class CompositeText extends AbstractText {
     this.transformationDepth = depth;
   }
 
+  @Override
   public int length() {
     return length;
   }
@@ -85,6 +86,7 @@ public class CompositeText extends AbstractText {
     return transformationDepth;
   }
 
+  @Override
   public TextCharSequence sequence() {
     return new CompositeTextCharSequence();
   }
@@ -96,10 +98,12 @@ public class CompositeText extends AbstractText {
     private int textIndex = 0;
     private TextCharSequence innerSequence = texts[textIndex].sequence();
 
+    @Override
     public Text getText() {
       return CompositeText.this;
     }
 
+    @Override
     public int length() {
       return length;
     }
@@ -108,20 +112,24 @@ public class CompositeText extends AbstractText {
       return index - skipped;
     }
 
+    @Override
     public char charAt(int index) {
       moveTo(index);
       return innerSequence.charAt(getInnerIndex(index));
     }
 
+    @Override
     public TextCharSequence subSequence(int start, int end) {
       return subText(start, end).sequence();
     }
 
+    @Override
     public Text subText(int start, int end) {
       // TODO can be optimized for regions, which does not span multiple texts
       return new SubText(CompositeText.this, start, end);
     }
 
+    @Override
     public TextLocation getLocation(int index) {
       moveTo(index);
       return innerSequence.getLocation(getInnerIndex(index));

@@ -47,6 +47,7 @@ public class NextExpression implements ParsingExpression {
    * L1: ...
    * </pre>
    */
+  @Override
   public Instruction[] compile(CompilationHandler compiler) {
     Instruction[] sub = compiler.compile(subExpression);
     Instruction[] result = new Instruction[sub.length + 3];

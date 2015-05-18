@@ -45,6 +45,7 @@ public class FirstOfExpression implements ParsingExpression {
    * E: ...
    * </pre>
    */
+  @Override
   public Instruction[] compile(CompilationHandler compiler) {
     int index = 0;
     Instruction[][] sub = new Instruction[subExpressions.length][];

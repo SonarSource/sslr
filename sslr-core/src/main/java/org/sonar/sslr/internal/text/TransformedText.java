@@ -32,10 +32,12 @@ public class TransformedText extends AbstractText {
     this.toText = toText;
   }
 
+  @Override
   public int length() {
     return toText.length();
   }
 
+  @Override
   public TextCharSequence sequence() {
     return toText.sequence();
   }

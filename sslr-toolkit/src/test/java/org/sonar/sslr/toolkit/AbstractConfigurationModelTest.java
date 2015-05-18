@@ -102,6 +102,7 @@ public class AbstractConfigurationModelTest {
     private Parser<? extends Grammar> parser;
     private List<Tokenizer> tokenizers;
 
+    @Override
     public List<ConfigurationProperty> getProperties() {
       return null;
     }

@@ -41,6 +41,7 @@ public class SingleAstSelect implements AstSelect {
     this.node = node;
   }
 
+  @Override
   public AstSelect children() {
     if (node.getNumberOfChildren() == 1) {
       return new SingleAstSelect(node.getFirstChild());
@@ -51,6 +52,7 @@ public class SingleAstSelect implements AstSelect {
     }
   }
 
+  @Override
   public AstSelect children(AstNodeType type) {
     if (node.getNumberOfChildren() == 1) {
       AstNode result = node.getChildren().get(0);
@@ -73,6 +75,7 @@ public class SingleAstSelect implements AstSelect {
     }
   }
 
+  @Override
   public AstSelect children(AstNodeType... types) {
     if (node.getNumberOfChildren() == 1) {
       AstNode result = node.getChildren().get(0);
@@ -94,18 +97,22 @@ public class SingleAstSelect implements AstSelect {
     }
   }
 
+  @Override
   public AstSelect nextSibling() {
     return AstSelectFactory.select(node.getNextSibling());
   }
 
+  @Override
   public AstSelect previousSibling() {
     return AstSelectFactory.select(node.getPreviousSibling());
   }
 
+  @Override
   public AstSelect parent() {
     return AstSelectFactory.select(node.getParent());
   }
 
+  @Override
   public AstSelect firstAncestor(AstNodeType type) {
     AstNode result = node.getParent();
     while (result != null && result.getType() != type) {
@@ -114,6 +121,7 @@ public class SingleAstSelect implements AstSelect {
     return AstSelectFactory.select(result);
   }
 
+  @Override
   public AstSelect firstAncestor(AstNodeType... types) {
     AstNode result = node.getParent();
     while (result != null && !result.is(types)) {
@@ -122,38 +130,47 @@ public class SingleAstSelect implements AstSelect {
     return AstSelectFactory.select(result);
   }
 
+  @Override
   public AstSelect descendants(AstNodeType type) {
     return AstSelectFactory.create(node.getDescendants(type));
   }
 
+  @Override
   public AstSelect descendants(AstNodeType... types) {
     return AstSelectFactory.create(node.getDescendants(types));
   }
 
+  @Override
   public boolean isEmpty() {
     return false;
   }
 
+  @Override
   public boolean isNotEmpty() {
     return true;
   }
 
+  @Override
   public AstSelect filter(AstNodeType type) {
     return node.getType() == type ? this : AstSelectFactory.empty();
   }
 
+  @Override
   public AstSelect filter(AstNodeType... types) {
     return node.is(types) ? this : AstSelectFactory.empty();
   }
 
+  @Override
   public AstSelect filter(Predicate<AstNode> predicate) {
     return predicate.apply(node) ? this : AstSelectFactory.empty();
   }
 
+  @Override
   public int size() {
     return 1;
   }
 
+  @Override
   public AstNode get(int index) {
     if (index == 0) {
       return node;
@@ -161,6 +178,7 @@ public class SingleAstSelect implements AstSelect {
     throw new IndexOutOfBoundsException();
   }
 
+  @Override
   public Iterator<AstNode> iterator() {
     return Iterators.singletonIterator(node);
   }

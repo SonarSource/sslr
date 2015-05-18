@@ -30,6 +30,7 @@ public class SubExpression implements ParsingExpression {
     this.ids = ids;
   }
 
+  @Override
   public Instruction[] compile(CompilationHandler compiler) {
     Instruction[] result = new Instruction[ids.length];
     for (int i = 0; i < ids.length; i++) {

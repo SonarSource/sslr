@@ -49,6 +49,7 @@ public class Validators {
 
   private static class CharsetValidator implements ValidationCallback {
 
+    @Override
     public String validate(String newValueCandidate) {
       try {
         Charset.forName(newValueCandidate);
@@ -85,6 +86,7 @@ public class Validators {
       this.upperBound = upperBound;
     }
 
+    @Override
     public String validate(String newValueCandidate) {
       try {
         int value = Integer.parseInt(newValueCandidate);
@@ -139,6 +141,7 @@ public class Validators {
 
   private static class BooleanValidator implements ValidationCallback {
 
+    @Override
     public String validate(String newValueCandidate) {
       return !"false".equals(newValueCandidate) && !"true".equals(newValueCandidate) ?
           "Must be either \"true\" or \"false\": " + newValueCandidate :

@@ -147,6 +147,7 @@ public class Machine implements CharSequence {
   }
 
   private static final MachineHandler NOP_HANDLER = new MachineHandler() {
+    @Override
     public void onBacktrack(Machine machine) {
       // nop
     }
@@ -278,10 +279,12 @@ public class Machine implements CharSequence {
     index += offset;
   }
 
+  @Override
   public int length() {
     return inputLength - index;
   }
 
+  @Override
   public char charAt(int offset) {
     return input[index + offset];
   }
@@ -291,6 +294,7 @@ public class Machine implements CharSequence {
    *
    * @throws UnsupportedOperationException always
    */
+  @Override
   public CharSequence subSequence(int start, int end) {
     throw new UnsupportedOperationException();
   }

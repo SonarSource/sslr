@@ -33,74 +33,92 @@ import java.util.Iterator;
  */
 public class EmptyAstSelect implements AstSelect {
 
+  @Override
   public AstSelect children() {
     return this;
   }
 
+  @Override
   public AstSelect children(AstNodeType type) {
     return this;
   }
 
+  @Override
   public AstSelect children(AstNodeType... types) {
     return this;
   }
 
+  @Override
   public AstSelect nextSibling() {
     return this;
   }
 
+  @Override
   public AstSelect previousSibling() {
     return this;
   }
 
+  @Override
   public AstSelect parent() {
     return this;
   }
 
+  @Override
   public AstSelect firstAncestor(AstNodeType type) {
     return this;
   }
 
+  @Override
   public AstSelect firstAncestor(AstNodeType... types) {
     return this;
   }
 
+  @Override
   public AstSelect descendants(AstNodeType type) {
     return this;
   }
 
+  @Override
   public AstSelect descendants(AstNodeType... types) {
     return this;
   }
 
+  @Override
   public boolean isEmpty() {
     return true;
   }
 
+  @Override
   public boolean isNotEmpty() {
     return false;
   }
 
+  @Override
   public AstSelect filter(AstNodeType type) {
     return this;
   }
 
+  @Override
   public AstSelect filter(AstNodeType... types) {
     return this;
   }
 
+  @Override
   public AstSelect filter(Predicate<AstNode> predicate) {
     return this;
   }
 
+  @Override
   public int size() {
     return 0;
   }
 
+  @Override
   public AstNode get(int index) {
     throw new IndexOutOfBoundsException();
   }
 
+  @Override
   public Iterator<AstNode> iterator() {
     return Iterators.emptyIterator();
   }

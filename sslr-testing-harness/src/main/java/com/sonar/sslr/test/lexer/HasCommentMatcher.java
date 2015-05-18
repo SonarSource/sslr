@@ -19,13 +19,12 @@
  */
 package com.sonar.sslr.test.lexer;
 
-import java.util.List;
-
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.Trivia;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.Trivia;
+import java.util.List;
 
 class HasCommentMatcher extends BaseMatcher<List<Token>> {
 
@@ -51,6 +50,7 @@ class HasCommentMatcher extends BaseMatcher<List<Token>> {
     this.originalValue = originalValue;
   }
 
+  @Override
   public boolean matches(Object obj) {
     if ( !(obj instanceof List)) {
       return false;
@@ -72,6 +72,7 @@ class HasCommentMatcher extends BaseMatcher<List<Token>> {
     return false;
   }
 
+  @Override
   public void describeTo(Description desc) {
     if (originalValue) {
       desc.appendText("Comment('" + commentValue + "')");

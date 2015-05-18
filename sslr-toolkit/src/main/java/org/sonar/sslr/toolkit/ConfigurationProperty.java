@@ -30,6 +30,7 @@ import com.google.common.base.Preconditions;
 public class ConfigurationProperty {
 
   private static final ValidationCallback NO_VALIDATION = new ValidationCallback() {
+    @Override
     public String validate(String newValueCandidate) {
       return "";
     }

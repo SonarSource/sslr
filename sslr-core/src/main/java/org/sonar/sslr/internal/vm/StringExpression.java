@@ -29,6 +29,7 @@ public class StringExpression extends NativeExpression implements Matcher {
     this.string = string;
   }
 
+  @Override
   public void execute(Machine machine) {
     if (machine.length() < string.length()) {
       machine.backtrack();

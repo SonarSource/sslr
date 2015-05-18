@@ -41,6 +41,7 @@ public class SequenceExpression implements ParsingExpression {
    * ...
    * </pre>
    */
+  @Override
   public Instruction[] compile(CompilationHandler compiler) {
     List<Instruction> result = Lists.newArrayList();
     for (ParsingExpression subExpression : subExpressions) {

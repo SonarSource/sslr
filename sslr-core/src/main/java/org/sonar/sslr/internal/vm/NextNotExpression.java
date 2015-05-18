@@ -45,6 +45,7 @@ public class NextNotExpression implements ParsingExpression {
    * L2: ...
    * </pre>
    */
+  @Override
   public Instruction[] compile(CompilationHandler compiler) {
     Instruction[] sub = compiler.compile(subExpression);
     Instruction[] result = new Instruction[sub.length + 2];

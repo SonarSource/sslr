@@ -48,11 +48,10 @@ public class ConfigurationPropertyTest {
     assertThat(new ConfigurationProperty("", "", "").validate("foo")).isEmpty();
 
     ConfigurationProperty property = new ConfigurationProperty("", "", "foo", new ValidationCallback() {
-
+      @Override
       public String validate(String newValueCandidate) {
         return "foo".equals(newValueCandidate) ? "" : "Only the value \"foo\" is allowed.";
       }
-
     });
     assertThat(property.validate("")).isEqualTo("Only the value \"foo\" is allowed.");
     assertThat(property.validate("foo")).isEmpty();
@@ -70,11 +69,10 @@ public class ConfigurationPropertyTest {
     thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage("The value \"foo\" did not pass validation: Not valid!");
     new ConfigurationProperty("", "", "", new ValidationCallback() {
-
+      @Override
       public String validate(String newValueCandidate) {
         return newValueCandidate.length() == 0 ? "" : "The value \"" + newValueCandidate + "\" did not pass validation: Not valid!";
       }
-
     }).setValue("foo");
   }
 

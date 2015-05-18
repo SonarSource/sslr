@@ -36,6 +36,7 @@ public class OptionalExpression implements ParsingExpression {
    * L1: ...
    * </pre>
    */
+  @Override
   public Instruction[] compile(CompilationHandler compiler) {
     // not described in paper
     Instruction[] instr = compiler.compile(subExpression);

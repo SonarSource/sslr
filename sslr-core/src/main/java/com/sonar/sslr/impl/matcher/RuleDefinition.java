@@ -60,6 +60,7 @@ public class RuleDefinition implements Rule, AstNodeSkippingPolicy, GrammarRuleK
     return name;
   }
 
+  @Override
   public RuleDefinition is(Object... e) {
     throwExceptionIfRuleAlreadyDefined("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.");
     throwExceptionIfEmptyListOfMatchers(e);
@@ -67,24 +68,29 @@ public class RuleDefinition implements Rule, AstNodeSkippingPolicy, GrammarRuleK
     return this;
   }
 
+  @Override
   public RuleDefinition override(Object... e) {
     throwExceptionIfEmptyListOfMatchers(e);
     setExpression(GrammarFunctions.convertToSingleExpression(e));
     return this;
   }
 
+  @Override
   public void mock() {
     setExpression((ParsingExpression) Standard.firstOf(getName(), getName().toUpperCase()));
   }
 
+  @Override
   public void skip() {
     astNodeSkippingPolicy = AlwaysSkipFromAst.INSTANCE;
   }
 
+  @Override
   public void skipIf(AstNodeSkippingPolicy astNodeSkipPolicy) {
     astNodeSkippingPolicy = astNodeSkipPolicy;
   }
 
+  @Override
   public void skipIfOneChild() {
     astNodeSkippingPolicy = SkipFromAstIfOnlyOneChild.INSTANCE;
   }
@@ -101,9 +107,11 @@ public class RuleDefinition implements Rule, AstNodeSkippingPolicy, GrammarRuleK
     }
   }
 
+  @Override
   public void recoveryRule() {
   }
 
+  @Override
   public boolean hasToBeSkippedFromAst(AstNode node) {
     if (AstNodeSkippingPolicy.class.isAssignableFrom(astNodeSkippingPolicy.getClass())) {
       return ((AstNodeSkippingPolicy) astNodeSkippingPolicy).hasToBeSkippedFromAst(node);
@@ -118,18 +126,22 @@ public class RuleDefinition implements Rule, AstNodeSkippingPolicy, GrammarRuleK
     return ruleKey;
   }
 
+  @Override
   public GrammarRuleKey getRuleKey() {
     return ruleKey;
   }
 
+  @Override
   public ParsingExpression getExpression() {
     return expression;
   }
 
+  @Override
   public void setExpression(ParsingExpression expression) {
     this.expression = expression;
   }
 
+  @Override
   public Instruction[] compile(CompilationHandler compiler) {
     return compiler.compile(new RuleRefExpression(getRuleKey()));
   }
@@ -139,6 +151,7 @@ public class RuleDefinition implements Rule, AstNodeSkippingPolicy, GrammarRuleK
     return getName();
   }
 
+  @Override
   public boolean shouldMemoize() {
     return memoize;
   }

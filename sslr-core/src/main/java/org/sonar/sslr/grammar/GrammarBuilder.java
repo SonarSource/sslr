@@ -279,6 +279,7 @@ abstract class GrammarBuilder {
       this.delegate = delegate;
     }
 
+    @Override
     public GrammarRuleBuilder is(Object e) {
       if (delegate.getExpression() != null) {
         throw new GrammarException("The rule '" + delegate.getRuleKey() + "' has already been defined somewhere in the grammar.");
@@ -287,27 +288,33 @@ abstract class GrammarBuilder {
       return this;
     }
 
+    @Override
     public GrammarRuleBuilder is(Object e, Object... rest) {
       return is(new SequenceExpression(b.convertToExpressions(Lists.asList(e, rest))));
     }
 
+    @Override
     public GrammarRuleBuilder override(Object e) {
       delegate.setExpression(b.convertToExpression(e));
       return this;
     }
 
+    @Override
     public GrammarRuleBuilder override(Object e, Object... rest) {
       return override(new SequenceExpression(b.convertToExpressions(Lists.asList(e, rest))));
     }
 
+    @Override
     public void skip() {
       delegate.skip();
     }
 
+    @Override
     public void skipIfOneChild() {
       delegate.skipIfOneChild();
     }
 
+    @Override
     public void recoveryRule() {
       throw new UnsupportedOperationException();
     }

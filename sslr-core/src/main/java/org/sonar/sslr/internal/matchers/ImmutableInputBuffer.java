@@ -52,10 +52,12 @@ public class ImmutableInputBuffer implements InputBuffer {
     }
   }
 
+  @Override
   public int length() {
     return buffer.length;
   }
 
+  @Override
   public char charAt(int i) {
     return buffer[i];
   }
@@ -70,12 +72,14 @@ public class ImmutableInputBuffer implements InputBuffer {
         (buffer[i] == TextUtils.CR && (((i + 1 < buffer.length) && buffer[i + 1] != TextUtils.LF) || i + 1 == buffer.length));
   }
 
+  @Override
   public String extractLine(int lineNumber) {
     int start = lines[lineNumber - 1];
     int end = lines[lineNumber];
     return new String(buffer, start, end - start);
   }
 
+  @Override
   public int getLineCount() {
     return lines.length - 1;
   }
@@ -85,6 +89,7 @@ public class ImmutableInputBuffer implements InputBuffer {
     return Math.min(i >= 0 ? i + 1 : -(i + 1), getLineCount());
   }
 
+  @Override
   public Position getPosition(int index) {
     int line = getLineNumber(index);
     int column = index - lines[line - 1] + 1;

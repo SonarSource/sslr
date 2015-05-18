@@ -46,6 +46,7 @@ public class TriviaExpression implements Matcher, ParsingExpression {
    * L2: ...
    * </pre>
    */
+  @Override
   public Instruction[] compile(CompilationHandler compiler) {
     return TokenExpression.compile(compiler, this, subExpression);
   }
