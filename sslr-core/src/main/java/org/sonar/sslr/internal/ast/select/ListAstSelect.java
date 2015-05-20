@@ -19,13 +19,12 @@
  */
 package org.sonar.sslr.internal.ast.select;
 
-import org.sonar.sslr.ast.AstSelect;
-
 import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
+import org.sonar.sslr.ast.AstSelect;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class ListAstSelect implements AstSelect {
 
   @Override
   public AstSelect children() {
-    List<AstNode> result = Lists.newArrayList();
+    List<AstNode> result = new ArrayList<>();
     for (AstNode node : list) {
       result.addAll(node.getChildren());
     }
@@ -51,7 +50,7 @@ public class ListAstSelect implements AstSelect {
 
   @Override
   public AstSelect children(AstNodeType type) {
-    List<AstNode> result = Lists.newArrayList();
+    List<AstNode> result = new ArrayList<>();
     for (AstNode node : list) {
       // Don't use "getChildren(type)", because under the hood it will create an array of types and new List to keep the result
       for (AstNode child : node.getChildren()) {
@@ -66,7 +65,7 @@ public class ListAstSelect implements AstSelect {
 
   @Override
   public AstSelect children(AstNodeType... types) {
-    List<AstNode> result = Lists.newArrayList();
+    List<AstNode> result = new ArrayList<>();
     for (AstNode node : list) {
       // Don't use "getChildren(type)", because it will create new List to keep the result
       for (AstNode child : node.getChildren()) {
@@ -80,7 +79,7 @@ public class ListAstSelect implements AstSelect {
 
   @Override
   public AstSelect nextSibling() {
-    List<AstNode> result = Lists.newArrayList();
+    List<AstNode> result = new ArrayList<>();
     for (AstNode node : list) {
       node = node.getNextSibling();
       if (node != null) {
@@ -92,7 +91,7 @@ public class ListAstSelect implements AstSelect {
 
   @Override
   public AstSelect previousSibling() {
-    List<AstNode> result = Lists.newArrayList();
+    List<AstNode> result = new ArrayList<>();
     for (AstNode node : list) {
       node = node.getPreviousSibling();
       if (node != null) {
@@ -104,7 +103,7 @@ public class ListAstSelect implements AstSelect {
 
   @Override
   public AstSelect parent() {
-    List<AstNode> result = Lists.newArrayList();
+    List<AstNode> result = new ArrayList<>();
     for (AstNode node : list) {
       node = node.getParent();
       if (node != null) {
@@ -116,7 +115,7 @@ public class ListAstSelect implements AstSelect {
 
   @Override
   public AstSelect firstAncestor(AstNodeType type) {
-    List<AstNode> result = Lists.newArrayList();
+    List<AstNode> result = new ArrayList<>();
     for (AstNode node : list) {
       node = node.getParent();
       while (node != null && node.getType() != type) {
@@ -131,7 +130,7 @@ public class ListAstSelect implements AstSelect {
 
   @Override
   public AstSelect firstAncestor(AstNodeType... types) {
-    List<AstNode> result = Lists.newArrayList();
+    List<AstNode> result = new ArrayList<>();
     for (AstNode node : list) {
       node = node.getParent();
       while (node != null && !node.is(types)) {
@@ -146,7 +145,7 @@ public class ListAstSelect implements AstSelect {
 
   @Override
   public AstSelect descendants(AstNodeType type) {
-    List<AstNode> result = Lists.newArrayList();
+    List<AstNode> result = new ArrayList<>();
     for (AstNode node : list) {
       result.addAll(node.getDescendants(type));
     }
@@ -155,7 +154,7 @@ public class ListAstSelect implements AstSelect {
 
   @Override
   public AstSelect descendants(AstNodeType... types) {
-    List<AstNode> result = Lists.newArrayList();
+    List<AstNode> result = new ArrayList<>();
     for (AstNode node : list) {
       result.addAll(node.getDescendants(types));
     }
@@ -174,7 +173,7 @@ public class ListAstSelect implements AstSelect {
 
   @Override
   public AstSelect filter(AstNodeType type) {
-    List<AstNode> result = Lists.newArrayList();
+    List<AstNode> result = new ArrayList<>();
     for (AstNode node : list) {
       if (node.getType() == type) {
         result.add(node);
@@ -185,7 +184,7 @@ public class ListAstSelect implements AstSelect {
 
   @Override
   public AstSelect filter(AstNodeType... types) {
-    List<AstNode> result = Lists.newArrayList();
+    List<AstNode> result = new ArrayList<>();
     for (AstNode node : list) {
       if (node.is(types)) {
         result.add(node);
@@ -196,7 +195,7 @@ public class ListAstSelect implements AstSelect {
 
   @Override
   public AstSelect filter(Predicate<AstNode> predicate) {
-    List<AstNode> result = Lists.newArrayList();
+    List<AstNode> result = new ArrayList<>();
     for (AstNode node : list) {
       if (predicate.apply(node)) {
         result.add(node);

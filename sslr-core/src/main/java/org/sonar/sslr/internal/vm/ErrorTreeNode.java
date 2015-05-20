@@ -19,15 +19,15 @@
  */
 package org.sonar.sslr.internal.vm;
 
-import com.google.common.collect.Lists;
 import org.sonar.sslr.internal.matchers.MatcherPathElement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ErrorTreeNode {
 
   public MatcherPathElement pathElement;
-  public List<ErrorTreeNode> children = Lists.newArrayList();
+  public List<ErrorTreeNode> children = new ArrayList<>();
 
   public static ErrorTreeNode buildTree(List<List<MatcherPathElement>> paths) {
     ErrorTreeNode root = new ErrorTreeNode();

@@ -19,12 +19,12 @@
  */
 package org.sonar.sslr.internal.matchers;
 
-import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.sonar.sslr.internal.vm.lexerful.TokenTypeExpression;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LexerfulAstCreator {
@@ -51,7 +51,7 @@ public class LexerfulAstCreator {
   }
 
   private AstNode visitNonTerminal(ParseNode node) {
-    List<AstNode> astNodes = Lists.newArrayList();
+    List<AstNode> astNodes = new ArrayList<>();
     for (ParseNode child : node.getChildren()) {
       AstNode astNode = visit(child);
       if (astNode == null) {

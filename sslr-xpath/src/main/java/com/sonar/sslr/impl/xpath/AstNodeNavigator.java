@@ -28,13 +28,10 @@ import org.jaxen.util.SingleObjectIterator;
 
 import java.util.Collections;
 import java.util.Iterator;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Objects;
 
 @SuppressWarnings("serial")
 public class AstNodeNavigator extends DefaultNavigator {
-
-  private static final Iterator EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
 
   private transient AstNode documentNode = null;
 
@@ -184,7 +181,9 @@ public class AstNodeNavigator extends DefaultNavigator {
   @Override
   public Object getDocumentNode(Object contextNode) {
     computeDocumentNode(contextNode);
-    checkNotNull(documentNode, "Unable to compute the document node from the context node \"" + contextNode.getClass().getSimpleName() + "\": " + contextNode);
+    Objects.requireNonNull(documentNode,
+        "Unable to compute the document node from the context node \""
+            + contextNode.getClass().getSimpleName() + "\": " + contextNode);
     return documentNode;
   }
 
@@ -194,7 +193,7 @@ public class AstNodeNavigator extends DefaultNavigator {
       AstNode astNode = (AstNode) contextNode;
       return astNode.getChildren().iterator();
     } else if (isAttribute(contextNode)) {
-      return EMPTY_ITERATOR;
+      return Collections.emptyIterator();
     } else {
       throw new UnsupportedOperationException("Unsupported context object type for child axis \"" + contextNode.getClass().getSimpleName() + "\": " + contextNode);
     }
@@ -219,7 +218,7 @@ public class AstNodeNavigator extends DefaultNavigator {
     if (isElement(contextNode)) {
       AstNode astNode = (AstNode) contextNode;
       AstNode parent = astNode.getParent();
-      return parent == null ? EMPTY_ITERATOR : new SingleObjectIterator(parent);
+      return parent == null ? Collections.emptyIterator() : new SingleObjectIterator(parent);
     } else if (isAttribute(contextNode)) {
       Attribute attribute = (Attribute) contextNode;
       return new SingleObjectIterator(attribute.getAstNode());
@@ -233,12 +232,12 @@ public class AstNodeNavigator extends DefaultNavigator {
     if (isElement(contextNode)) {
       AstNode astNode = (AstNode) contextNode;
       if (!astNode.hasToken()) {
-        return EMPTY_ITERATOR;
+        return Collections.emptyIterator();
       } else {
         return Iterators.forArray(new Attribute("tokenLine", astNode), new Attribute("tokenColumn", astNode), new Attribute("tokenValue", astNode));
       }
     } else if (isAttribute(contextNode)) {
-      return EMPTY_ITERATOR;
+      return Collections.emptyIterator();
     } else {
       throw new UnsupportedOperationException("Unsupported context object type for attribute axis \"" + contextNode.getClass().getSimpleName() + "\": " + contextNode);
     }

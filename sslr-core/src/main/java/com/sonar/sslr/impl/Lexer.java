@@ -20,8 +20,6 @@
 package com.sonar.sslr.impl;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
-import com.google.common.io.Closeables;
 import com.sonar.sslr.api.Preprocessor;
 import com.sonar.sslr.api.PreprocessorAction;
 import com.sonar.sslr.api.Token;
@@ -32,6 +30,8 @@ import org.sonar.sslr.channel.CodeReader;
 import org.sonar.sslr.channel.CodeReaderConfiguration;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
@@ -45,9 +45,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 
 public class Lexer {
@@ -76,7 +76,7 @@ public class Lexer {
   }
 
   public List<Token> lex(File file) {
-    checkNotNull(file, "file cannot be null");
+    Objects.requireNonNull(file, "file cannot be null");
     checkArgument(file.isFile(), "file \"%s\" must be a file", file.getAbsolutePath());
 
     try {
@@ -87,19 +87,22 @@ public class Lexer {
   }
 
   public List<Token> lex(URL url) {
-    checkNotNull(url, "url cannot be null");
+    Objects.requireNonNull(url, "url cannot be null");
 
-    InputStreamReader reader = null;
-    try {
-      this.uri = url.toURI();
+      try {
+          uri = url.toURI();
+      } catch (URISyntaxException e) {
+          throw new LexerException("failed to convert URL <" + url + "> to a URI", e);
+      }
 
-      reader = new InputStreamReader(url.openStream(), charset);
-      return lex(reader);
-    } catch (Exception e) {
-      throw new LexerException("Unable to lex url: " + getURI(), e);
-    } finally {
-      Closeables.closeQuietly(reader);
-    }
+      try (
+          final InputStream in = url.openStream();
+          final InputStreamReader reader = new InputStreamReader(in, charset);
+      ) {
+          return lex(reader);
+      } catch (IOException e) {
+          throw new LexerException("Unable to lex url: " + uri, e);
+      }
   }
 
   /**
@@ -110,7 +113,7 @@ public class Lexer {
    */
   @VisibleForTesting
   public List<Token> lex(String sourceCode) {
-    checkNotNull(sourceCode, "sourceCode cannot be null");
+    Objects.requireNonNull(sourceCode, "sourceCode cannot be null");
 
     try {
       return lex(new StringReader(sourceCode));
@@ -120,7 +123,7 @@ public class Lexer {
   }
 
   private List<Token> lex(Reader reader) {
-    tokens = Lists.newArrayList();
+    tokens = new ArrayList<>();
 
     initPreprocessors();
     CodeReader code = new CodeReader(reader, configuration);
@@ -157,7 +160,8 @@ public class Lexer {
     int i = 0;
     while (i < remainingTokens.size()) {
       PreprocessorAction action = preprocessor.process(remainingTokens.subList(i, remainingTokens.size()));
-      checkNotNull(action, "A preprocessor cannot return a null PreprocessorAction");
+      Objects.requireNonNull(action,
+          "A preprocessor cannot return a null PreprocessorAction");
 
       addTrivia(action.getTriviaToInject());
 
@@ -191,7 +195,7 @@ public class Lexer {
   }
 
   public void addTrivia(List<Trivia> trivia) {
-    checkNotNull(trivia, "trivia cannot be null");
+    Objects.requireNonNull(trivia, "trivia cannot be null");
 
     this.trivia.addAll(trivia);
   }

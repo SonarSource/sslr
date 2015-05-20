@@ -19,12 +19,12 @@
  */
 package org.sonar.sslr.text;
 
-import com.google.common.collect.Lists;
 import org.sonar.sslr.internal.text.AbstractText;
 import org.sonar.sslr.internal.text.CompositeText;
 import org.sonar.sslr.internal.text.PlainText;
 import org.sonar.sslr.internal.text.TransformedText;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,7 +38,7 @@ public class TextBuilder {
 
   private static final Text EMPTY = new PlainText(new char[0]);
 
-  private final List<AbstractText> texts = Lists.newArrayList();
+  private final List<AbstractText> texts = new ArrayList<>();
 
   public static TextBuilder create() {
     return new TextBuilder();

@@ -54,7 +54,7 @@ public class Toolkit {
 
       @Override
       public List<ConfigurationProperty> getProperties() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
       }
 
       @Override

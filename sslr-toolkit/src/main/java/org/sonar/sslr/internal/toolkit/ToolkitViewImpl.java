@@ -20,7 +20,6 @@
 package org.sonar.sslr.internal.toolkit;
 
 import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
@@ -69,11 +68,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ToolkitViewImpl extends JFrame implements ToolkitView {
 
@@ -126,7 +126,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
   private boolean astSelectionEventDisabled = false;
 
   public ToolkitViewImpl(ToolkitPresenter presenter) {
-    checkNotNull(presenter);
+    Objects.requireNonNull(presenter);
     this.presenter = presenter;
 
     initComponents();
@@ -256,7 +256,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     try {
       sourceCodeTextCursorMovedEventDisabled = true;
 
-      checkNotNull(htmlHighlightedSourceCode);
+      Objects.requireNonNull(htmlHighlightedSourceCode);
 
       StringBuilder sb = new StringBuilder();
       sb.append("<html><head><style type=\"text/css\">");
@@ -306,7 +306,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
 
   @Override
   public void displayXml(String xml) {
-    checkNotNull(xml);
+    Objects.requireNonNull(xml);
 
     xmlTextArea.setText(xml);
   }
@@ -321,7 +321,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
 
   @Override
   public void scrollSourceCodeTo(final Point point) {
-    checkNotNull(point);
+    Objects.requireNonNull(point);
 
     // http://stackoverflow.com/questions/8789371/java-jtextpane-jscrollpane-de-activate-automatic-scrolling
     SwingUtilities.invokeLater(new Runnable() {
@@ -392,7 +392,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
 
   @Override
   public void highlightSourceCode(AstNode astNode) {
-    checkNotNull(astNode);
+    Objects.requireNonNull(astNode);
 
     if (!astNode.hasToken()) {
       return;
@@ -505,7 +505,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
 
   @Override
   public List<AstNode> getSelectedAstNodes() {
-    List<AstNode> acc = Lists.newArrayList();
+    List<AstNode> acc = new ArrayList<>();
 
     TreePath[] selectedPaths = astTree.getSelectionPaths();
     if (selectedPaths != null) {

@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.grammar;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.api.Trivia.TriviaKind;
@@ -34,6 +33,7 @@ import org.sonar.sslr.internal.vm.TriviaExpression;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A builder for creating <a href="http://en.wikipedia.org/wiki/Parsing_expression_grammar">Parsing Expression Grammars</a> for lexerless parsing.
@@ -154,7 +154,7 @@ public class LexerlessGrammarBuilder extends GrammarBuilder {
 
   @Override
   protected ParsingExpression convertToExpression(Object e) {
-    Preconditions.checkNotNull(e, "Parsing expression can't be null");
+    Objects.requireNonNull(e, "Parsing expression can't be null");
     final ParsingExpression result;
     if (e instanceof ParsingExpression) {
       result = (ParsingExpression) e;

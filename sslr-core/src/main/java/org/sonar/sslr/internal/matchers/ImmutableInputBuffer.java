@@ -19,8 +19,7 @@
  */
 package org.sonar.sslr.internal.matchers;
 
-import com.google.common.collect.Lists;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class ImmutableInputBuffer implements InputBuffer {
   public ImmutableInputBuffer(char[] buffer) {
     this.buffer = buffer;
 
-    List<Integer> newlines = Lists.newArrayList();
+    List<Integer> newlines = new ArrayList<>();
     int i = 0;
     newlines.add(0);
     while (i < buffer.length) {
