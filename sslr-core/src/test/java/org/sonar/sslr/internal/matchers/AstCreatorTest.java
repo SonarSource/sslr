@@ -52,8 +52,8 @@ public class AstCreatorTest {
     AstNodeType realAstNodeType = mock(AstNodeType.class);
     when(ruleMatcher.getRealAstNodeType()).thenReturn(realAstNodeType);
 
-    ParseNode triviaNode = new ParseNode(0, 4, Collections.EMPTY_LIST, triviaMatcher);
-    ParseNode tokenNode = new ParseNode(4, 7, Collections.EMPTY_LIST, tokenMatcher);
+    ParseNode triviaNode = new ParseNode(0, 4, Collections.<ParseNode>emptyList(), triviaMatcher);
+    ParseNode tokenNode = new ParseNode(4, 7, Collections.<ParseNode>emptyList(), tokenMatcher);
     ParseNode parseTreeRoot = new ParseNode(0, 7, ImmutableList.of(triviaNode, tokenNode), ruleMatcher);
 
     InputBuffer inputBuffer = new ImmutableInputBuffer(input);
@@ -91,8 +91,8 @@ public class AstCreatorTest {
   public void should_create_tokens_without_TokenMatcher() {
     char[] input = "foobar".toCharArray();
 
-    ParseNode firstTerminal = new ParseNode(0, 3, Collections.EMPTY_LIST, null);
-    ParseNode secondTerminal = new ParseNode(3, 6, Collections.EMPTY_LIST, null);
+    ParseNode firstTerminal = new ParseNode(0, 3, Collections.<ParseNode>emptyList(), null);
+    ParseNode secondTerminal = new ParseNode(3, 6, Collections.<ParseNode>emptyList(), null);
     MutableParsingRule ruleMatcher = mockRuleMatcher("rule");
     AstNodeType realAstNodeType = mock(AstNodeType.class);
     when(ruleMatcher.getRealAstNodeType()).thenReturn(realAstNodeType);
@@ -138,7 +138,7 @@ public class AstCreatorTest {
     AstNodeType realAstNodeType = mock(AstNodeType.class);
     when(ruleMatcher2.getRealAstNodeType()).thenReturn(realAstNodeType);
 
-    ParseNode node = new ParseNode(0, 3, Collections.EMPTY_LIST, ruleMatcher1);
+    ParseNode node = new ParseNode(0, 3, Collections.<ParseNode>emptyList(), ruleMatcher1);
     ParseNode parseTreeRoot = new ParseNode(0, 3, ImmutableList.of(node), ruleMatcher2);
 
     InputBuffer inputBuffer = new ImmutableInputBuffer(input);
