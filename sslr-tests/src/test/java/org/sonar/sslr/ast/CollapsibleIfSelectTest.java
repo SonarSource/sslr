@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.ast;
 
-import com.google.common.collect.Sets;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.impl.Parser;
@@ -28,6 +27,7 @@ import com.sonar.sslr.test.minic.MiniCParser;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -43,7 +43,7 @@ public class CollapsibleIfSelectTest {
     AstNode fileNode = p.parse(new File("src/test/resources/queries/collapsible_if.mc"));
     List<AstNode> ifStatements = fileNode.getDescendants(MiniCGrammar.IF_STATEMENT);
 
-    Set<Integer> violations = Sets.newHashSet();
+    Set<Integer> violations = new HashSet<>();
     for (AstNode node : ifStatements) {
       if (visit(node)) {
         violations.add(node.getTokenLine());

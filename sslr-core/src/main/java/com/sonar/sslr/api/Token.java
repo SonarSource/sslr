@@ -20,9 +20,9 @@
 package com.sonar.sslr.api;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -229,7 +229,7 @@ public class Token {
     public Builder setTrivia(List<Trivia> trivia) {
       checkNotNull(trivia, "trivia can't be null");
 
-      this.trivia = Lists.newArrayList(trivia);
+      this.trivia = new ArrayList<>(trivia);
       return this;
     }
 
@@ -237,7 +237,7 @@ public class Token {
       checkNotNull(trivia, "trivia can't be null");
 
       if (this.trivia.isEmpty()) {
-        this.trivia = Lists.newArrayList();
+        this.trivia = new ArrayList<>();
       }
 
       this.trivia.add(trivia);

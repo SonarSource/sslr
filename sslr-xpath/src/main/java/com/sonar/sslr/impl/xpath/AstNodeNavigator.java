@@ -34,8 +34,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @SuppressWarnings("serial")
 public class AstNodeNavigator extends DefaultNavigator {
 
-  private static final Iterator EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
-
   private transient AstNode documentNode = null;
 
   public void reset() {
@@ -194,7 +192,7 @@ public class AstNodeNavigator extends DefaultNavigator {
       AstNode astNode = (AstNode) contextNode;
       return astNode.getChildren().iterator();
     } else if (isAttribute(contextNode)) {
-      return EMPTY_ITERATOR;
+      return Collections.emptyIterator();
     } else {
       throw new UnsupportedOperationException("Unsupported context object type for child axis \"" + contextNode.getClass().getSimpleName() + "\": " + contextNode);
     }
@@ -219,7 +217,7 @@ public class AstNodeNavigator extends DefaultNavigator {
     if (isElement(contextNode)) {
       AstNode astNode = (AstNode) contextNode;
       AstNode parent = astNode.getParent();
-      return parent == null ? EMPTY_ITERATOR : new SingleObjectIterator(parent);
+      return parent == null ? Collections.emptyIterator() : new SingleObjectIterator(parent);
     } else if (isAttribute(contextNode)) {
       Attribute attribute = (Attribute) contextNode;
       return new SingleObjectIterator(attribute.getAstNode());
@@ -233,12 +231,12 @@ public class AstNodeNavigator extends DefaultNavigator {
     if (isElement(contextNode)) {
       AstNode astNode = (AstNode) contextNode;
       if (!astNode.hasToken()) {
-        return EMPTY_ITERATOR;
+        return Collections.emptyIterator();
       } else {
         return Iterators.forArray(new Attribute("tokenLine", astNode), new Attribute("tokenColumn", astNode), new Attribute("tokenValue", astNode));
       }
     } else if (isAttribute(contextNode)) {
-      return EMPTY_ITERATOR;
+      return Collections.emptyIterator();
     } else {
       throw new UnsupportedOperationException("Unsupported context object type for attribute axis \"" + contextNode.getClass().getSimpleName() + "\": " + contextNode);
     }

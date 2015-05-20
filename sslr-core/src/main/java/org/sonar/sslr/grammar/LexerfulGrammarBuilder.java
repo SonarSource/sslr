@@ -21,7 +21,6 @@ package org.sonar.sslr.grammar;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
@@ -40,6 +39,7 @@ import org.sonar.sslr.internal.vm.lexerful.TokenTypesExpression;
 import org.sonar.sslr.internal.vm.lexerful.TokenValueExpression;
 import org.sonar.sslr.internal.vm.lexerful.TokensBridgeExpression;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -58,7 +58,7 @@ import java.util.Map;
  */
 public class LexerfulGrammarBuilder extends GrammarBuilder {
 
-  private final Map<GrammarRuleKey, RuleDefinition> definitions = Maps.newHashMap();
+  private final Map<GrammarRuleKey, RuleDefinition> definitions = new HashMap<>();
   private GrammarRuleKey rootRuleKey;
 
   public static LexerfulGrammarBuilder create() {

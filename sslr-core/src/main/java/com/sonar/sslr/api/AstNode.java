@@ -20,14 +20,13 @@
 package com.sonar.sslr.api;
 
 import com.google.common.annotations.Beta;
-import com.google.common.collect.Lists;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.sonar.sslr.ast.AstSelect;
 import org.sonar.sslr.internal.ast.select.AstSelectFactory;
 import org.sonar.sslr.internal.grammar.MutableParsingRule;
 
 import javax.annotation.Nullable;
-
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -69,7 +68,7 @@ public class AstNode {
   public void addChild(AstNode child) {
     if (child != null) {
       if (children.isEmpty()) {
-        children = Lists.newArrayList();
+        children = new ArrayList<>();
       }
       if (child.hasToBeSkippedFromAst()) {
         if (child.hasChildren()) {
@@ -420,7 +419,7 @@ public class AstNode {
    * @since 1.17
    */
   public List<AstNode> getChildren(AstNodeType... nodeTypes) {
-    List<AstNode> result = Lists.newArrayList();
+    List<AstNode> result = new ArrayList<>();
     for (AstNode child : children) {
       for (AstNodeType nodeType : nodeTypes) {
         if (child.type == nodeType) {
@@ -436,7 +435,7 @@ public class AstNode {
    */
   @Deprecated
   public List<AstNode> findChildren(AstNodeType... nodeTypes) {
-    List<AstNode> result = Lists.newArrayList();
+    List<AstNode> result = new ArrayList<>();
     getDescendants(result, nodeTypes);
     return result;
   }
@@ -459,7 +458,7 @@ public class AstNode {
    * @since 1.17
    */
   public List<AstNode> getDescendants(AstNodeType... nodeTypes) {
-    List<AstNode> result = Lists.newArrayList();
+    List<AstNode> result = new ArrayList<>();
     if (hasChildren()) {
       for (AstNode child : children) {
         child.getDescendants(result, nodeTypes);
@@ -624,7 +623,7 @@ public class AstNode {
    * Return all tokens contained in this tree node. Those tokens can be directly or indirectly attached to this node.
    */
   public List<Token> getTokens() {
-    List<Token> tokens = Lists.newArrayList();
+    List<Token> tokens = new ArrayList<>();
     getTokens(tokens);
     return tokens;
   }

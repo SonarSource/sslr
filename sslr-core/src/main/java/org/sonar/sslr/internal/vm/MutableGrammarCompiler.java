@@ -19,10 +19,11 @@
  */
 package org.sonar.sslr.internal.vm;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -33,12 +34,12 @@ public class MutableGrammarCompiler extends CompilationHandler {
     return new MutableGrammarCompiler().doCompile(rule);
   }
 
-  private final Queue<CompilableGrammarRule> compilationQueue = Lists.newLinkedList();
-  private final Map<GrammarRuleKey, CompilableGrammarRule> matchers = Maps.newHashMap();
-  private final Map<GrammarRuleKey, Integer> offsets = Maps.newHashMap();
+  private final Queue<CompilableGrammarRule> compilationQueue = new ArrayDeque<>();
+  private final Map<GrammarRuleKey, CompilableGrammarRule> matchers = new HashMap<>();
+  private final Map<GrammarRuleKey, Integer> offsets = new HashMap<>();
 
   private CompiledGrammar doCompile(CompilableGrammarRule start) {
-    List<Instruction> instructions = Lists.newArrayList();
+    List<Instruction> instructions = new ArrayList<>();
 
     // Compile
 

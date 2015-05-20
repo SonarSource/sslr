@@ -20,7 +20,6 @@
 package org.sonar.sslr.grammar;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.api.Trivia.TriviaKind;
 import org.sonar.sslr.internal.grammar.MutableGrammar;
@@ -33,6 +32,7 @@ import org.sonar.sslr.internal.vm.TokenExpression;
 import org.sonar.sslr.internal.vm.TriviaExpression;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -50,7 +50,7 @@ import java.util.Map;
  */
 public class LexerlessGrammarBuilder extends GrammarBuilder {
 
-  private final Map<GrammarRuleKey, MutableParsingRule> definitions = Maps.newHashMap();
+  private final Map<GrammarRuleKey, MutableParsingRule> definitions = new HashMap<>();
   private GrammarRuleKey rootRuleKey;
 
   public static LexerlessGrammarBuilder create() {

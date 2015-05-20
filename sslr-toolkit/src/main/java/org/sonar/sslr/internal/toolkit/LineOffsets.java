@@ -19,9 +19,9 @@
  */
 package org.sonar.sslr.internal.toolkit;
 
-import com.google.common.collect.Maps;
 import com.sonar.sslr.api.Token;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -30,7 +30,7 @@ public class LineOffsets {
 
   private static final String NEWLINE_REGEX = "(\r)?\n|\r";
 
-  private final Map<Integer, Integer> lineOffsets = Maps.newHashMap();
+  private final Map<Integer, Integer> lineOffsets = new HashMap<>();
   private final int endOffset;
 
   public LineOffsets(String code) {

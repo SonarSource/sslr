@@ -20,8 +20,6 @@
 package org.sonar.sslr.internal.toolkit;
 
 import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
@@ -69,7 +67,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -96,7 +96,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
   private final JPanel configurationInnerPanel = new JPanel(new GridBagLayout());
   private final JPanel configurationOuterPanel = new JPanel(new BorderLayout());
   private final JScrollPane configurationScrollPane = new JScrollPane(configurationOuterPanel);
-  private final Map<String, ConfigurationPropertyPanel> configurationPropertiesPanels = Maps.newHashMap();
+  private final Map<String, ConfigurationPropertyPanel> configurationPropertiesPanels = new HashMap<>();
 
   private final JLabel sourceCodeLabel = new JLabel(" Source Code");
   private final JEditorPane sourceCodeEditorPane = new JEditorPane();
@@ -505,7 +505,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
 
   @Override
   public List<AstNode> getSelectedAstNodes() {
-    List<AstNode> acc = Lists.newArrayList();
+    List<AstNode> acc = new ArrayList<>();
 
     TreePath[] selectedPaths = astTree.getSelectionPaths();
     if (selectedPaths != null) {
