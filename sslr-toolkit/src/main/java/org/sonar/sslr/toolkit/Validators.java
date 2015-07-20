@@ -144,7 +144,7 @@ public class Validators {
     @Override
     public String validate(String newValueCandidate) {
       return !"false".equals(newValueCandidate) && !"true".equals(newValueCandidate) ?
-          "Must be either \"true\" or \"false\": " + newValueCandidate :
+          ("Must be either \"true\" or \"false\": " + newValueCandidate) :
           "";
     }
 

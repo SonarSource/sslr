@@ -88,7 +88,7 @@ public final class AstWalker {
     leaveNode(ast, nodeVisitors);
   }
 
-  private void leaveNode(AstNode ast, AstVisitor[] nodeVisitors) {
+  private static void leaveNode(AstNode ast, AstVisitor[] nodeVisitors) {
     for (int i = nodeVisitors.length - 1; i >= 0; i--) {
       nodeVisitors[i].leaveNode(ast);
     }
@@ -109,7 +109,7 @@ public final class AstWalker {
     }
   }
 
-  private void visitNode(AstNode ast, AstVisitor[] nodeVisitors) {
+  private static void visitNode(AstNode ast, AstVisitor[] nodeVisitors) {
     for (AstVisitor nodeVisitor : nodeVisitors) {
       nodeVisitor.visitNode(ast);
     }

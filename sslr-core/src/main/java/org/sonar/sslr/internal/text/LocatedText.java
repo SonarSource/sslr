@@ -56,7 +56,7 @@ public class LocatedText extends PlainText {
 
   private int getLineNumber(int index) {
     int i = Arrays.binarySearch(lines, index);
-    return i >= 0 ? i + 2 : -i;
+    return i >= 0 ? (i + 2) : -i;
   }
 
   private int getLineStart(int line) {

@@ -36,7 +36,8 @@ import java.util.Arrays;
 @BenchmarkMode(Mode.Throughput)
 public class MemoizationOfMismatchesBenchmark {
 
-  private ParseRunner required, notRequired;
+  private ParseRunner required;
+  private ParseRunner notRequired;
   private char[] input;
 
   @Setup

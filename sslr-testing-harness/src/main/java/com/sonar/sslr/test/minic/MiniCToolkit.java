@@ -82,7 +82,7 @@ public final class MiniCToolkit {
       return MiniCColorizer.getTokenizers();
     }
 
-    private void updateConfiguration() {
+    private static void updateConfiguration() {
       /* Construct a parser configuration object from the properties */
     }
 

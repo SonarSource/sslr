@@ -58,7 +58,7 @@ public class TextBuilder {
     return append(new TransformedText(cast(from), cast(to)));
   }
 
-  private AbstractText cast(Text text) {
+  private static AbstractText cast(Text text) {
     // This cast is safe, even if not checked - AbstractText is a base implementation of interface Text
     return (AbstractText) text;
   }

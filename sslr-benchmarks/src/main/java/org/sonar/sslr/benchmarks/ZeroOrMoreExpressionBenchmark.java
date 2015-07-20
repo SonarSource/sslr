@@ -42,7 +42,8 @@ import org.sonar.sslr.internal.vm.ZeroOrMoreExpression;
 public class ZeroOrMoreExpressionBenchmark {
 
   private String input;
-  private Instruction[] zeroOrMore, optionalOneOrMore;
+  private Instruction[] zeroOrMore;
+  private Instruction[] optionalOneOrMore;
 
   @Setup
   public void setup() {
@@ -63,7 +64,7 @@ public class ZeroOrMoreExpressionBenchmark {
     return Machine.execute(input, optionalOneOrMore);
   }
 
-  private Instruction[] compile(ParsingExpression expression) {
+  private static Instruction[] compile(ParsingExpression expression) {
     return new SequenceExpression(expression, EndOfInputExpression.INSTANCE).compile(new CompilationHandler());
   }
 

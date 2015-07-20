@@ -57,9 +57,9 @@ public class AstNodeNavigator extends DefaultNavigator {
     Attribute attribute = (Attribute) attributeObject;
 
     if ("tokenLine".equals(attribute.getName())) {
-      return "" + attribute.getAstNode().getToken().getLine();
+      return Integer.toString(attribute.getAstNode().getToken().getLine());
     } else if ("tokenColumn".equals(attribute.getName())) {
-      return "" + attribute.getAstNode().getToken().getColumn();
+      return Integer.toString(attribute.getAstNode().getToken().getColumn());
     } else if ("tokenValue".equals(attribute.getName())) {
       return attribute.getAstNode().getToken().getValue();
     } else {

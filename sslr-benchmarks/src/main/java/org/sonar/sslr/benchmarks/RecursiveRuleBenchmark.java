@@ -61,7 +61,8 @@ public class RecursiveRuleBenchmark {
   }
 
   private char[] input;
-  private ParseRunner recursive, greedy;
+  private ParseRunner recursive;
+  private ParseRunner greedy;
 
   @Setup
   public void setup() {

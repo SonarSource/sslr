@@ -282,7 +282,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     }
   }
 
-  private DefaultMutableTreeNode getTreeNode(AstNode astNode) {
+  private static DefaultMutableTreeNode getTreeNode(AstNode astNode) {
     DefaultMutableTreeNode treeNode = new DefaultMutableTreeNode(astNode);
 
     if (astNode.hasChildren()) {

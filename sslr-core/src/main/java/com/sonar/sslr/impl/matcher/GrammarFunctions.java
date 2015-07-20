@@ -277,7 +277,7 @@ public final class GrammarFunctions {
       TokenType tokenType = (TokenType) e;
       expression = new TokenTypeExpression(tokenType);
     } else if (e instanceof RuleDefinition) {
-      expression = ((RuleDefinition) e);
+      expression = (RuleDefinition) e;
     } else if (e instanceof Class) {
       expression = new TokenTypeClassExpression((Class) e);
     } else if (e instanceof ParsingExpression) {

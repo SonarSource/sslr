@@ -85,7 +85,7 @@ public class ImmutableInputBuffer implements InputBuffer {
 
   private int getLineNumber(int index) {
     int i = Arrays.binarySearch(lines, index);
-    return Math.min(i >= 0 ? i + 1 : -(i + 1), getLineCount());
+    return Math.min(i >= 0 ? (i + 1) : -(i + 1), getLineCount());
   }
 
   @Override

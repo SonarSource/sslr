@@ -80,7 +80,7 @@ public final class TokenUtils {
         reader.pop();
         continue;
       } else {
-        token = mockTokenBuilder(IDENTIFIER, "" + (char) reader.pop()).setLine(linePosition).setColumn(columnPosition).build();
+        token = mockTokenBuilder(IDENTIFIER, Character.toString((char) reader.pop())).setLine(linePosition).setColumn(columnPosition).build();
       }
       tokens.add(token);
     }
