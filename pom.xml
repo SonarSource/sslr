@@ -3,12 +3,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.codehaus.sonar-plugins</groupId>
+    <groupId>org.sonarsource.parent</groupId>
     <artifactId>parent</artifactId>
-    <version>19</version>
+    <version>23</version>
   </parent>
 
-  <groupId>org.codehaus.sonar.sslr</groupId>
+  <groupId>org.sonarsource.sslr</groupId>
   <artifactId>sslr</artifactId>
   <version>1.21-SNAPSHOT</version>
   <packaging>pom</packaging>
