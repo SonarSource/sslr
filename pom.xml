@@ -58,13 +58,6 @@
     <system>Cloudbees</system>
     <url>https://sonarplugins.ci.cloudbees.com/job/sslr/</url>
   </ciManagement>
-  <distributionManagement>
-    <repository>
-      <id>codehaus-nexus-staging</id>
-      <name>Codehaus Release Repository</name>
-      <url>https://nexus.codehaus.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-  </distributionManagement>
 
   <properties>
     <license.title>SonarSource Language Recognizer</license.title>
