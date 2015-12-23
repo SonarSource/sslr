@@ -24,24 +24,26 @@ import org.sonar.sslr.internal.matchers.Matcher;
 public class StringExpression extends NativeExpression implements Matcher {
 
   private final String string;
+  private final int length;
 
   public StringExpression(String string) {
     this.string = string;
+    this.length = string.length();
   }
 
   @Override
   public void execute(Machine machine) {
-    if (machine.length() < string.length()) {
+    if (machine.length() < length) {
       machine.backtrack();
       return;
     }
-    for (int i = 0; i < string.length(); i++) {
+    for (int i = 0; i < length; i++) {
       if (machine.charAt(i) != string.charAt(i)) {
         machine.backtrack();
         return;
       }
     }
-    machine.createLeafNode(this, string.length());
+    machine.createLeafNode(this, length);
     machine.jump(1);
   }
 
