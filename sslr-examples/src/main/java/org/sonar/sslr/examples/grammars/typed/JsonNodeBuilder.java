@@ -30,6 +30,11 @@ import org.sonar.sslr.grammar.GrammarRuleKey;
 
 public class JsonNodeBuilder implements NodeBuilder {
 
+  /**
+   * This methods is called for every rule defined in JsonLexer (i.e. TRUE, NUMBER, etc.).
+   * Despite the fact that these rules are supposed to define tokens (as {@link JsonNodeBuilder#createTerminal} method does), this method is called due to whitespaces.
+   * The whitespace token is dropped, and only the first one is returned.
+   */
   @Override
   public Object createNonTerminal(GrammarRuleKey ruleKey, Rule rule, List<Object> children, int startIndex, int endIndex) {
     for (Object child : children) {
@@ -37,7 +42,8 @@ public class JsonNodeBuilder implements NodeBuilder {
         return child;
       }
     }
-    return null;
+
+    throw new IllegalStateException();
   }
 
   @Override
