@@ -23,13 +23,6 @@ import com.sonar.sslr.api.GenericTokenType;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 
-import static org.sonar.sslr.examples.grammars.typed.JsonPunctuator.COLON;
-import static org.sonar.sslr.examples.grammars.typed.JsonPunctuator.COMMA;
-import static org.sonar.sslr.examples.grammars.typed.JsonPunctuator.LBRACKET;
-import static org.sonar.sslr.examples.grammars.typed.JsonPunctuator.LCURLYBRACE;
-import static org.sonar.sslr.examples.grammars.typed.JsonPunctuator.RBRACKET;
-import static org.sonar.sslr.examples.grammars.typed.JsonPunctuator.RCURLYBRACE;
-
 public enum JsonLexer implements GrammarRuleKey {
 
   JSON,
@@ -41,6 +34,13 @@ public enum JsonLexer implements GrammarRuleKey {
   NULL,
   STRING,
   NUMBER,
+
+  LCURLYBRACE,
+  RCURLYBRACE,
+  LBRACKET,
+  RBRACKET,
+  COMMA,
+  COLON,
 
   EOF,
   WHITESPACE,

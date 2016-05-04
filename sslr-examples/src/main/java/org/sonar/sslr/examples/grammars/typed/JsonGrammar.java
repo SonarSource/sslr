@@ -52,35 +52,35 @@ public class JsonGrammar {
   public ObjectTree OBJECT() {
     return b.<ObjectTree>nonterminal(JsonLexer.OBJECT).is(
       f.object(
-        b.token(JsonPunctuator.LCURLYBRACE),
+        b.token(JsonLexer.LCURLYBRACE),
         b.optional(PAIR_LIST()),
-        b.token(JsonPunctuator.RCURLYBRACE)));
+        b.token(JsonLexer.RCURLYBRACE)));
   }
 
   public SyntaxList<PairTree> PAIR_LIST() {
     return b.<SyntaxList<PairTree>>nonterminal().is(
       b.firstOf(
-        f.pairList(PAIR(), b.token(JsonPunctuator.COMMA), PAIR_LIST()),
+        f.pairList(PAIR(), b.token(JsonLexer.COMMA), PAIR_LIST()),
         f.pairList(PAIR())));
   }
 
   public PairTree PAIR() {
     return b.<PairTree>nonterminal().is(
-      f.pair(STRING(), b.token(JsonPunctuator.COLON), VALUE()));
+      f.pair(STRING(), b.token(JsonLexer.COLON), VALUE()));
   }
 
   public ArrayTree ARRAY() {
     return b.<ArrayTree>nonterminal(JsonLexer.ARRAY).is(
       f.array(
-        b.token(JsonPunctuator.LBRACKET),
+        b.token(JsonLexer.LBRACKET),
         b.optional(VALUE_LIST()),
-        b.token(JsonPunctuator.RBRACKET)));
+        b.token(JsonLexer.RBRACKET)));
   }
 
   public SyntaxList<ValueTree> VALUE_LIST() {
     return b.<SyntaxList<ValueTree>>nonterminal().is(
       b.firstOf(
-        f.valueList(VALUE(), b.token(JsonPunctuator.COMMA), VALUE_LIST()),
+        f.valueList(VALUE(), b.token(JsonLexer.COMMA), VALUE_LIST()),
         f.valueList(VALUE())));
   }
 
