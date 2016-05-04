@@ -65,7 +65,7 @@ public enum JsonLexer implements GrammarRuleKey {
     b.rule(NUMBER).is(b.regexp("-?+(0|[1-9][0-9]*+)(\\.[0-9]++)?+([eE][+-]?+[0-9]++)?+"), WHITESPACE);
     b.rule(STRING).is(b.regexp("\"([^\"\\\\]|\\\\([\"\\\\/bfnrt]|u[0-9a-fA-F]{4}))*+\""), WHITESPACE);
 
-    b.rule(EOF).is(b.token(GenericTokenType.EOF, b.endOfInput())).skip();
+    b.rule(EOF).is(b.token(GenericTokenType.EOF, b.endOfInput()));
 
     b.setRootRule(JSON);
     return b;
