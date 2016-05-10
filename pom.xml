@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.sonarsource.parent</groupId>
     <artifactId>parent</artifactId>
-    <version>23</version>
+    <version>32</version>
   </parent>
 
   <groupId>org.sonarsource.sslr</groupId>
@@ -67,6 +67,7 @@
     <sonar.version>3.7</sonar.version>
     <sonar.jacoco.reportPath>../sslr-core/target/jacoco.exec</sonar.jacoco.reportPath>
     <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+    <gitRepositoryName>sslr</gitRepositoryName>
   </properties>
 
   <modules>
