@@ -17,4 +17,9 @@ jdk:
 # Skip "install" stage:
 install: true
 
-script: mvn -V -B -e verify
+script: travis.sh
+
+notifications:
+  email: false
+  webhooks:
+    - secure: "NI4Fx52MsQcUTWSfhvHctuHi338Kq1I+02QL1Arhr1RnqmDtrgnWtnfN5NI13NmMgtbKvlHONmitV5qQJl33lAKtpUQKf1kCxwJHlxdibeShNfgESdscv6zDKAv/bS8l/uLXHYkSQvFZZ/RyVY90RUaeLqt8O19h4PaYr+cYpmM="
