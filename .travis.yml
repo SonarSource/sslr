@@ -17,7 +17,7 @@ jdk:
 # Skip "install" stage:
 install: true
 
-script: travis.sh
+script: ./travis.sh
 
 notifications:
   email: false
