@@ -66,7 +66,7 @@
 
     <sonar.version>3.7</sonar.version>
     <sonar.jacoco.reportPath>../sslr-core/target/jacoco.exec</sonar.jacoco.reportPath>
-    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+    <sonar.exclusions>target/generated-sources/**</sonar.exclusions>
     <gitRepositoryName>sslr</gitRepositoryName>
   </properties>
 
