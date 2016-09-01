@@ -66,11 +66,11 @@ public class CodeBuffer implements CharSequence {
       cursor = new Cursor();
       tabWidth = configuration.getTabWidth();
 
-      Reader filteredReader = initialCodeReader;
+      Reader filteredReader = reader;
 
       /* Setup the filters on the reader */
       for (CodeReaderFilter<?> codeReaderFilter : configuration.getCodeReaderFilters()) {
-        filteredReader = new Filter(reader, codeReaderFilter, configuration);
+        filteredReader = new Filter(filteredReader, codeReaderFilter, configuration);
       }
 
       /* Make sure to close the filtered reader when done (cascading through the lot) */
