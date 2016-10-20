@@ -20,7 +20,6 @@
 package com.sonar.sslr.impl;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.io.Closeables;
 import com.sonar.sslr.api.Preprocessor;
 import com.sonar.sslr.api.PreprocessorAction;
 import com.sonar.sslr.api.Token;
@@ -88,16 +87,12 @@ public class Lexer {
   public List<Token> lex(URL url) {
     checkNotNull(url, "url cannot be null");
 
-    InputStreamReader reader = null;
-    try {
+    try (InputStreamReader reader = new InputStreamReader(url.openStream(), charset)) {
       this.uri = url.toURI();
-
-      reader = new InputStreamReader(url.openStream(), charset);
       return lex(reader);
+
     } catch (Exception e) {
       throw new LexerException("Unable to lex url: " + getURI(), e);
-    } finally {
-      Closeables.closeQuietly(reader);
     }
   }
 
