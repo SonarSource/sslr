@@ -33,8 +33,8 @@ import java.util.Map;
 
 public final class AstWalker {
 
-  private final Map<AstNodeType, AstVisitor[]> visitorsByNodeType = new IdentityHashMap<AstNodeType, AstVisitor[]>();
-  private final List<AstVisitor> visitors = new ArrayList<AstVisitor>();
+  private final Map<AstNodeType, AstVisitor[]> visitorsByNodeType = new IdentityHashMap<>();
+  private final List<AstVisitor> visitors = new ArrayList<>();
   private AstAndTokenVisitor[] astAndTokenVisitors = new AstAndTokenVisitor[0];
   private Token lastVisitedToken = null;
 
@@ -56,7 +56,7 @@ public final class AstWalker {
       putAstVisitors(type, visitorsByType);
     }
     if (visitor instanceof AstAndTokenVisitor) {
-      List<AstAndTokenVisitor> tokenVisitorsList = new ArrayList<AstAndTokenVisitor>(Arrays.asList(astAndTokenVisitors));
+      List<AstAndTokenVisitor> tokenVisitorsList = new ArrayList<>(Arrays.asList(astAndTokenVisitors));
       tokenVisitorsList.add((AstAndTokenVisitor) visitor);
       astAndTokenVisitors = tokenVisitorsList.toArray(new AstAndTokenVisitor[tokenVisitorsList.size()]);
     }
@@ -129,6 +129,6 @@ public final class AstWalker {
 
   private List<AstVisitor> getAstVisitors(AstNodeType type) {
     AstVisitor[] visitorsByType = visitorsByNodeType.get(type);
-    return visitorsByType == null ? new ArrayList<AstVisitor>() : new ArrayList<AstVisitor>(Arrays.asList(visitorsByType));
+    return visitorsByType == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(visitorsByType));
   }
 }

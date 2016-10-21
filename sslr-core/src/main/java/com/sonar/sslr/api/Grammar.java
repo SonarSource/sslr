@@ -52,7 +52,7 @@ public abstract class Grammar {
   public static List<Field> getRuleFields(Class grammarClass) {
     Field[] fields = grammarClass.getDeclaredFields();
 
-    List<Field> ruleFields = new ArrayList<Field>();
+    List<Field> ruleFields = new ArrayList<>();
     for (Field field : fields) {
       if (Rule.class.isAssignableFrom(field.getType())) {
         ruleFields.add(field);

@@ -77,7 +77,7 @@ public class AstWalkerTest {
 
   @Test
   public void testVisitFileAndLeaveFileCalls() {
-    when(astVisitor.getAstNodeTypesToVisit()).thenReturn(new ArrayList<AstNodeType>());
+    when(astVisitor.getAstNodeTypesToVisit()).thenReturn(new ArrayList<>());
     walker.addVisitor(astVisitor);
     walker.walkAndVisit(ast1);
     verify(astVisitor).visitFile(ast1);
@@ -87,7 +87,7 @@ public class AstWalkerTest {
 
   @Test
   public void testVisitToken() {
-    when(astAndTokenVisitor.getAstNodeTypesToVisit()).thenReturn(new ArrayList<AstNodeType>());
+    when(astAndTokenVisitor.getAstNodeTypesToVisit()).thenReturn(new ArrayList<>());
     walker.addVisitor(astAndTokenVisitor);
     walker.walkAndVisit(astNodeWithToken);
     verify(astAndTokenVisitor).visitFile(astNodeWithToken);

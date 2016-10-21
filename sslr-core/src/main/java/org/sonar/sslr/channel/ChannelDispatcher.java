@@ -70,7 +70,7 @@ public class ChannelDispatcher<O> extends Channel<O> {
 
   public static final class Builder {
 
-    private final List<Channel> channels = new ArrayList<Channel>();
+    private final List<Channel> channels = new ArrayList<>();
     private boolean failIfNoChannelToConsumeOneCharacter = false;
 
     private Builder() {
@@ -97,7 +97,7 @@ public class ChannelDispatcher<O> extends Channel<O> {
     }
 
     public <O> ChannelDispatcher<O> build() {
-      return new ChannelDispatcher<O>(this);
+      return new ChannelDispatcher<>(this);
     }
 
   }

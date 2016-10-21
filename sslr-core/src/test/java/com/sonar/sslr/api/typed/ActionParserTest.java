@@ -161,7 +161,7 @@ public class ActionParserTest {
       b.optional(b.skippedTrivia(b.regexp("\\s+"))),
       b.regexp("[0-9]+"));
     b.rule(MyGrammarKeys.EOF).is(b.token(GenericTokenType.EOF, b.endOfInput())).skip();
-    return new ActionParser<AstNode>(Charsets.UTF_8, b, MyGrammar.class, new MyTreeFactory(), new AstNodeBuilder(), ruleKey);
+    return new ActionParser<>(Charsets.UTF_8, b, MyGrammar.class, new MyTreeFactory(), new AstNodeBuilder(), ruleKey);
   }
 
   private void assertNotParse(GrammarRuleKey ruleKey, String toParse) {

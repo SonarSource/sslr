@@ -100,7 +100,7 @@ public final class AstNodeXPathQuery<T> {
    * @return The compiled XPath query
    */
   public static <E> AstNodeXPathQuery<E> create(String xpath) {
-    return new AstNodeXPathQuery<E>(xpath);
+    return new AstNodeXPathQuery<>(xpath);
   }
 
 }

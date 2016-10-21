@@ -19,9 +19,7 @@
  */
 package com.sonar.sslr.test.lexer;
 
-import static com.sonar.sslr.api.GenericTokenType.*;
-import static com.sonar.sslr.test.lexer.MockHelper.*;
-
+import com.sonar.sslr.api.Token;
 import org.sonar.sslr.channel.CodeReader;
 
 import java.util.ArrayList;
@@ -29,7 +27,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sonar.sslr.api.Token;
+import static com.sonar.sslr.api.GenericTokenType.EOF;
+import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
+import static com.sonar.sslr.test.lexer.MockHelper.mockTokenBuilder;
 
 public final class TokenUtils {
 
@@ -61,7 +61,7 @@ public final class TokenUtils {
   }
 
   public static List<Token> lex(String sourceCode) {
-    List<Token> tokens = new ArrayList<Token>();
+    List<Token> tokens = new ArrayList<>();
     CodeReader reader = new CodeReader(sourceCode);
     Matcher matcher = Pattern.compile("[a-zA-Z_0-9\\+\\-\\*/]+").matcher("");
 

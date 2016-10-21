@@ -54,7 +54,7 @@ public class GrammarBuilderInterceptor<T> implements MethodInterceptor, GrammarB
 
   private Method buildingMethod = null;
   private GrammarRuleKey ruleKey = null;
-  private final Deque<ParsingExpression> expressionStack = new ArrayDeque<ParsingExpression>();
+  private final Deque<ParsingExpression> expressionStack = new ArrayDeque<>();
 
   public GrammarBuilderInterceptor(LexerlessGrammarBuilder b) {
     this.b = b;

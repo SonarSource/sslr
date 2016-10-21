@@ -100,11 +100,11 @@ public class Parser<G extends Grammar> {
   }
 
   public static <G extends Grammar> Builder<G> builder(G grammar) {
-    return new Builder<G>(grammar);
+    return new Builder<>(grammar);
   }
 
   public static <G extends Grammar> Builder<G> builder(Parser<G> parser) {
-    return new Builder<G>(parser);
+    return new Builder<>(parser);
   }
 
   public static final class Builder<G extends Grammar> {
@@ -127,7 +127,7 @@ public class Parser<G extends Grammar> {
       if (baseParser instanceof ParserAdapter) {
         return baseParser;
       }
-      return new Parser<G>(this);
+      return new Parser<>(this);
     }
 
     public Builder<G> withLexer(Lexer lexer) {

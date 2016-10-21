@@ -42,7 +42,7 @@ public class PreprocessorAction {
    * Equivalent to: <tt>new PreprocessorAction(0, new ArrayList&lt;Trivia&gt;(), new ArrayList&lt;Token&gt;());</tt>
    * </p>
    */
-  public static final PreprocessorAction NO_OPERATION = new PreprocessorAction(0, new ArrayList<Trivia>(), new ArrayList<Token>());
+  public static final PreprocessorAction NO_OPERATION = new PreprocessorAction(0, new ArrayList<>(), new ArrayList<>());
 
   private final int numberOfConsumedTokens;
   private final List<Trivia> triviaToInject;

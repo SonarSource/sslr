@@ -32,7 +32,7 @@ public class CodeReaderConfiguration {
 
   private int tabWidth = DEFAULT_TAB_WIDTH;
 
-  private List<CodeReaderFilter<?>> codeReaderFilters = new ArrayList<CodeReaderFilter<?>>();
+  private List<CodeReaderFilter<?>> codeReaderFilters = new ArrayList<>();
 
   /**
    * @return the tabWidth
@@ -62,7 +62,7 @@ public class CodeReaderConfiguration {
    *          the codeReaderFilters to set
    */
   public void setCodeReaderFilters(CodeReaderFilter<?>... codeReaderFilters) {
-    this.codeReaderFilters = new ArrayList<CodeReaderFilter<?>>(Arrays.asList(codeReaderFilters));
+    this.codeReaderFilters = new ArrayList<>(Arrays.asList(codeReaderFilters));
   }
 
   /**

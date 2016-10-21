@@ -37,7 +37,7 @@ public abstract class Optional<T> {
   }
 
   public static <T> Optional<T> of(T reference) {
-    return new Present<T>(Preconditions.checkNotNull(reference));
+    return new Present<>(Preconditions.checkNotNull(reference));
   }
 
   public abstract boolean isPresent();

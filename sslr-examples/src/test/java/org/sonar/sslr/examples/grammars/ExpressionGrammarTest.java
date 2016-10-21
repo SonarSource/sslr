@@ -49,7 +49,7 @@ public class ExpressionGrammarTest {
    */
   @Test
   public void ast() {
-    ParserAdapter<LexerlessGrammar> parser = new ParserAdapter<LexerlessGrammar>(Charsets.UTF_8, b.build());
+    ParserAdapter<LexerlessGrammar> parser = new ParserAdapter<>(Charsets.UTF_8, b.build());
     AstNode rootNode = parser.parse("2 + var");
     assertThat(rootNode.getType()).isSameAs(ExpressionGrammar.EXPRESSION);
 

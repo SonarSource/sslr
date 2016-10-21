@@ -56,8 +56,8 @@ public class Lexer {
   private final Preprocessor[] preprocessors;
 
   private URI uri;
-  private final List<Trivia> trivia = new LinkedList<Trivia>();
-  private List<Token> tokens = new ArrayList<Token>();
+  private final List<Trivia> trivia = new LinkedList<>();
+  private List<Token> tokens = new ArrayList<>();
 
   private Lexer(Builder builder) {
     this.charset = builder.charset;
@@ -145,7 +145,7 @@ public class Lexer {
   }
 
   private void preprocess(Preprocessor preprocessor) {
-    List<Token> remainingTokens = Collections.unmodifiableList(new ArrayList<Token>(tokens));
+    List<Token> remainingTokens = Collections.unmodifiableList(new ArrayList<>(tokens));
     tokens.clear();
 
     int i = 0;
@@ -225,9 +225,9 @@ public class Lexer {
   public static final class Builder {
 
     private Charset charset = Charset.defaultCharset();
-    private final List<Preprocessor> preprocessors = new ArrayList<Preprocessor>();
+    private final List<Preprocessor> preprocessors = new ArrayList<>();
     private final CodeReaderConfiguration configuration = new CodeReaderConfiguration();
-    private final List<Channel<Lexer>> channels = new ArrayList<Channel<Lexer>>();
+    private final List<Channel<Lexer>> channels = new ArrayList<>();
     private boolean failIfNoChannelToConsumeOneCharacter = false;
 
     private Builder() {
