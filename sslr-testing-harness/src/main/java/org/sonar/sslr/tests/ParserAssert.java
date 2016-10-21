@@ -62,7 +62,6 @@ public class ParserAssert extends GenericAssert<ParserAssert, Parser> {
    */
   public ParserAssert matches(String input) {
     isNotNull();
-    hasRootRule();
     Parser parser = createParserWithEofMatcher();
     String expected = "Rule '" + getRuleName() + "' should match:\n" + input;
     try {
@@ -80,7 +79,6 @@ public class ParserAssert extends GenericAssert<ParserAssert, Parser> {
    */
   public ParserAssert notMatches(String input) {
     isNotNull();
-    hasRootRule();
     Parser parser = createParserWithEofMatcher();
     try {
       parser.parse(input);
@@ -89,12 +87,6 @@ public class ParserAssert extends GenericAssert<ParserAssert, Parser> {
       return this;
     }
     throw new AssertionError("Rule '" + getRuleName() + "' should not match:\n" + input);
-  }
-
-  private void hasRootRule() {
-    Assertions.assertThat(actual.getRootRule())
-        .overridingErrorMessage("Root rule of the parser should not be null")
-        .isNotNull();
   }
 
   private String getRuleName() {

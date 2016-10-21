@@ -63,6 +63,7 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
   public ParserAdapter(Charset charset, G grammar, @Nullable PreprocessorsChain preprocessorsChain) {
     super(Preconditions.checkNotNull(grammar, "grammar"));
     this.charset = Preconditions.checkNotNull(charset, "charset");
+    // TODO: getRootRule can be null
     this.parseRunner = new ParseRunner(grammar.getRootRule());
     this.preprocessorsChain = preprocessorsChain;
   }

@@ -105,8 +105,8 @@ public class ParserAssertTest {
 
   @Test
   public void should_not_accept_null_root_rule() {
-    thrown.expect(AssertionError.class);
-    thrown.expectMessage("Root rule of the parser should not be null");
+    thrown.expect(IllegalStateException.class);
+    thrown.expectMessage("root rule has not been set");
     parser.setRootRule(null);
     new ParserAssert(parser).matches("");
   }

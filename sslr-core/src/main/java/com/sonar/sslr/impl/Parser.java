@@ -29,12 +29,12 @@ import com.sonar.sslr.impl.events.ExtendedStackTrace;
 import com.sonar.sslr.impl.events.ParsingEventListener;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.sonar.sslr.internal.matchers.LexerfulAstCreator;
-import org.sonar.sslr.internal.vm.CompilableGrammarRule;
 import org.sonar.sslr.internal.vm.CompiledGrammar;
 import org.sonar.sslr.internal.vm.Machine;
 import org.sonar.sslr.internal.vm.MutableGrammarCompiler;
 import org.sonar.sslr.parser.ParserAdapter;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.List;
 
@@ -45,6 +45,7 @@ import java.util.List;
  */
 public class Parser<G extends Grammar> {
 
+  @Nullable
   private RuleDefinition rootRule;
   private final Lexer lexer;
   private final G grammar;
@@ -83,7 +84,7 @@ public class Parser<G extends Grammar> {
 
   public AstNode parse(List<Token> tokens) {
     // TODO can be compiled only once
-    CompiledGrammar g = MutableGrammarCompiler.compile((CompilableGrammarRule) rootRule);
+    CompiledGrammar g = MutableGrammarCompiler.compile(getRootRule());
     return LexerfulAstCreator.create(Machine.parse(tokens, g), tokens);
   }
 
@@ -91,7 +92,13 @@ public class Parser<G extends Grammar> {
     return grammar;
   }
 
+  /**
+   * @throws IllegalStateException if root rule has not been set
+   */
   public RuleDefinition getRootRule() {
+    if (rootRule == null) {
+      throw new IllegalStateException("root rule has not been set");
+    }
     return rootRule;
   }
 
