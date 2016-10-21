@@ -118,7 +118,7 @@ public class CodeReader extends CodeBuffer {
       while (!matcher.match(nextChar) && nextChar != -1) {
         appendable.append((char) nextChar);
         ++index;
-        nextChar = charAt(index);
+        nextChar = intAt(index);
       }
     } catch (IOException e) {
       throw new ChannelException(e.getMessage(), e);

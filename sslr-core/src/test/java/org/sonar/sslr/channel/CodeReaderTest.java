@@ -73,6 +73,14 @@ public class CodeReaderTest {
   }
 
   @Test
+  public void peekTo_should_stop_at_end_of_input() {
+    CodeReader reader = new CodeReader("foo");
+    StringBuilder result = new StringBuilder();
+    reader.peekTo(i -> false, result);
+    assertEquals("foo", result.toString());
+  }
+
+  @Test
   public void testPopToWithRegex() {
     CodeReader reader = new CodeReader(new StringReader("123ABC"));
     StringBuilder token = new StringBuilder();
