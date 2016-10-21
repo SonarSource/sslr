@@ -130,7 +130,7 @@ public class LexerfulGrammarBuilderTest {
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
     b.setRootRule(ruleKey);
     thrown.expect(GrammarException.class);
-    thrown.expectMessage("The rule '" + ruleKey + "' hasn't beed defined.");
+    thrown.expectMessage("The rule '" + ruleKey + "' hasn't been defined.");
     b.build();
   }
 
@@ -140,7 +140,7 @@ public class LexerfulGrammarBuilderTest {
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
     b.rule(ruleKey);
     thrown.expect(GrammarException.class);
-    thrown.expectMessage("The rule '" + ruleKey + "' hasn't beed defined.");
+    thrown.expectMessage("The rule '" + ruleKey + "' hasn't been defined.");
     b.build();
   }
 
@@ -151,7 +151,7 @@ public class LexerfulGrammarBuilderTest {
     GrammarRuleKey ruleKey2 = mock(GrammarRuleKey.class);
     b.rule(ruleKey1).is(ruleKey2);
     thrown.expect(GrammarException.class);
-    thrown.expectMessage("The rule '" + ruleKey2 + "' hasn't beed defined.");
+    thrown.expectMessage("The rule '" + ruleKey2 + "' hasn't been defined.");
     b.build();
   }
 

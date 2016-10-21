@@ -100,7 +100,7 @@ public class LexerfulGrammarBuilder extends GrammarBuilder {
   public Grammar build() {
     for (RuleDefinition rule : definitions.values()) {
       if (rule.getExpression() == null) {
-        throw new GrammarException("The rule '" + rule.getRuleKey() + "' hasn't beed defined.");
+        throw new GrammarException("The rule '" + rule.getRuleKey() + "' hasn't been defined.");
       }
     }
     return new MutableGrammar(definitions, rootRuleKey);
