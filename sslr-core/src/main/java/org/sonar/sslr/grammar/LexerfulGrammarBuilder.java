@@ -65,14 +65,7 @@ public class LexerfulGrammarBuilder extends GrammarBuilder {
     return new LexerfulGrammarBuilder();
   }
 
-  public static LexerfulGrammarBuilder createBasedOn(LexerfulGrammarBuilder... base) {
-    return new LexerfulGrammarBuilder(base);
-  }
-
-  private LexerfulGrammarBuilder(LexerfulGrammarBuilder... base) {
-    for (LexerfulGrammarBuilder b : base) {
-      definitions.putAll(b.definitions);
-    }
+  private LexerfulGrammarBuilder() {
   }
 
   /**
