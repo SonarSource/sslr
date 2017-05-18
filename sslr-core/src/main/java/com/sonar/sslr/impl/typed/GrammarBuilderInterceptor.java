@@ -27,6 +27,8 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.typed.GrammarBuilder;
 import com.sonar.sslr.api.typed.NonterminalBuilder;
 import com.sonar.sslr.api.typed.Optional;
+import java.util.HashMap;
+import java.util.Map;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 import org.sonar.sslr.grammar.GrammarRuleKey;
@@ -47,7 +49,7 @@ public class GrammarBuilderInterceptor<T> implements MethodInterceptor, GrammarB
 
   private final LexerlessGrammarBuilder b;
   private final BiMap<Method, GrammarRuleKey> mapping = HashBiMap.create();
-  private final BiMap<Method, GrammarRuleKey> actions = HashBiMap.create();
+  private final Map<GrammarRuleKey, Method> actions = new HashMap<>();
   private final Set<GrammarRuleKey> optionals = Sets.newHashSet();
   private final Set<GrammarRuleKey> oneOrMores = Sets.newHashSet();
   private final Set<GrammarRuleKey> zeroOrMores = Sets.newHashSet();
@@ -154,7 +156,10 @@ public class GrammarBuilderInterceptor<T> implements MethodInterceptor, GrammarB
     push(new DelayedRuleInvocationExpression(b, grammarRuleKey));
   }
 
-  public void replaceByRule(GrammarRuleKey grammarRuleKey, int stackElements) {
+  public void addAction(Method method, int stackElements) {
+    method.setAccessible(true);
+    GrammarRuleKey grammarRuleKey = new DummyGrammarRuleKey(method);
+    actions.put(grammarRuleKey, method);
     ParsingExpression expression = stackElements == 1 ? pop() : new SequenceExpression(pop(stackElements));
     b.rule(grammarRuleKey).is(expression);
     invokeRule(grammarRuleKey);
@@ -176,19 +181,9 @@ public class GrammarBuilderInterceptor<T> implements MethodInterceptor, GrammarB
     expressionStack.push(expression);
   }
 
-  public GrammarRuleKey ruleKeyForAction(Method method) {
-    GrammarRuleKey grammarRuleKey = actions.get(method);
-    if (grammarRuleKey == null) {
-      method.setAccessible(true);
-      grammarRuleKey = new DummyGrammarRuleKey(method);
-      actions.put(method, grammarRuleKey);
-    }
-    return grammarRuleKey;
-  }
-
   @Nullable
   public Method actionForRuleKey(Object ruleKey) {
-    return actions.inverse().get(ruleKey);
+    return actions.get(ruleKey);
   }
 
   @Nullable
