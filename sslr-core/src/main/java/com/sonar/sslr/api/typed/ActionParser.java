@@ -134,8 +134,7 @@ public class ActionParser<N> {
         return proxy.invokeSuper(obj, args);
       }
 
-      GrammarRuleKey ruleKey = grammarBuilderInterceptor.ruleKeyForAction(method);
-      grammarBuilderInterceptor.replaceByRule(ruleKey, args.length);
+      grammarBuilderInterceptor.addAction(method, args.length);
 
       return null;
     }

@@ -140,6 +140,12 @@ public class ActionParserTest {
     }
   }
 
+  @Test
+  public void more_than_one_call_to_the_same_action_method() throws Exception {
+    assertThat(parse(MyGrammarKeys.NUMERIC, "42", Numeric.class).toString()).isEqualTo("42");
+    assertThat(parse(MyGrammarKeys.NUMERIC2, "42", Numeric.class).toString()).isEqualTo("42");
+  }
+
   @SuppressWarnings("unchecked")
   private <T extends AstNode> T parse(GrammarRuleKey ruleKey, String toParse, Class<T> expectedClass) {
     AstNode astNode = parse(ruleKey, toParse);
@@ -174,7 +180,7 @@ public class ActionParserTest {
   }
 
   private enum MyGrammarKeys implements GrammarRuleKey,AstNodeType {
-    NUMERIC, NUMERIC_TOKEN,
+    NUMERIC, NUMERIC2, NUMERIC_TOKEN,
     PLUS, MINUS, OPERATOR, UNARY_EXP,
     NUMERIC_LIST, POTENTIALLY_EMPTY_NUMERIC_LIST,
     EOF, NUMERIC_WITH_EOF
@@ -191,6 +197,12 @@ public class ActionParserTest {
 
     public Numeric NUMERIC() {
       return b.<Numeric>nonterminal(MyGrammarKeys.NUMERIC)
+        .is(f.numeric(b.invokeRule(MyGrammarKeys.NUMERIC_TOKEN)));
+    }
+
+    // Includes a 2nd call to MyTreeFactory.numeric(...)
+    public Numeric NUMERIC2() {
+      return b.<Numeric>nonterminal(MyGrammarKeys.NUMERIC2)
         .is(f.numeric(b.invokeRule(MyGrammarKeys.NUMERIC_TOKEN)));
     }
 
