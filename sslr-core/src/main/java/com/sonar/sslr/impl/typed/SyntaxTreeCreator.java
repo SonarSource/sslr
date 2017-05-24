@@ -20,7 +20,6 @@
 package com.sonar.sslr.impl.typed;
 
 import com.google.common.base.Preconditions;
-import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
@@ -60,11 +59,7 @@ public class SyntaxTreeCreator<T> {
   public T create(ParseNode node, Input input) {
     this.input = input;
     this.trivias.clear();
-    T result = (T) visit(node);
-    if (result instanceof AstNode) {
-      ((AstNode) result).hasToBeSkippedFromAst();
-    }
-    return result;
+    return (T) visit(node);
   }
 
   private Object visit(ParseNode node) {
@@ -94,61 +89,25 @@ public class SyntaxTreeCreator<T> {
       if (node.getChildren().isEmpty()) {
         result = Optional.absent();
       } else {
-        Object child = visit(node.getChildren().get(0));
-        if (child instanceof AstNode) {
-          ((AstNode) child).hasToBeSkippedFromAst();
-        }
-        result = Optional.of(child);
+        result = Optional.of(visit(node.getChildren().get(0)));
       }
-
-    } else if (mapping.isOneOrMoreRule(ruleKey)) {
-
-      result = convertChildren(node);
-
-    } else if (mapping.isZeroOrMoreRule(ruleKey)) {
-
-      List<Object> convertedChildren = convertChildren(node);
-      result = convertedChildren.isEmpty() ? Optional.absent() : Optional.of(convertedChildren);
-
-    } else if (method == null) {
-
-      result = nodeBuilder.createNonTerminal(rule.getRuleKey(), rule, convertChildren(node), node.getStartIndex(), node.getEndIndex());
 
     } else {
-
-      List<Object> convertedChildren = convertChildren(node);
-      result = ReflectionUtils.invokeMethod(method, treeFactory, convertedChildren.toArray(new Object[convertedChildren.size()]));
-
-    }
-    return result;
-  }
-
-  private List<Object> convertChildren(ParseNode node) {
-    List<Object> convertedChildren = new ArrayList<>();
-    for (ParseNode child : node.getChildren()) {
-      Object result = visit(child);
-
-      if (result != null) {
-        // FIXME to remove aafter full migration: Allow to skip optional nodes that are supposed to bw skipped from the AST
-        if (result instanceof Optional && ((Optional) result).isPresent() && hasToBeSkippedFromAst(((Optional) result).get())) {
-          for (AstNode resultChild : ((AstNode) ((Optional) result).get()).getChildren()) {
-            convertedChildren.add(resultChild);
-          }
-
-        } else if (hasToBeSkippedFromAst(result)) {
-          for (AstNode resultChild : ((AstNode) result).getChildren()) {
-            convertedChildren.add(resultChild);
-          }
-        } else {
-          convertedChildren.add(result);
-        }
+      List<Object> convertedChildren = new ArrayList<>();
+      for (ParseNode child : node.getChildren()) {
+        convertedChildren.add(visit(child));
+      }
+      if (mapping.isOneOrMoreRule(ruleKey)) {
+        result = convertedChildren;
+      } else if (mapping.isZeroOrMoreRule(ruleKey)) {
+        result = convertedChildren.isEmpty() ? Optional.absent() : Optional.of(convertedChildren);
+      } else if (method == null) {
+        result = nodeBuilder.createNonTerminal(ruleKey, rule, convertedChildren, node.getStartIndex(), node.getEndIndex());
+      } else {
+        result = ReflectionUtils.invokeMethod(method, treeFactory, convertedChildren.toArray(new Object[0]));
       }
     }
-    return convertedChildren;
-  }
-
-  private static boolean hasToBeSkippedFromAst(Object object) {
-    return object instanceof AstNode && ((AstNode) object).hasToBeSkippedFromAst();
+    return result;
   }
 
   private Object visitTerminal(ParseNode node) {

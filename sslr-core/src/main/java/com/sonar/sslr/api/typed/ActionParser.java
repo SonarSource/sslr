@@ -22,9 +22,7 @@ package com.sonar.sslr.api.typed;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;
-import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.RecognitionException;
-import com.sonar.sslr.impl.typed.AstNodeSanitizer;
 import com.sonar.sslr.impl.typed.GrammarBuilderInterceptor;
 import com.sonar.sslr.impl.typed.ReflectionUtils;
 import com.sonar.sslr.impl.typed.SyntaxTreeCreator;
@@ -49,7 +47,6 @@ public class ActionParser<N> {
 
   private final Charset charset;
 
-  private final AstNodeSanitizer astNodeSanitizer = new AstNodeSanitizer();
   private final SyntaxTreeCreator<N> syntaxTreeCreator;
   private final GrammarRuleKey rootRule;
   private final ParseRunner parseRunner;
@@ -109,11 +106,7 @@ public class ActionParser<N> {
       throw new RecognitionException(line, message);
     }
 
-    N node = syntaxTreeCreator.create(result.getParseTreeRoot(), input);
-    if (node instanceof AstNode) {
-      astNodeSanitizer.sanitize((AstNode) node);
-    }
-    return node;
+    return syntaxTreeCreator.create(result.getParseTreeRoot(), input);
   }
 
   public GrammarRuleKey rootRule() {
