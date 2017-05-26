@@ -69,11 +69,9 @@ public class ActionParser<N> {
       new Object[] {grammarBuilderInterceptor, actionEnhancer.create()});
 
     for (Method method : grammarClass.getMethods()) {
-      if (method.getDeclaringClass().equals(Object.class)) {
-        continue;
+      if (!method.getDeclaringClass().equals(Object.class) && method.getParameterCount() == 0) {
+        ReflectionUtils.invokeMethod(method, grammar);
       }
-
-      ReflectionUtils.invokeMethod(method, grammar);
     }
 
     this.syntaxTreeCreator = new SyntaxTreeCreator<>(treeFactory, grammarBuilderInterceptor, nodeBuilder);
