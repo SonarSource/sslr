@@ -197,13 +197,13 @@ public class ActionParserTest {
 
     public Numeric NUMERIC() {
       return b.<Numeric>nonterminal(MyGrammarKeys.NUMERIC)
-        .is(f.numeric(b.invokeRule(MyGrammarKeys.NUMERIC_TOKEN)));
+        .is(f.numeric(invokeRule(MyGrammarKeys.NUMERIC_TOKEN)));
     }
 
     // Includes a 2nd call to MyTreeFactory.numeric(...)
     public Numeric NUMERIC2() {
       return b.<Numeric>nonterminal(MyGrammarKeys.NUMERIC2)
-        .is(f.numeric(b.invokeRule(MyGrammarKeys.NUMERIC_TOKEN)));
+        .is(f.numeric(invokeRule(MyGrammarKeys.NUMERIC_TOKEN)));
     }
 
     public Operator OPERATOR() {
@@ -240,7 +240,12 @@ public class ActionParserTest {
         .is(
           f.numeric(
             NUMERIC(),
-            b.invokeRule(MyGrammarKeys.EOF)));
+            invokeRule(MyGrammarKeys.EOF)));
+    }
+
+    // public helper method
+    public AstNode invokeRule(GrammarRuleKey key) {
+      return b.invokeRule(key);
     }
 
   }

@@ -64,7 +64,7 @@ public class GrammarBuilderInterceptor<T> implements MethodInterceptor, GrammarB
 
   @Override
   public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-    if (method.getDeclaringClass().equals(Object.class)) {
+    if (method.getDeclaringClass().equals(Object.class) || method.getParameterCount() != 0) {
       return proxy.invokeSuper(obj, args);
     }
 
