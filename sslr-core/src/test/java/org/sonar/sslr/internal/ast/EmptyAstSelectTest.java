@@ -20,13 +20,14 @@
 package org.sonar.sslr.internal.ast;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterators;
 import com.sonar.sslr.api.AstNodeType;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.sonar.sslr.ast.AstSelect;
 import org.sonar.sslr.internal.ast.select.EmptyAstSelect;
+
+import java.util.Collections;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -102,7 +103,7 @@ public class EmptyAstSelectTest {
 
   @Test
   public void test_iterator() {
-    assertThat((Object) select.iterator()).isSameAs(Iterators.emptyIterator());
+    assertThat((Object) select.iterator()).isSameAs(Collections.emptyIterator());
   }
 
 }

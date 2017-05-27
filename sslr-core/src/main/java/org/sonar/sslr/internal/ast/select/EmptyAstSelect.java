@@ -22,10 +22,10 @@ package org.sonar.sslr.internal.ast.select;
 import org.sonar.sslr.ast.AstSelect;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterators;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 
+import java.util.Collections;
 import java.util.Iterator;
 
 /**
@@ -120,7 +120,7 @@ public class EmptyAstSelect implements AstSelect {
 
   @Override
   public Iterator<AstNode> iterator() {
-    return Iterators.emptyIterator();
+    return Collections.emptyIterator();
   }
 
 }

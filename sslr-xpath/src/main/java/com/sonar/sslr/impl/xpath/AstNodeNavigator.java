@@ -20,12 +20,12 @@
 package com.sonar.sslr.impl.xpath;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Iterators;
 import com.sonar.sslr.api.AstNode;
 import org.jaxen.DefaultNavigator;
 import org.jaxen.XPath;
 import org.jaxen.util.SingleObjectIterator;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -233,7 +233,11 @@ public class AstNodeNavigator extends DefaultNavigator {
       if (!astNode.hasToken()) {
         return Collections.emptyIterator();
       } else {
-        return Iterators.forArray(new Attribute("tokenLine", astNode), new Attribute("tokenColumn", astNode), new Attribute("tokenValue", astNode));
+        return Arrays.asList(
+          new Attribute("tokenLine", astNode),
+          new Attribute("tokenColumn", astNode),
+          new Attribute("tokenValue", astNode)
+        ).iterator();
       }
     } else if (isAttribute(contextNode)) {
       return Collections.emptyIterator();
