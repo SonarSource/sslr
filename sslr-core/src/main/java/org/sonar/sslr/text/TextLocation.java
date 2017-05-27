@@ -19,12 +19,11 @@
  */
 package org.sonar.sslr.text;
 
-import com.google.common.base.Objects;
-
-import javax.annotation.Nullable;
-
 import java.io.File;
 import java.net.URI;
+import java.util.Objects;
+
+import javax.annotation.Nullable;
 
 /**
  * <p>This class is not intended to be instantiated or subclassed by clients.</p>
@@ -72,7 +71,7 @@ public class TextLocation {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(file, line, column);
+    return Objects.hash(file, line, column);
   }
 
   @Override
@@ -82,7 +81,7 @@ public class TextLocation {
     }
     if (obj instanceof TextLocation) {
       TextLocation other = (TextLocation) obj;
-      return Objects.equal(this.file, other.file)
+      return Objects.equals(this.file, other.file)
         && this.line == other.line
         && this.column == other.column;
     }
@@ -91,11 +90,7 @@ public class TextLocation {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this)
-      .add("file", file)
-      .add("line", line)
-      .add("column", column)
-      .toString();
+    return "TextLocation{" + "file=" + file + ", line=" + line + ", column=" + column + '}';
   }
 
 }

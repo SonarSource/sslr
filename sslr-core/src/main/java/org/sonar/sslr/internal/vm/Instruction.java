@@ -19,11 +19,11 @@
  */
 package org.sonar.sslr.internal.vm;
 
-import com.google.common.base.Objects;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.internal.matchers.Matcher;
 
 import java.util.List;
+import java.util.Objects;
 
 public abstract class Instruction {
 
@@ -144,7 +144,7 @@ public abstract class Instruction {
       if (obj instanceof CallInstruction) {
         CallInstruction other = (CallInstruction) obj;
         return this.offset == other.offset
-          && Objects.equal(this.matcher, other.matcher);
+          && Objects.equals(this.matcher, other.matcher);
       }
       return false;
     }

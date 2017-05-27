@@ -19,7 +19,7 @@
  */
 package org.sonar.sslr.internal.matchers;
 
-import com.google.common.base.Objects;
+import java.util.Objects;
 
 public class MatcherPathElement {
 
@@ -47,7 +47,7 @@ public class MatcherPathElement {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(matcher, startIndex, endIndex);
+    return Objects.hash(matcher, startIndex, endIndex);
   }
 
   @Override
