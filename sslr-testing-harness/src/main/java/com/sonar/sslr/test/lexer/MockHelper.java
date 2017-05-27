@@ -19,7 +19,6 @@
  */
 package com.sonar.sslr.test.lexer;
 
-import com.google.common.base.Throwables;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
@@ -57,7 +56,7 @@ public final class MockHelper {
           .setLine(1)
           .setColumn(1);
     } catch (URISyntaxException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 

@@ -21,7 +21,6 @@ package org.sonar.sslr.internal.toolkit;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
@@ -106,7 +105,7 @@ public class ToolkitPresenter {
       try {
         view.displayHighlightedSourceCode(Files.toString(fileToParse, configurationModel.getCharset()));
       } catch (IOException e) {
-        Throwables.propagate(e);
+        throw new RuntimeException(e);
       }
       model.setSourceCode(fileToParse, configurationModel.getCharset());
       view.displayHighlightedSourceCode(model.getHighlightedSourceCode());

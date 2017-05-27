@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.toolkit;
 
-import com.google.common.base.Throwables;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -37,7 +36,7 @@ public final class CssLoader {
       InputStream inputStream = CssLoader.class.getResourceAsStream(CSS_PATH);
       return IOUtils.toString(inputStream);
     } catch (IOException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 

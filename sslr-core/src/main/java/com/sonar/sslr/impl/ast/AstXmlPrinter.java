@@ -19,7 +19,6 @@
  */
 package com.sonar.sslr.impl.ast;
 
-import com.google.common.base.Throwables;
 import com.sonar.sslr.api.AstNode;
 
 import java.io.IOException;
@@ -51,7 +50,7 @@ public final class AstXmlPrinter {
     try {
       printNode(0, rootNode);
     } catch (IOException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 

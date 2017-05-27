@@ -19,8 +19,6 @@
  */
 package com.sonar.sslr.impl.typed;
 
-import com.google.common.base.Throwables;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -35,7 +33,7 @@ public class ReflectionUtils {
     try {
       return method.invoke(object, args);
     } catch (IllegalAccessException | InvocationTargetException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -45,7 +43,7 @@ public class ReflectionUtils {
       field.setAccessible(true);
       return field;
     } catch (NoSuchFieldException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -53,7 +51,7 @@ public class ReflectionUtils {
     try {
       field.set(instance, value);
     } catch (IllegalAccessException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 

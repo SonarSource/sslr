@@ -19,7 +19,6 @@
  */
 package com.sonar.sslr.impl.typed;
 
-import com.google.common.base.Throwables;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 import org.sonar.sslr.internal.grammar.MutableParsingRule;
@@ -68,7 +67,7 @@ public class DelayedRuleInvocationExpression implements ParsingExpression {
       b.rule(ruleKey);
       return compiler.compile((MutableParsingRule) ((Map) DEFINITIONS_FIELD.get(b)).get(ruleKey));
     } catch (IllegalAccessException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 

@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.channel;
 
-import com.google.common.base.Throwables;
 import com.google.common.io.CharStreams;
 
 import java.io.FilterReader;
@@ -239,7 +238,7 @@ public class CodeBuffer implements CharSequence {
       try {
         clone = (Cursor) super.clone();
       } catch (CloneNotSupportedException e) {
-        throw Throwables.propagate(e);
+        throw new RuntimeException(e);
       }
 
       clone.column = column;

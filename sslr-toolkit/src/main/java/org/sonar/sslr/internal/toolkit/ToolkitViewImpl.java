@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.toolkit;
 
-import com.google.common.base.Throwables;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
@@ -341,7 +340,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     try {
       return sourceCodeEditorPane.getText(startOffset, endOffset - startOffset - 1);
     } catch (BadLocationException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -407,7 +406,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     try {
       sourceCodeEditorPane.getHighlighter().addHighlight(startOffset, endOffset, highlighter);
     } catch (BadLocationException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -452,7 +451,7 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
         sourceCodeEditorPane.scrollRectToVisible(sourceCodeEditorPane.modelToView(0));
         sourceCodeEditorPane.scrollRectToVisible(sourceCodeEditorPane.modelToView(lineOffsets.getOffset(line, 0)));
       } catch (BadLocationException e) {
-        throw Throwables.propagate(e);
+        throw new RuntimeException(e);
       }
     }
   }

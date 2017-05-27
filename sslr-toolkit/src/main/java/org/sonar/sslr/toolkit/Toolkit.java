@@ -20,7 +20,6 @@
 package org.sonar.sslr.toolkit;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
 import com.sonar.sslr.impl.Parser;
 import org.sonar.colorizer.Tokenizer;
 import org.sonar.sslr.internal.toolkit.SourceCodeModel;
@@ -97,7 +96,7 @@ public class Toolkit {
             }
           }
         } catch (Exception e) {
-          Throwables.propagate(e);
+          throw new RuntimeException(e);
         }
 
         SourceCodeModel model = new SourceCodeModel(configurationModel);
