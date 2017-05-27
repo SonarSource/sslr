@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.examples.grammars.typed;
 
-import com.google.common.base.Charsets;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.typed.ActionParser;
 import org.junit.Test;
@@ -31,12 +30,14 @@ import org.sonar.sslr.examples.grammars.typed.api.ObjectTree;
 import org.sonar.sslr.examples.grammars.typed.api.PairTree;
 import org.sonar.sslr.examples.grammars.typed.api.ValueTree;
 
+import java.nio.charset.StandardCharsets;
+
 import static org.fest.assertions.Assertions.assertThat;
 
 public class JsonGrammarTest {
 
   private static ActionParser<Tree> parser = new ActionParser<>(
-      Charsets.UTF_8,
+      StandardCharsets.UTF_8,
       JsonLexer.createGrammarBuilder(),
       org.sonar.sslr.examples.grammars.typed.JsonGrammar.class,
       new TreeFactory(),

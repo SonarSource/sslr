@@ -19,7 +19,6 @@
  */
 package com.sonar.sslr.api.typed;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
@@ -39,6 +38,7 @@ import org.sonar.sslr.internal.vm.TriviaExpression;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -167,7 +167,7 @@ public class ActionParserTest {
       b.optional(b.skippedTrivia(b.regexp("\\s+"))),
       b.regexp("[0-9]+"));
     b.rule(MyGrammarKeys.EOF).is(b.token(GenericTokenType.EOF, b.endOfInput())).skip();
-    return new ActionParser<>(Charsets.UTF_8, b, MyGrammar.class, new MyTreeFactory(), new AstNodeBuilder(), ruleKey);
+    return new ActionParser<>(StandardCharsets.UTF_8, b, MyGrammar.class, new MyTreeFactory(), new AstNodeBuilder(), ruleKey);
   }
 
   private void assertNotParse(GrammarRuleKey ruleKey, String toParse) {

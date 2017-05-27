@@ -19,12 +19,13 @@
  */
 package org.sonar.sslr.examples.grammars;
 
-import com.google.common.base.Charsets;
 import com.sonar.sslr.api.AstNode;
 import org.junit.Test;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 import org.sonar.sslr.parser.LexerlessGrammar;
 import org.sonar.sslr.parser.ParserAdapter;
+
+import java.nio.charset.StandardCharsets;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.sonar.sslr.tests.Assertions.assertThat;
@@ -49,7 +50,7 @@ public class ExpressionGrammarTest {
    */
   @Test
   public void ast() {
-    ParserAdapter<LexerlessGrammar> parser = new ParserAdapter<>(Charsets.UTF_8, b.build());
+    ParserAdapter<LexerlessGrammar> parser = new ParserAdapter<>(StandardCharsets.UTF_8, b.build());
     AstNode rootNode = parser.parse("2 + var");
     assertThat(rootNode.getType()).isSameAs(ExpressionGrammar.EXPRESSION);
 

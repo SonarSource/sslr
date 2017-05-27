@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.toolkit;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
@@ -37,6 +36,7 @@ import java.io.PrintWriter;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -173,7 +173,7 @@ public class ToolkitPresenterTest {
     when(model.getAstNode()).thenReturn(astNode);
     when(model.getXml()).thenReturn("my_mocked_xml");
 
-    ToolkitPresenter presenter = new ToolkitPresenter((ConfigurationModel) when(mock(ConfigurationModel.class).getCharset()).thenReturn(Charsets.UTF_8).getMock(), model);
+    ToolkitPresenter presenter = new ToolkitPresenter((ConfigurationModel) when(mock(ConfigurationModel.class).getCharset()).thenReturn(StandardCharsets.UTF_8).getMock(), model);
     presenter.setView(view);
 
     presenter.onSourceCodeOpenButtonClick();
@@ -182,7 +182,7 @@ public class ToolkitPresenterTest {
 
     verify(view).clearConsole();
     verify(view).displayHighlightedSourceCode("my_mocked_highlighted_source_code");
-    verify(model).setSourceCode(file, Charsets.UTF_8);
+    verify(model).setSourceCode(file, StandardCharsets.UTF_8);
     verify(view).displayAst(astNode);
     verify(view).displayXml("my_mocked_xml");
     verify(view).scrollSourceCodeTo(new Point(0, 0));
@@ -198,7 +198,7 @@ public class ToolkitPresenterTest {
     SourceCodeModel model = mock(SourceCodeModel.class);
     Mockito.doThrow(new RuntimeException("Parse error")).when(model).setSourceCode(Mockito.any(File.class), Mockito.any(Charset.class));
 
-    ToolkitPresenter presenter = new ToolkitPresenter((ConfigurationModel) when(mock(ConfigurationModel.class).getCharset()).thenReturn(Charsets.UTF_8).getMock(), model);
+    ToolkitPresenter presenter = new ToolkitPresenter((ConfigurationModel) when(mock(ConfigurationModel.class).getCharset()).thenReturn(StandardCharsets.UTF_8).getMock(), model);
     presenter.setView(view);
 
     try {
