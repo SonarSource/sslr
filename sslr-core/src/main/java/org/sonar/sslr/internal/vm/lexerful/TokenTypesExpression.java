@@ -19,12 +19,13 @@
  */
 package org.sonar.sslr.internal.vm.lexerful;
 
-import com.google.common.collect.ImmutableSet;
 import com.sonar.sslr.api.TokenType;
 import org.sonar.sslr.internal.matchers.Matcher;
 import org.sonar.sslr.internal.vm.Machine;
 import org.sonar.sslr.internal.vm.NativeExpression;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 public class TokenTypesExpression extends NativeExpression implements Matcher {
@@ -32,7 +33,8 @@ public class TokenTypesExpression extends NativeExpression implements Matcher {
   private final Set<TokenType> types;
 
   public TokenTypesExpression(TokenType... types) {
-    this.types = ImmutableSet.copyOf(types);
+    this.types = new HashSet<>();
+    this.types.addAll(Arrays.asList(types));
   }
 
   @Override

@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.vm.lexerful;
 
-import com.google.common.collect.ImmutableSet;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import org.junit.Rule;
@@ -48,7 +47,7 @@ public class TokenTypesExpressionTest {
   @Test
   public void should_compile() {
     assertThat(expression.compile(new CompilationHandler())).containsOnly(expression);
-    assertThat(expression.toString()).isEqualTo("TokenTypes " + ImmutableSet.of(type1, type2));
+    assertThat(expression.toString()).startsWith("TokenTypes [Mock for TokenType, ");
   }
 
   @Test
