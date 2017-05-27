@@ -20,7 +20,6 @@
 package org.sonar.sslr.internal.toolkit;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
@@ -34,9 +33,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import java.util.Objects;
 
 public class ToolkitPresenter {
 
@@ -50,13 +47,15 @@ public class ToolkitPresenter {
   }
 
   public void setView(ToolkitView view) {
-    checkNotNull(view);
+    Objects.requireNonNull(view);
     this.view = view;
   }
 
   @VisibleForTesting
   void checkInitialized() {
-    checkState(view != null, "the view must be set before the presenter can be ran");
+    if (view == null) {
+      throw new IllegalStateException("the view must be set before the presenter can be ran");
+    }
   }
 
   @VisibleForTesting
@@ -190,7 +189,9 @@ public class ToolkitPresenter {
 
   public void onConfigurationPropertyFocusLost(String name) {
     ConfigurationProperty configurationProperty = getConfigurationPropertyByName(name);
-    Preconditions.checkArgument(configurationProperty != null, "No such configuration property: " + name);
+    if (configurationProperty == null) {
+      throw new IllegalArgumentException("No such configuration property: " + name);
+    }
 
     String newValueCandidate = view.getConfigurationPropertyValue(name);
     String errorMessage = configurationProperty.validate(newValueCandidate);

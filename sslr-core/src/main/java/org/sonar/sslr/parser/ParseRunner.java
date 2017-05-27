@@ -19,12 +19,13 @@
  */
 package org.sonar.sslr.parser;
 
-import com.google.common.base.Preconditions;
 import com.sonar.sslr.api.Rule;
 import org.sonar.sslr.internal.vm.CompilableGrammarRule;
 import org.sonar.sslr.internal.vm.CompiledGrammar;
 import org.sonar.sslr.internal.vm.Machine;
 import org.sonar.sslr.internal.vm.MutableGrammarCompiler;
+
+import java.util.Objects;
 
 /**
  * Performs parsing of a given grammar rule on a given input text.
@@ -38,7 +39,7 @@ public class ParseRunner {
   private final CompiledGrammar compiledGrammar;
 
   public ParseRunner(Rule rule) {
-    compiledGrammar = MutableGrammarCompiler.compile((CompilableGrammarRule) Preconditions.checkNotNull(rule, "rule"));
+    compiledGrammar = MutableGrammarCompiler.compile((CompilableGrammarRule) Objects.requireNonNull(rule, "rule"));
   }
 
   public ParsingResult parse(char[] input) {

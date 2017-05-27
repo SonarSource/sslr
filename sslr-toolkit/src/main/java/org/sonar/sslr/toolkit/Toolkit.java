@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.toolkit;
 
-import com.google.common.base.Preconditions;
 import com.sonar.sslr.impl.Parser;
 import org.sonar.colorizer.Tokenizer;
 import org.sonar.sslr.internal.toolkit.SourceCodeModel;
@@ -32,6 +31,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Toolkit {
 
@@ -78,7 +78,7 @@ public class Toolkit {
    * @since 1.17
    */
   public Toolkit(String title, ConfigurationModel configurationModel) {
-    Preconditions.checkNotNull(title);
+    Objects.requireNonNull(title);
 
     this.title = title;
     this.configurationModel = configurationModel;

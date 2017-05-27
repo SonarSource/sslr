@@ -24,8 +24,6 @@ import com.sonar.sslr.api.Token;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 public class LineOffsets {
 
   private static final String NEWLINE_REGEX = "(\r)?\n|\r";
@@ -59,8 +57,12 @@ public class LineOffsets {
   }
 
   public int getOffset(int line, int column) {
-    checkArgument(line >= 1);
-    checkArgument(column >= 0);
+    if (line < 1) {
+      throw new IllegalArgumentException();
+    }
+    if (column < 0) {
+      throw new IllegalArgumentException();
+    }
 
     if (lineOffsets.containsKey(line)) {
       return Math.min(lineOffsets.get(line) + column, endOffset);

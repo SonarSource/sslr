@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.grammar;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.TokenType;
@@ -41,6 +40,7 @@ import org.sonar.sslr.internal.vm.lexerful.TokensBridgeExpression;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A builder for creating <a href="http://en.wikipedia.org/wiki/Parsing_expression_grammar">Parsing Expression Grammars</a> for lexerful parsing.
@@ -254,7 +254,7 @@ public class LexerfulGrammarBuilder extends GrammarBuilder {
 
   @Override
   protected ParsingExpression convertToExpression(Object e) {
-    Preconditions.checkNotNull(e, "Parsing expression can't be null");
+    Objects.requireNonNull(e, "Parsing expression can't be null");
     final ParsingExpression result;
     if (e instanceof ParsingExpression) {
       result = (ParsingExpression) e;

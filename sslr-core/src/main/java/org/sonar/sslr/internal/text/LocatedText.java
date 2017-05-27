@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.text;
 
-import com.google.common.base.Preconditions;
 import org.sonar.sslr.text.TextLocation;
 
 import javax.annotation.Nullable;
@@ -48,7 +47,9 @@ public class LocatedText extends PlainText {
 
   @Override
   public TextLocation getLocation(int index) {
-    Preconditions.checkPositionIndex(index, length());
+    if (index < 0 || index > length()) {
+      throw new IndexOutOfBoundsException();
+    }
     int line = getLineNumber(index);
     int column = index - getLineStart(line) + 1;
     return new TextLocation(file, uri, line, column);

@@ -19,10 +19,11 @@
  */
 package org.sonar.sslr.parser;
 
-import com.google.common.base.Preconditions;
 import org.sonar.sslr.internal.matchers.InputBuffer;
 import org.sonar.sslr.internal.matchers.InputBuffer.Position;
 import org.sonar.sslr.internal.matchers.TextUtils;
+
+import java.util.Objects;
 
 /**
  * Formats {@link ParseError} to readable form.
@@ -39,7 +40,7 @@ public class ParseErrorFormatter {
   private static final int SNIPPET_SIZE = 10;
 
   public String format(ParseError parseError) {
-    Preconditions.checkNotNull(parseError);
+    Objects.requireNonNull(parseError);
 
     InputBuffer inputBuffer = parseError.getInputBuffer();
     Position position = inputBuffer.getPosition(parseError.getErrorIndex());

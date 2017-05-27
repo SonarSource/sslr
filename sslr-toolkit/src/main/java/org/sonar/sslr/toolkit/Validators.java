@@ -19,8 +19,6 @@
  */
 package org.sonar.sslr.toolkit;
 
-import com.google.common.base.Preconditions;
-
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
@@ -80,7 +78,9 @@ public class Validators {
     private final int upperBound;
 
     public IntegerRangeValidator(int lowerBound, int upperBound) {
-      Preconditions.checkArgument(lowerBound <= upperBound, "lowerBound(" + lowerBound + ") <= upperBound(" + upperBound + ")");
+      if (lowerBound > upperBound) {
+        throw new IllegalArgumentException("lowerBound(" + lowerBound + ") <= upperBound(" + upperBound + ")");
+      }
 
       this.lowerBound = lowerBound;
       this.upperBound = upperBound;

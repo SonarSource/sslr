@@ -43,9 +43,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 
 public class Lexer {
@@ -74,8 +73,10 @@ public class Lexer {
   }
 
   public List<Token> lex(File file) {
-    checkNotNull(file, "file cannot be null");
-    checkArgument(file.isFile(), "file \"%s\" must be a file", file.getAbsolutePath());
+    Objects.requireNonNull(file, "file cannot be null");
+    if (!file.isFile()) {
+      throw new IllegalArgumentException("file \"" + file.getAbsolutePath() + "\" must be a file");
+    }
 
     try {
       return lex(file.toURI().toURL());
@@ -85,7 +86,7 @@ public class Lexer {
   }
 
   public List<Token> lex(URL url) {
-    checkNotNull(url, "url cannot be null");
+    Objects.requireNonNull(url, "url cannot be null");
 
     try (InputStreamReader reader = new InputStreamReader(url.openStream(), charset)) {
       this.uri = url.toURI();
@@ -104,7 +105,7 @@ public class Lexer {
    */
   @VisibleForTesting
   public List<Token> lex(String sourceCode) {
-    checkNotNull(sourceCode, "sourceCode cannot be null");
+    Objects.requireNonNull(sourceCode, "sourceCode cannot be null");
 
     try {
       return lex(new StringReader(sourceCode));
@@ -151,7 +152,7 @@ public class Lexer {
     int i = 0;
     while (i < remainingTokens.size()) {
       PreprocessorAction action = preprocessor.process(remainingTokens.subList(i, remainingTokens.size()));
-      checkNotNull(action, "A preprocessor cannot return a null PreprocessorAction");
+      Objects.requireNonNull(action, "A preprocessor cannot return a null PreprocessorAction");
 
       addTrivia(action.getTriviaToInject());
 
@@ -185,13 +186,15 @@ public class Lexer {
   }
 
   public void addTrivia(List<Trivia> trivia) {
-    checkNotNull(trivia, "trivia cannot be null");
+    Objects.requireNonNull(trivia, "trivia cannot be null");
 
     this.trivia.addAll(trivia);
   }
 
   public void addToken(Token... tokens) {
-    checkArgument(tokens.length > 0, "at least one token must be given");
+    if (tokens.length <= 0) {
+      throw new IllegalArgumentException("at least one token must be given");
+    }
 
     Token firstToken = tokens[0];
     Token firstTokenWithTrivia;

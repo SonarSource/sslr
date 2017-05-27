@@ -22,9 +22,7 @@ package com.sonar.sslr.api;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Objects;
 
 /**
  * This class encapsulates the actions to be performed by a preprocessor.
@@ -91,9 +89,11 @@ public class PreprocessorAction {
    *          Tokens to inject. Injected tokens will not lead to successive calls to the preprocessor.
    */
   public PreprocessorAction(int numberOfConsumedTokens, List<Trivia> triviaToInject, List<Token> tokensToInject) {
-    checkArgument(numberOfConsumedTokens >= 0, "numberOfConsumedTokens(%s) must be greater or equal to 0", numberOfConsumedTokens);
-    checkNotNull(triviaToInject, "triviaToInject cannot be null");
-    checkNotNull(tokensToInject, "tokensToInject cannot be null");
+    if (numberOfConsumedTokens < 0) {
+      throw new IllegalArgumentException("numberOfConsumedTokens(" + numberOfConsumedTokens + ") must be greater or equal to 0");
+    }
+    Objects.requireNonNull(triviaToInject, "triviaToInject cannot be null");
+    Objects.requireNonNull(tokensToInject, "tokensToInject cannot be null");
 
     this.numberOfConsumedTokens = numberOfConsumedTokens;
     this.triviaToInject = Collections.unmodifiableList(new ArrayList<>(triviaToInject));

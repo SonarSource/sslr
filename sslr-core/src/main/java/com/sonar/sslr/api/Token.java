@@ -23,9 +23,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Objects;
 
 /**
  * Tokens are string of character like an identifier, a literal, an integer, ... which are produced by the lexer to feed the parser.
@@ -180,14 +178,14 @@ public class Token {
     }
 
     public Builder setType(TokenType type) {
-      checkNotNull(type, "type cannot be null");
+      Objects.requireNonNull(type, "type cannot be null");
 
       this.type = type;
       return this;
     }
 
     public Builder setValueAndOriginalValue(String valueAndOriginalValue) {
-      checkNotNull(valueAndOriginalValue, "valueAndOriginalValue cannot be null");
+      Objects.requireNonNull(valueAndOriginalValue, "valueAndOriginalValue cannot be null");
 
       this.value = valueAndOriginalValue;
       this.originalValue = valueAndOriginalValue;
@@ -195,8 +193,8 @@ public class Token {
     }
 
     public Builder setValueAndOriginalValue(String value, String originalValue) {
-      checkNotNull(value, "value cannot be null");
-      checkNotNull(originalValue, "originalValue cannot be null");
+      Objects.requireNonNull(value, "value cannot be null");
+      Objects.requireNonNull(originalValue, "originalValue cannot be null");
 
       this.value = value;
       this.originalValue = originalValue;
@@ -214,7 +212,7 @@ public class Token {
     }
 
     public Builder setURI(URI uri) {
-      checkNotNull(uri, "uri cannot be null");
+      Objects.requireNonNull(uri, "uri cannot be null");
 
       this.uri = uri;
       return this;
@@ -226,14 +224,14 @@ public class Token {
     }
 
     public Builder setTrivia(List<Trivia> trivia) {
-      checkNotNull(trivia, "trivia can't be null");
+      Objects.requireNonNull(trivia, "trivia can't be null");
 
       this.trivia = new ArrayList<>(trivia);
       return this;
     }
 
     public Builder addTrivia(Trivia trivia) {
-      checkNotNull(trivia, "trivia can't be null");
+      Objects.requireNonNull(trivia, "trivia can't be null");
 
       if (this.trivia.isEmpty()) {
         this.trivia = new ArrayList<>();
@@ -254,7 +252,7 @@ public class Token {
     }
 
     public Builder setCopyBook(String copyBookOriginalFileName, int copyBookOriginalLine) {
-      checkNotNull(copyBookOriginalFileName, "copyBookOriginalFileName cannot be null");
+      Objects.requireNonNull(copyBookOriginalFileName, "copyBookOriginalFileName cannot be null");
 
       this.copyBook = true;
       this.copyBookOriginalFileName = copyBookOriginalFileName;
@@ -263,12 +261,16 @@ public class Token {
     }
 
     public Token build() {
-      checkNotNull(type, "type must be set");
-      checkNotNull(value, "value must be set");
-      checkNotNull(originalValue, "originalValue must be set");
-      checkNotNull(uri, "file must be set");
-      checkArgument(line >= 1, "line must be greater or equal than 1");
-      checkArgument(column >= 0, "column must be greater or equal than 0");
+      Objects.requireNonNull(type, "type must be set");
+      Objects.requireNonNull(value, "value must be set");
+      Objects.requireNonNull(originalValue, "originalValue must be set");
+      Objects.requireNonNull(uri, "file must be set");
+      if (line < 1) {
+        throw new IllegalArgumentException("line must be greater or equal than 1");
+      }
+      if (column < 0) {
+        throw new IllegalArgumentException("column must be greater or equal than 0");
+      }
 
       return new Token(this);
     }

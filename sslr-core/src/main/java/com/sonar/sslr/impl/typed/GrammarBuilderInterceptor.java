@@ -19,7 +19,6 @@
  */
 package com.sonar.sslr.impl.typed;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.sonar.sslr.api.AstNode;
@@ -92,7 +91,9 @@ public class GrammarBuilderInterceptor<T> implements MethodInterceptor, GrammarB
 
   @Override
   public Object is(Object method) {
-    Preconditions.checkState(expressionStack.size() == 1, "Unexpected stack size: " + expressionStack.size());
+    if (expressionStack.size() != 1) {
+      throw new IllegalStateException("Unexpected stack size: " + expressionStack.size());
+    }
 
     ParsingExpression expression = pop();
     b.rule(ruleKey).is(expression);

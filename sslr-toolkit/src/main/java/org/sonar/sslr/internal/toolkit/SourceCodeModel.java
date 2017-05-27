@@ -21,7 +21,6 @@ package org.sonar.sslr.internal.toolkit;
 
 import org.sonar.sslr.toolkit.ConfigurationModel;
 
-import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;
@@ -32,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.Charset;
+import java.util.Objects;
 
 public class SourceCodeModel {
 
@@ -42,7 +42,7 @@ public class SourceCodeModel {
   private AstNode astNode;
 
   public SourceCodeModel(ConfigurationModel configurationModel) {
-    Preconditions.checkNotNull(configurationModel);
+    Objects.requireNonNull(configurationModel);
 
     this.configurationModel = configurationModel;
   }

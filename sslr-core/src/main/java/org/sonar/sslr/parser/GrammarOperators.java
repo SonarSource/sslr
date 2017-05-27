@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.parser;
 
-import com.google.common.base.Preconditions;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.api.Trivia.TriviaKind;
 import org.sonar.sslr.internal.vm.EndOfInputExpression;
@@ -36,6 +35,8 @@ import org.sonar.sslr.internal.vm.StringExpression;
 import org.sonar.sslr.internal.vm.TokenExpression;
 import org.sonar.sslr.internal.vm.TriviaExpression;
 import org.sonar.sslr.internal.vm.ZeroOrMoreExpression;
+
+import java.util.Objects;
 
 /**
  * @since 1.16
@@ -60,7 +61,7 @@ public final class GrammarOperators {
    */
   @Deprecated
   public static Object firstOf(Object... e) {
-    Preconditions.checkNotNull(e);
+    Objects.requireNonNull(e);
 
     if (e.length == 1) {
       return convertToExpression(e[0]);
@@ -159,7 +160,7 @@ public final class GrammarOperators {
   }
 
   private static ParsingExpression convertToSingleExpression(Object... elements) {
-    Preconditions.checkNotNull(elements);
+    Objects.requireNonNull(elements);
 
     if (elements.length == 1) {
       return convertToExpression(elements[0]);
@@ -168,8 +169,10 @@ public final class GrammarOperators {
   }
 
   private static ParsingExpression[] convertToExpressions(Object... elements) {
-    Preconditions.checkNotNull(elements);
-    Preconditions.checkArgument(elements.length > 0);
+    Objects.requireNonNull(elements);
+    if (elements.length <= 0) {
+      throw new IllegalArgumentException();
+    }
 
     ParsingExpression[] matchers = new ParsingExpression[elements.length];
     for (int i = 0; i < matchers.length; i++) {
@@ -179,7 +182,7 @@ public final class GrammarOperators {
   }
 
   private static ParsingExpression convertToExpression(Object e) {
-    Preconditions.checkNotNull(e);
+    Objects.requireNonNull(e);
 
     if (e instanceof ParsingExpression) {
       return (ParsingExpression) e;

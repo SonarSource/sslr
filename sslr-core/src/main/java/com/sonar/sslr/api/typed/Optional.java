@@ -20,10 +20,10 @@
 package com.sonar.sslr.api.typed;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 /**
  * Loosely modeled after {@link com.google.common.base.Optional}.
@@ -37,7 +37,7 @@ public abstract class Optional<T> {
   }
 
   public static <T> Optional<T> of(T reference) {
-    return new Present<>(Preconditions.checkNotNull(reference));
+    return new Present<>(Objects.requireNonNull(reference));
   }
 
   public abstract boolean isPresent();
@@ -68,7 +68,7 @@ public abstract class Optional<T> {
 
     @Override
     public T or(Object defaultValue) {
-      Preconditions.checkNotNull(defaultValue, "use orNull() instead of or(null)");
+      Objects.requireNonNull(defaultValue, "use orNull() instead of or(null)");
       return reference;
     }
 
@@ -113,7 +113,7 @@ public abstract class Optional<T> {
 
     @Override
     public Object or(Object defaultValue) {
-      return Preconditions.checkNotNull(defaultValue, "use orNull() instead of or(null)");
+      return Objects.requireNonNull(defaultValue, "use orNull() instead of or(null)");
     }
 
     @CheckForNull

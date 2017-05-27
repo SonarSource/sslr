@@ -19,7 +19,6 @@
  */
 package com.sonar.sslr.impl.typed;
 
-import com.google.common.base.Preconditions;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
@@ -80,12 +79,16 @@ public class SyntaxTreeCreator<T> {
     if (mapping.hasMethodForRuleKey(ruleKey)) {
 
       // TODO Drop useless intermediate nodes
-      Preconditions.checkState(node.getChildren().size() == 1);
+      if (node.getChildren().size() != 1) {
+        throw new IllegalStateException();
+      }
       result = visit(node.getChildren().get(0));
 
     } else if (mapping.isOptionalRule(ruleKey)) {
 
-      Preconditions.checkState(node.getChildren().size() <= 1);
+      if (node.getChildren().size() > 1) {
+        throw new IllegalStateException();
+      }
       if (node.getChildren().isEmpty()) {
         result = Optional.absent();
       } else {

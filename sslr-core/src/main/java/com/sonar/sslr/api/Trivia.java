@@ -21,9 +21,7 @@ package com.sonar.sslr.api;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import java.util.Objects;
 
 public class Trivia {
 
@@ -45,10 +43,12 @@ public class Trivia {
     this.kind = kind;
     this.preprocessingDirective = preprocessingDirective;
     this.tokens = Arrays.asList(tokens);
+    if (this.tokens.isEmpty()) {
+      throw new IllegalArgumentException("the trivia must have at least one associated token to be able to call getToken()");
+    }
   }
 
   public Token getToken() {
-    checkState(!tokens.isEmpty(), "the trivia must have at least one associated token to be able to call getToken()");
     return tokens.get(0);
   }
 
@@ -99,7 +99,7 @@ public class Trivia {
   }
 
   public static Trivia createSkippedText(List<Token> tokens) {
-    checkNotNull(tokens, "tokens cannot be null");
+    Objects.requireNonNull(tokens, "tokens cannot be null");
 
     return createSkippedText(tokens.toArray(new Token[tokens.size()]));
   }

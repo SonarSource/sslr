@@ -19,7 +19,7 @@
  */
 package org.sonar.sslr.toolkit;
 
-import com.google.common.base.Preconditions;
+import java.util.Objects;
 
 /**
  * This class represents a configuration property, which is made of a name, a description (which may be empty),
@@ -53,13 +53,15 @@ public class ConfigurationProperty {
    * @param validationCallback The validation callback. Note that handy ones are available out-of-the-box by the {@link Validators} class.
    */
   public ConfigurationProperty(String name, String description, String defaultValue, ValidationCallback validationCallback) {
-    Preconditions.checkNotNull(name);
-    Preconditions.checkNotNull(description);
-    Preconditions.checkNotNull(defaultValue);
-    Preconditions.checkNotNull(validationCallback);
+    Objects.requireNonNull(name);
+    Objects.requireNonNull(description);
+    Objects.requireNonNull(defaultValue);
+    Objects.requireNonNull(validationCallback);
 
     String errorMessage = validationCallback.validate(defaultValue);
-    Preconditions.checkArgument("".equals(errorMessage), "The default value \"" + defaultValue + "\" did not pass validation: " + errorMessage);
+    if (!"".equals(errorMessage)) {
+      throw new IllegalArgumentException("The default value \"" + defaultValue + "\" did not pass validation: " + errorMessage);
+    }
 
     this.name = name;
     this.description = description;
@@ -81,7 +83,9 @@ public class ConfigurationProperty {
 
   public void setValue(String value) {
     String errorMessage = validate(value);
-    Preconditions.checkArgument("".equals(errorMessage), "The value \"" + value + "\" did not pass validation: " + errorMessage);
+    if (!"".equals(errorMessage)) {
+      throw new IllegalArgumentException("The value \"" + value + "\" did not pass validation: " + errorMessage);
+    }
 
     this.value = value;
   }
