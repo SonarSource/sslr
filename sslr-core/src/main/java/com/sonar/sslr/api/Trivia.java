@@ -19,8 +19,7 @@
  */
 package com.sonar.sslr.api;
 
-import com.google.common.collect.ImmutableList;
-
+import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -45,7 +44,7 @@ public class Trivia {
   private Trivia(TriviaKind kind, PreprocessingDirective preprocessingDirective, Token... tokens) {
     this.kind = kind;
     this.preprocessingDirective = preprocessingDirective;
-    this.tokens = ImmutableList.copyOf(tokens);
+    this.tokens = Arrays.asList(tokens);
   }
 
   public Token getToken() {

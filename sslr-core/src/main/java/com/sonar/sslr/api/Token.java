@@ -19,10 +19,9 @@
  */
 package com.sonar.sslr.api;
 
-import com.google.common.collect.ImmutableList;
-
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -55,7 +54,7 @@ public class Token {
     this.column = builder.column;
     this.uri = builder.uri;
     this.generatedCode = builder.generatedCode;
-    this.trivia = ImmutableList.copyOf(builder.trivia);
+    this.trivia = builder.trivia.isEmpty() ? Collections.emptyList() : new ArrayList<>(builder.trivia);
     this.copyBook = builder.copyBook;
     this.copyBookOriginalLine = builder.copyBookOriginalLine;
     this.copyBookOriginalFileName = builder.copyBookOriginalFileName;
@@ -157,7 +156,7 @@ public class Token {
     private URI uri;
     private int line = 0;
     private int column = -1;
-    private List<Trivia> trivia = ImmutableList.of();
+    private List<Trivia> trivia = Collections.emptyList();
     private boolean generatedCode = false;
     private boolean copyBook = false;
     private int copyBookOriginalLine = -1;

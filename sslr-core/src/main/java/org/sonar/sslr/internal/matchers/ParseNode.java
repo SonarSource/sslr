@@ -19,8 +19,8 @@
  */
 package org.sonar.sslr.internal.matchers;
 
-import com.google.common.collect.ImmutableList;
-
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,7 +36,7 @@ public class ParseNode {
   public ParseNode(int startIndex, int endIndex, List<ParseNode> children, Matcher matcher) {
     this.startIndex = startIndex;
     this.endIndex = endIndex;
-    this.children = ImmutableList.copyOf(children);
+    this.children = new ArrayList<>(children);
     this.matcher = matcher;
   }
 
@@ -47,7 +47,7 @@ public class ParseNode {
     this.startIndex = startIndex;
     this.endIndex = endIndex;
     this.matcher = matcher;
-    this.children = ImmutableList.of();
+    this.children = Collections.emptyList();
   }
 
   public int getStartIndex() {
