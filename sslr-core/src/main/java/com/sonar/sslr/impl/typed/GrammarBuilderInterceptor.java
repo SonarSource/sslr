@@ -22,12 +22,12 @@ package com.sonar.sslr.impl.typed;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.Sets;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.typed.GrammarBuilder;
 import com.sonar.sslr.api.typed.NonterminalBuilder;
 import com.sonar.sslr.api.typed.Optional;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -50,9 +50,9 @@ public class GrammarBuilderInterceptor<T> implements MethodInterceptor, GrammarB
   private final LexerlessGrammarBuilder b;
   private final BiMap<Method, GrammarRuleKey> mapping = HashBiMap.create();
   private final Map<GrammarRuleKey, Method> actions = new HashMap<>();
-  private final Set<GrammarRuleKey> optionals = Sets.newHashSet();
-  private final Set<GrammarRuleKey> oneOrMores = Sets.newHashSet();
-  private final Set<GrammarRuleKey> zeroOrMores = Sets.newHashSet();
+  private final Set<GrammarRuleKey> optionals = new HashSet<>();
+  private final Set<GrammarRuleKey> oneOrMores = new HashSet<>();
+  private final Set<GrammarRuleKey> zeroOrMores = new HashSet<>();
 
   private Method buildingMethod = null;
   private GrammarRuleKey ruleKey = null;
