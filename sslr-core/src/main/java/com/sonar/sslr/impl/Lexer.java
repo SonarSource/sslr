@@ -244,6 +244,10 @@ public class Lexer {
       return this;
     }
 
+    /**
+     * @deprecated in 1.20 - use your own preprocessor instead
+     */
+    @Deprecated
     public Builder withPreprocessor(Preprocessor preprocessor) {
       preprocessors.add(preprocessor);
       return this;
