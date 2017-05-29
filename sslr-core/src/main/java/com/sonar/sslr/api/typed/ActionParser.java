@@ -20,7 +20,6 @@
 package com.sonar.sslr.api.typed;
 
 import com.google.common.annotations.Beta;
-import com.google.common.io.Files;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.typed.GrammarBuilderInterceptor;
 import com.sonar.sslr.impl.typed.ReflectionUtils;
@@ -40,6 +39,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @Beta
 public class ActionParser<N> {
@@ -84,7 +85,8 @@ public class ActionParser<N> {
 
   public N parse(File file) {
     try {
-      return parse(new Input(Files.toString(file, charset).toCharArray(), file.toURI()));
+      char[] chars = new String(Files.readAllBytes(Paths.get(file.getPath())), charset).toCharArray();
+      return parse(new Input(chars, file.toURI()));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

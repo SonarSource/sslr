@@ -21,7 +21,6 @@ package org.sonar.sslr.internal.toolkit;
 
 import org.sonar.sslr.toolkit.ConfigurationModel;
 
-import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import org.sonar.colorizer.HtmlOptions;
@@ -31,6 +30,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 public class SourceCodeModel {
@@ -51,7 +52,7 @@ public class SourceCodeModel {
     this.astNode = configurationModel.getParser().parse(source);
 
     try {
-      this.sourceCode = Files.toString(source, charset);
+      this.sourceCode = new String(Files.readAllBytes(Paths.get(source.getPath())), charset);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

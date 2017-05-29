@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.parser;
 
-import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Token;
@@ -37,6 +36,8 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 
@@ -90,7 +91,7 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
 
   private static char[] fileToCharArray(File file, Charset charset) {
     try {
-      return Files.toString(file, charset).toCharArray();
+      return new String(Files.readAllBytes(Paths.get(file.getPath())), charset).toCharArray();
     } catch (IOException e) {
       throw new RecognitionException(0, e.getMessage(), e);
     }

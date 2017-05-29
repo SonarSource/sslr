@@ -20,7 +20,6 @@
 package org.sonar.sslr.internal.toolkit;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
 import org.sonar.sslr.toolkit.ConfigurationModel;
@@ -33,6 +32,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 public class ToolkitPresenter {
@@ -102,7 +103,7 @@ public class ToolkitPresenter {
     if (fileToParse != null) {
       view.clearConsole();
       try {
-        view.displayHighlightedSourceCode(Files.toString(fileToParse, configurationModel.getCharset()));
+        view.displayHighlightedSourceCode(new String(Files.readAllBytes(Paths.get(fileToParse.getPath())), configurationModel.getCharset()));
       } catch (IOException e) {
         throw new RuntimeException(e);
       }

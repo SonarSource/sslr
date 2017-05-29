@@ -39,6 +39,7 @@ import org.sonar.sslr.internal.vm.TriviaExpression;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.NoSuchFileException;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -136,7 +137,7 @@ public class ActionParserTest {
       parser.parse(new File("unknown"));
       Assert.fail("expceted exception");
     } catch (RuntimeException e) {
-      assertThat(e.getCause()).isInstanceOf(FileNotFoundException.class);
+      assertThat(e.getCause()).isInstanceOf(NoSuchFileException.class);
     }
   }
 
