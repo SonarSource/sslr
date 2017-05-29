@@ -19,7 +19,6 @@
  */
 package com.sonar.sslr.test.minic;
 
-import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.impl.Parser;
 import org.sonar.colorizer.Tokenizer;
 import org.sonar.sslr.toolkit.AbstractConfigurationModel;
@@ -30,6 +29,7 @@ import org.sonar.sslr.toolkit.ValidationCallback;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.Collections;
 import java.util.List;
 
 public final class MiniCToolkit {
@@ -62,7 +62,7 @@ public final class MiniCToolkit {
 
     @Override
     public List<ConfigurationProperty> getProperties() {
-      return ImmutableList.of(charsetProperty);
+      return Collections.singletonList(charsetProperty);
     }
 
     @Override
