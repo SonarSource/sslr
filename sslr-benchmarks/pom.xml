@@ -33,6 +33,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>sslr-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>

@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.ast;
 
-import com.google.common.base.Predicate;
 import com.sonar.sslr.api.AstNodeType;
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,6 +27,7 @@ import org.sonar.sslr.ast.AstSelect;
 import org.sonar.sslr.internal.ast.select.EmptyAstSelect;
 
 import java.util.Collections;
+import java.util.function.Predicate;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

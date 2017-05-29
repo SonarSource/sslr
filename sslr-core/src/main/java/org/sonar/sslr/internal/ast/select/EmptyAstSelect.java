@@ -19,14 +19,13 @@
  */
 package org.sonar.sslr.internal.ast.select;
 
-import org.sonar.sslr.ast.AstSelect;
-
-import com.google.common.base.Predicate;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
+import org.sonar.sslr.ast.AstSelect;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 /**
  * {@link AstSelect} which contains no elements.

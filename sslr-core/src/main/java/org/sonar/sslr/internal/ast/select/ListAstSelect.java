@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.ast.select;
 
-import com.google.common.base.Predicate;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import org.sonar.sslr.ast.AstSelect;
@@ -27,6 +26,7 @@ import org.sonar.sslr.ast.AstSelect;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * {@link AstSelect} which contains more than one element.
@@ -197,7 +197,7 @@ public class ListAstSelect implements AstSelect {
   public AstSelect filter(Predicate<AstNode> predicate) {
     List<AstNode> result = new ArrayList<>();
     for (AstNode node : list) {
-      if (predicate.apply(node)) {
+      if (predicate.test(node)) {
         result.add(node);
       }
     }

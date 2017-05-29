@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.ast.select;
 
-import com.google.common.base.Predicate;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import org.sonar.sslr.ast.AstSelect;
@@ -28,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * {@link AstSelect} which contains exactly one element.
@@ -161,7 +161,7 @@ public class SingleAstSelect implements AstSelect {
 
   @Override
   public AstSelect filter(Predicate<AstNode> predicate) {
-    return predicate.apply(node) ? this : AstSelectFactory.empty();
+    return predicate.test(node) ? this : AstSelectFactory.empty();
   }
 
   @Override

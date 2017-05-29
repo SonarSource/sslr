@@ -19,11 +19,11 @@
  */
 package org.sonar.sslr.ast;
 
-import com.google.common.base.Predicate;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 /**
  * An immutable ordered collection of AST nodes with operations for selection.

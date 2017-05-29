@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.ast;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
@@ -31,6 +30,8 @@ import org.sonar.sslr.ast.AstSelect;
 import org.sonar.sslr.internal.ast.select.AstSelectFactory;
 import org.sonar.sslr.internal.ast.select.ListAstSelect;
 import org.sonar.sslr.internal.ast.select.SingleAstSelect;
+
+import java.util.function.Predicate;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -227,7 +228,7 @@ public class SingleAstSelectTest {
     Predicate<AstNode> predicate = mock(Predicate.class);
     assertThat((Object) select.filter(predicate)).isSameAs(AstSelectFactory.empty());
 
-    when(predicate.apply(node)).thenReturn(true);
+    when(predicate.test(node)).thenReturn(true);
     assertThat((Object) select.filter(predicate)).isSameAs(select);
   }
 
