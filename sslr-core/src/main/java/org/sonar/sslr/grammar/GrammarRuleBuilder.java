@@ -86,11 +86,4 @@ public interface GrammarRuleBuilder {
    */
   void skipIfOneChild();
 
-  /**
-   * @deprecated in 1.19, no difference between usual grammar rule and "recovery rule" - both will be presented in AST and so can be handled via AST visitor.
-   * @throws UnsupportedOperationException always
-   */
-  @Deprecated
-  void recoveryRule();
-
 }

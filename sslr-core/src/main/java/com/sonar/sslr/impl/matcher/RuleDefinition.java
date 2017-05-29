@@ -86,11 +86,6 @@ public class RuleDefinition implements Rule, AstNodeSkippingPolicy, GrammarRuleK
   }
 
   @Override
-  public void skipIf(AstNodeSkippingPolicy astNodeSkipPolicy) {
-    astNodeSkippingPolicy = astNodeSkipPolicy;
-  }
-
-  @Override
   public void skipIfOneChild() {
     astNodeSkippingPolicy = SkipFromAstIfOnlyOneChild.INSTANCE;
   }
@@ -105,10 +100,6 @@ public class RuleDefinition implements Rule, AstNodeSkippingPolicy, GrammarRuleK
     if (matchers.length == 0) {
       throw new IllegalStateException("The rule '" + ruleKey + "' should at least contains one matcher.");
     }
-  }
-
-  @Override
-  public void recoveryRule() {
   }
 
   @Override

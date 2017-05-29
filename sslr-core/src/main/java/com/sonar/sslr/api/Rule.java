@@ -60,14 +60,6 @@ public interface Rule extends AstNodeType {
   void skip();
 
   /**
-   * Defines policy of creation of AST node for this rule.
-   *
-   * @deprecated in 1.19
-   */
-  @Deprecated
-  void skipIf(AstNodeSkippingPolicy policy);
-
-  /**
    * Indicates that grammar rule should not lead to creation of AST node if it has exactly one child.
    *
    * @deprecated in 1.19, use {@link org.sonar.sslr.grammar.GrammarRuleBuilder#skipIfOneChild()} instead.
@@ -83,11 +75,5 @@ public interface Rule extends AstNodeType {
    */
   @Deprecated
   void mock();
-
-  /**
-   * @deprecated in 1.19, no difference between usual grammar rule and "recovery rule" - both will be presented in AST and so can be handled via AST visitor.
-   */
-  @Deprecated
-  void recoveryRule();
 
 }

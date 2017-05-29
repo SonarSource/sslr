@@ -111,10 +111,4 @@ public class RuleBuilderTest {
     verify(delegate).skipIfOneChild();
   }
 
-  @Test
-  public void recovery_rule_not_supported() {
-    thrown.expect(UnsupportedOperationException.class);
-    ruleBuilder.recoveryRule();
-  }
-
 }

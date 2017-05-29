@@ -41,16 +41,6 @@ public class ParserTest {
   }
 
   @Test
-  public void lexerErrorNotWorthToRetry() {
-    try {
-      parseString(".");
-      throw new AssertionError("This should be unreachable!");
-    } catch (RecognitionException re) {
-      assertThat(re.isToRetryWithExtendStackTrace()).isFalse();
-    }
-  }
-
-  @Test
   public void parse() {
     AstNode compilationUnit = parseString("");
     assertThat(compilationUnit.getNumberOfChildren()).isEqualTo(1);

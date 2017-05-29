@@ -61,14 +61,6 @@ public class MutableParsingRuleTest {
   }
 
   @Test
-  public void recovery_rule_not_supported() {
-    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
-    MutableParsingRule rule = new MutableParsingRule(ruleKey);
-    thrown.expect(UnsupportedOperationException.class);
-    rule.recoveryRule();
-  }
-
-  @Test
   public void should_not_skip_from_AST() {
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
     MutableParsingRule rule = new MutableParsingRule(ruleKey);

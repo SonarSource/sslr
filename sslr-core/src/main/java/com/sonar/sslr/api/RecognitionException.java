@@ -58,20 +58,4 @@ public class RecognitionException extends RuntimeException {
     return line;
   }
 
-  /**
-   * @deprecated in 1.19
-   */
-  @Deprecated
-  public boolean isToRetryWithExtendStackTrace() {
-    return false;
-  }
-
-  /**
-   * @deprecated in 1.19
-   */
-  @Deprecated
-  public boolean isFatal() {
-    return true;
-  }
-
 }

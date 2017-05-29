@@ -322,11 +322,6 @@ abstract class GrammarBuilder {
       delegate.skipIfOneChild();
     }
 
-    @Override
-    public void recoveryRule() {
-      throw new UnsupportedOperationException();
-    }
-
   }
 
 }

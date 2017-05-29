@@ -22,11 +22,8 @@ package com.sonar.sslr.impl;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.RecognitionException;
-import com.sonar.sslr.api.RecognitionExceptionListener;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.events.ExtendedStackTrace;
-import com.sonar.sslr.impl.events.ParsingEventListener;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.sonar.sslr.internal.matchers.LexerfulAstCreator;
 import org.sonar.sslr.internal.vm.CompilableGrammarRule;
@@ -132,46 +129,6 @@ public class Parser<G extends Grammar> {
 
     public Builder<G> withLexer(Lexer lexer) {
       this.lexer = lexer;
-      return this;
-    }
-
-    /**
-     * @deprecated in 1.19
-     */
-    @Deprecated
-    public Builder<G> setParsingEventListeners(ParsingEventListener... parsingEventListeners) {
-      return this;
-    }
-
-    /**
-     * @deprecated in 1.19
-     */
-    @Deprecated
-    public Builder<G> addParsingEventListeners(ParsingEventListener... parsingEventListeners) {
-      return this;
-    }
-
-    /**
-     * @deprecated in 1.19
-     */
-    @Deprecated
-    public Builder<G> setRecognictionExceptionListener(RecognitionExceptionListener... listeners) {
-      return this;
-    }
-
-    /**
-     * @deprecated in 1.19
-     */
-    @Deprecated
-    public Builder<G> addRecognictionExceptionListeners(RecognitionExceptionListener... listeners) {
-      return this;
-    }
-
-    /**
-     * @deprecated in 1.19
-     */
-    @Deprecated
-    public Builder<G> setExtendedStackTrace(ExtendedStackTrace extendedStackTrace) {
       return this;
     }
 

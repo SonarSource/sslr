@@ -117,16 +117,6 @@ public class MutableParsingRule implements CompilableGrammarRule, Matcher, Rule,
   }
 
   @Override
-  public void skipIf(AstNodeSkippingPolicy policy) {
-    astNodeSkippingPolicy = policy;
-  }
-
-  @Override
-  public void recoveryRule() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
   public boolean hasToBeSkippedFromAst(AstNode node) {
     return astNodeSkippingPolicy.hasToBeSkippedFromAst(node);
   }

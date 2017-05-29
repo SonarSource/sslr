@@ -202,12 +202,4 @@ public class LexerlessGrammarBuilderTest {
     b.rule(ruleKey).is("foo", "bar");
   }
 
-  @Test
-  public void recovery_rule_not_supported() {
-    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
-    GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
-    thrown.expect(UnsupportedOperationException.class);
-    b.rule(ruleKey).recoveryRule();
-  }
-
 }
