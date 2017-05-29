@@ -19,8 +19,6 @@
  */
 package org.sonar.sslr.channel;
 
-import com.google.common.io.CharStreams;
-
 import java.io.FilterReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -73,12 +71,22 @@ public class CodeBuffer implements CharSequence {
 
       /* Make sure to close the filtered reader when done (cascading through the lot) */
       try (Reader usedReader = filteredReader) {
-        buffer = CharStreams.toString(usedReader).toCharArray();
+        buffer = read(usedReader);
       }
 
     } catch (IOException e) {
       throw new ChannelException(e.getMessage(), e);
     }
+  }
+
+  private char[] read(Reader reader) throws IOException {
+    StringBuilder sb = new StringBuilder();
+    char[] str = new char[4 * 1024];
+    int n;
+    while ((n = reader.read(str)) > 0) {
+      sb.append(str, 0, n);
+    }
+    return sb.toString().toCharArray();
   }
 
   /**
