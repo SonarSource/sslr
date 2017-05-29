@@ -19,8 +19,6 @@
  */
 package com.sonar.sslr.impl.typed;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.typed.GrammarBuilder;
 import com.sonar.sslr.api.typed.NonterminalBuilder;
@@ -47,7 +45,10 @@ import java.util.Set;
 public class GrammarBuilderInterceptor<T> implements MethodInterceptor, GrammarBuilder<T>, NonterminalBuilder {
 
   private final LexerlessGrammarBuilder b;
-  private final BiMap<Method, GrammarRuleKey> mapping = HashBiMap.create();
+
+  private final Set<GrammarRuleKey> mappedRuleKeys = new HashSet<>();
+  private final Map<Method, GrammarRuleKey> methodToRuleKey = new HashMap<>();
+
   private final Map<GrammarRuleKey, Method> actions = new HashMap<>();
   private final Set<GrammarRuleKey> optionals = new HashSet<>();
   private final Set<GrammarRuleKey> oneOrMores = new HashSet<>();
@@ -85,7 +86,8 @@ public class GrammarBuilderInterceptor<T> implements MethodInterceptor, GrammarB
   @Override
   public <U> NonterminalBuilder<U> nonterminal(GrammarRuleKey ruleKey) {
     this.ruleKey = ruleKey;
-    this.mapping.put(this.buildingMethod, this.ruleKey);
+    this.mappedRuleKeys.add(ruleKey);
+    this.methodToRuleKey.put(this.buildingMethod, this.ruleKey);
     return this;
   }
 
@@ -189,11 +191,11 @@ public class GrammarBuilderInterceptor<T> implements MethodInterceptor, GrammarB
 
   @Nullable
   public GrammarRuleKey ruleKeyForMethod(Method method) {
-    return mapping.get(method);
+    return methodToRuleKey.get(method);
   }
 
   public boolean hasMethodForRuleKey(Object ruleKey) {
-    return mapping.containsValue(ruleKey);
+    return mappedRuleKeys.contains(ruleKey);
   }
 
   public boolean isOptionalRule(Object ruleKey) {
