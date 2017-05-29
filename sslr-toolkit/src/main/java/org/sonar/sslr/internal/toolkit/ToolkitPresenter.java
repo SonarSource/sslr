@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.toolkit;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
 import org.sonar.sslr.toolkit.ConfigurationModel;
@@ -52,14 +51,14 @@ public class ToolkitPresenter {
     this.view = view;
   }
 
-  @VisibleForTesting
+  // @VisibleForTesting
   void checkInitialized() {
     if (view == null) {
       throw new IllegalStateException("the view must be set before the presenter can be ran");
     }
   }
 
-  @VisibleForTesting
+  // @VisibleForTesting
   void initUncaughtExceptionsHandler() {
     Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
       @Override
@@ -74,7 +73,7 @@ public class ToolkitPresenter {
     });
   }
 
-  @VisibleForTesting
+  // @VisibleForTesting
   void initConfigurationTab() {
     for (ConfigurationProperty configurationProperty : configurationModel.getProperties()) {
       view.addConfigurationProperty(configurationProperty.getName(), configurationProperty.getDescription());

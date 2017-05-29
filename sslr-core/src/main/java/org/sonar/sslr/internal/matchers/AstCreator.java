@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.matchers;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
@@ -179,7 +178,7 @@ public final class AstCreator {
     return result.toString();
   }
 
-  @VisibleForTesting
+  // @VisibleForTesting
   static final TokenType UNDEFINED_TOKEN_TYPE = new TokenType() {
     @Override
     public String getName() {

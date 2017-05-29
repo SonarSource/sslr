@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.vm;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Token;
 import org.sonar.sslr.grammar.GrammarException;
@@ -106,7 +105,7 @@ public class Machine implements CharSequence {
     execute(instructions);
   }
 
-  @VisibleForTesting
+  // @VisibleForTesting
   public static boolean execute(String input, Instruction[] instructions) {
     Machine machine = new Machine(input, instructions);
     while (machine.address != -1 && machine.address < instructions.length) {
@@ -115,7 +114,7 @@ public class Machine implements CharSequence {
     return machine.matched;
   }
 
-  @VisibleForTesting
+  // @VisibleForTesting
   public static boolean execute(Instruction[] instructions, Token... input) {
     Machine machine = new Machine(null, input, instructions, NOP_HANDLER);
     while (machine.address != -1 && machine.address < instructions.length) {
@@ -153,7 +152,7 @@ public class Machine implements CharSequence {
     }
   };
 
-  @VisibleForTesting
+  // @VisibleForTesting
   public Machine(String input, Instruction[] instructions) {
     this(input, instructions, NOP_HANDLER);
   }

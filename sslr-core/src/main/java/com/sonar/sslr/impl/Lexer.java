@@ -19,7 +19,6 @@
  */
 package com.sonar.sslr.impl;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.sonar.sslr.api.Preprocessor;
 import com.sonar.sslr.api.PreprocessorAction;
 import com.sonar.sslr.api.Token;
@@ -103,7 +102,7 @@ public class Lexer {
    * @param sourceCode
    * @return
    */
-  @VisibleForTesting
+  // @VisibleForTesting
   public List<Token> lex(String sourceCode) {
     Objects.requireNonNull(sourceCode, "sourceCode cannot be null");
 

@@ -19,7 +19,6 @@
  */
 package com.sonar.sslr.impl.xpath;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.sonar.sslr.api.AstNode;
 import org.jaxen.DefaultNavigator;
 import org.jaxen.XPath;
@@ -252,7 +251,7 @@ public class AstNodeNavigator extends DefaultNavigator {
     return null;
   }
 
-  @VisibleForTesting
+  // @VisibleForTesting
   public static class Attribute {
 
     private final String name;

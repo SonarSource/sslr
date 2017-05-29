@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.parser;
 
-import com.google.common.annotations.VisibleForTesting;
 import org.sonar.sslr.internal.matchers.InputBuffer;
 import org.sonar.sslr.internal.matchers.ParseNode;
 
@@ -59,7 +58,7 @@ public class ParsingResult {
     return parseError;
   }
 
-  @VisibleForTesting
+  // @VisibleForTesting
   public ParseNode getParseTreeRoot() {
     return parseTreeRoot;
   }
