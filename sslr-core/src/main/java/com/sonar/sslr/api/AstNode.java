@@ -19,7 +19,6 @@
  */
 package com.sonar.sslr.api;
 
-import com.google.common.annotations.Beta;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.sonar.sslr.ast.AstSelect;
 import org.sonar.sslr.internal.ast.select.AstSelectFactory;
@@ -671,8 +670,9 @@ public class AstNode {
 
   /**
    * @since 1.18
+   * @deprecated in 1.22
    */
-  @Beta
+  @Deprecated
   public AstSelect select() {
     return AstSelectFactory.select(this);
   }

@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.ast;
 
-import com.google.common.annotations.Beta;
 import com.google.common.base.Predicate;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
@@ -33,8 +32,9 @@ import java.util.Iterator;
  * <p>This interface is not intended to be implemented by clients.</p>
  *
  * @since 1.18
+ * @deprecated in 1.22
  */
-@Beta
+@Deprecated
 public interface AstSelect extends Iterable<AstNode> {
 
   /**
