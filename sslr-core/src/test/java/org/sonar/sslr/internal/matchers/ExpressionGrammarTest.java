@@ -24,7 +24,6 @@ import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import org.junit.Before;
 import org.junit.Test;
-import org.sonar.sslr.internal.text.LocatedText;
 import org.sonar.sslr.parser.ParseError;
 import org.sonar.sslr.parser.ParseErrorFormatter;
 import org.sonar.sslr.parser.ParseRunner;

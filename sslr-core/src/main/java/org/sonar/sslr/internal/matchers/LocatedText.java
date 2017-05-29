@@ -17,20 +17,23 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.sslr.internal.text;
-
-import org.sonar.sslr.text.TextLocation;
+package org.sonar.sslr.internal.matchers;
 
 import javax.annotation.Nullable;
 
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-public class LocatedText extends PlainText {
+public class LocatedText implements CharSequence {
+
+  private static final int[] EMPTY_INT_ARRAY = new int[0];
 
   private final File file;
   private final URI uri;
+  private final char[] chars;
 
   /**
    * Indices of lines.
@@ -39,14 +42,39 @@ public class LocatedText extends PlainText {
   private final int[] lines;
 
   public LocatedText(@Nullable File file, char[] chars) {
-    super(chars);
     this.file = file;
     this.uri = file == null ? null : file.toURI();
-    this.lines = TextUtils.computeLines(chars);
+    this.chars = chars;
+    this.lines = computeLines(chars);
   }
 
   @Override
-  public TextLocation getLocation(int index) {
+  public int length() {
+    return chars.length;
+  }
+
+  public char[] toChars() {
+    char[] chars = new char[length()];
+    System.arraycopy(this.chars, 0, chars, 0, chars.length);
+    return chars;
+  }
+
+  @Override
+  public char charAt(int index) {
+    return chars[index];
+  }
+
+  @Override
+  public CharSequence subSequence(int from, int to) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public String toString() {
+    return new String(toChars());
+  }
+
+  TextLocation getLocation(int index) {
     if (index < 0 || index > length()) {
       throw new IndexOutOfBoundsException();
     }
@@ -62,6 +90,35 @@ public class LocatedText extends PlainText {
 
   private int getLineStart(int line) {
     return line == 1 ? 0 : lines[line - 2];
+  }
+
+  private static int[] computeLines(char[] chars) {
+    List<Integer> newlines = new ArrayList<>();
+    int i = 0;
+    while (i < chars.length) {
+      if (isEndOfLine(chars, i)) {
+        newlines.add(i + 1);
+      }
+      i++;
+    }
+    if (newlines.isEmpty()) {
+      return EMPTY_INT_ARRAY;
+    }
+    int[] lines = new int[newlines.size()];
+    for (i = 0; i < newlines.size(); i++) {
+      lines[i] = newlines.get(i);
+    }
+    return lines;
+  }
+
+  /**
+   * A line is considered to be terminated by any one of
+   * a line feed ({@code '\n'}), a carriage return ({@code '\r'}),
+   * or a carriage return followed immediately by a line feed ({@code "\r\n"}).
+   */
+  private static boolean isEndOfLine(char[] buffer, int i) {
+    return buffer[i] == '\n' ||
+      buffer[i] == '\r' && (i + 1 < buffer.length && buffer[i + 1] != '\n' || i + 1 == buffer.length);
   }
 
 }

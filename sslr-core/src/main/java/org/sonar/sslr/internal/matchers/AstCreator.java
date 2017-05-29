@@ -26,13 +26,9 @@ import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.api.Trivia.TriviaKind;
 import org.sonar.sslr.internal.grammar.MutableParsingRule;
-import org.sonar.sslr.internal.text.CompositeText.CompositeTextCharSequence;
 import org.sonar.sslr.internal.vm.TokenExpression;
 import org.sonar.sslr.internal.vm.TriviaExpression;
 import org.sonar.sslr.parser.ParsingResult;
-import org.sonar.sslr.text.Text;
-import org.sonar.sslr.text.TextCharSequence;
-import org.sonar.sslr.text.TextLocation;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -53,19 +49,19 @@ public final class AstCreator {
     }
   }
 
-  private final TextCharSequence input;
+  private final LocatedText input;
   private final Token.Builder tokenBuilder = Token.builder();
   private final List<Trivia> trivias = new ArrayList<>();
 
-  public static AstNode create(ParsingResult parsingResult, Text input) {
+  public static AstNode create(ParsingResult parsingResult, LocatedText input) {
     AstNode astNode = new AstCreator(input).visit(parsingResult.getParseTreeRoot());
     // Unwrap AstNodeType for root node:
     astNode.hasToBeSkippedFromAst();
     return astNode;
   }
 
-  private AstCreator(Text input) {
-    this.input = input.sequence();
+  private AstCreator(LocatedText input) {
+    this.input = input;
   }
 
   private AstNode visit(ParseNode node) {
@@ -124,15 +120,7 @@ public final class AstCreator {
       tokenBuilder.setLine(location.getLine());
       tokenBuilder.setColumn(location.getColumn() - 1);
       tokenBuilder.setURI(location.getFileURI() == null ? FAKE_URI : location.getFileURI());
-
-      TextLocation copyLocation = input instanceof CompositeTextCharSequence
-          ? ((CompositeTextCharSequence) input).getCopyLocation(node.getStartIndex())
-          : null;
-      if (copyLocation == null) {
-        tokenBuilder.notCopyBook();
-      } else {
-        tokenBuilder.setCopyBook(copyLocation.getFile().getAbsolutePath(), copyLocation.getLine());
-      }
+      tokenBuilder.notCopyBook();
     }
 
     String value = getValue(node);

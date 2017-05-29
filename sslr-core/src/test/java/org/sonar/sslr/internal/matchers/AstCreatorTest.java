@@ -30,7 +30,6 @@ import com.sonar.sslr.impl.ast.AstXmlPrinter;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.sonar.sslr.internal.grammar.MutableParsingRule;
-import org.sonar.sslr.internal.text.LocatedText;
 import org.sonar.sslr.internal.vm.TokenExpression;
 import org.sonar.sslr.parser.ParsingResult;
 

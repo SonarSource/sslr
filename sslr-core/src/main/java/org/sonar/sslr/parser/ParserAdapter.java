@@ -26,12 +26,7 @@ import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.sonar.sslr.internal.matchers.AstCreator;
 import org.sonar.sslr.internal.matchers.InputBuffer;
-import org.sonar.sslr.internal.text.AbstractText;
-import org.sonar.sslr.internal.text.LocatedText;
-import org.sonar.sslr.text.PreprocessorsChain;
-import org.sonar.sslr.text.Text;
-
-import javax.annotation.Nullable;
+import org.sonar.sslr.internal.matchers.LocatedText;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,20 +47,11 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
 
   private final Charset charset;
   private final ParseRunner parseRunner;
-  private PreprocessorsChain preprocessorsChain;
 
   public ParserAdapter(Charset charset, G grammar) {
-    this(charset, grammar, null);
-  }
-
-  /**
-   * @since 1.17
-   */
-  public ParserAdapter(Charset charset, G grammar, @Nullable PreprocessorsChain preprocessorsChain) {
     super(Objects.requireNonNull(grammar, "grammar"));
     this.charset = Objects.requireNonNull(charset, "charset");
     this.parseRunner = new ParseRunner(grammar.getRootRule());
-    this.preprocessorsChain = preprocessorsChain;
   }
 
   /**
@@ -75,7 +61,7 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
   @Override
   public AstNode parse(String source) {
     // LocatedText is used in order to be able to retrieve TextLocation
-    Text text = new LocatedText(null, source.toCharArray());
+    LocatedText text = new LocatedText(null, source.toCharArray());
     return parse(text);
   }
 
@@ -85,7 +71,7 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
    */
   @Override
   public AstNode parse(File file) {
-    Text text = new LocatedText(file, fileToCharArray(file, charset));
+    LocatedText text = new LocatedText(file, fileToCharArray(file, charset));
     return parse(text);
   }
 
@@ -97,13 +83,8 @@ public class ParserAdapter<G extends LexerlessGrammar> extends Parser<G> {
     }
   }
 
-  private AstNode parse(Text input) {
-    if (preprocessorsChain != null) {
-      input = preprocessorsChain.process(input);
-    }
-    // This cast is safe, even if not checked - AbstractText is a base implementation of interface Text
-    // TODO Godin: however would be better to get rid of it
-    char[] chars = ((AbstractText) input).toChars();
+  private AstNode parse(LocatedText input) {
+    char[] chars = input.toChars();
     ParsingResult result = parseRunner.parse(chars);
     if (result.isMatched()) {
       return AstCreator.create(result, input);

@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.sslr.text;
+package org.sonar.sslr.internal.matchers;
 
 import java.io.File;
 import java.net.URI;
@@ -25,23 +25,12 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-/**
- * <p>This class is not intended to be instantiated or subclassed by clients.</p>
- *
- * @since 1.17
- * @deprecated in 1.20, use your own text API instead.
- */
-@Deprecated
-public class TextLocation {
+class TextLocation {
 
   private final File file;
   private final URI uri;
   private final int line;
   private final int column;
-
-  public TextLocation(@Nullable File file, int line, int column) {
-    this(file, file == null ? null : file.toURI(), line, column);
-  }
 
   public TextLocation(@Nullable File file, @Nullable URI uri, int line, int column) {
     this.file = file;
