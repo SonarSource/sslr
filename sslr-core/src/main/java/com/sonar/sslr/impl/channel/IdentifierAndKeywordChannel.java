@@ -22,11 +22,11 @@ package com.sonar.sslr.impl.channel;
 import org.sonar.sslr.channel.Channel;
 import org.sonar.sslr.channel.CodeReader;
 
-import com.google.common.collect.ImmutableMap;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.Lexer;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,7 +35,7 @@ import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
 
 public class IdentifierAndKeywordChannel extends Channel<Lexer> {
 
-  private final Map<String, TokenType> keywordsMap;
+  private final Map<String, TokenType> keywordsMap = new HashMap<>();
   private final StringBuilder tmpBuilder = new StringBuilder();
   private final Matcher matcher;
   private final boolean caseSensitive;
@@ -45,14 +45,12 @@ public class IdentifierAndKeywordChannel extends Channel<Lexer> {
    * @throws java.util.regex.PatternSyntaxException if the expression's syntax is invalid
    */
   public IdentifierAndKeywordChannel(String regexp, boolean caseSensitive, TokenType[]... keywordSets) {
-    ImmutableMap.Builder<String, TokenType> keywordsMapBuilder = ImmutableMap.builder();
     for (TokenType[] keywords : keywordSets) {
       for (TokenType keyword : keywords) {
         String keywordValue = caseSensitive ? keyword.getValue() : keyword.getValue().toUpperCase();
-        keywordsMapBuilder.put(keywordValue, keyword);
+        keywordsMap.put(keywordValue, keyword);
       }
     }
-    this.keywordsMap = keywordsMapBuilder.build();
     this.caseSensitive = caseSensitive;
     matcher = Pattern.compile(regexp).matcher("");
   }
