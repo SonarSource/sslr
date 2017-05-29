@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.grammar;
 
-import com.google.common.collect.Lists;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
@@ -249,7 +248,7 @@ public class LexerfulGrammarBuilder extends GrammarBuilder {
    * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public Object exclusiveTill(Object e1, Object... rest) {
-    return exclusiveTill(new FirstOfExpression(convertToExpressions(Lists.asList(e1, rest))));
+    return exclusiveTill(new FirstOfExpression(convertToExpressions(e1, rest)));
   }
 
   @Override

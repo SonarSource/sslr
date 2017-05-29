@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.grammar;
 
-import com.google.common.collect.Lists;
 import org.sonar.sslr.internal.vm.CompilableGrammarRule;
 import org.sonar.sslr.internal.vm.FirstOfExpression;
 import org.sonar.sslr.internal.vm.NextExpression;
@@ -30,8 +29,6 @@ import org.sonar.sslr.internal.vm.OptionalExpression;
 import org.sonar.sslr.internal.vm.ParsingExpression;
 import org.sonar.sslr.internal.vm.SequenceExpression;
 import org.sonar.sslr.internal.vm.ZeroOrMoreExpression;
-
-import java.util.List;
 
 /**
  * <p>This class is not intended to be instantiated or subclassed by clients.</p>
@@ -73,7 +70,7 @@ abstract class GrammarBuilder {
    * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public final Object sequence(Object e1, Object e2, Object... rest) {
-    return new SequenceExpression(convertToExpressions(Lists.asList(e1, e2, rest)));
+    return new SequenceExpression(convertToExpressions(e1, e2, rest));
   }
 
   /**
@@ -101,7 +98,7 @@ abstract class GrammarBuilder {
    * @throws IllegalArgumentException if any of given arguments is not a parsing expression
    */
   public final Object firstOf(Object e1, Object e2, Object... rest) {
-    return new FirstOfExpression(convertToExpressions(Lists.asList(e1, e2, rest)));
+    return new FirstOfExpression(convertToExpressions(e1, e2, rest));
   }
 
   /**
@@ -129,7 +126,7 @@ abstract class GrammarBuilder {
    * @see #sequence(Object, Object)
    */
   public final Object optional(Object e1, Object... rest) {
-    return new OptionalExpression(new SequenceExpression(convertToExpressions(Lists.asList(e1, rest))));
+    return new OptionalExpression(new SequenceExpression(convertToExpressions(e1, rest)));
   }
 
   /**
@@ -161,7 +158,7 @@ abstract class GrammarBuilder {
    * @see #sequence(Object, Object)
    */
   public final Object oneOrMore(Object e1, Object... rest) {
-    return new OneOrMoreExpression(new SequenceExpression(convertToExpressions(Lists.asList(e1, rest))));
+    return new OneOrMoreExpression(new SequenceExpression(convertToExpressions(e1, rest)));
   }
 
   /**
@@ -193,7 +190,7 @@ abstract class GrammarBuilder {
    * @see #sequence(Object, Object)
    */
   public final Object zeroOrMore(Object e1, Object... rest) {
-    return new ZeroOrMoreExpression(new SequenceExpression(convertToExpressions(Lists.asList(e1, rest))));
+    return new ZeroOrMoreExpression(new SequenceExpression(convertToExpressions(e1, rest)));
   }
 
   /**
@@ -219,7 +216,7 @@ abstract class GrammarBuilder {
    * @see #sequence(Object, Object)
    */
   public final Object next(Object e1, Object... rest) {
-    return new NextExpression(new SequenceExpression(convertToExpressions(Lists.asList(e1, rest))));
+    return new NextExpression(new SequenceExpression(convertToExpressions(e1, rest)));
   }
 
   /**
@@ -245,7 +242,7 @@ abstract class GrammarBuilder {
    * @see #sequence(Object, Object)
    */
   public final Object nextNot(Object e1, Object... rest) {
-    return new NextNotExpression(new SequenceExpression(convertToExpressions(Lists.asList(e1, rest))));
+    return new NextNotExpression(new SequenceExpression(convertToExpressions(e1, rest)));
   }
 
   /**
@@ -258,10 +255,21 @@ abstract class GrammarBuilder {
 
   protected abstract ParsingExpression convertToExpression(Object e);
 
-  protected final ParsingExpression[] convertToExpressions(List<Object> expressions) {
-    ParsingExpression[] result = new ParsingExpression[expressions.size()];
-    for (int i = 0; i < expressions.size(); i++) {
-      result[i] = convertToExpression(expressions.get(i));
+  final ParsingExpression[] convertToExpressions(Object e1, Object[] rest) {
+    ParsingExpression[] result = new ParsingExpression[1 + rest.length];
+    result[0] = convertToExpression(e1);
+    for (int i = 0; i < rest.length; i++) {
+      result[1 + i] = convertToExpression(rest[i]);
+    }
+    return result;
+  }
+
+  private ParsingExpression[] convertToExpressions(Object e1, Object e2, Object[] rest) {
+    ParsingExpression[] result = new ParsingExpression[2 + rest.length];
+    result[0] = convertToExpression(e1);
+    result[1] = convertToExpression(e2);
+    for (int i = 0; i < rest.length; i++) {
+      result[2 + i] = convertToExpression(rest[i]);
     }
     return result;
   }
@@ -290,7 +298,7 @@ abstract class GrammarBuilder {
 
     @Override
     public GrammarRuleBuilder is(Object e, Object... rest) {
-      return is(new SequenceExpression(b.convertToExpressions(Lists.asList(e, rest))));
+      return is(new SequenceExpression(b.convertToExpressions(e, rest)));
     }
 
     @Override
@@ -301,7 +309,7 @@ abstract class GrammarBuilder {
 
     @Override
     public GrammarRuleBuilder override(Object e, Object... rest) {
-      return override(new SequenceExpression(b.convertToExpressions(Lists.asList(e, rest))));
+      return override(new SequenceExpression(b.convertToExpressions(e, rest)));
     }
 
     @Override
