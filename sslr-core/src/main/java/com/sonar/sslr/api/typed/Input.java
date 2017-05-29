@@ -19,15 +19,15 @@
  */
 package com.sonar.sslr.api.typed;
 
-import com.google.common.annotations.Beta;
-
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Beta
+/**
+ * @since 1.21
+ */
 public class Input {
 
   private static final URI FAKE_URI = new File("tests://unittests").toURI();

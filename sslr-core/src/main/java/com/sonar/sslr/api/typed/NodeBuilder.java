@@ -19,7 +19,6 @@
  */
 package com.sonar.sslr.api.typed;
 
-import com.google.common.annotations.Beta;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.api.Trivia;
@@ -27,7 +26,9 @@ import org.sonar.sslr.grammar.GrammarRuleKey;
 
 import java.util.List;
 
-@Beta
+/**
+ * @since 1.21
+ */
 public interface NodeBuilder {
 
   Object createNonTerminal(GrammarRuleKey ruleKey, Rule rule, List<Object> children, int startIndex, int endIndex);

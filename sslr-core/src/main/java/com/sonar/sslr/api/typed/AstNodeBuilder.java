@@ -19,7 +19,6 @@
  */
 package com.sonar.sslr.api.typed;
 
-import com.google.common.annotations.Beta;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.api.Token;
@@ -29,7 +28,9 @@ import org.sonar.sslr.grammar.GrammarRuleKey;
 
 import java.util.List;
 
-@Beta
+/**
+ * @since 1.21
+ */
 public class AstNodeBuilder implements NodeBuilder {
 
   private static final TokenType UNDEFINED_TOKEN_TYPE = new UndefinedTokenType();

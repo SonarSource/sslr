@@ -19,13 +19,14 @@
  */
 package com.sonar.sslr.api.typed;
 
-import com.google.common.annotations.Beta;
 import com.sonar.sslr.api.AstNode;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 
 import java.util.List;
 
-@Beta
+/**
+ * @since 1.21
+ */
 public interface GrammarBuilder<T> {
 
   <U> NonterminalBuilder<U> nonterminal();

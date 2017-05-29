@@ -19,7 +19,6 @@
  */
 package com.sonar.sslr.api.typed;
 
-import com.google.common.annotations.Beta;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.impl.typed.GrammarBuilderInterceptor;
 import com.sonar.sslr.impl.typed.ReflectionUtils;
@@ -42,7 +41,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-@Beta
+/**
+ * @since 1.21
+ */
 public class ActionParser<N> {
 
   private final Charset charset;

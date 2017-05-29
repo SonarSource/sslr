@@ -19,16 +19,15 @@
  */
 package com.sonar.sslr.api.typed;
 
-import com.google.common.annotations.Beta;
-
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
 /**
- * Loosely modeled after {@link com.google.common.base.Optional}.
+ * Loosely modeled after {@link java.util.Optional}.
+ *
+ * @since 1.21
  */
-@Beta
 public abstract class Optional<T> {
 
   @SuppressWarnings("unchecked")

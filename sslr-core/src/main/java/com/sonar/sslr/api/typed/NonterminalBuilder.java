@@ -19,9 +19,9 @@
  */
 package com.sonar.sslr.api.typed;
 
-import com.google.common.annotations.Beta;
-
-@Beta
+/**
+ * @since 1.21
+ */
 public interface NonterminalBuilder<T> {
 
   T is(T method);
