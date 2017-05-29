@@ -28,8 +28,7 @@ import org.jaxen.util.SingleObjectIterator;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Objects;
 
 @SuppressWarnings("serial")
 public class AstNodeNavigator extends DefaultNavigator {
@@ -182,7 +181,7 @@ public class AstNodeNavigator extends DefaultNavigator {
   @Override
   public Object getDocumentNode(Object contextNode) {
     computeDocumentNode(contextNode);
-    checkNotNull(documentNode, "Unable to compute the document node from the context node \"" + contextNode.getClass().getSimpleName() + "\": " + contextNode);
+    Objects.requireNonNull(documentNode, "Unable to compute the document node from the context node \"" + contextNode.getClass().getSimpleName() + "\": " + contextNode);
     return documentNode;
   }
 
