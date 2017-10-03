@@ -55,8 +55,8 @@
     <url>http://jira.sonarsource.com/browse/SSLR</url>
   </issueManagement>
   <ciManagement>
-    <system>Cloudbees</system>
-    <url>https://sonarplugins.ci.cloudbees.com/job/sslr/</url>
+    <system>Travis</system>
+    <url>https://travis-ci.org/SonarSource/sslr</url>
   </ciManagement>
 
   <properties>
