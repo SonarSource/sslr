@@ -73,31 +73,32 @@ public class SyntaxTreeCreator<T> {
     MutableParsingRule rule = (MutableParsingRule) node.getMatcher();
     GrammarRuleKey ruleKey = rule.getRuleKey();
     Method method = mapping.actionForRuleKey(ruleKey);
+    List<ParseNode> children = node.getChildren();
 
     Object result;
 
     if (mapping.hasMethodForRuleKey(ruleKey)) {
 
       // TODO Drop useless intermediate nodes
-      if (node.getChildren().size() != 1) {
+      if (children.size() != 1) {
         throw new IllegalStateException();
       }
-      result = visit(node.getChildren().get(0));
+      result = visit(children.get(0));
 
     } else if (mapping.isOptionalRule(ruleKey)) {
 
-      if (node.getChildren().size() > 1) {
+      if (children.size() > 1) {
         throw new IllegalStateException();
       }
-      if (node.getChildren().isEmpty()) {
+      if (children.isEmpty()) {
         result = Optional.absent();
       } else {
-        result = Optional.of(visit(node.getChildren().get(0)));
+        result = Optional.of(visit(children.get(0)));
       }
 
     } else {
-      List<Object> convertedChildren = new ArrayList<>();
-      for (ParseNode child : node.getChildren()) {
+      List<Object> convertedChildren = new ArrayList<>(children.size());
+      for (ParseNode child : children) {
         convertedChildren.add(visit(child));
       }
       if (mapping.isOneOrMoreRule(ruleKey)) {
