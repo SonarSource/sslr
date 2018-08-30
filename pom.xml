@@ -68,6 +68,7 @@
     <sonar.jacoco.reportPath>../sslr-core/target/jacoco.exec</sonar.jacoco.reportPath>
     <sonar.exclusions>target/generated-sources/**</sonar.exclusions>
     <gitRepositoryName>sslr</gitRepositoryName>
+    <version.release.plugin>2.5.3</version.release.plugin>
   </properties>
 
   <modules>
@@ -167,6 +168,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
+        <version>${version.release.plugin}</version>
         <configuration>
           <autoVersionSubmodules>true</autoVersionSubmodules>
           <localCheckout>true</localCheckout>
