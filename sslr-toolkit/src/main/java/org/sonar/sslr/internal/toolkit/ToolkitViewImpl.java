@@ -477,11 +477,11 @@ public class ToolkitViewImpl extends JFrame implements ToolkitView {
     AstNode followingAstNode = null;
 
     if (treeNode != null) {
-      Enumeration<DefaultMutableTreeNode> enumeration = ((DefaultMutableTreeNode) astTree.getModel().getRoot()).breadthFirstEnumeration();
+      Enumeration enumeration = ((DefaultMutableTreeNode) astTree.getModel().getRoot()).breadthFirstEnumeration();
 
       int nearestOffsetSoFar = Integer.MAX_VALUE;
       while (enumeration.hasMoreElements()) {
-        DefaultMutableTreeNode childTreeNode = enumeration.nextElement();
+        DefaultMutableTreeNode childTreeNode = (DefaultMutableTreeNode) enumeration.nextElement();
         if (childTreeNode.getUserObject() instanceof AstNode) {
           AstNode astNode = (AstNode) childTreeNode.getUserObject();
 
