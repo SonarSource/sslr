@@ -153,7 +153,7 @@ public class ToolkitPresenterTest {
     presenter = new ToolkitPresenter(configurationModel, mock(SourceCodeModel.class));
     presenter.setView(view);
     presenter.run("my_mocked_title");
-    verify(view).addConfigurationProperty(Mockito.anyString(), Mockito.anyString());
+    verify(view).addConfigurationProperty(any(), any());
   }
 
   @Test
