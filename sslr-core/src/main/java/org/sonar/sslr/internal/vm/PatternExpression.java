@@ -55,11 +55,21 @@ public class PatternExpression extends NativeExpression implements org.sonar.ssl
     } else {
       machine.backtrack();
     }
+
+    // Avoid keeping a reference to the "Machine" instance:
+    matcher.reset("");
   }
 
   @Override
   public String toString() {
     return "Pattern " + matcher.pattern().pattern();
+  }
+
+  /**
+   * Visible for testing.
+   */
+  Matcher getMatcher() {
+    return matcher;
   }
 
 }

@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.internal.vm;
 
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -61,6 +62,14 @@ public class PatternExpressionTest {
     inOrder.verify(machine).createLeafNode(expression, 3);
     inOrder.verify(machine).jump(1);
     verifyNoMoreInteractions(machine);
+
+    // Should reset matcher with empty string:
+    try {
+      expression.getMatcher().find(1);
+      Assert.fail("exception expected");
+    } catch (IndexOutOfBoundsException e) {
+      assertThat(e.getMessage()).isEqualTo("Illegal start index");
+    }
   }
 
   @Test
@@ -73,6 +82,14 @@ public class PatternExpressionTest {
     inOrder.verify(machine, atLeast(1)).charAt(0);
     inOrder.verify(machine).backtrack();
     verifyNoMoreInteractions(machine);
+
+    // Should reset matcher with empty string:
+    try {
+      expression.getMatcher().find(1);
+      Assert.fail("exception expected");
+    } catch (IndexOutOfBoundsException e) {
+      assertThat(e.getMessage()).isEqualTo("Illegal start index");
+    }
   }
 
   @Test
