@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.channel;
 
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -90,6 +91,16 @@ public class CodeReaderTest {
     assertEquals(3, reader.popTo(Pattern.compile("\\w+").matcher(new String()), token));
     assertEquals("123ABC", token.toString());
     assertEquals(-1, reader.popTo(Pattern.compile("\\w+").matcher(new String()), token));
+
+    // Should reset matcher with empty string:
+    Matcher matcher = Pattern.compile("\\d+").matcher("");
+    reader.popTo(matcher, token);
+    try {
+      matcher.find(1);
+      Assert.fail("exception expected");
+    } catch (IndexOutOfBoundsException e) {
+      assertEquals("Illegal start index", e.getMessage());
+    }
   }
 
   @Test

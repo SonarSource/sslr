@@ -176,6 +176,9 @@ public class CodeReader extends CodeBuffer {
       return -1;
     } catch (IOException e) {
       throw new ChannelException(e.getMessage(), e);
+    } finally {
+      // Avoid keeping a reference to the "CodeReader" instance:
+      matcher.reset("");
     }
     return -1;
   }
