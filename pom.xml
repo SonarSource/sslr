@@ -10,7 +10,7 @@
 
   <groupId>org.sonarsource.sslr</groupId>
   <artifactId>sslr</artifactId>
-  <version>1.23-SNAPSHOT</version>
+  <version>1.23</version>
   <packaging>pom</packaging>
 
   <name>SonarSource :: Language Recognizer</name>
