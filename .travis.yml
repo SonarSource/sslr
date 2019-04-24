@@ -11,11 +11,7 @@ cache:
 notifications:
   email: false
 
-jdk:
-  - oraclejdk8
-
-# Skip "install" stage:
-install: true
+jdk: openjdk11
 
 script: ./travis.sh
 
