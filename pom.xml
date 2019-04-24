@@ -69,6 +69,9 @@
     <sonar.exclusions>target/generated-sources/**</sonar.exclusions>
     <gitRepositoryName>sslr</gitRepositoryName>
     <version.release.plugin>2.5.3</version.release.plugin>
+
+    <!-- FIXME: warnings on javadoc should be fixed -->
+    <doclint>none</doclint>
   </properties>
 
   <modules>
@@ -179,5 +182,18 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <!-- Use javac's release flag for Java 9 and higher -->
+      <id>java9+</id>
+      <activation>
+        <jdk>[9,)</jdk>
+      </activation>
+      <properties>
+        <maven.compiler.release>8</maven.compiler.release>
+      </properties>
+    </profile>
+  </profiles>
 
 </project>
