@@ -37,7 +37,6 @@ import org.sonar.sslr.internal.vm.PatternExpression;
 import org.sonar.sslr.internal.vm.TriviaExpression;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
 import java.util.List;
