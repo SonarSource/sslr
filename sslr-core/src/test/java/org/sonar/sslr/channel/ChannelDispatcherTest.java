@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.channel;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -42,8 +43,8 @@ public class ChannelDispatcherTest {
   public void shouldAddChannels() {
     ChannelDispatcher<StringBuilder> dispatcher = ChannelDispatcher.builder().addChannels(new SpaceDeletionChannel(), new FakeChannel()).build();
     assertThat(dispatcher.getChannels().length, is(2));
-    assertThat(dispatcher.getChannels()[0], is(SpaceDeletionChannel.class));
-    assertThat(dispatcher.getChannels()[1], is(FakeChannel.class));
+    assertThat(dispatcher.getChannels()[0], is(instanceOf(SpaceDeletionChannel.class)));
+    assertThat(dispatcher.getChannels()[1], is(instanceOf(FakeChannel.class)));
   }
 
   @Test(expected = IllegalStateException.class)
