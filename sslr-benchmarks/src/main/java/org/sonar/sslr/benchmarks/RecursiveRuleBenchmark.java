@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.benchmarks;
 
-import com.google.common.base.Strings;
 import com.sonar.sslr.api.Grammar;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;

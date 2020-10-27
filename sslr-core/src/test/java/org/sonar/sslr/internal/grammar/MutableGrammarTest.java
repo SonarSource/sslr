@@ -19,10 +19,11 @@
  */
 package org.sonar.sslr.internal.grammar;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.vm.CompilableGrammarRule;
+
+import java.util.HashMap;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -35,7 +36,10 @@ public class MutableGrammarTest {
     CompilableGrammarRule rule = mock(CompilableGrammarRule.class);
     GrammarRuleKey rootRuleKey = mock(GrammarRuleKey.class);
     CompilableGrammarRule rootRule = mock(CompilableGrammarRule.class);
-    MutableGrammar grammar = new MutableGrammar(ImmutableMap.of(ruleKey, rule, rootRuleKey, rootRule), rootRuleKey);
+    HashMap<GrammarRuleKey, CompilableGrammarRule> rules = new HashMap<>();
+    rules.put(ruleKey, rule);
+    rules.put(rootRuleKey, rootRule);
+    MutableGrammar grammar = new MutableGrammar(rules, rootRuleKey);
     assertThat(grammar.rule(ruleKey)).isSameAs(rule);
     assertThat(grammar.getRootRule()).isSameAs(rootRule);
   }

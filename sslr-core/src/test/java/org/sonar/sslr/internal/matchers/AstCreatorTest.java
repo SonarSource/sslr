@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.matchers;
 
-import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.GenericTokenType;
@@ -33,6 +32,7 @@ import org.sonar.sslr.internal.grammar.MutableParsingRule;
 import org.sonar.sslr.internal.vm.TokenExpression;
 import org.sonar.sslr.parser.ParsingResult;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -53,7 +53,7 @@ public class AstCreatorTest {
 
     ParseNode triviaNode = new ParseNode(0, 4, Collections.<ParseNode>emptyList(), triviaMatcher);
     ParseNode tokenNode = new ParseNode(4, 7, Collections.<ParseNode>emptyList(), tokenMatcher);
-    ParseNode parseTreeRoot = new ParseNode(0, 7, ImmutableList.of(triviaNode, tokenNode), ruleMatcher);
+    ParseNode parseTreeRoot = new ParseNode(0, 7, Arrays.asList(triviaNode, tokenNode), ruleMatcher);
 
     InputBuffer inputBuffer = new ImmutableInputBuffer(input);
     ParsingResult parsingResult = new ParsingResult(inputBuffer, true, parseTreeRoot, null);
@@ -95,7 +95,7 @@ public class AstCreatorTest {
     MutableParsingRule ruleMatcher = mockRuleMatcher("rule");
     AstNodeType realAstNodeType = mock(AstNodeType.class);
     when(ruleMatcher.getRealAstNodeType()).thenReturn(realAstNodeType);
-    ParseNode parseTreeRoot = new ParseNode(0, 6, ImmutableList.of(firstTerminal, secondTerminal), ruleMatcher);
+    ParseNode parseTreeRoot = new ParseNode(0, 6, Arrays.asList(firstTerminal, secondTerminal), ruleMatcher);
 
     InputBuffer inputBuffer = new ImmutableInputBuffer(input);
     ParsingResult parsingResult = new ParsingResult(inputBuffer, true, parseTreeRoot, null);
@@ -138,7 +138,7 @@ public class AstCreatorTest {
     when(ruleMatcher2.getRealAstNodeType()).thenReturn(realAstNodeType);
 
     ParseNode node = new ParseNode(0, 3, Collections.<ParseNode>emptyList(), ruleMatcher1);
-    ParseNode parseTreeRoot = new ParseNode(0, 3, ImmutableList.of(node), ruleMatcher2);
+    ParseNode parseTreeRoot = new ParseNode(0, 3, Arrays.asList(node), ruleMatcher2);
 
     InputBuffer inputBuffer = new ImmutableInputBuffer(input);
     ParsingResult parsingResult = new ParsingResult(inputBuffer, true, parseTreeRoot, null);

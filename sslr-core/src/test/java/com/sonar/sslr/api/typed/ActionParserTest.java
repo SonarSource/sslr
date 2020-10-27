@@ -19,7 +19,6 @@
  */
 package com.sonar.sslr.api.typed;
 
-import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.api.GenericTokenType;
@@ -37,6 +36,7 @@ import org.sonar.sslr.internal.vm.TriviaExpression;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
+import java.util.Collections;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -328,7 +328,7 @@ public class ActionParserTest {
     }
 
     public AstNode numericList(Optional<List<Numeric>> list) {
-      return new NumericList(list.isPresent() ? list.get() : ImmutableList.<Numeric>of());
+      return new NumericList(list.isPresent() ? list.get() : Collections.emptyList());
     }
 
     public Operator operator(AstNode node) {
