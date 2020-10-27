@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.toolkit;
 
-import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
@@ -38,6 +37,7 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -110,7 +110,7 @@ public class ToolkitPresenterTest {
     when(property2.getValue()).thenReturn("default2");
 
     ConfigurationModel configurationModel = mock(ConfigurationModel.class);
-    when(configurationModel.getProperties()).thenReturn(ImmutableList.of(property1, property2));
+    when(configurationModel.getProperties()).thenReturn(Arrays.asList(property1, property2));
     presenter = new ToolkitPresenter(configurationModel, mock(SourceCodeModel.class));
     presenter.setView(view);
     presenter.initConfigurationTab();
@@ -149,7 +149,7 @@ public class ToolkitPresenterTest {
     verify(view, never()).addConfigurationProperty(Mockito.anyString(), Mockito.anyString());
 
     ConfigurationModel configurationModel = mock(ConfigurationModel.class);
-    when(configurationModel.getProperties()).thenReturn(ImmutableList.of(mock(ConfigurationProperty.class)));
+    when(configurationModel.getProperties()).thenReturn(Collections.singletonList(mock(ConfigurationProperty.class)));
     presenter = new ToolkitPresenter(configurationModel, mock(SourceCodeModel.class));
     presenter.setView(view);
     presenter.run("my_mocked_title");
@@ -402,7 +402,7 @@ public class ToolkitPresenterTest {
     when(property.validate("foo")).thenReturn("");
 
     ConfigurationModel configurationModel = mock(ConfigurationModel.class);
-    when(configurationModel.getProperties()).thenReturn(ImmutableList.of(property));
+    when(configurationModel.getProperties()).thenReturn(Collections.singletonList(property));
     ToolkitPresenter presenter = new ToolkitPresenter(configurationModel, mock(SourceCodeModel.class));
     presenter.setView(view);
 
@@ -426,7 +426,7 @@ public class ToolkitPresenterTest {
     when(property.validate("foo")).thenReturn("The value foo is forbidden!");
 
     ConfigurationModel configurationModel = mock(ConfigurationModel.class);
-    when(configurationModel.getProperties()).thenReturn(ImmutableList.of(property));
+    when(configurationModel.getProperties()).thenReturn(Collections.singletonList(property));
     ToolkitPresenter presenter = new ToolkitPresenter(configurationModel, mock(SourceCodeModel.class));
     presenter.setView(view);
 

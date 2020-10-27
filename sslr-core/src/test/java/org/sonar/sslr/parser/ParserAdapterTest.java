@@ -19,8 +19,6 @@
  */
 package org.sonar.sslr.parser;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.io.Files;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.Parser;
@@ -31,8 +29,11 @@ import org.junit.rules.TemporaryFolder;
 import org.sonar.sslr.internal.matchers.ExpressionGrammar;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -77,7 +78,12 @@ public class ParserAdapterTest {
   @Test
   public void should_parse_file() throws Exception {
     File file = temporaryFolder.newFile();
-    Files.write("1+1", file, StandardCharsets.UTF_8);
+    try (
+      FileOutputStream fileOutputStream = new FileOutputStream(file);
+      OutputStreamWriter writer = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8);
+    ) {
+      writer.write("1+1");
+    }
     parser.parse(file);
   }
 
@@ -95,7 +101,7 @@ public class ParserAdapterTest {
 
   @Test
   public void parse_tokens_unsupported() {
-    List<Token> tokens = ImmutableList.of();
+    List<Token> tokens = Collections.emptyList();
     assertThrows(UnsupportedOperationException.class,
       () -> parser.parse(tokens));
   }

@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.ast;
 
-import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
 import org.junit.Test;
 import org.sonar.sslr.internal.ast.select.AstSelectFactory;
@@ -28,6 +27,7 @@ import org.sonar.sslr.internal.ast.select.ListAstSelect;
 import org.sonar.sslr.internal.ast.select.SingleAstSelect;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -44,7 +44,7 @@ public class AstSelectFactoryTest {
   public void test_create() {
     AstNode node1 = mock(AstNode.class);
     AstNode node2 = mock(AstNode.class);
-    assertThat((Object) AstSelectFactory.create(ImmutableList.<AstNode> of())).isSameAs(AstSelectFactory.empty());
+    assertThat((Object) AstSelectFactory.create(Collections.emptyList())).isSameAs(AstSelectFactory.empty());
     assertThat((Object) AstSelectFactory.create(Arrays.asList(node1))).isInstanceOf(SingleAstSelect.class);
     assertThat((Object) AstSelectFactory.create(Arrays.asList(node1, node2))).isInstanceOf(ListAstSelect.class);
   }

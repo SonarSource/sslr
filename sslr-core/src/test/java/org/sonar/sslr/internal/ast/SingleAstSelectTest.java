@@ -19,7 +19,6 @@
  */
 package org.sonar.sslr.internal.ast;
 
-import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import org.junit.Before;
@@ -29,6 +28,8 @@ import org.sonar.sslr.internal.ast.select.AstSelectFactory;
 import org.sonar.sslr.internal.ast.select.ListAstSelect;
 import org.sonar.sslr.internal.ast.select.SingleAstSelect;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.function.Predicate;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -66,7 +67,7 @@ public class SingleAstSelectTest {
     assertThat((Object) children).isInstanceOf(SingleAstSelect.class);
     assertThat(children).containsOnly(child);
 
-    when(node.getChildren()).thenReturn(ImmutableList.of(child));
+    when(node.getChildren()).thenReturn(Collections.singletonList(child));
 
     children = select.children(type1);
     assertThat((Object) children).isSameAs(AstSelectFactory.empty());
@@ -92,7 +93,7 @@ public class SingleAstSelectTest {
     AstNode child1 = mock(AstNode.class);
     AstNode child2 = mock(AstNode.class);
     when(node.getNumberOfChildren()).thenReturn(2);
-    when(node.getChildren()).thenReturn(ImmutableList.of(child1, child2));
+    when(node.getChildren()).thenReturn(Arrays.asList(child1, child2));
 
     AstSelect children = select.children();
     assertThat((Object) children).isInstanceOf(ListAstSelect.class);
