@@ -20,23 +20,20 @@
 package org.sonar.sslr.internal.vm;
 
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.sonar.sslr.grammar.GrammarException;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 public class PatternExpressionTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   private PatternExpression expression = new PatternExpression("foo|bar");
   private Machine machine = mock(Machine.class);
@@ -96,10 +93,11 @@ public class PatternExpressionTest {
   public void should_catch_StackOverflowError() {
     when(machine.length()).thenReturn(1);
     when(machine.charAt(0)).thenThrow(StackOverflowError.class);
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("The regular expression 'foo|bar' has led to a stack overflow error."
-      + " This error is certainly due to an inefficient use of alternations. See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5050507");
-    expression.execute(machine);
+    GrammarException thrown = assertThrows(GrammarException.class,
+      () -> expression.execute(machine));
+    assertEquals("The regular expression 'foo|bar' has led to a stack overflow error."
+      + " This error is certainly due to an inefficient use of alternations. See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5050507",
+      thrown.getMessage());
   }
 
 }

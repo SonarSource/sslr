@@ -19,9 +19,7 @@
  */
 package org.sonar.sslr.grammar;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.sonar.sslr.grammar.GrammarBuilder.RuleBuilder;
@@ -29,14 +27,13 @@ import org.sonar.sslr.internal.vm.CompilableGrammarRule;
 import org.sonar.sslr.internal.vm.ParsingExpression;
 import org.sonar.sslr.internal.vm.SequenceExpression;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class RuleBuilderTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   private GrammarBuilder b = mock(GrammarBuilder.class);
   private CompilableGrammarRule delegate = mock(CompilableGrammarRule.class);
@@ -67,9 +64,9 @@ public class RuleBuilderTest {
     when(delegate.getExpression()).thenReturn(e);
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
     when(delegate.getRuleKey()).thenReturn(ruleKey);
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.");
-    ruleBuilder.is(e);
+    GrammarException thrown = assertThrows(GrammarException.class,
+      () -> ruleBuilder.is(e));
+    assertEquals("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.", thrown.getMessage());
   }
 
   @Test

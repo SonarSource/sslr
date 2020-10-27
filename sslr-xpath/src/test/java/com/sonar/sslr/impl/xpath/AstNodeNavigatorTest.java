@@ -24,20 +24,17 @@ import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.xpath.AstNodeNavigator.Attribute;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.net.URI;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class AstNodeNavigatorTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   private AstNodeNavigator navigator;
 
@@ -48,14 +45,14 @@ public class AstNodeNavigatorTest {
 
   @Test
   public void getTextStringValue() {
-    thrown.expect(UnsupportedOperationException.class);
-    navigator.getTextStringValue(null);
+    assertThrows(UnsupportedOperationException.class,
+      () -> navigator.getTextStringValue(null));
   }
 
   @Test
   public void getCommentStringValue() {
-    thrown.expect(UnsupportedOperationException.class);
-    navigator.getCommentStringValue(null);
+    assertThrows(UnsupportedOperationException.class,
+      () -> navigator.getCommentStringValue(null));
   }
 
   @Test
@@ -76,29 +73,29 @@ public class AstNodeNavigatorTest {
   public void getAttributeStringValue2() {
     Attribute attribute = mock(Attribute.class);
     when(attribute.getName()).thenReturn("foo");
-    thrown.expect(UnsupportedOperationException.class);
-    navigator.getAttributeStringValue(attribute);
+    assertThrows(UnsupportedOperationException.class,
+      () -> navigator.getAttributeStringValue(attribute));
   }
 
   @Test
   public void getElementStringValue() {
-    thrown.expect(UnsupportedOperationException.class);
-    thrown.expectMessage("Implicit nodes to string conversion is not supported. Use the tokenValue attribute instead.");
-    navigator.getElementStringValue(null);
+    UnsupportedOperationException thrown = assertThrows(UnsupportedOperationException.class,
+      () -> navigator.getElementStringValue(null));
+    assertEquals("Implicit nodes to string conversion is not supported. Use the tokenValue attribute instead.", thrown.getMessage());
   }
 
   /* Namespaces */
 
   @Test
   public void getNamespacePrefix() {
-    thrown.expect(UnsupportedOperationException.class);
-    navigator.getNamespacePrefix(null);
+    assertThrows(UnsupportedOperationException.class,
+      () -> navigator.getNamespacePrefix(null));
   }
 
   @Test
   public void getNamespaceStringValue() {
-    thrown.expect(UnsupportedOperationException.class);
-    navigator.getNamespaceStringValue(null);
+    assertThrows(UnsupportedOperationException.class,
+      () -> navigator.getNamespaceStringValue(null));
   }
 
   /* Attributes */
@@ -213,8 +210,8 @@ public class AstNodeNavigatorTest {
 
   @Test
   public void getChildAxisIterator2() {
-    thrown.expect(UnsupportedOperationException.class);
-    navigator.getChildAxisIterator(new Object());
+    assertThrows(UnsupportedOperationException.class,
+      () -> navigator.getChildAxisIterator(new Object()));
   }
 
   @Test
@@ -230,20 +227,20 @@ public class AstNodeNavigatorTest {
 
   @Test
   public void getParentNode2() {
-    thrown.expect(UnsupportedOperationException.class);
-    navigator.getParentNode(new Object());
+    assertThrows(UnsupportedOperationException.class,
+      () -> navigator.getParentNode(new Object()));
   }
 
   @Test
   public void getParentAxisIterator() {
-    thrown.expect(UnsupportedOperationException.class);
-    navigator.getParentAxisIterator(new Object());
+    assertThrows(UnsupportedOperationException.class,
+      () -> navigator.getParentAxisIterator(new Object()));
   }
 
   @Test
   public void getAttributeAxisIterator() {
-    thrown.expect(UnsupportedOperationException.class);
-    navigator.getAttributeAxisIterator(new Object());
+    assertThrows(UnsupportedOperationException.class,
+      () -> navigator.getAttributeAxisIterator(new Object()));
   }
 
   /* Unknown */

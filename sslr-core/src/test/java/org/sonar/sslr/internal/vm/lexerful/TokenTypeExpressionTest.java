@@ -21,9 +21,7 @@ package org.sonar.sslr.internal.vm.lexerful;
 
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.TokenType;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.sonar.sslr.internal.vm.CompilationHandler;
@@ -35,9 +33,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 public class TokenTypeExpressionTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   private TokenType type = mock(TokenType.class);
   private TokenTypeExpression expression = new TokenTypeExpression(type);

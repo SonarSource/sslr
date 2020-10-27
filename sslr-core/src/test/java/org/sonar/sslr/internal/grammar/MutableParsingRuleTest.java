@@ -20,31 +20,28 @@
 package org.sonar.sslr.internal.grammar;
 
 import com.sonar.sslr.api.AstNode;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.vm.ParsingExpression;
 import org.sonar.sslr.internal.vm.SequenceExpression;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class MutableParsingRuleTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void should_not_allow_redefinition() {
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
     MutableParsingRule rule = new MutableParsingRule(ruleKey);
     rule.is(mock(ParsingExpression.class));
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.");
-    rule.is(mock(ParsingExpression.class));
+    GrammarException thrown = assertThrows(GrammarException.class,
+      () -> rule.is(mock(ParsingExpression.class)));
+    assertEquals("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.", thrown.getMessage());
   }
 
   @Test

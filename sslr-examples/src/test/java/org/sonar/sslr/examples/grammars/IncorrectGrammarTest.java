@@ -19,59 +19,58 @@
  */
 package org.sonar.sslr.examples.grammars;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.parser.ParseRunner;
 
 import java.util.regex.PatternSyntaxException;
 
-public class IncorrectGrammarTest {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
+public class IncorrectGrammarTest {
 
   @Test
   public void undefined_rule() {
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("The rule 'A' hasn't been defined.");
-    IncorrectGrammar.undefinedRule();
+    GrammarException thrown = assertThrows(GrammarException.class,
+      IncorrectGrammar::undefinedRule);
+    assertEquals("The rule 'A' hasn't been defined.", thrown.getMessage());
   }
 
   @Test
   public void reference_to_undefined_rule() {
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("The rule 'B' hasn't been defined.");
-    IncorrectGrammar.referenceToUndefinedRule();
+    GrammarException thrown = assertThrows(GrammarException.class,
+      IncorrectGrammar::referenceToUndefinedRule);
+    assertEquals("The rule 'B' hasn't been defined.", thrown.getMessage());
   }
 
   @Test
   public void rule_defined_twice() {
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("The rule 'A' has already been defined somewhere in the grammar.");
-    IncorrectGrammar.ruleDefinedTwice();
+    GrammarException thrown = assertThrows(GrammarException.class,
+      IncorrectGrammar::ruleDefinedTwice);
+    assertEquals("The rule 'A' has already been defined somewhere in the grammar.", thrown.getMessage());
   }
 
   @Test
   public void incorrect_regular_expression() {
-    thrown.expect(PatternSyntaxException.class);
-    thrown.expectMessage("Dangling meta character '*' near index 0");
-    IncorrectGrammar.incorrectRegularExpression();
+    PatternSyntaxException thrown = assertThrows(PatternSyntaxException.class,
+      IncorrectGrammar::incorrectRegularExpression);
+    assertTrue(thrown.getMessage().startsWith("Dangling meta character '*' near index 0"));
   }
 
   @Test
   public void infinite_zero_or_more_expression() {
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("The inner part of ZeroOrMore and OneOrMore must not allow empty matches");
-    new ParseRunner(IncorrectGrammar.infiniteZeroOrMore().rule(IncorrectGrammar.A)).parse("foo".toCharArray());
+    GrammarException thrown = assertThrows(GrammarException.class,
+      () -> new ParseRunner(IncorrectGrammar.infiniteZeroOrMore().rule(IncorrectGrammar.A)).parse("foo".toCharArray()));
+    assertEquals("The inner part of ZeroOrMore and OneOrMore must not allow empty matches", thrown.getMessage());
   }
 
   @Test
   public void infinite_one_or_more_expression() {
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("The inner part of ZeroOrMore and OneOrMore must not allow empty matches");
-    new ParseRunner(IncorrectGrammar.infiniteOneOrMore().rule(IncorrectGrammar.A)).parse("foo".toCharArray());
+    GrammarException thrown = assertThrows(GrammarException.class,
+      () -> new ParseRunner(IncorrectGrammar.infiniteOneOrMore().rule(IncorrectGrammar.A)).parse("foo".toCharArray()));
+    assertEquals("The inner part of ZeroOrMore and OneOrMore must not allow empty matches", thrown.getMessage());
   }
 
 }

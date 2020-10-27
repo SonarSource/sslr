@@ -19,18 +19,14 @@
  */
 package org.sonar.sslr.internal.vm;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 public class RuleRefExpressionTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   private GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
   private RuleRefExpression expression = new RuleRefExpression(ruleKey);
@@ -45,8 +41,8 @@ public class RuleRefExpressionTest {
 
   @Test
   public void can_not_be_executed() {
-    thrown.expect(UnsupportedOperationException.class);
-    expression.execute(machine);
+    assertThrows(UnsupportedOperationException.class,
+      () -> expression.execute(machine));
   }
 
 }

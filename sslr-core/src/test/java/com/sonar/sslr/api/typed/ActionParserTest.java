@@ -28,9 +28,7 @@ import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.api.Trivia.TriviaKind;
 import junit.framework.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 import org.sonar.sslr.internal.vm.PatternExpression;
@@ -42,11 +40,10 @@ import java.nio.file.NoSuchFileException;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 public class ActionParserTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   @Test(expected = RecognitionException.class)
   public void not_matching() throws Exception {
@@ -112,9 +109,9 @@ public class ActionParserTest {
   
   @Test
   public void unknown_trivia() throws Exception {
-    thrown.expect(IllegalStateException.class);
-    thrown.expectMessage("Unexpected trivia kind");
-    parse(MyGrammarKeys.NUMERIC, "#preprocessor 42", Numeric.class);
+    IllegalStateException thrown = assertThrows(IllegalStateException.class,
+      () -> parse(MyGrammarKeys.NUMERIC, "#preprocessor 42", Numeric.class));
+    assertEquals("Unexpected trivia kind: PREPROCESSOR", thrown.getMessage());
   }
 
   @Test

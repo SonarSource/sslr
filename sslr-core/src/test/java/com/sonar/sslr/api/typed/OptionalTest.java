@@ -19,16 +19,13 @@
  */
 package com.sonar.sslr.api.typed;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 public class OptionalTest {
-
-  @Rule
-  public final ExpectedException thrown = ExpectedException.none();
 
   private final Optional<String> present = Optional.of("foo");
   private final Optional<String> absent = Optional.absent();
@@ -68,23 +65,23 @@ public class OptionalTest {
 
     assertThat(absent.hashCode()).isEqualTo(0x598df91c);
 
-    thrown.expect(IllegalStateException.class);
-    thrown.expectMessage("value is absent");
-    absent.get();
+    IllegalStateException thrown = assertThrows(IllegalStateException.class,
+      absent::get);
+    assertEquals("value is absent", thrown.getMessage());
   }
 
   @Test
   public void present_or_null() {
-    thrown.expect(NullPointerException.class);
-    thrown.expectMessage("use orNull() instead of or(null)");
-    present.or(null);
+    NullPointerException thrown = assertThrows(NullPointerException.class,
+      () -> present.or(null));
+    assertEquals("use orNull() instead of or(null)", thrown.getMessage());
   }
 
   @Test
   public void absent_or_null() {
-    thrown.expect(NullPointerException.class);
-    thrown.expectMessage("use orNull() instead of or(null)");
-    absent.or(null);
+    NullPointerException thrown = assertThrows(NullPointerException.class,
+      () -> absent.or(null));
+    assertEquals("use orNull() instead of or(null)", thrown.getMessage());
   }
 
 }

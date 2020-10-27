@@ -22,20 +22,17 @@ package org.sonar.sslr.parser;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.sonar.sslr.internal.grammar.MutableParsingRule;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 public class ParseRunnerTest {
 
-  @org.junit.Rule
-  public ExpectedException thrown = ExpectedException.none();
-
   @Test
   public void should_not_accept_null() {
-    thrown.expect(NullPointerException.class);
-    new ParseRunner(null);
+    assertThrows(NullPointerException.class,
+      () -> new ParseRunner(null));
   }
 
   @Test

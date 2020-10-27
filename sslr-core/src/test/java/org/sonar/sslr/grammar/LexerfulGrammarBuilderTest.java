@@ -22,9 +22,7 @@ package org.sonar.sslr.grammar;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.sonar.sslr.internal.grammar.MutableGrammar;
 import org.sonar.sslr.internal.vm.CompilableGrammarRule;
 import org.sonar.sslr.internal.vm.FirstOfExpression;
@@ -45,12 +43,11 @@ import org.sonar.sslr.internal.vm.lexerful.TokenValueExpression;
 import org.sonar.sslr.internal.vm.lexerful.TokensBridgeExpression;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 public class LexerfulGrammarBuilderTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void should_create_expressions() {
@@ -129,9 +126,9 @@ public class LexerfulGrammarBuilderTest {
     LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
     b.setRootRule(ruleKey);
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("The rule '" + ruleKey + "' hasn't been defined.");
-    b.build();
+    GrammarException thrown = assertThrows(GrammarException.class,
+      b::build);
+    assertEquals("The rule '" + ruleKey + "' hasn't been defined.", thrown.getMessage());
   }
 
   @Test
@@ -139,9 +136,9 @@ public class LexerfulGrammarBuilderTest {
     LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
     b.rule(ruleKey);
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("The rule '" + ruleKey + "' hasn't been defined.");
-    b.build();
+    GrammarException thrown = assertThrows(GrammarException.class,
+      b::build);
+    assertEquals("The rule '" + ruleKey + "' hasn't been defined.", thrown.getMessage());
   }
 
   @Test
@@ -150,23 +147,23 @@ public class LexerfulGrammarBuilderTest {
     GrammarRuleKey ruleKey1 = mock(GrammarRuleKey.class);
     GrammarRuleKey ruleKey2 = mock(GrammarRuleKey.class);
     b.rule(ruleKey1).is(ruleKey2);
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("The rule '" + ruleKey2 + "' hasn't been defined.");
-    b.build();
+    GrammarException thrown = assertThrows(GrammarException.class,
+      b::build);
+    assertEquals("The rule '" + ruleKey2 + "' hasn't been defined.", thrown.getMessage());
   }
 
   @Test
   public void test_incorrect_type_of_parsing_expression() {
-    thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("Incorrect type of parsing expression: class java.lang.Object");
-    LexerfulGrammarBuilder.create().convertToExpression(new Object());
+    IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
+      () -> LexerfulGrammarBuilder.create().convertToExpression(new Object()));
+    assertEquals("Incorrect type of parsing expression: class java.lang.Object", thrown.getMessage());
   }
 
   @Test
   public void test_null_parsing_expression() {
-    thrown.expect(NullPointerException.class);
-    thrown.expectMessage("Parsing expression can't be null");
-    LexerfulGrammarBuilder.create().convertToExpression(null);
+    NullPointerException thrown = assertThrows(NullPointerException.class,
+      () -> LexerfulGrammarBuilder.create().convertToExpression(null));
+    assertEquals("Parsing expression can't be null", thrown.getMessage());
   }
 
   @Test
@@ -174,9 +171,9 @@ public class LexerfulGrammarBuilderTest {
     LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
     b.rule(ruleKey).is("foo");
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.");
-    b.rule(ruleKey).is("foo");
+    GrammarException thrown = assertThrows(GrammarException.class,
+      () -> b.rule(ruleKey).is("foo"));
+    assertEquals("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.", thrown.getMessage());
   }
 
   @Test
@@ -184,9 +181,9 @@ public class LexerfulGrammarBuilderTest {
     LexerfulGrammarBuilder b = LexerfulGrammarBuilder.create();
     GrammarRuleKey ruleKey = mock(GrammarRuleKey.class);
     b.rule(ruleKey).is("foo", "bar");
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.");
-    b.rule(ruleKey).is("foo");
+    GrammarException thrown = assertThrows(GrammarException.class,
+      () -> b.rule(ruleKey).is("foo"));
+    assertEquals("The rule '" + ruleKey + "' has already been defined somewhere in the grammar.", thrown.getMessage());
   }
 
 }

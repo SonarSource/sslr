@@ -23,20 +23,18 @@ import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Trivia.TriviaKind;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.rules.Timeout;
 import org.sonar.sslr.grammar.GrammarException;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 // TODO this test should also check state of machine after execution
 public class MachineIntegrationTest {
 
   @Rule
   public Timeout timeout = new Timeout(5000);
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void pattern() {
@@ -108,9 +106,9 @@ public class MachineIntegrationTest {
         new FirstOfExpression(
             new StringExpression("foo"),
             new StringExpression(""))).compile(new CompilationHandler());
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("The inner part of ZeroOrMore and OneOrMore must not allow empty matches");
-    Machine.execute("foo", instructions);
+    GrammarException thrown = assertThrows(GrammarException.class,
+      () -> Machine.execute("foo", instructions));
+    assertEquals("The inner part of ZeroOrMore and OneOrMore must not allow empty matches", thrown.getMessage());
   }
 
   @Test
@@ -127,9 +125,9 @@ public class MachineIntegrationTest {
         new FirstOfExpression(
             new StringExpression("foo"),
             new StringExpression(""))).compile(new CompilationHandler());
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("The inner part of ZeroOrMore and OneOrMore must not allow empty matches");
-    Machine.execute("foo", instructions);
+    GrammarException thrown = assertThrows(GrammarException.class,
+      () -> Machine.execute("foo", instructions));
+    assertEquals("The inner part of ZeroOrMore and OneOrMore must not allow empty matches", thrown.getMessage());
   }
 
   @Test

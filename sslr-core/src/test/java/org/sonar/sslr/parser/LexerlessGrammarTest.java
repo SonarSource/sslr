@@ -21,17 +21,14 @@ package org.sonar.sslr.parser;
 
 import com.sonar.sslr.api.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.internal.grammar.MutableParsingRule;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 public class LexerlessGrammarTest {
-
-  @org.junit.Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void should_instanciate_rule_fields() {
@@ -42,9 +39,9 @@ public class LexerlessGrammarTest {
 
   @Test
   public void should_throw_exception() {
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("Unable to instanciate the rule 'rootRule': ");
-    new IllegalGrammar();
+    GrammarException thrown = assertThrows(GrammarException.class,
+      IllegalGrammar::new);
+    assertThat(thrown.getMessage()).startsWith("Unable to instanciate the rule 'rootRule': ");
   }
 
   private static class TestGrammar extends LexerlessGrammar {

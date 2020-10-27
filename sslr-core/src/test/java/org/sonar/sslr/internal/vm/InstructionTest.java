@@ -19,9 +19,7 @@
  */
 package org.sonar.sslr.internal.vm;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.sonar.sslr.grammar.GrammarException;
@@ -40,6 +38,8 @@ import org.sonar.sslr.internal.vm.Instruction.PredicateChoiceInstruction;
 import org.sonar.sslr.internal.vm.Instruction.RetInstruction;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -47,9 +47,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 public class InstructionTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   private Machine machine = mock(Machine.class);
 
@@ -171,9 +168,9 @@ public class InstructionTest {
     stack.setIndex(13);
     when(machine.peek()).thenReturn(stack);
     when(machine.getIndex()).thenReturn(13);
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("The inner part of ZeroOrMore and OneOrMore must not allow empty matches");
-    instruction.execute(machine);
+    GrammarException thrown = assertThrows(GrammarException.class,
+      () -> instruction.execute(machine));
+    assertEquals("The inner part of ZeroOrMore and OneOrMore must not allow empty matches", thrown.getMessage());
   }
 
   @Test
