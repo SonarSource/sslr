@@ -19,9 +19,7 @@
  */
 package com.sonar.sslr.impl.typed;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
@@ -32,15 +30,14 @@ import org.sonar.sslr.internal.vm.ParsingExpression;
 import java.lang.reflect.Method;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class DelayedRuleInvocationExpressionTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void should_compile_rule_keys() {
@@ -83,11 +80,12 @@ public class DelayedRuleInvocationExpressionTest {
 
   @Test
   public void should_fail_when_method_is_not_mapped() throws Exception {
-    thrown.expect(IllegalStateException.class);
-    thrown.expectMessage("Cannot find the rule key corresponding to the invoked method: FOO()");
-
-    Method method = DelayedRuleInvocationExpressionTest.class.getDeclaredMethod("FOO");
-    new DelayedRuleInvocationExpression(LexerlessGrammarBuilder.create(), mock(GrammarBuilderInterceptor.class), method).compile(mock(CompilationHandler.class));
+    IllegalStateException thrown = assertThrows(IllegalStateException.class,
+      () -> {
+        Method method = DelayedRuleInvocationExpressionTest.class.getDeclaredMethod("FOO");
+        new DelayedRuleInvocationExpression(LexerlessGrammarBuilder.create(), mock(GrammarBuilderInterceptor.class), method).compile(mock(CompilationHandler.class));
+      });
+    assertEquals("Cannot find the rule key corresponding to the invoked method: FOO()", thrown.getMessage());
   }
 
   @Test

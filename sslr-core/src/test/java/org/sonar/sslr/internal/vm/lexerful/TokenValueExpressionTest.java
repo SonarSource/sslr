@@ -20,9 +20,7 @@
 package org.sonar.sslr.internal.vm.lexerful;
 
 import com.sonar.sslr.api.Token;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.sonar.sslr.internal.vm.CompilationHandler;
@@ -34,9 +32,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 public class TokenValueExpressionTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   private TokenValueExpression expression = new TokenValueExpression("foo");
   private Machine machine = mock(Machine.class);

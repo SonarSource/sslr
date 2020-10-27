@@ -20,17 +20,12 @@
 package org.sonar.sslr.internal.vm;
 
 import com.sonar.sslr.api.GenericTokenType;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class TokenExpressionTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void should_compile() {

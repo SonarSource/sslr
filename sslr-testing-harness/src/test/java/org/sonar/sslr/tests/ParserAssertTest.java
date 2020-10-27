@@ -29,12 +29,12 @@ import com.sonar.sslr.impl.channel.RegexpChannel;
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 public class ParserAssertTest {
-
-  @org.junit.Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   private Rule rule;
   private Parser parser;
@@ -66,61 +66,58 @@ public class ParserAssertTest {
 
   @Test
   public void test_matches_failure() {
-    thrown.expect(ParsingResultComparisonFailure.class);
-    thrown.expectMessage("Rule 'ruleName' should match:\nbar");
-    new ParserAssert(parser)
-        .matches("bar");
+    ParsingResultComparisonFailure thrown = assertThrows(ParsingResultComparisonFailure.class,
+      () -> new ParserAssert(parser).matches("bar"));
+    assertTrue(thrown.getMessage().contains("Rule 'ruleName' should match:\nbar"));
   }
 
   @Test
   public void test2_matches_failure() {
-    thrown.expect(ParsingResultComparisonFailure.class);
-    thrown.expectMessage("Rule 'ruleName' should match:\nfoo bar");
-    new ParserAssert(parser)
-        .matches("foo bar");
+    ParsingResultComparisonFailure thrown = assertThrows(ParsingResultComparisonFailure.class,
+      () -> new ParserAssert(parser).matches("foo bar"));
+    assertTrue(thrown.getMessage().contains("Rule 'ruleName' should match:\nfoo bar"));
   }
 
   @Test
   public void test_notMatches_failure() {
-    thrown.expect(AssertionError.class);
-    thrown.expectMessage("Rule 'ruleName' should not match:\nfoo");
-    new ParserAssert(parser)
-        .notMatches("foo");
+    AssertionError thrown = assertThrows(AssertionError.class,
+      () -> new ParserAssert(parser).notMatches("foo"));
+    assertEquals("Rule 'ruleName' should not match:\nfoo", thrown.getMessage());
   }
 
   @Test
   public void test_notMatches_failure2() {
-    thrown.expect(AssertionError.class);
-    thrown.expectMessage("Rule 'ruleName' should not match:\nfoo");
     rule.override("foo", GenericTokenType.EOF);
-    new ParserAssert(parser).notMatches("foo");
+    AssertionError thrown = assertThrows(AssertionError.class,
+      () -> new ParserAssert(parser).notMatches("foo"));
+    assertEquals("Rule 'ruleName' should not match:\nfoo", thrown.getMessage());
   }
 
   @Test
   public void should_not_accept_null() {
-    thrown.expect(AssertionError.class);
-    thrown.expectMessage("expecting actual value not to be null");
-    new ParserAssert((Parser) null).matches("");
+    AssertionError thrown = assertThrows(AssertionError.class,
+      () -> new ParserAssert((Parser) null).matches(""));
+    assertEquals("expecting actual value not to be null", thrown.getMessage());
   }
 
   @Test
   public void should_not_accept_null_root_rule() {
-    thrown.expect(AssertionError.class);
-    thrown.expectMessage("Root rule of the parser should not be null");
     parser.setRootRule(null);
-    new ParserAssert(parser).matches("");
+    AssertionError thrown = assertThrows(AssertionError.class,
+      () -> new ParserAssert(parser).matches(""));
+    assertEquals("Root rule of the parser should not be null", thrown.getMessage());
   }
 
   @Test
   public void test_lexer_failure() {
-    thrown.expect(ParsingResultComparisonFailure.class);
+    ParsingResultComparisonFailure thrown = assertThrows(ParsingResultComparisonFailure.class,
+      () -> new ParserAssert(parser).matches("_"));
     String expectedMessage = new StringBuilder()
         .append("Rule 'ruleName' should match:\n")
         .append("_\n")
         .append("Lexer error: Unable to lex")
         .toString();
-    thrown.expectMessage(expectedMessage);
-    new ParserAssert(parser).matches("_");
+    assertTrue(thrown.getMessage().contains(expectedMessage));
   }
 
 }

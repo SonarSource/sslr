@@ -19,16 +19,13 @@
  */
 package org.sonar.sslr.toolkit;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 public class ValidatorsTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void charsetValidator() {
@@ -63,10 +60,9 @@ public class ValidatorsTest {
 
   @Test
   public void integerRangeValidator_should_fail_with_upper_smaller_than_lower_bound() {
-    thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("lowerBound(42) <= upperBound(0)");
-
-    Validators.integerRangeValidator(42, 0);
+    IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
+      () -> Validators.integerRangeValidator(42, 0));
+    assertEquals("lowerBound(42) <= upperBound(0)", thrown.getMessage());
   }
 
   @Test

@@ -20,25 +20,22 @@
 package org.sonar.sslr.examples.grammars;
 
 import com.sonar.sslr.api.Grammar;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.parser.ParseRunner;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class LeftRecursiveGrammarTest {
 
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
-
   @Test
   public void should_detect_immediate_left_recursion() {
     Grammar grammar = LeftRecursiveGrammar.immediateLeftRecursion();
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("Left recursion has been detected, involved rule: " + LeftRecursiveGrammar.A);
-    new ParseRunner(grammar.rule(LeftRecursiveGrammar.A)).parse("".toCharArray());
+    GrammarException thrown = assertThrows(GrammarException.class,
+      () -> new ParseRunner(grammar.rule(LeftRecursiveGrammar.A)).parse("".toCharArray()));
+    assertEquals("Left recursion has been detected, involved rule: " + LeftRecursiveGrammar.A, thrown.getMessage());
   }
 
   @Test
@@ -60,9 +57,9 @@ public class LeftRecursiveGrammarTest {
   @Test
   public void should_detect_indirect_left_recursion() {
     Grammar grammar = LeftRecursiveGrammar.indirectLeftRecursion();
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("Left recursion has been detected, involved rule: " + LeftRecursiveGrammar.B);
-    new ParseRunner(grammar.rule(LeftRecursiveGrammar.A)).parse("".toCharArray());
+    GrammarException thrown = assertThrows(GrammarException.class,
+      () -> new ParseRunner(grammar.rule(LeftRecursiveGrammar.A)).parse("".toCharArray()));
+    assertEquals("Left recursion has been detected, involved rule: " + LeftRecursiveGrammar.B, thrown.getMessage());
   }
 
   @Test

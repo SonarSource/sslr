@@ -21,9 +21,7 @@ package org.sonar.sslr.parser;
 
 import com.sonar.sslr.api.TokenType;
 import com.sonar.sslr.api.Trivia.TriviaKind;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.sonar.sslr.internal.vm.EndOfInputExpression;
 import org.sonar.sslr.internal.vm.FirstOfExpression;
 import org.sonar.sslr.internal.vm.NextExpression;
@@ -42,12 +40,11 @@ import org.sonar.sslr.internal.vm.ZeroOrMoreExpression;
 import java.lang.reflect.Constructor;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 public class GrammarOperatorsTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void test() {
@@ -106,9 +103,9 @@ public class GrammarOperatorsTest {
 
   @Test
   public void illegal_argument() {
-    thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("java.lang.Object");
-    GrammarOperators.sequence(new Object());
+    IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
+      () -> GrammarOperators.sequence(new Object()));
+    assertEquals("Incorrect type of parsing expression: class java.lang.Object", thrown.getMessage());
   }
 
   @Test

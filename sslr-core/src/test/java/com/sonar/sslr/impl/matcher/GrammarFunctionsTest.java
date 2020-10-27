@@ -20,9 +20,7 @@
 package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.TokenType;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.sonar.sslr.internal.vm.FirstOfExpression;
 import org.sonar.sslr.internal.vm.NextExpression;
 import org.sonar.sslr.internal.vm.NextNotExpression;
@@ -43,12 +41,11 @@ import org.sonar.sslr.internal.vm.lexerful.TokensBridgeExpression;
 import java.lang.reflect.Constructor;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 public class GrammarFunctionsTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void test() {
@@ -101,30 +98,31 @@ public class GrammarFunctionsTest {
 
   @Test
   public void firstOf_requires_at_least_one_argument() {
-    thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("You must define at least one matcher.");
-    GrammarFunctions.Standard.firstOf();
+    IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
+      GrammarFunctions.Standard::firstOf);
+    assertEquals("You must define at least one matcher.", thrown.getMessage());
   }
 
   @Test
   public void and_requires_at_least_one_argument() {
-    thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("You must define at least one matcher.");
-    GrammarFunctions.Standard.and();
+    IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
+      GrammarFunctions.Standard::and);
+    assertEquals("You must define at least one matcher.", thrown.getMessage());
   }
 
   @Test
   public void isOneOfThem_requires_at_least_one_argument() {
-    thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("You must define at least one matcher.");
-    GrammarFunctions.Advanced.isOneOfThem();
+    IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
+      GrammarFunctions.Advanced::isOneOfThem);
+    assertEquals("You must define at least one matcher.", thrown.getMessage());
   }
 
   @Test
   public void test_incorrect_type_of_parsing_expression() {
-    thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("java.lang.Object");
-    GrammarFunctions.Standard.and(new Object());
+    IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
+      () -> GrammarFunctions.Standard.and(new Object()));
+    assertThat(thrown.getMessage())
+      .startsWith("The matcher object can't be anything else than a Rule, Matcher, String, TokenType or Class. Object = java.lang.Object@");
   }
 
   @Test

@@ -20,9 +20,7 @@
 package org.sonar.sslr.internal.ast;
 
 import com.sonar.sslr.api.AstNodeType;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.sonar.sslr.ast.AstSelect;
 import org.sonar.sslr.internal.ast.select.EmptyAstSelect;
 
@@ -30,12 +28,10 @@ import java.util.Collections;
 import java.util.function.Predicate;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 public class EmptyAstSelectTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   private AstSelect select = new EmptyAstSelect();
 
@@ -92,8 +88,8 @@ public class EmptyAstSelectTest {
 
   @Test
   public void test_get_non_existing() {
-    thrown.expect(IndexOutOfBoundsException.class);
-    select.get(0);
+    assertThrows(IndexOutOfBoundsException.class,
+      () -> select.get(0));
   }
 
   @Test

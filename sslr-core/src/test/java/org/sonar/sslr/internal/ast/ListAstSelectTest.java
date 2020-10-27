@@ -23,9 +23,7 @@ import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.sonar.sslr.ast.AstSelect;
 import org.sonar.sslr.internal.ast.select.AstSelectFactory;
 import org.sonar.sslr.internal.ast.select.ListAstSelect;
@@ -35,13 +33,11 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ListAstSelectTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   private AstNode node1, node2;
   private ListAstSelect select;
@@ -284,8 +280,8 @@ public class ListAstSelectTest {
 
   @Test
   public void test_get_non_existing() {
-    thrown.expect(IndexOutOfBoundsException.class);
-    select.get(2);
+    assertThrows(IndexOutOfBoundsException.class,
+      () -> select.get(2));
   }
 
   @Test

@@ -21,7 +21,6 @@ package com.sonar.sslr.api;
 
 import com.sonar.sslr.impl.matcher.RuleDefinition;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.internal.grammar.MutableParsingRule;
@@ -31,12 +30,10 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 public class GrammarTest {
-
-  @org.junit.Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void testGetRuleFields() {
@@ -52,8 +49,8 @@ public class GrammarTest {
 
   @Test
   public void method_rule_should_throw_exception_by_default() {
-    thrown.expect(UnsupportedOperationException.class);
-    new MyGrammar().rule(mock(GrammarRuleKey.class));
+    assertThrows(UnsupportedOperationException.class,
+      () -> new MyGrammar().rule(mock(GrammarRuleKey.class)));
   }
 
   @Test
@@ -78,9 +75,9 @@ public class GrammarTest {
 
   @Test
   public void should_throw_exception() {
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("Unable to instanciate the rule 'rootRule': ");
-    new IllegalGrammar();
+    GrammarException thrown = assertThrows(GrammarException.class,
+      IllegalGrammar::new);
+    assertThat(thrown.getMessage()).startsWith("Unable to instanciate the rule 'rootRule': ");
   }
 
   public static abstract class MyBaseGrammar extends Grammar {

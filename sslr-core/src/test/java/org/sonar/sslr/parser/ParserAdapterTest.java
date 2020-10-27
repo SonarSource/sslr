@@ -27,7 +27,6 @@ import com.sonar.sslr.impl.Parser;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 import org.sonar.sslr.internal.matchers.ExpressionGrammar;
 
@@ -37,11 +36,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 public class ParserAdapterTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   @Rule
   public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -67,9 +65,13 @@ public class ParserAdapterTest {
 
   @Test
   public void should_not_parse_invalid_string() {
-    thrown.expect(RecognitionException.class);
-    thrown.expectMessage("Parse error");
-    parser.parse("");
+    RecognitionException thrown = assertThrows(RecognitionException.class,
+      () -> parser.parse(""));
+    assertEquals("Parse error at line 1 column 1:\n" +
+        "\n" +
+        "1: \n" +
+        "   ^\n",
+      thrown.getMessage());
   }
 
   @Test
@@ -81,9 +83,9 @@ public class ParserAdapterTest {
 
   @Test
   public void should_not_parse_invalid_file() {
-    thrown.expect(RecognitionException.class);
     File file = new File("notfound");
-    parser.parse(file);
+    assertThrows(RecognitionException.class,
+      () -> parser.parse(file));
   }
 
   @Test
@@ -93,15 +95,15 @@ public class ParserAdapterTest {
 
   @Test
   public void parse_tokens_unsupported() {
-    thrown.expect(UnsupportedOperationException.class);
     List<Token> tokens = ImmutableList.of();
-    parser.parse(tokens);
+    assertThrows(UnsupportedOperationException.class,
+      () -> parser.parse(tokens));
   }
 
   @Test
   public void getRootRule_unsupported() {
-    thrown.expect(UnsupportedOperationException.class);
-    parser.getRootRule();
+    assertThrows(UnsupportedOperationException.class,
+      () -> parser.getRootRule());
   }
 
 }

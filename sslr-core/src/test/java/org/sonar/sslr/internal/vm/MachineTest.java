@@ -19,27 +19,24 @@
  */
 package org.sonar.sslr.internal.vm;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.internal.matchers.Matcher;
 import org.sonar.sslr.internal.matchers.ParseNode;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class MachineTest {
 
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
-
   @Test
   public void subSequence_not_supported() {
     Machine machine = new Machine("", new Instruction[0]);
-    thrown.expect(UnsupportedOperationException.class);
-    machine.subSequence(0, 0);
+    assertThrows(UnsupportedOperationException.class,
+      () -> machine.subSequence(0, 0));
   }
 
   @Test
@@ -112,9 +109,9 @@ public class MachineTest {
     assertThat(machine.peek().leftRecursion()).isEqualTo(1);
 
     // same rule and index of input sequence
-    thrown.expect(GrammarException.class);
-    thrown.expectMessage("Left recursion has been detected, involved rule: " + matcher.toString());
-    machine.pushReturn(0, matcher, 0);
+    GrammarException thrown = assertThrows(GrammarException.class,
+      () -> machine.pushReturn(0, matcher, 0));
+    assertEquals("Left recursion has been detected, involved rule: " + matcher.toString(), thrown.getMessage());
   }
 
   @Test

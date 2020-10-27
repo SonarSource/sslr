@@ -21,33 +21,30 @@ package com.sonar.sslr.impl.matcher;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import static com.sonar.sslr.test.lexer.MockHelper.mockToken;
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 public class RuleDefinitionTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void testEmptyIs() {
     RuleDefinition javaClassDefinition = new RuleDefinition("JavaClassDefinition");
-    thrown.expect(IllegalStateException.class);
-    thrown.expectMessage("The rule 'JavaClassDefinition' should at least contains one matcher.");
-    javaClassDefinition.is();
+    IllegalStateException thrown = assertThrows(IllegalStateException.class,
+      javaClassDefinition::is);
+    assertEquals("The rule 'JavaClassDefinition' should at least contains one matcher.", thrown.getMessage());
   }
 
   @Test
   public void testMoreThanOneDefinitionForASigleRuleWithIs() {
     RuleDefinition javaClassDefinition = new RuleDefinition("JavaClassDefinition");
     javaClassDefinition.is("option1");
-    thrown.expect(IllegalStateException.class);
-    thrown.expectMessage("The rule 'JavaClassDefinition' has already been defined somewhere in the grammar.");
-    javaClassDefinition.is("option2");
+    IllegalStateException thrown = assertThrows(IllegalStateException.class,
+      () -> javaClassDefinition.is("option2"));
+    assertEquals("The rule 'JavaClassDefinition' has already been defined somewhere in the grammar.", thrown.getMessage());
   }
 
   @Test

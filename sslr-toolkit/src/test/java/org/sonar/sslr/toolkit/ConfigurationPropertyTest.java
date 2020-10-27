@@ -19,16 +19,13 @@
  */
 package org.sonar.sslr.toolkit;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 public class ConfigurationPropertyTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void getName() {
@@ -66,14 +63,14 @@ public class ConfigurationPropertyTest {
 
   @Test
   public void setValue_should_fail_if_validation_fails() {
-    thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("The value \"foo\" did not pass validation: Not valid!");
-    new ConfigurationProperty("", "", "", new ValidationCallback() {
-      @Override
-      public String validate(String newValueCandidate) {
-        return newValueCandidate.isEmpty() ? "" : "The value \"" + newValueCandidate + "\" did not pass validation: Not valid!";
-      }
-    }).setValue("foo");
+    IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
+      () -> new ConfigurationProperty("", "", "", new ValidationCallback() {
+        @Override
+        public String validate(String newValueCandidate) {
+          return newValueCandidate.isEmpty() ? "" : "The value \"" + newValueCandidate + "\" did not pass validation: Not valid!";
+        }
+      }).setValue("foo"));
+    assertTrue(thrown.getMessage().contains("The value \"foo\" did not pass validation: Not valid!"));
   }
 
   @Test

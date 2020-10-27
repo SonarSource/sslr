@@ -22,13 +22,13 @@ package org.sonar.sslr.tests;
 import com.sonar.sslr.api.Rule;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.sonar.sslr.internal.grammar.MutableParsingRule;
 
-public class RuleAssertTest {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
-  @org.junit.Rule
-  public ExpectedException thrown = ExpectedException.none();
+public class RuleAssertTest {
 
   private Rule rule;
 
@@ -46,25 +46,23 @@ public class RuleAssertTest {
 
   @Test
   public void test_matches_failure() {
-    thrown.expect(ParsingResultComparisonFailure.class);
-    thrown.expectMessage("Rule 'ruleName' should match:\nbar");
-    new RuleAssert(rule)
-        .matches("bar");
+    ParsingResultComparisonFailure thrown = assertThrows(ParsingResultComparisonFailure.class,
+      () -> new RuleAssert(rule).matches("bar"));
+    assertTrue(thrown.getMessage().contains("Rule 'ruleName' should match:\nbar"));
   }
 
   @Test
   public void test_notMatches_failure() {
-    thrown.expect(AssertionError.class);
-    thrown.expectMessage("Rule 'ruleName' should not match:\nfoo");
-    new RuleAssert(rule)
-        .notMatches("foo");
+    AssertionError thrown = assertThrows(AssertionError.class,
+      () -> new RuleAssert(rule).notMatches("foo"));
+    assertEquals(thrown.getMessage(), "Rule 'ruleName' should not match:\nfoo");
   }
 
   @Test
   public void should_not_accept_null() {
-    thrown.expect(AssertionError.class);
-    thrown.expectMessage("expecting actual value not to be null");
-    new RuleAssert((Rule) null).matches("");
+    AssertionError thrown = assertThrows(AssertionError.class,
+      () -> new RuleAssert((Rule) null).matches(""));
+    assertEquals(thrown.getMessage(), "expecting actual value not to be null");
   }
 
   @Test
@@ -81,18 +79,16 @@ public class RuleAssertTest {
 
   @Test
   public void matchesPrefix_full_mistmatch() {
-    thrown.expect(ParsingResultComparisonFailure.class);
-    thrown.expectMessage("Rule 'ruleName' should match:\nbar\nwhen followed by:\n baz");
-    new RuleAssert(rule)
-        .matchesPrefix("bar", " baz");
+    ParsingResultComparisonFailure thrown = assertThrows(ParsingResultComparisonFailure.class,
+      () -> new RuleAssert(rule).matchesPrefix("bar", " baz"));
+    assertTrue(thrown.getMessage().contains("Rule 'ruleName' should match:\nbar\nwhen followed by:\n baz"));
   }
 
   @Test
   public void matchesPrefix_wrong_prefix() {
-    thrown.expect(ParsingResultComparisonFailure.class);
-    thrown.expectMessage("Rule 'ruleName' should match:\nfoo bar\nwhen followed by:\n baz\nbut matched:\nfoo");
-    new RuleAssert(rule)
-        .matchesPrefix("foo bar", " baz");
+    ParsingResultComparisonFailure thrown = assertThrows(ParsingResultComparisonFailure.class,
+      () -> new RuleAssert(rule).matchesPrefix("foo bar", " baz"));
+    assertEquals(thrown.getMessage(), "Rule 'ruleName' should match:\nfoo bar\nwhen followed by:\n baz\nbut matched:\nfoo");
   }
 
 }

@@ -19,9 +19,7 @@
  */
 package org.sonar.sslr.internal.vm;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
@@ -31,9 +29,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 public class StringExpressionTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   private StringExpression expression = new StringExpression("foo");
   private Machine machine = mock(Machine.class);
