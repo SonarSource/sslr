@@ -20,12 +20,11 @@
 package com.sonar.sslr.api.typed;
 
 import com.sonar.sslr.api.RecognitionException;
+import com.sonar.sslr.impl.typed.Interceptor;
+import com.sonar.sslr.impl.typed.MethodInterceptor;
 import com.sonar.sslr.impl.typed.GrammarBuilderInterceptor;
 import com.sonar.sslr.impl.typed.ReflectionUtils;
 import com.sonar.sslr.impl.typed.SyntaxTreeCreator;
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 import org.sonar.sslr.internal.matchers.InputBuffer;
@@ -56,18 +55,18 @@ public class ActionParser<N> {
     this.charset = charset;
 
     GrammarBuilderInterceptor grammarBuilderInterceptor = new GrammarBuilderInterceptor(b);
-    Enhancer grammarEnhancer = new Enhancer();
-    grammarEnhancer.setSuperclass(grammarClass);
-    grammarEnhancer.setCallback(grammarBuilderInterceptor);
-
-    ActionMethodInterceptor actionMethodInterceptor = new ActionMethodInterceptor(grammarBuilderInterceptor);
-    Enhancer actionEnhancer = new Enhancer();
-    actionEnhancer.setSuperclass(treeFactory.getClass());
-    actionEnhancer.setCallback(actionMethodInterceptor);
-
-    Object grammar = grammarEnhancer.create(
-      new Class[] {GrammarBuilder.class, treeFactory.getClass()},
-      new Object[] {grammarBuilderInterceptor, actionEnhancer.create()});
+    Object treeFactoryInterceptor = Interceptor.create(
+      treeFactory.getClass(),
+      new Class[]{},
+      new Object[]{},
+      new ActionMethodInterceptor(grammarBuilderInterceptor)
+    );
+    Object grammar = Interceptor.create(
+      grammarClass,
+      new Class[]{GrammarBuilder.class, treeFactory.getClass()},
+      new Object[]{grammarBuilderInterceptor, treeFactoryInterceptor},
+      grammarBuilderInterceptor
+    );
 
     for (Method method : grammarClass.getMethods()) {
       if (method.getDeclaringClass().equals(Object.class)) {
@@ -124,14 +123,9 @@ public class ActionParser<N> {
     }
 
     @Override
-    public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-      if (method.getDeclaringClass().equals(Object.class)) {
-        return proxy.invokeSuper(obj, args);
-      }
-
-      grammarBuilderInterceptor.addAction(method, args.length);
-
-      return null;
+    public boolean intercept(Method method) {
+      grammarBuilderInterceptor.addAction(method, method.getParameterCount());
+      return true;
     }
 
   }

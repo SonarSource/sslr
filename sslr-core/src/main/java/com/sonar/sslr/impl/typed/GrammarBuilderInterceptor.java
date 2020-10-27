@@ -26,8 +26,7 @@ import com.sonar.sslr.api.typed.Optional;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
+
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 import org.sonar.sslr.internal.vm.FirstOfExpression;
@@ -63,19 +62,13 @@ public class GrammarBuilderInterceptor<T> implements MethodInterceptor, GrammarB
   }
 
   @Override
-  public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-    if (method.getDeclaringClass().equals(Object.class)) {
-      return proxy.invokeSuper(obj, args);
-    }
-
+  public boolean intercept(Method method) {
     if (buildingMethod != null) {
       push(new DelayedRuleInvocationExpression(b, this, method));
-      return null;
+      return true;
     }
-
     buildingMethod = method;
-
-    return proxy.invokeSuper(obj, args);
+    return false;
   }
 
   @Override
