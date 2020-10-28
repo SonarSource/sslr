@@ -145,7 +145,7 @@ public class Interceptor {
 
     byte[] classBytes = cv.toByteArray();
 
-    Class<?> cls = new ClassLoader() {
+    Class<?> cls = new ClassLoader(superClass.getClassLoader()) {
       public Class<?> defineClass() {
         return defineClass(className, classBytes, 0, classBytes.length);
       }

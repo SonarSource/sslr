@@ -20,7 +20,11 @@
 package com.sonar.sslr.impl.typed;
 
 import org.junit.Test;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -185,6 +189,35 @@ public class InterceptorTest {
     @SuppressWarnings("unused")
     public void m() {
     }
+  }
+
+  @Test
+  public void should_use_ClassLoader_of_intercepted_class() throws Exception {
+    ClassWriter cv = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+    cv.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, "Target", null, "java/lang/Object", null);
+    MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC, "<init>", "()V", null, null);
+    mv.visitVarInsn(Opcodes.ALOAD, 0);
+    mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
+    mv.visitInsn(Opcodes.RETURN);
+    mv.visitMaxs(0, 0);
+    mv.visitEnd();
+    mv = cv.visitMethod(Opcodes.ACC_PUBLIC, "m", "()Ljava/lang/String;", null, null);
+    mv.visitLdcInsn("m()");
+    mv.visitInsn(Opcodes.ARETURN);
+    mv.visitMaxs(0, 0);
+    mv.visitEnd();
+
+    byte[] classBytes = cv.toByteArray();
+
+    Class<?> cls = new ClassLoader() {
+      public Class<?> defineClass() {
+        return defineClass("Target", classBytes, 0, classBytes.length);
+      }
+    }.defineClass();
+
+    Object interceptedTarget = Interceptor.create(cls, new Class[]{}, new Object[]{}, methodInterceptor);
+    assertEquals("m()", interceptedTarget.getClass().getMethod("m").invoke(interceptedTarget));
+    assertEquals(1, interceptedMethods.size());
   }
 
 }
