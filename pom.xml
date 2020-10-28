@@ -72,6 +72,9 @@
 
     <!-- FIXME: warnings on javadoc should be fixed -->
     <doclint>none</doclint>
+
+    <!-- Enable publication to Bintray using SonarSource/gh-action_LT_release -->
+    <artifactsToPublish>org.sonarsource.sslr:sslr</artifactsToPublish>
   </properties>
 
   <modules>
