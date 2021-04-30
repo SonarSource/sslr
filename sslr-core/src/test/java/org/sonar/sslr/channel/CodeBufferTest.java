@@ -264,6 +264,29 @@ public class CodeBufferTest {
     assertThat(code.pop(), is( -1));
   }
 
+    @Test
+    public void testSubSequence()
+    {
+        final CodeReaderConfiguration cfg = new CodeReaderConfiguration();
+        final String input = "some pretty short input\njust for kicks";
+        final CodeBuffer code = new CodeBuffer(input, cfg);
+
+        assertThat(code.subSequence(0, 4).toString(), is("some"));
+        assertThat(code.subSequence(24, 38).toString(), is("just for kicks"));
+
+        // Shift by one; the subsequence should shift accordingly
+        code.pop();
+        assertThat(code.subSequence(0, 4).toString(), is("ome "));
+
+        // Shift four more
+        code.pop();
+        code.pop();
+        code.pop();
+        code.pop();
+        assertThat(code.subSequence(0, 12).toString(), is("pretty short"));
+        assertThat(code.subSequence(13, 18).toString(), is("input"));
+    }
+
   /**
    * Backward compatibility with a COBOL plugin: filter returns 0 instead of -1, when end of the stream has been reached.
    */
