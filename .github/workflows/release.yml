@@ -18,7 +18,6 @@ jobs:
         with:
           distribute: true
           publish_to_binaries: false
-          run_rules_cov: false
         env:
           ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
           BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
