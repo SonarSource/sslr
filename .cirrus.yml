@@ -2,20 +2,10 @@ gcp_credentials: ENCRYPTED[!149d4005ecdba4cdd78bb5ba22756ebb98bf8e3367ee2e9ab08c
  
 env:
   CIRRUS_CLONE_DEPTH: 20
-  ARTIFACTORY_URL: ENCRYPTED[!2f8fa307d3289faa0aa6791f18b961627ae44f1ef46b136e1a1e63b0b4c86454dbb25520d49b339e2d50a1e1e5f95c88!]
-  ARTIFACTORY_PRIVATE_USERNAME: repox-private-reader-lt-ef42e7
-  ARTIFACTORY_PRIVATE_PASSWORD: ENCRYPTED[!9b954ad23535be51e04d7ad72d8f79b93141341f3b6fe5527140e1ffa9570694f23ddea6fc384b742e7ec956533765d6!]
-  ARTIFACTORY_DEPLOY_USERNAME: repox-qa-deployer-lt-ef42e7
-  ARTIFACTORY_DEPLOY_PASSWORD: ENCRYPTED[!e9d67cbbb9ffaa6a05b863eae9d08292b431481ae920205c7cb42d8811c18a932f2a29f486a46171c9ac6c053bc51e73!]
+  ARTIFACTORY_PRIVATE_USERNAME: vault-sonarsource-sslr-private-reader
+  ARTIFACTORY_DEPLOY_USERNAME: vault-sonarsource-sslr-qa-deployer
   #Possible values for ARTIFACTORY_DEPLOY_REPO: sonarsource-private-qa, sonarsource-public-qa
   ARTIFACTORY_DEPLOY_REPO: sonarsource-public-qa
-  ARTIFACTORY_API_KEY: ENCRYPTED[!9b954ad23535be51e04d7ad72d8f79b93141341f3b6fe5527140e1ffa9570694f23ddea6fc384b742e7ec956533765d6!]
-  # burgr notification
-  BURGR_URL: ENCRYPTED[!c7e294da94762d7bac144abef6310c5db300c95979daed4454ca977776bfd5edeb557e1237e3aa8ed722336243af2d78!]
-  BURGR_USERNAME: ENCRYPTED[!b29ddc7610116de511e74bec9a93ad9b8a20ac217a0852e94a96d0066e6e822b95e7bc1fe152afb707f16b70605fddd3!]
-  BURGR_PASSWORD: ENCRYPTED[!83e130718e92b8c9de7c5226355f730e55fb46e45869149a9223e724bb99656878ef9684c5f8cfef434aa716e87f4cf2!]
-  # access license key
-  GITHUB_TOKEN: ENCRYPTED[!f458126aa9ed2ac526f220c5acb51dd9cc255726b34761a56fc78d4294c11089502a882888cef0ca7dd4085e72e611a5!]
   # Use bash (instead of sh on linux or cmd.exe on windows)
   CIRRUS_SHELL: bash
 
@@ -28,6 +18,10 @@ container_definition: &CONTAINER_DEFINITION
 only_sonarsource_qa: &ONLY_SONARSOURCE_QA
   only_if: $CIRRUS_USER_COLLABORATOR == 'true' && $CIRRUS_TAG == "" && ($CIRRUS_PR != "" || $CIRRUS_BRANCH == "master" || $CIRRUS_BRANCH =~ "branch-.*" || $CIRRUS_BRANCH =~ "dogfood-on-.*")
 
+vault: &VAULT
+  vault_script:
+    - vault.sh
+
 build_task:
   <<: *ONLY_SONARSOURCE_QA
   gke_container:
@@ -36,10 +30,10 @@ build_task:
     memory: 2G
   env:    
     # analysis on next
-    SONAR_TOKEN: ENCRYPTED[!b6fd814826c51e64ee61b0b6f3ae621551f6413383f7170f73580e2e141ac78c4b134b506f6288c74faa0dd564c05a29!]
     SONAR_HOST_URL: https://next.sonarqube.com/sonarqube
     #allow deployment of pull request artifacts to repox
     DEPLOY_PULL_REQUEST: true
+  <<: *VAULT
   maven_cache:
     folder: ${CIRRUS_WORKING_DIR}/.m2/repository 
   build_script:
@@ -57,11 +51,9 @@ promote_task:
     cpu: 0.5
     memory: 500M
   env:
-    #promotion cloud function
-    GCF_ACCESS_TOKEN: ENCRYPTED[!1fb91961a5c01e06e38834e55755231d649dc62eca354593105af9f9d643d701ae4539ab6a8021278b8d9348ae2ce8be!]
-    PROMOTE_URL: ENCRYPTED[!e22ed2e34a8f7a1aea5cff653585429bbd3d5151e7201022140218f9c5d620069ec2388f14f83971e3fd726215bc0f5e!]   
     #artifacts that will have downloadable links in burgr
     ARTIFACTS: "org.sonarsource.sslr:sslr:jar" 
+  <<: *VAULT
   maven_cache:
     folder: ${CIRRUS_WORKING_DIR}/.m2/repository
   script: cirrus_promote_maven
