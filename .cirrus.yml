@@ -6,9 +6,9 @@ env:
   CIRRUS_VAULT_ROLE: cirrusci-${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}
   CIRRUS_VAULT_URL: https://vault.sonar.build:8200
   ARTIFACTORY_URL: VAULT[development/kv/data/repox data.url]
-  ARTIFACTORY_PRIVATE_USERNAME: repox-private-reader-lt-1a7e1f
+  ARTIFACTORY_PRIVATE_USERNAME: vault-${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-private-reader
   ARTIFACTORY_PRIVATE_PASSWORD: VAULT[development/artifactory/token/SonarSource-sslr-private-reader access_token]
-  ARTIFACTORY_DEPLOY_USERNAME: repox-qa-deployer-lt-1a7e1f
+  ARTIFACTORY_DEPLOY_USERNAME: vault-${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-qa-deployer
   ARTIFACTORY_DEPLOY_PASSWORD: VAULT[development/artifactory/token/SonarSource-sslr-qa-deployer access_token]
   #Possible values for ARTIFACTORY_DEPLOY_REPO: sonarsource-private-qa, sonarsource-public-qa
   ARTIFACTORY_DEPLOY_REPO: sonarsource-public-qa
