@@ -7,9 +7,9 @@ env:
   CIRRUS_VAULT_URL: https://vault.sonar.build:8200
   ARTIFACTORY_URL: VAULT[development/kv/data/repox data.url]
   ARTIFACTORY_PRIVATE_USERNAME: vault-${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-private-reader
-  ARTIFACTORY_PRIVATE_PASSWORD: VAULT[development/artifactory/token/SonarSource-sslr-private-reader access_token]
+  ARTIFACTORY_PRIVATE_PASSWORD: VAULT[development/artifactory/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-private-reader access_token]
   ARTIFACTORY_DEPLOY_USERNAME: vault-${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-qa-deployer
-  ARTIFACTORY_DEPLOY_PASSWORD: VAULT[development/artifactory/token/SonarSource-sslr-qa-deployer access_token]
+  ARTIFACTORY_DEPLOY_PASSWORD: VAULT[development/artifactory/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-qa-deployer access_token]
   #Possible values for ARTIFACTORY_DEPLOY_REPO: sonarsource-private-qa, sonarsource-public-qa
   ARTIFACTORY_DEPLOY_REPO: sonarsource-public-qa
   # burgr notification
@@ -60,7 +60,7 @@ promote_task:
     #promotion cloud function
     GCF_ACCESS_TOKEN: VAULT[development/kv/data/promote data.token]
     PROMOTE_URL: VAULT[development/kv/data/promote data.url]
-    GITHUB_TOKEN: VAULT[development/github/token/SonarSource-sslr-promotion token]
+    GITHUB_TOKEN: VAULT[development/github/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-promotion token]
     #artifacts that will have downloadable links in burgr
     ARTIFACTS: "org.sonarsource.sslr:sslr:jar" 
   maven_cache:
