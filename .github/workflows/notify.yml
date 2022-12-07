@@ -1,0 +1,41 @@
+# This doesn't work, probably because `check_run` is not present in
+# https://github.com/SonarSource/re-terraform-aws-vault/blob/9eb101a80c087dec062c74e0a9dfca7938bd5bfb/terraform-vault-config/modules/repository/roles.tf#L105-L111
+
+on:
+  push
+#  check_run:
+#    types: [completed]
+
+#      - run: curl -d "text=test" -d "channel=@Godin" -H "Authorization: Bearer ${TOKEN}" -X POST https://slack.com/api/chat.postMessage
+#        env:
+#          SLACK_TOKEN: ${{ fromJSON(steps.secrets.outputs.vault).SLACK_TOKEN }}
+
+jobs:
+  notify:
+    uses: ./.github/workflows/reusable.yml
+#    if: >-
+#      github.event.check_run.conclusion != 'success'
+#      && github.event.check_run.check_suite.app.name == 'Cirrus CI'
+#      && github.event.check_run.check_suite.head_branch == 'godin/cirrusci-notify'
+#    runs-on: ubuntu-latest
+#    permissions:
+#      id-token: write # required for SonarSource/vault-action-wrapper
+#    steps:
+#      - name: get secrets
+#        id: secrets
+#        uses: hashicorp/vault-action@7d98524254c38dc6892804f991526ff30905f643 # tag=v2.4.2
+##        uses: SonarSource/vault-action-wrapper@d1c1ab4ca5ad07fd9cdfe1eff038a39673dfca64  # tag=2.4.2-1
+#        with:
+#          url: https://vault.sonar.build:8200
+#          exportEnv: false
+#          method: jwt
+#          path: jwt-ghwf
+#          role: github-sonarsource-sslr
+#          secrets: |
+#            development/kv/data/slack token | SLACK_TOKEN;
+#      - run: echo
+#        env:
+#          JSON: ${{ toJSON(github.event) }}
+#      - name: echo
+#        run: |
+#          echo "CirrusCI task `${{ github.event.check_run.name }}` failed - see ${{ github.event.check_run.details_url }}"

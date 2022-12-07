@@ -1,0 +1,16 @@
+on: workflow_call
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # required for SonarSource/vault-action-wrapper
+    steps:
+      - name: get secrets
+        id: secrets
+        uses: SonarSource/vault-action-wrapper@d1c1ab4ca5ad07fd9cdfe1eff038a39673dfca64  # tag=2.4.2-1
+        with:
+          secrets: |
+            development/kv/data/slack token | SLACK_TOKEN;
+      - name: test
+        run: echo OK
