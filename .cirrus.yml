@@ -42,6 +42,8 @@ build_task:
     DEPLOY_PULL_REQUEST: true
   maven_cache:
     folder: ${CIRRUS_WORKING_DIR}/.m2/repository 
+  example_script:
+    - fail
   build_script:
     - source cirrus-env BUILD
     - regular_mvn_build_deploy_analyze
