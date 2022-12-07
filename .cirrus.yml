@@ -28,6 +28,14 @@ container_definition: &CONTAINER_DEFINITION
 only_sonarsource_qa: &ONLY_SONARSOURCE_QA
   only_if: $CIRRUS_USER_COLLABORATOR == 'true' && $CIRRUS_TAG == "" && ($CIRRUS_PR != "" || $CIRRUS_BRANCH == "master" || $CIRRUS_BRANCH =~ "branch-.*" || $CIRRUS_BRANCH =~ "dogfood-on-.*")
 
+example_task:
+  gke_container:
+    <<: *CONTAINER_DEFINITION
+    cpu: 2
+    memory: 2G
+  example_script:
+    - fail
+
 build_task:
   <<: *ONLY_SONARSOURCE_QA
   gke_container:
