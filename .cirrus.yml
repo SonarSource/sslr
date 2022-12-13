@@ -1,10 +1,5 @@
-gcp_credentials: ENCRYPTED[!149d4005ecdba4cdd78bb5ba22756ebb98bf8e3367ee2e9ab08c5a1608c0d3e3b501904b67a1d67c0b63085e469d7dde!]
- 
 env:
   CIRRUS_CLONE_DEPTH: 20
-  CIRRUS_VAULT_AUTH_PATH: jwt-cirrusci
-  CIRRUS_VAULT_ROLE: cirrusci-${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}
-  CIRRUS_VAULT_URL: https://vault.sonar.build:8200
   ARTIFACTORY_URL: VAULT[development/kv/data/repox data.url]
   ARTIFACTORY_PRIVATE_USERNAME: vault-${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-private-reader
   ARTIFACTORY_PRIVATE_PASSWORD: VAULT[development/artifactory/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-private-reader access_token]
@@ -20,9 +15,9 @@ env:
   CIRRUS_SHELL: bash
 
 container_definition: &CONTAINER_DEFINITION
-  image: eu.gcr.io/release-engineering-ci-prod/base:j11-latest
-  cluster_name: cirrus-ci
-  zone: europe-west4-b
+  image: ${CIRRUS_AWS_ACCOUNT}.dkr.ecr.eu-central-1.amazonaws.com/base:j11-latest
+  cluster_name: ${CIRRUS_CLUSTER_NAME}
+  region: eu-central-1
   namespace: default
 
 only_sonarsource_qa: &ONLY_SONARSOURCE_QA
@@ -30,7 +25,7 @@ only_sonarsource_qa: &ONLY_SONARSOURCE_QA
 
 build_task:
   <<: *ONLY_SONARSOURCE_QA
-  gke_container:
+  eks_container:
     <<: *CONTAINER_DEFINITION
     cpu: 2
     memory: 2G
@@ -52,7 +47,7 @@ promote_task:
   depends_on:
     - build
   <<: *ONLY_SONARSOURCE_QA
-  gke_container:
+  eks_container:
     <<: *CONTAINER_DEFINITION
     cpu: 0.5
     memory: 500M
