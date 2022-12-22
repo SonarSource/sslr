@@ -5,9 +5,6 @@ on:
     types:
       - published
 
-env:
-  PYTHONUNBUFFERED: 1
-
 jobs:
   release:
     permissions:
