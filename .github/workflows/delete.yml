@@ -1,0 +1,19 @@
+on:
+  - delete
+  - push
+
+jobs:
+  test:
+    if: >-
+      (github.event_name == 'push' && (github.event.ref == 'refs/heads/master' || startsWith(github.event.ref, 'refs/heads/dogfood/')))
+      || (github.event_name == 'delete' && startsWith(github.event.ref, 'dogfood/'))
+    name: delete
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo
+        env:
+          JSON: ${{ toJSON(github) }}
+      - run: echo
+        env:
+          JSON: ${{ github.event.ref }}
+      - run: cat ${{ github.event_path }}
