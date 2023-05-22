@@ -1,6 +1,6 @@
 /*
  * SonarSource Language Recognizer
- * Copyright (C) 2010-2021 SonarSource SA
+ * Copyright (C) 2010-2023 SonarSource SA
  * mailto:info AT sonarsource DOT com
  *
  * This program is free software; you can redistribute it and/or
