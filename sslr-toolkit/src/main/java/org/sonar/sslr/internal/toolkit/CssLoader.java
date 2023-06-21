@@ -19,10 +19,12 @@
  */
 package org.sonar.sslr.internal.toolkit;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public final class CssLoader {
 
@@ -33,9 +35,13 @@ public final class CssLoader {
 
   public static String getCss() {
     try {
-      InputStream inputStream = CssLoader.class.getResourceAsStream(CSS_PATH);
-      return IOUtils.toString(inputStream);
-    } catch (IOException e) {
+      return Optional.ofNullable(CssLoader.class.getResourceAsStream(CSS_PATH))
+        .map(InputStreamReader::new)
+        .map(BufferedReader::new)
+        .map(BufferedReader::lines)
+        .map(lines -> lines.collect(Collectors.joining("\n")))
+        .orElseThrow(() -> new NoSuchElementException("CSS not found by path: " + CSS_PATH));
+    } catch (UncheckedIOException e) {
       throw new RuntimeException(e);
     }
   }
