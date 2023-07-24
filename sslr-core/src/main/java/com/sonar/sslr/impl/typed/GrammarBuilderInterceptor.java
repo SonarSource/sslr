@@ -87,7 +87,14 @@ public class GrammarBuilderInterceptor<T> implements MethodInterceptor, GrammarB
   @Override
   public Object is(Object method) {
     if (expressionStack.size() != 1) {
-      throw new IllegalStateException("Unexpected stack size: " + expressionStack.size());
+      StringBuilder errorMessage = new StringBuilder("Unable to find the method for rule: \"" + ruleKey + "\" in Grammar. " +
+        "Please check if the method is defined as public.\nRecognized methods: [");
+      for (Method methodKey : methodToRuleKey.keySet()) {
+        errorMessage.append("\n\t");
+        errorMessage.append(methodKey.getName());
+      }
+      errorMessage.append("\n]");
+      throw new IllegalStateException(errorMessage.toString());
     }
 
     ParsingExpression expression = pop();
