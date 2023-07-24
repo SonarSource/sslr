@@ -19,6 +19,7 @@
  */
 package org.sonar.sslr.internal.vm;
 
+import org.sonar.sslr.grammar.GrammarException;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 
 import java.util.ArrayDeque;
@@ -49,6 +50,10 @@ public class MutableGrammarCompiler extends CompilationHandler {
     while (!compilationQueue.isEmpty()) {
       CompilableGrammarRule rule = compilationQueue.poll();
       GrammarRuleKey ruleKey = rule.getRuleKey();
+
+      if(rule.getExpression() == null) {
+        throw new GrammarException("The expression for rule \"" + ruleKey + "\" is undefined.");
+      }
 
       offsets.put(ruleKey, instructions.size());
       Instruction.addAll(instructions, compile(rule.getExpression()));
