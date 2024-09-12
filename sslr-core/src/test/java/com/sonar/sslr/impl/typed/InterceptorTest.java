@@ -24,7 +24,6 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,6 +33,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 public class InterceptorTest {
 
@@ -165,8 +165,10 @@ public class InterceptorTest {
    */
   @Test
   public void requires_final_methods_to_be_non_public() {
-    VerifyError thrown = assertThrows(VerifyError.class,
+    LinkageError thrown = assertThrows(LinkageError.class,
       () -> Interceptor.create(PublicFinalMethod.class, new Class[]{}, new Object[]{}, methodInterceptor));
+    assertTrue(/* JDK 11 */ thrown.getClass().equals(VerifyError.class)
+      /* JDK 17 */ || thrown.getClass().equals(IncompatibleClassChangeError.class));
     assertThat(thrown.getMessage())
       // Note that details of the message are different between JDK versions
       .startsWith("class GeneratedBySSLR overrides final method");
