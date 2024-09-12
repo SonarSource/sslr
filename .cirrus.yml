@@ -11,7 +11,7 @@ env:
   CIRRUS_SHELL: bash
 
 container_definition: &CONTAINER_DEFINITION
-  image: ${CIRRUS_AWS_ACCOUNT}.dkr.ecr.eu-central-1.amazonaws.com/base:j11-latest
+  image: ${CIRRUS_AWS_ACCOUNT}.dkr.ecr.eu-central-1.amazonaws.com/base:j17-latest
   cluster_name: ${CIRRUS_CLUSTER_NAME}
   region: eu-central-1
   namespace: default
@@ -31,13 +31,9 @@ build_task:
     SONAR_HOST_URL: https://next.sonarqube.com/sonarqube
     #allow deployment of pull request artifacts to repox
     DEPLOY_PULL_REQUEST: true
-  maven_cache:
-    folder: ${CIRRUS_WORKING_DIR}/.m2/repository 
   build_script:
     - source cirrus-env BUILD
     - regular_mvn_build_deploy_analyze
-  cleanup_before_cache_script: cleanup_maven_repository
-
 
 promote_task:
   depends_on:
@@ -50,7 +46,4 @@ promote_task:
   env:
     ARTIFACTORY_PROMOTE_ACCESS_TOKEN: VAULT[development/artifactory/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-promoter access_token]
     GITHUB_TOKEN: VAULT[development/github/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-promotion token]
-  maven_cache:
-    folder: ${CIRRUS_WORKING_DIR}/.m2/repository
   script: cirrus_promote_maven
-  cleanup_before_cache_script: cleanup_maven_repository
