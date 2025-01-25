@@ -69,7 +69,6 @@ public class SyntaxTreeCreator<T> {
   private Object visitNonTerminal(ParseNode node) {
     MutableParsingRule rule = (MutableParsingRule) node.getMatcher();
     GrammarRuleKey ruleKey = rule.getRuleKey();
-    Method method = mapping.actionForRuleKey(ruleKey);
 
     Object result;
 
@@ -93,6 +92,7 @@ public class SyntaxTreeCreator<T> {
       }
 
     } else {
+      Method method = mapping.actionForRuleKey(ruleKey);
       List<Object> convertedChildren = new ArrayList<>();
       for (ParseNode child : node.getChildren()) {
         convertedChildren.add(visit(child));
