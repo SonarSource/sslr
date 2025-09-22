@@ -28,6 +28,8 @@ jobs:
       - uses: SonarSource/ci-github-actions/build-maven@v1
         with:
           deploy-pull-request: true
+          artifactory-reader-role: private-reader
+          artifactory-deployer-role: qa-deployer
 
   promote:
     needs: [build]
