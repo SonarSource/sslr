@@ -1,7 +1,5 @@
 # SonarSource Language Recognizer
 
-[![Build Status](https://travis-ci.org/SonarSource/sslr.svg?branch=master)](https://travis-ci.org/SonarSource/sslr)
-
 * Issue tracking: http://jira.sonarsource.com/browse/SSLR
 * Community forums: feel free to ask any question on the [Community Forums](https://community.sonarsource.com/)
 * License: LGPLv3
