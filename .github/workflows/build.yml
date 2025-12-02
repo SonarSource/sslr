@@ -23,10 +23,10 @@ jobs:
       id-token: write  # Required for Vault OIDC authentication
       contents: write  # Required for repository access and tagging
     steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
-      - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2.4.4
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      - uses: jdx/mise-action@146a28175021df8ca24f8ee1828cc2a60f980bd5 # v3.5.1
         with:
-          version: 2025.7.12
+          version: 2025.11.11
       - uses: SonarSource/ci-github-actions/build-maven@v1
         with:
           deploy-pull-request: true
