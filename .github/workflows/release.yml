@@ -14,4 +14,4 @@ jobs:
     with:
       publishToBinaries: true
       mavenCentralSync: true
-      slackChannel: team-lang-cfamily
+      slackChannel: squad-cfamily-notifications
