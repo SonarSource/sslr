@@ -12,6 +12,6 @@ jobs:
       contents: write
     uses: SonarSource/gh-action_release/.github/workflows/main.yaml@4a05ba99d2db61c5ab50467d169e905a746c2693 # 6.2.0
     with:
-      publishToBinaries: true
+      publishToBinaries: false
       mavenCentralSync: true
       slackChannel: squad-cfamily-notifications
