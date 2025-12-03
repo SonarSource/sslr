@@ -14,8 +14,12 @@
   <packaging>pom</packaging>
 
   <name>SonarSource :: Language Recognizer</name>
-  <description />
-  <url />
+  <description>
+      SSLR is a lightweight Java library which provides everything required to analyse any piece of source code.
+      Using SSLR, you can quickly create a lexer, a parser, and some AST visitors to implement quality rules or compute measures.
+      This library is used in several SonarSource language analyzers.
+  </description>
+  <url>https://github.com/SonarSource/sslr</url>
   <inceptionYear>2010</inceptionYear>
   <organization>
     <name>SonarSource</name>
