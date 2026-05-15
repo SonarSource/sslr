@@ -1,0 +1,16 @@
+name: Required SCA Check
+on:
+  pull_request:
+  merge_group:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  verify-sca:
+    runs-on: github-ubuntu-latest-s  # Public repo with auth actions
+    name: Verify SCA
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: SonarSource/ci-github-actions/check-sca@v1
