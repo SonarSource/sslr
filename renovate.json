@@ -2,27 +2,5 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "local>SonarSource/core-languages-tooling-public:renovate-config"
-  ],
-  "rebaseWhen": "conflicted",
-  "minimumReleaseAgeBehaviour": "timestamp-required",
-  "packageRules": [
-    {
-      "description": "Group GitHub Actions updates",
-      "matchManagers": ["github-actions"],
-      "groupName": "GitHub Actions dependencies",
-      "groupSlug": "github-actions-dependencies"
-    },
-    {
-      "description": "Group Maven updates",
-      "matchManagers": ["maven"],
-      "groupName": "Maven dependencies",
-      "groupSlug": "maven-dependencies"
-    },
-    {
-      "description": "Group Mise tool updates",
-      "matchManagers": ["mise"],
-      "groupName": "Mise tool dependencies",
-      "groupSlug": "mise-tool-dependencies"
-    }
   ]
 }
