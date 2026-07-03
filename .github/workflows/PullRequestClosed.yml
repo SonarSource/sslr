@@ -5,9 +5,9 @@ on:
     types: [closed]
 
 jobs:
-  PullRequestMerged_job:
-    name: Pull Request Merged
-    runs-on: github-ubuntu-latest-s
+  PullRequestClosed_job:
+    name: Pull Request Closed
+    runs-on: sonar-xs
     permissions:
       id-token: write
       pull-requests: read
