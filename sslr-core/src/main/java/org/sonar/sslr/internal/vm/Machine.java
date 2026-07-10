@@ -131,8 +131,8 @@ public class Machine implements CharSequence {
     if (input != null) {
       this.inputLength = input.length;
     } else {
-        assert tokens != null;
-        this.inputLength = tokens.length;
+      assert tokens != null;
+      this.inputLength = tokens.length;
     }
 
     this.handler = handler;
