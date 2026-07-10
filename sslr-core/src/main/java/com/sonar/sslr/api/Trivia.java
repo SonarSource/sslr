@@ -16,6 +16,7 @@
  */
 package com.sonar.sslr.api;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +37,7 @@ public class Trivia {
     this(kind, null, tokens);
   }
 
-  private Trivia(TriviaKind kind, PreprocessingDirective preprocessingDirective, Token... tokens) {
+  private Trivia(TriviaKind kind, @Nullable PreprocessingDirective preprocessingDirective, Token... tokens) {
     this.kind = kind;
     this.preprocessingDirective = preprocessingDirective;
     this.tokens = Arrays.asList(tokens);

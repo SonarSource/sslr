@@ -27,6 +27,7 @@ import org.sonar.sslr.internal.vm.lexerful.LexerfulParseErrorFormatter;
 import org.sonar.sslr.parser.ParseError;
 import org.sonar.sslr.parser.ParsingResult;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -124,12 +125,13 @@ public class Machine implements CharSequence {
     this(input.toCharArray(), null, instructions, handler);
   }
 
-  private Machine(char[] input, Token[] tokens, Instruction[] instructions, MachineHandler handler) {
+  private Machine(@Nullable char[] input, @Nullable Token[] tokens, Instruction[] instructions, MachineHandler handler) {
     this.input = input;
     this.tokens = tokens;
     if (input != null) {
       this.inputLength = input.length;
     } else {
+      assert tokens != null;
       this.inputLength = tokens.length;
     }
 
