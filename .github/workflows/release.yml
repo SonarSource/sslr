@@ -7,6 +7,10 @@ on:
         description: Full version including build number, e.g. 1.25.1.3886
         required: true
         type: string
+      dryRun:
+        type: boolean
+        description: Flag to enable the dry-run execution
+        default: false
 
 jobs:
   release:
@@ -16,6 +20,7 @@ jobs:
     uses: SonarSource/gh-action_release/.github/workflows/main.yaml@v7
     with:
       version: ${{ inputs.version }}
+      dryRun: ${{ inputs.dryRun == true }}
       publishToBinaries: false
       mavenCentralSync: true
       slackChannel: squad-corelang-releases
