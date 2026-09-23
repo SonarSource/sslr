@@ -43,6 +43,7 @@ jobs:
           name: build-output-${{ steps.build.outputs.BUILD_NUMBER }}
           path: '**/target'
           retention-days: 3
+          overwrite: true
 
   scan:
     name: Scan
