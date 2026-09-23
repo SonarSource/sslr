@@ -54,6 +54,7 @@ public class JsonGrammar {
         b.token(JsonLexer.RCURLYBRACE)));
   }
 
+  @SuppressWarnings("java:S2190") // recursion terminates because each call consumes a token from the input
   public SyntaxList<PairTree> PAIR_LIST() {
     return b.<SyntaxList<PairTree>>nonterminal().is(
       b.firstOf(
@@ -74,6 +75,7 @@ public class JsonGrammar {
         b.token(JsonLexer.RBRACKET)));
   }
 
+  @SuppressWarnings("java:S2190") // recursion terminates because each call consumes a token from the input
   public SyntaxList<ValueTree> VALUE_LIST() {
     return b.<SyntaxList<ValueTree>>nonterminal().is(
       b.firstOf(
