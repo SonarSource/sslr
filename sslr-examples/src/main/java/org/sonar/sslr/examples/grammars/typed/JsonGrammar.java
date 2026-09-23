@@ -54,7 +54,7 @@ public class JsonGrammar {
         b.token(JsonLexer.RCURLYBRACE)));
   }
 
-  @SuppressWarnings("java:S2190") // recursion terminates because each call consumes a token from the input
+  @SuppressWarnings("java:S2190") // not real recursion: ActionParser's generated grammar subclass intercepts nested rule calls and records a delayed rule reference instead of invoking the method
   public SyntaxList<PairTree> PAIR_LIST() {
     return b.<SyntaxList<PairTree>>nonterminal().is(
       b.firstOf(
@@ -75,7 +75,7 @@ public class JsonGrammar {
         b.token(JsonLexer.RBRACKET)));
   }
 
-  @SuppressWarnings("java:S2190") // recursion terminates because each call consumes a token from the input
+  @SuppressWarnings("java:S2190") // not real recursion: ActionParser's generated grammar subclass intercepts nested rule calls and records a delayed rule reference instead of invoking the method
   public SyntaxList<ValueTree> VALUE_LIST() {
     return b.<SyntaxList<ValueTree>>nonterminal().is(
       b.firstOf(
