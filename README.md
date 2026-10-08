@@ -1,10 +1,26 @@
+<!-- Sonar Marketing hosts these approved brand assets on its Kentico Kontent CDN (assets-eu-01.kc-usercontent.com). Shared URLs are intentional; consult Marketing before replacing them. -->
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://assets-eu-01.kc-usercontent.com/ef593040-b591-0198-9506-ed88b30bc023/a23fc7ba-23f0-489a-829d-ed88c0748521/Sonar_Logo_Dark%20Backgrounds.svg">
+    <img src="https://assets-eu-01.kc-usercontent.com/ef593040-b591-0198-9506-ed88b30bc023/82c13eba-d95c-4bb8-8007-7ce77c14e043/Sonar_Logo_Light%20Backgrounds.svg" alt="Sonar logo" width="400">
+  </picture>
+</p>
+
+<!-- sonar-marketing:start -->
+<!-- Marketing maintains this section. For wording changes, consult the relevant Product Marketing Manager (PMM). Repository maintainers review accuracy and merge changes. -->
+
 # SonarSource Language Recognizer
+
+SonarSource Language Recognizer (SSLR) is a Java library for implementing lexers, parsers, and abstract syntax tree visitors. It is used by Sonar language analyzers and is intended for developers building source-code analysis tools.
+
+To learn more about the SonarQube product family, visit the [Sonar website](https://www.sonarsource.com/products/sonarqube/).
+
+<!-- sonar-marketing:end -->
 
 * Issue tracking: http://jira.sonarsource.com/browse/SSLR
 * Community forums: feel free to ask any question on the [Community Forums](https://community.sonarsource.com/)
 * License: LGPLv3
 
-SSLR  is a lightweight Java library which provides everything required to analyse any piece of source code. Using SSLR, you can quickly create a lexer, a parser, and some AST visitors to implement quality rules or compute measures. This library is used in several SonarSource language analyzers.
 
 
 ## Motivations
