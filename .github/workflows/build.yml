@@ -106,7 +106,7 @@ jobs:
       - name: Slack Notification
         uses: SonarSource/core-languages-tooling-public/common-actions/slack-notify@v1
         with:
-          slack-channel: "C0BFBRNJCM8" # #ops-language-coverage
+          slack-channel: "C0BFBRNJCM8" # #ops-language-expansion
           branch-patterns: ${{ format('{0},branch-*,dogfood-*', github.event.repository.default_branch || 'master') }}
           github-token: ${{ github.token }}
           branch: ${{ github.ref_name }}

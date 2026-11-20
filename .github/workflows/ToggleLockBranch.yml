@@ -25,4 +25,4 @@ jobs:
           github-token: ${{ fromJSON(steps.secrets.outputs.vault).lock_token }}
           slack-token: ${{ fromJSON(steps.secrets.outputs.vault).slack_api_token }}
           additional-message: ${{ github.event.inputs.additional-message }}
-          slack-channel: "C0BFBRNJCM8" # #ops-language-coverage
+          slack-channel: "C0BFBRNJCM8" # #ops-language-expansion
